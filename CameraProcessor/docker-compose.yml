@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  app-dev:
+    image: cameraprocessor
+    build: .
+    user: "1000:999"
+    volumes:
+    - ./src:/code
+    labels:
+      - "author=TrackTech"
+    command: watch -t pytest -v
+  
+  app:
+    image: cameraprocessor
