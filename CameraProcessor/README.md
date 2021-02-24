@@ -10,9 +10,9 @@ docker-compose up
 ```
 run code
 ```
-docker run CameraProcessor
+docker run cameraprocessor
 ```
 run tests
 ```
-docker run CameraProcessor watch -t pytest -v
+docker run cameraprocessor watch -t pytest -v
 ```
