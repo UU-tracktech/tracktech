@@ -30,11 +30,13 @@ RUN cd nginx-1.18.0 && ./configure --add-module=/nginx-rtmp-module --without-htt
   make install
   
 #Copy static files into the image
-COPY html /data/www/html
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf
 
-#Make sure port 8080 can be reached
+#Make sure port 8080 can be reached (to request data)
 EXPOSE 8080
+
+#Make sure port 1935 can be reached (to deliver data)
+EXPOSE 1935
 
 #Make sure the console stuff goes to the right place and the daemon doesn't keep secrets
 CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
