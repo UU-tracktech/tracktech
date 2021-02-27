@@ -44,3 +44,31 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+
+# Setting up ESLint
+
+To set up ESLint for both JavaScript, React and TypeScript:
+
+## Installing ESLint
+
+In WebStorm press `Alt+F12` to open a terminal.
+
+In the terminal run the following commands:
+
+ * `npm install --save-dev eslint` to install ESLint as a development dependency.
+
+ * `npm install eslint-plugin-react --save-dev` to install ESLint for React.
+
+ * `npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin` to install ESLint for TypeScript
+
+## Enabling ESLint in WebStorm
+
+Press `Ctrl+Alt+S` to open Settings/Preferences dialog.
+
+Go to Languages and Framework | JavaScript | Code Quality Tools | ESLint.
+
+Select the Automatic ESLint configuration option.
+
+The ESLint is now enabled for JavaScript, React and TypeScript in the current project.
