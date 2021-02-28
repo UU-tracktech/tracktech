@@ -26,17 +26,17 @@ RUN mkdir /root/.ssh/
 # Copy over private key, and set permissions
 # Warning! Anyone who gets their hands on this image will be able
 # to retrieve this private key file from the corresponding image layer
-######ADD deployment_rsa /root/.ssh/deployment_rsa
+ADD deployment_rsa /root/.ssh/deployment_rsa
 
 # Create known_hosts
-######RUN touch /root/.ssh/known_hosts
+RUN touch /root/.ssh/known_hosts
 # Add bitbuckets key
-######RUN ssh-keyscan -T 30 git.science.uu.nl >> /root/.ssh/known_hosts
+RUN ssh-keyscan -T 30 git.science.uu.nl >> /root/.ssh/known_hosts
 
 # Clone the conf files into the docker container
-######RUN git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/src.git /tmp/project_modules/ && \
-######    git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/public.git /tmp/project_modules/ && \
-######    git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/start.sh.git /tmp/project_modules/ && \
-######    git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/package.json.git /tmp/project_modules/
+RUN git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/src.git /tmp/project_modules/ && \
+    git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/public.git /tmp/project_modules/ && \
+    git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/start.sh.git /tmp/project_modules/ && \
+    git clone -b SCP_63-TEST-BRANCH --single-branch git@git.science.uu.nl:e.w.j.bangma/tracktech/interface/package.json.git /tmp/project_modules/
 
-######COPY start.sh /tmp/project_modules/start.sh
+COPY start.sh /tmp/project_modules/start.sh
