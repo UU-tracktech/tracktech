@@ -46,20 +46,11 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 
-<<<<<<< HEAD
-
-# Setting up ESLint
-
-To set up ESLint for both JavaScript, React and TypeScript:
-
-## Installing ESLint
-=======
 #Setting up ESLint
 
 To set up ESLint for both JavaScript, React and TypeScript:
 
 ##Installing ESLint
->>>>>>> 9215a1f137c17e66c1df225990195ce6dd5bb406
 
 In WebStorm press `Alt+F12` to open a terminal.
 
@@ -71,11 +62,7 @@ In the terminal run the following commands:
 
  * `npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin` to install ESLint for TypeScript
 
-<<<<<<< HEAD
-## Enabling ESLint in WebStorm
-=======
 ##Enabling ESLint in WebStorm
->>>>>>> 9215a1f137c17e66c1df225990195ce6dd5bb406
 
 Press `Ctrl+Alt+S` to open Settings/Preferences dialog.
 
@@ -83,9 +70,6 @@ Go to Languages and Framework | JavaScript | Code Quality Tools | ESLint.
 
 Select the Automatic ESLint configuration option.
 
-<<<<<<< HEAD
-The ESLint is now enabled for JavaScript, React and TypeScript in the current project.
-=======
 The ESLint is now enabled for JavaScript, React and TypeScript in the current project.
 
 #Running Docker
@@ -141,4 +125,3 @@ Docker desktop.
 Run everything described in [Starting Docker](##Starting-Docker).
 
 Keep in mind that image names should be unique.
->>>>>>> 9215a1f137c17e66c1df225990195ce6dd5bb406
