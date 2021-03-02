@@ -10,6 +10,8 @@ RUN apt-get install -y git
 #Install wget
 RUN apt-get install -y wget
 
+#Install ffmpeg
+RUN apt install -y ffmpeg
 
 #https://docs.peer5.com/guides/setting-up-hls-live-streaming-server-using-nginx/
 #Clone nginx-rtmp-module
