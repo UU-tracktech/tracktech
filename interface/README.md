@@ -116,7 +116,7 @@ Docker desktop.
 
  * Run `docker build -t <image_name> .` in PowerShell.
 
- * Run `docker run -p 80:5000 <image_name> serve -s build` in PowerShell to restart the updated build.
+ * Run `docker run -p 80:5000 <image_name>` in PowerShell to restart the updated build.
 
  * Refresh the `localhost` page in your browser.
 
