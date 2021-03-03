@@ -1,5 +1,5 @@
-set imageName=tt-forwarder-image
-set containerName=tt-forwarder-container
+set imageName=tt-traefik-image
+set containerName=tt-traefik-container
 
 :: Remove old container
 docker rm -f %containerName%
@@ -11,4 +11,4 @@ docker image rm %imageName%
 docker build -t %imageName% .
 
 :: Run new container, this one exposes port 80 and 1935
-docker run -d -p 80:8080 -p 1935:1935 --name %containerName% %imageName%
+docker run -d -p 50005:80 -p 50006:8080 --name %containerName% %imageName%

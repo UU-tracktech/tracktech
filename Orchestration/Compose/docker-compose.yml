@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  reverse-proxy:
+    image: tt-traefik-image # The custom treafik image.
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "50005:80" # The HTTP port
+      - "50006:8080" # The Web UI (enabled by --api.insecure=true)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+  interface:
+    image: tt-interface-image
+    ports:
+      - "50007:5000"
+  forwarder1:
+    image: tt-forwarder-image
+    ports:
+      - "50008:8080"

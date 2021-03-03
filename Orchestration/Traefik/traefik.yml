@@ -1,0 +1,15 @@
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: j.teeuwissen@students.uu.nl
+      storage: acme.json
+      httpChallenge:
+        # used during the challenge
+        entryPoint: web
