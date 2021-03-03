@@ -11,6 +11,7 @@
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "react": "^17.0.1",
+    "react-awesome-player": "^1.1.0",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
     "typescript": "^4.2.2",
@@ -44,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "eslint": "^7.20.0",
-    "eslint-plugin-react": "^7.22.0"
+    "eslint-plugin-react": "^7.22.0",
+    "video.js": "^7.11.4"
   }
 }
