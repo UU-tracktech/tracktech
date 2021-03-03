@@ -11,4 +11,4 @@ docker image rm %imageName%
 docker build -t %imageName% .
 
 :: Run new container, this one exposes port 80 and 1935
-docker run -d -p 80:8080 -p 1935:1935  --name %containerName% %imageName%
+docker run -d -p 80:8080 -p 1935:1935 --name %containerName% %imageName%
