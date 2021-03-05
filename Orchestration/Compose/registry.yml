@@ -2,15 +2,35 @@ version: "3.2"
 
 services:
   registry:
-    image: registry
+    image: registry:2
     restart: always
     ports:
       - published: 50007
-      - target: 5000
-  environment:
-     - REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/tracktech.ml-cert.pem 
-     - REGISTRY_HTTP_TLS_KEY=/run/secrets/tracktech.ml-key.pem 
-    
+        target: 5000
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /run/secrets/tracktech.ml-cert.pem
+      REGISTRY_HTTP_TLS_KEY: /run/secrets/tracktech.ml-privkey.pem
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.registry==true "
+    volumes:
+      - registry:/var/lib/registry
+      - registry_auth:/auth
+    secrets:
+      - tracktech.ml-cert.pem
+      - tracktech.ml-privkey.pem
+
+
+volumes:
+  registry:
+    external: true
+  registry_auth:
+    external: true
+
 secrets:
   tracktech.ml-cert.pem:
     external: true
