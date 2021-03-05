@@ -14,7 +14,7 @@ DetectionObj
 
 BoundingBox:
   * int: Identifier
-  * Rectangle: TBD
+  * Rectangle: (x1, y1, x2, y2)
   * FeatureObj: TBD
   * str: Classification (f.e. "Person")
   * float: Certainty
