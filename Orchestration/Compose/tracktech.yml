@@ -6,6 +6,7 @@ services:
     ports:
       - published: 50007
       - target: 5000
+    entrypoint: ["serve", "-s", "build", "--ssl-cert","/run/secrets/tracktech.ml-cert.pem","--ssl-key","/run/secrets/tracktech.ml-privkey.pem"]
   forwarder1:
     image: tt-forwarder-image
     ports:
@@ -13,3 +14,8 @@ services:
       - target: 8080
       - mode: "host"
 
+secrets:
+  tracktech.ml-cert.pem:
+    external: true
+  tracktech.ml-privkey.pem:
+    external: true
