@@ -32,24 +32,13 @@ function App() {
 class Video extends React.Component { //video player component.
   state = {
     options: {
-      poster: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=854361313,3188166359&fm=26&gp=0.jpg",
+      poster: "https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif",
       sources: [{
         //type: "video/mp4",
         //src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
         type: "application/x-mpegURL",
-        src: "http://d3rlna7iyyu8wu.cloudfront.net/skip_armstrong/skip_armstrong_multichannel_subs.m3u8"
-      }],
-      subtitles: [{
-        language: 'zh',
-        url: "https://feawesome.github.io/react-awesome-player/zh.vtt",
-        label: "中文"
-      },
-        {
-          language: 'en',
-          url: "https://feawesome.github.io/react-awesome-player/en.vtt",
-          label: "EN"
-        }],
-      defaultSubtitle: 'en'
+        src: "http://localhost:50008/hls/movie.m3u8"
+      }]
     }
   }
   loadeddata() {

@@ -1,5 +1,5 @@
-set imageName=videoforwarderimage
-set containerName=videoforwardercontainer
+set imageName=tt-forwarder-image
+set containerName=tt-forwarder-container
 
 :: Remove old container
 docker rm -f %containerName%
