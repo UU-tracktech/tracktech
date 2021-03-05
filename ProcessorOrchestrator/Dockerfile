@@ -10,4 +10,4 @@ COPY . .
 EXPOSE 8000
 
 # Run server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--chdir", "/src","app.wsgi:application"]
+CMD ["python", "/src/main.py"]
