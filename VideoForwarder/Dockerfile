@@ -30,9 +30,9 @@ RUN tar -xf nginx-1.18.0.tar.gz
 RUN cd nginx-1.18.0 && ./configure --add-module=/nginx-rtmp-module --without-http_gzip_module && \
   make && \
   make install
-  
+
 #Copy static files into the image
-COPY nginx.conf /usr/local/nginx/conf/nginx.conf
+COPY configuration.sh /configuration.sh
 
 #Make sure port 8080 can be reached (to request data)
 EXPOSE 8080
@@ -41,4 +41,5 @@ EXPOSE 8080
 EXPOSE 1935
 
 #Make sure the console stuff goes to the right place and the daemon doesn't keep secrets
-CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
+ENTRYPOINT ["./configuration.sh"]
+CMD ["rtsp://root:root@192.168.178.30/axis-media/media.amp;cam1"]
