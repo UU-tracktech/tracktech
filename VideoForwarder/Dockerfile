@@ -42,4 +42,4 @@ EXPOSE 1935
 
 #Make sure the console stuff goes to the right place and the daemon doesn't keep secrets
 ENTRYPOINT ["./configuration.sh"]
-CMD ["rtsp://root:root@192.168.178.30/axis-media/media.amp;cam1"]
+CMD ["rtsp://root:root@tracktech.ml:49999/axis-media/media.amp;cam1"]

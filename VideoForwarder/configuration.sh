@@ -42,9 +42,11 @@ echo "
       live on;
 
       exec /usr/bin/ffmpeg -i rtmp://localhost/\$app/\$name -async 1 -vsync -1
-      -c:v libx264 -c:a libvo_aacenc -b:v 128K -b:a 32k -vf \"scale=1280:720\" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_low
-      -c:v libx264 -c:a libvo_aacenc -b:v 256k -b:a 64k -vf \"scale=1280:720\" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_mid
-      -c:v libx264 -c:a libvo_aacenc -b:v 512K -b:a 128k -vf \"scale=1280:720\" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_high;
+      -c:v libx264 -c:a libvo_aacenc -b:v 128k -b:a 64k -vf ""scale=144:-2"" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_144p
+      -c:v libx264 -c:a libvo_aacenc -b:v 256k -b:a 64k -vf ""scale=240:-2"" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_240p
+      -c:v libx264 -c:a libvo_aacenc -b:v 768k -b:a 64k -vf ""scale=360:-2"" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_360p
+      -c:v libx264 -c:a libvo_aacenc -b:v 1024k -b:a 64k -vf ""scale=420:-2"" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_420p
+      -c:v libx264 -c:a libvo_aacenc -b:v 1920k -b:a 64k -vf ""scale=720:-2"" -tune zerolatency -preset veryfast -crf 23 -f flv rtmp://localhost/show/\$name_720p;
     }
 
     application show {
@@ -61,9 +63,11 @@ echo "
       hls_playlist_length 30;
 
       # Instruct clients to adjust resolution according to bandwidth
-      hls_variant _low BANDWIDTH=160000; # Low bitrate, sub-SD resolution
-      hls_variant _mid BANDWIDTH=320000; # Medium bitrate, SD resolution
-      hls_variant _high BANDWIDTH=640000; # High bitrate, higher-than-SD resolution
+      hls_variant _144p BANDWIDTH=256000; # Very-Low bitrate, 144p resolution
+      hls_variant _240p BANDWIDTH=512000; # Low bitrate, 240p resolution
+      hls_variant _360p BANDWIDTH=1152000; # Medium bitrate, 360p resolution
+      hls_variant _420p BANDWIDTH=2048000; # Medium-High bitrate, 420p resolution
+      hls_variant _720p BANDWIDTH=4096000; # High bitrate, 720p resolution
     }
   }
 }
