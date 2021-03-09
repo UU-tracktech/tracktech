@@ -1,7 +1,7 @@
 from queue import Queue
 
 
-from scheduling.schedule_node import INode
+from scheduling.node.schedule_node import INode
 
 
 class Scheduler:

@@ -1,8 +1,8 @@
-from typing import Callable, List, Any
+from typing import Callable, Any
 import numpy as np
 
 
-from scheduling.component_interface import IComponent
+from scheduling.component.component_interface import IComponent
 
 
 class INode:
