@@ -1,5 +1,6 @@
 import React from "react";
 import ReactAwesomePlayer from 'react-awesome-player';
+import './video.css';
 
 class Video extends React.Component { //video player component.
     state = {
@@ -8,8 +9,9 @@ class Video extends React.Component { //video player component.
             sources: [{
                 type: "video/mp4",
                 src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
-                //type: "application/x-mpegURL",
-                //src: "http://localhost:50008/hls/movie.m3u8"
+            }, {
+                type: "application/x-mpegURL",
+                src: "http://localhost:50008/hls/movie.m3u8"
             }]
         }
     }
@@ -60,7 +62,5 @@ class Video extends React.Component { //video player component.
         </div>
     }
 }
-
-
 
 export default Video;
