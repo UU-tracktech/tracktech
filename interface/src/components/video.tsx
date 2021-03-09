@@ -61,6 +61,7 @@ class Video extends React.Component { //video player component.
             />
         </div>
     }
+
 }
 
 export default Video;
