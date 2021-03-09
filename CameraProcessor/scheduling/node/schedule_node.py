@@ -39,7 +39,7 @@ class ScheduleNode(INode):
         return self.needed_args <= 0
 
     def execute(self, notify: Callable[[list[INode]], None]) -> None:
-        if self.executable():
+        if not self.executable():
             raise Exception("Can't call function without the function's arguments being complete")
 
         out = self.component.execute_component()(*self.arguments)
@@ -52,11 +52,11 @@ class ScheduleNode(INode):
             if node.executable():
                 ready_nodes.append(node)
 
-        notify(self, ready_nodes)
+        notify(ready_nodes)
 
     def assign(self, arg: object, arg_nr: int) -> None:
-        if len(self.arguments) < arg_nr:
-            raise IndexError(f"Index too large {arg_nr} for arguments array with size {len(self.arguments)}")
+        if len(self.arguments) <= arg_nr:
+            raise IndexError(f"Index {arg_nr} too large for arguments array with size {len(self.arguments)}")
 
         if self.arguments[arg_nr] is None:
             self.arguments[arg_nr] = arg
