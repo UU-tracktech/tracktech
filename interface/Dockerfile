@@ -1,4 +1,4 @@
-FROM node AS builder 
+FROM node:15 AS builder
 COPY react react
 WORKDIR /react
 RUN ["npm","run","build"]
