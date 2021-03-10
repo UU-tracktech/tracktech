@@ -16,6 +16,10 @@ following command in the cmd:
 
     pip install -U selenium
 
+In order to run Selenium jdk is required, in order to fix that we need to download it at:
+
+    https://www.oracle.com/nl/java/technologies/javase-downloads.html
+
 The last step is to install the ide required to run selenium, in our case this will be pycharm community edition at
 
     https://www.jetbrains.com/pycharm/download/#section=windows
