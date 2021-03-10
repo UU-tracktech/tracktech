@@ -1,0 +1,158 @@
+{
+    "info": {
+        "description": "Documentation Processor Orchestrator API",
+        "title": "Processor Orchestrator Api",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/",
+            "description": "Local environment"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "Hello world"
+                ],
+                "summary": "Simple hello world landing page",
+                "description": "Echoes hello world to the user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "pong"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/tracking": {
+            "post": {
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Start the tracking of an object",
+                "description": "Takes camera id and bounding box id and sends a command to start tracking that object",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "command",
+                        "description": "Parameters for the command to be executed",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "cameraId",
+                                "boxId",
+                                "frameId"
+                            ],
+                            "properties": {
+                                "cameraId": {
+                                    "type": "integer"
+                                },
+                                "boxId": {
+                                    "type": "integer"
+                                },
+                                "frameId": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Client"
+                ],
+                "summary": "Stop the tracking of an object",
+                "description": "Takes object id and sends commands to stop tracking that object",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "command",
+                        "description": "Parameters for the command to be executed",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "objectId"
+                            ],
+                            "properties": {
+                                "boxId": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/processor/features": {
+            "post": {
+                "tags": [
+                    "Processor"
+                ],
+                "summary": "Adds or updates feature map of tracked object",
+                "description": "Takes object id and feature map and sends a command to start tracking that object",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "feature map",
+                        "description": "Object id and feature map",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "objectId",
+                                "featureMap"
+                            ],
+                            "properties": {
+                                "objectId": {
+                                    "type": "integer"
+                                },
+                                "featureMap": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Hello world",
+            "description": "Landing page for the app"
+        },
+        {
+            "name": "Client",
+            "description": "Client websocket can be found at \"/client\", this socket is used to send tracking information"
+        },
+        {
+            "name": "Processor",
+            "description": "Processor websocket can be found at \"/processor\", this socket is used to send tracking information"
+        }
+    ],
+    "openapi": "3.0.2"
+}
