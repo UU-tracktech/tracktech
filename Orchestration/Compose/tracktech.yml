@@ -2,17 +2,18 @@ version: "3.2"
 
 services:
   interface:
-    image: tt-interface-image
+    image: tracktech.ml:50007/tt-interface-image
     ports:
       - published: 50007
-      - target: 5000
+        target: 5000
     entrypoint: ["serve", "-s", "build", "--ssl-cert","/run/secrets/tracktech.ml-cert.pem","--ssl-key","/run/secrets/tracktech.ml-privkey.pem"]
   forwarder1:
-    image: tt-forwarder-image
+    image: tracktech.ml:50007/tt-forwarder-image
     ports:
       - published: 50008
-      - target: 8080
-      - mode: "host"
+        target: 8080
+        mode: "host"
+    command: ["rtsp://root:root@192.168.178.30/axis-media/media.amp;cam1"]
 
 secrets:
   tracktech.ml-cert.pem:
