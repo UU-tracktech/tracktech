@@ -1,10 +1,8 @@
 version: '3.4'
 
 services:
-  cameraprocessor:
-    image: camera-processor
+  opencv:
+    image: opencv
     build:
       context: .
       dockerfile: ./Dockerfile
-    ports:
-      - "8000:8000"
