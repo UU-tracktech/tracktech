@@ -45,7 +45,7 @@ class App extends React.Component<{}, appState> {
   }
 }
 
-console.log("Test: " + process.env.NODE_ENV)
+console.log("test: " + process.env.NODE_ENV)
 console.log("Environment variable: " + process.env.REACT_APP_URL) //alle var moeten met REACT_APP_ beginnen
 
 export default App;
