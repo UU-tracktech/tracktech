@@ -48,7 +48,7 @@ which has itself in their respective `out_nodes` list.
 A schedule node is defined as follows:
 ```python
 from scheduling.node.schedule_node import INode, ScheduleNode
-from scheduling.component.example_components.example_components import ExampleComponent
+from scheduling.component.example_components.example_component import ExampleComponent
 
 number_of_inputs: int
 out_node: INode
