@@ -8,6 +8,10 @@ class OutputComponent(IComponent):
     """Example output component without next layers.
 
     Contains a function to handle the output that falls outside of the scheduler.
+
+    Arguments:
+        func: function to handle outputs send outside of the schedulers graph.
+        out: contains output, only here for example_plan.py to retrieve output.
     """
 
     def __init__(self, func):
@@ -18,14 +22,16 @@ class OutputComponent(IComponent):
         """
         self.func = func
 
+        self.out = None
+
     def work(self, obj) -> object:
         """Example function with single argument that can be returned by execute_component().
 
         Outputs to object outside of scheduler and there is no next layer to pass objects to.
         """
-        output = obj
+        self.out = obj
 
-        self.func(output)
+        self.func(self.out)
         return None
 
     def execute_component(self) -> Callable:
@@ -37,6 +43,9 @@ class IntermediaryOutputComponent(IComponent):
     """Example output component with next layers.
 
     Contains a function to handle the output that falls outside of the scheduler.
+
+    Arguments:
+        func: function to handle outputs send outside of the schedulers graph.
     """
 
     def __init__(self, func):

@@ -56,15 +56,3 @@ class Scheduler:
         """
         for node in ready_nodes:
             self.queue.put(node)
-
-
-if __name__ == '__main__':
-    from scheduling.plan.example_plan import schedule_input_node
-
-    scheduler = Scheduler(schedule_input_node)
-    scheduler.schedule_graph("test")
-
-    curr_node = schedule_input_node
-    while len(curr_node.out_nodes) > 0:
-        curr_node = curr_node.out_nodes[0][0]
-    print(curr_node.component.out)
