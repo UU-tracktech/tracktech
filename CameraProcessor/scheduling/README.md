@@ -183,3 +183,7 @@ How this is done can depend on the use case, below a few examples:
 - A function to which output must be passed after completion of an iteration
 - A direct call to the API used to pass data between 
 the camera processor and processor orchestrator
+
+It is expected that a node without `out_nodes` contains an output component.
+Also any component can be an output component, it already counts as 
+one if it emits output outside of the scheduler flow.
