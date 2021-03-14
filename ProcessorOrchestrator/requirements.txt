@@ -1,5 +1,1 @@
 tornado
-apispec
-apispec-webframeworks
-marshmallow
-swagger-ui-py
