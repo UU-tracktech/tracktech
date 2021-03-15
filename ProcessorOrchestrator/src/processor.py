@@ -1,10 +1,8 @@
-from tornado.web import RequestHandler
+import json
 from tornado.websocket import WebSocketHandler
 
+
 class ProcessorSocket(WebSocketHandler):
-    tagDescription = dict(name="Processor",
-                          description="Processor websocket can be found at \"/processor\", this socket is used to send "
-                                      "tracking information")
 
     def check_origin(self, origin):
         return True
@@ -16,43 +14,29 @@ class ProcessorSocket(WebSocketHandler):
         self.write_message(message)
 
     def on_message(self, message):
-        for p in processors:
-            p.write_message(u"A processor sent: " + message)
+        try:
+            message_object = json.loads(message)
+            if message_object["type"] == "featureMap":
+                update_feature_map(message_object)
+            else:
+                for p in processors:
+                    p.write_message("Someone gave an unknown command")
+        except ValueError:
+            for p in processors:
+                p.write_message("Someone wrote bad json")
+        except KeyError:
+            for p in processors:
+                p.write_message("Someone missed a property in their json")
 
     def on_close(self):
         print("Processor WebSocket closed")
 
-class ProcessorFeatureMap(RequestHandler):
 
-    def check_origin(self, origin):
-        return True
+def update_feature_map(message):
+    object_id = message["objectId"]
+    feature_map = message["featureMap"]
+    for p in processors:
+        p.write_message(f"Someone send a feature map of an object with Id {object_id}")
 
-    def post(self):
-        """ Adds or updates feature map of tracked object
-        ---
-        tags: [Processor]
-        summary: Adds or updates feature map of tracked object
-        description: Takes object id and feature map and sends a command to start tracking that object
-        parameters:
-            -   in: body
-                name: feature map
-                description: Object id and feature map
-                schema:
-                    type: object
-                    required:
-                        -   objectId
-                        -   featureMap
-                    properties:
-                        objectId:
-                            type: integer
-                        featureMap:
-                            type: object
-        responses:
-            200:
-                description: OK
-        """
-        object_id = self.get_body_argument("objectId")
-        feature_map = self.get_body_argument("featureMap")
-        self.write(f"You send a feature map of an object with Id {object_id}")
 
 processors: list[ProcessorSocket] = []
