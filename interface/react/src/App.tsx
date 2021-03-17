@@ -4,6 +4,7 @@ import VideoPlayer from "./components/VideojsPlayer";
 import logo from './logo.svg';
 import './App.css';
 import { Stream } from 'node:stream';
+import Canvas1 from './components/CanvasTry'
 
 type stream = { name: string, url: string }
 type appState = { streams: stream[] }
@@ -20,6 +21,8 @@ class App extends React.Component<{}, appState> {
     this.setState({ streams: config.map((stream) => ({ name: stream.Name, url: stream.Forwarder })) })
   }
 
+
+
   render() {
     var sources = this.state.streams.map((stream) => ({
       name: stream.name,
@@ -28,15 +31,17 @@ class App extends React.Component<{}, appState> {
         type: 'application/x-mpegURL'
       }
     }))
-
+        //<canvas> </canvas>
     return (
       <div className="App">
         <header className="App-header">
           {
             sources && sources.map((source) =>
               <div>
+                <Canvas1></Canvas1>
                 <h1>{source.name}</h1>
-                <VideoPlayer key={source.name} autoplay={true} controls={true} sources={[source.srcObject]} />
+                  <VideoPlayer key={source.name} autoplay={true} controls={true} sources={[source.srcObject]} />
+
               </div>)
           }
         </header>
