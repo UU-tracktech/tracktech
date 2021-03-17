@@ -1,12 +1,15 @@
 {
   "name": "interface",
   "jest": {
-    "testPathIgnorePatterns": ["/src/App.test.tsx"]
+    "testPathIgnorePatterns": [
+      "/src/App.test.tsx"
+    ]
   },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@babel/preset-env": "^7.13.10",
+    "@react-keycloak/web": "^3.4.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.3",
@@ -17,6 +20,7 @@
     "babel-jest": "^26.6.3",
     "chokidar": "^3.5.1",
     "jest": "^26.6.0",
+    "keycloak-js": "^12.0.4",
     "react": "^17.0.1",
     "react-awesome-player": "^1.1.0",
     "react-dom": "^17.0.1",
@@ -51,9 +55,9 @@
   },
   "devDependencies": {
     "@types/video.js": "^7.3.15",
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
-    "eslint": "^7.20.0",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.22.0",
     "eslint-plugin-react": "^7.22.0",
     "video.js": "^7.11.4"
   }

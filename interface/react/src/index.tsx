@@ -2,11 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Loginpage from "./loginpage";
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      {/* <App /> */}
+      <Loginpage />
   </React.StrictMode>,
   document.getElementById('root')
 );
