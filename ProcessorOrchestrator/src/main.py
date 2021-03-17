@@ -8,6 +8,7 @@ define('port', default=8000, help='port to listen on')
 
 
 def main():
+    # Define socket for both client and processor
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket)
