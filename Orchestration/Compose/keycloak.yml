@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:12.0.4
+    ports:
+      - published: 50009
+        target: 8443
+    networks:
+      - auth
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    secrets:
+      - source: tracktech.ml-fullchain.pem
+        target: /etc/x509/https/tls.crt
+      - source: tracktech.ml-privkey.pem
+        target: /etc/x509/https/tls.key
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.keycloak==true"
+
+networks:
+  auth:
+    external: true
+
+secrets:
+  tracktech.ml-fullchain.pem:
+    external: true
+  tracktech.ml-privkey.pem:
+    external: true
