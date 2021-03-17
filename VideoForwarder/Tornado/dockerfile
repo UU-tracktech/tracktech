@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM python:3
 
 # update repositories
 RUN apt-get update
@@ -11,6 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy the source code
+COPY streams streams
 COPY src src
 
 # Make sure port is available
