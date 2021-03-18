@@ -1,1 +1,0 @@
-ffmpeg -rtsp_transport tcp -i rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov -r 100 -crf 25 -preset faster -maxrate 500k -bufsize 1500k -c:v libx264 -hls_time 10 -hls_list_size 2 -hls_wrap 2 -start_number 1 -rtsp_transport tcp -y outputlist.m3u8
