@@ -1,64 +1,11 @@
-# from tornado.ioloop import IOLoop, PeriodicCallback
-# from tornado import gen
-# from tornado.websocket import websocket_connect
-# import logging
-#
-# class WebsocketClient:
-#     def __init__(self, url, timeout):
-#         self.url = url
-#         self.timeout = timeout
-#         self.ioloop = IOLoop.instance()
-#         self.ws = None
-#         self.connect()
-#         PeriodicCallback(self.keep_alive, 20000).start()
-#         self.ioloop.start()
-#
-#     def on_message(self, msg):
-#         logging.info(f"Websocket handler sent a message: {msg}")
-#
-#     def hello_world(self):
-#         print("hello, world")
-#
-#     @gen.coroutine
-#     def connect(self):
-#         print("trying to connect")
-#         try:
-#             self.ws = yield websocket_connect(self.url, on_message_callback=self.on_message())
-#         except Exception:
-#             print("connection error")
-#         else:
-#             print("connected")
-#             self.run()
-#
-#     @gen.coroutine
-#     def run(self):
-#         while True:
-#             msg = yield self.ws.read_message()
-#             if msg is None:
-#                 print("connection closed")
-#                 self.ws = None
-#                 break
-#
-#
-#     def keep_alive(self):
-#         if self.ws is None:
-#             self.connect()
-#         else:
-#             self.ws.write_message("keep alive")
-#
-#
-# if __name__ == "__main__":
-#     url = "ws://localhost:8000/processor"
-#     client = WebsocketClient(url, 5)
-
-from tornado import escape
 from tornado import gen
 from tornado import ioloop
 from tornado import websocket
 import json
 import time
-
-
+import sys
+import asyncio
+import threading
 
 
 class WebSocketClient():
@@ -119,11 +66,11 @@ class WebSocketClient():
         print(f"Received new message from the server: {msg}")
         try:
             message_object = json.loads(msg)
-            if message_object["type"] == "featureMap":
+            if message_object['type'] == 'featureMap':
                 self.update_feature_map(message_object)
-            elif message_object["type"] == "start":
+            elif message_object['type'] == 'start':
                 self.start_tracking(message_object)
-            elif message_object["ty[e"] == "stop":
+            elif message_object['type'] == 'stop':
                 self.stop_tracking(message_object)
             else:
                 self.send("Unknown command")
@@ -149,7 +96,8 @@ class WebSocketClient():
         """This is called in case if connection to the server could
         not established.
         """
-        raise Exception(f"Could not connect to {self._url}")
+        print(f"Could not connect to {self._url}")
+        # raise Exception(f"Could not connect to {self._url}")
 
     def update_feature_map(self, message):
         object_id = message["objectId"]
@@ -167,37 +115,60 @@ class WebSocketClient():
         print(f'Someone wants to stop tracking the object {object_id}')
 
 
+async def listen_to_msg():
+    global connection
+    while True:
+        print("abc")
+        msg = await connection.read_message()
+        print("d")
+        if msg is None:
+           print("Connection closed")
+           break
+
+        # Do something with msg
+        print(msg)
 
 
 
-# class TestWebSocketClient(WebSocketClient):
-#
-#     def _on_message(self, msg):
-#         print(msg)
-#         deadline = time.time() + 1
-#         ioloop.IOLoop().instance().add_timeout(
-#             deadline, functools.partial(self.send, str(int(time.time()))))
-#
-#     def _on_connection_success(self):
-#         print('Connected!')
-#         #self.send(str(int(time.time())))
-#
-#     def _on_connection_close(self):
-#         print('Connection closed!')
-#
-#     def _on_connection_error(self, exception):
-#         print('Connection error: %s', exception)
+def test_callback(msg):
+    print(msg)
 
+async def main():
+    global connection
+    #connection = await websocket.websocket_connect('wss://echo.websocket.org')
+    connection = await websocket.websocket_connect('ws://localhost:8000/processor', on_message_callback=test_callback)
+    #data = {}
+    #data['type'] = 'featureMap'
+    #data['objectId'] = 1
+    #data['featureMap'] = {}
+    #await connection.write_message(json.dumps(data))
+    await connection.write_message('test 1')
 
-def main():
-    client = WebSocketClient('ws://localhost:8000/processor')
-    client.connect()
+    #threading.Thread(target=lambda: asyncio.run(listen_to_msg())).start()
+    threading.Thread(target=lambda: listen_to_msg).start()
 
-    try:
-        ioloop.IOLoop.instance().start()
-    except KeyboardInterrupt:
-        client.close()
-
+    while True:
+        #print("e")
+        await asyncio.sleep(1)
+        #connection.write_message("test 2")
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
+
+    #asyncio.get_event_loop().run_until_complete(main())
+
+connection = None
+
+# 1. connection
+# 2. fork thread for listening
+
+
+#
+# import asyncio
+# import websockets
+#
+#
+# if __name__ == '__main__':
+#     #asyncio.run(main())
+#     #time.sleep(100)
+#     asyncio.get_event_loop().run_until_complete(main())
