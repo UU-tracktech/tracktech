@@ -1,0 +1,12 @@
+[
+  {
+    "Name": "cam1",
+    "Ip": "rtsp://root:root@192.168.178.30/axis-media/media.amp",
+    "Forwarder": "http://tracktech.ml:50008/cam1.m3u8"
+  },
+  {
+    "Name": "testvid",
+    "Ip": "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+    "Forwarder": "http://tracktech.ml:50008/testvid.m3u8"
+  }
+]

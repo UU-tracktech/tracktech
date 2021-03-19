@@ -10,13 +10,17 @@ RUN apt install -y ffmpeg
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# create a streams folder
+RUN ["mkdir","streams"]
+
+# copy a test config
+COPY NetworkConfig.json /run/secrets/NetworkConfig.json
+
 # copy the source code
-COPY streams streams
 COPY src src
 
 # Make sure port is available
 EXPOSE 80
 
 # Run server
-ENTRYPOINT ["python"]
-CMD ["/src/main.py"]
+ENTRYPOINT ["python","/src/main.py"]
