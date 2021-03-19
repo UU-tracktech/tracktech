@@ -8,7 +8,7 @@ class Annotations:
         self.dir_path = path
         self.nr_frames = nr_frames
         self.boxes = [[] for _ in range(nr_frames)]
-        self.parse_json()
+        self.parse_file()
 
     def parse_file(self):
         lines = []
@@ -30,7 +30,8 @@ class Annotations:
             for json_obj in data:
                 first_frame = list(json_obj['boxes'])[0]
                 x0, y0, x1, y1 = json_obj['boxes'][first_frame]
-                half_width = int((x1 - x0) / 2); half_height = int((y1 - y0) / 2)
+                half_width = int((x1 - x0) / 2)
+                half_height = int((y1 - y0) / 2)
                 for frame_nr in json_obj['path']:
                     (x, y) = json_obj['path'][frame_nr]
                     rectangle = (x - half_width, y - half_height, x + half_width, y + half_height)
