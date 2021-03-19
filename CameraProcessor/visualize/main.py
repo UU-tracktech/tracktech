@@ -1,6 +1,7 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options
+from tornado import httpserver, httpclient
 import threading
 import datetime
 import cv2 as cv
@@ -12,16 +13,46 @@ outputFrame = None
 cap = cv.VideoCapture(options.url)
 lock = threading.Lock()
 
+
 class MainHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         self.write("Hello, world")
+
 
 class DetectionHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         img = generate()
         self.write(img)
+
+'''
+class StreamingHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
+    def get(self):
+        client = httpclient.AsyncHTTPClient()
+
+        self.write('some opening')
+        self.flush()
+
+        requests = [
+            httpclient.HTTPRequest(
+                url='http://httpbin.org/delay/' + str(delay),
+                streaming_callback=self.on_chunk
+            ) for delay in [5, 4, 3, 2, 1]
+        ]
+
+        # `map()` doesn't return a list in Python 3
+        yield list(map(client.fetch, requests))
+
+        self.write('some closing')
+        self.finish()
+
+    def on_chunk(self, chunk):
+        self.write('some chunk')
+        self.flush()
+'''
 
 def readStream():
     global outputFrame,cap
