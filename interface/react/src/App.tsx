@@ -1,9 +1,6 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
-import { render } from 'react-dom';
+import React from 'react';
 import VideoPlayer from "./components/VideojsPlayer";
-import logo from './logo.svg';
 import './App.css';
-import { Stream } from 'node:stream';
 import WebSocket from "./components/WebSocket";
 import './components/WebSocket.css';
 

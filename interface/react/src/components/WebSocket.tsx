@@ -14,7 +14,7 @@ export const WebSocket = () => {
         getWebSocket
     } = useWebSocket(socketUrl, {
         onOpen: () => console.log("Connection opened"),
-        shouldReconnect: (closeEvent) => true, //try to reconnect when conncection is lost
+        shouldReconnect: () => true, //try to reconnect when connection is lost
         onError: () => console.log("Error with socket connection"),
         onMessage: () => JSONTest(lastJsonMessage),
         onClose: () => console.log("Connection closed")
@@ -29,7 +29,7 @@ export const WebSocket = () => {
     const testClickChangeSocketUrl = useCallback(() =>
         setSocketUrl('ws://tracktech.ml:50010/client'), []); //portainer server
 
-    const testClickSendMessage = useCallback((cameraID) => (event) =>
+    const testClickSendMessage = useCallback((cameraID) => () =>
         sendMessage('{"type":"test", "cameraId":' + cameraID + '}'), []);
 
     //connection status of web socket
@@ -43,13 +43,13 @@ export const WebSocket = () => {
 
 
     //function for start tracking target 'bodID' on camera 'cameraID' in frame 'frameID'
-    const handleStart = useCallback((cameraID, boxID, frameID) => (event) =>
+    const handleStart = useCallback((cameraID, boxID, frameID) => () =>
         sendMessage(
             '{"type":"start", "cameraId":"' + cameraID + '", "boxId":"' + boxID + '", "frameId":"' + frameID + '"}'),
         []);
 
     //function for stop tracking target 'objectID'
-    const handleStop = useCallback((objectID) => (event) =>
+    const handleStop = useCallback((objectID) => () =>
         sendMessage(
             '{"type":"stop", "objectId":"' + objectID + '"}'),
         []);
@@ -60,14 +60,13 @@ export const WebSocket = () => {
     function parseMessage (input) {
         const processInput = input.substring(1, input.length-1).replace(/['" ]+/g,'');
         console.log(processInput.split(',')[0]);
-        const boundingBoxJSON = {
+        return  {
             type: JSON.stringify(processInput.split(',')[0].split(':')[1]),
             cameraID: JSON.stringify(processInput.split(',')[1].split(':')[1]),
             frameId: JSON.stringify(processInput.split(',')[2].split(':')[1]),
             boxes: [JSON.stringify(processInput.split(',')[3].split(':')[1])]
         }
-        return boundingBoxJSON;
-    };
+    }
 
     //test function to print input
     function JSONTest (input) {
@@ -77,7 +76,7 @@ export const WebSocket = () => {
             console.log("frameID of JSON is: " + parseMessage(JSON.stringify(input)).frameId);
             console.log("boxes of JSON is: " + parseMessage(JSON.stringify(input)).boxes);
         }
-    };
+    }
 
     return (
         <div>
