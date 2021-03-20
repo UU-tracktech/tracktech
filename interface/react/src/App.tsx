@@ -6,7 +6,6 @@ import './App.css';
 import { Stream } from 'node:stream';
 import WebSocket from "./components/WebSocket";
 import './components/WebSocket.css';
-import useWebSocket, {ReadyState} from "react-use-websocket";
 
 type stream = { name: string, url: string, type: string }
 type appState = { streams: stream[] }
@@ -19,9 +18,9 @@ class App extends React.Component<{}, appState> {
   }
 
   async componentDidMount() {
-    //var config = await (await fetch('./TestConfig.json')).json();
     var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json();
-    this.setState({ streams: config.map((stream) => ({ name: stream.Name, url: stream.Forwarder, type: stream.Type })) })
+    this.setState({ streams: config.map((stream) => ({
+        name: stream.Name, url: stream.Forwarder, type: stream.Type })) })
   }
 
   render() {
@@ -51,8 +50,5 @@ class App extends React.Component<{}, appState> {
     );
   }
 }
-
-console.log("test: " + process.env.NODE_ENV)
-console.log("Environment variable: " + process.env.REACT_APP_URL) //alle var moeten met REACT_APP_ beginnen
 
 export default App;

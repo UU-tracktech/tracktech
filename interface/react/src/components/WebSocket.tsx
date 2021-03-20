@@ -7,9 +7,18 @@ export const WebSocket = () => {
 
     const {
         sendMessage,
+        sendJsonMessage,
         lastMessage,
+        lastJsonMessage,
         readyState,
-    } = useWebSocket(socketUrl);
+        getWebSocket
+    } = useWebSocket(socketUrl, {
+        onOpen: () => console.log("Connection opened"),
+        shouldReconnect: (closeEvent) => true, //try to reconnect when conncection is lost
+        onError: () => console.log("Error with socket connection"),
+        onMessage: () => JSONTest(lastJsonMessage),
+        onClose: () => console.log("Connection closed")
+    });
 
     const messageHistory = useRef([lastMessage]);
 
@@ -44,6 +53,31 @@ export const WebSocket = () => {
         sendMessage(
             '{"type":"stop", "objectId":"' + objectID + '"}'),
         []);
+
+    //converts JSON input into usable object
+    //the returned boundingBoxJSON is an object with the data from the JSON
+    //For example boundingBoxJSON.type returns the type of the JSON
+    function parseMessage (input) {
+        const processInput = input.substring(1, input.length-1).replace(/['" ]+/g,'');
+        console.log(processInput.split(',')[0]);
+        const boundingBoxJSON = {
+            type: JSON.stringify(processInput.split(',')[0].split(':')[1]),
+            cameraID: JSON.stringify(processInput.split(',')[1].split(':')[1]),
+            frameId: JSON.stringify(processInput.split(',')[2].split(':')[1]),
+            boxes: [JSON.stringify(processInput.split(',')[3].split(':')[1])]
+        }
+        return boundingBoxJSON;
+    };
+
+    //test function to print input
+    function JSONTest (input) {
+        if(input != null) {
+            console.log("type of JSON is: " + parseMessage(JSON.stringify(input)).type);
+            console.log("cameraID of JSON is: " + parseMessage(JSON.stringify(input)).cameraID);
+            console.log("frameID of JSON is: " + parseMessage(JSON.stringify(input)).frameId);
+            console.log("boxes of JSON is: " + parseMessage(JSON.stringify(input)).boxes);
+        }
+    };
 
     return (
         <div>
