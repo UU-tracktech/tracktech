@@ -21,6 +21,7 @@ COPY src src
 
 # Make sure port is available
 EXPOSE 80
+EXPOSE 443
 
 # Run server
-ENTRYPOINT ["python","/src/main.py"]
+ENTRYPOINT ["python","-u","/src/main.py"]

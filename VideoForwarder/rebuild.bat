@@ -11,4 +11,4 @@ docker build -t %imageName% .
 docker image prune -f
 
 :: Run new container...
-docker run -d -p 80:80 --name %containerName% %imageName% /run/secrets/NetworkConfig.json
+docker run -d -p 80:80 -p 443:443 --name %containerName% %imageName% /run/secrets/NetworkConfig.json
