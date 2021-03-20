@@ -1,7 +1,9 @@
 {
   "name": "interface",
   "jest": {
-    "testPathIgnorePatterns": ["/src/App.test.tsx"]
+    "testPathIgnorePatterns": [
+      "/src/App.test.tsx"
+    ]
   },
   "version": "0.1.0",
   "private": true,
@@ -21,6 +23,7 @@
     "react-awesome-player": "^1.1.0",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
+    "react-use-websocket": "^2.5.0",
     "typescript": "^4.2.2",
     "web-vitals": "^1.1.0"
   },
@@ -51,8 +54,8 @@
   },
   "devDependencies": {
     "@types/video.js": "^7.3.15",
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^7.20.0",
     "eslint-plugin-react": "^7.22.0",
     "video.js": "^7.11.4"
