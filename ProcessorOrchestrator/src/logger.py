@@ -14,6 +14,10 @@ def write_to_log(text):
     f.close()
 
 
+def log_get_request(location, ip):
+    write_to_log(f"GET Request made for {location} from {ip}")
+
+
 def log_message_receive(message, location, ip):
     write_to_log(f"Received message on {location} from {ip}: {message}")
 
