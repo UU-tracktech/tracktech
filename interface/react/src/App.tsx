@@ -10,6 +10,9 @@ import './components/WebSocket.css';
 type stream = { name: string, url: string, type: string }
 type appState = { streams: stream[] }
 
+//test
+
+
 class App extends React.Component<{}, appState> {
 
   constructor(props) {
@@ -19,6 +22,7 @@ class App extends React.Component<{}, appState> {
 
   async componentDidMount() {
     var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json();
+    //var config = await(await fetch('../testconfig.json')).json();
     this.setState({ streams: config.map((stream) => ({
         name: stream.Name, url: stream.Forwarder, type: stream.Type })) })
   }
@@ -33,6 +37,7 @@ class App extends React.Component<{}, appState> {
         type: stream.type
       }
     }))
+
         //<canvas> </canvas>
     return (
       <div className="App">

@@ -11,11 +11,10 @@ RUN npm install -g serve
 EXPOSE 5000
 
 # copy static files
-COPY testconfig.json /config.json 
-COPY entrypoint.sh /entrypoint.sh
+COPY testconfig.json /build/config.json
 
 # Copy the build program
 COPY --from=builder /react/build /build
 
-# Set the entrypoint to the script
-ENTRYPOINT ["/entrypoint.sh"]
+
+ENTRYPOINT ["serve", "-s", "build"]
