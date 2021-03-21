@@ -5,6 +5,7 @@ from tornado import httputil
 from tornado.websocket import WebSocketHandler
 from objectManager import TrackingObject, objects
 from processor import processors
+import logger
 
 
 class ClientSocket(WebSocketHandler):
@@ -19,13 +20,13 @@ class ClientSocket(WebSocketHandler):
 
     # Append self to client list upon opening
     def open(self):
+        logger.log_connect("/client", self.request.remote_ip)
         print(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
-    def send(self, message):
-        self.write_message(message)
-
     def on_message(self, message):
+        logger.log_message_receive(message, "/client", self.request.remote_ip)
+
         try:
             message_object = json.loads(message)
 
@@ -47,11 +48,18 @@ class ClientSocket(WebSocketHandler):
                 function()
 
         except ValueError:
+            logger.log_error("/client", "ValueError", self.request.remote_ip)
             print("Someone wrote bad json")
         except KeyError:
+            logger.log_error("/client", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
 
+    def send_message(self, message):
+        logger.log_message_send(message, "/client", self.request.remote_ip)
+        self.write_message(message)
+
     def on_close(self):
+        logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
         print(f"Client with id {self.identifier} disconnected")
 
@@ -72,7 +80,7 @@ def start_tracking(message):
         f"New tracking object created with id {tracking_object.identifier}, found at bounding box with Id {box_id} on "
         f"frame {frame_id} of camera {camera_id}")
 
-    processors[camera_id].write_message(json.dumps({
+    processors[camera_id].send_message(json.dumps({
         "type": "start",
         "objectId": tracking_object.identifier,
         "frameId": frame_id,
@@ -91,7 +99,7 @@ def stop_tracking(message):
 
     if len(processors) > 0:
         for p in processors.values():
-            p.write_message(json.dumps({
+            p.send_message(json.dumps({
                 "type": "stop",
                 "objectId": object_id
             }))
@@ -106,7 +114,7 @@ def send_mock_data(message, client):
     frame_id = 0
 
     for x in range(50):
-        client.write_message(json.dumps({
+        client.send_message(json.dumps({
             "type": "boundingBoxes",
             "cameraId": camera_id,
             "frameId": frame_id,

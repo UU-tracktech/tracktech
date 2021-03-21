@@ -10,5 +10,4 @@ COPY src src
 EXPOSE 8000
 
 # Run server
-ENTRYPOINT ["python"]
-CMD ["/src/main.py"]
+ENTRYPOINT ["python","-u","/src/main.py"]

@@ -4,6 +4,7 @@ from tornado.options import define, options
 from tornado.web import Application
 from client import ClientSocket
 from processor import ProcessorSocket
+from logger import LogHandler
 define('port', default=8000, help='port to listen on')
 
 
@@ -11,7 +12,8 @@ def main():
     # Define socket for both client and processor
     handlers = [
         ('/client', ClientSocket),
-        ('/processor', ProcessorSocket)
+        ('/processor', ProcessorSocket),
+        ('/logs', LogHandler)
     ]
 
     # Construct and serve the tornado application.
