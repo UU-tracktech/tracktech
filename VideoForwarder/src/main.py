@@ -64,12 +64,12 @@ class cameraHandler(tornado.web.StaticFileHandler):
                 if entry.conversion is None:
                     print(f'starting {camera}')
                     
-                    entry.conversion = Popen(['ffmpeg',  '-loglevel', 'fatal', '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
+                    entry.conversion = Popen(['ffmpeg',  '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
                     '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
                     '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
                     '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
                     '-c:a', 'copy',
-                    '-var_stream_map', 'v:0, a:0 v:1, a:1', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_playlist_type', 'event','-start_number', '1',
+                    '-var_stream_map', 'v:0,a:0 v:1,a:1', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_playlist_type', 'event','-start_number', '1',
                     '-master_pl_name', f'{camera}.m3u8', f'{root}/{camera}_V%v.m3u8'])
 
                     # Wait a maximum of x seconds for the file to be created
