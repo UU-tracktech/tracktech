@@ -6,21 +6,27 @@ import tornado.httpserver
 import tornado.process
 import tornado.template
 import tornado.gen
+import logging
 import cv2
 import os
 
 from input.hls_stream import HLSCapture
 
+logging.basicConfig(filename='app.log', filemode='a',
+                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                    level=logging.INFO,
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
 html_page_path = dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\webpage'
 capture = HLSCapture()
-frame_nr = 0
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
     def get(self, file_name='index.html'):
         # Check if page exists
+        logging.info('getting html page of browser')
         index_page = os.path.join(html_page_path, file_name)
         if os.path.exists(index_page):
             # Render it
@@ -29,6 +35,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             # Page not found, generate template
             err_tmpl = tornado.template.Template('<html> Err 404, Page {{ name }} not found</html>')
             err_html = err_tmpl.generate(name=file_name)
+            logging.error(f'no index.html found at path {file_name}')
             # Send response
             self.finish(err_html)
 
@@ -36,6 +43,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
 class StreamHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
+        logging.info('set headers')
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
         self.set_header('Pragma', 'no-cache')
         self.set_header('Content-Type', 'multipart/x-mixed-replace;boundary=--jpgboundary')
@@ -44,7 +52,7 @@ class StreamHandler(tornado.web.RequestHandler):
         self.served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
         while True:
-            frame = capture.get_next_frame()
+            ret, frame = capture.get_next_frame()
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()
             # Generating images for mjpeg stream and wraps them into http resp
@@ -62,6 +70,7 @@ class StreamHandler(tornado.web.RequestHandler):
 
 
 def make_app():
+    logging.info('creating app')
     # add handlers
     return tornado.web.Application([
         (r'/', HtmlPageHandler),
@@ -73,4 +82,5 @@ if __name__ == '__main__':
     # bind server on 9090 port
     app = make_app()
     app.listen(9090)
+    logging.info('listening on port 9090')
     tornado.ioloop.IOLoop.current().start()

@@ -1,6 +1,10 @@
 .vscode
 .env
 
+/data/annotated/MOT16-05/
+/data/annotated/PathTrack/
+app.log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -3,14 +3,19 @@ import logging
 from detection.dectection_obj import DetectionObj
 from input.hls_stream import HLSCapture
 
+logging.basicConfig(filename='app.log', filemode='a',
+                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                    level=logging.INFO,
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
 frame_nr = 0
 capture = HLSCapture()
 
 
 while not capture.stopped():
-    frame = capture.get_next_frame()
+    ret, frame = capture.get_next_frame()
 
-    if not frame:
+    if not ret:
         logging.warning('capture object frame missed')
         continue
 

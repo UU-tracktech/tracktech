@@ -1,6 +1,6 @@
 import cv2
 import logging
-from custom_capture import ICapture
+from input.custom_capture import ICapture
 
 
 class HLSCapture(ICapture):
@@ -20,5 +20,4 @@ class HLSCapture(ICapture):
 
     # Gets the next frame from the stream
     def get_next_frame(self):
-        ret, frame = self.cap.read()
-        return frame
+        return self.cap.read()

@@ -7,44 +7,46 @@
 # Determine accuracy of a bounding box estimate
 import cv2
 import os
+import logging
+from input.img_folder import IMGCapture
 from detection.dectection_obj import DetectionObj
 from training.annotations_obj import Annotations
 
-working_dir = os.path.normpath(os.getcwdb())
-print(working_dir)
-# folder_path = os.path.join(working_dir.parent.parent, "data\\annotated\\test")
-folder_path = "C:\\Users\\Gerar\\OneDrive - Universiteit Utrecht\\Documents\\University\\3.3 Bachelorproject\\TrackTech\\CameraProcessor\\data\\annotated"
+root_dir = os.path.abspath(__file__ + '/../../../')
+logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='a',
+                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                    level=logging.INFO,
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
+folder_name = 'test'
+images_dir = f'{root_dir}\\data\\annotated\\{folder_name}\\img1'
+bounding_boxes_path = f'{root_dir}\\data\\annotated\\{folder_name}\\gt'
 
 
-for item in os.listdir(folder_path):
-    item_path = os.path.join(folder_path, item)
+capture = IMGCapture(images_dir)
+bounding_boxes = Annotations(bounding_boxes_path, capture.nr_images).boxes
 
-    if os.path.isfile(item_path):
+logging.info('start training')
+while not capture.stopped():
+    ret, frame = capture.get_next_frame()
+
+    if not ret:
+        logging.warning('Frame inside training not found')
         continue
 
-    frame_nr = 0
-    images_dir = os.path.join(item_path, "img1")
+    # Create detectionObj
+    detection_obj = DetectionObj(None, frame, capture.image_index)
+    # Run detection on object
+    detection_obj.bounding_box = bounding_boxes[capture.image_index]
+    # Visualise rectangles and show it
+    detection_obj.draw_rectangles()
+    cv2.imshow('Frame', detection_obj.frame)
 
-    bounding_boxes_path = os.path.join(item_path, "gt")
-    nr_images = len(os.listdir(images_dir))
-    bounding_boxes = Annotations(bounding_boxes_path, nr_images).boxes
+    # Close loop when q is pressed
+    if cv2.waitKey(30) & 0xFF == ord('q'):
+        break
 
-    for image_name in sorted(os.listdir(images_dir)):
-        frame = cv2.imread(os.path.join(images_dir, image_name))
-
-        # Create detectionObj
-        detection_obj = DetectionObj(None, frame, frame_nr)
-        # Run detection on object
-        detection_obj.bounding_box = bounding_boxes[frame_nr]
-        # Visualise rectangles and show it
-        detection_obj.draw_rectangles()
-        cv2.imshow('Frame', detection_obj.frame)
-
-        # Close loop when q is pressed
-        if cv2.waitKey(30) & 0xFF == ord('q'):
-            break
-        frame_nr += 1
-
-
+logging.info('training stopping')
 # When everything is done release the capture
+capture.close()
 cv2.destroyAllWindows()
