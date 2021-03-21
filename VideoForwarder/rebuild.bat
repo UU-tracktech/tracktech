@@ -1,4 +1,4 @@
-set imageName=tt-forwarder-image
+set imageName=tracktech.ml:50007/tt-forwarder-image
 set containerName=tt-forwarder-container
 
 :: Remove old container

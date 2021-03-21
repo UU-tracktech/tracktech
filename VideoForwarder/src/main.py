@@ -10,8 +10,6 @@ from datetime import datetime
 from subprocess import Popen
 
 # Object to store camera stream information in
-
-
 class Camera:
     def __init__(self, ip, conversion):
         self.ip = ip
@@ -19,13 +17,16 @@ class Camera:
         self.callback = None
 
 # Camera request handler
-
-
 class cameraHandler(tornado.web.StaticFileHandler):
     cameras = {}
-    segmentSize = os.environ.get('SEGMENT_SIZE') or '10.0'
-    segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5.0'
-    timeoutDelay = float(os.environ.get('TIMEOUT_DELAY') or '30.0')
+    segmentSize = os.environ.get('SEGMENT_SIZE') or '1'
+    segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
+    removeDelay = float(os.environ.get('REMOVE_DELAY') or '60.0')
+    timeoutDelay = int(os.environ.get('TIMEOUT_DELAY') or '30')
+
+    # Function to allow cors
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
 
     # Function to stop a stream
     def stop_stream(self, root, camera):
@@ -36,6 +37,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
 
         # Terminate the conversion
         entry.conversion.terminate()
+        entry.conversion.wait(10) # Wait for the process to actually stop
         entry.conversion = None
 
         # Remove old files
@@ -59,12 +61,15 @@ class cameraHandler(tornado.web.StaticFileHandler):
 
                     print(f'starting {camera}')
                     entry.conversion = Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip, '-r', '100', '-crf', '25', '-preset', 'faster', '-maxrate', '500k', '-bufsize', '1500k',
-                                             '-c:v', 'libx264', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-start_number', '1', '-rtsp_transport', 'tcp', abspath])
+                                             '-c:v', 'libx264', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_playlist_type', 'event', '-start_number', '1', '-rtsp_transport', 'tcp', abspath])
 
-                    # Wait a maximum of 30 seconds for the file to be created
-                    for _ in range(0, 30):
+                    # Wait a maximum of x seconds for the file to be created
+                    for _ in range(0, self.timeoutDelay):
                         if os.path.exists(abspath) : break
                         time.sleep(1)
+
+                    # If not created, stop the conversion
+                    if not os.path.exists(abspath): self.stop_stream(root, camera)
         
         # If it requests an stream file
         if path.endswith('.m3u8') or path.endswith('.ts'):
@@ -75,10 +80,13 @@ class cameraHandler(tornado.web.StaticFileHandler):
                 # Cancel any current callbacks
                 if entry.callback is not None:
                     entry.callback.cancel()
+                    entry.callback = None
 
-                # Reschedule a new callback to stop the stream
-                entry.callback = threading.Timer(self.timeoutDelay, self.stop_stream, [root, camera])
-                entry.callback.start()
+                # If there is an conversion
+                if entry.conversion is not None :
+                    # Reschedule a new callback to stop the stream
+                    entry.callback = threading.Timer(self.removeDelay, self.stop_stream, [root, camera])
+                    entry.callback.start()
 
         return abspath
 
