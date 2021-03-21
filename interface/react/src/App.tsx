@@ -1,12 +1,13 @@
 import React from 'react';
-import { render } from 'react-dom';
 import VideoPlayer from "./components/VideojsPlayer";
-import logo from './logo.svg';
 import './App.css';
 import { Stream } from 'node:stream';
-import Canvas1 from './components/CanvasTry'
+import Canvas1 from './components/CanvasTry';
+import WebSocket from "./components/WebSocket";
+import './components/WebSocket.css';
 
-type stream = { name: string, url: string }
+
+type stream = { name: string, url: string, type: string }
 type appState = { streams: stream[] }
 
 class App extends React.Component<{}, appState> {
@@ -18,7 +19,8 @@ class App extends React.Component<{}, appState> {
 
   async componentDidMount() {
     var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json();
-    this.setState({ streams: config.map((stream) => ({ name: stream.Name, url: stream.Forwarder })) })
+    this.setState({ streams: config.map((stream) => ({
+        name: stream.Name, url: stream.Forwarder, type: stream.Type })) })
   }
 
 
@@ -28,7 +30,7 @@ class App extends React.Component<{}, appState> {
       name: stream.name,
       srcObject: {
         src: stream.url,
-        type: 'application/x-mpegURL'
+        type: stream.type
       }
     }))
         //<canvas> </canvas>
@@ -44,13 +46,13 @@ class App extends React.Component<{}, appState> {
 
               </div>)
           }
+          <div>
+            <WebSocket />
+          </div>
         </header>
       </div>
     );
   }
 }
-
-console.log("test: " + process.env.NODE_ENV)
-console.log("Environment variable: " + process.env.REACT_APP_URL) //alle var moeten met REACT_APP_ beginnen
 
 export default App;
