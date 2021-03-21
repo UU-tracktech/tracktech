@@ -66,18 +66,23 @@ class cameraHandler(tornado.web.StaticFileHandler):
                 if entry.conversion is None:
                     print(f'starting {camera}')
                     
-                    entry.conversion = Popen(['ffmpeg','-loglevel', 'fatal',  '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
-                    '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
-                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
-                    '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
-                    '-c:a', 'copy',
-                    '-var_stream_map', 'v:0,a:0 v:1,a:1', '-master_pl_name', f'{camera}.m3u8',
-                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments','-start_number', '1',
-                     f'{root}/{camera}_V%v.m3u8']) if entry.audio else Popen(['ffmpeg','-loglevel', 'fatal', '-i', entry.ip, '-map', '0:0', '-map', '0:0',
-                    '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
-                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
-                    '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
-                    '-var_stream_map', 'v:0 v:1', '-master_pl_name', f'{camera}.m3u8',
+                    entry.conversion = Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
+                    '-map', '0:0','-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', # Create 3 variances of video + audio stream
+                    '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000', # Set common properties of the video variances
+                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '800k', '-maxrate', '900k', '-bufsize', '1200k',    # 360p - Low bit-rate Stream
+                    '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize', '2138k',  # 420p - Medium bit-rate Stream
+                    '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize', '4275k', # 720p - High bit-rate Stream
+                    '-c:a', 'copy', # Copy original audio to the video variances
+                    '-var_stream_map', 'v:0,a:0 v:1,a:1 v:2,a:2',
+                    '-master_pl_name', f'{camera}.m3u8',  # Create the master playlist
+                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments','-start_number', '1',  # Configure segment properties
+                     f'{root}/{camera}_V%v.m3u8']) if entry.audio else Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
+                    '-map', '0:0', '-map', '0:0', '-map', '0:0',
+                    '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
+                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '800k', '-maxrate', '900k', '-bufsize', '1200k',
+                    '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize', '2138k',
+                    '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize', '4275k',
+                    '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                     '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-start_number', '1',
                      f'{root}/{camera}_V%v.m3u8'])
 
