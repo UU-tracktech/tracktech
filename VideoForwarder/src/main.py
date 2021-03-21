@@ -12,10 +12,11 @@ from subprocess import Popen
 
 # Object to store camera stream information in
 class Camera:
-    def __init__(self, ip, conversion):
+    def __init__(self, ip, audio):
         self.ip = ip
-        self.conversion = conversion
+        self.conversion = None
         self.callback = None
+        self.audio = audio
 
 # Camera request handler
 class cameraHandler(tornado.web.StaticFileHandler):
@@ -28,6 +29,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
     # Function to allow cors
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Cache-control", "no-cache")
 
     # Function to stop a stream
     def stop_stream(self, root, camera):
@@ -64,13 +66,20 @@ class cameraHandler(tornado.web.StaticFileHandler):
                 if entry.conversion is None:
                     print(f'starting {camera}')
                     
-                    entry.conversion = Popen(['ffmpeg',  '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
+                    entry.conversion = Popen(['ffmpeg','-loglevel', 'fatal',  '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
                     '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
                     '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
                     '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
                     '-c:a', 'copy',
-                    '-var_stream_map', 'v:0,a:0 v:1,a:1', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_playlist_type', 'event','-start_number', '1',
-                    '-master_pl_name', f'{camera}.m3u8', f'{root}/{camera}_V%v.m3u8'])
+                    '-var_stream_map', 'v:0,a:0 v:1,a:1', '-master_pl_name', f'{camera}.m3u8',
+                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments','-start_number', '1',
+                     f'{root}/{camera}_V%v.m3u8']) if entry.audio else Popen(['ffmpeg','-loglevel', 'fatal', '-i', entry.ip, '-map', '0:0', '-map', '0:0',
+                    '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
+                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
+                    '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
+                    '-var_stream_map', 'v:0 v:1', '-master_pl_name', f'{camera}.m3u8',
+                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-start_number', '1',
+                     f'{root}/{camera}_V%v.m3u8'])
 
                     # Wait a maximum of x seconds for the file to be created
                     for _ in range(0, self.timeoutDelay):
@@ -108,8 +117,7 @@ if __name__ == "__main__":
     configFile.close()
 
     # Save the cameras in the stat
-    cameraHandler.cameras = {camera["Name"]: Camera(
-        camera["Ip"], None) for camera in configJson}
+    cameraHandler.cameras = {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in configJson}
 
     # Get ssl ready, if provided in the environment variables
     cert = os.environ.get('SSL_CERT')
