@@ -12,6 +12,9 @@ import { Logging } from './pages/logging'
 type stream = { name: string, url: string, type: string }
 type appState = { streams: stream[] }
 
+//test
+
+
 class App extends React.Component<{}, appState> {
 
   render() {
