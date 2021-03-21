@@ -1,6 +1,7 @@
 import time
 
 import tornado.ioloop
+import tornado.iostream
 import tornado.web
 import tornado.httpserver
 import tornado.process
@@ -16,6 +17,7 @@ from input.hls_stream import HLSCapture
 html_page_path = dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\webpage'
 capture = HLSCapture()
 frame_nr = 0
+PORT = 9090
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
@@ -56,9 +58,12 @@ class StreamHandler(tornado.web.RequestHandler):
                 self.write('Content-length: %s\r\n\r\n' % len(img))
                 self.write(img)
                 self.served_image_timestamp = time.time()
-                yield self.flush()
-            else:
-                yield self.flush()
+
+            try:
+                self.flush()
+            except Exception:
+                print('connection lost with client')
+                break
 
 
 def make_app():
@@ -69,8 +74,19 @@ def make_app():
     ])
 
 
+# Print to console link to stream
+def generate_message():
+    print('*' * 30)
+    print('*' + ' ' * 28 + '*')
+    print(f'*   open TORNADO stream on   *')
+    print(f'*   http://localhost:{PORT}    *')
+    print('*' + ' ' * 28 + '*')
+    print('*' * 30)
+
+
 if __name__ == '__main__':
     # bind server on 9090 port
     app = make_app()
-    app.listen(9090)
+    app.listen(PORT)
+    generate_message()
     tornado.ioloop.IOLoop.current().start()
