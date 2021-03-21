@@ -56,19 +56,24 @@ class cameraHandler(tornado.web.StaticFileHandler):
 
                 # If there is no current conversion, start one
                 if entry.conversion is None:
-
                     print(f'starting {camera}')
-                    entry.conversion = Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip, '-r', '100', '-crf', '25', '-preset', 'faster', '-maxrate', '500k', '-bufsize', '1500k',
-                                             '-c:v', 'libx264', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-start_number', '1', '-rtsp_transport', 'tcp', abspath])
+                    
+                    entry.conversion = Popen(['ffmpeg',  '-loglevel', 'fatal', '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
+                    '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
+                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
+                    '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
+                    '-c:a', 'copy',
+                    '-var_stream_map', 'v:0, a:0 v:1, a:1', '-master_pl_name', 'master.m3u8', '-hls_time', '10', '-hls_list_size', '3', '-hls_flags', 'delete_segments', '-start_number', '1',
+                    '-master_pl_name', f'{camera}.m3u8', f'{root}/{camera}_V%v.m3u8'])
 
                     # Wait a maximum of 30 seconds for the file to be created
                     for _ in range(0, 30):
                         if os.path.exists(abspath) : break
                         time.sleep(1)
-        
+
         # If it requests an stream file
         if path.endswith('.m3u8') or path.endswith('.ts'):
-            camera = path.replace('.m3u8', '').replace('.ts', '')
+            camera = path.replace('.m3u8', '').replace('.ts', '').split('_')[0]
             if camera in cameraHandler.cameras:
                 entry = cameraHandler.cameras[camera]
 
