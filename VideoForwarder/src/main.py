@@ -6,6 +6,7 @@ import json
 import threading
 import time
 import ssl
+import re
 from datetime import datetime
 from subprocess import Popen
 
@@ -50,18 +51,26 @@ class cameraHandler(tornado.web.StaticFileHandler):
         # Determine the absolute path
         abspath = os.path.abspath(os.path.join(root, path))
 
+        match = re.search('(.*?)(?:_V.*)?\.(m3u8|ts)', path)
+        camera = match.group(1)
+        extension = match.group(2)
+        
         # If it requests an index file
-        if path.endswith('.m3u8'):
-            camera = path.replace('.m3u8', '')
+        if extension == 'm3u8':
             if camera in cameraHandler.cameras:
                 entry = cameraHandler.cameras[camera]
 
                 # If there is no current conversion, start one
                 if entry.conversion is None:
-
                     print(f'starting {camera}')
-                    entry.conversion = Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip, '-r', '100', '-crf', '25', '-preset', 'faster', '-maxrate', '500k', '-bufsize', '1500k',
-                                             '-c:v', 'libx264', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_playlist_type', 'event', '-start_number', '1', '-rtsp_transport', 'tcp', abspath])
+                    
+                    entry.conversion = Popen(['ffmpeg',  '-loglevel', 'fatal', '-i', entry.ip, '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1',
+                    '-c:v', 'h264', '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
+                    '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '365k',
+                    '-s:v:1', '960x540', '-c:v:1', 'libx264', '-b:v:1', '2000k',
+                    '-c:a', 'copy',
+                    '-var_stream_map', 'v:0, a:0 v:1, a:1', '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_playlist_type', 'event','-start_number', '1',
+                    '-master_pl_name', f'{camera}.m3u8', f'{root}/{camera}_V%v.m3u8'])
 
                     # Wait a maximum of x seconds for the file to be created
                     for _ in range(0, self.timeoutDelay):
@@ -72,8 +81,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
                     if not os.path.exists(abspath): self.stop_stream(root, camera)
         
         # If it requests an stream file
-        if path.endswith('.m3u8') or path.endswith('.ts'):
-            camera = path.replace('.m3u8', '').replace('.ts', '')
+        if extension == 'm3u8' or extension == 'ts':
             if camera in cameraHandler.cameras:
                 entry = cameraHandler.cameras[camera]
 
