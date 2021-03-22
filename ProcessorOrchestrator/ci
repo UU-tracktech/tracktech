@@ -1,0 +1,11 @@
+docker-build:
+  # Official docker image.
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker info
+  script:
+    - docker build -t "$CI_REGISTRY_IMAGE" .
+    - docker run "$CI_REGISTRY_IMAGE"
