@@ -1,11 +1,14 @@
 import asyncio
 import json
+import time
+import logging
 from tornado import websocket
 
 
 def update_feature_map(message):
     object_id = message["objectId"]
     feature_map = message["featureMap"]
+    logging.info(f"Updating object {object_id} with feature map {feature_map}")
     print(f"Updating object {object_id} with feature map {feature_map}")
 
 
@@ -13,11 +16,13 @@ def start_tracking(message):
     object_id = message["objectId"]
     frame_id = message["frameId"]
     box_id = message["boxId"]
+    logging.info(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
     print(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
 
 
 def stop_tracking(message):
     object_id = message["objectId"]
+    logging.info(f"Stop tracking object {object_id}")
     print(f"Stop tracking object {object_id}")
 
 
@@ -26,7 +31,7 @@ def read_msg(message):
     try:
         message_object = json.loads(message)
 
-        # switch on message type
+        # Switch on message type
         actions = {
             "featureMap":
                 lambda: update_feature_map(message_object),
@@ -56,15 +61,31 @@ async def write_message(msg):
 
 async def main():
     global connection
-    connection = await websocket.websocket_connect('ws://localhost:8000/processor', on_message_callback=read_msg)
+    url = 'ws://tracktech.ml:50010/processor'
 
-    # Video processing loop - should we send bounding boxes here?
+    # Setup logging
+    logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+                        filename='file.log',
+                        level=logging.INFO,
+                        filemode='w')
+
+    connected = False
+    while not connected:
+        try:
+            connection = await websocket.websocket_connect(url, on_message_callback=read_msg)
+            logging.info(f"Connected to {url} successfully")
+            connected = True
+        except ConnectionRefusedError:
+            logging.warning(f"Could not connect to {url}, trying again in 1 second...")
+            time.sleep(1)
+
+    # Video processing loop
     while True:
-        # non blocking call to write message in parallel
+        # Non-blocking call to write message in parallel
         asyncio.get_event_loop().create_task(write_message('{"type":"test", "frameId": 12, "boxId": 18}'))
 
         # Simulate delay
-        await asyncio.sleep(100)
+        await asyncio.sleep(20)
 
 if __name__ == '__main__':
     asyncio.run(main())
