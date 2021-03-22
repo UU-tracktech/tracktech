@@ -1,3 +1,6 @@
+stages:
+  - build
+
 docker-build:
   # Official docker image.
   image: docker:latest
