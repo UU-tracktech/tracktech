@@ -7,8 +7,6 @@ docker-build:
   stage: build
   services:
     - docker:dind
-  before_script:
-    - docker info
   script:
     - docker build -t processor-orchestrator .
     - docker run processor-orchestrator
