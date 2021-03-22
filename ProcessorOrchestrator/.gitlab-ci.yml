@@ -7,5 +7,5 @@ docker-build:
   before_script:
     - docker info
   script:
-    - docker build -t "$CI_REGISTRY_IMAGE" .
-    - docker run "$CI_REGISTRY_IMAGE"
+    - docker build -t processor-orchestrator .
+    - docker run processor-orchestrator
