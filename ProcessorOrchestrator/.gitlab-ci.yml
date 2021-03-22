@@ -8,5 +8,5 @@ docker-build:
   services:
     - docker:dind
   script:
-    - docker build -t processor-orchestrator .
+    - docker build -t processor-orchestrator ./ProcessorOrchestrator
     - docker run processor-orchestrator
