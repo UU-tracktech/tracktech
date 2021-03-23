@@ -1,6 +1,11 @@
 FROM node:15 AS builder
-COPY react react
 WORKDIR /react
+COPY react/package.json ./package.json
+COPY react/package-lock.json ./package-lock.json
+RUN ["npm","install"]
+COPY react/tsconfig.json ./tsconfig.json
+COPY react/public ./public
+COPY react/src ./src
 RUN ["npm","run","build"]
 
 # Created by WebStorm

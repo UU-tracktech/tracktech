@@ -27,7 +27,7 @@ export const WebSocket = () => {
 
     //test functions
     const testClickChangeSocketUrl = useCallback(() =>
-        setSocketUrl('ws://tracktech.ml:50010/client'), []); //portainer server
+        setSocketUrl('wss://tracktech.ml:50010/client'), []); //portainer server
 
     const testClickSendMessage = useCallback((cameraID) => () =>
         sendMessage('{"type":"test", "cameraId":' + cameraID + '}'), []);
