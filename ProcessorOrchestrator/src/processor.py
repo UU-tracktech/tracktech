@@ -5,6 +5,7 @@ from tornado import httputil
 from tornado.websocket import WebSocketHandler
 from objectManager import objects, TrackingObject
 import client
+import logger
 
 
 class ProcessorSocket(WebSocketHandler):
@@ -19,10 +20,13 @@ class ProcessorSocket(WebSocketHandler):
 
     # Append self to processor dict upon opening
     def open(self):
+        logger.log_connect("/processor", self.request.remote_ip)
         print(f"New processor connected with id: {self.identifier}")
         processors[self.identifier] = self
 
     def on_message(self, message):
+        logger.log_message_receive(message, "/processor", self.request.remote_ip)
+
         try:
             message_object = json.loads(message)
 
@@ -44,11 +48,18 @@ class ProcessorSocket(WebSocketHandler):
                 function()
 
         except ValueError:
+            logger.log_error("/processor", "ValueError", self.request.remote_ip)
             print("Someone wrote bad json")
         except KeyError:
+            logger.log_error("/processor", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
 
+    def send_message(self, message):
+        logger.log_message_send(message, "/processor", self.request.remote_ip)
+        self.write_message(message)
+
     def on_close(self):
+        logger.log_disconnect("/processor", self.request.remote_ip)
         del processors[self.identifier]
         print(f"Processor with id {self.identifier} disconnected")
 
@@ -60,7 +71,7 @@ def send_bounding_boxes(message, camera_id):
 
     if len(client.clients.values()) > 0:
         for c in client.clients.values():
-            c.write_message(json.dumps({
+            c.send_message(json.dumps({
                 "type": "boundingBoxes",
                 "cameraId": camera_id,
                 "frameId": frame_id,
@@ -79,7 +90,7 @@ def update_feature_map(message):
         print("Unknown object id")
 
     for p in processors.values():
-        p.write_message(json.dumps({
+        p.send_message(json.dumps({
             "type": "featureMap",
             "objectId": object_id,
             "featureMap": feature_map
@@ -94,7 +105,7 @@ def send_mock_commands(message, processor):
 
     tracking_object2 = TrackingObject()
 
-    processor.write_message(json.dumps({
+    processor.send_message(json.dumps({
         "type": "start",
         "objectId": tracking_object1.identifier,
         "frameId": frame_id,
@@ -103,7 +114,7 @@ def send_mock_commands(message, processor):
 
     sleep(2)
 
-    processor.write_message(json.dumps({
+    processor.send_message(json.dumps({
         "type": "featureMap",
         "objectId": tracking_object2.identifier,
         "featureMap": {}
@@ -111,7 +122,7 @@ def send_mock_commands(message, processor):
 
     sleep(2)
 
-    processor.write_message(json.dumps({
+    processor.send_message(json.dumps({
         "type": "stop",
         "objectId": tracking_object1.identifier
     }))
