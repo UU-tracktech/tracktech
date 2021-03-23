@@ -1,20 +1,23 @@
 import cv2
+import logging
 from detection.dectection_obj import DetectionObj
-
-hls_url = "http://81.83.10.9:8001/mjpg/video.mjpg"
-
-cap = cv2.VideoCapture(hls_url)
+from input.hls_stream import HLSCapture
 
 frame_nr = 0
-while cap.isOpened():
-    ret, frame = cap.read()
+capture = HLSCapture()
 
-    if not ret:
-        print("frame read failed")
-        break
+
+while not capture.stopped():
+    frame = capture.get_next_frame()
+
+    if not frame:
+        logging.warning('capture object frame missed')
+        continue
+
+    frame_nr += 1
 
     # Create detectionObj
-    detection_obj = DetectionObj(None, frame, frame_nr)
+    detection_obj = DetectionObj(None, frame, capture)
     # Run detection on object
 
     # Visualise rectangles and show it
@@ -25,6 +28,6 @@ while cap.isOpened():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# When everything is done release the capture
-cap.release()
+capture.close()
 cv2.destroyAllWindows()
+logging.info(f'capture object stopped after {frame_nr} frames')

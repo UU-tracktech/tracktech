@@ -11,6 +11,15 @@ class INode:
     Enforces the implementation of reset(), executable(), execute(notify), and assign(arg, arg_nr).
     """
 
+    def reset(self) -> None:
+        """Reset the node for the next iteration.
+
+        Raises:
+            NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
+        """
+        raise NotImplementedError("Function to prepare the node for the next iteration, "
+                                  "should also call on children/out nodes if applicable")
+
     def executable(self) -> bool:
         """Checks if the node is executable in its current state.
 
