@@ -1,174 +1,128 @@
-from tornado import gen
-from tornado import ioloop
-from tornado import websocket
-import json
-import time
-import sys
 import asyncio
-import threading
+import json
+import sys
+import logging
+from tornado import websocket
+
+# Setup (basic) logging
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+                    filename='file.log',
+                    level=logging.INFO,
+                    filemode='w')
+
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+
+state = 0
+
+# url = 'ws://tracktech.ml:50010/processor'
+# Url of websocket server
+url = 'ws://localhost:8000/processor'
+
+# Connection variables
+connected = False  # Whether or not the connection is live
+connection = None  # Holds the connection object
+connect_task_created = False  # Whether or not already trying to reconnect
 
 
-class WebSocketClient():
-    """Class that can communicate with websockets
-    """
+# Mock methods on received commands
+def update_feature_map(message):
+    object_id = message["objectId"]
+    feature_map = message["featureMap"]
+    logging.info(f"Updating object {object_id} with feature map {feature_map}")
 
-    def __init__(self, url):
-        """:param str url: URL of websocket to connect to"""
-        self._url = url
 
-    def connect(self):
-        """Connect to the websocket"""
-        ws_connect = websocket.websocket_connect(self._url)
-        ws_connect.add_done_callback(self._connect_callback)
+def start_tracking(message):
+    object_id = message["objectId"]
+    frame_id = message["frameId"]
+    box_id = message["boxId"]
+    logging.info(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
 
-    def send(self, data):
-        """Send message to the server
-        :param str data: message.
-        """
-        if not self._ws_connection:
-            raise RuntimeError('No available websocket connection')
 
-        #self._ws_connection.write_message(escape.utf8(json.dumps(data)))
-        self._ws_connection.write_message(f"Hello world, {data}")
+def stop_tracking(message):
+    object_id = message["objectId"]
+    logging.info(f"Stop tracking object {object_id}")
 
-    def close(self):
-        """Close connection."""
 
-        if not self._ws_connection:
-            raise RuntimeError('Web socket connection is already closed.')
+# Message handler
+def read_msg(message):
+    if not message:
+        logging.error("The websocket connection was closed")
+        return
+    try:
+        message_object = json.loads(message)
 
-        self._ws_connection.close()
+        # Switch on message type
+        actions = {
+            "featureMap":
+                lambda: update_feature_map(message_object),
+            "start":
+                lambda: start_tracking(message_object),
+            "stop":
+                lambda: stop_tracking(message_object)
+        }
 
-    def _connect_callback(self, future):
-        """This is called after the connection future is resolved (whether succcesful or not)"""
-        if future.exception() is None:
-            self._ws_connection = future.result()
-            self._on_connection_success()
-            self._read_messages()
+        # Execute correct function
+        function = actions.get(message_object["type"])
+        if function is None:
+            logging.warning(f"Someone gave an unknown command: {message}")
         else:
-            self._on_connection_error(future.exception())
+            function()
 
-    @gen.coroutine
-    def _read_messages(self):
-        """This method keeps checking for messages on the websocket"""
-        while True:
-            msg = yield self._ws_connection.read_message()
-            if msg is None:
-                self._on_connection_close()
-                break
+    except ValueError:
+        logging.warning(f"Someone wrote bad json: {message}")
+    except KeyError:
+        logging.warning(f"Someone missed a property in their json: {message}")
 
-            self._on_message(msg)
 
-    def _on_message(self, msg):
-        """This is called when new message is available from the server.
-        :param str msg: server message.
-        """
-        print(f"Received new message from the server: {msg}")
+# Write messages to the connection
+async def write_message(msg):
+    global connection, connected
+    try:
+        await connection.write_message(msg)
+
+    except websocket.WebSocketClosedError:
+        connected = False
+
+
+# Connect to the specified websocket url
+async def connect_to_url():
+    global connection, connected, connect_task_created
+
+    while not connected:
         try:
-            message_object = json.loads(msg)
-            if message_object['type'] == 'featureMap':
-                self.update_feature_map(message_object)
-            elif message_object['type'] == 'start':
-                self.start_tracking(message_object)
-            elif message_object['type'] == 'stop':
-                self.stop_tracking(message_object)
-            else:
-                self.send("Unknown command")
-        except ValueError:
-            self.send("Bad json")
-        except KeyError:
-            self.send("Missed property in json")
+            connection = await websocket.websocket_connect(url, on_message_callback=read_msg)
+            logging.info(f"Connected to {url} successfully")
+            connected = True
+            connect_task_created = False
 
+        except ConnectionRefusedError:
+            logging.warning(f"Could not connect to {url}, trying again in 1 second...")
+            await asyncio.sleep(1)
 
-    def _on_connection_success(self):
-        """This is called on successful connection ot the server.
-        """
-        print(f"Connected to {self._url}")
-
-        self.send("Test")
-
-    def _on_connection_close(self):
-        """This is called when server closed the connection.
-        """
-        print(f"Connection closed")
-
-    def _on_connection_error(self, exception):
-        """This is called in case if connection to the server could
-        not established.
-        """
-        print(f"Could not connect to {self._url}")
-        # raise Exception(f"Could not connect to {self._url}")
-
-    def update_feature_map(self, message):
-        object_id = message["objectId"]
-        feature_map = message["featureMap"]
-        print(f"Someone send a feature map of an object with Id {object_id}")
-
-    def start_tracking(self, message):
-        object_id = message["objectId"]
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
-        print(f'Someone wants to start tracking the object of bounding box {box_id} in frame {frame_id} with the new object id {object_id}')
-
-    def stop_tracking(self, message):
-        object_id = message["objectId"]
-        print(f'Someone wants to stop tracking the object {object_id}')
-
-
-async def listen_to_msg():
-    global connection
-    while True:
-        print("abc")
-        msg = await connection.read_message()
-        print("d")
-        if msg is None:
-           print("Connection closed")
-           break
-
-        # Do something with msg
-        print(msg)
-
-
-
-def test_callback(msg):
-    print(msg)
 
 async def main():
-    global connection
-    #connection = await websocket.websocket_connect('wss://echo.websocket.org')
-    connection = await websocket.websocket_connect('ws://localhost:8000/processor', on_message_callback=test_callback)
-    #data = {}
-    #data['type'] = 'featureMap'
-    #data['objectId'] = 1
-    #data['featureMap'] = {}
-    #await connection.write_message(json.dumps(data))
-    await connection.write_message('test 1')
+    global connection, connected, connect_task_created
 
-    #threading.Thread(target=lambda: asyncio.run(listen_to_msg())).start()
-    threading.Thread(target=lambda: listen_to_msg).start()
+    # Try to get an initial connection
+    await connect_to_url()
 
+    # Video processing loop
     while True:
-        #print("e")
-        await asyncio.sleep(1)
-        #connection.write_message("test 2")
+        global state
+
+        # Non-blocking call to reconnect if necessary
+        if not connected and not connect_task_created:
+            asyncio.get_event_loop().create_task(connect_to_url())
+            connect_task_created = True
+
+        state = state + 1
+        print(f"STATE: {state}")
+
+        # Simulate delay of video processing, video processing below
+        await asyncio.sleep(5)
+
+        # Non-blocking call to write message in parallel, normally happens after frame processing
+        asyncio.get_event_loop().create_task(write_message('{"type":"test", "frameId": 12, "boxId": 18}'))
 
 if __name__ == '__main__':
     asyncio.run(main())
-
-    #asyncio.get_event_loop().run_until_complete(main())
-
-connection = None
-
-# 1. connection
-# 2. fork thread for listening
-
-
-#
-# import asyncio
-# import websockets
-#
-#
-# if __name__ == '__main__':
-#     #asyncio.run(main())
-#     #time.sleep(100)
-#     asyncio.get_event_loop().run_until_complete(main())
