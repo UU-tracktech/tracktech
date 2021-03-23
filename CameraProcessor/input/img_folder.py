@@ -4,7 +4,7 @@ import logging
 from input.custom_capture import ICapture
 
 
-class IMGCapture(ICapture):
+class ImageCapture(ICapture):
     # Default init is public HLS stream
     def __init__(self, images_dir):
         logging.info(f'Using images from folder {images_dir}')

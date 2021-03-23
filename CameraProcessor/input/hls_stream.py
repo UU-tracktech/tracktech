@@ -3,7 +3,7 @@ import logging
 from input.custom_capture import ICapture
 
 
-class HLSCapture(ICapture):
+class HlsCapture(ICapture):
     # Default init is public HLS stream
     def __init__(self, hls_url='http://81.83.10.9:8001/mjpg/video.mjpg'):
         logging.info('connecting to HLS stream')

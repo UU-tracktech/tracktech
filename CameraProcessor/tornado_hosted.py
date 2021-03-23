@@ -10,19 +10,20 @@ import tornado.gen
 import logging
 import cv2
 import os
+import sys
 
-from input.hls_stream import HLSCapture
+from input.hls_stream import HlsCapture
 
-logging.basicConfig(filename='app.log', filemode='a',
+logging.basicConfig(filename='app.log', filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
 html_page_path = dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\webpage'
-capture = HLSCapture()
-frame_nr = 0
+capture = HlsCapture()
 PORT = 9090
 
 
@@ -54,7 +55,7 @@ class StreamHandler(tornado.web.RequestHandler):
 
         self.served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
-        while True:
+        while not capture.stopped():
             ret, frame = capture.get_next_frame()
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()

@@ -1,15 +1,17 @@
 import cv2
 import logging
+import sys
 from detection.dectection_obj import DetectionObj
-from input.hls_stream import HLSCapture
+from input.hls_stream import HlsCapture
 
-logging.basicConfig(filename='app.log', filemode='a',
+logging.basicConfig(filename='app.log', filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 frame_nr = 0
-capture = HLSCapture()
+capture = HlsCapture()
 
 
 while not capture.stopped():

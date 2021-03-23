@@ -8,22 +8,24 @@
 import cv2
 import os
 import logging
-from input.img_folder import IMGCapture
+import sys
+from input.img_folder import ImageCapture
 from detection.dectection_obj import DetectionObj
 from training.annotations_obj import Annotations
 
 root_dir = os.path.abspath(__file__ + '/../../../')
-logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='a',
+logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 folder_name = 'test'
 images_dir = f'{root_dir}\\data\\annotated\\{folder_name}\\img1'
 bounding_boxes_path = f'{root_dir}\\data\\annotated\\{folder_name}\\gt'
 
 
-capture = IMGCapture(images_dir)
+capture = ImageCapture(images_dir)
 bounding_boxes = Annotations(bounding_boxes_path, capture.nr_images).boxes
 
 logging.info('start training')

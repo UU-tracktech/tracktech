@@ -3,6 +3,8 @@ import os
 import logging
 from detection.bounding_box import BoundingBox
 
+skipped_lines = 0
+
 
 class Annotations:
     def __init__(self, path, nr_frames):
@@ -12,6 +14,7 @@ class Annotations:
         self.parse_file()
 
     def parse_file(self):
+        global skipped_lines
         # Read file
         file_path = os.path.join(self.dir_path, "gt.txt")
         with open(file_path) as file:
@@ -26,13 +29,16 @@ class Annotations:
         for line in lines:
             (frame_nr, person_id, x, y, w, h) = self.parse_line(line, delimiter)
             if frame_nr - 1 >= self.nr_frames:
-                logging.info('Skipped line')
+                skipped_lines = skipped_lines + 1
                 continue
 
             # Create bounding box
             rectangle = (x, y, x + w, y + h)
             box = BoundingBox(person_id, rectangle, "UFO", 1)
             self.boxes[frame_nr - 1].append(box)
+
+        if skipped_lines > 0:
+            logging.info(f'Skipped lines: {skipped_lines}')
 
     # Parse line from file given a delimiter
     def parse_line(self, line, delimiter):
@@ -43,12 +49,15 @@ class Annotations:
     def parse_json(self):
         json_path = os.path.join(self.dir_path, "path_annots.json")
         with open(json_path) as json_file:
+            # Every json object
             data = [x for x in json.load(json_file)]
             for json_obj in data:
+                # Extract data from json
                 first_frame = list(json_obj['boxes'])[0]
                 x0, y0, x1, y1 = json_obj['boxes'][first_frame]
                 half_width = int((x1 - x0) / 2)
                 half_height = int((y1 - y0) / 2)
+                # Create bounding box
                 for frame_nr in json_obj['path']:
                     (x, y) = json_obj['path'][frame_nr]
                     rectangle = (x - half_width, y - half_height, x + half_width, y + half_height)

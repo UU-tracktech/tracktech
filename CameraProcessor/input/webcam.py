@@ -3,7 +3,7 @@ import logging
 from input.custom_capture import ICapture
 
 
-class CAMCapture(ICapture):
+class CamCapture(ICapture):
     # Default init is public HLS stream
     def __init__(self):
         logging.info('connecting to webcam')
