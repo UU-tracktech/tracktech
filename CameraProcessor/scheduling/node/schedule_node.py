@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Callable, Any, List
 import numpy as np
 
 
@@ -31,7 +31,7 @@ class INode:
         """
         raise NotImplementedError("Function to indicate if the node can be run isn't implemented")
 
-    def execute(self, notify: Callable[[list[Any]], None]) -> None:
+    def execute(self, notify: Callable[[List[Any]], None]) -> None:
         """Execute the component and pass output to next layer.
 
         Executes the component with the previously provided arguments.
@@ -86,7 +86,10 @@ class ScheduleNode(INode):
         self.arguments = np.empty(self.needed_args, dtype=object)
 
     def reset(self) -> None:
-        """See base class."""
+        """Resets the node for the next iteration.
+
+        Empties arguments array and resets amount of needed arguments.
+        """
         self.needed_args = self.input_count
 
         # Keeping the numpy array and only emptying would be preferred
@@ -100,13 +103,14 @@ class ScheduleNode(INode):
         """
         return self.needed_args <= 0
 
-    def execute(self, notify: Callable[[list[INode]], None]) -> None:
+    def execute(self, notify: Callable[[List[INode]], None]) -> None:
         """Execute the component and pass output to next layer.
 
         Executes the component with the previously provided arguments in the arguments array.
         Throws error if node isn't executable.
         Pass the output of the component to nodes in the next layer by looping over all nodes in the next layer.
         Notify the scheduler of nodes that can now be executed since the contained component has been run.
+        Reset the node.
 
         Args:
             notify: function to pass nodes to that can be executed after the component was executed.
@@ -132,6 +136,9 @@ class ScheduleNode(INode):
 
         # Notify the scheduler of all nodes that can now be executed.
         notify(ready_nodes)
+
+        # Reset node state for next iteration.
+        self.reset()
 
     def assign(self, arg: object, arg_nr: int) -> None:
         """Store argument for later component execution in the arguments array.

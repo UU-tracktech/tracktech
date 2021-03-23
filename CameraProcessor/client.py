@@ -124,6 +124,5 @@ async def main():
         # Non-blocking call to write message in parallel, normally happens after frame processing
         asyncio.get_event_loop().create_task(write_message('{"type":"test", "frameId": 12, "boxId": 18}'))
 
-
 if __name__ == '__main__':
     asyncio.run(main())
