@@ -52,7 +52,7 @@ class Scheduler:
             else:
                 raise Exception("Node in queue should be executable")
 
-    def notify(self, ready_nodes: list[INode]) -> None:
+    def notify(self, ready_nodes: [INode]) -> None:
         """Queues nodes that are ready to be executed.
 
         Args:
