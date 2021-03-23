@@ -21,7 +21,7 @@ def main():
 
     http_server = HTTPServer(app)
     http_server.listen(options.port)
-    print('Listening on http://localhost:%i' % options.port)
+    print('Listening on port %i' % options.port)
     IOLoop.current().start()
 
 
