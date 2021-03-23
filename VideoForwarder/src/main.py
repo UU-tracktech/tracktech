@@ -54,6 +54,10 @@ class cameraHandler(tornado.web.StaticFileHandler):
         abspath = os.path.abspath(os.path.join(root, path))
 
         match = re.search('(.*?)(?:_V.*)?\.(m3u8|ts)', path)
+
+        if match is None:
+            return abspath
+
         camera = match.group(1)
         extension = match.group(2)
         
@@ -66,7 +70,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
                 if entry.conversion is None:
                     print(f'starting {camera}')
                     
-                    entry.conversion = Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
+                    entry.conversion = Popen(['ffmpeg', '-loglevel', 'fatal','-rtsp_transport', 'tcp', '-i', entry.ip,
                     '-map', '0:0','-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', # Create 3 variances of video + audio stream
                     '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000', # Set common properties of the video variances
                     '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '800k', '-maxrate', '900k', '-bufsize', '1200k',    # 360p - Low bit-rate Stream
@@ -75,7 +79,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
                     '-c:a', 'copy', # Copy original audio to the video variances
                     '-var_stream_map', 'v:0,a:0 v:1,a:1 v:2,a:2',
                     '-master_pl_name', f'{camera}.m3u8',  # Create the master playlist
-                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments','-start_number', '1',  # Configure segment properties
+                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_flags','omit_endlist','-start_number', '1',  # Configure segment properties
                      f'{root}/{camera}_V%v.m3u8']) if entry.audio else Popen(['ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
                     '-map', '0:0', '-map', '0:0', '-map', '0:0',
                     '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
@@ -83,7 +87,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
                     '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize', '2138k',
                     '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize', '4275k',
                     '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
-                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-start_number', '1',
+                    '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags', 'delete_segments', '-hls_flags','omit_endlist', '-start_number', '1',
                      f'{root}/{camera}_V%v.m3u8'])
 
                     # Wait a maximum of x seconds for the file to be created
