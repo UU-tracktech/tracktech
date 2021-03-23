@@ -4,8 +4,12 @@ from scheduling.component.example_components.output_component import OutputCompo
 from scheduling.component.example_components.example_component import ExampleComponent
 
 
+def func(ignore):
+    pass
+
+
 # Last node/layer.
-schedule_output_node = ScheduleNode(1, [], OutputComponent())
+schedule_output_node = ScheduleNode(1, [], OutputComponent(func))
 
 # Intermediary layer.
 layer2_multiple_input_node = ScheduleNode(2, [(schedule_output_node, 0)], ExampleComponent())

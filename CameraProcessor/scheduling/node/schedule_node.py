@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Callable, Any, List
 import numpy as np
 
 
@@ -31,7 +31,7 @@ class INode:
         """
         raise NotImplementedError("Function to indicate if the node can be run isn't implemented")
 
-    def execute(self, notify: Callable[[list[Any]], None]) -> None:
+    def execute(self, notify: Callable[[List[Any]], None]) -> None:
         """Execute the component and pass output to next layer.
 
         Executes the component with the previously provided arguments.
@@ -103,7 +103,7 @@ class ScheduleNode(INode):
         """
         return self.needed_args <= 0
 
-    def execute(self, notify: Callable[[list[INode]], None]) -> None:
+    def execute(self, notify: Callable[[List[INode]], None]) -> None:
         """Execute the component and pass output to next layer.
 
         Executes the component with the previously provided arguments in the arguments array.
