@@ -103,7 +103,7 @@ async def connect_to_url():
 
         except ConnectionRefusedError:
             logging.warning(f"Could not connect to {url}, trying again in 1 second...")
-            time.sleep(1)
+            await asyncio.sleep(1)
 
 
 async def main():
@@ -116,7 +116,6 @@ async def main():
     while not capture.stopped():
         # Non-blocking call to reconnect if necessary
         if not connected and not connect_task_created:
-            print("GOT HERE")
             asyncio.get_event_loop().create_task(connect_to_url())
             connect_task_created = True
 
