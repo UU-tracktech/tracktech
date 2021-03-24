@@ -40,13 +40,17 @@ class cameraHandler(tornado.web.StaticFileHandler):
 
         # Terminate the conversion
         entry.conversion.terminate()
-        entry.conversion.wait(10) # Wait for the process to actually stop
-        entry.conversion = None
+        try:
+            entry.conversion.wait(10) # Wait for the process to actually stop
+        except TimeoutExpired:
+            pass
+        finally:
+            entry.conversion = None
 
-        # Remove old files
-        for file in os.listdir(root):
-            if file.startswith(camera):
-                os.remove(os.path.join(root, file))
+            # Remove old files
+            for file in os.listdir(root):
+                if file.startswith(camera):
+                    os.remove(os.path.join(root, file))
 
     # Override function to start the stream
     def get_absolute_path(self, root, path):
@@ -118,7 +122,7 @@ class cameraHandler(tornado.web.StaticFileHandler):
 
 
 if __name__ == "__main__":
-    print('starting server')
+    print('starting server 4')
 
     # Read the config file
     configFile = open(sys.argv[1], "r")
