@@ -12,7 +12,9 @@ ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
 COPY requirements.txt .
-COPY . .
 RUN python -m pip install -r requirements.txt
 
-#CMD ["python", "tracking_test.py"]
+WORKDIR /app
+COPY . /app
+
+CMD ["python", "tornado_hosted.py"]
