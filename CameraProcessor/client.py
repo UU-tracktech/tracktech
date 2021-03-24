@@ -3,6 +3,10 @@ import json
 import sys
 import logging
 from tornado import websocket
+from detection.dectection_obj import DetectionObj
+from input.hls_stream import HlsCapture
+import cv2
+import time
 
 # Setup (basic) logging
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
@@ -12,11 +16,13 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
 
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
-state = 0
+frame_nr = 0
+capture = HlsCapture()
 
-# url = 'ws://tracktech.ml:50010/processor'
+
 # Url of websocket server
-url = 'ws://localhost:8000/processor'
+#url = 'ws://localhost:8000/processor'
+url = 'wss://tracktech.ml:50010/processor'
 
 # Connection variables
 connected = False  # Whether or not the connection is live
@@ -97,32 +103,49 @@ async def connect_to_url():
 
         except ConnectionRefusedError:
             logging.warning(f"Could not connect to {url}, trying again in 1 second...")
-            await asyncio.sleep(1)
+            time.sleep(1)
 
 
 async def main():
-    global connection, connected, connect_task_created
+    global connection, connected, connect_task_created, frame_nr
 
     # Try to get an initial connection
     await connect_to_url()
 
     # Video processing loop
-    while True:
-        global state
-
+    while not capture.stopped():
         # Non-blocking call to reconnect if necessary
         if not connected and not connect_task_created:
+            print("GOT HERE")
             asyncio.get_event_loop().create_task(connect_to_url())
             connect_task_created = True
 
-        state = state + 1
-        print(f"STATE: {state}")
+        ret, frame = capture.get_next_frame()
 
-        # Simulate delay of video processing, video processing below
-        await asyncio.sleep(5)
+        if not ret:
+            logging.warning('capture object frame missed')
+            continue
+
+        frame_nr += 1
+        print(frame_nr)
+
+        # Create detectionObj
+        detection_obj = DetectionObj(None, frame, capture)
+        # Run detection on object
+
+        # Visualise rectangles and show it
+        detection_obj.draw_rectangles()
+        cv2.imshow('Frame', detection_obj.frame)
 
         # Non-blocking call to write message in parallel, normally happens after frame processing
         asyncio.get_event_loop().create_task(write_message('{"type":"test", "frameId": 12, "boxId": 18}'))
+
+        # Close loop when q is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        # Hand control back to event loop
+        await asyncio.sleep(0)
 
 if __name__ == '__main__':
     asyncio.run(main())
