@@ -1,58 +1,131 @@
-from tornado.web import RequestHandler
+import json
+import tornado.web
+from time import sleep
+from tornado import httputil
 from tornado.websocket import WebSocketHandler
+from objectManager import objects, TrackingObject
+import client
+import logger
+
 
 class ProcessorSocket(WebSocketHandler):
-    tagDescription = dict(name="Processor",
-                          description="Processor websocket can be found at \"/processor\", this socket is used to send "
-                                      "tracking information")
 
+    def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
+        super().__init__(application, request)
+        self.identifier = max(processors.keys(), default=0) + 1
+
+    # CORS
     def check_origin(self, origin):
         return True
 
+    # Append self to processor dict upon opening
     def open(self):
-        processors.append(self)
-
-    def send(self, message):
-        self.write_message(message)
+        logger.log_connect("/processor", self.request.remote_ip)
+        print(f"New processor connected with id: {self.identifier}")
+        processors[self.identifier] = self
 
     def on_message(self, message):
-        for p in processors:
-            p.write_message(u"A processor sent: " + message)
+        logger.log_message_receive(message, "/processor", self.request.remote_ip)
+
+        try:
+            message_object = json.loads(message)
+
+            # Switch on message type
+            actions = {
+                "boundingBoxes":
+                    lambda: send_bounding_boxes(message_object, self.identifier),
+                "featureMap":
+                    lambda: update_feature_map(message_object),
+                "test":
+                    lambda: send_mock_commands(message_object, self)
+            }
+
+            # Execute correct function
+            function = actions.get(message_object["type"])
+            if function is None:
+                print("Someone gave an unknown command")
+            else:
+                function()
+
+        except ValueError:
+            logger.log_error("/processor", "ValueError", self.request.remote_ip)
+            print("Someone wrote bad json")
+        except KeyError:
+            logger.log_error("/processor", "KeyError", self.request.remote_ip)
+            print("Someone missed a property in their json")
+
+    def send_message(self, message):
+        logger.log_message_send(message, "/processor", self.request.remote_ip)
+        self.write_message(message)
 
     def on_close(self):
-        print("Processor WebSocket closed")
+        logger.log_disconnect("/processor", self.request.remote_ip)
+        del processors[self.identifier]
+        print(f"Processor with id {self.identifier} disconnected")
 
-class ProcessorFeatureMap(RequestHandler):
 
-    def check_origin(self, origin):
-        return True
+# Send bounding boxes to all clients
+def send_bounding_boxes(message, camera_id):
+    frame_id = message["frameId"]
+    boxes = message["boxes"]
 
-    def post(self):
-        """ Adds or updates feature map of tracked object
-        ---
-        tags: [Processor]
-        summary: Adds or updates feature map of tracked object
-        description: Takes object id and feature map and sends a command to start tracking that object
-        parameters:
-            -   in: body
-                name: feature map
-                description: Object id and feature map
-                schema:
-                    type: object
-                    required:
-                        -   objectId
-                        -   featureMap
-                    properties:
-                        objectId:
-                            type: integer
-                        featureMap:
-                            type: object
-        responses:
-            200:
-                description: OK
-        """
-        object_id = self.get_body_argument("objectId")
-        feature_map = self.get_body_argument("featureMap")
-        self.write(f"You send a feature map of an object with Id {object_id}")
+    if len(client.clients.values()) > 0:
+        for c in client.clients.values():
+            c.send_message(json.dumps({
+                "type": "boundingBoxes",
+                "cameraId": camera_id,
+                "frameId": frame_id,
+                "boxes": boxes
+            }))
 
-processors: list[ProcessorSocket] = []
+
+# Send updated feature map to all processors
+def update_feature_map(message):
+    object_id = message["objectId"]
+    feature_map = message["featureMap"]
+
+    try:
+        objects[object_id].update_feature_map(feature_map)
+    except KeyError:
+        print("Unknown object id")
+
+    for p in processors.values():
+        p.send_message(json.dumps({
+            "type": "featureMap",
+            "objectId": object_id,
+            "featureMap": feature_map
+        }))
+
+
+# Send a few mock messages to the processor for testing purposes
+def send_mock_commands(message, processor):
+    frame_id = message["frameId"]
+    box_id = message["boxId"]
+    tracking_object1 = TrackingObject()
+
+    tracking_object2 = TrackingObject()
+
+    processor.send_message(json.dumps({
+        "type": "start",
+        "objectId": tracking_object1.identifier,
+        "frameId": frame_id,
+        "boxId": box_id
+    }))
+
+    sleep(2)
+
+    processor.send_message(json.dumps({
+        "type": "featureMap",
+        "objectId": tracking_object2.identifier,
+        "featureMap": {}
+    }))
+
+    sleep(2)
+
+    processor.send_message(json.dumps({
+        "type": "stop",
+        "objectId": tracking_object1.identifier
+    }))
+
+
+processors = dict()

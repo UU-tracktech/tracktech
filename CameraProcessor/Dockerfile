@@ -2,6 +2,7 @@
 FROM tracktech.ml:50007/opencv-python:latest
 
 EXPOSE 8000
+EXPOSE 9090
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -14,6 +15,6 @@ COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
 WORKDIR /app
-COPY app.py /app
+COPY . /app
 
-CMD ["python", "tornado_sample.py"]
+CMD ["python", "tornado_hosted.py"]
