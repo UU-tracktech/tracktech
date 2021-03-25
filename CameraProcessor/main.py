@@ -2,7 +2,7 @@ import cv2
 import logging
 import sys
 from detection.dectection_obj import DetectionObj
-from input.hls_stream import HlsCapture
+from input.hls_capture import HlsCapture
 
 logging.basicConfig(filename='app.log', filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',

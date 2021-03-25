@@ -6,7 +6,7 @@ from detection.bounding_box import BoundingBox
 skipped_lines = 0
 
 
-class Annotations:
+class PreAnnotations:
     def __init__(self, path, nr_frames):
         self.dir_path = path
         self.nr_frames = nr_frames

@@ -9,9 +9,9 @@ import cv2
 import os
 import logging
 import sys
-from input.img_folder import ImageCapture
+from input.image_capture import ImageCapture
 from detection.dectection_obj import DetectionObj
-from training.annotations_obj import Annotations
+from training.pre_annotations import PreAnnotations
 
 root_dir = os.path.abspath(__file__ + '/../../../')
 logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',

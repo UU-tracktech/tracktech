@@ -1,7 +1,7 @@
 import cv2
 import os
 import logging
-from input.custom_capture import ICapture
+from input.icapture import ICapture
 
 
 class ImageCapture(ICapture):
