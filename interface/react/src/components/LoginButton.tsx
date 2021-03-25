@@ -17,7 +17,7 @@ const LoginButton = () => {
     return (
       <div>
 
-          <p>Keycloak is {initialized ? '' : 'NOT' } initialized</p>
+          <p>Keycloak {initialized ? '' : 'NOT' } connected</p>
 
           <p>User is {keycloak.authenticated ? '' : 'NOT' } authenticated</p>
 
