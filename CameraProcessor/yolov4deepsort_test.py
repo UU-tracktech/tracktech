@@ -5,6 +5,7 @@ import sys
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(curr_dir, 'detection'))
 sys.path.insert(0, os.path.join(curr_dir, 'tracking'))
+
 import configparser
 from absl import app, flags, logging
 from absl.flags import FLAGS
@@ -35,7 +36,8 @@ models are loaded here.
 def main(_argv):
     #Load the config file
     yolov4config = configparser.ConfigParser()
-    yolov4config.read('yolov4config.ini')
+    yolov4config.read('configs.ini')
+    yolov4config = yolov4config['Yolov4']
 
     #Initialize the tracker. Tracker has to be persistent across function calls to object_tracker.py
     tracker = ObjectTracker.initialize_tracker()
@@ -46,11 +48,11 @@ def main(_argv):
     session = InteractiveSession(config=config)
 
     #Not sure if this line below is even needed?
-    STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(yolov4config['Model']['model'])
+    STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(yolov4config['model'])
 
     # load tflite model if flag is set
-    if yolov4config['Model']['framework'] == 'tflite':
-        interpreter = tf.lite.Interpreter(os.path.join(curr_dir, model_path=yolov4config['Model']['weights']))
+    if yolov4config['framework'] == 'tflite':
+        interpreter = tf.lite.Interpreter(os.path.join(curr_dir, model_path=yolov4config['weights']))
         interpreter.allocate_tensors()
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
@@ -58,7 +60,7 @@ def main(_argv):
         print(output_details)
     # otherwise load standard tensorflow saved model
     else:
-        saved_model_loaded = tf.saved_model.load(os.path.join(curr_dir, yolov4config['Model']['weights']), tags=[tag_constants.SERVING])
+        saved_model_loaded = tf.saved_model.load(os.path.join(curr_dir, yolov4config['weights']), tags=[tag_constants.SERVING])
         infer = saved_model_loaded.signatures['serving_default']
 
     t = time.localtime()
@@ -68,10 +70,10 @@ def main(_argv):
     trac_obj = TrackingObject.TrackingObj(det_obj, None)
 
     #Capture the video stream
-    vid = cv2.VideoCapture(os.path.join(curr_dir, yolov4config['Video']['hls']))
+    vid = cv2.VideoCapture(os.path.join(curr_dir, yolov4config['source']))
 
     #Frame counter starts at 0. Will probably work differently for streams
-    counter = 0;
+    counter = 0
     while vid.isOpened():
         ret, frame = vid.read(0)
 
@@ -88,7 +90,7 @@ def main(_argv):
         det_obj.timestamp = time.localtime()
 
         #Run the object detector and tracker
-        if yolov4config['Model']['framework'] == 'tflife':
+        if yolov4config['framework'] == 'tflife':
             ObjectTracker.detect_and_track(det_obj, trac_obj, tracker, interpreter)
         else:
             ObjectTracker.detect_and_track(det_obj, trac_obj, tracker, infer)
