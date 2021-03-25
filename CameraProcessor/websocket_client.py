@@ -16,7 +16,7 @@ state = 0
 
 # url = 'ws://tracktech.ml:50010/processor'
 # Url of websocket server
-url = 'ws://localhost:8000/processor'
+url = 'ws://localhost:80/processor'
 
 # Connection variables
 connected = False  # Whether or not the connection is live
