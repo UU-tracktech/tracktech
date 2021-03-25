@@ -1,6 +1,11 @@
 FROM node:15 AS builder
-COPY react react
 WORKDIR /react
+COPY react/package.json ./package.json
+COPY react/package-lock.json ./package-lock.json
+RUN ["npm","install"]
+COPY react/tsconfig.json ./tsconfig.json
+COPY react/public ./public
+COPY react/src ./src
 RUN ["npm","run","build"]
 
 # Created by WebStorm
@@ -11,11 +16,10 @@ RUN npm install -g serve
 EXPOSE 5000
 
 # copy static files
-COPY testconfig.json /config.json 
-COPY entrypoint.sh /entrypoint.sh
+COPY testconfig.json /build/config.json
 
 # Copy the build program
 COPY --from=builder /react/build /build
 
-# Set the entrypoint to the script
-ENTRYPOINT ["/entrypoint.sh"]
+
+ENTRYPOINT ["serve", "-s", "build"]

@@ -1,90 +1,128 @@
-from tornado.web import RequestHandler
+import json
+import tornado.web
+from time import sleep
+from tornado import httputil
 from tornado.websocket import WebSocketHandler
+from objectManager import TrackingObject, objects
+from processor import processors
+import logger
 
 
 class ClientSocket(WebSocketHandler):
-    tagDescription = dict(name="Client",
-                          description="Client websocket can be found at \"/client\", this socket is used to send "
-                                      "tracking information")
 
+    def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
+        super().__init__(application, request)
+        self.identifier = max(clients.keys(), default=0) + 1
+
+    # CORS
     def check_origin(self, origin):
         return True
 
+    # Append self to client list upon opening
     def open(self):
-        clients.append(self)
-
-    def send(self, message):
-        self.write_message(message)
+        logger.log_connect("/client", self.request.remote_ip)
+        print(f"New client connected with id: {self.identifier}")
+        clients[self.identifier] = self
 
     def on_message(self, message):
-        for c in clients:
-            c.write_message(u"Someone said: " + message)
+        logger.log_message_receive(message, "/client", self.request.remote_ip)
+
+        try:
+            message_object = json.loads(message)
+
+            # Switch on message type
+            actions = {
+                "start":
+                    lambda: start_tracking(message_object),
+                "stop":
+                    lambda: stop_tracking(message_object),
+                "test":
+                    lambda: send_mock_data(message_object, self)
+            }
+
+            # Execute correct function
+            function = actions.get(message_object["type"])
+            if function is None:
+                print("Someone gave an unknown command")
+            else:
+                function()
+
+        except ValueError:
+            logger.log_error("/client", "ValueError", self.request.remote_ip)
+            print("Someone wrote bad json")
+        except KeyError:
+            logger.log_error("/client", "KeyError", self.request.remote_ip)
+            print("Someone missed a property in their json")
+
+    def send_message(self, message):
+        logger.log_message_send(message, "/client", self.request.remote_ip)
+        self.write_message(message)
 
     def on_close(self):
-        print("WebSocket closed")
+        logger.log_disconnect("/client", self.request.remote_ip)
+        del clients[self.identifier]
+        print(f"Client with id {self.identifier} disconnected")
 
 
-class ClientTracking(RequestHandler):
+# Create tracking object and send start tracking command to specified processor
+def start_tracking(message):
+    camera_id = message["cameraId"]
+    box_id = message["boxId"]
+    frame_id = message["frameId"]
 
-    def check_origin(self, origin):
-        return True
+    if camera_id not in processors.keys():
+        print("Unknown processor")
+        return
 
-    def post(self):
-        """ Start tracking of individual
-        ---
-        tags: [Client]
-        summary: Start the tracking of an object
-        description: Takes camera id and bounding box id and sends a command to start tracking that object
-        parameters:
-            -   in: body
-                name: command
-                description: Parameters for the command to be executed
-                schema:
-                    type: object
-                    required:
-                        -   cameraId
-                        -   boxId
-                        -   frameId
-                    properties:
-                        cameraId:
-                            type: integer
-                        boxId:
-                            type: integer
-                        frameId:
-                            type: integer
-        responses:
-            200:
-                description: OK
-        """
-        camera_id = self.get_body_argument("cameraId")
-        box_id = self.get_body_argument("boxId")
-        frame_id = self.get_body_argument("frameId")
-        self.write(f"You wanted to start tracking box with Id {box_id} on frame {frame_id} of camera {camera_id}")
+    tracking_object = TrackingObject()
+
+    print(
+        f"New tracking object created with id {tracking_object.identifier}, found at bounding box with Id {box_id} on "
+        f"frame {frame_id} of camera {camera_id}")
+
+    processors[camera_id].send_message(json.dumps({
+        "type": "start",
+        "objectId": tracking_object.identifier,
+        "frameId": frame_id,
+        "boxId": box_id
+    }))
 
 
-    def delete(self):
-        """ Stop tracking of individual
-                ---
-                tags: [Client]
-                summary: Stop the tracking of an object
-                description: Takes object id and sends commands to stop tracking that object
-                parameters:
-                    -   in: body
-                        name: command
-                        description: Parameters for the command to be executed
-                        schema:
-                            type: object
-                            required:
-                                -   objectId
-                            properties:
-                                boxId:
-                                    type: integer
-                responses:
-                    200:
-                        description: OK
-                """
-        object_id = self.get_body_argument("objectId")
-        self.write(f"You wanted to stop tracking object with Id {object_id}")
+# Remove tracking object and send stop tracking command to all processors
+def stop_tracking(message):
+    object_id = message["objectId"]
+    if object_id not in objects.keys():
+        print("unknown object")
+        return
+
+    objects[object_id].remove_self()
+
+    if len(processors) > 0:
+        for p in processors.values():
+            p.send_message(json.dumps({
+                "type": "stop",
+                "objectId": object_id
+            }))
+
+    print(f"stopped tracking of object with id {object_id}")
 
 
-clients: list[ClientSocket] = []
+# Send a few mock messages to the client for testing purposes
+def send_mock_data(message, client):
+    camera_id = message["cameraId"]
+
+    frame_id = 0
+
+    for x in range(50):
+        client.send_message(json.dumps({
+            "type": "boundingBoxes",
+            "cameraId": camera_id,
+            "frameId": frame_id,
+            "boxes": {}
+        }))
+
+        frame_id += 1
+        sleep(0.2)
+
+
+clients = dict()
