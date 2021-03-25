@@ -1,27 +1,34 @@
 import React from 'react'
 
-import { useKeycloak } from '@react-keycloak/web'
+import { useKeycloak} from "@react-keycloak/web";
 
 const LoginButton = () => {
 
-    const { keycloak, initialized } = useKeycloak()
+    const { keycloak, initialized } = useKeycloak();
 
-    {/*
-    if(!initialized) {
-        return <p>Loading keycloak...</p>
+    const login = () => {
+        keycloak.login();
     }
-    */}
+
+    const logout = () => {
+        keycloak.logout();
+    }
 
     return (
+      <div>
 
-        <div>
-            {/*if the user is not logged in, show a login button*/}
-            { keycloak && !keycloak.authenticated && <button onClick={()=>keycloak.login({redirectUri: 'https://oauth.pstmn.io/v1/callback'})}>Login</button> }
-            {/*if the user IS logged in, show a logout button*/}
-            { keycloak && keycloak.authenticated && <button onClick={()=>keycloak.logout()}>Logout</button>}
-        </div>
+          <p>Keycloak is {initialized ? '' : 'NOT' } initialized</p>
 
-    )
+          <p>User is {keycloak.authenticated ? '' : 'NOT' } authenticated</p>
+
+          {
+              keycloak.authenticated ?
+                  <button onClick={logout}>Logout</button> :
+                  <button onClick={login}>Login</button>
+          }
+
+      </div>
+    );
 }
 
 export default LoginButton

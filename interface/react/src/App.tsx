@@ -1,9 +1,7 @@
 import React from 'react';
-import { render } from 'react-dom';
 import VideoPlayer from "./components/VideojsPlayer";
-import logo from './logo.svg';
 import './App.css';
-import { Stream } from 'node:stream';
+import LoginButton from './components/LoginButton'
 
 type stream = { name: string, url: string }
 type appState = { streams: stream[] }
@@ -21,6 +19,7 @@ class App extends React.Component<{}, appState> {
   }
 
   render() {
+
     var sources = this.state.streams.map((stream) => ({
       name: stream.name,
       srcObject: {
@@ -31,6 +30,7 @@ class App extends React.Component<{}, appState> {
 
     return (
       <div className="App">
+        <LoginButton/>
         <header className="App-header">
           {
             sources && sources.map((source) =>
