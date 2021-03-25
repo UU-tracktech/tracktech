@@ -35,7 +35,9 @@ class App extends React.Component<{}, appState> {
 
     return (
       <div className="App">
+        <div>
         <LoginButton/>
+        </div>
         <header className="App-header">
           {
             sources && sources.map((source) =>
