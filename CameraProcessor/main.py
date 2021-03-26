@@ -1,7 +1,7 @@
 import cv2
 import logging
 import sys
-from detection.dectection_obj import DetectionObj
+from detection.detection_obj import DetectionObj
 from input.hls_capture import HlsCapture
 
 logging.basicConfig(filename='app.log', filemode='w',

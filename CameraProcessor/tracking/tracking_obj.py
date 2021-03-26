@@ -1,4 +1,4 @@
-from detection.dectection_obj import DetectionObj
+from detection.detection_obj import DetectionObj
 
 
 class TrackingObj:
