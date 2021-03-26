@@ -11,6 +11,7 @@ import numpy as np
 from detection.dectection_obj import DetectionObj
 from detection.bounding_box import BoundingBox
 from detection.yolov5.yolov5_runner import Detector
+from input.video_stream import VideoCapture
 
 
 def main(_argv):
@@ -27,8 +28,7 @@ def main(_argv):
     det_obj = DetectionObj(t, None, 0)
 
     # Capture the video stream
-    print("Capturing video stream...")
-    vid = cv2.VideoCapture(os.path.join(curr_dir, trueconfig['source']))
+    vidstream = VideoCapture(os.path.join(curr_dir, trueconfig['source']))
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -37,13 +37,13 @@ def main(_argv):
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
     counter = 0
-    while vid.isOpened():
+    while not vidstream.stopped():
         # Set the detected bounding box list to empty
         det_obj.bounding_box = []
-        ret, frame = vid.read(0)
+        ret, frame = vidstream.get_next_frame()
 
         if not ret:
-            if counter == vid.get(cv2.CAP_PROP_FRAME_COUNT):
+            if counter == vidstream.get_vid_length():
                 print("End of file")
                 break
             else:
