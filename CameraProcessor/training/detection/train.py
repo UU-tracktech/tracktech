@@ -10,7 +10,7 @@ import os
 import logging
 import sys
 from input.image_capture import ImageCapture
-from detection.dectection_obj import DetectionObj
+from detection.detection_obj import DetectionObj
 from training.pre_annotations import PreAnnotations
 
 root_dir = os.path.abspath(__file__ + '/../../../')
