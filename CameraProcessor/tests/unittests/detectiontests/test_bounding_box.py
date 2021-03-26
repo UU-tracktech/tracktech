@@ -1,12 +1,12 @@
-'''Tests for bounding_box.py
+"""Tests for bounding_box.py.
 
 Test different inputs in the class
  - Test if every type is correct.   done
- - Test if every value is correct.  not done
+ - Test if every value is correct.  done
  - Test empty inputs.               done
  - Test exceptions.                 done
 
-'''
+"""
 
 import pytest
 from detection.bounding_box import BoundingBox
@@ -21,6 +21,7 @@ class TestBoundingBox:
         self.unit_feature = None
         self.unit_classification = self.data.classification
         self.unit_certainty = self.data.certainty
+        assert len(self.unit_rectangle) == 4
 
     # Testing typechecking
     def test_type_identifier(self):
