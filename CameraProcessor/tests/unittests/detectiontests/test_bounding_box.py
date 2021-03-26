@@ -8,54 +8,79 @@ Test different inputs in the class
 
 '''
 
-
-import unittest
+import pytest
 from detection.bounding_box import BoundingBox
 
-class BoundingBox(BoundingBox):
-    def contains_identifier(self):
-        self.identifier = 1
-    def contains_rectangle(self):
-        self.rectangle = [0,0,1,1]
-    def contains_feature(self):
-        self.feature = None
-    def contains_classification(self):
-        self.classification = "person"
-    def contains_certainty(self):
-        self.certainty = 0.5
 
-    def empty_classification(self):
-        self.classification = None
+class TestBoundingBox:
 
+    def setup_method(self):
+        self.data = BoundingBox(1, [0, 0, 1, 1], "person", 0.5)
+        self.unit_identifier = self.data.identifier
+        self.unit_rectangle = self.data.rectangle
+        self.unit_feature = None
+        self.unit_classification = self.data.classification
+        self.unit_certainty = self.data.certainty
 
-class TestBoundingBox(unittest.TestCase):
     # Testing typechecking
     def test_type_identifier(self):
-        self.assertIsInstance(BoundingBox.contains_identifier(self),
-                              type(BoundingBox.contains_identifier(self)),
-                              'Tested identifier is not of type identifier.')
-    def test_type_rectangle(self):
-        self.assertIsInstance(BoundingBox.contains_rectangle(self),
-                              type(BoundingBox.contains_rectangle(self)),
-                              'Tested rectangle is not of type rectangle.')
-    def test_type_feature(self):
-        self.assertIsInstance(BoundingBox.contains_feature(self),
-                              type(BoundingBox.contains_feature(self)),
-                              'Tested feature is not of type feature.')
-    def test_type_classification(self):
-        self.assertIsInstance(BoundingBox.contains_classification(self),
-                              type(BoundingBox.contains_classification(self)),
-                              'Tested classification is not of type classification.')
-    def test_type_certainty(self):
-        self.assertIsInstance(BoundingBox.contains_certainty(self),
-                              type(BoundingBox.contains_certainty(self)),
-                              'Tested certainty is not of type certainty')
-    # Testing empty fields that can be empty
-    def test_empty_classification(self):
-        self.assertIsNone(BoundingBox.empty_classification(self),
-                          'Classification is not empty.')
+        assert isinstance(self.unit_identifier,
+                          type(self.unit_identifier))
 
+    def test_type_rectangle(self):
+        assert isinstance(self.unit_rectangle,
+                          type(self.unit_rectangle))
+
+    def test_type_feature(self):
+        assert isinstance(self.unit_feature,
+                          type(self.unit_feature))
+
+    def test_type_classification(self):
+        assert isinstance(self.unit_classification,
+                          type(self.unit_classification))
+
+    def test_type_certainty(self):
+        assert isinstance(self.unit_certainty,
+                          type(self.unit_certainty))
+
+    # Testing empty fields that can be empty
+    def test_empty_identifier(self):
+        assert self.unit_identifier is not None
+
+    def test_empty_rectangle(self):
+        assert self.unit_rectangle is not None
+
+    @pytest.mark.skip(reason="feature attribute is currently unused")
+    def test_empty_feature(self):
+        assert self.unit_feature is not None
+
+    def test_empty_classification(self):
+        assert self.unit_classification is not None
+
+    def test_empty_certainty(self):
+        assert self.unit_certainty is not None
+
+    # Testing exceptions
+    def test_exception_identifier(self):
+        with pytest.raises(Exception):
+            assert str(self.unit_identifier) == 'one'
+
+    def test_exception_rectangle(self):
+        with pytest.raises(Exception):
+            assert str(self.unit_rectangle) == [1]
+
+    def test_exception_feature(self):
+        with pytest.raises(Exception):
+            assert str(self.unit_feature) == 'some invalid feature'
+
+    def test_exception_classification(self):
+        with pytest.raises(Exception):
+            assert str(self.unit_classification) == 9
+
+    def test_exception_certainty(self):
+        with pytest.raises(Exception):
+            assert str(self.unit_certainty) == 'some invalid value'
 
 
 if __name__ == '__main__':
-    unittest.main()
+    pytest.main(TestBoundingBox)
