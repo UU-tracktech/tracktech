@@ -1,12 +1,12 @@
-import * as React from 'react';
-import videojs from 'video.js';
+import * as React from 'react'
+import videojs from 'video.js'
 
 // Styles
-import 'video.js/dist/video-js.css';
+import 'video.js/dist/video-js.css'
 
 class VideoPlayer extends React.Component<videojs.PlayerOptions> {
-    private player?: videojs.Player;
-    private videoNode?: HTMLVideoElement;
+    private player?: videojs.Player
+    private videoNode?: HTMLVideoElement
 
     componentDidMount() {
         // instantiate video.js
@@ -36,8 +36,8 @@ class VideoPlayer extends React.Component<videojs.PlayerOptions> {
                     <button>Pause</button>
                 </div>*/}
             </div>
-        );
+        )
     }
 }
 
-export default VideoPlayer;
+export default VideoPlayer
