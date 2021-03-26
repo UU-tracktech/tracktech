@@ -6,13 +6,14 @@ services:
     ports:
       - published: 50009
         target: 8443
-    networks:
-      - auth
+    volumes:
+      - Keycloak:/opt/jboss/keycloak/standalone/data
+      - Themes:/opt/jboss/keycloak/themes
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
     secrets:
-      - source: tracktech.ml-fullchain.pem
+      - source: tracktech.ml-cert.pem
         target: /etc/x509/https/tls.crt
       - source: tracktech.ml-privkey.pem
         target: /etc/x509/https/tls.key
@@ -21,12 +22,14 @@ services:
         constraints:
           - "node.labels.keycloak==true"
 
-networks:
-  auth:
+volumes:
+  Keycloak:
+    external: true
+  Themes:
     external: true
 
 secrets:
-  tracktech.ml-fullchain.pem:
+  tracktech.ml-cert.pem:
     external: true
   tracktech.ml-privkey.pem:
     external: true
