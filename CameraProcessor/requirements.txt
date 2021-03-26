@@ -1,3 +1,29 @@
-opencv-python
-tornado
-numpy
+# General imports
+tornado==6.1
+numpy>=1.16<1.19
+matplotlib
+scipy<=1.6.1
+
+# Logging
+logging
+
+# Images
+pillow
+opencv-python==4.1.2.30
+
+# CPU AI learning
+# tensorboard==2.3.0
+# tensorflow==2.3.1
+
+# XML
+lxml
+# Loading bar
+tqdm
+
+# GPU AI learning
+tensorboard==2.2.0
+tensorflow-gpu==2.3.0rc0
+
+torch==1.8.0+cu101
+torchvision==0.9.0+cu101
+-f https://download.pytorch.org/whl/torch_stable.html
