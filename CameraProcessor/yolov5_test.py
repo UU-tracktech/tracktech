@@ -1,17 +1,16 @@
 import time
 import os
 import sys
-from absl import app
+curr_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(curr_dir, 'detection/yolov5'))
 
+from absl import app
 import cv2
 import configparser
 import numpy as np
 from detection.dectection_obj import DetectionObj
 from detection.bounding_box import BoundingBox
 from detection.yolov5.yolov5_runner import Detector
-
-curr_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(curr_dir, 'detection/yolov5'))
 
 
 def main(_argv):
