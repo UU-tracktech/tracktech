@@ -18,21 +18,36 @@ def test_constructor(nr_frames):
     assert len(annotations.boxes) == nr_frames
 
 
-def test_text_file_exists():
-    assert os.path.exists(example_txt_file)
+class TestTextParsing:
+    def setup_method(self):
+        self.annotations = PreAnnotations(example_txt_file, 5)
+
+    def test_file_exists(self):
+        assert os.path.exists(example_txt_file)
+
+    def test_file_parsing(self):
+        self.annotations.parse_file()
+        number_boxes = [len(boxes_frame) for boxes_frame in self.annotations.boxes]
+        expected = [1, 2, 2, 1, 1]
+        assert number_boxes == expected
+
+    def test_comma_line_parsing(self):
+        with open(example_txt_file) as file:
+            firstLine = [line.rstrip('\n') for line in file][0]
+        information = self.annotations.parse_line(firstLine, ',')
+        assert information == [1, 1, 17, 150, 77, 191]
+
+    def test_line_parsing(self):
+        with open(example_txt_file) as file:
+            firstLine = [line.rstrip('\n') for line in file][0]
+        firstLine.replace(',', ' ')
+        information = self.annotations.parse_line(firstLine, ' ')
+        assert information == [1, 1, 17, 150, 77, 191]
 
 
 def test_json_file_exists():
     assert os.path.exists(example_json_file)
 
-
-def test_text_file_parsing():
-    pass
-    # parse_text_file
-
-
-def test_line_parsing():
-    pass
 
 # class PreAnnotations:
 #     def __init__(self, file_path, nr_frames):
