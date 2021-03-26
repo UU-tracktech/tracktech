@@ -1,0 +1,33 @@
+Looking in links: https://download.pytorch.org/whl/torch_stable.html
+Collecting torch
+  Downloading https://download.pytorch.org/whl/cu111/torch-1.8.0%2Bcu111-cp38-cp38-win_amd64.whl (3055.7 MB)
+Collecting torchvision
+  Downloading https://download.pytorch.org/whl/cu111/torchvision-0.9.0%2Bcu111-cp38-cp38-win_amd64.whl (1.9 MB)
+Collecting numpy
+  Using cached numpy-1.20.1-cp38-cp38-win_amd64.whl (13.7 MB)
+Collecting typing-extensions
+  Using cached typing_extensions-3.7.4.3-py3-none-any.whl (22 kB)
+Collecting pillow>=4.1.1
+  Downloading Pillow-8.1.2-cp38-cp38-win_amd64.whl (2.2 MB)
+Installing collected packages: typing-extensions, numpy, torch, pillow, torchvision
+  Attempting uninstall: typing-extensions
+    Found existing installation: typing-extensions 3.7.4.3
+    Uninstalling typing-extensions-3.7.4.3:
+      Successfully uninstalled typing-extensions-3.7.4.3
+  Attempting uninstall: numpy
+    Found existing installation: numpy 1.18.5
+    Uninstalling numpy-1.18.5:
+      Successfully uninstalled numpy-1.18.5
+  Attempting uninstall: torch
+    Found existing installation: torch 1.8.0
+    Uninstalling torch-1.8.0:
+      Successfully uninstalled torch-1.8.0
+  Attempting uninstall: pillow
+    Found existing installation: Pillow 8.1.1
+    Uninstalling Pillow-8.1.1:
+      Successfully uninstalled Pillow-8.1.1
+  Attempting uninstall: torchvision
+    Found existing installation: torchvision 0.9.0
+    Uninstalling torchvision-0.9.0:
+      Successfully uninstalled torchvision-0.9.0
+Successfully installed numpy-1.20.1 pillow-8.1.2 torch-1.8.0+cu111 torchvision-0.9.0+cu111 typing-extensions-3.7.4.3
