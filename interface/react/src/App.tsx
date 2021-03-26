@@ -2,7 +2,7 @@ import React from 'react';
 import VideoPlayer from "./components/VideojsPlayer";
 import './App.css';
 
-import LoginButton from './components/LoginButton'
+import { LoginButton } from './components/LoginButton'
 
 import WebSocket from "./components/WebSocket";
 import './components/WebSocket.css';
