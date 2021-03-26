@@ -52,7 +52,7 @@ class PreAnnotations:
 
     # Parse line from file given a delimiter
     def parse_line(self, line, delimiter):
-        return [int(i) for i in line.split(delimiter)[:5]]
+        return [int(i) for i in line.split(delimiter)[:6]]
 
     # Parse a JSON file to
     def parse_json_file(self):
