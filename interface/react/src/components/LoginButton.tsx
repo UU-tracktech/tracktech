@@ -1,34 +1,33 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 import { useKeycloak} from "@react-keycloak/web";
 
-const LoginButton = () => {
+export const LoginButton = () => {
 
     const { keycloak, initialized } = useKeycloak();
+    console.log('Keycloak connected: ', initialized);
+    console.log('User authenticated: ', keycloak.authenticated);
 
-    const login = () => {
+    return(
+        <div>
+            {
+                keycloak.authenticated ?
+                    <button onClick={doLogout}>Logout</button> :
+                    <button onClick={doLogin}>Login</button>
+            }
+        </div>
+    )
+
+    function doLogin() {
         keycloak.login();
     }
 
-    const logout = () => {
+    function doLogout() {
         keycloak.logout();
     }
-
-    return (
-      <div>
-
-          <p>Keycloak {initialized ? '' : 'NOT' } connected</p>
-
-          <p>User is {keycloak.authenticated ? '' : 'NOT' } authenticated</p>
-
-          {
-              keycloak.authenticated ?
-                  <button onClick={logout}>Logout</button> :
-                  <button onClick={login}>Login</button>
-          }
-
-      </div>
-    );
 }
 
 export default LoginButton
+
+
+
