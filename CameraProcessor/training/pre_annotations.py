@@ -1,5 +1,5 @@
 import json
-import os
+import re
 import logging
 from detection.bounding_box import BoundingBox
 
@@ -7,17 +7,27 @@ skipped_lines = 0
 
 
 class PreAnnotations:
-    def __init__(self, path, nr_frames):
-        self.dir_path = path
+    def __init__(self, file_path, nr_frames):
+        self.file_path = file_path
+        if nr_frames < 0:
+            raise AttributeError('Cannot have negative number of frames')
         self.nr_frames = nr_frames
         self.boxes = [[] for _ in range(nr_frames)]
-        self.parse_file()
 
     def parse_file(self):
+        is_txt_file = re.search('^.*.txt$', self.file_path)
+        is_json_file = re.search('^.*.json$', self.file_path)
+        if is_txt_file:
+            self.parse_text_file()
+        elif is_json_file:
+            self.parse_json_file()
+        else:
+            raise AttributeError
+
+    def parse_text_file(self):
         global skipped_lines
         # Read file
-        file_path = os.path.join(self.dir_path, "gt.txt")
-        with open(file_path) as file:
+        with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
 
         # Determine delimiter
@@ -42,13 +52,11 @@ class PreAnnotations:
 
     # Parse line from file given a delimiter
     def parse_line(self, line, delimiter):
-        (frame_nr, person_id, x, y, w, h, _, _, _) = line.split(delimiter)
-        return [int(i) for i in (frame_nr, person_id, x, y, w, h)]
+        return [int(i) for i in line.split(delimiter)[:5]]
 
     # Parse a JSON file to
-    def parse_json(self):
-        json_path = os.path.join(self.dir_path, "path_annots.json")
-        with open(json_path) as json_file:
+    def parse_json_file(self):
+        with open(self.file_path) as json_file:
             # Every json object
             data = [x for x in json.load(json_file)]
             for json_obj in data:
