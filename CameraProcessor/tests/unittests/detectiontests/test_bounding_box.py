@@ -4,7 +4,7 @@ Test different inputs in the class
  - Test if every type is correct.   done
  - Test if every value is correct.  not done
  - Test empty inputs.               done
- - Test exceptions.                 not done
+ - Test exceptions.                 done
 
 '''
 
@@ -80,6 +80,22 @@ class TestBoundingBox:
     def test_exception_certainty(self):
         with pytest.raises(Exception):
             assert str(self.unit_certainty) == 'some invalid value'
+
+    # Testing values
+    def test_value_identifier(self):
+        assert self.unit_identifier == 1
+
+    def test_value_rectangle(self):
+        assert self.unit_rectangle == [0, 0, 1, 1]
+
+    def test_value_feature(self):
+        assert self.unit_feature is None
+
+    def test_value_classification(self):
+        assert self.unit_classification == "person"
+
+    def test_value_certainty(self):
+        assert self.unit_certainty == 0.5
 
 
 if __name__ == '__main__':
