@@ -29,7 +29,7 @@ capture = ImageCapture(images_dir)
 bounding_boxes = PreAnnotations(bounding_boxes_path, capture.nr_images).boxes
 
 logging.info('start training')
-while not capture.stopped():
+while capture.opened():
     ret, frame = capture.get_next_frame()
 
     if not ret:
