@@ -21,7 +21,6 @@ class TestBoundingBox:
         self.unit_feature = None
         self.unit_classification = self.data.classification
         self.unit_certainty = self.data.certainty
-        assert len(self.unit_rectangle) == 4
 
     # Testing typechecking
     def test_type_identifier(self):
@@ -97,6 +96,10 @@ class TestBoundingBox:
 
     def test_value_certainty(self):
         assert self.unit_certainty == 0.5
+
+    # Testing others
+    def test_length_rectangle(self):
+        assert len(self.unit_rectangle) == 4
 
 
 if __name__ == '__main__':
