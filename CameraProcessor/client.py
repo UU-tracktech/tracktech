@@ -6,7 +6,7 @@ from tornado import websocket
 from detection.dectection_obj import DetectionObj
 from input.hls_stream import HlsCapture
 import cv2
-import time
+from datetime import datetime
 
 # Setup (basic) logging
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
@@ -21,7 +21,7 @@ capture = HlsCapture()
 
 
 # Url of websocket server
-#url = 'ws://localhost:8000/processor'
+#url = 'ws://localhost:80/processor'
 url = 'wss://tracktech.ml:50010/processor'
 
 # Connection variables
@@ -105,6 +105,11 @@ async def connect_to_url():
             logging.warning(f"Could not connect to {url}, trying again in 1 second...")
             await asyncio.sleep(1)
 
+def mock_detection_object():
+    obj = DetectionObj(datetime.now(), None, frame_nr)
+    obj.bounding_box = obj.mock_bounding_boxes()
+    print(obj.bounding_box[0].to_json())
+    return obj
 
 async def main():
     global connection, connected, connect_task_created, frame_nr
@@ -129,8 +134,9 @@ async def main():
         print(frame_nr)
 
         # Create detectionObj
-        detection_obj = DetectionObj(None, frame, capture)
+        detection_obj = DetectionObj(datetime.now(), frame, frame_nr)
         # Run detection on object
+
 
         # Visualise rectangles and show it
         detection_obj.draw_rectangles()
@@ -138,6 +144,7 @@ async def main():
 
         # Non-blocking call to write message in parallel, normally happens after frame processing
         asyncio.get_event_loop().create_task(write_message('{"type":"test", "frameId": 12, "boxId": 18}'))
+        print(mock_detection_object().to_json())
 
         # Close loop when q is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):

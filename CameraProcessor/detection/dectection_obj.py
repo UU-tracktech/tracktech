@@ -1,5 +1,6 @@
 import cv2
-
+import json
+from .bounding_box import BoundingBox
 
 class DetectionObj:
     def __init__(self, timestamp, frame, frame_nr):
@@ -16,3 +17,17 @@ class DetectionObj:
                                        tuple(bounding_box.rectangle[2:]),
                                        red,
                                        2)
+
+    def mock_bounding_boxes(self):
+        boxes = []
+        for i in range(1, 10):
+            boxes.append(BoundingBox(i, (0, 0, 10 * i, 10 * i), None, 0))
+        return boxes
+
+
+    def to_json(self):
+        return json.dumps({
+            "type": "boundingBoxes",
+            "frameId": self.frame_nr,
+            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_box],
+        })
