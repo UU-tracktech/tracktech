@@ -5,7 +5,7 @@ Test different inputs in the class
  - Test if every value is correct.
  - Test empty inputs.
  - Test exceptions.
- - Test if imputs are valid form.
+ - Test if inputs are valid form.
 """
 
 import pytest
