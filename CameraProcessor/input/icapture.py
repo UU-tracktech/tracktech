@@ -1,7 +1,7 @@
 # ICapture enforces implementation fo the following methods
 class ICapture:
     # Check if stream is stopped
-    def stopped(self) -> bool:
+    def opened(self) -> bool:
         raise NotImplementedError('stopped method not implemented')
 
     # Closes the capture object

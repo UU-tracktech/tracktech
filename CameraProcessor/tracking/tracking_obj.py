@@ -6,5 +6,5 @@ class TrackingObj:
         self.frame = detection_obj.frame
         self.frame_nr = detection_obj.frame_nr
         self.tracking_feature_maps = tracking_feature_maps
-        self.bounding_boxes = detection_obj.bounding_box
+        self.bounding_boxes = detection_obj.bounding_boxes
         self.tracked_boxes = []
