@@ -12,13 +12,13 @@ def docs():
     root_folder = os.path.dirname(__file__)
 
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
-    pdoc.render.configure(template_directory=Path(os.path.join(root_folder, 'pdoc_template')), docformat='google')
+    pdoc.render.configure(template_directory=Path(os.path.join(root_folder, 'docs/template')), docformat='google')
 
     # Get all project modules.
     modules = get_modules(root_folder)
 
     # Generate documentation for all found modules in the /docs.
-    pdoc.pdoc(*modules, output_directory=Path(os.path.join(root_folder, 'docs')))
+    pdoc.pdoc(*modules, output_directory=Path(os.path.join(root_folder, 'docs/html')))
 
     # pdoc.web.DocServer(addr=('localhost', 63500), all_modules=pdoc.web.AllModules())
 
