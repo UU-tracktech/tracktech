@@ -34,12 +34,24 @@ connect_task_created = False  # Whether or not already trying to reconnect
 
 # Mock methods on received commands
 def update_feature_map(message):
+    """
+    Handler for received feature maps
+
+    Args:
+        message: JSON parse of the sent message
+    """
     object_id = message["objectId"]
     feature_map = message["featureMap"]
     logging.info(f"Updating object {object_id} with feature map {feature_map}")
 
 
 def start_tracking(message):
+    """
+    Handler for the "start tracking" command
+
+    Args:
+        message: JSON parse of the sent message
+    """
     object_id = message["objectId"]
     frame_id = message["frameId"]
     box_id = message["boxId"]
@@ -47,12 +59,24 @@ def start_tracking(message):
 
 
 def stop_tracking(message):
+    """
+    Handler for the "stop tracking" command
+
+    Args:
+        message: JSON parse of the sent message
+    """
     object_id = message["objectId"]
     logging.info(f"Stop tracking object {object_id}")
 
 
 # Message handler
 def read_msg(message):
+    """
+    Read message callback for the websocket client
+
+    Args:
+        message: the raw message posted on the websocket
+    """
     if not message:
         logging.error("The websocket connection was closed")
         return
@@ -83,10 +107,16 @@ def read_msg(message):
 
 
 # Write messages to the connection
-async def write_message(msg):
+async def write_message(message):
+    """
+    Write a message on the websocket asynchronously
+
+    Args:
+        message: the message to write
+    """
     global connection, connected
     try:
-        await connection.write_message(msg)
+        await connection.write_message(message)
 
     except websocket.WebSocketClosedError:
         connected = False
@@ -94,6 +124,9 @@ async def write_message(msg):
 
 # Connect to the specified websocket url
 async def connect_to_url():
+    """
+    Connect to the specified websocket url
+    """
     global connection, connected, connect_task_created
 
     while not connected:
@@ -107,8 +140,19 @@ async def connect_to_url():
             logging.warning(f"Could not connect to {url}, trying again in 1 second...")
             await asyncio.sleep(1)
 
-def mock_detection_object(frm):
-    obj = DetectionObj(datetime.now(), frm, frame_nr)
+def mock_detection_object(frame):
+    """
+    Generate a mock detection object with the current frame, frame number and timestamp
+
+    Args:
+        frame: The current frame
+
+    Returns: The mock detection object with bounding boxes
+
+    """
+    obj = DetectionObj(datetime.now(), frame, frame_nr)
+
+    # Generate random bounding boxes
     obj.bounding_box = obj.mock_bounding_boxes()
     return obj
 
@@ -119,6 +163,9 @@ mock_feature_map_dict = {
 
 # Update one of the mock feature maps in the mock dictionary
 def update_feature_maps():
+    """
+    Update mock feature map dictionary
+    """
     object_id = random.randint(1,10)
 
     # if key does not yet exist
@@ -130,6 +177,9 @@ def update_feature_maps():
     mock_feature_map_dict[object_id]["state"] = mock_feature_map_dict[object_id]["state"] + 1
 
 async def main():
+    """
+    Main function that runs the video processing loop and listens on the websocket in parallel
+    """
     global connection, connected, connect_task_created, frame_nr
 
     # Try to get an initial connection
