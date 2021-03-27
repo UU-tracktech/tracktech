@@ -15,12 +15,12 @@ class ImageCapture(ICapture):
         logging.info(f'Found {self.nr_images} images inside the folder')
 
     # Sees whether stream has stopped
-    def stopped(self):
-        return self.image_index + 1 >= self.nr_images
+    def opened(self):
+        return self.image_index + 1 < self.nr_images
 
     # When everything is done release the capture
     def close(self):
-        return
+        self.image_index = self.nr_images + 1
 
     # Gets the next frame from the stream
     def get_next_frame(self):
