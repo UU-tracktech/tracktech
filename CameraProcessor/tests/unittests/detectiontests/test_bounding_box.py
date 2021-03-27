@@ -1,11 +1,11 @@
 """Tests for bounding_box.py.
 
 Test different inputs in the class
- - Test if every type is correct.   done
- - Test if every value is correct.  done
- - Test empty inputs.               done
- - Test exceptions.                 done
-
+ - Test if every type is correct.   
+ - Test if every value is correct.
+ - Test empty inputs.
+ - Test exceptions.
+ - Test if imputs are valid form.
 """
 
 import pytest
