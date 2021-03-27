@@ -11,8 +11,8 @@ class HlsCapture(ICapture):
         logging.info('opened HLS stream')
 
     # Sees whether stream has stopped
-    def stopped(self):
-        return not self.cap.isOpened()
+    def opened(self):
+        return self.cap.isOpened()
 
     # When everything is done release the capture
     def close(self):
