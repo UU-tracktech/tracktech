@@ -2,10 +2,11 @@
 
 Test different inputs in the class
  - Test if every type is correct.
- - Test if every value is correct.
  - Test empty inputs.
+ - Test if every value is correct.
  - Test exceptions.
  - Test if inputs are valid form.
+
 """
 
 import pytest
@@ -64,19 +65,19 @@ class TestBoundingBox:
     # Testing exceptions
     def test_exception_identifier(self):
         with pytest.raises(Exception):
-            assert str(self.identifier) == 'one'
+            assert str(self.identifier) == 'some invalid value'
 
     def test_exception_rectangle(self):
         with pytest.raises(Exception):
-            assert str(self.rectangle) == [1]
+            assert str(self.rectangle) == 'some invalid value'
 
     def test_exception_feature(self):
         with pytest.raises(Exception):
-            assert str(self.feature) == 'some invalid feature'
+            assert str(self.feature) == 'some invalid value'
 
     def test_exception_classification(self):
         with pytest.raises(Exception):
-            assert str(self.classification) == 9
+            assert str(self.classification) == 'some invalid  value'
 
     def test_exception_certainty(self):
         with pytest.raises(Exception):
@@ -98,9 +99,13 @@ class TestBoundingBox:
     def test_value_certainty(self):
         assert self.certainty == 0.5
 
-    # Testing others
+    # Testing form
     def test_length_rectangle(self):
         assert len(self.rectangle) == 4
+
+    def test_range_certainty(self):
+        assert self.certainty <= 1
+        assert self.certainty >= 0
 
 
 if __name__ == '__main__':
