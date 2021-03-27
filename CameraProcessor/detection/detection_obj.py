@@ -1,4 +1,5 @@
 import cv2
+from detection.bounding_box import BoundingBox
 
 
 class DetectionObj:
@@ -6,11 +7,11 @@ class DetectionObj:
         self.timestamp = timestamp
         self.frame = frame
         self.frame_nr = frame_nr
-        self.bounding_box = []
+        self.bounding_boxes = []
 
     def draw_rectangles(self):
         red = (255, 0, 0)
-        for bounding_box in self.bounding_box:
+        for bounding_box in self.bounding_boxes:
             self.frame = cv2.rectangle(self.frame,
                                        tuple(bounding_box.rectangle[:2]),
                                        tuple(bounding_box.rectangle[2:]),
