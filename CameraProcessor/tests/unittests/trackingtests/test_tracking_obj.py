@@ -21,6 +21,42 @@ class TestTrackingObj:
         self.bounding_boxes = self.data.bounding_boxes.append(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
         self.tracked_boxes = self.data.tracked_boxes
 
+    # Testing typechecking
+    def test_type_frame(self):
+        """Asserts if value of frame is of correct type.
+
+        """
+        assert isinstance(self.frame,
+                          type(self.frame))
+
+    def test_type_frame_nr(self):
+        """Asserts if value of frame_nr is of correct type.
+
+        """
+        assert isinstance(self.frame_nr,
+                          type(self.frame_nr))
+
+    def test_type_tracking_feature_map(self):
+        """Asserts if value of tracking_feature_map is of correct type.
+
+        """
+        assert isinstance(self.tracking_feature_maps,
+                          type(self.tracking_feature_maps))
+
+    def test_type_bounding_boxes(self):
+        """Asserts if value of bounding_boxes is of correct type.
+
+        """
+        assert isinstance(self.bounding_boxes,
+                          type(self.bounding_boxes))
+
+    def test_type_tracked_boxes(self):
+        """Asserts if value of tracked_boxes is of correct type.
+
+        """
+        assert isinstance(self.tracked_boxes,
+                          type(self.tracked_boxes))
+
 
 if __name__ == '__main__':
     pytest.main(TestTrackingObj)
