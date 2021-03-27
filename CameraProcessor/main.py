@@ -14,7 +14,7 @@ frame_nr = 0
 capture = HlsCapture()
 
 
-while not capture.stopped():
+while capture.opened():
     ret, frame = capture.get_next_frame()
 
     if not ret:
