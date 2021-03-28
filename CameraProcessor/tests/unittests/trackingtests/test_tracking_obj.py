@@ -30,6 +30,7 @@ class TestTrackingObj:
 
         """
         self.data = TrackingObj(DetectionObj(1.0, 1, 1), [])
+        self.timestamp = self.data.timestamp
         self.frame = self.data.frame
         self.frame_nr = self.data.frame_nr
         self.tracking_feature_maps = self.data.tracking_feature_maps
@@ -37,6 +38,13 @@ class TestTrackingObj:
         self.data.tracked_boxes.append(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
 
     # Testing typechecking
+    def test_type_timestamp(self):
+        """Asserts if value of timestamp is of correct type.
+
+        """
+        assert isinstance(self.timestamp,
+                          type(self.timestamp))
+
     def test_type_frame(self):
         """Asserts if value of frame is of correct type.
 
@@ -73,6 +81,12 @@ class TestTrackingObj:
                           type(self.data.tracked_boxes))
 
     # Testing empty fields that can be empty
+    def test_empty_timestamp(self):
+        """Asserts if timestamp is not None.
+
+        """
+        assert self.timestamp is not None
+
     def test_empty_frame(self):
         """Asserts if frame is not None.
 
@@ -104,6 +118,13 @@ class TestTrackingObj:
         assert self.data.tracked_boxes is not None
 
     # Testing exceptions
+    def test_exception_timestamp(self):
+        """Asserts if timestamp throws exception.
+
+        """
+        with pytest.raises(Exception):
+            assert str(self.timestamp) == 'some invalid value'
+
     def test_exception_frame(self):
         """Asserts if frame throws exception.
 
@@ -138,6 +159,43 @@ class TestTrackingObj:
         """
         with pytest.raises(Exception):
             assert str(self.data.tracked_boxes) == 'some invalid value'
+
+    # Testing values
+    def test_value_timestamp(self):
+        """Asserts if value of frame is correct.
+
+        """
+        assert self.timestamp == 1.0
+
+    def test_value_frame(self):
+        """Asserts if value of frame is correct.
+
+        """
+        assert self.frame == 1
+
+    def test_value_frame_nr(self):
+        """Asserts if value of frame_nr is correct.
+
+        """
+        assert self.frame_nr == 1
+
+    def test_value_tracking_feature_maps(self):
+        """Asserts if value of tracking_feature_maps is correct.
+
+        """
+        assert self.tracking_feature_maps == []
+
+    def test_value_bounding_boxes(self):
+        """Asserts if value of bounding_boxes is correct.
+
+        """
+        assert self.data.bounding_boxes.__eq__(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
+
+    def test_value_tracked_boxes(self):
+        """Asserts if value of tracked_boxes is correct.
+
+        """
+        assert self.data.tracked_boxes.__eq__(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
 
 
 if __name__ == '__main__':
