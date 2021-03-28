@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Navbar, Nav, NavbarProps, NavItem, Button , Form} from 'react-bootstrap'
+import { Component } from 'react'
+import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 
 export class NavMenu extends Component {
 
@@ -27,7 +27,7 @@ export class NavMenu extends Component {
     )
   }
 
-  onLoginPress(){
+  onLoginPress() {
     alert('login')
   }
 }
