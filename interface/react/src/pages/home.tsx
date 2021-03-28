@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import VideoPlayer from '../components/VideojsPlayer'
-import { Container, Col, Row, ButtonGroup, Button, Card, OverlayTrigger, Popover } from 'react-bootstrap'
+import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
 
 type indicator = 'All' | 'Selection' | 'None'
 type source = { id: number, name: string, srcObject: { src: string, type: string } }
@@ -115,8 +115,8 @@ export class Home extends Component<{}, homeState> {
 
   private number = 0
   async addSelection() {
-    const pictures = ["car", "guy", "garden"];
-    const picture = pictures[Math.floor(Math.random() * pictures.length)];
+    const pictures = ["car", "guy", "garden"]
+    const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
     var result = await fetch(process.env.PUBLIC_URL + `/${picture}.png`)
     var blob = await result.blob()
