@@ -1,5 +1,4 @@
-import React, {Component} from "react";
-import * as q1 from 'queue';
+import React, {Component} from "react"
 
 export default class Canvas1 extends React.Component{
 
@@ -8,58 +7,58 @@ export default class Canvas1 extends React.Component{
 
 
     componentDidMount = () => {
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement
+        const ctx = canvas.getContext('2d')
         //const queue = require('../')
         //const q = queue({ results: [] })
-        //this.state.queue = q;
-        ctx!.fillStyle = "green";
+        //this.state.queue = q
+        ctx!.fillStyle = "green"
 
-        requestAnimationFrame(this.tick);
+        requestAnimationFrame(this.tick)
     }
 
     tick = () => {
         if(this.state.showBoxes){
-            const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-            const ctx = canvas.getContext('2d');
-            ctx!.clearRect(0, 0, 300, 300);
-            this.state.x1 += 1;
-            this.state.x2 += 1;
-            this.state.y1 += 1;
-            this.state.y2 += 1;
-            ctx!.strokeRect(this.state.x1, this.state.y1, this.state.x2, this.state.y2);
-            requestAnimationFrame(this.tick);
+            const canvas = document.getElementById('canvas') as HTMLCanvasElement
+            const ctx = canvas.getContext('2d')
+            ctx!.clearRect(0, 0, 300, 300)
+            this.state.x1 += 1
+            this.state.x2 += 1
+            this.state.y1 += 1
+            this.state.y2 += 1
+            ctx!.strokeRect(this.state.x1, this.state.y1, this.state.x2, this.state.y2)
+            requestAnimationFrame(this.tick)
         }
         else{
-            this.state.x1 = 10;
-            this.state.y1 = 10;
-            this.state.x2 = 150;
-            this.state.y2 = 150;
+            this.state.x1 = 10
+            this.state.y1 = 10
+            this.state.x2 = 150
+            this.state.y2 = 150
         }
 
 
     }
 
     handleMouseDown = (event) => {
-        const {x, y} = event;
-        console.log(x, y);
+        const {x, y} = event
+        console.log(x, y)
         //if(this.state.queue != null) {
             // @ts-ignore
             //this.state.queue.push("Hello")
         //}
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-        const ctx = canvas.getContext('2d');
-        ctx!.clearRect(0, 0, 300, 300);
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement
+        const ctx = canvas.getContext('2d')
+        ctx!.clearRect(0, 0, 300, 300)
         //if(this.state.queue != null) {
             // @ts-ignore
-            //console.log(this.state.queue.size);
+            //console.log(this.state.queue.size)
         //}
         //Displaying or undisplaying bounding boxes
-        this.state.showBoxes = !this.state.showBoxes;
+        this.state.showBoxes = !this.state.showBoxes
 
         if(this.state.showBoxes){
-            ctx!.strokeRect(10, 10, 150, 150);
-            requestAnimationFrame(this.tick);
+            ctx!.strokeRect(10, 10, 150, 150)
+            requestAnimationFrame(this.tick)
         }
 
     }
