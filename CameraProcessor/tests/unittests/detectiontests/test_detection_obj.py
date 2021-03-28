@@ -161,8 +161,7 @@ class TestDetectionObj:
         """
         self.data.draw_rectangles()
         for test, expected in zip(self.data.frame, self.box_frame):
-            for p1, p2 in zip(test, expected):
-                assert p1 == p2
+            assert test.__eq__(expected)
 
 
 if __name__ == '__main__':
