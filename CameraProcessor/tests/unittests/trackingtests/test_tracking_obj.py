@@ -197,6 +197,12 @@ class TestTrackingObj:
         """
         assert self.data.tracked_boxes.__eq__(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
 
+    def test_value_equal(self):
+        """Asserts if tracked_boxes are equal
+
+        """
+        assert self.data.bounding_boxes[0].__eq__(self.data.tracked_boxes[0])
+
 
 if __name__ == '__main__':
     pytest.main(TestTrackingObj)
