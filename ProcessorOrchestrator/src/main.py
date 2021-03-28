@@ -5,9 +5,9 @@ from pathlib import Path
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application, StaticFileHandler
-from client import ClientSocket
-from processor import ProcessorSocket
-from logger import LogHandler
+from src.client import ClientSocket
+from src.processor import ProcessorSocket
+from src.logger import LogHandler
 import pdoc
 
 
