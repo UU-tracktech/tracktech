@@ -5,21 +5,36 @@ from detection.bounding_box import BoundingBox
 
 
 def __eq__(self, other):
+    """Custom equalize function
+
+    Args:
+        self: first object to compare
+        other: second object to compare
+
+    Returns: bool
+
+    """
     if isinstance(self, other.__class__):
         return self.a == other.a and self.b == other.b
     return False
 
 
 class TestTrackingObj:
+    """Tests tracking_obj.py.
+
+    """
 
     # Setup
     def setup_method(self):
+        """Set ups tracking_obj for unit testing.
+
+        """
         self.data = TrackingObj(DetectionObj(1.0, 1, 1), [])
         self.frame = self.data.frame
         self.frame_nr = self.data.frame_nr
         self.tracking_feature_maps = self.data.tracking_feature_maps
-        self.bounding_boxes = self.data.bounding_boxes.append(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
-        self.tracked_boxes = self.data.tracked_boxes
+        self.data.bounding_boxes.append(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
+        self.data.tracked_boxes.append(BoundingBox(1, [0, 0, 1, 1], "person", 0.5))
 
     # Testing typechecking
     def test_type_frame(self):
@@ -47,15 +62,46 @@ class TestTrackingObj:
         """Asserts if value of bounding_boxes is of correct type.
 
         """
-        assert isinstance(self.bounding_boxes,
-                          type(self.bounding_boxes))
+        assert isinstance(self.data.bounding_boxes,
+                          type(self.data.bounding_boxes))
 
     def test_type_tracked_boxes(self):
         """Asserts if value of tracked_boxes is of correct type.
 
         """
-        assert isinstance(self.tracked_boxes,
-                          type(self.tracked_boxes))
+        assert isinstance(self.data.tracked_boxes,
+                          type(self.data.tracked_boxes))
+
+    # Testing empty fields that can be empty
+    def test_empty_frame(self):
+        """Asserts if frame is not None.
+
+        """
+        assert self.frame is not None
+
+    def test_empty_frame_nr(self):
+        """Asserts if frame_nr is not None.
+
+        """
+        assert self.frame_nr is not None
+
+    def test_empty_tracking_feature_maps(self):
+        """Asserts if tracking_feature_maps is not None.
+
+        """
+        assert self.tracking_feature_maps is not None
+
+    def test_empty_bounding_boxes(self):
+        """Asserts if bounding_boxes is not None.
+
+        """
+        assert self.data.bounding_boxes is not None
+
+    def test_empty_tracked_boxes(self):
+        """Asserts if tracked_boxes is not None.
+
+        """
+        assert self.data.tracked_boxes is not None
 
 
 if __name__ == '__main__':
