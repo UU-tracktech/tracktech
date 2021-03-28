@@ -48,7 +48,6 @@ class App extends React.Component<{}, appState> {
                 <Canvas1></Canvas1>
                 <h1>{source.name}</h1>
                   <VideoPlayer key={source.name} autoplay={true} controls={true} sources={[source.srcObject]} />
-
               </div>)
           }
           <div>

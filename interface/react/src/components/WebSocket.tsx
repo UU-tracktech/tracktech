@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import Queue from '../Datastructures/Queue'
 
-export const WebSocket = () => {
+export const WebSocket = (q2) => {
     //Public API that will echo messages sent to it back to the client
     const [socketUrl, setSocketUrl] = useState('wss://echo.websocket.org'); //echo server
 
@@ -19,11 +20,17 @@ export const WebSocket = () => {
         onMessage: () => JSONTest(lastJsonMessage),
         onClose: () => console.log("Connection closed")
     });
+    const q : string[] = [];
+    const que = useRef(q);
+
 
     const messageHistory = useRef([lastMessage]);
 
     messageHistory.current = useMemo(() =>
         messageHistory.current.concat(lastMessage),[lastMessage]);
+
+    console.log("length of the current history");
+    console.log(messageHistory.current.length);
 
     //test functions
     const testClickChangeSocketUrl = useCallback(() =>
@@ -75,7 +82,16 @@ export const WebSocket = () => {
             console.log("cameraID of JSON is: " + parseMessage(JSON.stringify(input)).cameraID);
             console.log("frameID of JSON is: " + parseMessage(JSON.stringify(input)).frameId);
             console.log("boxes of JSON is: " + parseMessage(JSON.stringify(input)).boxes);
+            q.push(parseMessage(JSON.stringify(input)).type)
+            console.log(q.length)
+            q2.enqueue(parseMessage(JSON.stringify(input)).type)
+            console.log("size of q2 is: " + q2.size())
+            //q2.push(parseMessage(JSON.stringify(input)).type)
         }
+    }
+
+    function pushToQueue(){
+
     }
 
     return (
