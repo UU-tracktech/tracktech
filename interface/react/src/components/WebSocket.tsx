@@ -31,6 +31,9 @@ export const WebSocket = (q2) => {
     console.log("length of the current history");
     console.log(messageHistory.current.length);
 
+    console.log("length of the current history");
+    console.log(messageHistory.current.length);
+
     //test functions
     const testClickChangeSocketUrl = useCallback(() =>
         setSocketUrl('wss://tracktech.ml:50010/client'), []) //portainer server

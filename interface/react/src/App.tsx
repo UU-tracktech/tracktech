@@ -9,6 +9,7 @@ import { Home } from './pages/home'
 import { Websocket } from './pages/websocket'
 import { Logging } from './pages/logging'
 
+
 type stream = { name: string, url: string, type: string }
 type appState = { streams: stream[] }
 
@@ -16,6 +17,8 @@ type appState = { streams: stream[] }
 
 
 class App extends React.Component<{}, appState> {
+
+
 
   render() {
     return (
