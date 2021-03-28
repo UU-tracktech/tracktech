@@ -4,22 +4,26 @@ from pathlib import Path
 
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado.options import define, options
 from tornado.web import Application, StaticFileHandler
 from client import ClientSocket
 from processor import ProcessorSocket
 from logger import LogHandler
-from docs import DocsHandler
 import pdoc
 
 
 def main():
+    """Entry point of the application
+
+    The main method is used to set up the tornado application, which includes routing, setting up SSL certificates
+    and compiling the documentation.
+    """
     # Get ssl ready, if provided in the environment variables
     cert = os.environ.get('SSL_CERT')
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
 
     # Create documentation page
+    pdoc.render.configure(docformat="google")
     pdoc.pdoc(
         'main',
         'client',
