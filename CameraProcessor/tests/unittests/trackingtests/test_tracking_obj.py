@@ -103,6 +103,42 @@ class TestTrackingObj:
         """
         assert self.data.tracked_boxes is not None
 
+    # Testing exceptions
+    def test_exception_frame(self):
+        """Asserts if frame throws exception.
+
+        """
+        with pytest.raises(Exception):
+            assert str(self.frame) == 'some invalid value'
+
+    def test_exception_frame_nr(self):
+        """Asserts if frame_nr throws exception.
+
+        """
+        with pytest.raises(Exception):
+            assert str(self.frame_nr) == 'some invalid value'
+
+    def test_exception_tracking_feature_maps(self):
+        """Asserts if tracking_feature_maps throws exception.
+
+        """
+        with pytest.raises(Exception):
+            assert str(self.tracking_feature_maps) == 'some invalid value'
+
+    def test_exception_bounding_boxes(self):
+        """Asserts if bounding__boxes throws exception.
+
+        """
+        with pytest.raises(Exception):
+            assert str(self.data.bounding_boxes) == 'some invalid value'
+
+    def test_exception_tracked_boxes(self):
+        """Asserts if tracked_boxes throws exception.
+
+        """
+        with pytest.raises(Exception):
+            assert str(self.data.tracked_boxes) == 'some invalid value'
+
 
 if __name__ == '__main__':
     pytest.main(TestTrackingObj)
