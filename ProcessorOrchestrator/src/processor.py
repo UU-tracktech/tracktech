@@ -9,9 +9,9 @@ import tornado.web
 from time import sleep
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
-from objectManager import objects, TrackingObject
-import client
-import logger
+from src.objectManager import objects, TrackingObject
+import src.client
+import src.logger
 
 
 class ProcessorSocket(WebSocketHandler):
