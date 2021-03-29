@@ -8,7 +8,7 @@ export class NavMenu extends Component {
     return (
       <header>
         <Navbar bg="primary" variant="dark" expand="lg">
-          <Navbar.Brand href="/" >
+          <Navbar.Brand as={Link} to="/" >
             Tracktech
            {/*  <img style={{maxHeight: "100px", maxWidth:"100px"}} src={"https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif"} alt="logo" /> */}
           </Navbar.Brand>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Queue } from 'queue-typescript'
 
 import { OrchestratorMessage } from '../classes/OrchestratorMessage'
-import { ClientMessage, BoxesClientMessage, Box } from '../classes/ClientMessage'
+import { ClientMessage, Box } from '../classes/ClientMessage'
 
 export type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
 
@@ -53,9 +53,8 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
 
   onMessage(ev: MessageEvent<any>) {
     console.log('socket message', ev.data)
-    var message: BoxesClientMessage = JSON.parse(ev.data)
-    var listener = this.listeners.find((listener) => listener.id === message.cameraId)
-    listener?.callback(message.boxes)
+    var message: any = JSON.parse(ev.data)
+    this.listeners.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback([message.boxes]))
   }
 
   onClose(ev: CloseEvent) {

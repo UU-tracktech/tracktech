@@ -21,17 +21,17 @@ export class BoxesClientMessage extends ClientMessage {
 }
 
 export class Box {
-  constructor(x: number, y: number, width: number, height: number, type: number) {
-    this.x = x
-    this.y = y
-    this.width = width
-    this.height = height
+  constructor(x1: number, y1: number, x2: number, y2: number, type: number) {
+    this.x1 = x1
+    this.y1 = y1
+    this.x2 = x2
+    this.y2 = y2
     this.type = type
   }
 
-  x: number
-  y: number
-  width: number
-  height: number
+  x1: number
+  y1: number
+  x2: number
+  y2: number
   type: number
 }
