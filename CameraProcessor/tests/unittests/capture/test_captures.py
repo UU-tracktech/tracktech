@@ -8,7 +8,7 @@ from src.input.cam_capture import CamCapture
 
 class TestCaptures:
 
-    @pytest.skip(msg="Skipping for CI/CD Test")
+    @pytest.mark.skip(reason="Skipping for CI/CD Test")
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -16,7 +16,6 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
-
         assert capture_implementation.opened()
 
     def test_closed(self, capture_implementation):
