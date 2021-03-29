@@ -14,5 +14,7 @@ pytest:
     - python -m pytest tests --junitxml=report.xml
   artifacts:
     when: always
+    paths: 
+    - CameraProcessor/report.xml
     reports:
-      junit: report.xml
+      junit: <testing-repo>/CameraProcessor/report.xml
