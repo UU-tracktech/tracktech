@@ -8,40 +8,17 @@ import configparser
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
+import src.websocket_client as client
+import asyncio
 
-
-def main(arg):
-    # Logging doesn't work in main function without this,
-    # but it must be in main as it gets removed by documentation.py otherwise.
-    for handler in logging.root.handlers[:]:
-        logging.root.removeHandler(handler)
-
-    logging.basicConfig(filename='main.log', filemode='w',
-                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-                        level=logging.INFO,
-                        datefmt='%Y-%m-%d %H:%M:%S')
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-
-    # Load the config file, take the relevant Yolov5 section
-    configs = configparser.ConfigParser(allow_no_value=True)
-    configs.read(('../configs.ini'))
-    yolo_config = configs['Yolov5']
-
-    t = time.localtime()
-
-    # Instantiate the Detection Object
-    det_obj = DetectionObj(t, None, 0)
-
-    # Capture the video stream
-    vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
-
-    # Instantiate the detector
-    logging.info("Instantiating detector...")
-    detector = Detector(yolo_config)
-
-    # Frame counter starts at 0. Will probably work differently for streams
-    logging.info("Starting video stream...")
+# Process the video stream
+async def process_stream(vid_stream, det_obj, detector):
     frame_nr = 0
+    ws_url = 'ws://localhost:80/processor'
+    ws_url = 'wss://tracktech.ml:50010/processor'
+
+    await client.connect_to_url(ws_url)
+
     while vid_stream.opened():
         # Set the detected bounding box list to empty
         det_obj.bounding_box = []
@@ -75,9 +52,43 @@ def main(arg):
         # This next line is **ESSENTIAL** for the video to actually play
         if cv2.waitKey(1) & 0xFF == ord('q'):
             return
-    
+
+
     logging.info(f'capture object stopped after {frame_nr} frames')
 
+
+def main(arg):
+    # Logging doesn't work in main function without this,
+    # but it must be in main as it gets removed by documentation.py otherwise.
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+
+    logging.basicConfig(filename='main.log', filemode='w',
+                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                        level=logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+
+    # Load the config file, take the relevant Yolov5 section
+    configs = configparser.ConfigParser(allow_no_value=True)
+    configs.read(('../configs.ini'))
+    yolo_config = configs['Yolov5']
+
+    # Capture the video stream
+    vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
+
+    # Instantiate the Detection Object
+    det_obj = DetectionObj(time.localtime(), None, 0)
+
+    # Instantiate the detector
+    logging.info("Instantiating detector...")
+    detector = Detector(yolo_config)
+
+    # Frame counter starts at 0. Will probably work differently for streams
+    logging.info("Starting video stream...")
+
+    asyncio.run(process_stream(vid_stream, det_obj, detector))
 
 if __name__ == '__main__':
     try:

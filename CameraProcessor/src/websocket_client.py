@@ -16,7 +16,7 @@ state = 0
 
 # url = 'ws://tracktech.ml:50010/processor'
 # Url of websocket server
-url = 'ws://localhost:80/processor'
+# url = 'ws://localhost:80/processor'
 
 # Connection variables
 connected = False  # Whether or not the connection is live
@@ -85,7 +85,7 @@ async def write_message(msg):
 
 
 # Connect to the specified websocket url
-async def connect_to_url():
+async def connect_to_url(url):
     global connection, connected, connect_task_created
 
     while not connected:
@@ -104,7 +104,7 @@ async def main():
     global connection, connected, connect_task_created
 
     # Try to get an initial connection
-    await connect_to_url()
+
 
     # Video processing loop
     while True:
