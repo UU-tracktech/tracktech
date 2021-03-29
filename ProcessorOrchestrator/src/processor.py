@@ -1,3 +1,9 @@
+"""Processor component to handle processor websocket connections.
+
+This file contains a websocket class to handle websocket connections coming from camera processors. It defines multiple
+functions that can be called using specified json messages.
+"""
+
 import json
 import tornado.web
 from time import sleep
@@ -9,22 +15,57 @@ import logger
 
 
 class ProcessorSocket(WebSocketHandler):
+    """Websocket handler for camera processors.
+
+    Attributes:
+        identifier: An int that serves as the unique identifier to this object.
+    """
 
     def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
+        """Creates unique id and appends it to the dict of processors.
+
+        Args:
+            application: The tornado web application
+            request: The HTTP server request
+        """
         super().__init__(application, request)
         self.identifier = max(processors.keys(), default=0) + 1
 
-    # CORS
     def check_origin(self, origin):
+        """Override to enable support for allowing alternate origins.
+
+        Args:
+            origin:
+                Origin of the HTTP request, is ignored as all origins are allowed.
+        """
         return True
 
-    # Append self to processor dict upon opening
     def open(self):
+        """Called upon opening of the websocket.
+
+        Method called upon the opening of the websocket. After connecting, it appends this component to a dict
+        of other websockets.
+        """
         logger.log_connect("/processor", self.request.remote_ip)
         print(f"New processor connected with id: {self.identifier}")
         processors[self.identifier] = self
 
     def on_message(self, message):
+        """Handles a message from a processor that is received on the websocket.
+
+        Method which handles messages coming in from a processor. The messages are expected in json format.
+
+        Args:
+            message:
+                JSON with at least a "type" property. This property can have the following values:
+                    - "boundingBoxes" | This signifies a message that contains bounding boxes, see send_bounding_boxes
+                                        for the other expected properties.
+                    - "featureMap"    | This signifies a message that contains a feature map of an object,
+                                        see update_feature_map, for the other expected properties.
+                    - "test"          | This values will be answered with a series of messages mocking the messages
+                                        a processor might expect, see send_mock_commands for the other expected
+                                        properties.
+        """
         logger.log_message_receive(message, "/processor", self.request.remote_ip)
 
         try:
@@ -55,17 +96,32 @@ class ProcessorSocket(WebSocketHandler):
             print("Someone missed a property in their json")
 
     def send_message(self, message):
+        """Sends a message over the websocket and logs it.
+
+        Args:
+            message: string which should be send over this websocket
+        """
         logger.log_message_send(message, "/processor", self.request.remote_ip)
         self.write_message(message)
 
     def on_close(self):
+        """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
         del processors[self.identifier]
         print(f"Processor with id {self.identifier} disconnected")
 
 
-# Send bounding boxes to all clients
-def send_bounding_boxes(message, camera_id):
+def send_bounding_boxes(message, processor_id):
+    """Sends bounding boxes to all clients
+
+    Args:
+        message:
+            JSON message that was received. It should contain the following properties:
+                - "frameId" | The identifier of the frame for which these bounding boxes were computed.
+                - "boxes"   | An object containing the bounding boxes that were computed for this frame.
+        processor_id:
+            Internal identifier of the processor from which the message was received.
+    """
     frame_id = message["frameId"]
     boxes = message["boxes"]
 
@@ -73,14 +129,21 @@ def send_bounding_boxes(message, camera_id):
         for c in client.clients.values():
             c.send_message(json.dumps({
                 "type": "boundingBoxes",
-                "cameraId": camera_id,
+                "cameraId": processor_id,
                 "frameId": frame_id,
                 "boxes": boxes
             }))
 
 
-# Send updated feature map to all processors
 def update_feature_map(message):
+    """Sends an updated feature map to all processors
+
+    Args:
+        message:
+            JSON message that was received. It should contain the following properties:
+                - "objectId"   | The identifier of the object for which this feature map was computed.
+                - "featureMap" | An object containing the new feature map that was computed.
+    """
     object_id = message["objectId"]
     feature_map = message["featureMap"]
 
@@ -97,8 +160,17 @@ def update_feature_map(message):
         }))
 
 
-# Send a few mock messages to the processor for testing purposes
 def send_mock_commands(message, processor):
+    """Sends a few mock messages to the processor for testing purposes
+
+    Args:
+        message:
+            JSON message that was received. It should contain the following properties:
+                - "frameId"  | The identifier of a frame that should be used in the mock "start" command.
+                - "objectId" | The identifier of an object that should be used in the mock "start" command.
+        processor:
+            The processor websocket from which this command was sent.
+    """
     frame_id = message["frameId"]
     box_id = message["boxId"]
     tracking_object1 = TrackingObject()

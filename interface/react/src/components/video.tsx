@@ -1,6 +1,6 @@
-import React from "react";
-import ReactAwesomePlayer from 'react-awesome-player';
-import './video.css';
+import React from "react"
+import ReactAwesomePlayer from 'react-awesome-player'
+import './video.css'
 
 class Video extends React.Component { //video player component.
     state = {
@@ -64,4 +64,4 @@ class Video extends React.Component { //video player component.
 
 }
 
-export default Video;
+export default Video
