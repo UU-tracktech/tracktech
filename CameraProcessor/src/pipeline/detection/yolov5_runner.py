@@ -1,7 +1,10 @@
+import os
+import sys
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 import numpy as np
+import logging
 
 from src.pipeline.detection.yolov5.models.experimental import attempt_load
 from src.pipeline.detection.yolov5.utils.datasets import letterbox
@@ -16,6 +19,9 @@ class Detector:
     """
 
     def __init__(self, config):
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+        sys.path.insert(0, os.path.join(curr_dir, './yolov5'))
+
         self.config = config
 
         # Initialize
@@ -23,9 +29,9 @@ class Detector:
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
         if self.device.type == 'cpu':
-            print("I am using the CPU. Check CUDA version, or whether Pytorch is installed with CUDA support.")
+            logging.info("I am using the CPU. Check CUDA version, or whether Pytorch is installed with CUDA support.")
         else:
-            print("I am using GPU")
+            logging.info("I am using GPU")
 
         # load FP32 model
         self.model = attempt_load(self.config['weights'], map_location=self.device)  # load FP32 model
