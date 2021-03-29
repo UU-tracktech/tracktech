@@ -17,6 +17,7 @@ def __eq__(self, other):
         return self.a == other.a and self.b == other.b
     return False
 
+
 class TestWebsocketClient:
     """Tests websocket_client.py
 
