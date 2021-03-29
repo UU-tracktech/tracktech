@@ -8,7 +8,7 @@ from src.input.image_capture import ImageCapture
 
 
 def __get_images_dir():
-    """Get the path to the images directory
+    """Get the path to the images directory.
 
     Returns: a string containing the file path to the image folder.
 
