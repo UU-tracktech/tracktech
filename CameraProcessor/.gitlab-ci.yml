@@ -2,7 +2,7 @@ image: "python:3.8.8"
 
 before_script:
   - python --version
-  - pip install -r requirements.txt
+  - pip install -r CameraProcessor/requirements.txt
 
 stages:
   - test
@@ -10,7 +10,7 @@ stages:
 pytest:
   stage: test
   script:
-    - python -m pytest tests --junitxml=report.xml
+    - python -m pytest CameraProcessor/tests --junitxml=report.xml
   artifacts:
     when: always
     reports:
