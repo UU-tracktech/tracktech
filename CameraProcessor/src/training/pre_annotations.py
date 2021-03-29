@@ -78,6 +78,9 @@ class PreAnnotations:
     def parse_line(line: str, delimiter: str) -> [int]:
         """Parse line from file given a delimiter.
 
+        First 6 values are
+        "<frameID>,<objectID>,<x1>,<y1>,<x2>,<y2>,.. jibberish"
+
         Args:
             line (str): line in file.
             delimiter (str): delimiter values in line are separated with.
