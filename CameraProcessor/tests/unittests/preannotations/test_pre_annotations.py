@@ -2,8 +2,8 @@ import os
 import pytest
 from src.training.pre_annotations import PreAnnotations
 
-example_text_file = os.path.join(__file__, '../example_pre_annotations.txt')
-example_json_file = os.path.join(__file__, '../example_pre_annotations.json')
+example_text_file = os.path.join(__file__, 'example_pre_annotations.txt')
+example_json_file = os.path.join(__file__, 'example_pre_annotations.json')
 
 
 @pytest.mark.parametrize('nr_frames', [-2, -1, 0, 1, 5])
