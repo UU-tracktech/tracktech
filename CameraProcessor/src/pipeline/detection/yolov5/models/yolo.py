@@ -1,17 +1,18 @@
 import argparse
 import logging
 import sys
+import torch
 from copy import deepcopy
 
-sys.path.append('./')  # to run '$ python *.py' files in subdirectories
+sys.path.append('/')  # to run '$ python *.py' files in subdirectories
 logger = logging.getLogger(__name__)
 
-from detection.yolov5.models.common import *
-from detection.yolov5.models.experimental import *
-from detection.yolov5.utils.autoanchor import check_anchor_order
-from detection.yolov5.utils.general import make_divisible, check_file, set_logging
-from detection.yolov5.utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, scale_img, initialize_weights, \
-    select_device, copy_attr
+from src.pipeline.detection.yolov5.models.common import *
+from src.pipeline.detection.yolov5.models.experimental import *
+from src.pipeline.detection.yolov5.utils.autoanchor import check_anchor_order
+from src.pipeline.detection.yolov5.utils.general import make_divisible, check_file, set_logging
+from src.pipeline.detection.yolov5.utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, \
+    scale_img, initialize_weights, select_device, copy_attr
 
 try:
     import thop  # for FLOPS computation

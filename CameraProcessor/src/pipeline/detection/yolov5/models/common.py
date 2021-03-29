@@ -9,10 +9,10 @@ import torch
 import torch.nn as nn
 from PIL import Image
 
-from detection.yolov5.utils.datasets import letterbox
-from detection.yolov5.utils.general import non_max_suppression, make_divisible, scale_coords, xyxy2xywh
-from detection.yolov5.utils.plots import color_list, plot_one_box
-from detection.yolov5.utils.torch_utils import time_synchronized
+from src.pipeline.detection.yolov5.utils.datasets import letterbox
+from src.pipeline.detection.yolov5.utils.general import non_max_suppression, make_divisible, scale_coords, xyxy2xywh
+from src.pipeline.detection.yolov5.utils.plots import color_list, plot_one_box
+from src.pipeline.detection.yolov5.utils.torch_utils import time_synchronized
 
 
 def autopad(k, p=None):  # kernel, padding

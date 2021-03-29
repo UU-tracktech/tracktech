@@ -3,11 +3,12 @@ import torch.backends.cudnn as cudnn
 from numpy import random
 import numpy as np
 
-from models.experimental import attempt_load
-from utils.datasets import letterbox
-from utils.general import check_img_size, non_max_suppression, apply_classifier, scale_coords, set_logging
-from utils.torch_utils import select_device, load_classifier, time_synchronized
-from bounding_box import BoundingBox
+from src.pipeline.detection.yolov5.models.experimental import attempt_load
+from src.pipeline.detection.yolov5.utils.datasets import letterbox
+from src.pipeline.detection.yolov5.utils.general import check_img_size, non_max_suppression, apply_classifier, \
+    scale_coords, set_logging
+from src.pipeline.detection.yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
+from src.pipeline.detection.bounding_box import BoundingBox
 
 
 class Detector:
@@ -56,6 +57,7 @@ class Detector:
         RETURNS: a Detection Object with filled bounding box list
         """
         # Padded resize
+        det_obj.bounding_boxes = []
         img = letterbox(det_obj.frame, self.config.getint('img-size'), stride=self.stride)[0]
 
         # Convert image
@@ -90,7 +92,7 @@ class Detector:
                 for *xyxy, conf, cls in reversed(det):
                     bbox = BoundingBox(i, [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])],
                                        self.names[int(cls)], conf)
-                    det_obj.bounding_box.append(bbox)
+                    det_obj.bounding_boxes.append(bbox)
 
         # Print time (inference + NMS)
         t1 = time_synchronized()

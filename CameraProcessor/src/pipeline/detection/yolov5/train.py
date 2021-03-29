@@ -8,7 +8,6 @@ from copy import deepcopy
 from pathlib import Path
 from threading import Thread
 
-import wandb
 import numpy as np
 import torch.distributed as dist
 import torch.nn as nn
@@ -22,7 +21,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-import test  # import test.py to get mAP after each epoch
+from src.pipeline.detection.yolov5 import test
 from models.experimental import attempt_load
 from models.yolo import Model
 from utils.autoanchor import check_anchors

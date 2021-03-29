@@ -2,17 +2,15 @@ import time
 import os
 import sys
 curr_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(curr_dir, 'detection/yolov5'))
-sys.path.insert(0, os.path.join(curr_dir, 'detection'))
+sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
+sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 from absl import app
 import cv2
 import configparser
-import numpy as np
-from detection.dectection_obj import DetectionObj
-from detection.bounding_box import BoundingBox
-from detection.yolov5_runner import Detector
-from input.video_stream import VideoCapture
+from src.pipeline.detection.detection_obj import DetectionObj
+from src.pipeline.detection.yolov5_runner import Detector
+from src.input.video_capture import VideoCapture
 
 
 def main(_argv):
@@ -20,7 +18,7 @@ def main(_argv):
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
-    configs.read(('configs.ini'))
+    configs.read(('../configs.ini'))
     trueconfig = configs['Yolov5']
 
     t = time.localtime()
@@ -29,7 +27,7 @@ def main(_argv):
     det_obj = DetectionObj(t, None, 0)
 
     # Capture the video stream
-    vidstream = VideoCapture(os.path.join(curr_dir, trueconfig['source']))
+    vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -38,7 +36,7 @@ def main(_argv):
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
     counter = 0
-    while not vidstream.stopped():
+    while vidstream.opened():
         # Set the detected bounding box list to empty
         det_obj.bounding_box = []
         ret, frame = vidstream.get_next_frame()

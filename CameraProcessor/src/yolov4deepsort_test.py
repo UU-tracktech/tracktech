@@ -4,10 +4,8 @@ import os
 import sys
 
 import configparser
-from absl import app, flags, logging
-from absl.flags import FLAGS
-from PIL import Image
-from detection.yolov4deepsort.core import utils
+from absl import app
+from src.pipeline.detection.yolov4deepsort.core import utils
 import tensorflow as tf
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -17,25 +15,24 @@ import numpy as np
 from tensorflow.python.saved_model import tag_constants
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
-from detection.dectection_obj import DetectionObj
-from detection.bounding_box import BoundingBox
-from tracking.tracking_obj import TrackingObj
-from detection.yolov4deepsort import object_tracker as ObjectTracker
+from src.pipeline.detection.detection_obj import DetectionObj
+from src.pipeline.tracking.tracking_obj import TrackingObj
+from src.pipeline.detection.yolov4deepsort import object_tracker as ObjectTracker
 import matplotlib.pyplot as plt
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(curr_dir, 'detection'))
+sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 sys.path.insert(0, os.path.join(curr_dir, 'tracking'))
 
 
 def main(_argv):
-    '''Runs the YOLOv4 and DeepSORT Tracker on venice.mp4
+    """Runs the YOLOv4 and DeepSORT Tracker on venice.mp4
 
     NOTE: Any function that calls the yolov4 object_tracker or any other such detection model will
     probably have to instantiate a Tensorflow session. Without a persistent session it won't work.
     So if you're planning on writing your own testing python script, pay attention to how the Tensorflow
     models are loaded here.
-    '''
+    """
     # Load the config file
     yolov4config = configparser.ConfigParser()
     yolov4config.read('configs.ini')

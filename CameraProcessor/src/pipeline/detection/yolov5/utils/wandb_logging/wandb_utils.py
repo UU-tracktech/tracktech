@@ -7,7 +7,7 @@ from pathlib import Path
 import torch
 
 sys.path.append(str(Path(__file__).parent.parent.parent))  # add utils/ to path
-from utils.general import colorstr, xywh2xyxy
+from src.pipeline.detection.yolov5.utils.general import colorstr, xywh2xyxy
 
 try:
     import wandb

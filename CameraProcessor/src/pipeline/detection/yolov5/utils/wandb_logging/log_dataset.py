@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 
 from wandb_utils import WandbLogger
-from utils.datasets import LoadImagesAndLabels
+from src.pipeline.detection.yolov5.utils.datasets import LoadImagesAndLabels
 
 WANDB_ARTIFACT_PREFIX = 'wandb-artifact://'
 
