@@ -17,4 +17,4 @@ pytest:
     paths: 
     - CameraProcessor/report.xml
     reports:
-      junit: report.xml
+      junit: CameraProcessor/report.xml
