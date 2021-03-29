@@ -11,7 +11,7 @@ pytest:
   stage: test
   script:
     - cd CameraProcessor
-    - python -m pytest tests --junitxml=report.xml
+    - python -m pytest tests --junitxml=report.xml -set-exit-code > report.xml
   artifacts:
     when: always
     paths: 
