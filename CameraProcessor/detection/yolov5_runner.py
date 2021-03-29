@@ -7,7 +7,7 @@ from models.experimental import attempt_load
 from utils.datasets import letterbox
 from utils.general import check_img_size, non_max_suppression, apply_classifier, scale_coords, set_logging
 from utils.torch_utils import select_device, load_classifier, time_synchronized
-from detection.bounding_box import BoundingBox
+from bounding_box import BoundingBox
 
 
 class Detector:

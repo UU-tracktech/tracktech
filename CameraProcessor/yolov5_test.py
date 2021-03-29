@@ -3,6 +3,7 @@ import os
 import sys
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(curr_dir, 'detection/yolov5'))
+sys.path.insert(0, os.path.join(curr_dir, 'detection'))
 
 from absl import app
 import cv2
@@ -10,7 +11,7 @@ import configparser
 import numpy as np
 from detection.dectection_obj import DetectionObj
 from detection.bounding_box import BoundingBox
-from detection.yolov5.yolov5_runner import Detector
+from detection.yolov5_runner import Detector
 from input.video_stream import VideoCapture
 
 
@@ -63,7 +64,7 @@ def main(_argv):
         # Play the video in a window called "Output Video"
         try:
             cv2.imshow("Output Video", det_obj.frame)
-        except Exception:
+        except OSError:
             # Figure out how to get Docker to use GUI
             print("Error displaying video. Are you running this in Docker perhaps?")
 
