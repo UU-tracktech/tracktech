@@ -10,8 +10,9 @@ stages:
 pytest:
   stage: test
   script:
-    - python -m pytest CameraProcessor/tests --junitxml=report.xml
+    - cd CameraProcessor
+    - python -m pytest tests --junitxml=report.xml
   artifacts:
     when: always
     reports:
-      junit: CameraProcessor/report.xml
+      junit: report.xml
