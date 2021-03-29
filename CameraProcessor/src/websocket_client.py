@@ -5,11 +5,11 @@ import logging
 from tornado import websocket
 
 # Setup (basic) logging
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
-                    filename='file.log',
+logging.basicConfig(filename='websocket.log', filemode='w',
+                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
-                    filemode='w')
-
+                    datefmt='%Y-%m-%d %H:%M:%S')
+# Also output to terminal
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 state = 0

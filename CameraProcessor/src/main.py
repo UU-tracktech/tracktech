@@ -1,10 +1,10 @@
 import cv2
 import logging
 import sys
-from detection.detection_obj import DetectionObj
-from input.hls_capture import HlsCapture
+from src.pipeline.detection.detection_obj import DetectionObj
+from src.input.hls_capture import HlsCapture
 
-logging.basicConfig(filename='app.log', filemode='w',
+logging.basicConfig(filename='main.log', filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')

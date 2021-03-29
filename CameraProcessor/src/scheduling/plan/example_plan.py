@@ -1,7 +1,7 @@
-from scheduling.node.schedule_node import ScheduleNode
-from scheduling.component.example_components.input_component import InputComponent
-from scheduling.component.example_components.output_component import OutputComponent
-from scheduling.component.example_components.example_component import ExampleComponent
+from src.scheduling.node.schedule_node import ScheduleNode
+from src.scheduling.component.example_components.input_component import InputComponent
+from src.scheduling.component.example_components.output_component import OutputComponent
+from src.scheduling.component.example_components.example_component import ExampleComponent
 
 
 def func(ignore):

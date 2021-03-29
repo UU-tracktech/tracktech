@@ -1,5 +1,5 @@
 import pytest
-from detection.bounding_box import BoundingBox
+from src.pipeline.detection.bounding_box import BoundingBox
 
 
 class TestBoundingBox:
