@@ -1,26 +1,32 @@
 import { Component } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Button, Form, ListGroup } from 'react-bootstrap'
 
-import { OrchestratorMessage, StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/OrchestratorMessage'
-import { ClientMessage, BoxesClientMessage } from '../classes/ClientMessage'
-import { connectionState, websocketArgs, websocketContext } from '../components/websocketContext'
+import { StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/OrchestratorMessage'
+import { Box } from '../classes/ClientMessage'
+import { websocketArgs, websocketContext } from '../components/websocketContext'
 
-type WebsocketUserState = { currentMessage?: ClientMessage }
+type WebsocketUserState = { boxes: Box[] }
 export class WebsocketUser extends Component<{}, WebsocketUserState> {
+
+  static contextType = websocketContext;
+  context!: React.ContextType<typeof websocketContext>;
 
   constructor(props: any) {
     super(props)
-    this.state = {}
+    this.state = { boxes: [] }
+  }
+
+  componentDidMount() {
+    this.context.addListener(0, (boxes) => this.setState({ boxes: boxes }))
   }
 
   render() {
-    return (
+    return (<div>
       <websocketContext.Consumer>
         {
-          ({ send, setSocket, dequeue, clearQueue, socketUrl, connectionState, queueLength }: websocketArgs) => <div>
+          ({ send, setSocket, socketUrl, connectionState }: websocketArgs) => <div>
             <p>URL: {socketUrl}</p>
             <p>STATE: {connectionState}</p>
-            <p>QUEUE LENGTH: {queueLength}</p>
 
             <Form>
               <Button onClick={() => setSocket('wss://tracktech.ml:50010/client')}>Change Socket Url</Button>
@@ -29,19 +35,17 @@ export class WebsocketUser extends Component<{}, WebsocketUserState> {
               <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new StopOrchestratorMessage(1))}>Send stop json</Button>
             </Form>
 
-            <Form>
-              <Button onClick={() => this.setState({ currentMessage: dequeue() })}>Dequeue</Button>
-              <Button onClick={() => clearQueue()}>Clear queue</Button>
-            </Form>
-
-            {
-              this.state.currentMessage && <div>
-                <p>{JSON.stringify(this.state.currentMessage)}</p>
-              </div>
-            }
+            <ListGroup>
+              {
+                this.state.boxes.map((box: Box) => <ListGroup.Item>
+                  {JSON.stringify(box)}
+                </ListGroup.Item>)
+              }
+            </ListGroup>
           </div>
         }
       </websocketContext.Consumer>
+    </div>
     )
   }
 }

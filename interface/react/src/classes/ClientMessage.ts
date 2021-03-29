@@ -7,7 +7,7 @@ export abstract class ClientMessage {
 }
 
 export class BoxesClientMessage extends ClientMessage {
-  constructor(cameraId: number, frameId: number, boxes: number[]) {
+  constructor(cameraId: number, frameId: number, boxes: Box[]) {
     super('boundingBoxes')
 
     this.cameraId = cameraId
@@ -17,5 +17,21 @@ export class BoxesClientMessage extends ClientMessage {
 
   cameraId: number
   frameId: number
-  boxes: number[]
+  boxes: Box[]
+}
+
+export class Box {
+  constructor(x: number, y: number, width: number, height: number, type: number) {
+    this.x = x
+    this.y = y
+    this.width = width
+    this.height = height
+    this.type = type
+  }
+
+  x: number
+  y: number
+  width: number
+  height: number
+  type: number
 }

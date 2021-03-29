@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import { Queue } from 'queue-typescript'
 
-import { OrchestratorMessage, StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/OrchestratorMessage'
-import { ClientMessage, BoxesClientMessage } from '../classes/ClientMessage'
+import { OrchestratorMessage } from '../classes/OrchestratorMessage'
+import { ClientMessage, BoxesClientMessage, Box } from '../classes/ClientMessage'
 
 export type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
 
 export type websocketArgs = {
   setSocket: (url: string) => void
   send: (message: OrchestratorMessage) => void
-  dequeue: () => ClientMessage
-  clearQueue: () => void
-  queueLength: number
+  addListener: (id: number, callback: (boxes: Box[]) => void) => void
   connectionState: connectionState
   socketUrl: string
 }
@@ -19,25 +17,25 @@ export type websocketArgs = {
 export const websocketContext = React.createContext<websocketArgs>({
   setSocket: (url: string) => alert(JSON.stringify(url)),
   send: (message: OrchestratorMessage) => alert(JSON.stringify(message)),
-  dequeue: () => new BoxesClientMessage(0, 0, []),
-  clearQueue: () => { },
-  queueLength: 0,
+  addListener: (_: number, _2: (boxes: Box[]) => void) => { },
   connectionState: 'NONE',
   socketUrl: 'NO URL'
 })
 
-type WebsocketProviderState = { socketUrl: string, connectionState: connectionState, queueLength: number }
+type WebsocketProviderState = { socketUrl: string, connectionState: connectionState }
 export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
 
   socket?: WebSocket
+  listeners: { id: number, callback: (boxes: Box[]) => void }[] = []
   queue = new Queue<ClientMessage>()
 
   constructor(props: any) {
     super(props)
 
-    this.state = { connectionState: 'NONE', socketUrl: 'wss://echo.websocket.org', queueLength: 0 }
+    this.state = { connectionState: 'NONE', socketUrl: 'wss://echo.websocket.org' }
     this.setSocket(this.state.socketUrl)
   }
+
   setSocket(url: string) {
     this.socket = new WebSocket(url)
     this.setState({ connectionState: 'CONNECTING' })
@@ -48,22 +46,6 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
     this.setState({ socketUrl: url })
   }
 
-  enqueue(message: ClientMessage) {
-    this.queue.enqueue(message)
-    this.setState({ queueLength: this.queue.length })
-  }
-
-  dequeue(): ClientMessage {
-    var message = this.queue.dequeue()
-    this.setState({ queueLength: this.queue.length })
-    return message
-  }
-
-  clearQueue() {
-    this.queue = new Queue<ClientMessage>()
-    this.setState({ queueLength: this.queue.length })
-  }
-
   onOpen(ev: Event) {
     console.log('connected socket')
     this.setState({ connectionState: 'OPEN' })
@@ -71,8 +53,9 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
 
   onMessage(ev: MessageEvent<any>) {
     console.log('socket message', ev.data)
-    var message: ClientMessage = JSON.parse(ev.data)
-    this.enqueue(message)
+    var message: BoxesClientMessage = JSON.parse(ev.data)
+    var listener = this.listeners.find((listener) => listener.id === message.cameraId)
+    listener?.callback(message.boxes)
   }
 
   onClose(ev: CloseEvent) {
@@ -85,6 +68,9 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
     this.setState({ connectionState: 'ERROR' })
   }
 
+  addListener(id: number, callback: (boxes: Box[]) => void) {
+    this.listeners.push({ id: id, callback: callback })
+  }
 
   send(message: OrchestratorMessage) {
     if (!this.socket) throw new Error('socket is undefined')
@@ -95,11 +81,9 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
     return (
       <websocketContext.Provider value={
         {
-          setSocket: (url) => this.setSocket(url),
-          send: (message) => this.send(message),
-          dequeue: () => this.dequeue(),
-          clearQueue: () => this.clearQueue(),
-          queueLength: this.state.queueLength,
+          setSocket: (url: string) => this.setSocket(url),
+          send: (message: OrchestratorMessage) => this.send(message),
+          addListener: (id: number, callback: (boxes: Box[]) => void) => this.addListener(id, callback),
           connectionState: this.state.connectionState,
           socketUrl: this.state.socketUrl
         }}>
