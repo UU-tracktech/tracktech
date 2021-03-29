@@ -16,7 +16,7 @@ export class NavMenu extends Component {
             <Nav>
               <Nav.Link style={{ padding: "8px 25px" }} color="light" href="/">Home</Nav.Link>
               <Nav.Link style={{ padding: "8px 25px" }} href="/websockets">Websockets</Nav.Link>
-              <Nav.Link style={{ padding: "8px 25px" }} href="/Logging">Logging</Nav.Link>
+              <Nav.Link style={{ padding: "8px 25px" }} href="/Canvas">Canvas</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
               <Button onClick={this.onLoginPress}>Login</Button>
