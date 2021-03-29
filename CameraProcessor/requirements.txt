@@ -2,3 +2,5 @@ opencv-python
 tornado
 numpy
 pdoc
+pytest
+regex
