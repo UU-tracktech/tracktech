@@ -8,6 +8,11 @@ from src.input.image_capture import ImageCapture
 
 
 def __get_images_dir():
+    """Get the path to the images directory
+
+    Returns: a string containing the file path to the image folder.
+
+    """
     __root_dir = os.path.abspath(__file__ + '../../../../../')
     __folder_name = 'test'
     __images_dir = f'{__root_dir}\\data\\annotated\\{__folder_name}\\img1'
