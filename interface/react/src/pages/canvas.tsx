@@ -1,14 +1,11 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 
-export default class Canvas1 extends React.Component{
+export class Canvas extends React.Component {
 
-    //canvasRef = () => { return useRef(null)}
-
-
+    canvas = React.createRef<HTMLCanvasElement>()
 
     componentDidMount = () => {
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement
-        const ctx = canvas.getContext('2d')
+        const ctx = this.canvas.current?.getContext('2d')
         //const queue = require('../')
         //const q = queue({ results: [] })
         //this.state.queue = q
@@ -18,9 +15,8 @@ export default class Canvas1 extends React.Component{
     }
 
     tick = () => {
-        if(this.state.showBoxes){
-            const canvas = document.getElementById('canvas') as HTMLCanvasElement
-            const ctx = canvas.getContext('2d')
+        if (this.state.showBoxes) {
+            const ctx = this.canvas.current?.getContext('2d')
             ctx!.clearRect(0, 0, 300, 300)
             this.state.x1 += 1
             this.state.x2 += 1
@@ -29,7 +25,7 @@ export default class Canvas1 extends React.Component{
             ctx!.strokeRect(this.state.x1, this.state.y1, this.state.x2, this.state.y2)
             requestAnimationFrame(this.tick)
         }
-        else{
+        else {
             this.state.x1 = 10
             this.state.y1 = 10
             this.state.x2 = 150
@@ -40,23 +36,22 @@ export default class Canvas1 extends React.Component{
     }
 
     handleMouseDown = (event) => {
-        const {x, y} = event
+        const { x, y } = event
         console.log(x, y)
         //if(this.state.queue != null) {
-            // @ts-ignore
-            //this.state.queue.push("Hello")
+        // @ts-ignore
+        //this.state.queue.push("Hello")
         //}
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement
-        const ctx = canvas.getContext('2d')
+        const ctx = this.canvas.current?.getContext('2d')
         ctx!.clearRect(0, 0, 300, 300)
         //if(this.state.queue != null) {
-            // @ts-ignore
-            //console.log(this.state.queue.size)
+        // @ts-ignore
+        //console.log(this.state.queue.size)
         //}
         //Displaying or undisplaying bounding boxes
         this.state.showBoxes = !this.state.showBoxes
 
-        if(this.state.showBoxes){
+        if (this.state.showBoxes) {
             ctx!.strokeRect(10, 10, 150, 150)
             requestAnimationFrame(this.tick)
         }
@@ -73,13 +68,13 @@ export default class Canvas1 extends React.Component{
         y2: 150
     }
 
-    render(){
+    render() {
         return <canvas
-            id='canvas'
-            style={{backgroundColor: 'blue'}}
+            ref={this.canvas}
+            style={{ backgroundColor: 'blue' }}
             height='300'
             width='300'
-            onMouseDown = {this.handleMouseDown}
+            onMouseDown={this.handleMouseDown}
         >Canvas</canvas>
     }
 }
