@@ -1,6 +1,6 @@
 import pytest
 import json
-import websocket_client
+import src.websocket_client as websocket_client
 
 
 def __eq__(self, other):

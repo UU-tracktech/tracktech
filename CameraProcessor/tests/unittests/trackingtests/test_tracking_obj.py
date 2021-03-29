@@ -1,7 +1,7 @@
 import pytest
-from tracking.tracking_obj import TrackingObj
-from detection.detection_obj import DetectionObj
-from detection.bounding_box import BoundingBox
+from src.pipeline.tracking.tracking_obj import TrackingObj
+from src.pipeline.detection.detection_obj import DetectionObj
+from src.pipeline.detection.bounding_box import BoundingBox
 
 
 def __eq__(self, other):

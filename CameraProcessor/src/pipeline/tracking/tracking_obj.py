@@ -1,4 +1,4 @@
-from detection.detection_obj import DetectionObj
+from src.pipeline.detection.detection_obj import DetectionObj
 
 
 class TrackingObj:

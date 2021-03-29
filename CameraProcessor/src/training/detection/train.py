@@ -9,11 +9,11 @@ import cv2
 import os
 import logging
 import sys
-from input.image_capture import ImageCapture
-from detection.detection_obj import DetectionObj
-from training.pre_annotations import PreAnnotations
+from src.input.image_capture import ImageCapture
+from src.pipeline.detection.detection_obj import DetectionObj
+from src.training.pre_annotations import PreAnnotations
 
-root_dir = os.path.abspath(__file__ + '/../../../')
+root_dir = os.path.abspath(__file__ + '/../../../../')
 logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
@@ -51,4 +51,3 @@ while capture.opened():
 logging.info('training stopping')
 # When everything is done release the capture
 capture.close()
-cv2.destroyAllWindows()

@@ -1,7 +1,7 @@
 import os
 import re
 import pytest
-from training.pre_annotations import PreAnnotations
+from src.training.pre_annotations import PreAnnotations
 
 example_txt_file = os.path.join(__file__, '../example_pre_annotations.txt')
 example_json_file = os.path.join(__file__, '../example_pre_annotations.json')
@@ -47,15 +47,15 @@ class TestTextParsing:
 
 class TestJsonParsing:
     def setup_method(self):
-        self.annotations = PreAnnotations(example_json_file, 5)
+        self.annotations = PreAnnotations(example_json_file, 6)
 
     def test_file_exists(self):
         assert os.path.exists(example_json_file)
 
     def test_file_parsing(self):
-        self.annotations.parse_file()
+        self.annotations.parse_json_file()
         number_boxes = [len(boxes_frame) for boxes_frame in self.annotations.boxes]
-        expected = [1, 1, 1, 1, 1]
+        expected = [1, 1, 1, 1, 1, 1]
         assert number_boxes == expected
 
     def test_object_parsing(self):

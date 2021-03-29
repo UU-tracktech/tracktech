@@ -1,7 +1,7 @@
 import json
 import re
 import logging
-from detection.bounding_box import BoundingBox
+from src.pipeline.detection.bounding_box import BoundingBox
 
 skipped_lines = 0
 
@@ -115,7 +115,7 @@ class PreAnnotations:
         # Add bounding box for each frame
         for frame_nr in json_object['path']:
             # Skips frame when it does exceed list length
-            if frame_nr - 1 >= self.nr_frames:
+            if int(frame_nr) - 1 >= self.nr_frames:
                 skipped_lines = skipped_lines + 1
                 continue
 
