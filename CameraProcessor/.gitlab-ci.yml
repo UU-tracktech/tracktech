@@ -4,8 +4,6 @@ before_script:
   - apt-get update
   - apt-get install -y libgl1-mesa-dev
   - python --version
-  - pip install virtualenv
-  - python -m venv venv
   - pip install -r CameraProcessor/requirements.txt
 
 stages:
