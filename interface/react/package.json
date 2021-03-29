@@ -13,6 +13,7 @@
     "chokidar": "^3.5.1",
     "jest": "^26.6.0",
     "queue": "^6.0.2",
+    "queue-typescript": "^1.0.1",
     "react": "^17.0.1",
     "react-awesome-player": "^1.1.0",
     "react-bootstrap": "1.5.2",

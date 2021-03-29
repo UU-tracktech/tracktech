@@ -1,19 +1,22 @@
 import { Component } from 'react'
-import { Button, ListGroup } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
+import { Queue } from 'queue-typescript'
+
 import { OrchestratorMessage, StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/OrchestratorMessage'
 import { ClientMessage, BoxesClientMessage } from '../classes/ClientMessage'
 
 type Message = { dateTime: Date, content: ClientMessage }
 type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
-type WebsocketUserState = { socketUrl: string, connectionState: connectionState, history: Message[] }
+type WebsocketUserState = { socketUrl: string, connectionState: connectionState, queueLength: number, currentMessage?: Message }
 export class WebsocketUser extends Component<{}, WebsocketUserState> {
 
   socket?: WebSocket
+  queue = new Queue<Message>()
 
   constructor(props: any) {
     super(props)
 
-    this.state = { connectionState: 'NONE', socketUrl: 'wss://echo.websocket.org', history: [] }
+    this.state = { connectionState: 'NONE', socketUrl: 'wss://echo.websocket.org', queueLength: 0 }
     this.setSocket(this.state.socketUrl)
   }
 
@@ -27,6 +30,22 @@ export class WebsocketUser extends Component<{}, WebsocketUserState> {
     this.setState({ socketUrl: url })
   }
 
+  enqueue(message: Message) {
+    this.queue.enqueue(message)
+    this.setState({ queueLength: this.queue.length })
+  }
+
+  dequeue(): Message {
+    var message = this.queue.dequeue()
+    this.setState({ queueLength: this.queue.length })
+    return message
+  }
+
+  clearQueue() {
+    this.queue = new Queue<Message>()
+    this.setState({ queueLength: this.queue.length })
+  }
+
   onOpen(ev: Event) {
     console.log('connected socket')
     this.setState({ connectionState: 'OPEN' })
@@ -34,8 +53,9 @@ export class WebsocketUser extends Component<{}, WebsocketUserState> {
 
   onMessage(ev: MessageEvent<any>) {
     console.log('socket message', ev.data)
-    var message: ClientMessage = JSON.parse(ev.data)
-    this.setState(oldState => ({ history: [...oldState.history, { dateTime: new Date(), content: message }] }))
+    var content: ClientMessage = JSON.parse(ev.data)
+    var message: Message = { dateTime: new Date(), content: content }
+    this.enqueue(message)
   }
 
   onClose(ev: CloseEvent) {
@@ -56,21 +76,29 @@ export class WebsocketUser extends Component<{}, WebsocketUserState> {
   render() {
     return (
       <div>
-        <span>URL: {this.state.socketUrl}</span>
-        <span>STATE: {this.state.connectionState}</span>
+        <p>URL: {this.state.socketUrl}</p>
+        <p>STATE: {this.state.connectionState}</p>
+        <p>QUEUE LENGTH: {this.state.queueLength}</p>
 
-        <Button onClick={() => this.setSocket('wss://tracktech.ml:50010/client')}>Change Socket Url</Button>
-        <Button onClick={() => this.send(new TestOrchestratorMessage(1))}>Send test json</Button>
-        <Button onClick={() => this.send(new StartOrchestratorMessage(1, 2, 3))}>Send start json</Button>
-        <Button onClick={() => this.send(new StopOrchestratorMessage(1))}>Send stop json</Button>
+        <Form>
+          <Button onClick={() => this.setSocket('wss://tracktech.ml:50010/client')}>Change Socket Url</Button>
+          <Button disabled={this.state.connectionState !== 'OPEN'} onClick={() => this.send(new TestOrchestratorMessage(1))}>Send test json</Button>
+          <Button disabled={this.state.connectionState !== 'OPEN'} onClick={() => this.send(new StartOrchestratorMessage(1, 2, 3))}>Send start json</Button>
+          <Button disabled={this.state.connectionState !== 'OPEN'} onClick={() => this.send(new StopOrchestratorMessage(1))}>Send stop json</Button>
+        </Form>
 
-        <ListGroup>
-          {this.state.history.map((message: Message) =>
-            <ListGroup.Item id={message.dateTime.toString()}>
-              <p>AT: {message.dateTime.toUTCString()}</p>
-              <p>CONTENT: {JSON.stringify(message.content)}</p>
-            </ListGroup.Item>)}
-        </ListGroup>
+        <Form>
+          <Button onClick={() => this.setState({ currentMessage: this.dequeue() })}>Dequeue</Button>
+          <Button onClick={() => this.clearQueue()}>Clear queue</Button>
+        </Form>
+
+        {
+          this.state.currentMessage && <div>
+            <p>AT: {this.state.currentMessage.dateTime.toUTCString()}</p>
+            <p>CONTENT: {JSON.stringify(this.state.currentMessage.content)}</p>
+          </div>
+        }
+
       </div>
     )
   }
