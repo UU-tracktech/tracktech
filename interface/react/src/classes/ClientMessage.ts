@@ -21,7 +21,8 @@ export class BoxesClientMessage extends ClientMessage {
 }
 
 export class Box {
-  constructor(x1: number, y1: number, x2: number, y2: number, type: number) {
+  constructor(id: number, x1: number, y1: number, x2: number, y2: number, type: number) {
+    this.id = id
     this.x1 = x1
     this.y1 = y1
     this.x2 = x2
@@ -29,6 +30,7 @@ export class Box {
     this.type = type
   }
 
+  id: number
   x1: number
   y1: number
   x2: number

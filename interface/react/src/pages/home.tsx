@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
 
-import VideoPlayer from '../components/VideojsPlayer'
+import { VideoPlayer } from '../components/VideojsPlayer'
 import { Canvas } from '../components/canvas'
 
 type indicator = 'All' | 'Selection' | 'None'
@@ -87,7 +87,7 @@ export class Home extends Component<{}, homeState> {
             <Row className="d-flex justify-content-center" style={{ margin: "5px", width: "100%" }}>
               {
                 mainSource
-                  ? <Canvas cameraId={mainSource.id} width={bigSize.width} height={bigSize.height - 30}>
+                  ? <Canvas onClickCallback={(id) => alert(id)} cameraId={mainSource.id} width={bigSize.width} height={bigSize.height - 30}>
                     <VideoPlayer key={mainSource.name} autoplay={true} controls={true} {...bigSize} sources={[mainSource.srcObject]} />
                   </Canvas>
                   : <div style={{ width: `${bigSize.width}px`, height: `${bigSize.height}px` }}>please select video on the left hand side</div>
@@ -96,8 +96,8 @@ export class Home extends Component<{}, homeState> {
 
             <Row className="d-flex justify-content-center" style={{ margin: "5px", width: "100%" }}>
               {
-                otherSources.map((source) => <Canvas cameraId={source.id} width={smallSize.width} height={smallSize.height - 30}>
-                  <VideoPlayer key={source.name} autoplay={true} controls={true} {...smallSize} sources={[source.srcObject]} />
+                otherSources.map((source) => <Canvas onClickCallback={(id) => alert(id)} cameraId={source.id} width={smallSize.width} height={smallSize.height - 30}>
+                  <VideoPlayer onClick={() => this.viewSource(source)} key={source.name} autoplay={true} controls={true} {...smallSize} sources={[source.srcObject]} />
                 </Canvas>)
               }
             </Row>
