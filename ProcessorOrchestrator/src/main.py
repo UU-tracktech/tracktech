@@ -33,16 +33,7 @@ def main():
         output_directory=Path(os.path.join(os.path.dirname(__file__), "../docs"))
     )
 
-    # Define socket for both client and processor
-    handlers = [
-        ('/client', ClientSocket),
-        ('/processor', ProcessorSocket),
-        ('/logs', LogHandler),
-        ('/docs/(.*)', StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../docs"), 'default_filename': "index.html"})
-    ]
-
-    # Construct and serve the tornado application.
-    app = Application(handlers)
+    app = create_app()
 
     if use_tls:
         # Create a ssl context
@@ -61,6 +52,24 @@ def main():
         print('listening over http')
 
     IOLoop.current().start()
+
+
+def create_app():
+    """Creates tornado application.
+
+    Creates the routing in the application and returns the complete app.
+    """
+    # Define socket for both client and processor
+    handlers = [
+        ('/client', ClientSocket),
+        ('/processor', ProcessorSocket),
+        ('/logs', LogHandler),
+        ('/docs/(.*)', StaticFileHandler,
+         {'path': os.path.join(os.path.dirname(__file__), "../docs"), 'default_filename': "index.html"})
+    ]
+
+    # Construct and serve the tornado application.
+    return Application(handlers)
 
 
 if __name__ == "__main__":
