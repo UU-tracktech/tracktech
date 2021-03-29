@@ -210,3 +210,6 @@ fabric.properties
 # CodeStream plugin
 # https://plugins.jetbrains.com/plugin/12206-codestream
 .idea/codestream.xml
+
+# Ignores weird cuda install files
+[0-9\.]*cu\+[0-9]*
