@@ -14,4 +14,4 @@ pytest:
   artifacts:
     when: always
     reports:
-      junit: report.xml
+      junit: CameraProcessor/report.xml
