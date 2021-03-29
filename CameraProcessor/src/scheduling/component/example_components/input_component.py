@@ -1,7 +1,7 @@
 from typing import Callable
 
 
-from scheduling.component.component_interface import IComponent
+from src.scheduling.component.component_interface import IComponent
 
 
 class InputComponent(IComponent):

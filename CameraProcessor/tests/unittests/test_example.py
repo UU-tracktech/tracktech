@@ -1,5 +1,6 @@
 import pytest
 
+
 # content of test_class.py
 class TestClass:
     def test_one(self):
@@ -9,6 +10,7 @@ class TestClass:
     def test_two(self):
         x = "hello"
         assert hasattr(x, "check")
+
 
 # content of test_sample.py
 def func(x):

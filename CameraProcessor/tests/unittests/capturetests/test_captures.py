@@ -1,8 +1,8 @@
 import pytest
 import os
-from input.image_capture import ImageCapture
-from input.hls_capture import HlsCapture
-from input.cam_capture import CamCapture
+from src.input.image_capture import ImageCapture
+from src.input.hls_capture import HlsCapture
+from src.input.cam_capture import CamCapture
 
 root_dir = os.path.abspath(__file__ + '../../../../../')
 folder_name = 'test'

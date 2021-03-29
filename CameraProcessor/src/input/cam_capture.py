@@ -1,6 +1,6 @@
 import cv2
 import logging
-from input.icapture import ICapture
+from src.input.icapture import ICapture
 
 
 class CamCapture(ICapture):
