@@ -55,6 +55,9 @@ def get_modules(root_folder: str) -> List[str]:
     # Find all modules in found folders and append the full path.
     modules = []
     for module in pkgutil.iter_modules(folders):
+        if module.name.startswith('_'):
+            continue
+
         module_name = os.path.join(module.module_finder.path, module.name)
 
         modules.append(module_name)
