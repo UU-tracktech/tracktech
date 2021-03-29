@@ -15,6 +15,6 @@ pytest:
   artifacts:
     when: always
     paths: 
-    - report.xml
+    - CameraProcessor/report.xml
     reports:
-      junit: report.xml
+      junit: CameraProcessor/report.xml
