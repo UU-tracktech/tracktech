@@ -33,15 +33,15 @@ class TestTextParsing:
 
     def test_comma_line_parsing(self):
         with open(example_txt_file) as file:
-            firstLine = [line.rstrip('\n') for line in file][0]
-        information = self.annotations.parse_line(firstLine, ',')
+            first_line = [line.rstrip('\n') for line in file][0]
+        information = self.annotations.parse_line(first_line, ',')
         assert information == [1, 1, 17, 150, 77, 191]
 
     def test_line_parsing(self):
         with open(example_txt_file) as file:
-            firstLine = [line.rstrip('\n') for line in file][0]
-        firstLine.replace(',', ' ')
-        information = self.annotations.parse_line(firstLine, ',')
+            first_line = [line.rstrip('\n') for line in file][0]
+        first_line.replace(',', ' ')
+        information = self.annotations.parse_line(first_line, ',')
         assert information == [1, 1, 17, 150, 77, 191]
 
 
