@@ -1,14 +1,6 @@
 stages:
-  - triggers
   - test
-
-trigger_orchestrator:
-  stage: triggers
-  trigger:
-    include: ProcessorOrchestrator/.gitlab-ci.yml
-  rules:
-    - changes:
-        - ProcessorOrchestrator/*
+  - triggers
 
 pytest:
   stage: test
@@ -18,3 +10,11 @@ pytest:
     when: always
     reports:
       junit: report.xml
+
+trigger_orchestrator:
+  stage: triggers
+  trigger:
+    include: ProcessorOrchestrator/.gitlab-ci.yml
+  rules:
+    - changes:
+        - ProcessorOrchestrator/*
