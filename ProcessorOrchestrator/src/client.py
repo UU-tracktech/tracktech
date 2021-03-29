@@ -1,3 +1,9 @@
+"""Client component to handle client websocket connections.
+
+This file contains a websocket class to handle websocket connections coming from clients (using the interface).
+It defines multiple functions that can be called using specified json messages.
+"""
+
 import json
 import tornado.web
 from time import sleep
@@ -9,22 +15,57 @@ import logger
 
 
 class ClientSocket(WebSocketHandler):
+    """Websocket handler for camera processors.
+
+    Attributes:
+        identifier: An int that serves as the unique identifier to this object.
+    """
 
     def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
+        """Creates unique id and appends it to the dict of clients.
+
+        Args:
+            application: The tornado web application
+            request: The HTTP server request
+        """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
 
     # CORS
     def check_origin(self, origin):
+        """Override to enable support for allowing alternate origins.
+
+        Args:
+            origin:
+                Origin of the HTTP request, is ignored as all origins are allowed.
+        """
         return True
 
-    # Append self to client list upon opening
     def open(self):
+        """Called upon opening of the websocket.
+
+        Method called upon the opening of the websocket. After connecting, it appends this component to a dict
+        of other websockets.
+        """
         logger.log_connect("/client", self.request.remote_ip)
         print(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
     def on_message(self, message):
+        """Handles a message from a client that is received on the websocket.
+
+        Method which handles messages coming in from a client. The messages are expected in json format.
+
+        Args:
+            message:
+                JSON with at least a "type" property. This property can have the following values:
+                    - "start" | This command is used to start the tracking of an object in the specified frame,
+                                see start_tracking, for the other expected properties.
+                    - "stop"  | This command is used to stop the tracking of an object,
+                                see stop_tracking, for the other expected properties.
+                    - "test"  | This values will be answered with a series of messages mocking the messages
+                                a client might expect, see send_mock_data for the other expected properties.
+        """
         logger.log_message_receive(message, "/client", self.request.remote_ip)
 
         try:
@@ -55,20 +96,36 @@ class ClientSocket(WebSocketHandler):
             print("Someone missed a property in their json")
 
     def send_message(self, message):
+        """Sends a message over the websocket and logs it.
+
+        Args:
+            message: string which should be send over this websocket
+        """
         logger.log_message_send(message, "/client", self.request.remote_ip)
         self.write_message(message)
 
     def on_close(self):
+        """Called when the websocket is closed, deletes itself from the dict of clients."""
         logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
         print(f"Client with id {self.identifier} disconnected")
 
 
-# Create tracking object and send start tracking command to specified processor
 def start_tracking(message):
+    """Creates tracking object and sends start tracking command to specified processor
+
+    Args:
+        message:
+            JSON message that was received. It should contain the following properties:
+                - "cameraId" | The identifier of the processor on which the bounding box of the object to be tracked
+                               was computed.
+                - "frameId"  | The identifier of the frame on which the bounding box of the object to be tracked
+                               was computed.
+                - "boxId"    | The identifier of the bounding box computed for the object to be tracked.
+    """
     camera_id = message["cameraId"]
-    box_id = message["boxId"]
     frame_id = message["frameId"]
+    box_id = message["boxId"]
 
     if camera_id not in processors.keys():
         print("Unknown processor")
@@ -88,8 +145,14 @@ def start_tracking(message):
     }))
 
 
-# Remove tracking object and send stop tracking command to all processors
 def stop_tracking(message):
+    """Removes tracking object and sends stop tracking command to all processors
+
+    Args:
+        message:
+            JSON message that was received. It should contain the following properties:
+                - "objectId" | The identifier of the object which should no longer be tracked.
+    """
     object_id = message["objectId"]
     if object_id not in objects.keys():
         print("unknown object")
@@ -107,8 +170,16 @@ def stop_tracking(message):
     print(f"stopped tracking of object with id {object_id}")
 
 
-# Send a few mock messages to the client for testing purposes
 def send_mock_data(message, client):
+    """Sends a few mock messages to the client for testing purposes
+
+    Args:
+        message:
+            JSON message that was received. It should contain the following properties:
+                - "cameraId"  | The identifier of a processor that should be used in the mock "start" command.
+        client:
+            The client websocket from which this command was sent.
+    """
     camera_id = message["cameraId"]
 
     frame_id = 0
