@@ -12,9 +12,9 @@ import cv2
 import os
 import sys
 
-from input.hls_capture import HlsCapture
+from src.input.hls_capture import HlsCapture
 
-logging.basicConfig(filename='app.log', filemode='w',
+logging.basicConfig(filename='localhost.log', filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                     level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')

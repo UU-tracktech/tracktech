@@ -1,6 +1,6 @@
 import pytest
 import json
-import websocket_client
+import src.websocket_client as websocket_client
 
 
 def __eq__(self, other):
@@ -16,6 +16,7 @@ def __eq__(self, other):
     if isinstance(self, other.__class__):
         return self.a == other.a and self.b == other.b
     return False
+
 
 class TestWebsocketClient:
     """Tests websocket_client.py
