@@ -8,18 +8,6 @@ from src.input.cam_capture import CamCapture
 
 
 class TestCaptures:
-    @pytest.fixture(params=[ImageCapture(get_images_dir()), HlsCapture(), CamCapture()])
-    def capture_implementation(self, request):
-        """ Defines capture_implementation as multiple implementations of iCapture, to be use in generic capture tests.
-
-        Args:
-            request: different implementations of capture.
-
-        Returns: implementation of capture.
-
-        """
-        return request.param
-
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -27,6 +15,7 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
+
         assert capture_implementation.opened()
 
     def test_closed(self, capture_implementation):
