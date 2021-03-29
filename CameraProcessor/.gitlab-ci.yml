@@ -11,10 +11,10 @@ pytest:
   stage: test
   script:
     - cd CameraProcessor
-    - python -m pytest tests --junitxml=CameraProcessor/report.xml
+    - python -m pytest tests --junitxml=report.xml
   artifacts:
     when: always
     paths: 
-    - CameraProcessor/report.xml
+    - report.xml
     reports:
-      junit: CameraProcessor/report.xml
+      junit: report.xml
