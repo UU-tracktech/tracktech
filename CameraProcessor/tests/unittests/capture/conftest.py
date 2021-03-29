@@ -2,7 +2,6 @@ import os
 
 import pytest
 
-from src.input.icapture import ICapture
 from src.input.cam_capture import CamCapture
 from src.input.hls_capture import HlsCapture
 from src.input.image_capture import ImageCapture
