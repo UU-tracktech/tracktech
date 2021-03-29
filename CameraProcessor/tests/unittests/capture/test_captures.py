@@ -5,13 +5,10 @@ from src.input.image_capture import ImageCapture
 from src.input.hls_capture import HlsCapture
 from src.input.cam_capture import CamCapture
 
-root_dir = os.path.abspath(__file__ + '../../../../../')
-folder_name = 'test'
-images_dir = f'{root_dir}\\data\\annotated\\{folder_name}\\img1'
 
 
 class TestCaptures:
-    @pytest.fixture(params=[ImageCapture(images_dir), HlsCapture(), CamCapture()])
+    @pytest.fixture(params=[ImageCapture(get_images_dir()), HlsCapture(), CamCapture()])
     def capture_implementation(self, request):
         """ Defines capture_implementation as multiple implementations of iCapture, to be use in generic capture tests.
 
