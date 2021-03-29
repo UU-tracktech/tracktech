@@ -1,3 +1,4 @@
 tornado
 pdoc
 pytest
+pytest-tornasync

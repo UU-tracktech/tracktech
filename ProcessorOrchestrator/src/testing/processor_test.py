@@ -1,16 +1,15 @@
 import threading
 import pytest
 from tornado import websocket
-#from src.processor import *
-from ..main import *
+from src import main
 
 
-class TestProcessor:
-    @classmethod
-    async def setup_class(cls):
-        # start server
-        threading.Thread(target=main).start()
-        cls.socket = await websocket.websocket_connect("ws://localhost")
+@pytest.fixture
+def app():
+    return main.create_app()
 
-    def wrong_json_syntax_is_caught_and_logged(self):
-        self.socket.write_message("This is not valid json")
+
+async def test_wrong_json_syntax_is_caught_and_logged():
+    socket = await websocket.websocket_connect("ws://localhost:80")
+    await socket.write_message("This is not valid json")
+    assert 1 == 1
