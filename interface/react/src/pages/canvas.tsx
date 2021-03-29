@@ -1,11 +1,14 @@
 import React, { Component } from "react"
 
-export class Canvas extends React.Component {
+export default class Canvas extends React.Component {
+
+    //canvasRef = () => { return useRef(null)}
 
     canvas = React.createRef<HTMLCanvasElement>()
 
     componentDidMount = () => {
-        const ctx = this.canvas.current?.getContext('2d')
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement
+        const ctx = canvas.getContext('2d')
         //const queue = require('../')
         //const q = queue({ results: [] })
         //this.state.queue = q
@@ -16,7 +19,8 @@ export class Canvas extends React.Component {
 
     tick = () => {
         if (this.state.showBoxes) {
-            const ctx = this.canvas.current?.getContext('2d')
+            const canvas = document.getElementById('canvas') as HTMLCanvasElement
+            const ctx = canvas.getContext('2d')
             ctx!.clearRect(0, 0, 300, 300)
             this.state.x1 += 1
             this.state.x2 += 1
@@ -42,7 +46,8 @@ export class Canvas extends React.Component {
         // @ts-ignore
         //this.state.queue.push("Hello")
         //}
-        const ctx = this.canvas.current?.getContext('2d')
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement
+        const ctx = canvas.getContext('2d')
         ctx!.clearRect(0, 0, 300, 300)
         //if(this.state.queue != null) {
         // @ts-ignore

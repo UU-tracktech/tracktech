@@ -5,7 +5,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import { NavMenu } from './components/navbar'
 import { Home } from './pages/home'
 import { WebsocketUser } from './pages/websocket'
-import { Canvas } from './pages/canvas'
+import { CanvasVideo } from './pages/canvasVideo'
 import { WebsocketProvider } from './components/websocketContext'
 
 
@@ -17,11 +17,11 @@ export class App extends React.Component<{}, appState> {
     return (
       <div style={{ width: "100%", height: "100vh" }} >
         <WebsocketProvider>
-          <NavMenu key={0} />
           <BrowserRouter key={1}>
-            <Route exact path='/' component={Home} />
-            <Route path='/Websockets' component={WebsocketUser} />
-            <Route path='/Canvas' component={Canvas} />
+            <NavMenu key={0} />
+            <Route exact path='/' ><Home /></Route>
+            <Route path='/Websockets'  ><WebsocketUser /></Route>
+            <Route path='/Canvas' ><CanvasVideo /></Route>
           </BrowserRouter>
         </WebsocketProvider>
       </div>

@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 export class NavMenu extends Component {
 
@@ -14,9 +15,9 @@ export class NavMenu extends Component {
           <Navbar.Toggle style={{ float: "right" }} aria-controls="basic-navbar-nav" />
           <Navbar.Collapse className="mr-auto">
             <Nav>
-              <Nav.Link style={{ padding: "8px 25px" }} color="light" href="/">Home</Nav.Link>
-              <Nav.Link style={{ padding: "8px 25px" }} href="/websockets">Websockets</Nav.Link>
-              <Nav.Link style={{ padding: "8px 25px" }} href="/Canvas">Canvas</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} color="light" to="/">Home</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/websockets">Websockets</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Canvas">Canvas</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
               <Button onClick={this.onLoginPress}>Login</Button>
