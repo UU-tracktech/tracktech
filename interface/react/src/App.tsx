@@ -1,5 +1,7 @@
 import React from 'react';
 import './App.css';
+
+import './components/WebSocket.css';
 import { BrowserRouter, Route } from 'react-router-dom'
 
 import { NavMenu } from './components/navbar'

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Navbar, Nav, NavbarProps, NavItem, Button , Form} from 'react-bootstrap'
 
+import LoginButton from './LoginButton'
+
 export class NavMenu extends Component {
 
   render() {
@@ -19,15 +21,11 @@ export class NavMenu extends Component {
               <Nav.Link style={{ padding: "8px 25px" }} href="/Logging">Logging</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
-              <Button onClick={this.onLoginPress}>Login</Button>
+              <LoginButton />
             </Form>
           </Navbar.Collapse>
         </Navbar>
       </header>
     )
-  }
-
-  onLoginPress(){
-    alert('login')
   }
 }
