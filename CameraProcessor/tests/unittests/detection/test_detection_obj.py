@@ -1,7 +1,8 @@
 import pytest
 import cv2
-from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.bounding_box import BoundingBox
+from src.pipeline.detection.detection_obj import DetectionObj
+
 
 
 def __eq__(self, other):
