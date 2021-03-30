@@ -1,6 +1,14 @@
 stages:
-  - triggers
   - test
+  - triggers
+
+pytest:
+  stage: test
+  trigger:
+    include: CameraProcessor/.gitlab-ci.yml
+  rules:
+    - changes:
+        - CameraProcessor/*
 
 trigger_orchestrator:
   stage: triggers
@@ -9,12 +17,3 @@ trigger_orchestrator:
   rules:
     - changes:
         - ProcessorOrchestrator/*
-
-pytest:
-  stage: test
-  script:
-    - pytest --junitxml=report.xml
-  artifacts:
-    when: always
-    reports:
-      junit: report.xml
