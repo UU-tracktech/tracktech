@@ -8,12 +8,27 @@ before_script:
 
 stages:
   - documentation
+  - deploy_pages
 
 pdoc-documentation:
   stage: documentation
+  variables:
+    - PYTHONPATH=/usr/app/src
   script:
     - python src/documentation.py
   artifacts:
     when: always
     paths:
     - CameraProcessor/docs/html/
+    expire_in: 14 days
+
+deploy_documentation_gitlab_pages:
+  stage: deploy_pages
+  needs:
+    - job: documentation # only deploy when docs creation succeeded
+  script:
+    - mv CameraProcessor/docs/html/ public/$BRANCH/CameraProcessor
+  artifacts:
+    paths:
+      - public
+    expire_in: 14 days
