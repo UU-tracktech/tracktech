@@ -1,50 +1,30 @@
 import React from 'react';
-import VideoPlayer from "./components/VideojsPlayer";
 import './App.css';
-import WebSocket from "./components/WebSocket";
+
 import './components/WebSocket.css';
+import { BrowserRouter, Route } from 'react-router-dom'
+
+import { NavMenu } from './components/navbar'
+import { Home } from './pages/home'
+import { Websocket } from './pages/websocket'
+import { Logging } from './pages/logging'
 
 type stream = { name: string, url: string, type: string }
 type appState = { streams: stream[] }
 
 class App extends React.Component<{}, appState> {
 
-  constructor(props) {
-    super(props);
-    this.state = { streams: [] }
-  }
-
-  async componentDidMount() {
-    var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json();
-    this.setState({ streams: config.map((stream) => ({
-        name: stream.Name, url: stream.Forwarder, type: stream.Type })) })
-  }
-
   render() {
-    var sources = this.state.streams.map((stream) => ({
-      name: stream.name,
-      srcObject: {
-        src: stream.url,
-        type: stream.type
-      }
-    }))
-
     return (
-      <div className="App">
-        <header className="App-header">
-          {
-            sources && sources.map((source) =>
-              <div>
-                <h1>{source.name}</h1>
-                <VideoPlayer key={source.name} autoplay={true} controls={true} sources={[source.srcObject]} />
-              </div>)
-          }
-          <div>
-            <WebSocket />
-          </div>
-        </header>
+      <div style={{width:"100%", height:"100vh"}} >
+        <NavMenu key={0} />
+        <BrowserRouter key={1}>
+          <Route exact path='/' component={Home} />
+          <Route path='/Websockets' component={Websocket} />
+          <Route path='/Logging' component={Logging} />
+        </BrowserRouter>
       </div>
-    );
+    )
   }
 }
 
