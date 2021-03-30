@@ -7,190 +7,183 @@ from detection.dectection_obj import DetectionObj
 from input.hls_stream import HlsCapture
 import cv2
 from datetime import datetime
-import random
-
-# Setup (basic) logging
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
-                    filename='file.log',
-                    level=logging.INFO,
-                    filemode='w')
-
-logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-
-frame_nr = 0
-feature_map_delay = 10
-capture = HlsCapture()
 
 
-# Url of websocket server
-#url = 'ws://localhost:80/processor'
-url = 'wss://tracktech.ml:50010/processor'
-
-# Connection variables
-connected = False  # Whether or not the connection is live
-connection = None  # Holds the connection object
-connect_task_created = False  # Whether or not already trying to reconnect
-
-
-# Mock methods on received commands
-def update_feature_map(message):
+async def create_client(url):
     """
-    Handler for received feature maps
-
+    Method used to create a websocket client object
     Args:
-        message: JSON parse of the sent message
+        url: Websocket url to connect to
+
+    Returns: Websocket client object
     """
-    object_id = message["objectId"]
-    feature_map = message["featureMap"]
-    logging.info(f"Updating object {object_id} with feature map {feature_map}")
+    client = WebsocketClient(url)
+    await client.connect()
+    return client
 
 
-def start_tracking(message):
+class WebsocketClient:
     """
-    Handler for the "start tracking" command
-
-    Args:
-        message: JSON parse of the sent message
+    Async websocket client that connects to a specified url and read/write messages
+    Should not be instantiated directly. Rather, use the create_client function
     """
-    object_id = message["objectId"]
-    frame_id = message["frameId"]
-    box_id = message["boxId"]
-    logging.info(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
 
+    def __init__(self, url):
+        self.connection = None  # Holds the connection object
+        self.reconnecting = False  # Whether we are currently trying to reconnect
+        self.url = url  # The url of the websocket
+        self.write_queue = []  # Stores messages that could not be sent due to a closed socket
 
-def stop_tracking(message):
-    """
-    Handler for the "stop tracking" command
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
 
-    Args:
-        message: JSON parse of the sent message
-    """
-    object_id = message["objectId"]
-    logging.info(f"Stop tracking object {object_id}")
+        logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+                            filename='client.log',
+                            level=logging.INFO,
+                            filemode='w')
 
+        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
-# Message handler
-def read_msg(message):
-    """
-    Read message callback for the websocket client
-
-    Args:
-        message: the raw message posted on the websocket
-    """
-    if not message:
-        logging.error("The websocket connection was closed")
-        return
-    try:
-        message_object = json.loads(message)
-
-        # Switch on message type
-        actions = {
-            "featureMap":
-                lambda: update_feature_map(message_object),
-            "start":
-                lambda: start_tracking(message_object),
-            "stop":
-                lambda: stop_tracking(message_object)
-        }
-
-        # Execute correct function
-        function = actions.get(message_object["type"])
-        if function is None:
-            logging.warning(f"Someone gave an unknown command: {message}")
-        else:
-            function()
-
-    except ValueError:
-        logging.warning(f"Someone wrote bad json: {message}")
-    except KeyError:
-        logging.warning(f"Someone missed a property in their json: {message}")
-
-
-# Write messages to the connection
-async def write_message(message):
-    """
-    Write a message on the websocket asynchronously
-
-    Args:
-        message: the message to write
-    """
-    global connection, connected
-    try:
-        await connection.write_message(message)
-
-    except websocket.WebSocketClosedError:
+    async def connect(self):
+        """
+        Connect to the websocket url asynchronously
+        """
         connected = False
+        while not connected:
+            try:
+                self.connection = await websocket.websocket_connect(self.url,
+                                                                    on_message_callback=self._on_message)
+                logging.info(f"Connected to {self.url} successfully")
+                connected = True
 
+            except ConnectionRefusedError:
+                logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
+                await asyncio.sleep(1)
 
-# Connect to the specified websocket url
-async def connect_to_url():
-    """
-    Connect to the specified websocket url
-    """
-    global connection, connected, connect_task_created
+    def write_message(self, message):
+        """
+        Write a message on the websocket asynchronously
 
-    while not connected:
+        Args:
+            message: the message to write
+        """
+        asyncio.get_event_loop().create_task(self._write_message(message))
+
+    async def _write_message(self, message):
+        """
+        Internal write message that also writes all messages on the write queue if possible
+
+        Args:
+            message: the message to write
+        """
         try:
-            connection = await websocket.websocket_connect(url, on_message_callback=read_msg)
-            logging.info(f"Connected to {url} successfully")
-            connected = True
-            connect_task_created = False
+            # Write all not yet sent messages
+            for old_msg in self.write_queue:
+                self.connection.write_message(old_msg)
+                logging.info("Writing old message: " + message)
 
-        except ConnectionRefusedError:
-            logging.warning(f"Could not connect to {url}, trying again in 1 second...")
-            await asyncio.sleep(1)
+            # Clear the write queue
+            self.write_queue = []
 
-def mock_detection_object(frame):
-    """
-    Generate a mock detection object with the current frame, frame number and timestamp
+            # Write the new message
+            await self.connection.write_message(message)
+            logging.info("Writing message: " + message)
 
-    Args:
-        frame: The current frame
+        except websocket.WebSocketClosedError:
+            # Non-blocking call to reconnect if necessary
+            if not self.reconnecting:
+                self.reconnecting = True
+                await self.connect()
+                self.reconnecting = False
 
-    Returns: The mock detection object with bounding boxes
+            logging.info("Appending to message queue: " + message)
+            self.write_queue.append(message)
 
-    """
-    obj = DetectionObj(datetime.now(), frame, frame_nr)
+    def _on_message(self, message):
+        """
+        On message callback function
 
-    # Generate random bounding boxes
-    obj.bounding_box = obj.mock_bounding_boxes()
-    return obj
+        Args:
+            message: the raw message posted on the websocket
+        """
+        # Websocket closed, reconnect is handled by write_message
+        if not message:
+            logging.error("The websocket connection was closed")
+            return
 
+        try:
+            message_object = json.loads(message)
 
-mock_feature_map_dict = {
-    "type": "featureMaps"
-}
+            # Switch on message type
+            actions = {
+                "featureMap":
+                    lambda: self.update_feature_map(message_object),
+                "start":
+                    lambda: self.start_tracking(message_object),
+                "stop":
+                    lambda: self.stop_tracking(message_object)
+            }
 
-# Update one of the mock feature maps in the mock dictionary
-def update_feature_maps():
-    """
-    Update mock feature map dictionary
-    """
-    object_id = random.randint(1,10)
+            # Execute correct function
+            function = actions.get(message_object["type"])
+            if function is None:
+                logging.warning(f"Someone gave an unknown command: {message}")
+            else:
+                function()
 
-    # if key does not yet exist
-    if not object_id in mock_feature_map_dict:
+        except ValueError:
+            logging.warning(f"Someone wrote bad json: {message}")
+        except KeyError:
+            logging.warning(f"Someone missed a property in their json: {message}")
 
-        # Create a mock feature map for the object
-        mock_feature_map_dict[object_id] = { "state": 0}
+    # Mock methods on received commands
+    def update_feature_map(self, message):
+        """
+        Handler for received feature maps
 
-    mock_feature_map_dict[object_id]["state"] = mock_feature_map_dict[object_id]["state"] + 1
+        Args:
+            message: JSON parse of the sent message
+        """
+        object_id = message["objectId"]
+        feature_map = message["featureMap"]
+        logging.info(f"Updating object {object_id} with feature map {feature_map}")
+
+    def start_tracking(self, message):
+        """
+        Handler for the "start tracking" command
+
+        Args:
+            message: JSON parse of the sent message
+        """
+        object_id = message["objectId"]
+        frame_id = message["frameId"]
+        box_id = message["boxId"]
+        logging.info(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
+
+    def stop_tracking(self, message):
+        """
+        Handler for the "stop tracking" command
+
+        Args:
+            message: JSON parse of the sent message
+        """
+        object_id = message["objectId"]
+        logging.info(f"Stop tracking object {object_id}")
+
 
 async def main():
     """
     Main function that runs the video processing loop and listens on the websocket in parallel
     """
-    global connection, connected, connect_task_created, frame_nr
 
-    # Try to get an initial connection
-    await connect_to_url()
+    capture = HlsCapture()
+    # ws_client = await create_client("wss://echo.websocket.org")
+    ws_client = await create_client('ws://localhost:8000/processor')
+    frame_nr = 0
+    feature_map_delay = 10
 
     # Video processing loop
     while not capture.stopped():
-        # Non-blocking call to reconnect if necessary
-        if not connected and not connect_task_created:
-            asyncio.get_event_loop().create_task(connect_to_url())
-            connect_task_created = True
 
         ret, frame = capture.get_next_frame()
 
@@ -202,8 +195,8 @@ async def main():
         print(frame_nr)
 
         # Create detectionObj
-        #detection_obj = DetectionObj(datetime.now(), frame, frame_nr)
-        detection_obj = mock_detection_object(frame)
+        detection_obj = DetectionObj(datetime.now(), frame, frame_nr)
+        # detection_obj = mock_detection_object(frame)
         # Run detection on object
 
         # Visualise rectangles and show it
@@ -211,22 +204,26 @@ async def main():
         cv2.imshow('Frame', detection_obj.frame)
 
         # Tracking phase
-        update_feature_maps()
 
         # Non-blocking call to send bounding boxes
-        asyncio.get_event_loop().create_task(write_message(detection_obj.to_json()))
+        # asyncio.get_event_loop().create_task(write_message(detection_obj.to_json()))
+
+        # test with echo web server
+        ws_client.write_message('{"type":"test", "frameId":2, "boxId":3}')
 
         # Every 10 frames, send updated feature maps
         if frame_nr % feature_map_delay == 0:
-            print("Sending feature maps")
-            asyncio.get_event_loop().create_task(write_message(json.dumps(mock_feature_map_dict)))
+            pass
+            # print("Sending feature maps")
+            # asyncio.get_event_loop().create_task(write_message(json.dumps(mock_feature_map_dict)))
 
         # Close loop when q is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
         # Hand control back to event loop
-        await asyncio.sleep(0)
+        await asyncio.sleep(5)
+
 
 if __name__ == '__main__':
     asyncio.run(main())
