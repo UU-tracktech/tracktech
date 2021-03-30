@@ -2,7 +2,6 @@ import pytest
 import json
 import src.websocket_client as websocket_client
 from src.websocket_client import WebsocketClient
-ws_client = WebsocketClient
 
 
 def __eq__(self, other):
@@ -25,11 +24,11 @@ class TestWebsocketClient:
 
     """
 
-    def setup_method(self, ws_client):
+    def setup_method(self):
         """Set ups mock messages for unit testing.
 
         """
-        self.data = WebsocketClient
+        self.ws_client = WebsocketClient
         self.start_json = '{"type": "start", "objectId": 1, "frameId": 1, "boxId": 1}'
         self.stop_json = '{"type": "stop", "objectId": 1}'
         self.feature_map_json = '{"type": "featureMap", "objectId": 1, "featureMap": []}'
@@ -39,11 +38,11 @@ class TestWebsocketClient:
         self.message_object_start_tracking_string = self.start_json
         self.message_object_stop_tracking_string = self.stop_json
         self.message_object_update_feature_map_string = self.feature_map_json
-        self.start_tracking = self.data.start_tracking(ws_client, self.message_object_start_tracking)
-        self.stop_tracking = self.data.stop_tracking(ws_client, self.message_object_stop_tracking)
-        self.update_feature_map = self.data.update_feature_map(ws_client, self.message_object_update_feature_map)
-        self.connect = self.data.connect
-        self.write_message = self.data._write_message(ws_client, "test")
+        self.start_tracking = self.ws_client.start_tracking(self.ws_client, self.message_object_start_tracking)
+        self.stop_tracking = self.ws_client.stop_tracking(self.ws_client, self.message_object_stop_tracking)
+        self.update_feature_map = self.ws_client.update_feature_map(self.ws_client, self.message_object_update_feature_map)
+        self.connect = self.ws_client.connect
+        self.write_message = self.ws_client._write_message(self.ws_client, "test")
 
     def test_start_tracking(self):
         """Checks if start_tracking takes correct values from message
@@ -66,40 +65,40 @@ class TestWebsocketClient:
         assert self.message_object_update_feature_map["objectId"] == 1
         assert self.message_object_update_feature_map["featureMap"] == []
 
-    def test_read_msg_start_tracking(self, ws_client):
+    def test_read_msg_start_tracking(self):
         """Checks if read_msg correctly parses start tracking message
 
         """
-        json_temp_start = self.data._on_message(ws_client, self.message_object_start_tracking_string)
+        json_temp_start = self.ws_client._on_message(self.ws_client, self.message_object_start_tracking_string)
         assert json_temp_start.__eq__(self.message_object_start_tracking)
 
-    def test_read_msg_stop_tracking(self, ws_client):
+    def test_read_msg_stop_tracking(self):
         """Checks if read_msg correctly parses stop tracking message
 
         """
-        json_temp_stop = ws_client._on_message(self.message_object_stop_tracking_string)
+        json_temp_stop = self.ws_client._on_message(self.ws_client, self.message_object_stop_tracking_string)
         assert json_temp_stop.__eq__(self.message_object_stop_tracking)
 
-    def test_read_msg_update_feature_map(self, ws_client):
+    def test_read_msg_update_feature_map(self):
         """Checks if read_msg correctly parses update feature map message
 
         """
-        json_temp_feature_map = ws_client._on_message(self.message_object_update_feature_map_string)
+        json_temp_feature_map = self.ws_client._on_message(self.ws_client, self.message_object_update_feature_map_string)
         assert json_temp_feature_map.__eq__(self.message_object_update_feature_map)
 
-    def test_read_msg_type_error_exception(self, ws_client):
+    def test_read_msg_type_error_exception(self):
         """Checks if read_msg raises exception with invalid input
 
         """
         with pytest.raises(Exception):
-            assert ws_client._on_message(self, '"invalidJson": "yes"')
+            assert self.ws_client._on_message(self, '"invalidJson": "yes"')
 
-    def test_read_msg_key_error_exception(self, ws_client):
+    def test_read_msg_key_error_exception(self):
         """Checks if read_msg raises exception with missing value in input
 
         """
         with pytest.raises(Exception):
-            assert ws_client._on_message(self, '{"type": "start", "objectId": 1, "frameId": 1}')
+            assert self.ws_client._on_message(self, '{"type": "start", "objectId": 1, "frameId": 1}')
 
 
 if __name__ == '__main__':
