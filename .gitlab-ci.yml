@@ -6,5 +6,4 @@ trigger_orchestrator:
   trigger:
     include: ProcessorOrchestrator/.gitlab-ci.yml
   rules:
-    - changes:
-        - ProcessorOrchestrator/*
+    - if: $CI_MERGE_REQUEST_ID
