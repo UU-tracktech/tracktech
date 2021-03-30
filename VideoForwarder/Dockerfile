@@ -1,10 +1,7 @@
-FROM python:3
-
-# update repositories
-RUN apt-get update
+FROM python:3-alpine
 
 #Install ffmpeg
-RUN apt install -y ffmpeg
+RUN apk add ffmpeg
 
 # install python dependencies
 COPY requirements.txt .
