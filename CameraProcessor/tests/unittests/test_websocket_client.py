@@ -22,21 +22,20 @@ class TestWebsocketClient:
     """Tests websocket_client.py
 
     """
-    def __init__(self):
-        self.start_json = '{"type": "start", "objectId": 1, "frameId": 1, "boxId": 1}'
-        self.stop_json = '{"type": "stop", "objectId": 1}'
-        self.featuremap_json = '{"type": "featureMap", "objectId": 1, "featureMap": []}'
 
     def setup_method(self):
         """Set ups mock messages for unit testing.
 
         """
+        self.start_json = '{"type": "start", "objectId": 1, "frameId": 1, "boxId": 1}'
+        self.stop_json = '{"type": "stop", "objectId": 1}'
+        self.feature_map_json = '{"type": "featureMap", "objectId": 1, "featureMap": []}'
         self.message_object_start_tracking = json.loads(self.start_json)
         self.message_object_stop_tracking = json.loads(self.stop_json)
-        self.message_object_update_feature_map = json.loads(self.featuremap_json)
+        self.message_object_update_feature_map = json.loads(self.feature_map_json)
         self.message_object_start_tracking_string = self.start_json
         self.message_object_stop_tracking_string = self.stop_json
-        self.message_object_update_feature_map_string = self.featuremap_json
+        self.message_object_update_feature_map_string = self.feature_map_json
         self.connect = websocket_client.connected
         self.connection = websocket_client.connection
         self.connect_task_created = websocket_client.connect_task_created

@@ -2,7 +2,9 @@ import os
 from test_pre_annotations import example_text_file
 from src.training.pre_annotations import PreAnnotations
 
+
 class TestTextParsing:
+
     def setup_method(self):
         self.annotations = PreAnnotations(example_text_file, 5)
 
