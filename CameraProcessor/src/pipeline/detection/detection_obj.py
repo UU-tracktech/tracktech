@@ -34,5 +34,5 @@ class DetectionObj:
         return json.dumps({
             "type": "boundingBoxes",
             "frameId": self.frame_nr,
-            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_box],
+            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_boxes],
         })
