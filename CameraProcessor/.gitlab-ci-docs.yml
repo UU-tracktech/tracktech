@@ -1,0 +1,21 @@
+before_script:
+  - cd CameraProcessor
+  - md docs
+  - cd docs
+  - md html
+  - cd ..
+  - python --version
+  - pip install -r ./requirements.txt
+
+stages:
+  - documentation
+
+pdoc-documentation:
+  stage: documentation
+  script:
+    - cd CameraProcessor
+    - python src/documentation.py
+  artifacts:
+    when: always
+    paths:
+    - CameraProcessor/docs/html/
