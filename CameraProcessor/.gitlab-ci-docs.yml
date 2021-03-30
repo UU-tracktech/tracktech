@@ -1,9 +1,8 @@
+image: "python:3.8.8"
+
 before_script:
   - cd CameraProcessor
-  - md docs
-  - cd docs
-  - md html
-  - cd ..
+  - mkdir docs/html
   - python --version
   - pip install -r ./requirements.txt
 
