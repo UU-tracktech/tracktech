@@ -10,10 +10,10 @@ stages:
   - documentation
   - deploy_pages
 
-pdoc-documentation:
+pdoc_documentation:
   stage: documentation
   variables:
-    - PYTHONPATH=/usr/app/src
+    PYTHONPATH: "/usr/app/src"
   script:
     - python src/documentation.py
   artifacts:
@@ -25,7 +25,7 @@ pdoc-documentation:
 deploy_documentation_gitlab_pages:
   stage: deploy_pages
   needs:
-    - job: documentation # only deploy when docs creation succeeded
+    - job: pdoc_documentation # only deploy when docs creation succeeded
   script:
     - mv CameraProcessor/docs/html/ public/$BRANCH/CameraProcessor
   artifacts:
