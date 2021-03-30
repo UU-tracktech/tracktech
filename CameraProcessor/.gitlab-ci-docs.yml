@@ -12,7 +12,6 @@ stages:
 pdoc-documentation:
   stage: documentation
   script:
-    - cd CameraProcessor
     - python src/documentation.py
   artifacts:
     when: always
