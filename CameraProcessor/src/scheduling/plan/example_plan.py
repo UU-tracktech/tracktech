@@ -23,7 +23,7 @@ layer1_node2 = ScheduleNode(1, [(layer2_multiple_input_node, 1)], InputComponent
 schedule_input_node = ScheduleNode(1, [(layer1_node1, 0), (layer1_node2, 0)], InputComponent())
 
 if __name__ == '__main__':
-    from scheduling.scheduler import Scheduler
+    from src.scheduling.scheduler import Scheduler
 
     # Inits scheduler with starting node.
     scheduler = Scheduler(schedule_input_node)
