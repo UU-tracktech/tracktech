@@ -9,7 +9,7 @@ camera_processor_documentation:
     include: CameraProcessor/.gitlab-ci-docs.yml
   rules:
     - changes:
-        - CameraProcessor/src/*
+        - CameraProcessor/*
 
 pytest:
   stage: test
