@@ -1,0 +1,21 @@
+image: "python:3.8.8"
+
+before_script:
+  - apt-get update
+  - apt-get install -y libgl1-mesa-dev
+  - python --version
+  - pip install -r CameraProcessor/requirements.txt
+
+stages:
+  - test
+
+pytest:
+  stage: test
+  script:
+    - cd CameraProcessor
+    - python -m pytest tests --junitxml=report.xml
+  artifacts:
+    paths: 
+    - CameraProcessor/report.xml
+    reports:
+      junit: CameraProcessor/report.xml
