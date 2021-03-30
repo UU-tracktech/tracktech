@@ -1,6 +1,14 @@
 import json
 
 def loadData(datatype):
+    """Load a JSON test data file of chosen type.
+
+    Args:
+        A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap'}
+
+    Returns:
+        A dictionary of test data of the chosen JSON message type
+    """
     switcher={
         'boundingBoxes': 'boxes',
         'start': 'stopstart',
