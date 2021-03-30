@@ -11,17 +11,18 @@ from src.input.video_capture import VideoCapture
 import src.websocket_client as client
 import asyncio
 
+
 # Process the video stream
 async def process_stream(vid_stream, det_obj, detector):
     frame_nr = 0
     ws_url = 'ws://localhost:80/processor'
     ws_url = 'wss://tracktech.ml:50010/processor'
 
-    await client.connect_to_url(ws_url)
+    ws_client = await client.create_client(ws_url)
 
     while vid_stream.opened():
         # Set the detected bounding box list to empty
-        det_obj.bounding_box = []
+        det_obj.bounding_boxes = []
         ret, frame = vid_stream.get_next_frame()
 
         if not ret:
@@ -38,6 +39,8 @@ async def process_stream(vid_stream, det_obj, detector):
 
         detector.detect(det_obj)
 
+        ws_client.write_message(det_obj.to_json())
+
         # Draw the frame with bounding boxes
         det_obj.draw_rectangles()
         frame_nr += 1
@@ -52,7 +55,6 @@ async def process_stream(vid_stream, det_obj, detector):
         # This next line is **ESSENTIAL** for the video to actually play
         if cv2.waitKey(1) & 0xFF == ord('q'):
             return
-
 
     logging.info(f'capture object stopped after {frame_nr} frames')
 
@@ -89,6 +91,7 @@ def main(arg):
     logging.info("Starting video stream...")
 
     asyncio.run(process_stream(vid_stream, det_obj, detector))
+
 
 if __name__ == '__main__':
     try:
