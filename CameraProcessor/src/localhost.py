@@ -22,7 +22,11 @@ logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
-html_page_path = dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\..\\webpage'
+html_page_path = os.path.abspath(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    'webpage',
+))
+
 capture = HlsCapture()
 PORT = 9090
 
