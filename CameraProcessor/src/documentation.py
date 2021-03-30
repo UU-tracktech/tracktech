@@ -6,7 +6,7 @@ import pkgutil
 from typing import List
 
 
-def docs():
+def main():
     """Generates pdoc documentation for all Python modules in CameraProcessor project."""
     # Take file level of current Python modules as root_folder.
     root_folder = os.path.dirname(__file__)
@@ -66,4 +66,4 @@ def get_modules(root_folder: str) -> List[str]:
 
 
 if __name__ == '__main__':
-    docs()
+    main()
