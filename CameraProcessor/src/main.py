@@ -90,7 +90,7 @@ def main(arg):
     # Frame counter starts at 0. Will probably work differently for streams
     logging.info("Starting video stream...")
 
-    asyncio.run(process_stream(vid_stream, det_obj, detector))
+    asyncio.get_event_loop().run_until_complete(process_stream(vid_stream, det_obj, detector))
 
 
 if __name__ == '__main__':
