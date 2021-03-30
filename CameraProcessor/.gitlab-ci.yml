@@ -13,7 +13,6 @@ pytest:
   stage: test
   script:
     - cd CameraProcessor
-    - ls
     - python -m pytest tests --junitxml=report.xml
   artifacts:
     paths: 

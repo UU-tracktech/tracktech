@@ -15,6 +15,7 @@ pdoc_documentation:
   variables:
     PYTHONPATH: "/usr/app/src"
   script:
+    - ls
     - python src/documentation.py
   artifacts:
     when: always
