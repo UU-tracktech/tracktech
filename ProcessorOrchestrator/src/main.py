@@ -5,9 +5,9 @@ from pathlib import Path
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application, StaticFileHandler
-from src.client import ClientSocket
-from src.processor import ProcessorSocket
-from src.logger import LogHandler
+from client_socket import ClientSocket
+from processor_socket import ProcessorSocket
+from log_handler import LogHandler
 import pdoc
 
 
@@ -26,8 +26,9 @@ def main():
     pdoc.render.configure(docformat="google")
     pdoc.pdoc(
         'main',
-        'client',
-        'processor',
+        'client_socket',
+        'processor_socket',
+        'connections',
         'objectManager',
         'logger',
         output_directory=Path(os.path.join(os.path.dirname(__file__), "../docs"))
