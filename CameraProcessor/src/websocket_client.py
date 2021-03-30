@@ -117,11 +117,11 @@ class WebsocketClient:
             # Switch on message type
             actions = {
                 "featureMap":
-                    lambda: self.update_feature_map(message_object),
+                    lambda: self.update_feature_map(self, message_object),
                 "start":
-                    lambda: self.start_tracking(message_object),
+                    lambda: self.start_tracking(self, message_object),
                 "stop":
-                    lambda: self.stop_tracking(message_object)
+                    lambda: self.stop_tracking(self, message_object)
             }
 
             # Execute correct function
