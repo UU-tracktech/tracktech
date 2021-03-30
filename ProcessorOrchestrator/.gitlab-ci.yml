@@ -10,3 +10,5 @@ docker-build:
   script:
     - docker build -t processor-orchestrator ./ProcessorOrchestrator
     # - docker run processor-orchestrator
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
