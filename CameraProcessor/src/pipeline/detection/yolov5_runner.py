@@ -94,11 +94,14 @@ class Detector:
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], det_obj.frame.shape).round()
 
+                bb_id = 0
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
-                    bbox = BoundingBox(i, [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])],
+                    bbox = BoundingBox(bb_id, [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])],
                                        self.names[int(cls)], conf)
                     det_obj.bounding_boxes.append(bbox)
+
+                    bb_id += 1
 
         # Print time (inference + NMS)
         t1 = time_synchronized()
