@@ -11,4 +11,4 @@ docker build -t %imageName% .
 docker image prune -f
 
 :: Run new container...
-docker run -d -p 8000:8000 --name %containerName% %imageName%
+docker run -d -p 80:80 --name %containerName% %imageName%

@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
-import useWebSocket, { ReadyState } from 'react-use-websocket';
+import React, { useState, useCallback, useMemo, useRef } from 'react'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 export const WebSocket = () => {
     //Public API that will echo messages sent to it back to the client
-    const [socketUrl, setSocketUrl] = useState('wss://echo.websocket.org'); //echo server
+    const [socketUrl, setSocketUrl] = useState('wss://echo.websocket.org') //echo server
 
     const {
         sendMessage,
@@ -18,19 +18,19 @@ export const WebSocket = () => {
         onError: () => console.log("Error with socket connection"),
         onMessage: () => JSONTest(lastJsonMessage),
         onClose: () => console.log("Connection closed")
-    });
+    })
 
-    const messageHistory = useRef([lastMessage]);
+    const messageHistory = useRef([lastMessage])
 
     messageHistory.current = useMemo(() =>
-        messageHistory.current.concat(lastMessage),[lastMessage]);
+        messageHistory.current.concat(lastMessage),[lastMessage])
 
     //test functions
     const testClickChangeSocketUrl = useCallback(() =>
-        setSocketUrl('ws://tracktech.ml:50010/client'), []); //portainer server
+        setSocketUrl('wss://tracktech.ml:50010/client'), []) //portainer server
 
     const testClickSendMessage = useCallback((cameraID) => () =>
-        sendMessage('{"type":"test", "cameraId":' + cameraID + '}'), []);
+        sendMessage('{"type":"test", "cameraId":' + cameraID + '}'), [])
 
     //connection status of web socket
     const connectionStatus = {
@@ -39,27 +39,27 @@ export const WebSocket = () => {
         [ReadyState.CLOSING]: 'Closing',
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState];
+    }[readyState]
 
 
     //function for start tracking target 'bodID' on camera 'cameraID' in frame 'frameID'
     const handleStart = useCallback((cameraID, boxID, frameID) => () =>
         sendMessage(
             '{"type":"start", "cameraId":"' + cameraID + '", "boxId":"' + boxID + '", "frameId":"' + frameID + '"}'),
-        []);
+        [])
 
     //function for stop tracking target 'objectID'
     const handleStop = useCallback((objectID) => () =>
         sendMessage(
             '{"type":"stop", "objectId":"' + objectID + '"}'),
-        []);
+        [])
 
     //converts JSON input into usable object
     //the returned boundingBoxJSON is an object with the data from the JSON
     //For example boundingBoxJSON.type returns the type of the JSON
     function parseMessage (input) {
-        const processInput = input.substring(1, input.length-1).replace(/['" ]+/g,'');
-        console.log(processInput.split(',')[0]);
+        const processInput = input.substring(1, input.length-1).replace(/['" ]+/g,'')
+        console.log(processInput.split(',')[0])
         return  {
             type: JSON.stringify(processInput.split(',')[0].split(':')[1]),
             cameraID: JSON.stringify(processInput.split(',')[1].split(':')[1]),
@@ -71,10 +71,10 @@ export const WebSocket = () => {
     //test function to print input
     function JSONTest (input) {
         if(input != null) {
-            console.log("type of JSON is: " + parseMessage(JSON.stringify(input)).type);
-            console.log("cameraID of JSON is: " + parseMessage(JSON.stringify(input)).cameraID);
-            console.log("frameID of JSON is: " + parseMessage(JSON.stringify(input)).frameId);
-            console.log("boxes of JSON is: " + parseMessage(JSON.stringify(input)).boxes);
+            console.log("type of JSON is: " + parseMessage(JSON.stringify(input)).type)
+            console.log("cameraID of JSON is: " + parseMessage(JSON.stringify(input)).cameraID)
+            console.log("frameID of JSON is: " + parseMessage(JSON.stringify(input)).frameId)
+            console.log("boxes of JSON is: " + parseMessage(JSON.stringify(input)).boxes)
         }
     }
 
@@ -110,6 +110,6 @@ export const WebSocket = () => {
                     .map((message, idx) => <span key={idx}>{message?.['data']}</span>)}
             </ul>
         </div>
-    );
-};
-export default WebSocket;
+    )
+}
+export default WebSocket
