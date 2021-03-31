@@ -21,8 +21,8 @@ logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 folder_name = 'test'
-images_dir = f'{root_dir}\\data\\annotated\\{folder_name}\\img1'
-bounding_boxes_path = f'{root_dir}\\data\\annotated\\{folder_name}\\gt\\gt.txt'
+images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
+bounding_boxes_path = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
 
 
 capture = ImageCapture(images_dir)
