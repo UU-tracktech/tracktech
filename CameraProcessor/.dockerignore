@@ -28,3 +28,4 @@
 **/data/annotated
 README.md
 *.pyc
+*.log

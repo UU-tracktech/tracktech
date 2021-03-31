@@ -2,5 +2,12 @@ opencv-python
 tornado
 numpy
 pdoc
-pytest
 regex
+
+# Testing
+pytest
+pytest-asyncio
+async-timeout
+
+# Flags
+argparse

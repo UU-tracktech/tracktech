@@ -5,14 +5,16 @@ services:
     image: camera-processor
     ports:
       - 9090:9090
-      - 8000:8000
-    command: ["python", "src/websocket_client.py"]
+    command: ["python", "src/websocket_client.py",
+              "--ws-url", "ws://processor-orchestrator-test-service/processor"]
+    # environment:
+    #  - ORCHESTRATORURL=ws://processor-orchestrator-test-service/processor
     deploy:
       replicas: 1
  
   processor-orchestrator-test-service:
     image: processor-orchestrator
     ports:
-      - 8000:80
+      - 80:80
     deploy:
       replicas: 1
