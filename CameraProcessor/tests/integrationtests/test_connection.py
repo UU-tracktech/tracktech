@@ -1,11 +1,21 @@
 from src.websocket_client import WebsocketClient
 import pytest
+import tornado
+import tornado.testing
+from tornado import websocket
+import tornado.web
 import jsonloader
 from async_timeout import timeout
 
+# Make with_timeout available from everywhere (as fixture?)\
+# Constructor
+# Connects
+# Disconnects
+# Reconnect
+# Test API call
+
 url = 'ws://processor-orchestrator-test-service/processor'
 url = 'ws://localhost:80/processor'
-websocket = None
 
 
 def with_timeout(t):
@@ -41,9 +51,16 @@ async def test_websocket_disconnecting():
     # global websocket
     websocket = WebsocketClient(url)
     await websocket.connect()
-    assert websocket.connection
+    # assert pytest.raises(AttributeError, PreAnnotations, example_text_file, nr_frames)
     websocket.connection.close()
-    assert not websocket.connection
+    try:
+        websocket.write_message('test')
+        assert False
+    except tornado.websocket.WebSocketClosedError:
+        assert True
+    # assert pytest.raises(tornado.websocket.WebSocketClosedError, websocket.write_message, 'test')
+    # await tornado.gen.sleep(1)
+    assert True
 
 
 @pytest.mark.asyncio
@@ -51,7 +68,7 @@ async def test_websocket_disconnecting():
 async def test_websocket_reconnect():
     # global websocket
     websocket = WebsocketClient(url)
-    websocket.connect
+    websocket.connect()
     assert websocket.connection
     websocket.connection.close()
     await websocket.connect()
