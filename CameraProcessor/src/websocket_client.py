@@ -1,6 +1,8 @@
 import asyncio
+import argparse
 import json
 import sys
+import os
 import logging
 from tornado import websocket
 from src.pipeline.detection.detection_obj import DetectionObj
@@ -177,13 +179,12 @@ async def main():
     """
 
     capture = HlsCapture()
-    # ws_client = await create_client("wss://echo.websocket.org")
-    ws_client = await create_client('ws://localhost:8000/processor')
+    ws_client = await create_client(opt.ws_url)
     frame_nr = 0
     feature_map_delay = 10
 
     # Video processing loop
-    while not capture.stopped():
+    while capture.opened():
 
         ret, frame = capture.get_next_frame()
 
@@ -226,4 +227,15 @@ async def main():
 
 
 if __name__ == '__main__':
+    """ Parse arguments given when calling file and creates websocket
+    
+    Args:
+        --ws-url: Websocket url to connect to. Defaults to a localhost websocket url
+        
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ws-url', type=str, default='ws://localhost:80/processor', help='websocket url it will '
+                                                                                          'connect through')
+    opt = parser.parse_args()
+    logging.info(opt)
     asyncio.run(main())

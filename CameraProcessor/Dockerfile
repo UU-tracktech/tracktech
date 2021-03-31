@@ -21,4 +21,6 @@ copy webpage webpage
 COPY src src
 COPY tests tests
 
+EXPOSE 80
+
 # CMD ["python", "src/localhost.py"]
