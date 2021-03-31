@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 import pdoc
 import pdoc.web
@@ -16,6 +17,9 @@ def main():
 
     # Get all project modules.
     modules = get_modules(root_folder)
+
+    # Create docs html dir if it doesn't exist.
+    Path("../docs/html").mkdir(parents=True, exist_ok=True)
 
     # Generate documentation for all found modules in the /docs.
     pdoc.pdoc(*modules, output_directory=Path(os.path.join(root_folder, '../docs/html')))
