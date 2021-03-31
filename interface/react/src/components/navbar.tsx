@@ -19,7 +19,7 @@ export class NavMenu extends Component {
             <Nav>
               <Nav.Link as={Link} style={{ padding: "8px 25px" }} color="light" to="/">Home</Nav.Link>
               <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/websockets">Websockets</Nav.Link>
-              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Canvas">Canvas</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Overlay">Overlay</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
               <LoginButton />
