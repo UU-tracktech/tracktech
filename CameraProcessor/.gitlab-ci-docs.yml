@@ -30,8 +30,8 @@ deploy_documentation_gitlab_pages:
   needs:
     - job: pdoc_documentation # only deploy when docs creation succeeded
   script:
-    - mv CameraProcessor/docs/html/ public/$BRANCH/CameraProcessor
+    - mv CameraProcessor/docs/html/ public/CameraProcessor # $BRANCH later
   artifacts:
     paths:
-      - public
+      - public # $BRANCH later?
     expire_in: 14 days
