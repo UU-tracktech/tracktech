@@ -10,7 +10,6 @@ pdoc_documentation:
     - apt-get update
     - apt-get install -y libgl1-mesa-dev
     - cd CameraProcessor
-    - mkdir docs/html
     - python --version
     - pip install -r ./requirements.txt
   script:
@@ -26,9 +25,10 @@ deploy_documentation_gitlab_pages:
   needs:
     - job: pdoc_documentation # only deploy when docs creation succeeded
   script:
-    - ls
-    - mv CameraProcessor/docs/html/ public/CameraProcessor # $BRANCH later
+    - mkdir public/CameraProcessor
+    - mv CameraProcessor/docs/html/ public/ # $BRANCH later
   artifacts:
+    when: always
     paths:
       - public # $BRANCH later?
     expire_in: 14 days
