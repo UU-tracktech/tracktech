@@ -4,8 +4,7 @@ services:
   forwarder:
     image: tracktech.ml:50007/tt-forwarder-image
     build: .
+    environment:
+      - CONFIG_PATH=/NetworkConfig.json
     ports:
       - 80:80
-    volumes:
-      - "./NetworkConfig.json:/NetworkConfig.json"
-    command: ["/NetworkConfig.json"]
