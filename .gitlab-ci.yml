@@ -15,6 +15,5 @@ trigger_orchestrator:
   trigger:
     include: ProcessorOrchestrator/.gitlab-ci.yml
   only:
-    - if: $CI_MERGE_REQUEST_ID
     - changes:
         - ProcessorOrchestrator/*
