@@ -25,7 +25,7 @@ deploy_documentation_gitlab_pages:
   needs:
     - job: pdoc_documentation # only deploy when docs creation succeeded
   script:
-    - mkdir public/CameraProcessor
+    - mkdir -p public/CameraProcessor
     - mv CameraProcessor/docs/html/ public/ # $BRANCH later
   artifacts:
     when: always
