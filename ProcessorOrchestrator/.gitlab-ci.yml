@@ -2,7 +2,7 @@ stages:
   - build
   - test
 
-docker-build:
+docker_build:
   # Official docker image.
   image: docker:latest
   stage: build
@@ -13,5 +13,6 @@ docker-build:
 
 unit-testing:
   stage: test
+  needs: [docker_build]
   script:
     - docker run processor-orchestrator
