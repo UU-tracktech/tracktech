@@ -1,5 +1,14 @@
 stages:
+  - test
   - triggers
+
+pytest:
+  stage: test
+  trigger:
+    include: CameraProcessor/.gitlab-ci.yml
+  rules:
+    - changes:
+        - CameraProcessor/*
 
 trigger_orchestrator:
   stage: triggers
