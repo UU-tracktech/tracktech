@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
 
 docker-build:
   # Official docker image.
@@ -8,7 +9,9 @@ docker-build:
   services:
     - docker:dind
   script:
-    - docker build -t processor-orchestrator ./ProcessorOrchestrator
-    # - docker run processor-orchestrator
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
+    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
+
+unit-testing:
+  stage: test
+  script:
+    - docker run processor-orchestrator

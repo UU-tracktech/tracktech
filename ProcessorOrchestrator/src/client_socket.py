@@ -8,6 +8,7 @@ import json
 from typing import Optional, Awaitable, Dict, Callable, Any
 import tornado.web
 from time import sleep
+
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 from object_manager import TrackingObject, objects

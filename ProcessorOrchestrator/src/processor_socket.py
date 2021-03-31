@@ -84,7 +84,8 @@ class ProcessorSocket(WebSocketHandler):
             }
 
             # Execute correct function
-            function: Optional[Callable[[], None]] = actions.get(message_object["type"])
+            function = actions.get(message_object["type"])
+            """type: Optional[Callable[[], None]]"""
 
             if function is None:
                 print("Someone gave an unknown command")

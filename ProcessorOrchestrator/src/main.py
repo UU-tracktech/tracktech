@@ -29,7 +29,7 @@ def main():
         'client_socket',
         'processor_socket',
         'connections',
-        'objectManager',
+        'object_manager',
         'logger',
         output_directory=Path(os.path.join(os.path.dirname(__file__), "../docs"))
     )
