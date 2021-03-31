@@ -4,7 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import { NavMenu } from './components/navbar'
 import { Home } from './pages/home'
 import { WebsocketUser } from './pages/websocket'
-import { CanvasVideo } from './pages/canvasVideo'
+import { OverlayVideo } from './pages/overlayVideo'
 import { WebsocketProvider } from './components/websocketContext'
 
 
@@ -20,7 +20,7 @@ export class App extends React.Component<{}, appState> {
             <NavMenu key={0} />
             <Route exact path='/' ><Home /></Route>
             <Route path='/Websockets'  ><WebsocketUser /></Route>
-            <Route path='/Canvas' ><CanvasVideo /></Route>
+            <Route path='/Overlay' ><OverlayVideo /></Route>
           </BrowserRouter>
         </WebsocketProvider>
       </div>

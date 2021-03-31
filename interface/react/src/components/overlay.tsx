@@ -1,14 +1,14 @@
-import React from "react"
+import React from 'react'
 import { Queue } from 'queue-typescript'
 
+import { VideoPlayer, VideoPlayerProps } from '../components/VideojsPlayer'
 import { Box } from '../classes/ClientMessage'
 import { websocketContext } from './websocketContext'
 
-export type overlayProps = { cameraId: number, width: number, height: number, onClickCallback: (id?: number) => void }
-type overlayState = { boxes: Box[] }
-export class Overlay extends React.Component<overlayProps, overlayState> {
+export type overlayProps = { cameraId: number, onBoxClick: (id?: number) => void }
+type overlayState = { boxes: Box[], width: number, height: number, left: number, top: number }
+export class Overlay extends React.Component<overlayProps & VideoPlayerProps, overlayState> {
 
-    canvas = React.createRef<HTMLCanvasElement>()
     queue = new Queue<Box[]>()
 
     static contextType = websocketContext
@@ -16,7 +16,12 @@ export class Overlay extends React.Component<overlayProps, overlayState> {
 
     constructor(props: any) {
         super(props)
-        this.state = { boxes: [] }
+        this.state = { boxes: [], width: 100, height: 100, left: 100, top: 100 }
+    }
+
+    onPlayerResize(width: number, height: number, left: number, top: number) {
+        this.setState({ width: width, height: height, left: left, top: top })
+        console.log(width, height, left, top)
     }
 
     componentDidMount() {
@@ -44,22 +49,36 @@ export class Overlay extends React.Component<overlayProps, overlayState> {
 
     render() {
         const colordict = { 0: 'red', 1: 'green', 2: 'blue' }
-        return <div>
-            <div style={{ position: 'absolute', width: this.props.width, height: this.props.height, overflow: 'hidden' }}>
+
+        return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
                 {
-                    this.state.boxes.map((box) => <div key={box.type} style={
-                        {
-                            position: 'relative',
-                            left: box.x1 * this.props.width, top: box.y1 * this.props.height, width: (box.x2 - box.x1) * this.props.width, height: (box.y2 - box.y1) * this.props.height,
-                            borderColor: colordict[box.type ?? 0], borderStyle: 'solid',
-                            transitionProperty: 'all', transitionDuration:'1s',
-                            zIndex: 1000
+                    this.state.boxes.map((box) => {
+                        if (box.x1 > box.x2){
+                            var tempx = box.x1
+                            box.x1 = box.x2
+                            box.x2 = tempx  
                         }
-                    } onClick={() => this.props.onClickCallback(box.id)} />)
+                        if (box.y1 > box.y2){
+                            var tempy = box.y1
+                            box.y1 = box.y2
+                            box.y2 = tempy
+                        }
+                        return <div key={box.type} style={
+                            {
+                                position: 'relative',
+                                left: `${box.x1 * this.state.width + this.state.left}px`, top: `${box.y1 * this.state.height + this.state.top}px`,
+                                width: `${(box.x2 - box.x1) * this.state.width}px`, height: `${(box.y2 - box.y1) * this.state.height}px`,
+                                borderColor: colordict[box.type ?? 0], borderStyle: 'solid',
+                                transitionProperty: 'all', transitionDuration: '1s',
+                                zIndex: 1000
+                            }
+                        } onClick={() => this.props.onBoxClick(box.id)} />
+                    })
                 }
             </div>
-            <div>
-                {this.props.children}
+            <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
+                <VideoPlayer onResize={(w, h, l, t) => this.onPlayerResize(w, h, l, t)} autoplay={false} controls={true} onButtonClick={() => this.props.onButtonClick()} sources={this.props.sources} />
             </div>
         </div >
     }
