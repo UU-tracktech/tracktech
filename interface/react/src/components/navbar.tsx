@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Navbar, Nav, Button, Form } from 'react-bootstrap'
+import { Navbar, Nav, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import LoginButton from './LoginButton'

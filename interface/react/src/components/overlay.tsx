@@ -2,11 +2,11 @@ import React from "react"
 import { Queue } from 'queue-typescript'
 
 import { Box } from '../classes/ClientMessage'
-import { websocketContext } from '../components/websocketContext'
+import { websocketContext } from './websocketContext'
 
-export type canvasProps = { cameraId: number, width: number, height: number, onClickCallback: (id?: number) => void }
-type canvasState = { boxes: Box[] }
-export class Canvas extends React.Component<canvasProps, canvasState> {
+export type overlayProps = { cameraId: number, width: number, height: number, onClickCallback: (id?: number) => void }
+type overlayState = { boxes: Box[] }
+export class Overlay extends React.Component<overlayProps, overlayState> {
 
     canvas = React.createRef<HTMLCanvasElement>()
     queue = new Queue<Box[]>()
@@ -42,7 +42,6 @@ export class Canvas extends React.Component<canvasProps, canvasState> {
         this.setState({ queueLength: this.queue.length })
     }*/
 
-
     render() {
         const colordict = { 0: 'red', 1: 'green', 2: 'blue' }
         return <div>
@@ -59,14 +58,6 @@ export class Canvas extends React.Component<canvasProps, canvasState> {
                     } onClick={() => this.props.onClickCallback(box.id)} />)
                 }
             </div>
-            {/*  < canvas
-                key={this.props.cameraId}
-                style={{ position: 'absolute', zIndex: 1000 }}
-                width={this.props.width}
-                height={this.props.height}
-                ref={this.canvas}
-                onClick={(event) => this.onClick(event)}
-            /> */}
             <div>
                 {this.props.children}
             </div>
