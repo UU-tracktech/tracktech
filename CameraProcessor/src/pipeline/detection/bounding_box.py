@@ -1,5 +1,6 @@
 import json
 
+
 class BoundingBox:
     """
     Contains information about a single bounding box
