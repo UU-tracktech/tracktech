@@ -30,7 +30,7 @@ bounding_boxes = PreAnnotations(bounding_boxes_path, capture.nr_images).boxes
 
 logging.info('start training')
 while capture.opened():
-    ret, frame = capture.get_next_frame()
+    ret, frame, _ = capture.get_next_frame()
 
     if not ret:
         logging.warning('Frame inside training not found')
