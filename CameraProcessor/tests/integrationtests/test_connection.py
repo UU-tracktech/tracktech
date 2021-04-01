@@ -31,41 +31,43 @@ def with_timeout(t):
 
 def test_websocket_constructor():
     # global websocket
-    websocket = WebsocketClient(url)
-    assert websocket.url == url
-    assert websocket.write_queue == []
-    assert not websocket.reconnecting
-    assert not websocket.connection
+    websocket_test = WebsocketClient(url)
+    assert websocket_test.url == url
+    assert websocket_test.write_queue == []
+    assert not websocket_test.reconnecting
+    assert not websocket_test.connection
 
 
 @pytest.mark.asyncio
 @with_timeout(10)
 async def test_connecting():
     # global websocket
-    websocket = WebsocketClient(url)
-    await websocket.connect()
-    assert websocket.connection
+    websocket_test = WebsocketClient(url)
+    await websocket_test.connect()
+    assert websocket_test.connection
 
 
 @pytest.mark.asyncio
-@with_timeout(2)
+@with_timeout(3)
 async def test_websocket_disconnecting():
     # global websocket
-    websocket = WebsocketClient(url)
-    await websocket.connect()
+    websocket_test = WebsocketClient(url)
+    await websocket_test.connect()
     # assert pytest.raises(AttributeError, PreAnnotations, example_text_file, nr_frames)
-    websocket.on_close()
-    await asyncio.sleep(1)
-    assert websocket.start_tracking("test")
+    assert websocket_test.connection is not None
+    await websocket.gen.sleep(1)
+    websocket.WebSocketClientConnection.close(websocket_test.connection)
+    await websocket.gen.sleep(1)
+    assert websocket_test.connection is None
 
 
 @pytest.mark.asyncio
 @with_timeout(10)
 async def test_websocket_reconnect():
     # global websocket
-    websocket = WebsocketClient(url)
-    await websocket.connect()
-    assert websocket.connection
-    websocket.connection.close()
-    await websocket.connect()
-    assert websocket.connection
+    websocket_test = WebsocketClient(url)
+    await websocket_test.connect()
+    assert websocket_test.connection
+    websocket_test.connection.close()
+    await websocket_test.connect()
+    assert websocket_test.connection
