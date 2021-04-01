@@ -185,7 +185,7 @@ async def main():
     # Video processing loop
     while not capture.stopped():
 
-        ret, frame = capture.get_next_frame()
+        ret, frame, _ = capture.get_next_frame()
 
         if not ret:
             logging.warning('capture object frame missed')

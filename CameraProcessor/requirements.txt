@@ -8,13 +8,18 @@ matplotlib
 scipy<=1.6.1
 pytest
 regex
+time
 
 # Logging
 logging
 
-# Images
+# Images / Video
 pillow
 opencv-python==4.1.2.30
+ffmpeg-python
+
+# Threading
+threading
 
 # CPU AI learning
 # tensorboard==2.3.0
