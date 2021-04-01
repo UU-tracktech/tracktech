@@ -63,7 +63,14 @@ class WebsocketClient:
                 await asyncio.sleep(1)
 
     def on_close(self):
+        try:
+            websocket.WebSocketClientConnection.close(self.connection,
+                                                      1000, "Closing websocket for reasons I guess.")
+        except Exception:
+            print("Something totally went wrong with closing the websocket connection! "
+                  "Like, yoinks, Scoob!")
         self.connected = False
+        self.connection = None
 
     def write_message(self, message):
         """
