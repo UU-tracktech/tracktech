@@ -37,7 +37,7 @@ def test_websocket_constructor():
 
 
 @pytest.mark.asyncio
-@with_timeout(5)
+@with_timeout(10)
 async def test_connecting():
     # global websocket
     websocket = WebsocketClient(url)
@@ -52,15 +52,8 @@ async def test_websocket_disconnecting():
     websocket = WebsocketClient(url)
     await websocket.connect()
     # assert pytest.raises(AttributeError, PreAnnotations, example_text_file, nr_frames)
-    websocket.connection.close()
-    try:
-        websocket.write_message('test')
-        assert False
-    except tornado.websocket.WebSocketClosedError:
-        assert True
-    # assert pytest.raises(tornado.websocket.WebSocketClosedError, websocket.write_message, 'test')
-    # await tornado.gen.sleep(1)
-    assert True
+    await websocket.connection.close()
+    assert not websocket.connected
 
 
 @pytest.mark.asyncio
