@@ -32,6 +32,7 @@ class WebsocketClient:
 
     def __init__(self, url):
         self.connection = None  # Holds the connection object
+        self.connected = False  # Sees whether socket is connected
         self.reconnecting = False  # Whether we are currently trying to reconnect
         self.url = url  # The url of the websocket
         self.write_queue = []  # Stores messages that could not be sent due to a closed socket
@@ -50,17 +51,19 @@ class WebsocketClient:
         """
         Connect to the websocket url asynchronously
         """
-        connected = False
-        while not connected:
+        while not self.connected:
             try:
                 self.connection = await websocket.websocket_connect(self.url,
                                                                     on_message_callback=self._on_message)
                 logging.info(f"Connected to {self.url} successfully")
-                connected = True
+                self.connected = True
 
             except ConnectionRefusedError:
                 logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
                 await asyncio.sleep(1)
+
+    def on_close(self):
+        self.connected = False
 
     def write_message(self, message):
         """

@@ -7,8 +7,6 @@ services:
       - 9090:9090
     command: ["python", "src/websocket_client.py",
               "--ws-url", "ws://processor-orchestrator-test-service/processor"]
-    # environment:
-    #  - ORCHESTRATORURL=ws://processor-orchestrator-test-service/processor
     deploy:
       replicas: 1
  
