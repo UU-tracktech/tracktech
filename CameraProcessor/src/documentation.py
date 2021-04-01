@@ -15,6 +15,8 @@ def main():
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
     pdoc.render.configure(template_directory=Path(os.path.join(root_folder, '../docs/template')), docformat='google')
 
+    pdoc.render.env.filters['to_tree'] = to_tree
+
     # Get all project modules.
     modules = get_modules(root_folder)
 
@@ -67,6 +69,30 @@ def get_modules(root_folder: str) -> List[str]:
         modules.append(module_name)
 
     return modules
+
+
+def to_tree(modules):
+    """Turn a list of modules into a dictionary representing a tree which gets turned into a JSON object by Jinja2.
+
+    The tree dictionary contains a dictionary for each package/module.
+    A module has an empty dictionary and packages leading up to
+    a module are filled with all contained module dictionaries.
+
+    Args:
+        modules: list of strings of all module paths (like used in an import statement).
+
+    Returns: dictionary containing the tree structure as mentioned above.
+    """
+    tree = dict()
+
+    for module in modules:
+        module_path = module.split('.')
+        subtree = tree
+        for part in module_path:
+            if part not in subtree:
+                subtree[part] = dict()
+            subtree = subtree[part]
+    return tree
 
 
 if __name__ == '__main__':
