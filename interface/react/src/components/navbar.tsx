@@ -3,6 +3,7 @@ import { Navbar, Nav, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import LoginButton from './LoginButton'
+import { LoggedInUser } from './loggedInUser'
 
 export class NavMenu extends Component {
 
@@ -22,6 +23,7 @@ export class NavMenu extends Component {
               <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Overlay">Overlay</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
+              <LoggedInUser />
               <LoginButton />
             </Form>
           </Navbar.Collapse>
