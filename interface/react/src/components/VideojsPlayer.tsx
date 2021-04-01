@@ -15,7 +15,18 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             this.player?.controlBar.addChild(toggleSizeButton, { Text: 'Toggle main' }, 0)
             this.player?.on('playerresize', () => this.onResize())
             this.player?.on('play', () => this.onResize())
+
+            //this.player?.on('timeupdate', () => this.onTimeUpdate())
+            //this.player?.on('progress', () => this.onProgress())
         })
+    }
+
+    onProgress() {
+        console.log('onProgress:', this.player?.currentTime())
+    }
+
+    onTimeUpdate() {
+        console.log('onTimeupdate:', this.player?.currentTime())
     }
 
     onResize() {
