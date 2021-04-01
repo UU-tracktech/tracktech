@@ -1,7 +1,9 @@
+import asyncio
 from src.websocket_client import WebsocketClient
 import pytest
 import tornado
 import tornado.testing
+import tornado.gen
 from tornado import websocket
 import tornado.web
 import jsonloader
@@ -52,8 +54,9 @@ async def test_websocket_disconnecting():
     websocket = WebsocketClient(url)
     await websocket.connect()
     # assert pytest.raises(AttributeError, PreAnnotations, example_text_file, nr_frames)
-    await websocket.connection.close()
-    assert not websocket.connected
+    websocket.on_close()
+    await asyncio.sleep(1)
+    assert websocket.start_tracking("test")
 
 
 @pytest.mark.asyncio
@@ -61,7 +64,7 @@ async def test_websocket_disconnecting():
 async def test_websocket_reconnect():
     # global websocket
     websocket = WebsocketClient(url)
-    websocket.connect()
+    await websocket.connect()
     assert websocket.connection
     websocket.connection.close()
     await websocket.connect()
