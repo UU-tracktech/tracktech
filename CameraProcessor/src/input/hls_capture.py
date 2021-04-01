@@ -30,6 +30,7 @@ class HlsCapture(ICapture):
         self.start_time_stamp = 0
         self.frame_time_stamp = 0
         self.last_frame_time_stamp = 0
+        self.hls_start_time_stamp = 0
 
         # Time
         self.thread_start_time = 0
@@ -44,13 +45,18 @@ class HlsCapture(ICapture):
         self.t.daemon = True
         self.t.start()
 
+        # Sleep is essential so websocket has a prepared self.cap
+        time.sleep(1)
+
     def opened(self) -> bool:
         """Check whether the current capture object is still opened
 
         Returns:
-            Whether stream is still openened at this point of time
+            Whether stream is still opened at this point of time
         """
-        return self.cap.isOpened()
+        if self.cap:
+            return self.cap.isOpened()
+        return False
 
     # When everything is done release the capture
     def close(self) -> None:
@@ -129,4 +135,9 @@ class HlsCapture(ICapture):
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
         # extract the start_time from the meta-data to get the absolute segment time
-        self.hls_start_time_stamp = float(ffmpeg.probe(self.hls_url)['format']['start_time'])
+        meta_data = ffmpeg.probe(self.hls_url)
+        try:
+            self.hls_start_time_stamp = float(meta_data['format']['start_time'])
+        # Json did not contain key
+        except KeyError as e:
+            logging.warning(f'Json does not contain keys for start_time: {e}')

@@ -11,7 +11,7 @@ class CamCapture(ICapture):
 
     # Sees whether stream has stopped
     def opened(self):
-        return self.cap.isOpened(), None
+        return self.cap.isOpened()
 
     # When everything is done release the capture
     def close(self):
@@ -19,4 +19,4 @@ class CamCapture(ICapture):
 
     # Gets the next frame from the stream
     def get_next_frame(self):
-        return self.cap.read()
+        return *self.cap.read(), None
