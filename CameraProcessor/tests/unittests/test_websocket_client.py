@@ -1,6 +1,6 @@
 import pytest
 import json
-import src.websocket_client as websocket_client
+from src.websocket_client import WebsocketClient
 
 
 def __eq__(self, other):
@@ -27,6 +27,7 @@ class TestWebsocketClient:
         """Set ups mock messages for unit testing.
 
         """
+        self.ws_client = WebsocketClient
         self.start_json = '{"type": "start", "objectId": 1, "frameId": 1, "boxId": 1}'
         self.stop_json = '{"type": "stop", "objectId": 1}'
         self.feature_map_json = '{"type": "featureMap", "objectId": 1, "featureMap": []}'
@@ -36,10 +37,12 @@ class TestWebsocketClient:
         self.message_object_start_tracking_string = self.start_json
         self.message_object_stop_tracking_string = self.stop_json
         self.message_object_update_feature_map_string = self.feature_map_json
-        self.connect = websocket_client.connected
-        self.connection = websocket_client.connection
-        self.connect_task_created = websocket_client.connect_task_created
-        self.write_message = websocket_client.write_message("test")
+        self.start_tracking = self.ws_client.start_tracking(self.ws_client, self.message_object_start_tracking)
+        self.stop_tracking = self.ws_client.stop_tracking(self.ws_client, self.message_object_stop_tracking)
+        self.update_feature_map = self.ws_client.update_feature_map(self.ws_client,
+                                                                    self.message_object_update_feature_map)
+        self.connect = self.ws_client.connect
+        self.write_message = self.ws_client._write_message(self.ws_client, "test")
 
     def test_start_tracking(self):
         """Checks if start_tracking takes correct values from message
@@ -66,21 +69,22 @@ class TestWebsocketClient:
         """Checks if read_msg correctly parses start tracking message
 
         """
-        json_temp_start = websocket_client.read_msg(self.message_object_start_tracking_string)
+        json_temp_start = self.ws_client._on_message(self.ws_client, self.message_object_start_tracking_string)
         assert json_temp_start.__eq__(self.message_object_start_tracking)
 
     def test_read_msg_stop_tracking(self):
         """Checks if read_msg correctly parses stop tracking message
 
         """
-        json_temp_stop = websocket_client.read_msg(self.message_object_stop_tracking_string)
+        json_temp_stop = self.ws_client._on_message(self.ws_client, self.message_object_stop_tracking_string)
         assert json_temp_stop.__eq__(self.message_object_stop_tracking)
 
     def test_read_msg_update_feature_map(self):
         """Checks if read_msg correctly parses update feature map message
 
         """
-        json_temp_feature_map = websocket_client.read_msg(self.message_object_update_feature_map_string)
+        json_temp_feature_map = self.ws_client._on_message(self.ws_client,
+                                                           self.message_object_update_feature_map_string)
         assert json_temp_feature_map.__eq__(self.message_object_update_feature_map)
 
     def test_read_msg_type_error_exception(self):
@@ -88,14 +92,39 @@ class TestWebsocketClient:
 
         """
         with pytest.raises(Exception):
-            assert websocket_client.read_msg('"invalidJson": "yes"')
+            assert self.ws_client._on_message(self.ws_client, '"invalidJson": "yes"')
 
     def test_read_msg_key_error_exception(self):
         """Checks if read_msg raises exception with missing value in input
 
         """
         with pytest.raises(Exception):
-            assert websocket_client.read_msg('{"type": "start", "objectId": 1, "frameId": 1}')
+            assert self.ws_client._on_message(self.ws_client, '{"type": "start", "objectId": 1, "frameId": 1}')
+
+    def test_unparsed_json_input_start_tracking(self):
+        """Checks if start_tracking raises exception with is parsed JSON
+
+        """
+        with pytest.raises(Exception):
+            assert self.ws_client.start_tracking(self.ws_client, self.start_json)
+
+    def test_parsed_json_input_start_tracking(self):
+        """Checks if start_tracking raises exception with is parsed JSON
+
+        """
+        self.ws_client.start_tracking(self.ws_client, self.message_object_start_tracking)
+
+    def test_parsed_json_input_stop_tracking(self):
+        """Checks if start_tracking raises exception with is parsed JSON
+
+        """
+        self.ws_client.stop_tracking(self.ws_client, self.message_object_stop_tracking)
+
+    def test_parsed_json_input_feature_map(self):
+        """Checks if start_tracking raises exception with in parsed JSON
+
+        """
+        self.ws_client.update_feature_map(self.ws_client, self.message_object_update_feature_map)
 
 
 if __name__ == '__main__':
