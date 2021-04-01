@@ -8,6 +8,7 @@ import configparser
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
+from src.input.cam_capture import CamCapture
 import src.websocket_client as client
 import asyncio
 
@@ -79,6 +80,7 @@ def main(arg):
 
     # Capture the video stream
     vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
+    vid_stream = CamCapture()
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(time.localtime(), None, 0)
