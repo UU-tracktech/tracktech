@@ -1,6 +1,8 @@
 import asyncio
+import argparse
 import json
 import sys
+import os
 import logging
 from tornado import websocket
 from src.pipeline.detection.detection_obj import DetectionObj
@@ -30,6 +32,7 @@ class WebsocketClient:
 
     def __init__(self, url):
         self.connection = None  # Holds the connection object
+        self.connected = False  # Sees whether socket is connected
         self.reconnecting = False  # Whether we are currently trying to reconnect
         self.url = url  # The url of the websocket
         self.write_queue = []  # Stores messages that could not be sent due to a closed socket
@@ -48,17 +51,26 @@ class WebsocketClient:
         """
         Connect to the websocket url asynchronously
         """
-        connected = False
-        while not connected:
+        while not self.connected:
             try:
                 self.connection = await websocket.websocket_connect(self.url,
                                                                     on_message_callback=self._on_message)
                 logging.info(f"Connected to {self.url} successfully")
-                connected = True
+                self.connected = True
 
             except ConnectionRefusedError:
                 logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
                 await asyncio.sleep(1)
+
+    def on_close(self):
+        try:
+            websocket.WebSocketClientConnection.close(self.connection,
+                                                      1000, "Closing websocket for reasons I guess.")
+        except Exception:
+            print("Something totally went wrong with closing the websocket connection! "
+                  "Like, yoinks, Scoob!")
+        self.connected = False
+        self.connection = None
 
     def write_message(self, message):
         """
@@ -106,22 +118,22 @@ class WebsocketClient:
         Args:
             message: the raw message posted on the websocket
         """
+
         # Websocket closed, reconnect is handled by write_message
         if not message:
             logging.error("The websocket connection was closed")
             return
-
         try:
             message_object = json.loads(message)
 
             # Switch on message type
             actions = {
                 "featureMap":
-                    lambda: self.update_feature_map(self, message_object),
+                    self.update_feature_map,
                 "start":
-                    lambda: self.start_tracking(self, message_object),
+                    self.start_tracking,
                 "stop":
-                    lambda: self.stop_tracking(self, message_object)
+                    self.stop_tracking,
             }
 
             # Execute correct function
@@ -129,7 +141,7 @@ class WebsocketClient:
             if function is None:
                 logging.warning(f"Someone gave an unknown command: {message}")
             else:
-                function()
+                function(message_object)
 
         except ValueError:
             logging.warning(f"Someone wrote bad json: {message}")
@@ -144,8 +156,8 @@ class WebsocketClient:
         Args:
             message: JSON parse of the sent message
         """
-        object_id = message["objectId"]
-        feature_map = message["featureMap"]
+        object_id = message['objectId']
+        feature_map = message['featureMap']
         logging.info(f"Updating object {object_id} with feature map {feature_map}")
 
     def start_tracking(self, message):
@@ -155,9 +167,9 @@ class WebsocketClient:
         Args:
             message: JSON parse of the sent message
         """
-        object_id = message["objectId"]
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
+        object_id = message['objectId']
+        frame_id = message['frameId']
+        box_id = message['boxId']
         logging.info(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
 
     def stop_tracking(self, message):
@@ -167,7 +179,7 @@ class WebsocketClient:
         Args:
             message: JSON parse of the sent message
         """
-        object_id = message["objectId"]
+        object_id = message['objectId']
         logging.info(f"Stop tracking object {object_id}")
 
 
@@ -177,13 +189,12 @@ async def main():
     """
 
     capture = HlsCapture()
-    # ws_client = await create_client("wss://echo.websocket.org")
-    ws_client = await create_client('ws://localhost:8000/processor')
+    ws_client = await create_client('wss://tracktech.ml:50010/processor')
     frame_nr = 0
     feature_map_delay = 10
 
     # Video processing loop
-    while not capture.stopped():
+    while capture.opened():
 
         ret, frame = capture.get_next_frame()
 
@@ -226,4 +237,15 @@ async def main():
 
 
 if __name__ == '__main__':
+    """ Parse arguments given when calling file and creates websocket
+
+    Args:
+        --ws-url: Websocket url to connect to. Defaults to a localhost websocket url
+
+    """
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--ws-url', type=str, default='ws://localhost:80/processor', help='websocket url it will '
+    # 'connect through')
+    # opt = parser.parse_args()
+    # logging.info(opt)
     asyncio.run(main())
