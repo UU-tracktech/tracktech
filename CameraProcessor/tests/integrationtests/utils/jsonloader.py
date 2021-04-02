@@ -3,11 +3,12 @@ import random
 import os
 
 
-def load_data(datatype):
+def load_data(datatype, nr=None):
     """Load a JSON test data file of chosen type.
 
     Args:
-        A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'}
+        - A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'}
+        - A number which defaults to None. If it is not None, it will load 'nr' random json objects
 
     Returns:
         A dictionary of test data of the chosen JSON message type
@@ -24,34 +25,11 @@ def load_data(datatype):
         raise NameError('The JSON object requested is not in scope.')
     else:
         f = open(f'testdata/{filename}.json', encoding='utf8')
-        return json.load(f)
-
-
-def load_random_data(datatype, nr):
-    """Load a random amount of JSON test data of chosen datatype
-
-    Args:
-        - A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'}
-        - The number of random data you want
-
-    Returns:
-        A dictionary of length 'nr' of the chosen JSON message type
-    """
-
-    switcher = {
-        'boundingBoxes': 'boxes',
-        'start': 'stopstart',
-        'stop': 'stopstart',
-        'featureMap': 'featuremaps',
-        'invalid': 'invalid'
-    }
-    filename = switcher.get(datatype)
-    if filename is None:
-        raise NameError('The JSON object requested is not in scope.')
-    else:
-        f = open(f'testdata/{filename}.json', encoding='utf8')
         jfile = json.load(f)
-        d = []
-        for i in range(nr):
-            d.append(random.choice(jfile))
-        return d
+        if nr is not None:
+            d = []
+            for i in range(nr):
+                d.append(random.choice(jfile))
+            return d
+        else:
+            return jfile
