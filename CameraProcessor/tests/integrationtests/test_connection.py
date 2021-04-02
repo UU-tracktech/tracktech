@@ -6,7 +6,7 @@ import tornado.testing
 import tornado.gen
 from tornado import websocket
 import tornado.web
-import jsonloader
+#import jsonloader
 from async_timeout import timeout
 
 # Make with_timeout available from everywhere (as fixture?)\

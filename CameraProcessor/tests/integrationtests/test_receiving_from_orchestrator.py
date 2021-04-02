@@ -1,4 +1,5 @@
 import asyncio
+import os
 from src.websocket_client import WebsocketClient
 import pytest
 import tornado
@@ -6,7 +7,7 @@ import tornado.testing
 import tornado.gen
 from tornado import websocket
 import tornado.web
-import jsonloader
+from utils.jsonloader import load_data, load_random_data
 from async_timeout import timeout
 
 # Listens to what orchestrator sends through
@@ -23,7 +24,6 @@ class TestReceivingFromOrchestrator:
     def setup_method(self):
         self.ws_client = WebsocketClient(url)
 
-<<<<<<< HEAD
     def with_timeout(t):
         def wrapper(corofunc):
             async def run(*args, **kwargs):
@@ -39,6 +39,3 @@ websocket_test = WebsocketClient(url)
 
 if __name__ == '__main__':
     pytest.main(TestReceivingFromOrchestrator)
-=======
-websocket_test = WebsocketClient(url)
->>>>>>> 51091ca673b4994f714f360871c50a2f1f10cb32

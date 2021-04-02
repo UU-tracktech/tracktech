@@ -1,14 +1,8 @@
-import asyncio
 from src.websocket_client import WebsocketClient
 import pytest
+import os
 import json
-import random
-import tornado
-import tornado.testing
-import tornado.gen
-from tornado import websocket
-import tornado.web
-import jsonloader
+from utils.jsonloader import load_random_data
 from async_timeout import timeout
 
 # Talks to orchestrator
@@ -50,37 +44,51 @@ class TestSendToOrchestrator:
         """Confirms connection with websocket
 
         """
+        await self.ws_client.connect()
         assert self.ws_client.connection
 
-    def test_send_single_valid_boundingbox_data(self):
-        """Sends single valid boundingbox entry
+    #@pytest.fixture(params=[1, 10])
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_send_x_valid_boundingbox_data(self):
+        """Sends valid boundingbox entry
 
         """
-        m = jsonloader.load_random_data('boundingBoxes', 1)
+        m = load_random_data('boundingBoxes', 1)
         self.ws_client.write_message((json.dumps(m)))
 
-    def test_send_single_valid_featuremap_data(self):
-        """Sends single valid data entry for bounding boxes
+    #@pytest.fixture(params=[1, 10])
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_send_x_valid_featuremap_data(self):
+        """Sends valid data entry for bounding boxes
 
         """
-        m = jsonloader.load_random_data('featureMap', 1)
+        m = load_random_data('featureMap', 1)
         self.ws_client.write_message((json.dumps(m)))
 
-    def test_send_single_valid_start_or_stop_data(self):
+    #@pytest.fixture(params=[1, 10])
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_send_x_valid_start_data(self):
+        """Sends valid data entry for starting
+
+        """
+        m = load_random_data('start', 1)
+        self.ws_client.write_message((json.dumps(m)))
+
+    #@pytest.fixture(params=[1, 10])
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_send_x_valid_stop_data(self):
         """Sends single valid data entry for starting
 
         """
-        m = jsonloader.load_random_data('boundingBoxes', 1)
+        m = load_random_data('stop', 1)
         self.ws_client.write_message((json.dumps(m)))
 
     def test_send_single_invalid_data(self):
         """Sends single invalid data entry
-
-        """
-        pass
-
-    def test_send_10_valid_data(self):
-        """Sends multiple valid data entries
 
         """
         pass
