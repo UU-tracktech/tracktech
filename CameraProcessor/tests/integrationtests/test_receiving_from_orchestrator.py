@@ -23,6 +23,7 @@ class TestReceivingFromOrchestrator:
     def setup_method(self):
         self.ws_client = WebsocketClient(url)
 
+<<<<<<< HEAD
     def with_timeout(t):
         def wrapper(corofunc):
             async def run(*args, **kwargs):
@@ -38,3 +39,6 @@ websocket_test = WebsocketClient(url)
 
 if __name__ == '__main__':
     pytest.main(TestReceivingFromOrchestrator)
+=======
+websocket_test = WebsocketClient(url)
+>>>>>>> 51091ca673b4994f714f360871c50a2f1f10cb32

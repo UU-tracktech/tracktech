@@ -14,8 +14,8 @@ def load_data(datatype):
     """
     switcher = {
         'boundingBoxes': 'boxes',
-        'start': 'stopstart',
-        'stop': 'stopstart',
+        'start': 'start',
+        'stop': 'stop',
         'featureMap': 'featuremaps'
     }
     filename = switcher.get(datatype)
