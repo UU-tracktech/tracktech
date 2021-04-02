@@ -32,7 +32,7 @@ bounding_boxes = pre_annotations.boxes
 
 logging.info('start training')
 while capture.opened():
-    ret, frame = capture.get_next_frame()
+    ret, frame, _ = capture.get_next_frame()
 
     if not ret:
         logging.warning('Frame inside training not found')
