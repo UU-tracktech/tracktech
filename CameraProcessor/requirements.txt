@@ -6,6 +6,7 @@ tornado==6.1
 numpy>=1.16<1.19
 matplotlib
 scipy<=1.6.1
+pdoc
 pytest
 regex
 python-time

@@ -3,6 +3,7 @@ import ffmpeg
 import threading
 import time
 import logging
+import json
 from typing import List
 from src.input.icapture import ICapture
 
@@ -135,9 +136,14 @@ class HlsCapture(ICapture):
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
         # extract the start_time from the meta-data to get the absolute segment time
+        print(self.hls_url)
         meta_data = ffmpeg.probe(self.hls_url)
         try:
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         # Json did not contain key
         except KeyError as e:
             logging.warning(f'Json does not contain keys for start_time: {e}')
+
+    def to_json(self):
+        """Converts HLS URL into JSON with correct type included."""
+        return json.dumps({"type": "identifier", "id": self.hls_url})
