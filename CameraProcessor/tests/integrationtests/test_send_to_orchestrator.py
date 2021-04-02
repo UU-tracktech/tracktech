@@ -55,21 +55,25 @@ class TestSendToOrchestrator:
 
         """
         m = load_random_data('boundingBoxes', 1)
+
         self.ws_client.write_message((json.dumps(m)))
 
     #@pytest.fixture(params=[1, 10])
     @pytest.mark.asyncio
     @with_timeout(10)
+
     async def test_send_x_valid_featuremap_data(self):
         """Sends valid data entry for bounding boxes
 
         """
         m = load_random_data('featureMap', 1)
+
         self.ws_client.write_message((json.dumps(m)))
 
     #@pytest.fixture(params=[1, 10])
     @pytest.mark.asyncio
     @with_timeout(10)
+
     async def test_send_x_valid_start_data(self):
         """Sends valid data entry for starting
 
@@ -80,12 +84,14 @@ class TestSendToOrchestrator:
     #@pytest.fixture(params=[1, 10])
     @pytest.mark.asyncio
     @with_timeout(10)
+
     async def test_send_x_valid_stop_data(self):
         """Sends single valid data entry for starting
 
         """
         m = load_random_data('stop', 1)
         self.ws_client.write_message((json.dumps(m)))
+
 
     def test_send_single_invalid_data(self):
         """Sends single invalid data entry
