@@ -10,15 +10,6 @@ pytest:
   rules:
     - changes:
         - CameraProcessor/*
-#
-#trigger_orchestrator:
-#  stage: triggers
-#  trigger:
-#    include: ProcessorOrchestrator/.gitlab-ci.yml
-#  rules:
-#    - if: $CI_MERGE_REQUEST_ID
-#    - changes:
-#        - ProcessorOrchestrator/*
 
 orchestrator_docker_build:
   stage: build
