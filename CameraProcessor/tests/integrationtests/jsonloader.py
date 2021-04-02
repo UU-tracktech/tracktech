@@ -1,7 +1,7 @@
 import json
 
 
-def loadData(datatype):
+def load_data(datatype):
     """Load a JSON test data file of chosen type.
 
     Args:
