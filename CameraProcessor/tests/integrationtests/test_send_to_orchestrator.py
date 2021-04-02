@@ -1,6 +1,8 @@
 import asyncio
 from src.websocket_client import WebsocketClient
 import pytest
+import json
+import random
 import tornado
 import tornado.testing
 import tornado.gen
@@ -18,63 +20,83 @@ url = 'ws://processor-orchestrator-test-service/processor'
 url = 'ws://localhost:80/processor'
 
 
-def with_timeout(t):
-    """Time out function for testing
+class TestSendToOrchestrator:
 
-    Args:
-        t: seconds as integer
+    def setup_method(self):
+        self.ws_client = WebsocketClient(url)
 
-    Returns: async timer
+    def with_timeout(t):
+        """Time out function for testing
 
-    """
-    def wrapper(corofunc):
-        async def run(*args, **kwargs):
-            with timeout(t):
-                return await corofunc(*args, **kwargs)
-        return run
-    return wrapper
+        Args:
+            t: seconds as integer
+
+        Returns: async timer
+
+        """
+
+        def wrapper(corofunc):
+            async def run(*args, **kwargs):
+                with timeout(t):
+                    return await corofunc(*args, **kwargs)
+
+            return run
+
+        return wrapper
+
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_confirm_connection(self):
+        """Confirms connection with websocket
+
+        """
+        assert self.ws_client.connection
+
+    def test_send_single_valid_boundingbox_data(self):
+        """Sends single valid boundingbox entry
+
+        """
+        m = jsonloader.load_random_data('boundingBoxes', 1)
+        self.ws_client.write_message((json.dumps(m)))
+
+    def test_send_single_valid_featuremap_data(self):
+        """Sends single valid data entry for bounding boxes
+
+        """
+        m = jsonloader.load_random_data('featureMap', 1)
+        self.ws_client.write_message((json.dumps(m)))
+
+    def test_send_single_valid_start_or_stop_data(self):
+        """Sends single valid data entry for starting
+
+        """
+        m = jsonloader.load_random_data('boundingBoxes', 1)
+        self.ws_client.write_message((json.dumps(m)))
+
+    def test_send_single_invalid_data(self):
+        """Sends single invalid data entry
+
+        """
+        pass
+
+    def test_send_10_valid_data(self):
+        """Sends multiple valid data entries
+
+        """
+        pass
+
+    def test_send_9_valid_1_invalid(self):
+        """Sends multiple valid data entries and one invalid data entry.
+
+        """
+        pass
+
+    def test_speed_test(self):
+        """Speed tests
+
+        """
+        pass
 
 
-websocket_test = WebsocketClient(url)
-
-
-async def test_confirm_connection():
-    """Confirms connection with websocket
-
-    """
-    assert websocket_test.connection
-
-
-def test_send_single_valid_data():
-    """Sends single valid data entry
-
-    """
-    pass
-
-
-def test_send_single_invalid_data():
-    """Sends single invalid data entry
-
-    """
-    pass
-
-
-def test_send_10_valid_data():
-    """Sends multiple valid data entries
-
-    """
-    pass
-
-
-def test_send_9_valid_1_invalid():
-    """Sends multiple valid data entries and one invalid data entry.
-
-    """
-    pass
-
-
-def test_speed_test():
-    """Speed tests
-
-    """
-    pass
+if __name__ == '__main__':
+    pytest.main(TestSendToOrchestrator)
