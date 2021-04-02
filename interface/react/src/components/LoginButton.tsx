@@ -27,7 +27,7 @@ export const LoginButton = () => {
 
     /**Call keycloak login */
     function doLogin() {
-        keycloak.login()
+        keycloak.login({scope:'streams'})
     }
 
     /**Call keycloak logout */
