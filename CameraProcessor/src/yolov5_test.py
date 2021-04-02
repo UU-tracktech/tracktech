@@ -39,7 +39,7 @@ def main(_argv):
     while vidstream.opened():
         # Set the detected bounding box list to empty
         det_obj.bounding_box = []
-        ret, frame = vidstream.get_next_frame()
+        ret, frame, _ = vidstream.get_next_frame()
 
         if not ret:
             if counter == vidstream.get_vid_length():

@@ -56,7 +56,9 @@ class StreamHandler(tornado.web.RequestHandler):
         self.served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
         while capture.opened():
-            ret, frame = capture.get_next_frame()
+            ret, frame, _ = capture.get_next_frame()
+            if not ret:
+                continue
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()
             # Generating images for mjpeg stream and wraps them into http resp

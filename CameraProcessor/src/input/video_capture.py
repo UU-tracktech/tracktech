@@ -20,7 +20,7 @@ class VideoCapture(ICapture):
 
     # Gets the next frame of the video buffer
     def get_next_frame(self):
-        return self.cap.read()
+        return *self.cap.read(), None
 
     # Returns the amount of total frames in the video
     def get_vid_length(self):
