@@ -57,7 +57,7 @@ class TestSendToOrchestrator:
 
         """
         m = load_random_data('boundingBoxes', 1)
-        self.ws_client.write_message((json.dumps(m[0])))
+
 
     #@pytest.fixture(params=[1, 10])
     def test_send_x_valid_featuremap_data(self):
@@ -65,26 +65,33 @@ class TestSendToOrchestrator:
 
         """
         m = load_random_data('featureMap', 1)
-        self.ws_client.write_message((json.dumps(m[0])))
+        self._write_data(m)
 
 
-    def test_send_single_invalid_data(self):
-        """Sends single invalid data entry
+    def test_send_x_invalid_data(self):
+        """Sends invalid data entry
 
         """
-        pass
+        m = load_random_data('invalid', 1)
+        self._write_data(m)
 
-    def test_send_9_valid_1_invalid(self):
+    def test_send_x_valid_y_invalid(self):
         """Sends multiple valid data entries and one invalid data entry.
 
         """
-        pass
+        m = load_random_data('boundingBoxes', 1)
+        m.append(load_random_data('invalid', 1))
+        self._write_data(m)
 
     def test_speed_test(self):
         """Speed tests
 
         """
         pass
+
+    def _write_data(self, message):
+        for m in message:
+            self.ws_client.write_message(json.dumps(m))
 
 
 if __name__ == '__main__':
