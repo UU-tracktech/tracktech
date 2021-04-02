@@ -14,7 +14,13 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
-WORKDIR /app
-COPY . /app
+ENV PYTHONPATH="$PYTHONPATH:/usr/app/src"
 
-CMD ["python", "tornado_hosted.py"]
+WORKDIR /app
+COPY webpage webpage
+COPY src src
+COPY tests tests
+
+EXPOSE 80
+
+CMD ["python", "src/main.py"]
