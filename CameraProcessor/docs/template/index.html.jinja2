@@ -204,8 +204,6 @@
                 trace.push(branchKey);
 
                 let li = document.createElement("li");
-                li.setAttribute("data-module-path", trace.join("."));
-                li.setAttribute("data-module-name", branchKey);
 
                 let liA = document.createElement("a");
                 liA.href = `${trace.join("/")}.html`;
