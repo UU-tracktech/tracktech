@@ -21,3 +21,8 @@ run code
 ```
 docker run tracktech.ml:50007/camera-processor 
 ``` 
+
+Dependencies install
+```
+pip install -r requirements.txt
+```
