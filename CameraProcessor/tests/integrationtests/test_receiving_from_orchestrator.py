@@ -28,5 +28,3 @@ def with_timeout(t):
 
 
 websocket_test = WebsocketClient(url)
-
-
