@@ -21,6 +21,14 @@ url = 'ws://localhost:80/processor'
 
 
 def with_timeout(t):
+    """Time out function for testing
+
+    Args:
+        t: seconds as integer
+
+    Returns: async timer
+
+    """
     def wrapper(corofunc):
         async def run(*args, **kwargs):
             with timeout(t):
@@ -30,6 +38,9 @@ def with_timeout(t):
 
 
 def test_websocket_constructor():
+    """Test websocket set up
+
+    """
     # global websocket
     websocket_test = WebsocketClient(url)
     assert websocket_test.url == url
@@ -42,6 +53,9 @@ def test_websocket_constructor():
 @pytest.mark.asyncio
 @with_timeout(10)
 async def test_connecting():
+    """Test connecting to websocket
+
+    """
     # global websocket
     websocket_test = WebsocketClient(url)
     await websocket_test.connect()
@@ -51,6 +65,9 @@ async def test_connecting():
 @pytest.mark.asyncio
 @with_timeout(5)
 async def test_websocket_disconnecting():
+    """Test disconnection from websocket
+
+    """
     # global websocket
     websocket_test = WebsocketClient(url)
     await websocket_test.connect()
@@ -65,6 +82,9 @@ async def test_websocket_disconnecting():
 @pytest.mark.asyncio
 @with_timeout(10)
 async def test_websocket_reconnect():
+    """Test connecting, disconnecting and reconnecting
+
+    """
     # global websocket
     websocket_test = WebsocketClient(url)
     await websocket_test.connect()
