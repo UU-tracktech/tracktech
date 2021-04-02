@@ -3,6 +3,7 @@
 This file contains a class for tracking objects. Creating an object will automatically add it to a dictionary, which
 it removes itself from upon removal.
 """
+import json
 
 
 class TrackingObject:
@@ -20,7 +21,7 @@ class TrackingObject:
         self.feature_map = {}
         objects[self.identifier] = self
 
-    def update_feature_map(self, feature_map):
+    def update_feature_map(self, feature_map: json):
         """Update feature map of this object.
 
         Args:
@@ -36,3 +37,7 @@ class TrackingObject:
 
 
 objects = dict()
+"""Dictionary which matches an object identifier to 
+
+type: Dict[str, TrackingObject]
+"""
