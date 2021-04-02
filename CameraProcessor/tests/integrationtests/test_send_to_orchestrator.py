@@ -2,6 +2,7 @@ from src.websocket_client import WebsocketClient
 import pytest
 import os
 import json
+import tornado
 from utils.jsonloader import load_random_data
 from async_timeout import timeout
 
@@ -16,8 +17,11 @@ url = 'ws://localhost:80/processor'
 
 class TestSendToOrchestrator:
 
-    def setup_method(self):
-        self.ws_client = WebsocketClient(url)
+    ws_client = WebsocketClient(url)
+
+    async def setup_method(self):
+
+        await self.ws_client.connect()
 
     def with_timeout(t):
         """Time out function for testing
@@ -44,53 +48,24 @@ class TestSendToOrchestrator:
         """Confirms connection with websocket
 
         """
-        await self.ws_client.connect()
+
         assert self.ws_client.connection
 
     #@pytest.fixture(params=[1, 10])
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_x_valid_boundingbox_data(self):
+    def test_send_x_valid_boundingbox_data(self):
         """Sends valid boundingbox entry
 
         """
         m = load_random_data('boundingBoxes', 1)
-
-        self.ws_client.write_message((json.dumps(m)))
+        self.ws_client.write_message((json.dumps(m[0])))
 
     #@pytest.fixture(params=[1, 10])
-    @pytest.mark.asyncio
-    @with_timeout(10)
-
-    async def test_send_x_valid_featuremap_data(self):
+    def test_send_x_valid_featuremap_data(self):
         """Sends valid data entry for bounding boxes
 
         """
         m = load_random_data('featureMap', 1)
-
-        self.ws_client.write_message((json.dumps(m)))
-
-    #@pytest.fixture(params=[1, 10])
-    @pytest.mark.asyncio
-    @with_timeout(10)
-
-    async def test_send_x_valid_start_data(self):
-        """Sends valid data entry for starting
-
-        """
-        m = load_random_data('start', 1)
-        self.ws_client.write_message((json.dumps(m)))
-
-    #@pytest.fixture(params=[1, 10])
-    @pytest.mark.asyncio
-    @with_timeout(10)
-
-    async def test_send_x_valid_stop_data(self):
-        """Sends single valid data entry for starting
-
-        """
-        m = load_random_data('stop', 1)
-        self.ws_client.write_message((json.dumps(m)))
+        self.ws_client.write_message((json.dumps(m[0])))
 
 
     def test_send_single_invalid_data(self):
