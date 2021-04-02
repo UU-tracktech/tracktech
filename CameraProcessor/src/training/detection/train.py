@@ -23,15 +23,18 @@ def main():
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     folder_name = 'test'
-    images_dir = f'{root_dir}\\data\\annotated\\{folder_name}\\img1'
-    bounding_boxes_path = f'{root_dir}\\data\\annotated\\{folder_name}\\gt'
+    images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
+    bounding_boxes_path = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
+
 
     capture = ImageCapture(images_dir)
-    bounding_boxes = PreAnnotations(bounding_boxes_path, capture.nr_images).boxes
+    pre_annotations = PreAnnotations(bounding_boxes_path, capture.nr_images)
+    pre_annotations.parse_file()
+    bounding_boxes = pre_annotations.boxes
 
     logging.info('start training')
     while capture.opened():
-        ret, frame = capture.get_next_frame()
+        ret, frame, _ = capture.get_next_frame()
 
         if not ret:
             logging.warning('Frame inside training not found')
@@ -40,7 +43,7 @@ def main():
         # Create detectionObj
         detection_obj = DetectionObj(None, frame, capture.image_index)
         # Run detection on object
-        detection_obj.bounding_box = bounding_boxes[capture.image_index]
+        detection_obj.bounding_boxes = bounding_boxes[capture.image_index]
         # Visualise rectangles and show it
         detection_obj.draw_rectangles()
         cv2.imshow('Frame', detection_obj.frame)
@@ -52,7 +55,3 @@ def main():
     logging.info('training stopping')
     # When everything is done release the capture
     capture.close()
-
-
-if __name__ == '__main__':
-    main()
