@@ -1,6 +1,7 @@
 import json
 import random
 import os
+import sys
 
 
 def load_data(datatype, nr=None):
@@ -24,12 +25,13 @@ def load_data(datatype, nr=None):
     if filename is None:
         raise NameError('The JSON object requested is not in scope.')
     else:
-        f = open(f'testdata/{filename}.json', encoding='utf8')
+        cd = os.path.join(sys.path[0], f'tests/integrationtests/testdata/{filename}.json')
+        f = open(cd, encoding="utf-8")
         jfile = json.load(f)
         if nr is not None:
             d = []
             for i in range(nr):
-                d.append(random.choice(jfile))
+                d.append(json.dumps(random.choice(jfile)))
             return d
         else:
             return jfile

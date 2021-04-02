@@ -119,7 +119,6 @@ class WebsocketClient:
             message: the raw message posted on the websocket
         """
 
-
         # Websocket closed, reconnect is handled by write_message
         if not message:
             logging.error("The websocket connection was closed")
