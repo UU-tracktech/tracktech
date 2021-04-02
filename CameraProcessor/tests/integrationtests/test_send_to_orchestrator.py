@@ -3,7 +3,7 @@ import pytest
 import os
 import json
 import tornado
-from utils.jsonloader import load_random_data
+from utils.jsonloader import load_data
 from async_timeout import timeout
 
 # Talks to orchestrator
@@ -56,7 +56,7 @@ class TestSendToOrchestrator:
         """Sends valid boundingbox entry
 
         """
-        m = load_random_data('boundingBoxes', 1)
+        m = load_data('boundingBoxes', 1)
 
 
     #@pytest.fixture(params=[1, 10])
@@ -64,7 +64,7 @@ class TestSendToOrchestrator:
         """Sends valid data entry for bounding boxes
 
         """
-        m = load_random_data('featureMap', 1)
+        m = load_data('featureMap', 1)
         self._write_data(m)
 
 
@@ -72,15 +72,15 @@ class TestSendToOrchestrator:
         """Sends invalid data entry
 
         """
-        m = load_random_data('invalid', 1)
+        m = load_data('invalid', 1)
         self._write_data(m)
 
     def test_send_x_valid_y_invalid(self):
         """Sends multiple valid data entries and one invalid data entry.
 
         """
-        m = load_random_data('boundingBoxes', 1)
-        m.append(load_random_data('invalid', 1))
+        m = load_data('boundingBoxes', 1)
+        m.append(load_data('invalid', 1))
         self._write_data(m)
 
     def test_speed_test(self):
