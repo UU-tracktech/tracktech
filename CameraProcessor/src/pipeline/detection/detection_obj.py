@@ -33,6 +33,6 @@ class DetectionObj:
         """
         return json.dumps({
             "type": "boundingBoxes",
-            "frameId": self.frame_nr,
+            "frameId": self.timestamp,
             "boxes": [bounding_box.to_json() for bounding_box in self.bounding_boxes],
         })

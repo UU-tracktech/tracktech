@@ -1,20 +1,22 @@
 import * as React from 'react'
 import videojs from 'video.js'
-
-// Styles
 import 'video.js/dist/video-js.css'
 
-class VideoPlayer extends React.Component<videojs.PlayerOptions> {
+export type VideoPlayerProps = { onClick?: () => void }
+export class VideoPlayer extends React.Component<videojs.PlayerOptions & VideoPlayerProps> {
     private player?: videojs.Player
     private videoNode?: HTMLVideoElement
 
     componentDidMount() {
         // instantiate video.js
-        this.player = videojs(this.videoNode, this.props).ready(function () {
-            //console.log('onPlayerReady')
+        this.player = videojs(this.videoNode, this.props, () => {
+            if (this.props.onClick) {
+                console.log(this.props.onClick)
+                var toggleSizeButton = new ToggleSizeButton(this.player, { onClick: this.props.onClick });
+                this.player?.controlBar.addChild(toggleSizeButton, { Text: 'Enlarge' })
+            }
         })
     }
-
 
     // destroy player on unmount
     componentWillUnmount() {
@@ -31,13 +33,24 @@ class VideoPlayer extends React.Component<videojs.PlayerOptions> {
                 <div className="c-player__screen" data-vjs-player="true">
                     <video ref={(node: HTMLVideoElement) => this.videoNode = node} className="video-js" />
                 </div>
-                {}                {/*<div className="c-player__controls">
-                    <button>Play</button>
-                    <button>Pause</button>
-                </div>*/}
             </div>
         )
     }
 }
 
-export default VideoPlayer
+//https://stackoverflow.com/questions/35604358/videojs-v5-adding-custom-components-in-es6-am-i-doing-it-right
+export type ToggleSizeButtonOptions = { onClick: () => void }
+class ToggleSizeButton extends videojs.getComponent('Button') {
+
+    private onClick: () => void
+
+    constructor(player, options: ToggleSizeButtonOptions) {
+        super(player, {})
+        this.onClick = options.onClick
+        this.addClass('vjs-icon-circle');
+    }
+
+    public handleClick(_e) {
+        this.onClick()
+    }
+}
