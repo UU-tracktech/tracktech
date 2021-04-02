@@ -11,6 +11,7 @@ import configparser
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
+from src.input.hls_capture import HlsCapture
 
 
 def main(_argv):
@@ -28,6 +29,7 @@ def main(_argv):
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
+    vidstream = HlsCapture()
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -42,6 +44,7 @@ def main(_argv):
         ret, frame, _ = vidstream.get_next_frame()
 
         if not ret:
+            continue
             if counter == vidstream.get_vid_length():
                 print("End of file")
                 break

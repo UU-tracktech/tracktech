@@ -1,10 +1,10 @@
 version: '3.4'
 
 services:
-  cameraprocessor:
-    image: camera-processor
+  camera-processor-yolov5:
+    image: camera-processor-yolov5
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - "8000:8000"
+      - "9090:9090"

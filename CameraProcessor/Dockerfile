@@ -22,5 +22,3 @@ COPY src src
 COPY tests tests
 
 EXPOSE 80
-
-CMD ["python", "src/main.py"]
