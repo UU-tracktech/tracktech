@@ -23,7 +23,7 @@ async def process_stream(vid_stream, det_obj, detector):
     while vid_stream.opened():
         # Set the detected bounding box list to empty
         det_obj.bounding_boxes = []
-        ret, frame = vid_stream.get_next_frame()
+        ret, frame, _ = vid_stream.get_next_frame()
 
         if not ret:
             if frame_nr == vid_stream.get_vid_length():
