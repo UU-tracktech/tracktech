@@ -7,7 +7,7 @@ import tornado.testing
 import tornado.gen
 from tornado import websocket
 import tornado.web
-from utils.jsonloader import load_data, load_random_data
+from utils.jsonloader import load_data
 from async_timeout import timeout
 
 # Listens to what orchestrator sends through
