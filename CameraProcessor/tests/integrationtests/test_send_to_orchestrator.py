@@ -51,36 +51,38 @@ class TestSendToOrchestrator:
 
         assert self.ws_client.connection
 
-    #@pytest.fixture(params=[1, 10])
-    def test_send_x_valid_boundingbox_data(self):
+    @pytest.mark.parametrize("x", [1, 10])
+    def test_send_x_valid_boundingbox_data(self, x):
         """Sends valid boundingbox entry
 
         """
-        m = load_data('boundingBoxes', 1)
+        m = load_data('boundingBoxes', x)
+        self._write_data(m)
 
 
-    #@pytest.fixture(params=[1, 10])
-    def test_send_x_valid_featuremap_data(self):
+    @pytest.mark.parametrize("x", [1, 10])
+    def test_send_x_valid_featuremap_data(self, x):
         """Sends valid data entry for bounding boxes
 
         """
-        m = load_data('featureMap', 1)
+        m = load_data('featureMap', x)
         self._write_data(m)
 
-
-    def test_send_x_invalid_data(self):
+    @pytest.mark.parametrize("x", [1, 10])
+    def test_send_x_invalid_data(self, x):
         """Sends invalid data entry
 
         """
-        m = load_data('invalid', 1)
+        m = load_data('invalid', x)
         self._write_data(m)
 
-    def test_send_x_valid_y_invalid(self):
+    @pytest.mark.parametrize("x,y", [(1, 9), (9, 1)])
+    def test_send_x_valid_y_invalid(self, x, y):
         """Sends multiple valid data entries and one invalid data entry.
 
         """
-        m = load_data('boundingBoxes', 1)
-        m.append(load_data('invalid', 1))
+        m = load_data('boundingBoxes', x)
+        m.append(load_data('invalid', y))
         self._write_data(m)
 
     def test_speed_test(self):
