@@ -8,6 +8,7 @@ import configparser
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
+from src.input.hls_capture import HlsCapture
 import src.websocket_client as client
 import asyncio
 
@@ -26,6 +27,7 @@ async def process_stream(vid_stream, det_obj, detector):
         ret, frame, _ = vid_stream.get_next_frame()
 
         if not ret:
+            continue
             if frame_nr == vid_stream.get_vid_length():
                 logging.info("End of file")
                 break
@@ -79,6 +81,7 @@ def main(arg):
 
     # Capture the video stream
     vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
+    vid_stream = HlsCapture()
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(time.localtime(), None, 0)
