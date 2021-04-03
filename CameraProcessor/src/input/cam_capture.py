@@ -1,13 +1,16 @@
-import cv2
 import logging
+from cv2 import VideoCapture
 from src.input.icapture import ICapture
+
+vcap = VideoCapture(0)
 
 
 class CamCapture(ICapture):
+
     # Default init is public HLS stream
     def __init__(self):
         logging.info('connecting to webcam')
-        self.cap = cv2.VideoCapture(0)
+        self.cap = vcap
 
     # Sees whether stream has stopped
     def opened(self):
