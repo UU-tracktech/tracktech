@@ -1,10 +1,10 @@
-import cv2
-import ffmpeg
 import threading
 import time
 import logging
 import json
 from typing import List
+import ffmpeg
+import cv2
 from src.input.icapture import ICapture
 
 
@@ -23,6 +23,7 @@ class HlsCapture(ICapture):
         Args:
             hls_url: Url the videocapture has to connect to
         """
+
         # Stream related properties
         self.hls_url = hls_url
         self.cap = None
@@ -42,9 +43,9 @@ class HlsCapture(ICapture):
         self.current_frame_nr = 0
 
         # Create thread that syncs streams
-        self.t = threading.Thread(target=self.sync)
-        self.t.daemon = True
-        self.t.start()
+        self.thread = threading.Thread(target=self.sync)
+        self.thread.daemon = True
+        self.thread.start()
 
         # Sleep is essential so websocket has a prepared self.cap
         time.sleep(1)
@@ -61,10 +62,11 @@ class HlsCapture(ICapture):
 
     # When everything is done release the capture
     def close(self) -> None:
-        """Closes the capture object and the thread that is responsible for serving the current frame
+        """Closes the capture object and the thread that is responsible
+        for serving the current frame
         """
         logging.info('HLS stream closing')
-        self.t.join()
+        self.thread.join()
         self.cap.release()
 
     def get_next_frame(self) -> (bool, List[List[int]], float):
@@ -82,7 +84,8 @@ class HlsCapture(ICapture):
         return True, self.current_frame, self.frame_time_stamp
 
     def read(self) -> None:
-        """Method that runs in seperate thread that goes through the frames of the stream at a consistent pace
+        """Method that runs in seperate thread that goes through the frames of the
+        stream at a consistent pace
 
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long
@@ -128,7 +131,8 @@ class HlsCapture(ICapture):
 
         logging.info('opened HLS stream')
 
-        # Get the FPS of the hls stream and turn it into a delay of when each frame should be displayed
+        # Get the FPS of the hls stream and turn it into a delay of when
+        # each frame should be displayed
         self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
         self.read()
 
@@ -141,8 +145,8 @@ class HlsCapture(ICapture):
         try:
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         # Json did not contain key
-        except KeyError as e:
-            logging.warning(f'Json does not contain keys for start_time: {e}')
+        except KeyError as err:
+            logging.warning("Json does not contain keys for start_time: %s", err)
 
     def to_json(self):
         """Converts HLS URL into JSON with correct type included."""

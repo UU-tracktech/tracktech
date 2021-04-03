@@ -4,18 +4,18 @@
 # General imports
 tornado==6.1
 numpy>=1.16<1.19
-matplotlib
+matplotlib~=3.3.4
 scipy<=1.6.1
-pdoc
-pytest
+pdoc~=6.4.2
+pytest~=6.2.2
 regex
 python-time
 
 # Logging
-logging
+logging~=0.4.9.6
 
 # Images / Video
-pillow
+pillow~=8.1.2
 opencv-python==4.1.2.30
 ffmpeg-python
 
@@ -29,7 +29,7 @@ threaded
 # XML
 lxml
 # Loading bar
-tqdm
+tqdm~=4.59.0
 
 # GPU AI learning
 tensorboard==2.2.0
@@ -41,3 +41,10 @@ torchvision==0.9.0+cu101
 -r src/pipeline/detection/yolov4deepsort/requirements.txt
 # YOLOv5
 -r src/pipeline/detection/yolov5/requirements.txt
+
+numpy~=1.18.5
+argparse~=1.4.0
+requests~=2.25.1
+tensorflow~=2.3.1
+
+ffmpeg
