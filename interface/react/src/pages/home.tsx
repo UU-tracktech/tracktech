@@ -55,7 +55,7 @@ export class Home extends Component<{}, homeState> {
                 <h2>Cameras</h2>
                 {
                   this.state.sources && this.state.sources.map((source) =>
-                    <Card>
+                    <Card key={source.id}>
                       <Card.Body>
                         <Card.Title>{source.name}</Card.Title>
                         <Button variant="primary" onClick={() => this.viewSource(source.id)}>View</Button>

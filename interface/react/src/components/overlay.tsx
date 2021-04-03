@@ -21,7 +21,6 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
 
     onPlayerResize(width: number, height: number, left: number, top: number) {
         this.setState({ width: width, height: height, left: left, top: top })
-        console.log(width, height, left, top)
     }
 
     componentDidMount() {
