@@ -1,6 +1,6 @@
 import React from 'react'
-import {Button, Navbar} from 'react-bootstrap'
-import { useKeycloak} from "@react-keycloak/web";
+import { Button } from 'react-bootstrap'
+import { useKeycloak } from "@react-keycloak/web";
 
 /**This component shows a button, which when clicked either authorizes the user with keycloak
  * if not lgged in, and logs the user out if he is logged in */
@@ -14,12 +14,12 @@ export const LoginButton = () => {
 
     /*Returns a button which either lets the user log in or out
     * depending on if they're authorized already or not */
-    return(
+    return (
         <div>
             {
                 keycloak.authenticated ?
                     <Button onClick={doLogout}>Logout</Button>
-                :
+                    :
                     <Button onClick={doLogin}>Login</Button>
             }
         </div>
