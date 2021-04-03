@@ -4,8 +4,7 @@ from src.pipeline.detection.bounding_box import BoundingBox
 
 
 class DetectionObj:
-    """
-    Contains all the bounding boxes for a specific frame
+    """Object that holds all the bounding boxes for a specific frame
     """
     def __init__(self, timestamp, frame, frame_nr):
         self.timestamp = timestamp
@@ -13,9 +12,8 @@ class DetectionObj:
         self.frame_nr = frame_nr
         self.bounding_boxes = []
 
-    def draw_rectangles(self):
-        """
-        Draws the bounding boxes on the frame
+    def draw_rectangles(self) -> None:
+        """Draws the bounding boxes on the frame
         """
         red = (255, 0, 0)
         for bounding_box in self.bounding_boxes:
@@ -25,14 +23,15 @@ class DetectionObj:
                                        red,
                                        2)
 
-    def to_json(self):
-        """
-        Converts the object to JSON format
-        Returns: JSON representation of the object
+    def to_json(self) -> json:
+        """Converts the object to JSON format
+
+        Returns:
+            JSON representation of the object
 
         """
         return json.dumps({
             "type": "boundingBoxes",
             "frameId": self.frame_nr,
-            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_box],
+            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_boxes],
         })
