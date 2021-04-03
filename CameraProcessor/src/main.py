@@ -49,13 +49,15 @@ def main(args):
 
     hls_config = configs['HLS']
 
+    hls_enabled = hls_config.getboolean('enabled')
+
     # Capture the video stream
-    if hls_config['enabled']:
+    if hls_enabled:
         vid_stream = HlsCapture(hls_config['url'])
     else:
         vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
 
-    asyncio.get_event_loop().run_until_complete(process_stream(vid_stream, det_obj, detector, hls_config['enabled']))
+    asyncio.get_event_loop().run_until_complete(process_stream(vid_stream, det_obj, detector, hls_enabled))
 
 
 if __name__ == '__main__':
