@@ -178,14 +178,14 @@ async def main():
 
     capture = HlsCapture()
     # ws_client = await create_client("wss://echo.websocket.org")
-    ws_client = await create_client('ws://localhost:8000/processor')
+    ws_client = await create_client('ws://localhost:80/processor')
     frame_nr = 0
     feature_map_delay = 10
 
     # Video processing loop
-    while not capture.stopped():
+    while capture.opened():
 
-        ret, frame = capture.get_next_frame()
+        ret, frame, _ = capture.get_next_frame()
 
         if not ret:
             logging.warning('capture object frame missed')
