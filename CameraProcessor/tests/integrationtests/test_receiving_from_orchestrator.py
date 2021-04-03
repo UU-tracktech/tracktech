@@ -1,6 +1,7 @@
 import asyncio
 import os
 from src.websocket_client import WebsocketClient
+from super_websocket_client import WebsocketClientDummy
 import pytest
 import tornado
 import tornado.testing
@@ -40,21 +41,12 @@ def with_timeout(t):
 class TestReceivingFromOrchestrator:
     @staticmethod
     def get_websocket():
-        return WebsocketClient(url)
+        return WebsocketClientDummy(url)
 
     async def get_connected_websocket(self):
         ws_client = self.get_websocket()
         await ws_client.connect()
         return ws_client
-
-    @with_timeout(120)
-    async def on_message(self):
-        ws_client = self.get_websocket()
-        await ws_client.connect()
-        m = None
-        while m is None:
-            m = ws_client.update_feature_map()
-
 
     @pytest.mark.asyncio
     @with_timeout(10)
@@ -65,18 +57,69 @@ class TestReceivingFromOrchestrator:
         ws_client = self.get_websocket()
         await ws_client.connect()
         assert ws_client.connected
+        ws_client.connection.close()
 
     @pytest.mark.asyncio
-    @with_timeout(120)
-    async def retrieve_feature_map(self):
-        """Sends valid boundingbox entry
+    @with_timeout(10)
+    async def test_retrieve_feature_map(self):
+        """Sends valid featureMap entry
 
         """
         ws_client = await self.get_connected_websocket()
         ws_client2 = await self.get_connected_websocket()
-        ws_client.write_message(load_data('featureMap', 1))
-        await ws_client2.on_message()
-        await tornado.gen.sleep(10)
+        msg = load_data('featureMap', 1)
+        await ws_client._write_message(msg[0])
+        await asyncio.sleep(1)
+        await ws_client2.await_message(1)
+        assert len(ws_client2.message_list) == 1
+        # ws_client.write_message(json_message[0])
+
+    @pytest.mark.skip
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_retrieve_start_tracking(self):
+        """Sends valid featureMap entry
+
+        """
+        ws_client = await self.get_connected_websocket()
+        ws_client2 = await self.get_connected_websocket()
+        msg = load_data('start', 1)
+        await ws_client._write_message(msg[0])
+        await asyncio.sleep(1)
+        await ws_client2.await_message(1)
+        assert len(ws_client2.message_list) == 1
+        # ws_client.write_message(json_message[0])
+
+    @pytest.mark.skip
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_retrieve_stop_tracking(self):
+        """Sends valid featureMap entry
+
+        """
+        ws_client = await self.get_connected_websocket()
+        ws_client2 = await self.get_connected_websocket()
+        msg = load_data('stop', 1)
+        await ws_client._write_message(msg[0])
+        await asyncio.sleep(1)
+        await ws_client2.await_message(1)
+        assert len(ws_client2.message_list) == 1
+        # ws_client.write_message(json_message[0])
+
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_retrieve_feature_map(self):
+        """Sends valid featureMap entry
+
+        """
+        ws_client = await self.get_connected_websocket()
+        ws_client2 = await self.get_connected_websocket()
+        msg = load_data('featureMap', 10)
+        for j in msg:
+            await ws_client._write_message(j)
+        await asyncio.sleep(1)
+        await ws_client2.await_message(10)
+        assert len(ws_client2.message_list) == 10
         # ws_client.write_message(json_message[0])
 
 

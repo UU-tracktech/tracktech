@@ -54,7 +54,7 @@ class WebsocketClient:
         while not self.connected:
             try:
                 self.connection = await websocket.websocket_connect(self.url,
-                                                                    on_message_callback=self._on_message)
+                                                                    on_message_callback=self.on_message)
                 logging.info(f"Connected to {self.url} successfully")
                 self.connected = True
 
@@ -111,7 +111,7 @@ class WebsocketClient:
             logging.info("Appending to message queue: " + message)
             self.write_queue.append(message)
 
-    def _on_message(self, message):
+    def on_message(self, message):
         """
         On message callback function
 
