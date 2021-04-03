@@ -1,9 +1,5 @@
 from src.websocket_client import WebsocketClient
 import pytest
-import asyncio
-import os
-import json
-import tornado
 from utils.jsonloader import load_data
 from async_timeout import timeout
 
