@@ -1,18 +1,11 @@
-import asyncio
-import os
 from src.websocket_client import WebsocketClient
 import json
-import pytest
-import tornado
-import tornado.testing
-import tornado.gen
-from tornado import websocket
-import tornado.web
-from utils.jsonloader import load_data
-from async_timeout import timeout
 
 
 class WebsocketClientDummy(WebsocketClient):
+    """Superclass of WebsocketClient to test receiving messages
+
+    """
 
     def __init__(self, url):
 
@@ -33,6 +26,14 @@ class WebsocketClientDummy(WebsocketClient):
             self.message_list.append(message_json)
 
     async def await_message(self, length):
+        """Waits for message list to be filled.
+
+        Args:
+            length: expected length of message_list
+
+        Returns:
+
+        """
         while len(self.message_list) < length:
             continue
         return
