@@ -1,6 +1,15 @@
 stages:
+  - camera_docs
   - test
   - triggers
+
+camera_processor_documentation:
+  stage: camera_docs
+  trigger:
+    include: CameraProcessor/.gitlab-ci-docs.yml
+  rules:
+    - changes:
+        - CameraProcessor/*
 
 pytest:
   stage: test
