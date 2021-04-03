@@ -71,5 +71,6 @@ async def process_stream(capture, det_obj, detector, use_client):
                 return
 
         frame_nr += 1
+        asyncio.sleep(0)
 
     logging.info(f'capture object stopped after {frame_nr} frames')
