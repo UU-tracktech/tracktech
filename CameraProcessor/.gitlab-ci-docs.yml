@@ -1,0 +1,34 @@
+image: "python:3.8.8"
+
+stages:
+  - documentation
+  - deploy_pages
+
+pdoc_documentation:
+  stage: documentation
+  before_script:
+    - apt-get update
+    - apt-get install -y libgl1-mesa-dev
+    - cd CameraProcessor
+    - python --version
+    - pip install -r ./requirements.txt
+  script:
+    - python src/documentation.py
+  artifacts:
+    when: always
+    paths:
+    - CameraProcessor/docs/html/
+    expire_in: 14 days
+
+deploy_documentation_gitlab_pages:
+  stage: deploy_pages
+  needs:
+    - job: pdoc_documentation # only deploy when docs creation succeeded
+  script:
+    - mkdir -p public/CameraProcessor
+    - mv CameraProcessor/docs/html/ public/ # $BRANCH later
+  artifacts:
+    when: always
+    paths:
+      - public # $BRANCH later?
+    expire_in: 14 days
