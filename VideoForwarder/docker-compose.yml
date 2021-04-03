@@ -12,3 +12,10 @@ services:
       ENCODING: libx264
     ports:
       - 80:80
+  forwarder-docs:
+    image: tracktech.ml:50007/tt-forwarder-docs-image
+    build:
+      context: .
+      target: pdoc
+    ports:
+      - 8080:8080
