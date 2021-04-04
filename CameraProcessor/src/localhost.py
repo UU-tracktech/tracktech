@@ -28,7 +28,18 @@ PORT = 9090
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
-    def get(self, file_name='index.html'):
+    """Handler for the html page of the site that is for the main page
+
+    """
+    def get(self, file_name='index.html') -> None:
+        """Gets the html page and renders it
+
+        When the index.html page cannot be found it will send an error template to the webclient
+
+        Args:
+            file_name (str): html page it is getting
+
+        """
         # Check if page exists
         logging.info('getting html page of browser')
         index_page = os.path.join(html_page_path, file_name)
@@ -45,8 +56,12 @@ class HtmlPageHandler(tornado.web.RequestHandler):
 
 
 class StreamHandler(tornado.web.RequestHandler):
+    """Handler for the frame stream
+
+    """
     @tornado.gen.coroutine
     def get(self):
+        # Sets headers of the handler
         logging.info('set headers')
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
         self.set_header('Pragma', 'no-cache')
@@ -56,11 +71,15 @@ class StreamHandler(tornado.web.RequestHandler):
         self.served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
         while capture.opened():
+            # Get frame
             ret, frame = capture.get_next_frame()
+            if not ret:
+                continue
+            # If it does get the image the frame gets encoded
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()
-            # Generating images for mjpeg stream and wraps them into http resp
 
+            # Every .1 seconds the frame gets sent to the browser
             interval = 0.1
             if self.served_image_timestamp + interval < time.time():
                 self.write(my_boundary)
@@ -68,25 +87,25 @@ class StreamHandler(tornado.web.RequestHandler):
                 self.write('Content-length: %s\r\n\r\n' % len(img))
                 self.write(img)
                 self.served_image_timestamp = time.time()
-
-            try:
                 self.flush()
-            except Exception:
-                print('connection lost with client')
-                break
 
 
-def make_app():
+def make_app() -> tornado.web.Application:
+    """Creates the tornado web app
+
+    Returns:
+        Tornado web app with the main page and video handler
+    """
     logging.info('creating app')
-    # add handlers
     return tornado.web.Application([
         (r'/', HtmlPageHandler),
         (r'/video_feed', StreamHandler)
     ])
 
 
-# Print to console link to stream
-def generate_message():
+def generate_message() -> None:
+    """Generates message to terminal so user can click link
+    """
     print('*' * 30)
     print('*' + ' ' * 28 + '*')
     print(f'*   open TORNADO stream on   *')
@@ -96,7 +115,8 @@ def generate_message():
 
 
 if __name__ == '__main__':
-    # bind server on 9090 port
+    """Start tornado event loop
+    """
     app = make_app()
     app.listen(PORT)
     generate_message()

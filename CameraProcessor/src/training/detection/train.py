@@ -24,7 +24,7 @@ folder_name = 'test'
 images_dir = f'{root_dir}\\data\\annotated\\{folder_name}\\img1'
 bounding_boxes_path = f'{root_dir}\\data\\annotated\\{folder_name}\\gt'
 
-
+# Create image capture
 capture = ImageCapture(images_dir)
 bounding_boxes = PreAnnotations(bounding_boxes_path, capture.nr_images).boxes
 
