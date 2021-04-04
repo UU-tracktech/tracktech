@@ -5,6 +5,5 @@ services:
     image: camera-processor-yolov5
     build:
       context: .
-      dockerfile: ./Dockerfile
     ports:
       - "9090:9090"

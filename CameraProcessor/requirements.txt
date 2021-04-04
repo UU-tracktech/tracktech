@@ -7,9 +7,11 @@ numpy>=1.16<1.19
 matplotlib
 scipy<=1.6.1
 pdoc
-pytest
 regex
 python-time
+
+# Testing
+pytest
 
 # Logging
 # logging
@@ -32,11 +34,13 @@ lxml
 tqdm
 
 # GPU AI learning
-tensorboard==2.2.0
-tensorflow-gpu==2.3.0rc0
-torch==1.8.0+cu101
-torchvision==0.9.0+cu101
--f https://download.pytorch.org/whl/torch_stable.html
+# tensorboard==2.2.0
+# tensorflow-gpu==2.3.0rc0
+
+# torch==1.8.0+cu101
+# torchvision==0.9.0+cu101
+# -f https://download.pytorch.org/whl/torch_stable.html
+
 # YOLOv4deepsort
 # -r app/src/detection/yolov4deepsort/requirements.txt
 # YOLOv5
