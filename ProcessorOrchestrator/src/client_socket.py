@@ -5,14 +5,15 @@ It defines multiple functions that can be called using specified json messages.
 """
 
 import json
-from typing import Optional, Awaitable, Dict, Callable, Any
-import tornado.web
 from time import sleep
+from typing import Optional, Awaitable, Dict, Callable, Any
 
+import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
-from object_manager import TrackingObject, objects
-from connections import processors, clients
+
+from src.object_manager import TrackingObject, objects
+from src.connections import processors, clients
 import logger
 
 
@@ -45,8 +46,8 @@ class ClientSocket(WebSocketHandler):
     def open(self) -> None:
         """Called upon opening of the websocket.
 
-        Method called upon the opening of the websocket. After connecting, it appends this component to a dict
-        of other websockets.
+        Method called upon the opening of the websocket. After connecting, it appends this component
+        to a dict of other websockets.
         """
         logger.log_connect("/client", self.request.remote_ip)
         print(f"New client connected with id: {self.identifier}")
@@ -55,7 +56,8 @@ class ClientSocket(WebSocketHandler):
     def on_message(self, message) -> None:
         """Handles a message from a client that is received on the websocket.
 
-        Method which handles messages coming in from a client. The messages are expected in json format.
+        Method which handles messages coming in from a client. The messages are expected in json
+        format.
 
         Args:
             message:
@@ -107,7 +109,6 @@ class ClientSocket(WebSocketHandler):
 
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
-        pass
 
     def on_close(self) -> None:
         """Called when the websocket is closed, deletes itself from the dict of clients."""
@@ -166,8 +167,8 @@ class ClientSocket(WebSocketHandler):
         objects[object_id].remove_self()
 
         if len(processors) > 0:
-            for p in processors.values():
-                p.send_message(json.dumps({
+            for processor in processors.values():
+                processor.send_message(json.dumps({
                     "type": "stop",
                     "objectId": object_id
                 }))
@@ -186,7 +187,7 @@ class ClientSocket(WebSocketHandler):
 
         frame_id = 0
 
-        for x in range(50):
+        for _ in range(50):
             self.send_message(json.dumps({
                 "type": "boundingBoxes",
                 "cameraId": camera_id,

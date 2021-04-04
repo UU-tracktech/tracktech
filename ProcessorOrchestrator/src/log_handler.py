@@ -1,6 +1,5 @@
 """HTTP handler to serve the logs"""
 from typing import Optional, Awaitable
-
 from tornado.web import RequestHandler
 
 
@@ -17,9 +16,8 @@ class LogHandler(RequestHandler):
         Writes a response containing the contents of the logfile, with html br tags instead of newlines, to increase
         readability.
         """
-        f = open("logs.log", "r")
-        self.write(f.read().replace("\n", "<br/>"))
+        file = open("logs.log", "r")
+        self.write(file.read().replace("\n", "<br/>"))
 
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
-        pass
