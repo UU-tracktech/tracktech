@@ -32,6 +32,9 @@
             <li>
                     <a class="variable" href="#processors">processors</a>
             </li>
+            <li>
+                    <a class="variable" href="#clients">clients</a>
+            </li>
     </ul>
 
 
@@ -53,20 +56,19 @@ connections    </h1>
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;File which contains dicts with the currently open websocket connections&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">client_socket</span> <span class="kn">import</span> <span class="n">ClientSocket</span>
-    <span class="kn">from</span> <span class="nn">processor_socket</span> <span class="kn">import</span> <span class="n">ProcessorSocket</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 
 <span class="n">processors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="sd">&quot;&quot;&quot;Dictionary which matches processor id to the corresponding websocket</span>
+
+<span class="sd">type: Dict[str, ProcessorSocket]</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">type: Dict[str, ProcessorSocket]&quot;&quot;&quot;</span>
+<span class="n">clients</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="sd">&quot;&quot;&quot;Dictionary which matches client id to the corresponding websocket</span>
 
-<span class="n">clients</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="c1"># type: Dict[str, ClientSocket]</span>
+<span class="sd">type: Dict[str, ClientSocket]</span>
+<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -78,7 +80,22 @@ connections    </h1>
         <span class="name">processors</span><span class="default_value"> = {}</span>
     </div>
 
-            <div class="docstring"><p>type: Dict[str, ProcessorSocket]</p>
+            <div class="docstring"><p>Dictionary which matches processor id to the corresponding websocket</p>
+
+<p>type: Dict[str, ProcessorSocket]</p>
+</div>
+
+
+                </section>
+                <section id="clients">
+                                <div class="attr variable"><a class="headerlink" href="#clients">#&nbsp;&nbsp</a>
+
+        <span class="name">clients</span><span class="default_value"> = {}</span>
+    </div>
+
+            <div class="docstring"><p>Dictionary which matches client id to the corresponding websocket</p>
+
+<p>type: Dict[str, ClientSocket]</p>
 </div>
 
 
