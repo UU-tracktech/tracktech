@@ -2,11 +2,11 @@ import asyncio
 import json
 import sys
 import logging
+from datetime import datetime
+import cv2
 from tornado import websocket
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.input.hls_capture import HlsCapture
-import cv2
-from datetime import datetime
 
 
 async def create_client(url):
@@ -51,13 +51,14 @@ class WebsocketClient:
         connected = False
         while not connected:
             try:
-                self.connection = await websocket.websocket_connect(self.url,
-                                                                    on_message_callback=self._on_message)
-                logging.info(f"Connected to {self.url} successfully")
+                self.connection =\
+                    await websocket.websocket_connect(self.url,
+                                                      on_message_callback=self._on_message)
+                logging.info('Connected to %s successfully', self.url)
                 connected = True
 
             except ConnectionRefusedError:
-                logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
+                logging.warning('Could not connect to %s, trying again in 1 second...', self.url)
                 await asyncio.sleep(1)
 
     def write_message(self, message):
@@ -80,14 +81,14 @@ class WebsocketClient:
             # Write all not yet sent messages
             for old_msg in self.write_queue:
                 self.connection.write_message(old_msg)
-                logging.info("Writing old message: " + message)
+                logging.info('Writing old message: %s', message)
 
             # Clear the write queue
             self.write_queue = []
 
             # Write the new message
             await self.connection.write_message(message)
-            logging.info("Writing message: " + message)
+            logging.info('Writing message: %s', message)
 
         except websocket.WebSocketClosedError:
             # Non-blocking call to reconnect if necessary
@@ -96,7 +97,7 @@ class WebsocketClient:
                 await self.connect()
                 self.reconnecting = False
 
-            logging.info("Appending to message queue: " + message)
+            logging.info('Appending to message queue: %s', message)
             self.write_queue.append(message)
 
     def _on_message(self, message):
@@ -127,16 +128,17 @@ class WebsocketClient:
             # Execute correct function
             function = actions.get(message_object["type"])
             if function is None:
-                logging.warning(f"Someone gave an unknown command: {message}")
+                logging.warning('Someone gave an unknown command: %s', message)
             else:
                 function()
 
         except ValueError:
-            logging.warning(f"Someone wrote bad json: {message}")
+            logging.warning('Someone wrote bad json: %s', message)
         except KeyError:
-            logging.warning(f"Someone missed a property in their json: {message}")
+            logging.warning('Someone missed a property in their json: %s', message)
 
     # Mock methods on received commands
+    # pylint: disable=R0201
     def update_feature_map(self, message):
         """
         Handler for received feature maps
@@ -146,7 +148,7 @@ class WebsocketClient:
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
-        logging.info(f"Updating object {object_id} with feature map {feature_map}")
+        logging.info('Updating object %s with feature map %s', object_id, feature_map)
 
     def start_tracking(self, message):
         """
@@ -158,7 +160,8 @@ class WebsocketClient:
         object_id = message["objectId"]
         frame_id = message["frameId"]
         box_id = message["boxId"]
-        logging.info(f"Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}")
+        logging.info('Start tracking box %s in frame_id %s with new object id %s',
+                     box_id, frame_id, object_id)
 
     def stop_tracking(self, message):
         """
@@ -168,7 +171,8 @@ class WebsocketClient:
             message: JSON parse of the sent message
         """
         object_id = message["objectId"]
-        logging.info(f"Stop tracking object {object_id}")
+        logging.info('Stop tracking object %s', object_id)
+    # pylint: enable=R0201
 
 
 async def main():

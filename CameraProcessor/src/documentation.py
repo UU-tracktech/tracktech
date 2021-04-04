@@ -1,10 +1,9 @@
 import os
-import sys
 from pathlib import Path
-import pdoc
-import pdoc.web
 import pkgutil
 from typing import List
+import pdoc
+import pdoc.web
 
 
 def main():
@@ -13,7 +12,8 @@ def main():
     root_folder = os.path.dirname(__file__)
 
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
-    pdoc.render.configure(template_directory=Path(os.path.join(root_folder, '../docs/template')), docformat='google')
+    pdoc.render.configure(template_directory=Path(os.path.join(root_folder, '../docs/template')),
+                          docformat='google')
 
     pdoc.render.env.filters['to_tree'] = to_tree
 
@@ -30,10 +30,12 @@ def main():
 
 
 def get_modules(root_folder: str) -> List[str]:
-    """Gets all modules starting from the top folder, excludes Python modules that are deemed as hidden.
+    """Gets all modules starting from the top folder,
+    excludes Python modules that are deemed as hidden.
 
     Gets all modules starting from the top folder given as root_folder.
-    Starts by searching for all sub folders of the root folder, excluding folders starting with '.' or '_'.
+    Starts by searching for all sub folders of the root folder,
+    excluding folders starting with '.' or '_'.
     Looks for modules in all found folders (root_folder + both direct and indirect sub folders).
 
     Args:
@@ -42,7 +44,8 @@ def get_modules(root_folder: str) -> List[str]:
     Returns:
         List of all Python modules located in root_folder and its sub folders
     """
-    # Find all valid sub folders (dir name doesn't start with '.' or '_', starting at the root_folder.
+    # Find all valid sub folders (dir name doesn't start with
+    # '.' or '_', starting at the root_folder.
     folders = [root_folder]
     index = 0
     while index < len(folders):
@@ -72,7 +75,8 @@ def get_modules(root_folder: str) -> List[str]:
 
 
 def to_tree(modules):
-    """Turn a list of modules into a dictionary representing a tree which gets turned into a JSON object by Jinja2.
+    """Turn a list of modules into a dictionary representing a tree
+    which gets turned into a JSON object by Jinja2.
 
     The tree dictionary contains a dictionary for each package/module.
     A module has an empty dictionary and packages leading up to
