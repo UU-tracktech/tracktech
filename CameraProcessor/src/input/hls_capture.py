@@ -141,7 +141,9 @@ class HlsCapture(ICapture):
         """
         # extract the start_time from the meta-data to get the absolute segment time
         print(self.hls_url)
+        # pylint: disable=no-member
         meta_data = ffmpeg.probe(self.hls_url)
+        # pylint: enable=no-member
         try:
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         # Json did not contain key

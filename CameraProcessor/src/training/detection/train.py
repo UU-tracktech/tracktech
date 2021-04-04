@@ -5,10 +5,10 @@
 # Run test set in epochs
 
 # Determine accuracy of a bounding box estimate
-import cv2
 import os
 import logging
 import sys
+import cv2
 from src.input.image_capture import ImageCapture
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.training.pre_annotations import PreAnnotations

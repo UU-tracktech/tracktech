@@ -1,17 +1,17 @@
 import os
 import sys
-import torch
-import torch.backends.cudnn as cudnn
+import logging
 from numpy import random
 import numpy as np
-import logging
-
+import torch
+from src.pipeline.detection.bounding_box import BoundingBox
 from src.pipeline.detection.yolov5.models.experimental import attempt_load
 from src.pipeline.detection.yolov5.utils.datasets import letterbox
-from src.pipeline.detection.yolov5.utils.general import check_img_size, non_max_suppression, apply_classifier, \
+from src.pipeline.detection.yolov5.utils.general import check_img_size,\
+    non_max_suppression, apply_classifier,\
     scale_coords, set_logging
-from src.pipeline.detection.yolov5.utils.torch_utils import select_device, load_classifier, time_synchronized
-from src.pipeline.detection.bounding_box import BoundingBox
+from src.pipeline.detection.yolov5.utils.torch_utils import select_device,\
+    load_classifier, time_synchronized
 
 
 class Detector:
@@ -29,12 +29,14 @@ class Detector:
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
         if self.device.type == 'cpu':
-            logging.info("I am using the CPU. Check CUDA version, or whether Pytorch is installed with CUDA support.")
+            logging.info("I am using the CPU. Check CUDA version,"
+                         "or whether Pytorch is installed with CUDA support.")
         else:
             logging.info("I am using GPU")
 
         # load FP32 model
-        self.model = attempt_load(self.config['weights'], map_location=self.device)  # load FP32 model
+        self.model = attempt_load(self.config['weights'],
+                                  map_location=self.device)  # load FP32 model
         self.stride = int(self.model.stride.max())  # model stride
         imgsz = check_img_size(self.config.getint('img-size'), s=self.stride)  # check img_size
         if self.half:
@@ -55,7 +57,9 @@ class Detector:
 
         if self.device.type != 'cpu':
             self.model(
-                torch.zeros(1, 3, imgsz, imgsz).to(self.device).type_as(next(self.model.parameters())))  # run once
+                torch.zeros(1, 3, imgsz,
+                            imgsz).to(self.device).type_as(next(self.model.parameters())))
+            # run once
 
     def detect(self, det_obj):
         """Run detection on a Detection Object
@@ -76,11 +80,12 @@ class Detector:
             img = img.unsqueeze(0)
 
         # Run inference on the converted image
-        t0 = time_synchronized()
+        time_zero = time_synchronized()
         pred = self.model(img, augment=self.config.getboolean('augment'))[0]
 
         # Apply NMS
-        pred = non_max_suppression(pred, self.config.getfloat('conf-thres'), self.config.getfloat('iou-thres'),
+        pred = non_max_suppression(pred, self.config.getfloat('conf-thres'),
+                                   self.config.getfloat('iou-thres'),
                                    classes=self.config['classes'],
                                    agnostic=self.config.getboolean('agnostic_nms'))
 
@@ -89,7 +94,7 @@ class Detector:
             pred = apply_classifier(pred, self.modelc, img, det_obj.frame)
 
         # Process detections
-        for i, det in enumerate(pred):  # detections per image
+        for _, det in enumerate(pred):  # detections per image
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], det_obj.frame.shape).round()
@@ -97,12 +102,13 @@ class Detector:
                 bb_id = 0
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
-                    bbox = BoundingBox(bb_id, [int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])],
+                    bbox = BoundingBox(bb_id, [int(xyxy[0]),
+                                               int(xyxy[1]), int(xyxy[2]), int(xyxy[3])],
                                        self.names[int(cls)], conf)
                     det_obj.bounding_boxes.append(bbox)
 
                     bb_id += 1
 
         # Print time (inference + NMS)
-        t1 = time_synchronized()
-        print(f'Finished processing of frame {det_obj.frame_nr} in ({t1 - t0:.3f}s)')
+        time_one = time_synchronized()
+        print(f'Finished processing of frame {det_obj.frame_nr} in ({time_one - time_zero:.3f}s)')

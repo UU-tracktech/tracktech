@@ -1,6 +1,5 @@
-import cv2
 import json
-from src.pipeline.detection.bounding_box import BoundingBox
+import cv2
 
 
 class DetectionObj:

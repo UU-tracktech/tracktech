@@ -41,10 +41,6 @@ torchvision==0.9.0+cu101
 -r src/pipeline/detection/yolov4deepsort/requirements.txt
 # YOLOv5
 -r src/pipeline/detection/yolov5/requirements.txt
-
-numpy~=1.18.5
+ffmpeg~=1.4
 argparse~=1.4.0
 requests~=2.25.1
-tensorflow~=2.3.1
-
-ffmpeg

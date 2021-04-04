@@ -1,15 +1,10 @@
-import sys
 import logging
-import time
-import os
-from absl import app
+import asyncio
 import cv2
-import configparser
+import src.websocket_client as client
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.hls_capture import HlsCapture
-import src.websocket_client as client
-import asyncio
 
 
 async def process_stream(capture, det_obj, detector, use_client):
@@ -20,7 +15,8 @@ async def process_stream(capture, det_obj, detector, use_client):
 
     Args:
         capture (ICapture): capture object to process a stream of frames.
-        det_obj (DetectionObj): detection object containing all information about detections in the current frame.
+        det_obj (DetectionObj): detection object containing all information about detections
+        in the current frame.
         detector (Detector): Yolov5 detector performing the detection using det_obj.
     """
     frame_nr = 0
@@ -62,9 +58,10 @@ async def process_stream(capture, det_obj, detector, use_client):
             # Play the video in a window called "Output Video"
             try:
                 cv2.imshow("Output Video", det_obj.frame)
-            except OSError:
+            except OSError as err:
                 # Figure out how to get Docker to use GUI
-                raise OSError("Error displaying video. Are you running this in Docker perhaps?")
+                raise OSError("Error displaying video. Are you running this in Docker perhaps?")\
+                    from err
 
             # This next line is **ESSENTIAL** for the video to actually play
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -73,4 +70,4 @@ async def process_stream(capture, det_obj, detector, use_client):
         frame_nr += 1
         await asyncio.sleep(0)
 
-    logging.info(f'capture object stopped after {frame_nr} frames')
+    logging.info("capture object stopped after %s frames", frame_nr)
