@@ -1,5 +1,5 @@
 [MASTER]
-init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()));"
 
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
@@ -18,7 +18,7 @@ extension-pkg-whitelist=
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS
+ignore=CVS,venv,yolov5,yolov4deepsort
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
@@ -149,7 +149,8 @@ disable=print-statement,
         comprehension-escape,
         too-many-instance-attributes,
         too-few-public-methods,
-        too-many-locals
+        too-many-locals,
+        too-many-public-methods
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

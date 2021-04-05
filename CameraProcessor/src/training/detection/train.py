@@ -26,7 +26,6 @@ def main():
     images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
     bounding_boxes_path = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
 
-
     capture = ImageCapture(images_dir)
     pre_annotations = PreAnnotations(bounding_boxes_path, capture.nr_images)
     pre_annotations.parse_file()

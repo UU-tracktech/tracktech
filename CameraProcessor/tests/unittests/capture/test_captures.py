@@ -1,5 +1,5 @@
-import pytest
 import os
+import pytest
 from src.input.icapture import ICapture
 from src.input.image_capture import ImageCapture
 from src.input.hls_capture import HlsCapture

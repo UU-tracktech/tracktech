@@ -4,7 +4,7 @@ from src.pipeline.detection.bounding_box import BoundingBox
 from src.pipeline.detection.detection_obj import DetectionObj
 
 
-
+# pylint: disable=attribute-defined-outside-init, no-member
 def __eq__(self, other):
     """Custom equalize function
 
