@@ -18,14 +18,36 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             this.player?.controlBar.addChild(toggleSizeButton, { Text: 'Toggle main' }, 0)
             this.player?.on('playerresize', () => this.onResize())
             this.player?.on('play', () => this.onResize())
+            this.player?.on('loadeddata', () => this.testFunc())
 
             //On load, grab metadata and set an offset for our internal timestamp
-            this.player?.on('loadeddata', () => this.GetMetaData())
+            //this.player?.on('loadeddata', () => this.GetMetaData())
 
             //print our internal timestamp to the console for debug info
-            this.player?.setInterval(() => this.printTime(), 1000)
+            this.player?.setInterval(() => this.printTime(), 1000 / 24)
         })
     }
+
+    testFunc() {
+        let activeCue = this.player?.textTracks()[0].activeCues;
+
+        if (activeCue)
+            if (activeCue[0]) {
+
+                let splitUri = activeCue[0]['value'].uri.split('_V')[1]
+                //The extracted number
+                let fragNum = splitUri.slice(1, splitUri.length - 3)
+                //Set offset based on starttime found in metadata
+                let startTime = activeCue[0].startTime
+                //each fragment is 2 seconds, so we need fragNum * 2 to get total seconds
+                if (startTime == 0) {
+                    this.offset = parseFloat(fragNum) * 2
+                } else {
+                    this.offset = parseFloat(fragNum) * 2 - 2
+                }
+            }
+    }
+
 
     /**Gets the metadata track*/
     GetMetaData() {
