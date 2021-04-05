@@ -13,14 +13,10 @@ RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.
 
 WORKDIR /app
 
-EXPOSE 9090
-
 # Install pip requirements
 COPY requirements.txt .
 COPY src/pipeline/detection/yolov5/requirements.txt src/pipeline/detection/yolov5/requirements.txt
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
-
-
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -35,10 +31,8 @@ COPY configs.ini .
 COPY coco.names .
 COPY src src
 
-
-
 WORKDIR src
 
-EXPOSE 80
+CMD ["python3.8", "main.py"]
 
 # https://developer.nvidia.com/cuda/wsl/download
