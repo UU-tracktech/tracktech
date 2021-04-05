@@ -14,5 +14,6 @@ jest.mock("@react-keycloak/web", () => {
 })
 
 test('App renders', () => {
+  fetch("www.google.com")
   render(<App />);
 })
