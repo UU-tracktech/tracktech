@@ -19,4 +19,4 @@ class CamCapture(ICapture):
 
     # Gets the next frame from the stream
     def get_next_frame(self):
-        return self.cap.read()
+        return *self.cap.read(), None

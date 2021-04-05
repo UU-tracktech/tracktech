@@ -29,11 +29,20 @@ if __name__ == "__main__":
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
 
+    # Read the public key file if applicable
+    publicKeyPath = os.environ.get('PUBLIC_KEY_PATH')
+    print('using auth' if publicKeyPath is not None else 'not using auth')
+    publicKey = None
+    if publicKeyPath is not None:
+        publicKeyFile = open(publicKeyPath, "r")
+        publicKey = publicKeyFile.read()
+        publicKeyFile.close()
+
     # Create a web application
     app = tornado.web.Application(
         [
             (r'/(.*)', CameraHandler, {'path': 'streams'}),
-        ])
+        ], publicKey = publicKey) #store the public key
 
     if use_tls:
         # Create a ssl context
