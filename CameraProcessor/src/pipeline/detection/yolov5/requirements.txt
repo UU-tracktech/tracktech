@@ -1,3 +1,9 @@
+# Sending requests
+requests
+
+# Building
+absl-py
+
 # File reading
 PyYAML>=5.3.1
 

@@ -42,15 +42,15 @@ tqdm
 # torchvision==0.9.0+cu101
 # -f https://download.pytorch.org/whl/torch_stable.html
 
-# Docker
-
-
 # YOLOv4deepsort
 # -r app/src/detection/yolov4deepsort/requirements.txt
 # YOLOv5
-# -r app/src/detection/yolov5/requirements.txt
+# -r src/pipeline/detection/yolov5/requirements.txt
 
+# Sending requests
 requests
+
+# Building
 absl-py
 
 # File reading
