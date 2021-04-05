@@ -2,8 +2,10 @@ import logging
 import asyncio
 import cv2
 import src.websocket_client as client
+# pylint: disable=unused-import
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
+# pylint: enable=unused-import
 from src.input.hls_capture import HlsCapture
 
 
