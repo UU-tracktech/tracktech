@@ -48,8 +48,10 @@ class WebsocketClient:
         """
         Connect to the websocket url asynchronously
         """
+        timeout_left = 60
+        sleep = 1
         connected = False
-        while not connected:
+        while not connected and timeout_left > 0:
             try:
                 self.connection = await websocket.websocket_connect(self.url,
                                                                     on_message_callback=self._on_message)
@@ -58,7 +60,15 @@ class WebsocketClient:
 
             except ConnectionRefusedError:
                 logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
-                await asyncio.sleep(1)
+                await asyncio.sleep(sleep)
+                timeout_left -= sleep
+
+        # If timeout was reached without connection
+        if not connected:
+            logging.error("Could never connect with orchestrator")
+            raise TimeoutError("Never connected with orchestrator")
+
+
 
     def write_message(self, message):
         """
