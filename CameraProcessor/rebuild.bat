@@ -11,7 +11,7 @@ docker build -t %imageName% .
 docker image prune -f
 
 :: Run new container...
-docker run -t -d -p 9090:9090 --gpus all --name %containerName% %imageName%
-:: docker run -t -d -p 9090:9090 --name %containerName% %imageName%
+docker run -t -d --gpus all --name %containerName% %imageName%
+:: docker run -t -d --name %containerName% %imageName%
 
 Pause
