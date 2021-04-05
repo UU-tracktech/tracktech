@@ -1,8 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Home } from '../src/pages/home';
+import { App } from '../src/App';
 
-test('renders learn react link', () => {
-  render(<Home />); const linkElement = screen.getByText(/Cameras/i);
-  expect(linkElement).toBeDefined()
-});
+jest.mock("@react-keycloak/web", () => {
+  const originalModule = jest.requireActual("@react-keycloak/web");
+  return {
+    ...originalModule,
+    useKeycloak: () => ({
+      keycloak: {authenticated: false, login: () => {}, logout: () => {}},
+      initialized: false
+    })
+  }
+})
+
+test('App renders', () => {
+  render(<App />);
+})
