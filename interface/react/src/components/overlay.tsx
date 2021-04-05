@@ -24,7 +24,9 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
     }
 
     componentDidMount() {
-        this.context.addListener(this.props.cameraId, (boxes: Box[]) => {
+        var cameraId = this.props.cameraId
+        cameraId = 1
+        this.context.addListener(cameraId, (boxes: Box[]) => {
             this.setState({ boxes: boxes })
         })
     }
@@ -48,31 +50,32 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
 
     render() {
         const colordict = { 0: 'red', 1: 'green', 2: 'blue' }
-
+        console.log(this.state.boxes)
         return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
                 {
                     this.state.boxes.map((box) => {
-                        if (box.x1 > box.x2){
-                            var tempx = box.x1
-                            box.x1 = box.x2
-                            box.x2 = tempx  
+                        var x1 = box.rect[0], x2 = box.rect[2], y1 = box.rect[1], y2 = box.rect[3]
+                        if (x1 > x2){
+                            var tempx = x1
+                            x1 = x2
+                            x2 = tempx  
                         }
-                        if (box.y1 > box.y2){
-                            var tempy = box.y1
-                            box.y1 = box.y2
-                            box.y2 = tempy
+                        if (y1 > y2){
+                            var tempy = y1
+                            y1 = y2
+                            y2 = tempy
                         }
-                        return <div key={box.type} style={
+                        return <div key={box.boxId} style={
                             {
                                 position: 'relative',
-                                left: `${box.x1 * this.state.width + this.state.left}px`, top: `${box.y1 * this.state.height + this.state.top}px`,
-                                width: `${(box.x2 - box.x1) * this.state.width}px`, height: `${(box.y2 - box.y1) * this.state.height}px`,
-                                borderColor: colordict[box.type ?? 0], borderStyle: 'solid',
+                                left: `${x1 /** this.state.width*/ + this.state.left}px`, top: `${y1 /** this.state.height*/ + this.state.top}px`,
+                                width: `${(x2 - x1) /** this.state.width*/}px`, height: `${(y2 - y1) /** this.state.height*/}px`,
+                                borderColor: "blue" /*colordict[box.boxId ?? 0]*/, borderStyle: 'solid',
                                 transitionProperty: 'all', transitionDuration: '1s',
                                 zIndex: 1000
                             }
-                        } onClick={() => this.props.onBoxClick(box.id)} />
+                        } onClick={() => this.props.onBoxClick(box.boxId)} />
                     })
                 }
             </div>
