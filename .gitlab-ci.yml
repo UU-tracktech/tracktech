@@ -38,3 +38,22 @@ orchestrator_unit-testing:
     - if: $CI_MERGE_REQUEST_ID
     - changes:
         - ProcessorOrchestrator/*
+
+interface_docker_build:
+  stage: build
+  script:
+    - docker build -t interface --target testing ./interface
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - changes:
+        - interface/*
+
+interface_unit-testing:
+  stage: test
+  needs: [orchestrator_docker_build]
+  script:
+    - docker run interface
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - changes:
+        - interface/*

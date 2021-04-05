@@ -1,10 +1,5 @@
 {
   "name": "interface",
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/src/App.test.tsx"
-    ]
-  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
