@@ -26,13 +26,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-ENV PYTHONPATH="$PYTHONPATH:/usr/app/src"
-ENV PYTHONPATH="$PYTHONPATH:/usr/app"
+ENV PYTHONPATH=/app
 
 # COPY webpage webpage
 COPY configs.ini .
 COPY coco.names .
 COPY src src
+
+WORKDIR src
 
 EXPOSE 80
 
