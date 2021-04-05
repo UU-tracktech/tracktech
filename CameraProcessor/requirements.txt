@@ -18,7 +18,8 @@ pytest
 
 # Images / Video
 pillow
-opencv-python==4.1.2.30
+opencv-python-headless
+opencv-python==4.5.1.48
 ffmpeg-python
 
 # Threading
@@ -41,10 +42,16 @@ tqdm
 # torchvision==0.9.0+cu101
 # -f https://download.pytorch.org/whl/torch_stable.html
 
+# Docker
+
+
 # YOLOv4deepsort
 # -r app/src/detection/yolov4deepsort/requirements.txt
 # YOLOv5
 # -r app/src/detection/yolov5/requirements.txt
+
+requests
+absl-py
 
 # File reading
 PyYAML>=5.3.1

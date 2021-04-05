@@ -1,6 +1,6 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 # FROM tracktech.ml:50007/opencv-python:latest
-FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
 
 RUN apt update
 RUN apt install -y ffmpeg
@@ -27,14 +27,12 @@ ENV PYTHONUNBUFFERED=1
 
 ENV PYTHONPATH="$PYTHONPATH:/usr/app/src"
 
-RUN ["python3.8", "-m", "pip", "install", "absl-py"]
-RUN ["python3.8", "-m", "pip", "install", "requests"]
-RUN ["python3.8", "-m", "pip", "install", "opencv-python-headless"] 
-
 # COPY webpage webpage
 COPY configs.ini .
 COPY coco.names .
 COPY src src
+
+EXPOSE 80
 
 # https://developer.nvidia.com/cuda/wsl/download
 
