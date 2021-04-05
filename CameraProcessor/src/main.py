@@ -34,10 +34,7 @@ def main(args):
 
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
-    # Docker
     configs.read('../configs.ini')
-    # Local run
-    # configs.read('../configs.ini')
     yolo_config = configs['Yolov5']
 
     # Instantiate the Detection Object
