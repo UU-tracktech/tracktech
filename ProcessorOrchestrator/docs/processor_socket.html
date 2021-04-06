@@ -54,6 +54,9 @@
                                 <a class="function" href="#ProcessorSocket.data_received">data_received</a>
                         </li>
                         <li>
+                                <a class="function" href="#ProcessorSocket.register_processor">register_processor</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#ProcessorSocket.send_bounding_boxes">send_bounding_boxes</a>
                         </li>
                         <li>
@@ -100,7 +103,7 @@ functions that can be called using specified json messages.</p>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">httputil</span>
 <span class="kn">from</span> <span class="nn">tornado.websocket</span> <span class="kn">import</span> <span class="n">WebSocketHandler</span>
-<span class="kn">from</span> <span class="nn">objectManager</span> <span class="kn">import</span> <span class="n">objects</span><span class="p">,</span> <span class="n">TrackingObject</span>
+<span class="kn">from</span> <span class="nn">object_manager</span> <span class="kn">import</span> <span class="n">objects</span><span class="p">,</span> <span class="n">TrackingObject</span>
 <span class="kn">from</span> <span class="nn">connections</span> <span class="kn">import</span> <span class="n">processors</span>
 <span class="kn">import</span> <span class="nn">client_socket</span>
 <span class="kn">import</span> <span class="nn">logger</span>
@@ -121,7 +124,7 @@ functions that can be called using specified json messages.</p>
 <span class="sd">            request: The HTTP server request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">check_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Override to enable support for allowing alternate origins.</span>
@@ -135,12 +138,10 @@ functions that can be called using specified json messages.</p>
     <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Called upon opening of the websocket.</span>
 
-<span class="sd">        Method called upon the opening of the websocket. After connecting, it appends this component to a dict</span>
-<span class="sd">        of other websockets.</span>
+<span class="sd">        Method called upon the opening of the websocket, will log connection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New processor connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Handles a message from a processor that is received on the websocket.</span>
@@ -165,6 +166,8 @@ functions that can be called using specified json messages.</p>
 
             <span class="c1"># Switch on message type</span>
             <span class="n">actions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_bounding_boxes</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span>
@@ -174,7 +177,8 @@ functions that can be called using specified json messages.</p>
             <span class="p">}</span>
 
             <span class="c1"># Execute correct function</span>
-            <span class="n">function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+            <span class="sd">&quot;&quot;&quot;type: Optional[Callable[[], None]]&quot;&quot;&quot;</span>
 
             <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
@@ -207,8 +211,21 @@ functions that can be called using specified json messages.</p>
         <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
+    <span class="k">def</span> <span class="nf">register_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Registers a processor under the given identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message:</span>
+<span class="sd">                JSON message that was received. It should contain the following property:</span>
+<span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
     <span class="k">def</span> <span class="nf">send_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sends bounding boxes to all clients</span>
+        <span class="sd">&quot;&quot;&quot;Sends bounding boxes to all clients.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message:</span>
@@ -320,7 +337,7 @@ functions that can be called using specified json messages.</p>
 <span class="sd">            request: The HTTP server request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">check_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Override to enable support for allowing alternate origins.</span>
@@ -334,12 +351,10 @@ functions that can be called using specified json messages.</p>
     <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Called upon opening of the websocket.</span>
 
-<span class="sd">        Method called upon the opening of the websocket. After connecting, it appends this component to a dict</span>
-<span class="sd">        of other websockets.</span>
+<span class="sd">        Method called upon the opening of the websocket, will log connection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New processor connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Handles a message from a processor that is received on the websocket.</span>
@@ -364,6 +379,8 @@ functions that can be called using specified json messages.</p>
 
             <span class="c1"># Switch on message type</span>
             <span class="n">actions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_bounding_boxes</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span>
@@ -373,7 +390,8 @@ functions that can be called using specified json messages.</p>
             <span class="p">}</span>
 
             <span class="c1"># Execute correct function</span>
-            <span class="n">function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+            <span class="sd">&quot;&quot;&quot;type: Optional[Callable[[], None]]&quot;&quot;&quot;</span>
 
             <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
@@ -406,8 +424,21 @@ functions that can be called using specified json messages.</p>
         <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
+    <span class="k">def</span> <span class="nf">register_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Registers a processor under the given identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message:</span>
+<span class="sd">                JSON message that was received. It should contain the following property:</span>
+<span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
     <span class="k">def</span> <span class="nf">send_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sends bounding boxes to all clients</span>
+        <span class="sd">&quot;&quot;&quot;Sends bounding boxes to all clients.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message:</span>
@@ -522,7 +553,7 @@ functions that can be called using specified json messages.</p>
 <span class="sd">            request: The HTTP server request</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
@@ -585,20 +616,17 @@ functions that can be called using specified json messages.</p>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Called upon opening of the websocket.</span>
 
-<span class="sd">        Method called upon the opening of the websocket. After connecting, it appends this component to a dict</span>
-<span class="sd">        of other websockets.</span>
+<span class="sd">        Method called upon the opening of the websocket, will log connection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New processor connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Called upon opening of the websocket.</p>
 
-<p>Method called upon the opening of the websocket. After connecting, it appends this component to a dict
-of other websockets.</p>
+<p>Method called upon the opening of the websocket, will log connection</p>
 </div>
 
 
@@ -636,6 +664,8 @@ of other websockets.</p>
 
             <span class="c1"># Switch on message type</span>
             <span class="n">actions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_bounding_boxes</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span>
@@ -645,7 +675,8 @@ of other websockets.</p>
             <span class="p">}</span>
 
             <span class="c1"># Execute correct function</span>
-            <span class="n">function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+            <span class="sd">&quot;&quot;&quot;type: Optional[Callable[[], None]]&quot;&quot;&quot;</span>
 
             <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
@@ -763,6 +794,46 @@ of other websockets.</p>
 
 
                             </div>
+                            <div id="ProcessorSocket.register_processor" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ProcessorSocket.register_processor">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">register_processor</span><span class="signature">(self, message) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">register_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Registers a processor under the given identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message:</span>
+<span class="sd">                JSON message that was received. It should contain the following property:</span>
+<span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Registers a processor under the given identifier.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>message:</strong>  JSON message that was received. It should contain the following property:
+<ul>
+<li>"id" | The identifier of the processor under which this socket should be registered.</li>
+</ul></li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="ProcessorSocket.send_bounding_boxes" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ProcessorSocket.send_bounding_boxes">#&nbsp;&nbsp</a>
 
@@ -774,7 +845,7 @@ of other websockets.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">send_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sends bounding boxes to all clients</span>
+        <span class="sd">&quot;&quot;&quot;Sends bounding boxes to all clients.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message:</span>
@@ -797,7 +868,7 @@ of other websockets.</p>
 
         </details>
 
-            <div class="docstring"><p>Sends bounding boxes to all clients</p>
+            <div class="docstring"><p>Sends bounding boxes to all clients.</p>
 
 <h6 id="args">Args</h6>
 
@@ -936,28 +1007,27 @@ of other websockets.</p>
                                 <dl>
                                     <div><dt>tornado.websocket.WebSocketHandler</dt>
                                 <dd id="ProcessorSocket.get" class="function">get</dd>
-                <dd id="ProcessorSocket.ping_interval" class="variable">ping_interval</dd>
-                <dd id="ProcessorSocket.ping_timeout" class="variable">ping_timeout</dd>
-                <dd id="ProcessorSocket.max_message_size" class="variable">max_message_size</dd>
                 <dd id="ProcessorSocket.write_message" class="function">write_message</dd>
                 <dd id="ProcessorSocket.select_subprotocol" class="function">select_subprotocol</dd>
-                <dd id="ProcessorSocket.selected_subprotocol" class="variable">selected_subprotocol</dd>
                 <dd id="ProcessorSocket.get_compression_options" class="function">get_compression_options</dd>
                 <dd id="ProcessorSocket.ping" class="function">ping</dd>
                 <dd id="ProcessorSocket.on_pong" class="function">on_pong</dd>
-                <dd id="ProcessorSocket.on_ping" class="function">on_ping</dd>
                 <dd id="ProcessorSocket.close" class="function">close</dd>
                 <dd id="ProcessorSocket.set_nodelay" class="function">set_nodelay</dd>
                 <dd id="ProcessorSocket.on_connection_close" class="function">on_connection_close</dd>
-                <dd id="ProcessorSocket.on_ws_connection_close" class="function">on_ws_connection_close</dd>
                 <dd id="ProcessorSocket.send_error" class="function">send_error</dd>
                 <dd id="ProcessorSocket.get_websocket_protocol" class="function">get_websocket_protocol</dd>
+                <dd id="ProcessorSocket.set_status" class="function">set_status</dd>
+                <dd id="ProcessorSocket.set_header" class="function">set_header</dd>
+                <dd id="ProcessorSocket.set_cookie" class="function">set_cookie</dd>
+                <dd id="ProcessorSocket.redirect" class="function">redirect</dd>
+                <dd id="ProcessorSocket.write" class="function">write</dd>
+                <dd id="ProcessorSocket.flush" class="function">flush</dd>
+                <dd id="ProcessorSocket.finish" class="function">finish</dd>
 
             </div>
             <div><dt>tornado.web.RequestHandler</dt>
                                 <dd id="ProcessorSocket.SUPPORTED_METHODS" class="variable">SUPPORTED_METHODS</dd>
-                <dd id="ProcessorSocket.path_args" class="variable">path_args</dd>
-                <dd id="ProcessorSocket.path_kwargs" class="variable">path_kwargs</dd>
                 <dd id="ProcessorSocket.initialize" class="function">initialize</dd>
                 <dd id="ProcessorSocket.settings" class="variable">settings</dd>
                 <dd id="ProcessorSocket.head" class="function">head</dd>
@@ -970,9 +1040,7 @@ of other websockets.</p>
                 <dd id="ProcessorSocket.on_finish" class="function">on_finish</dd>
                 <dd id="ProcessorSocket.clear" class="function">clear</dd>
                 <dd id="ProcessorSocket.set_default_headers" class="function">set_default_headers</dd>
-                <dd id="ProcessorSocket.set_status" class="function">set_status</dd>
                 <dd id="ProcessorSocket.get_status" class="function">get_status</dd>
-                <dd id="ProcessorSocket.set_header" class="function">set_header</dd>
                 <dd id="ProcessorSocket.add_header" class="function">add_header</dd>
                 <dd id="ProcessorSocket.clear_header" class="function">clear_header</dd>
                 <dd id="ProcessorSocket.get_argument" class="function">get_argument</dd>
@@ -984,26 +1052,15 @@ of other websockets.</p>
                 <dd id="ProcessorSocket.decode_argument" class="function">decode_argument</dd>
                 <dd id="ProcessorSocket.cookies" class="variable">cookies</dd>
                 <dd id="ProcessorSocket.get_cookie" class="function">get_cookie</dd>
-                <dd id="ProcessorSocket.set_cookie" class="function">set_cookie</dd>
                 <dd id="ProcessorSocket.clear_cookie" class="function">clear_cookie</dd>
                 <dd id="ProcessorSocket.clear_all_cookies" class="function">clear_all_cookies</dd>
                 <dd id="ProcessorSocket.set_secure_cookie" class="function">set_secure_cookie</dd>
                 <dd id="ProcessorSocket.create_signed_value" class="function">create_signed_value</dd>
                 <dd id="ProcessorSocket.get_secure_cookie" class="function">get_secure_cookie</dd>
-                <dd id="ProcessorSocket.get_secure_cookie_key_version" class="function">get_secure_cookie_key_version</dd>
-                <dd id="ProcessorSocket.redirect" class="function">redirect</dd>
-                <dd id="ProcessorSocket.write" class="function">write</dd>
                 <dd id="ProcessorSocket.render" class="function">render</dd>
-                <dd id="ProcessorSocket.render_linked_js" class="function">render_linked_js</dd>
-                <dd id="ProcessorSocket.render_embed_js" class="function">render_embed_js</dd>
-                <dd id="ProcessorSocket.render_linked_css" class="function">render_linked_css</dd>
-                <dd id="ProcessorSocket.render_embed_css" class="function">render_embed_css</dd>
                 <dd id="ProcessorSocket.render_string" class="function">render_string</dd>
                 <dd id="ProcessorSocket.get_template_namespace" class="function">get_template_namespace</dd>
                 <dd id="ProcessorSocket.create_template_loader" class="function">create_template_loader</dd>
-                <dd id="ProcessorSocket.flush" class="function">flush</dd>
-                <dd id="ProcessorSocket.finish" class="function">finish</dd>
-                <dd id="ProcessorSocket.detach" class="function">detach</dd>
                 <dd id="ProcessorSocket.write_error" class="function">write_error</dd>
                 <dd id="ProcessorSocket.locale" class="variable">locale</dd>
                 <dd id="ProcessorSocket.get_user_locale" class="function">get_user_locale</dd>
