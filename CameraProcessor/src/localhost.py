@@ -99,7 +99,7 @@ def generate_message():
     print('*' * 30)
     print('*' + ' ' * 28 + '*')
     print('*   open TORNADO stream on   *')
-    print('*   http://localhost:%s    *', PORT)
+    print(f'*   http://localhost:{PORT}    *')
     print('*' + ' ' * 28 + '*')
     print('*' * 30)
 

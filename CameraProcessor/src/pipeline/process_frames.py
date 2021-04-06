@@ -1,13 +1,12 @@
 import logging
 import asyncio
 import cv2
-import src.websocket_client as client
 # pylint: disable=unused-import
+import src.websocket_client as client
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
-# pylint: enable=unused-import
 from src.input.hls_capture import HlsCapture
-
+# pylint: enable=unused-import
 
 async def process_stream(capture, det_obj, detector, use_client):
     """Processes a stream of frames, outputs to frame or sends to client.

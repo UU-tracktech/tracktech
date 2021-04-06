@@ -7,7 +7,6 @@ numpy>=1.16<1.19
 matplotlib~=3.3.4
 scipy<=1.6.1
 pdoc~=6.4.2
-pytest~=6.2.2
 regex
 python-time
 
@@ -47,9 +46,6 @@ torchvision==0.9.0+cu101
 # -r src/pipeline/detection/yolov4deepsort/requirements.txt
 # YOLOv5
 -r src/pipeline/detection/yolov5/requirements.txt
-ffmpeg~=1.4
-argparse~=1.4.0
-requests~=2.25.1
 
 # linting
 pylint
