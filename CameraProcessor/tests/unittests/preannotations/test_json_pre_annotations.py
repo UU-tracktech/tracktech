@@ -41,5 +41,6 @@ class TestJsonParsing:
         """
         self.short_annotations.parse_file()
         number_boxes = [len(boxes_frame) for boxes_frame in self.short_annotations.boxes]
+        print(number_boxes)
         assert self.short_annotations.skipped_lines == 4
         assert number_boxes == [1, 1]
