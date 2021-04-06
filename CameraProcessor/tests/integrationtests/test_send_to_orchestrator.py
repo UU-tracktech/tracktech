@@ -1,5 +1,7 @@
 from src.websocket_client import WebsocketClient
+from super_websocket_client import WebsocketClientDummy
 import pytest
+import asyncio
 from utils.jsonloader import load_data
 from async_timeout import timeout
 
@@ -21,7 +23,6 @@ def with_timeout(t):
     Returns: async timer
 
     """
-
     def wrapper(corofunc):
         async def run(*args, **kwargs):
             with timeout(t):
@@ -33,7 +34,7 @@ def with_timeout(t):
 class TestSendToOrchestrator:
     @staticmethod
     def get_websocket():
-        return WebsocketClient(url)
+        return WebsocketClientDummy(url)
 
     async def get_connected_websocket(self):
         ws_client = self.get_websocket()
@@ -49,93 +50,43 @@ class TestSendToOrchestrator:
         ws_client = self.get_websocket()
         await ws_client.connect()
         assert ws_client.connected
+        ws_client.connection.close()
+
+    @pytest.fixture(params=['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'])
+    def message_type(self, request):
+        return request.param
+
+    @pytest.fixture(params=[1, 10, None])
+    def amount(self, request):
+        return request.param
 
     @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_1_valid_boundingbox_data(self):
-        """Sends valid boundingbox entry
+    async def test_send_message(self, message_type, amount):
+        """"Sends a message with different message types
+        and in different amounts
 
+        Args:
+            message_type: ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid']
+            amount: any number, or None for all the test data
         """
+        message = load_data(message_type, amount)
         ws_client = await self.get_connected_websocket()
-        json_message = load_data('boundingBoxes', 1)
-        ws_client.write_message(json_message[0])
+        for m in message:
+            ws_client.write_message(m)
+        task = asyncio.create_task((self._is_queue_empty(ws_client)))
+        await task
+        ws_client.connection.close()
+        await asyncio.sleep(1)
 
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_10_valid_boundingbox_data(self):
-        """Sends valid boundingbox entry
+    async def _is_queue_empty(self, ws_client):
+        """A coroutine used for waiting until the message queue is empty.
 
+        Args:
+            ws_client: the given WebSocketClient
         """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('boundingBoxes', 10)
-        for i in json_message:
-            ws_client.write_message(i)
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_1_valid_featuremap_data(self):
-        """Sends valid data entry for bounding boxes
-
-        """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('featureMap', 1)
-        ws_client.write_message(json_message[0])
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_10_valid_featuremap_data(self):
-        """Sends valid data entry for bounding boxes
-
-        """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('featureMap', 10)
-        for i in json_message:
-            ws_client.write_message(i)
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_1_invalid_data(self):
-        """Sends invalid data entry
-
-        """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('invalid', 1)
-        ws_client.write_message(json_message[0])
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_10_invalid_data(self):
-        """Sends invalid data entry
-
-        """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('invalid', 10)
-        for i in json_message:
-            ws_client.write_message(i)
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_1_valid_9_invalid(self):
-        """Sends multiple invalid data entries and one valid data entry.
-
-        """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('invalid', 9)
-        json_message.append(load_data('boundingBoxes', 1)[0])
-        for i in json_message:
-            ws_client.write_message(i)
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_send_9_valid_1_invalid(self):
-        """Sends multiple valid data entries and one invalid data entry.
-
-        """
-        ws_client = await self.get_connected_websocket()
-        json_message = load_data('boundingBoxes', 9)
-        json_message.append(load_data('invalid', 1)[0])
-        for i in json_message:
-            ws_client.write_message(i)
+        while(True):
+            if not ws_client.write_queue:
+                return
 
 
 if __name__ == '__main__':
