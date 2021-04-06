@@ -26,12 +26,13 @@ camera-processor_unit-testing:
   needs: [camera-processor_docker_test_build]
   script:
     - cd CameraProcessor
-    - docker run camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
+    - docker cp camera-processor-test-container:/app/report.xml .
   artifacts:
     paths:
-      - app/report.xml
+      - report.xml
     reports:
-      junit: app/report.xml
+      junit: report.xml
   rules:
     - changes:
         - CameraProcessor/*
