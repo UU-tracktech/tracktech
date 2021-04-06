@@ -4,6 +4,7 @@ from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.tracking.tracking_obj import TrackingObj
 
 
+# pylint: disable=attribute-defined-outside-init
 def __eq__(self, other):
     """Custom equalize function
 

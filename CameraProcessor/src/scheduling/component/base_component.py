@@ -9,7 +9,6 @@ class BaseComponent(IComponent):
 
     def work(self) -> object:
         """Example function that can be returned by execute_component()."""
-        pass
 
     def execute_component(self) -> Callable:
         """See base class."""

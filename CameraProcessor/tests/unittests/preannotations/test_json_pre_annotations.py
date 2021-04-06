@@ -1,8 +1,9 @@
 import os
-from test_pre_annotations import example_json_file
+from tests.unittests.preannotations.test_pre_annotations import example_json_file
 from src.training.pre_annotations import PreAnnotations
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestJsonParsing:
     def setup_method(self) -> None:
         """Sets up an annotations object that can be parsed.

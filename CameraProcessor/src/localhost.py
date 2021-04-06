@@ -1,5 +1,7 @@
 import time
-
+import logging
+import os
+import sys
 import tornado.ioloop
 import tornado.iostream
 import tornado.web
@@ -7,10 +9,7 @@ import tornado.httpserver
 import tornado.process
 import tornado.template
 import tornado.gen
-import logging
 import cv2
-import os
-import sys
 
 from src.input.hls_capture import HlsCapture
 
@@ -52,21 +51,27 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             # Send response
             self.finish(err_html)
 
+    def data_received(self, chunk: bytes):
+        tornado.web.RequestHandler.data_received(self, chunk)
+
 
 class StreamHandler(tornado.web.RequestHandler):
     """Handler for the frame stream
 
     """
+    server_image_timestamp = 0
+
     @tornado.gen.coroutine
     def get(self):
         # Sets headers of the handler
         logging.info('set headers')
-        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
+        self.set_header('Cache-Control',
+                        'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
         self.set_header('Pragma', 'no-cache')
         self.set_header('Content-Type', 'multipart/x-mixed-replace;boundary=--jpgboundary')
         self.set_header('Connection', 'close')
 
-        self.served_image_timestamp = time.time()
+        served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
 
         # Create capture and start read loop
@@ -83,13 +88,20 @@ class StreamHandler(tornado.web.RequestHandler):
 
             # Every .1 seconds the frame gets sent to the browser
             interval = 0.1
-            if self.served_image_timestamp + interval < time.time():
+            if served_image_timestamp + interval < time.time():
                 self.write(my_boundary)
                 self.write('Content-type: image/jpeg\r\n')
                 self.write('Content-length: %s\r\n\r\n' % len(img))
                 self.write(img)
-                self.served_image_timestamp = time.time()
+                served_image_timestamp = time.time()
+
+            try:
                 self.flush()
+            except Exception as err:
+                raise Exception('connection lost with client') from err
+
+    def data_received(self, chunk: bytes):
+        tornado.web.RequestHandler.data_received(self, chunk)
 
 
 def make_app() -> tornado.web.Application:
@@ -110,7 +122,7 @@ def generate_message(port) -> None:
     """
     print('*' * 30)
     print('*' + ' ' * 28 + '*')
-    print(f'*   open TORNADO stream on   *')
+    print('*   open TORNADO stream on   *')
     print(f'*   http://localhost:{PORT}    *')
     print('*' + ' ' * 28 + '*')
     print('*' * 30)

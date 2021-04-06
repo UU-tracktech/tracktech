@@ -4,9 +4,9 @@
 # General imports
 tornado==6.1
 numpy>=1.16<1.19
-matplotlib
+matplotlib~=3.3.4
 scipy<=1.6.1
-pdoc
+pdoc~=6.4.2
 regex
 python-time
 
@@ -30,7 +30,7 @@ asyncio
 # XML
 lxml
 # Loading bar
-tqdm
+tqdm~=4.59.0
 
 # GPU AI learning
 # tensorboard==2.2.0
@@ -44,3 +44,6 @@ torchvision==0.9.0+cu101
 # -r src/pipeline/detection/yolov4deepsort/requirements.txt
 # YOLOv5
 -r src/pipeline/detection/yolov5/requirements.txt
+
+# linting
+pylint

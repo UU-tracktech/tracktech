@@ -1,12 +1,11 @@
 from typing import Callable, Any, List
 import numpy as np
-
-
 from src.scheduling.component.component_interface import IComponent
 
 
 class INode:
-    """Node interface enforcing the implementation of functions needed by the scheduler and schedule node.
+    """Node interface enforcing the implementation of functions needed
+    by the scheduler and schedule node.
 
     Enforces the implementation of reset(), executable(), execute(notify), and assign(arg, arg_nr).
     """
@@ -15,7 +14,8 @@ class INode:
         """Reset the node for the next iteration.
 
         Raises:
-            NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
+            NotImplementedError: occurs when this method is not overridden
+            to ensure this function is defined.
         """
         raise NotImplementedError("Function to prepare the node for the next iteration, "
                                   "should also call on children/out nodes if applicable")
@@ -27,7 +27,8 @@ class INode:
             Boolean indicating whether the node is ready to run or not.
 
         Raises:
-            NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
+            NotImplementedError: occurs when this method is not overridden
+            to ensure this function is defined.
         """
         raise NotImplementedError("Function to indicate if the node can be run isn't implemented")
 
@@ -36,13 +37,15 @@ class INode:
 
         Executes the component with the previously provided arguments.
         Pass the output of the component to nodes in the next layer.
-        Notify the scheduler of nodes that can now be executed since the contained component has been run.
+        Notify the scheduler of nodes that can now be executed
+        since the contained component has been run.
 
         Args:
             notify: function to pass nodes to that can be executed after the component was executed.
 
         Raises:
-            NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
+            NotImplementedError: occurs when this method is not overridden
+            to ensure this function is defined.
         """
         raise NotImplementedError("Function should execute the associated internal component")
 
@@ -54,9 +57,11 @@ class INode:
             arg_nr: index at which the argument is stored in the arguments array.
 
         Raises:
-            NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
+            NotImplementedError: occurs when this method is not overridden
+            to ensure this function is defined.
         """
-        raise NotImplementedError("Function to assign an input to a node as argument not implemented")
+        raise NotImplementedError("Function to assign an input to a node"
+                                  "as argument not implemented")
 
 
 class ScheduleNode(INode):
@@ -64,8 +69,10 @@ class ScheduleNode(INode):
 
     Arguments:
         input_count: total amount of arguments necessary to execute the component.
-        out_nodes: tuples of nodes in the next layer together with argument index to push argument to.
-        component: component to execute once the scheduler calls the node (all needed arguments should be ready).
+        out_nodes: tuples of nodes in the next layer together with argument index
+        to push argument to.
+        component: component to execute once the scheduler calls the node
+        (all needed arguments should be ready).
         needed_args: amount of arguments still needed to execute the component.
         arguments: array of all arguments provided so far.
     """
@@ -75,8 +82,10 @@ class ScheduleNode(INode):
 
         Args:
             input_count: total amount of arguments necessary to execute the component.
-            out_nodes: tuples of nodes in the next layer together with argument index to push argument to.
-            component: component to execute once the scheduler calls the node (all needed arguments should be ready).
+            out_nodes: tuples of nodes in the next layer together with argument index
+            to push argument to.
+            component: component to execute once the scheduler calls the node
+            (all needed arguments should be ready).
         """
         self.input_count = input_count
         self.out_nodes = out_nodes
@@ -108,8 +117,10 @@ class ScheduleNode(INode):
 
         Executes the component with the previously provided arguments in the arguments array.
         Throws error if node isn't executable.
-        Pass the output of the component to nodes in the next layer by looping over all nodes in the next layer.
-        Notify the scheduler of nodes that can now be executed since the contained component has been run.
+        Pass the output of the component to nodes in the next layer
+        by looping over all nodes in the next layer.
+        Notify the scheduler of nodes that can now be executed since
+        the contained component has been run.
         Reset the node.
 
         Args:
@@ -124,7 +135,7 @@ class ScheduleNode(INode):
         # Fold arguments into components work function and receive component output.
         out = self.component.execute_component()(*self.arguments)
 
-        ready_nodes: list[INode] = []
+        ready_nodes: List[INode] = []
 
         # Assign output of component to all nodes in the next layer.
         for (node, arg_nr) in self.out_nodes:
@@ -152,7 +163,8 @@ class ScheduleNode(INode):
             Exception: argument is provided twice, existing argument would be overwritten.
         """
         if len(self.arguments) <= arg_nr:
-            raise IndexError(f"Index {arg_nr} too large for arguments array with size {len(self.arguments)}")
+            raise IndexError("Index %s too large for arguments array with size %x" %
+                             (arg_nr, len(self.arguments)))
 
         # Ensure previously supplied argument isn't overwritten.
         if self.arguments[arg_nr] is None:
