@@ -52,7 +52,7 @@ class TestSendToOrchestrator:
         assert ws_client.connected
         ws_client.connection.close()
 
-    @pytest.fixture(params=['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'])
+    @pytest.fixture(params=['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid', 'bad'])
     def message_type(self, request):
         return request.param
 
@@ -67,7 +67,7 @@ class TestSendToOrchestrator:
 
         Args:
             message_type: ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid']
-            amount: any number, or None for all the test data
+            amount: Tuple consisting of any number, or None for all the test data, and a boolean for Random data
         """
         message = load_data(message_type, amount[0], amount[1])
         ws_client = await self.get_connected_websocket()

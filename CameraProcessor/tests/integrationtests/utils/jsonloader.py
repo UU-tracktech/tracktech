@@ -19,7 +19,8 @@ def load_data(datatype, nr=1, rng=False):
         'start': 'start',
         'stop': 'stop',
         'featureMap': 'featuremaps',
-        'invalid': 'invalid'
+        'invalid': 'invalid',
+        'bad' : 'baddata'
     }
     filename = switcher.get(datatype)
     if filename is None:
