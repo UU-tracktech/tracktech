@@ -49,8 +49,8 @@ class ImageCapture(ICapture):
         # Skips when it is not a file but a directory
         if not os.path.isfile(image_path):
             logging.warning(f'File {image_path} is not a file!')
-            return False, None
+            return False, None, None
 
         # Reads the image file and returns it
         frame = cv2.imread(image_path)
-        return True, frame
+        return True, frame, None

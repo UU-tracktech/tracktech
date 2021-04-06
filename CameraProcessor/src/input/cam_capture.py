@@ -31,4 +31,4 @@ class CamCapture(ICapture):
             Boolean whether a next frame was found
             Next webcam frame.
         """
-        return self.cap.read()
+        return *self.cap.read(), None

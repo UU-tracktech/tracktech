@@ -73,9 +73,10 @@ class StreamHandler(tornado.web.RequestHandler):
         capture = HlsCapture()
         while capture.opened():
             # Get frame
-            ret, frame = capture.get_next_frame()
+            ret, frame, _ = capture.get_next_frame()
             if not ret:
                 continue
+            
             # If it does get the image the frame gets encoded
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()
