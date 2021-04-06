@@ -87,7 +87,7 @@ class TestReceivingFromOrchestrator:
 
         Args:
             message_type: Pytest fixture, being one of the available message types
-            amount: any number, or None for all the test data
+            amount: Tuple consisting of any number, or None for all the test data, and a boolean for Random data
 
         Returns:
 
