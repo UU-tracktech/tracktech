@@ -42,7 +42,7 @@ orchestrator_unit-testing:
 interface_docker_build:
   stage: build
   script:
-    - docker build -t interface --target testing ./interface
+    - docker build -t interface -f Dockerfile.test ./interface
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - changes:
@@ -50,7 +50,7 @@ interface_docker_build:
 
 interface_unit-testing:
   stage: test
-  needs: [orchestrator_docker_build]
+  needs: [interface_docker_build]
   script:
     - docker run interface
   rules:

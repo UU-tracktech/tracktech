@@ -1,4 +1,3 @@
-const mockFetchPromise = Promise.resolve({
-    json: () => Promise.resolve({}),
-  });
-global.fetch = jest.fn(() => mockFetchPromise);
+import { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks()
+fetch.mockResponse(JSON.stringify([]))
