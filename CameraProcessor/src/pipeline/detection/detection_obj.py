@@ -21,10 +21,10 @@ class DetectionObj:
         for bounding_box in self.bounding_boxes:
             height, width, _ = self.frame.shape
             self.frame = cv2.rectangle(self.frame,
-                                       (bounding_box.rectangle[0] * width,
-                                        bounding_box.rectangle[0] * height),
-                                       (bounding_box.rectangle[1] * width,
-                                        bounding_box.rectangle[2] * height),
+                                       (int(bounding_box.rectangle[0] * width),
+                                       int(bounding_box.rectangle[1] * height)),
+                                       (int(bounding_box.rectangle[2] * width),
+                                        int(bounding_box.rectangle[3] * height)),
                                        red,
                                        2)
 
