@@ -54,11 +54,11 @@ class WebsocketClient:
                 self.connection =\
                     await websocket.websocket_connect(self.url,
                                                       on_message_callback=self._on_message)
-                logging.info('Connected to %s successfully', self.url)
+                logging.info(f'Connected to {self.url} successfully')
                 connected = True
 
             except ConnectionRefusedError:
-                logging.warning('Could not connect to %s, trying again in 1 second...', self.url)
+                logging.warning(f'Could not connect to {self.url}, trying again in 1 second...')
                 await asyncio.sleep(1)
 
     def write_message(self, message):
@@ -81,14 +81,14 @@ class WebsocketClient:
             # Write all not yet sent messages
             for old_msg in self.write_queue:
                 self.connection.write_message(old_msg)
-                logging.info('Writing old message: %s', message)
+                logging.info(f'Writing old message: {message}')
 
             # Clear the write queue
             self.write_queue = []
 
             # Write the new message
             await self.connection.write_message(message)
-            logging.info('Writing message: %s', message)
+            logging.info(f'Writing message: {message}')
 
         except websocket.WebSocketClosedError:
             # Non-blocking call to reconnect if necessary
@@ -97,7 +97,7 @@ class WebsocketClient:
                 await self.connect()
                 self.reconnecting = False
 
-            logging.info('Appending to message queue: %s', message)
+            logging.info(f'Appending to message queue: {message}')
             self.write_queue.append(message)
 
     def _on_message(self, message):
@@ -128,14 +128,14 @@ class WebsocketClient:
             # Execute correct function
             function = actions.get(message_object["type"])
             if function is None:
-                logging.warning('Someone gave an unknown command: %s', message)
+                logging.warning(f'Someone gave an unknown command: {message}')
             else:
                 function()
 
         except ValueError:
-            logging.warning('Someone wrote bad json: %s', message)
+            logging.warning(f'Someone wrote bad json: {message}')
         except KeyError:
-            logging.warning('Someone missed a property in their json: %s', message)
+            logging.warning(f'Someone missed a property in their json: {message}')
 
     # Mock methods on received commands
     # pylint: disable=R0201
@@ -148,7 +148,7 @@ class WebsocketClient:
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
-        logging.info('Updating object %s with feature map %s', object_id, feature_map)
+        logging.info(f'Updating object {object_id} with feature map {feature_map}')
 
     def start_tracking(self, message):
         """
@@ -160,8 +160,7 @@ class WebsocketClient:
         object_id = message["objectId"]
         frame_id = message["frameId"]
         box_id = message["boxId"]
-        logging.info('Start tracking box %s in frame_id %s with new object id %s',
-                     box_id, frame_id, object_id)
+        logging.info(f'Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}')
 
     def stop_tracking(self, message):
         """
@@ -171,7 +170,7 @@ class WebsocketClient:
             message: JSON parse of the sent message
         """
         object_id = message["objectId"]
-        logging.info('Stop tracking object %s', object_id)
+        logging.info(f'Stop tracking object {object_id}')
     # pylint: enable=R0201
 
 

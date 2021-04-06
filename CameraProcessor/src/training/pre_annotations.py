@@ -70,7 +70,7 @@ class PreAnnotations:
 
         # Logs when lines skipped
         if self.skipped_lines > 0:
-            logging.info('Skipped lines: %s', self.skipped_lines)
+            logging.info(f'Skipped lines: {self.skipped_lines}')
 
     @staticmethod
     def parse_line(line: str, delimiter: str) -> [int]:

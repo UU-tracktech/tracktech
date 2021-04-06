@@ -38,7 +38,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             # Page not found, generate template
             err_tmpl = tornado.template.Template('<html> Err 404, Page {{ name }} not found</html>')
             err_html = err_tmpl.generate(name=file_name)
-            logging.error('no index.html found at path %s', file_name)
+            logging.error(f'no index.html found at path {file_name}')
             # Send response
             self.finish(err_html)
 

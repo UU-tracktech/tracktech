@@ -60,6 +60,12 @@ Select the path to pylintrc (should be at root of project)
 
 Click apply.
 
+### Live linting while developing:
+
+Nevigate to `Edtior>Inspections>Pylint`
+
+Check `Pylint real-time scan`
+
 ### Ignoring folders from linting:
 
 Mark desired folder as Excluded in PyCharm. (for local development)
