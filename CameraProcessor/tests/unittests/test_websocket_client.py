@@ -68,21 +68,21 @@ class TestWebsocketClient:
         """Checks if read_msg correctly parses start tracking message
 
         """
-        json_temp_start = self.ws_client.on_message(self.message_object_start_tracking_string)
+        json_temp_start = self.ws_client._on_message(self.message_object_start_tracking_string)
         assert json_temp_start.__eq__(self.message_object_start_tracking)
 
     def test_read_msg_stop_tracking(self):
         """Checks if read_msg correctly parses stop tracking message
 
         """
-        json_temp_stop = self.ws_client.on_message(self.message_object_stop_tracking_string)
+        json_temp_stop = self.ws_client._on_message(self.message_object_stop_tracking_string)
         assert json_temp_stop.__eq__(self.message_object_stop_tracking)
 
     def test_read_msg_update_feature_map(self):
         """Checks if read_msg correctly parses update feature map message
 
         """
-        json_temp_feature_map = self.ws_client.on_message(self.message_object_update_feature_map_string)
+        json_temp_feature_map = self.ws_client._on_message(self.message_object_update_feature_map_string)
         assert json_temp_feature_map.__eq__(self.message_object_update_feature_map)
 
     def test_read_msg_type_error_exception(self):

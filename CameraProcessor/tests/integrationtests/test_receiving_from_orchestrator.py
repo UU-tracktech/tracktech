@@ -78,7 +78,7 @@ class TestReceivingFromOrchestrator:
     def message_type(self, request):
         return request.param
 
-    @pytest.fixture(params=[(1, True)], ids=["1, True"]) ## (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
+    @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
     def amount(self, request):
         return request.param
 
@@ -93,22 +93,33 @@ class TestReceivingFromOrchestrator:
         Returns:
 
         """
+        print("GOT HERE 3")
+        msg = load_data(message_type, amount[0], amount[1])
         ws_client = await self.get_connected_websocket()
         ws_client2 = await self.get_connected_websocket()
-        msg = load_data(message_type, amount[0], amount[1])
         for j in msg:
             ws_client.write_message(j)
-        await asyncio.sleep(1)
-        await ws_client2.await_message(len(msg))
+        # await ws_client2.await_message(len(msg))
         assert len(ws_client2.message_list) == len(msg)
         for i in msg:
             assert ws_client2.message_list[i.index(i)].__eq__(i)
         ws_client.connection.close()
         ws_client2.connection.close()
+        await asyncio.sleep(1)
         task1 = asyncio.create_task(self._check_closed(ws_client))
         task2 = asyncio.create_task(self._check_closed(ws_client2))
         await task1
         await task2
+
+    async def _is_queue_empty(self, ws_client):
+        """A coroutine used for waiting until the message queue is empty.
+
+        Args:
+            ws_client: the given WebSocketClient
+        """
+        while(True):
+            if not ws_client.write_queue:
+                return
 
     async def _check_closed(self, ws_client):
         while ws_client.connection is not None:
