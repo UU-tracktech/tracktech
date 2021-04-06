@@ -22,9 +22,6 @@ logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
-html_page_path = dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\..\\webpage'
-capture = HlsCapture()
-PORT = 9090
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
@@ -42,7 +39,8 @@ class HtmlPageHandler(tornado.web.RequestHandler):
         """
         # Check if page exists
         logging.info('getting html page of browser')
-        index_page = os.path.join(html_page_path, file_name)
+        html_dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\..\\webpage'
+        index_page = os.path.join(html_dir_path, file_name)
         if os.path.exists(index_page):
             # Render it
             self.render(index_page)
@@ -50,7 +48,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             # Page not found, generate template
             err_tmpl = tornado.template.Template('<html> Err 404, Page {{ name }} not found</html>')
             err_html = err_tmpl.generate(name=file_name)
-            logging.error(f'no index.html found at path {file_name}')
+            logging.error(f'no index.html found at path {index_page}')
             # Send response
             self.finish(err_html)
 
@@ -70,6 +68,9 @@ class StreamHandler(tornado.web.RequestHandler):
 
         self.served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
+
+        # Create capture and start read loop
+        capture = HlsCapture()
         while capture.opened():
             # Get frame
             ret, frame = capture.get_next_frame()
@@ -103,7 +104,7 @@ def make_app() -> tornado.web.Application:
     ])
 
 
-def generate_message() -> None:
+def generate_message(port) -> None:
     """Generates message to terminal so user can click link
     """
     print('*' * 30)
@@ -117,7 +118,8 @@ def generate_message() -> None:
 if __name__ == '__main__':
     """Start tornado event loop
     """
+    PORT = 9090
     app = make_app()
     app.listen(PORT)
-    generate_message()
+    generate_message(PORT)
     tornado.ioloop.IOLoop.current().start()
