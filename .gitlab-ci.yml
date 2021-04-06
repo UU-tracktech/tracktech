@@ -28,7 +28,9 @@ camera-processor_unit-testing:
     - cd CameraProcessor
     - docker container prune -f
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
+    - ls
     - docker cp camera-processor-test-container:/app/report.xml .
+    - ls
   artifacts:
     paths:
       - report.xml
