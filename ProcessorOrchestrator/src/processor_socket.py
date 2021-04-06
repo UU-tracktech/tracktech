@@ -87,7 +87,6 @@ class ProcessorSocket(WebSocketHandler):
 
             # Execute correct function
             function = actions.get(message_object["type"])
-            """type: Optional[Callable[[], None]]"""
 
             if function is None:
                 print("Someone gave an unknown command")
@@ -118,7 +117,6 @@ class ProcessorSocket(WebSocketHandler):
 
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
-        pass
 
     def send_bounding_boxes(self, message) -> None:
         """Sends bounding boxes to all clients
