@@ -19,9 +19,12 @@ class DetectionObj:
         """
         red = (255, 0, 0)
         for bounding_box in self.bounding_boxes:
+            height, width, _ = self.frame.shape
             self.frame = cv2.rectangle(self.frame,
-                                       tuple(bounding_box.rectangle[:2]),
-                                       tuple(bounding_box.rectangle[2:]),
+                                       (bounding_box.rectangle[0] * width,
+                                        bounding_box.rectangle[0] * height),
+                                       (bounding_box.rectangle[1] * width,
+                                        bounding_box.rectangle[2] * height),
                                        red,
                                        2)
 
