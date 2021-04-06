@@ -7,13 +7,13 @@ from src.input.icapture import ICapture
 class ImageCapture(ICapture):
     # Default init is public HLS stream
     def __init__(self, images_dir):
-        logging.info("Using images from folder %s", images_dir)
+        logging.info(f'Using images from folder {images_dir}')
         self.images_paths = sorted([os.path.join(images_dir, image_name)
                                     for image_name in os.listdir(images_dir)])
         self.nr_images = len(self.images_paths)
         # Starts at -1 so after getting the image it keeps the index
         self.image_index = -1
-        logging.info("Found %s images inside the folder", self.nr_images)
+        logging.info(f'Found {self.nr_images} images inside the folder')
 
     # Sees whether stream has stopped
     def opened(self):
@@ -29,7 +29,7 @@ class ImageCapture(ICapture):
         image_path = self.images_paths[self.image_index]
 
         if not os.path.isfile(image_path):
-            logging.warning("File %s is not a file!", image_path)
+            logging.warning(f'File {image_path} is not a file!')
             return False, None, None
 
         frame = cv2.imread(image_path)
