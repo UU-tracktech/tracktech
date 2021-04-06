@@ -30,9 +30,9 @@ camera-processor_unit-testing:
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
   artifacts:
     paths:
-      - app/report.xml
+      - CameraProcessor/report.xml
     reports:
-      junit: app/report.xml
+      junit: CameraProcessor/report.xml
   rules:
     - changes:
         - CameraProcessor/*
