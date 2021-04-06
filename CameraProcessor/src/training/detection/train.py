@@ -5,10 +5,10 @@
 # Run test set in epochs
 
 # Determine accuracy of a bounding box estimate
-import cv2
 import os
 import logging
 import sys
+import cv2
 from src.input.image_capture import ImageCapture
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.training.pre_annotations import PreAnnotations
@@ -25,7 +25,6 @@ def main():
     folder_name = 'test'
     images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
     bounding_boxes_path = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
-
 
     capture = ImageCapture(images_dir)
     pre_annotations = PreAnnotations(bounding_boxes_path, capture.nr_images)

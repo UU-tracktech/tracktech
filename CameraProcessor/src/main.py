@@ -1,24 +1,19 @@
 import sys
 import logging
-import time
 import os
-from absl import app
-import cv2
 import configparser
+import asyncio
+from absl import app
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
 from src.input.hls_capture import HlsCapture
-import src.websocket_client as client
-import asyncio
 from src.pipeline.process_frames import process_stream
 
 
-def main(args):
+def main():
     """Setup for logging and starts pipeline by reading in config information.
 
-    Args:
-        args (list): list of arguments passed to main, contains file path per default.
     """
     # Logging doesn't work in main function without this,
     # but it must be in main as it gets removed by documentation.py otherwise.
@@ -57,7 +52,8 @@ def main(args):
     else:
         vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
 
-    asyncio.get_event_loop().run_until_complete(process_stream(vid_stream, det_obj, detector, hls_enabled))
+    asyncio.get_event_loop().run_until_complete(process_stream(vid_stream,
+                                                               det_obj, detector, hls_enabled))
 
 
 if __name__ == '__main__':

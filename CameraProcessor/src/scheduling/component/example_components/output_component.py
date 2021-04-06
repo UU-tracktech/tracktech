@@ -31,8 +31,7 @@ class OutputComponent(IComponent):
         """
         self.out = obj
 
-        self.func(self.out)
-        return None
+        return self.func(self.out)
 
     def execute_component(self) -> Callable:
         """See base class."""

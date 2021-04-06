@@ -1,7 +1,7 @@
 import pytest
 from src.pipeline.detection.bounding_box import BoundingBox
 
-
+# pylint: disable=attribute-defined-outside-init
 class TestBoundingBox:
     """Tests bounding_box.py.
 

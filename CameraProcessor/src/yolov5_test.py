@@ -1,17 +1,17 @@
 import time
 import os
 import sys
-curr_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
-sys.path.insert(0, os.path.join(curr_dir, '../detection'))
-
-from absl import app
-import cv2
 import configparser
+import cv2
+from absl import app
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
 from src.input.hls_capture import HlsCapture
+
+curr_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
+sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
 def main(_argv):
@@ -22,10 +22,10 @@ def main(_argv):
     configs.read(('../configs.ini'))
     trueconfig = configs['Yolov5']
 
-    t = time.localtime()
+    local_time = time.localtime()
 
     # Instantiate the Detection Object
-    det_obj = DetectionObj(t, None, 0)
+    det_obj = DetectionObj(local_time, None, 0)
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
@@ -47,7 +47,6 @@ def main(_argv):
             continue
             if counter == vidstream.get_vid_length():
                 print("End of file")
-                break
             else:
                 raise ValueError("Feed has been interrupted")
 
