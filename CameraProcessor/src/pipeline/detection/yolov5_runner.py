@@ -102,8 +102,8 @@ class Detector:
                 bb_id = 0
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
-                    bbox = BoundingBox(bb_id, [int(xyxy[0]),
-                                               int(xyxy[1]), int(xyxy[2]), int(xyxy[3])],
+                    height, width, _ = det_obj.frame.shape
+                    bbox = BoundingBox(bb_id, [int(xyxy[0])/width, int(xyxy[1])/height, int(xyxy[2])/width, int(xyxy[3])/height],
                                        self.names[int(cls)], conf)
                     det_obj.bounding_boxes.append(bbox)
 

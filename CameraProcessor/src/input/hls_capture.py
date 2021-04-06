@@ -27,6 +27,7 @@ class HlsCapture(ICapture):
         # Stream related properties
         self.hls_url = hls_url
         self.cap = None
+        self.cap_initialized = False
 
         # Time stamps
         self.start_time_stamp = 0
@@ -47,8 +48,19 @@ class HlsCapture(ICapture):
         self.thread.daemon = True
         self.thread.start()
 
-        # Sleep is essential so websocket has a prepared self.cap
-        time.sleep(1)
+        # Reconnect with timeout
+        timeout_left = 10
+        sleep = 1
+        # Sleep is essential so processor has a prepared self.cap
+        while not self.cap_initialized and timeout_left > 0:
+            logging.info("Waiting 1 seconds before rechecking if stream is opened..")
+            time.sleep(sleep)
+            timeout_left -= sleep
+
+        # Raise error when capture is never created in other thread
+        if not self.cap_initialized:
+            logging.error("cv2.VideoCapture probably raised exception")
+            raise TimeoutError("HLS Capture never opened")
 
     def opened(self) -> bool:
         """Check whether the current capture object is still opened
@@ -118,18 +130,19 @@ class HlsCapture(ICapture):
 
         Makes a separate thread to request meta-data and sets the default values for the variables
         """
-        logging.info('connecting to HLS stream')
+        logging.info('Connecting to HLS stream, url: %s', self.hls_url)
 
         # Starts a separate thread to request meta-data
         threading.Thread(target=self.get_meta_data).start()
 
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
+        self.cap_initialized = True
 
         # Saves the current time of a successful established connection
         self.thread_start_time = time.time()
 
-        logging.info('opened HLS stream')
+        logging.info('Opened HLS stream')
 
         # Get the FPS of the hls stream and turn it into a delay of when
         # each frame should be displayed
@@ -140,8 +153,7 @@ class HlsCapture(ICapture):
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
         # extract the start_time from the meta-data to get the absolute segment time
-        print(self.hls_url)
-        # pylint: disable=no-member
+        logging.info('Retrieving meta data from HLS stream')
         meta_data = ffmpeg.probe(self.hls_url)
         # pylint: enable=no-member
         try:
