@@ -149,7 +149,7 @@ class TestDetectionObj:
         assert self.data.bounding_boxes.__eq__(self.bounding_box_value_test)
 
     # Testing form
-    @pytest.mark.skip(reason="Skipping for CI/CD Test")
+    @pytest.mark.skip(reason="BUG NEEDS FIXING")
     def test_draw_length(self):
         """Asserts if length of test frame is equal to expected length
 
@@ -157,7 +157,7 @@ class TestDetectionObj:
         self.data.draw_rectangles()
         assert len(self.data.frame) == len(self.box_frame)
 
-    @pytest.mark.skip(reason="Skipping for CI/CD Test")
+    @pytest.mark.skip(reason="BUG NEEDS FIXING")
     def test_draw_equal(self):
         """Asserts if drawn rectangles are equal to expected rectangles
 
