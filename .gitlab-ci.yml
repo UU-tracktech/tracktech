@@ -11,6 +11,9 @@ camera_processor_documentation:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
+    - when: manual
+      changes:
+        - CameraProcessor/*
 
 camera-processor_docker_test_build:
   stage: build
@@ -19,6 +22,9 @@ camera-processor_docker_test_build:
     - docker build -f Dockerfile.test -t camera-processor-test .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+    - when: manual
       changes:
         - CameraProcessor/*
         
@@ -35,6 +41,9 @@ camera-processor_unit-testing:
       junit: CameraProcessor/report.xml
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+    - when: manual
       changes:
         - CameraProcessor/*
 
