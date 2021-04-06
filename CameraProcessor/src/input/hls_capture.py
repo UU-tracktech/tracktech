@@ -47,10 +47,19 @@ class HlsCapture(ICapture):
         self.t.daemon = True
         self.t.start()
 
+        # Reconnect with timeout
+        timeout_left = 10
+        sleep = 1
         # Sleep is essential so processor has a prepared self.cap
-        while not self.cap_initialized:
+        while not self.cap_initialized and timeout_left > 0:
             logging.info("Waiting 1 seconds before rechecking if stream is opened..")
-            time.sleep(1)
+            time.sleep(sleep)
+            timeout_left -= sleep
+
+        # Raise error when capture is never created in other thread
+        if not self.cap_initialized:
+            logging.error("cv2.VideoCapture probably raised exception")
+            raise TimeoutError("HLS Capture never opened")
 
     def opened(self) -> bool:
         """Check whether the current capture object is still opened

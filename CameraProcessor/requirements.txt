@@ -7,16 +7,19 @@ numpy>=1.16<1.19
 matplotlib
 scipy<=1.6.1
 pdoc
-pytest
 regex
 python-time
 
+# Testing
+pytest
+
 # Logging
-logging
+# logging
 
 # Images / Video
 pillow
-opencv-python==4.1.2.30
+opencv-python-headless
+opencv-python==4.5.1.48
 ffmpeg-python
 
 # Threading
@@ -32,12 +35,14 @@ lxml
 tqdm
 
 # GPU AI learning
-tensorboard==2.2.0
-tensorflow-gpu==2.3.0rc0
+# tensorboard==2.2.0
+# tensorflow-gpu==2.3.0rc0
+
 torch==1.8.0+cu101
 torchvision==0.9.0+cu101
 -f https://download.pytorch.org/whl/torch_stable.html
+
 # YOLOv4deepsort
--r src/pipeline/detection/yolov4deepsort/requirements.txt
+# -r src/pipeline/detection/yolov4deepsort/requirements.txt
 # YOLOv5
 -r src/pipeline/detection/yolov5/requirements.txt
