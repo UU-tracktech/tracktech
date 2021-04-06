@@ -138,6 +138,21 @@ class TestReceivingFromOrchestrator:
         for i in msg:
             assert ws_client2.message_list[i.index(i)].__eq__(i)
 
+    @pytest.mark.asyncio
+    @with_timeout(10)
+    async def test_retrieve_invalid_tracking(self):
+        """Sends valid stop entry and verifies the result
+
+        """
+        ws_client = await self.get_connected_websocket()
+        ws_client2 = await self.get_connected_websocket()
+        msg = load_data('invalid', 1)
+        ws_client.write_message(msg[0])
+        await asyncio.sleep(1)
+        await ws_client2.await_message(1)
+        assert len(ws_client2.message_list) == 1
+        assert ws_client2.message_list.__eq__(msg)
+
 
 if __name__ == '__main__':
     pytest.main(TestReceivingFromOrchestrator)
