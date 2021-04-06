@@ -1,24 +1,22 @@
 import sys
 import logging
-import time
 import os
-from absl import app
-import cv2
+import asyncio
 import configparser
+from absl import app
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.pipeline.detection.yolov5_runner import Detector
 from src.input.video_capture import VideoCapture
 from src.input.hls_capture import HlsCapture
 import src.websocket_client as client
-import asyncio
 from src.pipeline.process_frames import process_stream
 
 
-def main(args):
+def main(_):
     """Setup for logging and starts pipeline by reading in config information.
 
     Args:
-        args (list): list of arguments passed to main, contains file path per default.
+        _ (list): list of arguments passed to main, contains file path per default.
     """
     # Logging doesn't work in main function without this,
     # but it must be in main as it gets removed by documentation.py otherwise.
@@ -62,6 +60,16 @@ def main(args):
 
 
 async def initialize(vid_stream, det_obj, detector, url):
+    """Initialize the websocket client connecting to the processor orchestrator when a HLS stream is used.
+
+    Args:
+        vid_stream (ICapture): video stream object.
+        det_obj (DetectionObj): stores detections with all necessary information.
+        detector (Detector): detector object performing yolov5 detections.
+        url (str): url to the processor orchestrator.
+
+    Returns:
+    """
     if isinstance(vid_stream, HlsCapture):
         ws_client = await client.create_client(url)
         ws_client.write_message(vid_stream.to_json())
