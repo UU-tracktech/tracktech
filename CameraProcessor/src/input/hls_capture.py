@@ -1,10 +1,10 @@
-import cv2
-import ffmpeg
 import threading
 import time
 import logging
 import json
 from typing import List
+import ffmpeg
+import cv2
 from src.input.icapture import ICapture
 
 
@@ -23,6 +23,7 @@ class HlsCapture(ICapture):
         Args:
             hls_url: Url the videocapture has to connect to
         """
+
         # Stream related properties
         self.hls_url = hls_url
         self.cap = None
@@ -43,9 +44,9 @@ class HlsCapture(ICapture):
         self.current_frame_nr = 0
 
         # Create thread that syncs streams
-        self.t = threading.Thread(target=self.sync)
-        self.t.daemon = True
-        self.t.start()
+        self.thread = threading.Thread(target=self.sync)
+        self.thread.daemon = True
+        self.thread.start()
 
         # Reconnect with timeout
         timeout_left = 10
@@ -73,10 +74,11 @@ class HlsCapture(ICapture):
 
     # When everything is done release the capture
     def close(self) -> None:
-        """Closes the capture object and the thread that is responsible for serving the current frame
+        """Closes the capture object and the thread that is responsible
+        for serving the current frame
         """
         logging.info('HLS stream closing')
-        self.t.join()
+        self.thread.join()
         self.cap.release()
 
     def get_next_frame(self) -> (bool, List[List[int]], float):
@@ -94,7 +96,8 @@ class HlsCapture(ICapture):
         return True, self.current_frame, self.frame_time_stamp
 
     def read(self) -> None:
-        """Method that runs in seperate thread that goes through the frames of the stream at a consistent pace
+        """Method that runs in seperate thread that goes through the frames of the
+        stream at a consistent pace
 
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long
@@ -127,7 +130,7 @@ class HlsCapture(ICapture):
 
         Makes a separate thread to request meta-data and sets the default values for the variables
         """
-        logging.info('Connecting to HLS stream, url: %s', self.hls_url)
+        logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
         # Starts a separate thread to request meta-data
         threading.Thread(target=self.get_meta_data).start()
@@ -141,7 +144,8 @@ class HlsCapture(ICapture):
 
         logging.info('Opened HLS stream')
 
-        # Get the FPS of the hls stream and turn it into a delay of when each frame should be displayed
+        # Get the FPS of the hls stream and turn it into a delay of when
+        # each frame should be displayed
         self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
         self.read()
 
@@ -150,12 +154,14 @@ class HlsCapture(ICapture):
         """
         # extract the start_time from the meta-data to get the absolute segment time
         logging.info('Retrieving meta data from HLS stream')
+        # pylint: disable=no-member
         meta_data = ffmpeg.probe(self.hls_url)
+        # pylint: enable=no-member
         try:
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         # Json did not contain key
-        except KeyError as e:
-            logging.warning(f'Json does not contain keys for start_time: {e}')
+        except KeyError as err:
+            logging.warning(f'Json does not contain keys for start_time: {err}')
 
     def to_json(self):
         """Converts HLS URL into JSON with correct type included."""

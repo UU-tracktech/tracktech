@@ -1,7 +1,7 @@
-import cv2
 import os
 import logging
 from typing import List
+import cv2
 from src.input.icapture import ICapture
 
 
@@ -13,9 +13,9 @@ class ImageCapture(ICapture):
             images_dir: Path to the directory that contains the images
         """
         logging.info(f'Using images from folder {images_dir}')
-
         # Gets the number of images from the folder
-        self.images_paths = sorted([os.path.join(images_dir, image_name) for image_name in os.listdir(images_dir)])
+        self.images_paths = sorted([os.path.join(images_dir, image_name)
+                                    for image_name in os.listdir(images_dir)])
         self.nr_images = len(self.images_paths)
 
         # Start index is -1 because we want to know the index of current after it has been incremented

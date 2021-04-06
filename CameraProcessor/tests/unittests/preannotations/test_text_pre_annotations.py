@@ -1,8 +1,10 @@
 import os
-from test_pre_annotations import example_text_file
+import pytest
 from src.training.pre_annotations import PreAnnotations
+from tests.unittests.preannotations.test_pre_annotations import example_text_file
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestTextParsing:
     """Tests the parsing of text files, these contain the bounding boxes of subjects
     """
@@ -50,3 +52,7 @@ class TestTextParsing:
 
         assert self.short_annotations.skipped_lines == 4
         assert number_boxes == [1, 2]
+
+
+if __name__ == '__main__':
+    pytest.main(TestTextParsing)

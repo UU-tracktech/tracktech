@@ -22,7 +22,8 @@ def __get_images_dir():
 
 @pytest.fixture(params=[ImageCapture(__get_images_dir()), CamCapture()])
 def capture_implementation(request):
-    """ Defines capture_implementation as multiple implementations of iCapture, to be use in generic capture tests.
+    """ Defines capture_implementation as multiple implementations of iCapture,
+    to be use in generic capture tests.
 
     Args:
         request: different implementations of capture.

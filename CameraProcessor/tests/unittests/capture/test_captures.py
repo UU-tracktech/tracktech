@@ -1,5 +1,5 @@
-import pytest
 import os
+import pytest
 from src.input.icapture import ICapture
 from src.input.image_capture import ImageCapture
 from src.input.hls_capture import HlsCapture
@@ -18,6 +18,7 @@ class TestCaptures:
         """
         assert capture_implementation.opened()
 
+    @pytest.mark.skip
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
