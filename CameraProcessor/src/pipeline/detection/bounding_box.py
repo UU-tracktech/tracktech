@@ -2,6 +2,7 @@ import json
 from typing import List
 
 
+
 class BoundingBox:
     """Contains information about a single bounding box
     """
