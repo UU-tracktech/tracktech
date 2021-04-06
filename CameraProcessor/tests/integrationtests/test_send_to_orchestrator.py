@@ -49,7 +49,7 @@ class TestSendToOrchestrator:
         """
         ws_client = self.get_websocket()
         await ws_client.connect()
-        assert ws_client.connected
+        assert ws_client.connection is not None
         ws_client.connection.close()
 
     @pytest.fixture(params=['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid', 'bad'])

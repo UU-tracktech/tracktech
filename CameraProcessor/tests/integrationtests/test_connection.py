@@ -47,7 +47,6 @@ def test_websocket_constructor():
     assert websocket_test.write_queue == []
     assert not websocket_test.reconnecting
     assert not websocket_test.connection
-    assert not websocket_test.connected
 
 
 @pytest.mark.asyncio
@@ -74,9 +73,9 @@ async def test_websocket_disconnecting():
     # assert pytest.raises(AttributeError, PreAnnotations, example_text_file, nr_frames)
     assert websocket_test.connection is not None
     await websocket.gen.sleep(1)
-    websocket_test.on_close()
+    websocket_test.connection.close()
     await websocket.gen.sleep(1)
-    assert not websocket_test.connected
+    assert websocket_test.connection is not None
 
 
 @pytest.mark.asyncio
