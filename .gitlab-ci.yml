@@ -8,7 +8,8 @@ camera_processor_documentation:
   trigger:
     include: CameraProcessor/.gitlab-ci-docs.yml
   rules:
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - CameraProcessor/*
 
 camera-processor_docker_test_build:
@@ -17,7 +18,8 @@ camera-processor_docker_test_build:
     - cd CameraProcessor
     - docker build -f Dockerfile.test -t camera-processor-test .
   rules:
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - CameraProcessor/*
         
 camera-processor_unit-testing:
@@ -32,7 +34,8 @@ camera-processor_unit-testing:
     reports:
       junit: CameraProcessor/report.xml
   rules:
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - CameraProcessor/*
 
 orchestrator_docker_build:
