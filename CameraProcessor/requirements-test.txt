@@ -17,8 +17,9 @@ opencv-python-headless
 opencv-python==4.5.1.48
 ffmpeg-python
 
-# Threading
+# Threading / Async
 threaded
+asyncio
 
 # XML
 lxml
