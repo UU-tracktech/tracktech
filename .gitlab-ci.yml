@@ -1,11 +1,10 @@
 stages:
   - build
-  - camera_docs
   - test
-  - triggers
+  - documentation
 
 camera_processor_documentation:
-  stage: camera_docs
+  stage: documentation
   trigger:
     include: CameraProcessor/.gitlab-ci-docs.yml
   rules:
