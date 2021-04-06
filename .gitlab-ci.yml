@@ -14,8 +14,8 @@ camera_processor_documentation:
 
 camera-processor_docker_test_build:
   stage: build
-  script: 
-    - docker build -f Dockerfile.test -t camera-processor-test ./CameraProcessor
+  script:
+    - docker build -f ./CameraProcessor/Dockerfile.test ./CameraProcessor -t camera-processor-test
         
 camera-processor_unit-testing:
   stage: test
