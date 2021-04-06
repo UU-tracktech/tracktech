@@ -17,11 +17,15 @@ camera-processor_docker_test_build:
   script:
     - cd CameraProcessor
     - docker build -f Dockerfile.test -t camera-processor-test .
+  rules:
+    - changes:
+        - CameraProcessor/*
         
 camera-processor_unit-testing:
   stage: test
   needs: [camera-processor_docker_test_build]
   script:
+    - cd CameraProcessor
     - docker run camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
   artifacts:
     paths:
