@@ -77,7 +77,7 @@ class TestReceivingFromOrchestrator:
     def message_type(self, request):
         return request.param
 
-    @pytest.fixture(params=[1, 10, None])
+    @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
     def amount(self, request):
         return request.param
 
@@ -94,7 +94,7 @@ class TestReceivingFromOrchestrator:
         """
         ws_client = await self.get_connected_websocket()
         ws_client2 = await self.get_connected_websocket()
-        msg = load_data(message_type, amount)
+        msg = load_data(message_type, amount[0], amount[1])
         for j in msg:
             ws_client.write_message(j)
         await asyncio.sleep(1)
