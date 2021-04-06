@@ -1,5 +1,5 @@
-import cv2
 import logging
+import cv2
 from src.input.icapture import ICapture
 
 

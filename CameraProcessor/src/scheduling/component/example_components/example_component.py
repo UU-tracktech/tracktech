@@ -7,7 +7,8 @@ from src.scheduling.component.component_interface import IComponent
 class ExampleComponent(IComponent):
     """Example component with a work function containing multiple inputs."""
 
-    def work(self, first_arg, second_arg) -> object:
+    @staticmethod
+    def work(first_arg, second_arg) -> object:
         """Example function with multiple arguments that can be returned by execute_component().
 
         Args:
