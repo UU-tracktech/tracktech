@@ -130,7 +130,7 @@ class HlsCapture(ICapture):
 
         Makes a separate thread to request meta-data and sets the default values for the variables
         """
-        logging.info('Connecting to HLS stream, url: %s', self.hls_url)
+        logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
         # Starts a separate thread to request meta-data
         threading.Thread(target=self.get_meta_data).start()
@@ -154,6 +154,7 @@ class HlsCapture(ICapture):
         """
         # extract the start_time from the meta-data to get the absolute segment time
         logging.info('Retrieving meta data from HLS stream')
+        # pylint: disable=no-member
         meta_data = ffmpeg.probe(self.hls_url)
         # pylint: enable=no-member
         try:
