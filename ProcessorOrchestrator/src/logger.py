@@ -11,19 +11,19 @@ logging.basicConfig(filename='logs.log',
                     level=logging.DEBUG)
 
 
-def log_get_request(location, ip):
+def log_get_request(location, ip_address):
     """Writes a get request to the log.
 
     Args:
         location:
             Url path where this request was made.
-        ip:
+        ip_address:
             Ip address of the request origin.
     """
-    logging.info(f"GET Request made for {location} from {ip}")
+    logging.info(f"GET Request made for {location} from {ip_address}")
 
 
-def log_message_receive(message, location, ip):
+def log_message_receive(message, location, ip_address):
     """Logs a message that was received.
 
     Args:
@@ -31,13 +31,13 @@ def log_message_receive(message, location, ip):
             The message that was received.
         location:
             Url path where this request was made.
-        ip:
+        ip_address:
             Ip address where the message was sent from.
     """
-    logging.info(f"Received message on {location} from {ip}: {message}")
+    logging.info(f"Received message on {location} from {ip_address}: {message}")
 
 
-def log_message_send(message, location, ip):
+def log_message_send(message, location, ip_address):
     """Logs a message that was sent.
 
         Args:
@@ -45,37 +45,37 @@ def log_message_send(message, location, ip):
                 The message that was sent.
             location:
                 Url path where this request was made.
-            ip:
+            ip_address:
                 Ip address where the message was sent to.
     """
-    logging.info(f"Sent message on {location} from {ip}: {message}")
+    logging.info(f"Sent message on {location} from {ip_address}: {message}")
 
 
-def log_connect(location, ip):
+def log_connect(location, ip_address):
     """Logs a new websocket connection.
 
         Args:
             location:
                 Url path where this connection was made.
-            ip:
+            ip_address:
                 Ip address of the connection origin.
     """
-    logging.info(f"Websocket connected on {location} from {ip}")
+    logging.info(f"Websocket connected on {location} from {ip_address}")
 
 
-def log_disconnect(location, ip):
+def log_disconnect(location, ip_address):
     """Logs a new websocket connection.
 
         Args:
             location:
                 Url path where this connection was stopped.
-            ip:
+            ip_address:
                 Ip address of the connection origin.
     """
-    logging.info(f"Websocket disconnected on {location} from {ip}")
+    logging.info(f"Websocket disconnected on {location} from {ip_address}")
 
 
-def log_error(location, error, ip):
+def log_error(location, error, ip_address):
     """Logs an error.
 
         Args:
@@ -83,7 +83,7 @@ def log_error(location, error, ip):
                 Url path where this error was handled.
             error:
                 The error that was handled.
-            ip:
+            ip_address:
                 Ip address of the source of the error.
     """
-    logging.warning(f"{error} on {location} from {ip}")
+    logging.warning(f"{error} on {location} from {ip_address}")
