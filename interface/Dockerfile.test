@@ -16,4 +16,4 @@ COPY react/testing ./testing
 # copy static files
 COPY testconfig.json /build/config.json
 
-#ENTRYPOINT ["npm", "test"]
+ENTRYPOINT ["npm", "test"]

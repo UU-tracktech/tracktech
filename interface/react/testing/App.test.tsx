@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { App } from '../src/App';
+import fetchMock from 'jest-fetch-mock';
 
 jest.mock("@react-keycloak/web", () => {
   const originalModule = jest.requireActual("@react-keycloak/web");
@@ -13,7 +14,7 @@ jest.mock("@react-keycloak/web", () => {
   }
 })
 
-test('App renders', () => {
+test('App renders', async () => {
   fetch("www.google.com")
   render(<App />);
 })
