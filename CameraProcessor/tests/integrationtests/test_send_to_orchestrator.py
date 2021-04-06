@@ -56,7 +56,7 @@ class TestSendToOrchestrator:
     def message_type(self, request):
         return request.param
 
-    @pytest.fixture(params=[1, 10, None])
+    @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
     def amount(self, request):
         return request.param
 
@@ -69,7 +69,7 @@ class TestSendToOrchestrator:
             message_type: ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid']
             amount: any number, or None for all the test data
         """
-        message = load_data(message_type, amount)
+        message = load_data(message_type, amount[0], amount[1])
         ws_client = await self.get_connected_websocket()
         for m in message:
             ws_client.write_message(m)
