@@ -9,6 +9,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
 
     //Offset used for the time based on fragment number
     private offset = 0
+    private startUri;
 
     componentDidMount() {
         // instantiate video.js
@@ -18,90 +19,69 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             this.player?.controlBar.addChild(toggleSizeButton, { Text: 'Toggle main' }, 0)
             this.player?.on('playerresize', () => this.onResize())
             this.player?.on('play', () => this.onResize())
-            this.player?.on('loadeddata', () => this.testFunc())
 
-            //On load, grab metadata and set an offset for our internal timestamp
-            //this.player?.on('loadeddata', () => this.GetMetaData())
+            this.player?.on('play', () => {
+                this.getCurrentTime()
+                let uriCheck = this.player?.setInterval(() => {
+                    let playerHLS = (this.player?.tech() as any).vhs
+                    let media = playerHLS.playlists.media()
 
-            //print our internal timestamp to the console for debug info
-            this.player?.setInterval(() => this.printTime(), 1000 / 24)
+                    let currentUri = media.segments[0].uri
+
+                    if (currentUri != this.startUri) {
+                        let splitUri = currentUri.split('_V')[1]
+                        let fragNum = splitUri.slice(1, splitUri.length - 3)
+                        const segmentTimestamp: number = (parseInt(fragNum) - 1) * 2
+                        this.offset = segmentTimestamp - 1
+                        this.clearInterval(uriCheck)
+                        this.player?.currentTime(0)
+                        //console.log('Interval done')
+                    }
+                }, 10)
+            })
+
+            this.player?.setInterval(() => {
+
+                let playerTime = this.player?.currentTime();
+
+                if(playerTime) {
+
+                    // console.log('playertime', playerTime)
+                    // console.log('offset', this.offset)
+                    let stamp = playerTime + this.offset
+
+                    let min = Math.floor(stamp / 60)
+                    let sec = Math.floor(stamp % 60)
+                    let toPrint = min + ':' + sec
+
+                    console.log('time', toPrint)
+                }
+            }, 1000/24)
         })
     }
 
-    testFunc() {
-        let activeCue = this.player?.textTracks()[0].activeCues;
-
-        if (activeCue)
-            if (activeCue[0]) {
-
-                let splitUri = activeCue[0]['value'].uri.split('_V')[1]
-                //The extracted number
-                let fragNum = splitUri.slice(1, splitUri.length - 3)
-                //Set offset based on starttime found in metadata
-                let startTime = activeCue[0].startTime
-                //each fragment is 2 seconds, so we need fragNum * 2 to get total seconds
-                if (startTime == 0) {
-                    this.offset = parseFloat(fragNum) * 2
-                } else {
-                    this.offset = parseFloat(fragNum) * 2 - 2
-                }
-            }
+    clearInterval(x) {
+        this.player?.clearInterval(x)
     }
 
+    getCurrentTime() {
+        let playerHLS = (this.player?.tech() as any).vhs
+        //console.log('playerhls', playerHLS)
 
-    /**Gets the metadata track*/
-    GetMetaData() {
-        let tracks = this.player?.textTracks();
-        let segmentMetadataTrack;
+        let media = playerHLS.playlists.media()
+        let lastUri = media.segments[0].uri
+        this.startUri = lastUri
 
-        if(tracks) {
-            for (let i = 0; i < tracks.length; i++) {
-                if (tracks[i].label === 'segment-metadata') {
-                    segmentMetadataTrack = tracks[i];
-                }
-            }
+        let splitUri = lastUri.split('_V')[1]
+        let fragNum = splitUri.slice(1, splitUri.length - 3)
+        const segmentTimestamp = (parseInt(fragNum) - 1) * 2
+        this.offset = segmentTimestamp
 
-            if (segmentMetadataTrack) {
-                segmentMetadataTrack.on('cuechange', this.HandleMetaData(segmentMetadataTrack))
-            }
-        }
-    }
-
-    /**Handles the given metadata and sets an offset
-     * to get a correct internal timestamp of the video
-     * based on the fragment number*/
-    HandleMetaData(segmentMetadataTrack) {
-        let activeCue = segmentMetadataTrack.activeCues[0];
-        if (activeCue) {
-            //The whole filename of the fragment being played
-            let splitUri = activeCue['value'].uri.split('_V')[1]
-            //The extracted number
-            let fragNum = splitUri.slice(1, splitUri.length-3)
-            //Set offset based on starttime found in metadata
-            let startTime = activeCue.startTime
-            //each fragment is 2 seconds, so we need fragNum * 2 to get total seconds
-            if(startTime == 0) {
-                this.offset = parseFloat(fragNum) * 2
-            }
-            else {
-                this.offset = parseFloat(fragNum) * 2 - 2
-            }
-        }
-    }
-
-    /**Print the internal timestamp to the console as debug info*/
-    printTime() {
-        if(this.player?.currentTime()) {
-            //Get the time with our calculated offset
-            let realtime = this.player?.currentTime() + this.offset
-
-            //convert to readable format
-            let minutes = Math.floor(realtime / 60)
-            let seconds = Math.floor(realtime % 60)
-            let playerTime = minutes + ':' + seconds
-
-            console.log('Time', playerTime)
-        }
+        // let min = Math.floor(segmentTimestamp / 60)
+        // let sec = segmentTimestamp % 60
+        // let stamp = min + ':' + sec
+        //console.log('timestamp', stamp)
+        //console.log('currentTime', this.player?.currentTime())
     }
 
     onResize() {
