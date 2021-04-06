@@ -73,85 +73,35 @@ class TestReceivingFromOrchestrator:
         assert ws_client.connected
         ws_client.connection.close()
 
+    @pytest.fixture(params=['featureMap'])
+    def message_type(self, request):
+        return request.param
+
+    @pytest.fixture(params=[1, 10, None])
+    def amount(self, request):
+        return request.param
+
     @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_retrieve_feature_map(self):
-        """Sends valid featureMap entry and verifies the result
+    async def test_retrieve_data(self, message_type, amount):
+        """Sends data to the orchestrator and tests if it receives the same data back
+
+        Args:
+            message_type: Pytest fixture, being one of the available message types
+            amount: any number, or None for all the test data
+
+        Returns:
 
         """
         ws_client = await self.get_connected_websocket()
         ws_client2 = await self.get_connected_websocket()
-        msg = load_data('featureMap', 1)
-        ws_client.write_message(msg[0])
-        await asyncio.sleep(1)
-        await ws_client2.await_message(1)
-        assert len(ws_client2.message_list) == 1
-        assert ws_client2.message_list.__eq__(msg)
-
-    @pytest.mark.skip(reason="Skipping due to no return implementation from orchestrator")
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_retrieve_start_tracking(self):
-        """Sends valid start entry and verifies the result
-
-        """
-        ws_client = await self.get_connected_websocket()
-        ws_client2 = await self.get_connected_websocket()
-        msg = load_data('start', 1)
-        ws_client.write_message(msg[0])
-        await asyncio.sleep(1)
-        await ws_client2.await_message(1)
-        assert len(ws_client2.message_list) == 1
-        assert ws_client2.message_list.__eq__(msg)
-        # ws_client.write_message(json_message[0])
-
-    @pytest.mark.skip(reason="Skipping due to no return implementation from orchestrator")
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_retrieve_stop_tracking(self):
-        """Sends valid stop entry and verifies the result
-
-        """
-        ws_client = await self.get_connected_websocket()
-        ws_client2 = await self.get_connected_websocket()
-        msg = load_data('stop', 1)
-        ws_client.write_message(msg[0])
-        await asyncio.sleep(1)
-        await ws_client2.await_message(1)
-        assert len(ws_client2.message_list) == 1
-        assert ws_client2.message_list.__eq__(msg)
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_retrieve_feature_map(self):
-        """Sends valid featureMap entries and verifies the result
-
-        """
-        ws_client = await self.get_connected_websocket()
-        ws_client2 = await self.get_connected_websocket()
-        msg = load_data('featureMap', 10)
+        msg = load_data(message_type, amount)
         for j in msg:
             ws_client.write_message(j)
         await asyncio.sleep(1)
-        await ws_client2.await_message(10)
-        assert len(ws_client2.message_list) == 10
+        await ws_client2.await_message(len(msg))
+        assert len(ws_client2.message_list) == len(msg)
         for i in msg:
             assert ws_client2.message_list[i.index(i)].__eq__(i)
-
-    @pytest.mark.asyncio
-    @with_timeout(10)
-    async def test_retrieve_invalid_tracking(self):
-        """Sends valid stop entry and verifies the result
-
-        """
-        ws_client = await self.get_connected_websocket()
-        ws_client2 = await self.get_connected_websocket()
-        msg = load_data('invalid', 1)
-        ws_client.write_message(msg[0])
-        await asyncio.sleep(1)
-        await ws_client2.await_message(1)
-        assert len(ws_client2.message_list) == 1
-        assert ws_client2.message_list.__eq__(msg)
 
 
 if __name__ == '__main__':
