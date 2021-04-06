@@ -28,6 +28,8 @@ def load_data(datatype, nr=None):
         cd = os.path.join(sys.path[0], f'tests/integrationtests/testdata/{filename}.json')
         f = open(cd, encoding="utf-8")
         jfile = json.load(f)
+        if nr == 'all':
+            return json.dumps(jfile)
         if nr is not None:
             d = []
             for i in range(nr):
