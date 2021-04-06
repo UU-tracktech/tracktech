@@ -13,17 +13,15 @@ python-time
 # Testing
 pytest
 
-# Logging
-# logging
-
 # Images / Video
 pillow
 opencv-python-headless
 opencv-python==4.5.1.48
 ffmpeg-python
 
-# Threading
+# Threading / Async
 threaded
+asyncio
 
 # CPU AI learning
 # tensorboard==2.3.0
