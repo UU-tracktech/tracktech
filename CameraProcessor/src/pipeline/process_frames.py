@@ -12,7 +12,7 @@ import src.websocket_client as client
 import asyncio
 
 
-async def process_stream(capture, det_obj, detector, use_client):
+async def process_stream(capture, det_obj, detector, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -24,19 +24,6 @@ async def process_stream(capture, det_obj, detector, use_client):
         detector (Detector): Yolov5 detector performing the detection using det_obj.
     """
     frame_nr = 0
-
-    # if use_client and not isinstance(capture, HlsCapture):
-    #     raise TypeError('Wrong object passed to process_stream')
-    #
-    # if use_client:
-    #     ws_url = 'ws://localhost:80/processor'
-    #     ws_url = 'ws://processor-orchestrator-service/processor'
-    #     ws_url = 'wss://tracktech.ml:50010/processor'
-    #
-    #     ws_client = await client.create_client(ws_url)
-    #     ws_client.write_message(capture.to_json())
-    # else:
-    #     ws_client = None
 
     while capture.opened():
         # Set the detected bounding box list to empty
@@ -54,9 +41,9 @@ async def process_stream(capture, det_obj, detector, use_client):
         detector.detect(det_obj)
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
-        if use_client:
-            # ws_client.write_message(det_obj.to_json())
-            print(det_obj.to_json())
+        if ws_client is not None:
+            ws_client.write_message(det_obj.to_json())
+            logging.info(det_obj.to_json())
         else:
             # Draw the frame with bounding boxes
             det_obj.draw_rectangles()

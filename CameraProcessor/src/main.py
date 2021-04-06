@@ -48,6 +48,7 @@ def main(args):
     logging.info("Starting video stream...")
 
     hls_config = configs['HLS']
+    orchestrator_config = configs['Orchestrator']
 
     hls_enabled = hls_config.getboolean('enabled')
 
@@ -57,7 +58,17 @@ def main(args):
     else:
         vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
 
-    asyncio.get_event_loop().run_until_complete(process_stream(vid_stream, det_obj, detector, hls_enabled))
+    asyncio.get_event_loop().run_until_complete(initialize(vid_stream, det_obj, detector, orchestrator_config['url']))
+
+
+async def initialize(vid_stream, det_obj, detector, url):
+    if isinstance(vid_stream, HlsCapture):
+        ws_client = await client.create_client(url)
+        ws_client.write_message(vid_stream.to_json())
+    else:
+        ws_client = None
+
+    await process_stream(vid_stream, det_obj, detector, ws_client)
 
 
 if __name__ == '__main__':
