@@ -1,13 +1,14 @@
 import os
-import tornado.web
 import re
 import threading
 import time
-from subprocess import Popen
+from subprocess import Popen, TimeoutExpired
+import tornado.web
 import jwt
+# pylint: disable=unused-import
 from jwt.algorithms import get_default_algorithms
-
 from camera import Camera
+# pylint: enable=unused-import
 
 
 # Camera request handler
@@ -21,13 +22,19 @@ class CameraHandler(tornado.web.StaticFileHandler):
     secret = os.environ.get('JWT_PUBLIC_SECRET')
     audience = os.environ.get('TOKEN_AUDIENCE')
     scope = os.environ.get('TOKEN_SCOPE')
-    publicKey = None
+    public_key = None
+    root = None
 
+    # pylint: disable=arguments-differ
     def initialize(self, path):
         self.root = path
 
         # retrieve the public key
-        self.publicKey = self.application.settings.get('publicKey') 
+        self.public_key = self.application.settings.get('publicKey')
+    # pylint: enable=arguments-differ
+
+    def data_received(self, chunk: bytes):
+        tornado.web.StaticFileHandler.data_received(self, chunk)
 
     # Function to allow cors
     def set_default_headers(self):
@@ -58,17 +65,17 @@ class CameraHandler(tornado.web.StaticFileHandler):
     # To authenticate
     def prepare(self):
         # If auth is enabled
-        if self.publicKey is not None:
+        if self.public_key is not None:
 
             # Try to decode the token using the public key
             try:
                 decoded = jwt.decode(self.request.headers.get('Authorization').split()[
-                                     1], self.publicKey, algorithms=['RS256'], audience=self.audience)
+                                     1], self.public_key, algorithms=['RS256'], audience=self.audience)
 
             # If decoding fails, return not authorized
-            except:
+            except ValueError as exc:
                 self.set_status(401)
-                raise tornado.web.Finish()
+                raise tornado.web.Finish() from exc
 
             # If decoding succeeds, but the required scope is missing, return not authorized
             if self.scope in decoded['resource_access'][self.audience]:
@@ -83,7 +90,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         # Determine the absolute path
         abspath = os.path.abspath(os.path.join(root, path))
 
-        match = re.search('(.*?)(?:_V.*)?\.(m3u8|ts)', path)
+        match = re.search(r'(.*?)(?:_V.*)?\.(m3u8|ts)', path)
 
         if match is None:
             return abspath
@@ -126,12 +133,12 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
                             '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
-                            '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '800k', '-maxrate', '900k', '-bufsize',
-                            '1200k',
-                            '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize',
-                            '2138k',
-                            '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize',
-                            '4275k',
+                            '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0',
+                            '800k', '-maxrate', '900k', '-bufsize', '1200k',
+                            '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1',
+                            '1425k', '-maxrate', '1600k', '-bufsize', '2138k',
+                            '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2',
+                            '2850k', '-maxrate', '3200k', '-bufsize', '4275k',
                             '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',
                             'delete_segments', '-hls_flags', 'omit_endlist', '-start_number', '1',
@@ -149,7 +156,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                         self.stop_stream(root, camera)
 
         # If it requests an stream file
-        if extension == 'm3u8' or extension == 'ts':
+        if extension in ('m3u8', 'ts'):
             if camera in CameraHandler.cameras:
                 entry = CameraHandler.cameras[camera]
 
