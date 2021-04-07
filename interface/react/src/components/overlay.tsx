@@ -50,29 +50,30 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
 
     render() {
         const colordict = { 0: 'red', 1: 'green', 2: 'blue' }
-        console.log(this.state.boxes)
+
         return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
                 {
                     this.state.boxes.map((box) => {
                         var x1 = box.rect[0], x2 = box.rect[2], y1 = box.rect[1], y2 = box.rect[3]
-                        if (x1 > x2){
+                        if (x1 > x2) {
                             var tempx = x1
                             x1 = x2
-                            x2 = tempx  
+                            x2 = tempx
                         }
-                        if (y1 > y2){
+                        if (y1 > y2) {
                             var tempy = y1
                             y1 = y2
                             y2 = tempy
                         }
+                        
                         return <div key={box.boxId} style={
                             {
-                                position: 'relative',
-                                left: `${x1 /** this.state.width*/ + this.state.left}px`, top: `${y1 /** this.state.height*/ + this.state.top}px`,
-                                width: `${(x2 - x1) /** this.state.width*/}px`, height: `${(y2 - y1) /** this.state.height*/}px`,
+                                position: 'absolute',
+                                left: `${x1 * this.state.width + this.state.left}px`, top: `${y1 * this.state.height + this.state.top}px`,
+                                width: `${(x2 - x1) * this.state.width}px`, height: `${(y2 - y1) * this.state.height}px`,
                                 borderColor: "blue" /*colordict[box.boxId ?? 0]*/, borderStyle: 'solid',
-                                transitionProperty: 'all', transitionDuration: '1s',
+                                /* transitionProperty: 'all', transitionDuration: '1s', */
                                 zIndex: 1000
                             }
                         } onClick={() => this.props.onBoxClick(box.boxId)} />
