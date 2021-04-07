@@ -3,6 +3,7 @@ import json
 from src.websocket_client import WebsocketClient
 
 
+# pylint: disable=attribute-defined-outside-init, no-member
 def __eq__(self, other):
     """Custom equalize function
 
@@ -18,7 +19,7 @@ def __eq__(self, other):
     return False
 
 
-class TestWebsocketClient:
+class TestWebsocketClient():
     """Tests websocket_client.py
 
     """

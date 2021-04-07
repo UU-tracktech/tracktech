@@ -1,21 +1,26 @@
+"""Entry point of the application
+
+This file sets up the tornado application.
+"""
 import os
 import ssl
 from pathlib import Path
 
+import pdoc
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application, StaticFileHandler
-from client import ClientSocket
-from processor import ProcessorSocket
-from logger import LogHandler
-import pdoc
+
+from src.client_socket import ClientSocket
+from src.processor_socket import ProcessorSocket
+from src.log_handler import LogHandler
 
 
 def main():
     """Entry point of the application
 
-    The main method is used to set up the tornado application, which includes routing, setting up SSL certificates
-    and compiling the documentation.
+    The main method is used to set up the tornado application, which includes routing, setting up
+    SSL certificates and compiling the documentation.
     """
     # Get ssl ready, if provided in the environment variables
     cert = os.environ.get('SSL_CERT')
@@ -26,23 +31,15 @@ def main():
     pdoc.render.configure(docformat="google")
     pdoc.pdoc(
         'main',
-        'client',
-        'processor',
-        'objectManager',
+        'client_socket',
+        'processor_socket',
+        'connections',
+        'object_manager',
         'logger',
         output_directory=Path(os.path.join(os.path.dirname(__file__), "../docs"))
     )
 
-    # Define socket for both client and processor
-    handlers = [
-        ('/client', ClientSocket),
-        ('/processor', ProcessorSocket),
-        ('/logs', LogHandler),
-        ('/docs/(.*)', StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../docs"), 'default_filename': "index.html"})
-    ]
-
-    # Construct and serve the tornado application.
-    app = Application(handlers)
+    app = create_app()
 
     if use_tls:
         # Create a ssl context
@@ -61,6 +58,26 @@ def main():
         print('listening over http')
 
     IOLoop.current().start()
+
+
+def create_app():
+    """Creates tornado application.
+
+    Creates the routing in the application and returns the complete app.
+    """
+    # Define socket for both client and processor
+    handlers = [
+        ('/client', ClientSocket),
+        ('/processor', ProcessorSocket),
+        ('/logs', LogHandler),
+        ('/docs/(.*)', StaticFileHandler,
+         {'path': os.path.join(os.path.dirname(__file__), "../docs"),
+          'default_filename': "index.html"}
+         )
+    ]
+
+    # Construct and serve the tornado application.
+    return Application(handlers)
 
 
 if __name__ == "__main__":

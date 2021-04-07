@@ -4,6 +4,7 @@ from src.scheduling.component.example_components.output_component import OutputC
 from src.scheduling.component.example_components.example_component import ExampleComponent
 
 
+# pylint: disable=unused-argument
 def func(ignore):
     pass
 

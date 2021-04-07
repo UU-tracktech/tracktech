@@ -78,5 +78,3 @@ class FirstTest(unittest.TestCase):
 
         self.driver.quit()
 
-
-

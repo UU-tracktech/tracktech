@@ -1,22 +1,36 @@
-import cv2
 import logging
+from typing import List
+from cv2 import VideoCapture
 from src.input.icapture import ICapture
+
+vcap = VideoCapture(0)
 
 
 class CamCapture(ICapture):
-    # Default init is public HLS stream
     def __init__(self):
+        """Opens capture that connects to webcam.
+        """
         logging.info('connecting to webcam')
-        self.cap = cv2.VideoCapture(0)
+        self.cap = vcap
 
-    # Sees whether stream has stopped
-    def opened(self):
+    def opened(self) -> bool:
+        """Checks if webcam is still opened.
+
+        Returns:
+            Boolean whether webcam is still on.
+        """
         return self.cap.isOpened()
 
-    # When everything is done release the capture
-    def close(self):
+    def close(self) -> None:
+        """Releases webcam
+        """
         self.cap.release()
 
-    # Gets the next frame from the stream
-    def get_next_frame(self):
-        return self.cap.read()
+    def get_next_frame(self) -> (bool, List[List[int]]):
+        """Gets the next frame from the capture object.
+
+        Returns:
+            Boolean whether a next frame was found
+            Next webcam frame.
+        """
+        return *self.cap.read(), None
