@@ -28,7 +28,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
 
                     let currentUri = media.segments[0].uri
 
-                    if (currentUri != this.startUri) {
+                    if (currentUri !== this.startUri) {
                         let splitUri = currentUri.split('_V')[1]
                         let fragNum = splitUri.slice(1, splitUri.length - 3)
                         const segmentTimestamp: number = (parseInt(fragNum) - 1) * 2
