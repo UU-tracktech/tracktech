@@ -6,10 +6,12 @@ functions that can be called using specified json messages.
 
 import json
 from typing import Optional, Awaitable, Dict, Callable, Any
-import tornado.web
 from time import sleep
+
+import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
+
 from object_manager import objects, TrackingObject
 from connections import processors
 import client_socket
@@ -85,7 +87,6 @@ class ProcessorSocket(WebSocketHandler):
 
             # Execute correct function
             function = actions.get(message_object["type"])
-            """type: Optional[Callable[[], None]]"""
 
             if function is None:
                 print("Someone gave an unknown command")
@@ -116,7 +117,6 @@ class ProcessorSocket(WebSocketHandler):
 
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
-        pass
 
     def register_processor(self, message) -> None:
         """Registers a processor under the given identifier.
@@ -147,8 +147,8 @@ class ProcessorSocket(WebSocketHandler):
         boxes: json = message["boxes"]
 
         if len(client_socket.clients.values()) > 0:
-            for c in client_socket.clients.values():
-                c.send_message(json.dumps({
+            for client in client_socket.clients.values():
+                client.send_message(json.dumps({
                     "type": "boundingBoxes",
                     "cameraId": self.identifier,
                     "frameId": frame_id,
@@ -173,8 +173,8 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             print("Unknown object id")
 
-        for p in processors.values():
-            p.send_message(json.dumps({
+        for processor in processors.values():
+            processor.send_message(json.dumps({
                 "type": "featureMap",
                 "objectId": object_id,
                 "featureMap": feature_map
