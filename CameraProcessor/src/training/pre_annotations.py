@@ -18,6 +18,7 @@ class PreAnnotations:
             When number of frames is negative it raises an error.
         """
         self.file_path = file_path
+        self.skipped_lines = 0
         # Cannot contain negative frames.
         if nr_frames < 0:
             raise AttributeError('Cannot have negative number of frames')
@@ -64,7 +65,7 @@ class PreAnnotations:
                 continue
 
             # Create bounding box
-            rectangle = (pos_x, pos_y, pos_x + pos_w, pos_y + pos_h)
+            rectangle = [pos_x, pos_y, pos_x + pos_w, pos_y + pos_h]
             box = BoundingBox(person_id, rectangle, "UFO", 1)
             self.boxes[frame_nr - 1].append(box)
 
@@ -91,14 +92,14 @@ class PreAnnotations:
     def parse_json_file(self) -> None:
         """Parses JSON file
         """
-        # Open file.
+        # Open file
         with open(self.file_path) as json_file:
             # Every json object
             data = [json.load(json_file)]
             for json_obj in data:
                 self.parse_json_object(json_obj)
 
-    def parse_json_object(self, json_object) -> None:
+    def parse_json_object(self, json_object: json) -> None:
         """Extracts data from json object and puts them in class.
 
         JSON object (subject) has a path containing coordinates for each frame.
@@ -107,22 +108,22 @@ class PreAnnotations:
         Args:
             json_object: A single json object.
         """
-        first_frame = list(json_object['boxes'])[0]
+        first_frame = list(json_object[0]['boxes'])[0]
         # A rectangle
-        pos_x0, pos_y0, pos_x1, pos_y1 = json_object['boxes'][first_frame]
+        pos_x0, pos_y0, pos_x1, pos_y1 = json_object[0]['boxes'][first_frame]
         half_width = int((pos_x1 - pos_x0) / 2)
         half_height = int((pos_y1 - pos_y0) / 2)
         # Add bounding box for each frame
-        for frame_nr in json_object['path']:
+        for frame_nr in json_object[0]['path']:
             # Skips frame when it does exceed list length
-            if int(frame_nr) - 1 >= self.nr_frames:
+            if int(frame_nr) >= self.nr_frames:
                 self.skipped_lines = self.skipped_lines + 1
                 continue
 
             # Create bounding box for a frame
-            (pos_x, pos_y) = json_object['path'][frame_nr]
-            rectangle = (pos_x - half_width, pos_y - half_height,
-                         pos_x + half_width, pos_y + half_height)
+            (pos_x, pos_y) = json_object[0]['path'][frame_nr]
+            rectangle = [pos_x - half_width, pos_y - half_height,
+                         pos_x + half_width, pos_y + half_height]
             box = BoundingBox(1, rectangle, 'UFO', 1)
             # Append to list
             self.boxes[int(frame_nr) - 1].append(box)

@@ -54,3 +54,6 @@ def main():
     logging.info('training stopping')
     # When everything is done release the capture
     capture.close()
+
+if __name__ == '__main__':
+    main()
