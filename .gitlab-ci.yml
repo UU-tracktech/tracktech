@@ -8,7 +8,7 @@ camera_processor_documentation:
   trigger:
     include: CameraProcessor/.gitlab-ci-docs.yml
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: never
       changes:
         - CameraProcessor/*
 
