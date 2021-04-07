@@ -1,3 +1,4 @@
+import React from 'react'
 import { Component } from 'react'
 import { Navbar, Nav, Button, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'

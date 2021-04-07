@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3 AS build
 
 # install dependencies
 COPY requirements.txt .

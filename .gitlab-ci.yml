@@ -25,8 +25,8 @@ orchestrator_docker_build:
   script:
     - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
   rules:
-    - if: $CI_MERGE_REQUEST_ID
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - ProcessorOrchestrator/*
 
 orchestrator_unit-testing:
@@ -35,6 +35,26 @@ orchestrator_unit-testing:
   script:
     - docker run processor-orchestrator
   rules:
-    - if: $CI_MERGE_REQUEST_ID
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - ProcessorOrchestrator/*
+
+interface_docker_build:
+  stage: build
+  script:
+    - cd interface
+    - docker build -t interface -f Dockerfile.test .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - interface/*
+
+interface_unit-testing:
+  stage: test
+  needs: [interface_docker_build]
+  script:
+    - docker run interface
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - interface/*
