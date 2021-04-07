@@ -162,7 +162,3 @@ class HlsCapture(ICapture):
         # Json did not contain key
         except KeyError as error:
             logging.warning(f'Json does not contain keys for {error}')
-
-    def to_json(self):
-        """Converts HLS URL into JSON with correct type included."""
-        return json.dumps({"type": "identifier", "id": self.hls_url})
