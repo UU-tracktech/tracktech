@@ -1,5 +1,4 @@
 """File which contains dicts with the currently open websocket connections"""
-from typing import Dict
 
 processors = dict()
 """Dictionary which matches processor id to the corresponding websocket
