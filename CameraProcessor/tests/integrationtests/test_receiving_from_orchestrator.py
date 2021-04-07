@@ -99,7 +99,7 @@ class TestReceivingFromOrchestrator:
         ws_client2 = await self.get_connected_websocket()
         for j in msg:
             ws_client.write_message(j)
-        # await ws_client2.await_message(len(msg))
+        await ws_client2.await_message(len(msg))
         assert len(ws_client2.message_list) == len(msg)
         for i in msg:
             assert ws_client2.message_list[i.index(i)].__eq__(i)
