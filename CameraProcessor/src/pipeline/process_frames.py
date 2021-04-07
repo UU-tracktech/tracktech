@@ -8,6 +8,7 @@ from src.pipeline.detection.yolov5_runner import Detector
 from src.input.hls_capture import HlsCapture
 # pylint: enable=unused-import
 
+
 async def process_stream(capture, det_obj, detector, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
@@ -38,7 +39,7 @@ async def process_stream(capture, det_obj, detector, ws_client=None):
         detector.detect(det_obj)
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
-        if ws_client is not None:
+        if ws_client:
             ws_client.write_message(det_obj.to_json())
             logging.info(det_obj.to_json())
         else:
