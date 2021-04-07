@@ -1,0 +1,78 @@
+stages:
+  - build
+  - test
+  - documentation
+
+camera_processor_documentation:
+  stage: documentation
+  trigger:
+    include: CameraProcessor/.gitlab-ci-docs.yml
+  rules:
+    - when: never
+      changes:
+        - CameraProcessor/*
+
+camera-processor_docker_test_build:
+  stage: build
+  script:
+    - cd CameraProcessor
+    - docker build -f Dockerfile.test -t camera-processor-test .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+        
+camera-processor_unit-testing:
+  stage: test
+  needs: [camera-processor_docker_test_build]
+  script:
+    - cd CameraProcessor
+    - docker container prune -f
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
+    - docker cp camera-processor-test-container:/app/report.xml report.xml
+  artifacts:
+    reports:
+      junit: CameraProcessor/report.xml
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+
+orchestrator_docker_build:
+  stage: build
+  script:
+    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/*
+
+orchestrator_unit-testing:
+  stage: test
+  needs: [orchestrator_docker_build]
+  script:
+    - docker run processor-orchestrator
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/*
+
+interface_docker_build:
+  stage: build
+  script:
+    - cd interface
+    - docker build -t interface -f Dockerfile.test .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - interface/*
+
+interface_unit-testing:
+  stage: test
+  needs: [interface_docker_build]
+  script:
+    - docker run interface
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - interface/*

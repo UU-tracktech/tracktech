@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  interface:
+      image: tracktech.ml:50007/tt-interface-image
+      ports:
+        - published: 50005
+          target: 5000
+      configs:
+        - NetworkConfig
+  forwarder1:
+    image: tracktech.ml:50007/tt-forwarder-image
+    ports:
+      - published: 50008
+        target: 8080
+        mode: "host"
+    command: ["rtsp://root:root@192.168.178.30/axis-media/media.amp;cam1"]
+
+configs:
+  NetworkConfig:
+    external: true
+    
+secrets:
+  tracktech.ml-cert.pem:
+    external: true
+  tracktech.ml-privkey.pem:
+    external: true

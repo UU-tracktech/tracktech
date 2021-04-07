@@ -1,0 +1,2 @@
+This dockerfile contains the Docker Image containing just Python 3.7 and OpenCV 4.5.1. The dockerfile in the parent directory builds from this 
+directory by pulling it from the registry. I don't recommend building this locally, since it takes a while. 
