@@ -1,23 +1,41 @@
 stages:
   - build
-  - camera_docs
   - test
-  - triggers
+  - documentation
 
 camera_processor_documentation:
-  stage: camera_docs
+  stage: documentation
   trigger:
     include: CameraProcessor/.gitlab-ci-docs.yml
   rules:
-    - changes:
+    - when: never
+      changes:
         - CameraProcessor/*
 
-pytest:
-  stage: test
-  trigger:
-    include: CameraProcessor/.gitlab-ci.yml
+camera-processor_docker_test_build:
+  stage: build
+  script:
+    - cd CameraProcessor
+    - docker build -f Dockerfile.test -t camera-processor-test .
   rules:
-    - changes:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+        
+camera-processor_unit-testing:
+  stage: test
+  needs: [camera-processor_docker_test_build]
+  script:
+    - cd CameraProcessor
+    - docker container prune -f
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
+    - docker cp camera-processor-test-container:/app/report.xml report.xml
+  artifacts:
+    reports:
+      junit: CameraProcessor/report.xml
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
         - CameraProcessor/*
 
 orchestrator_docker_build:
