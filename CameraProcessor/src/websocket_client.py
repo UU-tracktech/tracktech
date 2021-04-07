@@ -9,15 +9,17 @@ from src.pipeline.detection.detection_obj import DetectionObj
 from src.input.hls_capture import HlsCapture
 
 
-async def create_client(url):
+async def create_client(url, id=None):
     """
     Method used to create a websocket client object
     Args:
         url: Websocket url to connect to
+        id: Identifier of the websocket. If the websocket is not used as a processor socket,
+        set id to None. Otherwise, set to an identifier.
 
     Returns: Websocket client object
     """
-    client = WebsocketClient(url)
+    client = WebsocketClient(url, id)
     await client.connect()
     return client
 
@@ -28,11 +30,12 @@ class WebsocketClient:
     Should not be instantiated directly. Rather, use the create_client function
     """
 
-    def __init__(self, url):
+    def __init__(self, url, identifier=None):
         self.connection = None  # Holds the connection object
         self.reconnecting = False  # Whether we are currently trying to reconnect
         self.url = url  # The url of the websocket
         self.write_queue = []  # Stores messages that could not be sent due to a closed socket
+        self.identifier = identifier  # Identify to identify itself with orchestrator
 
         for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)
@@ -57,6 +60,17 @@ class WebsocketClient:
                     await websocket.websocket_connect(self.url,
                                                       on_message_callback=self._on_message)
                 logging.info(f'Connected to {self.url} successfully')
+
+                # Send an identification message to the orchestrator on connect
+                # Only do this when the websocket is a processor socket
+                if self.identifier is not None:
+                    id_message = json.dumps({
+                        "type": "identifier",
+                        "id": self.identifier
+                    })
+                    logging.info(f'Identified with: {id_message}')
+                    self.connection.write_message(id_message)
+
                 connected = True
 
             except ConnectionRefusedError:
@@ -88,6 +102,9 @@ class WebsocketClient:
             message: the message to write
         """
         try:
+            if self.connection is None:
+                raise websocket.WebSocketClosedError
+
             # Write all not yet sent messages
             for old_msg in self.write_queue:
                 self.connection.write_message(old_msg)
