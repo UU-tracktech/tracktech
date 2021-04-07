@@ -71,8 +71,8 @@ async def initialize(vid_stream, det_obj, detector, url):
     Returns:
     """
     if isinstance(vid_stream, HlsCapture):
-        ws_client = await client.create_client(url)
-        ws_client.write_message(vid_stream.to_json())
+        ws_id = vid_stream.hls_url
+        ws_client = await client.create_client(url, ws_id)
     else:
         ws_client = None
 
