@@ -1,6 +1,6 @@
-import cv2
 import os
 import logging
+import cv2
 from src.input.icapture import ICapture
 
 
@@ -8,7 +8,8 @@ class ImageCapture(ICapture):
     # Default init is public HLS stream
     def __init__(self, images_dir):
         logging.info(f'Using images from folder {images_dir}')
-        self.images_paths = sorted([os.path.join(images_dir, image_name) for image_name in os.listdir(images_dir)])
+        self.images_paths = sorted([os.path.join(images_dir, image_name)
+                                    for image_name in os.listdir(images_dir)])
         self.nr_images = len(self.images_paths)
         # Starts at -1 so after getting the image it keeps the index
         self.image_index = -1
@@ -29,7 +30,7 @@ class ImageCapture(ICapture):
 
         if not os.path.isfile(image_path):
             logging.warning(f'File {image_path} is not a file!')
-            return False, None
+            return False, None, None
 
         frame = cv2.imread(image_path)
-        return True, frame
+        return True, frame, None

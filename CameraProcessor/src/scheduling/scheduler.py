@@ -1,11 +1,10 @@
 from queue import Queue
-
-
 from src.scheduling.node.schedule_node import INode
 
 
 class Scheduler:
-    """Sequential scheduler executing a starting node and all children of said node when they are ready for execution.
+    """Sequential scheduler executing a starting node and all children of
+    said node when they are ready for execution.
 
     Attributes:
         start_node: INode representing the initial input node, starting point of the graph.
@@ -15,7 +14,8 @@ class Scheduler:
     """
 
     def __init__(self, start_node: INode):
-        """Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.
+        """Inits Scheduler with a starting node that contains the graph
+        and a queue to determine execution order.
 
         Args:
             start_node: INode representing the initial input node, starting point of the graph.

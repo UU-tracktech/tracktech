@@ -11,7 +11,17 @@ logging.basicConfig(filename='logs.log',
                     level=logging.DEBUG)
 
 
-def log_get_request(location, ip_address):
+def log(message):
+    """Writes a general message to the log
+
+    Args:
+        message:
+            The message to be logged.
+    """
+    logging.info(message)
+
+
+def log_get_request(location, ip):
     """Writes a get request to the log.
 
     Args:

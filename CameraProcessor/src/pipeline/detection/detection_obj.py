@@ -1,6 +1,5 @@
-import cv2
 import json
-from src.pipeline.detection.bounding_box import BoundingBox
+import cv2
 
 
 class DetectionObj:
@@ -19,9 +18,12 @@ class DetectionObj:
         """
         red = (255, 0, 0)
         for bounding_box in self.bounding_boxes:
+            height, width, _ = self.frame.shape
             self.frame = cv2.rectangle(self.frame,
-                                       tuple(bounding_box.rectangle[:2]),
-                                       tuple(bounding_box.rectangle[2:]),
+                                       (int(bounding_box.rectangle[0] * width),
+                                       int(bounding_box.rectangle[1] * height)),
+                                       (int(bounding_box.rectangle[2] * width),
+                                        int(bounding_box.rectangle[3] * height)),
                                        red,
                                        2)
 
@@ -33,6 +35,6 @@ class DetectionObj:
         """
         return json.dumps({
             "type": "boundingBoxes",
-            "frameId": self.frame_nr,
-            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_box],
+            "frameId": self.timestamp,
+            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_boxes],
         })

@@ -11,7 +11,8 @@ class InputComponent(IComponent):
     because the current scheduler can only pass one argument to the initial node.
     """
 
-    def work(self, obj) -> object:
+    @staticmethod
+    def work(obj) -> object:
         """Example function with single argument that can be returned by execute_component().
 
         Args:

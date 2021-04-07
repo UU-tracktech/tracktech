@@ -33,7 +33,7 @@ class ProcessorSocket(WebSocketHandler):
             request: The HTTP server request
         """
         super().__init__(application, request)
-        self.identifier = max(processors.keys(), default=0) + 1
+        self.identifier = None
 
     def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
@@ -47,12 +47,10 @@ class ProcessorSocket(WebSocketHandler):
     def open(self) -> None:
         """Called upon opening of the websocket.
 
-        Method called upon the opening of the websocket. After connecting, it appends this component to a dict
-        of other websockets.
+        Method called upon the opening of the websocket, will log connection
         """
         logger.log_connect("/processor", self.request.remote_ip)
-        print(f"New processor connected with id: {self.identifier}")
-        processors[self.identifier] = self
+        print(f"New processor connected")
 
     def on_message(self, message: str) -> None:
         """Handles a message from a processor that is received on the websocket.
@@ -77,6 +75,8 @@ class ProcessorSocket(WebSocketHandler):
 
             # Switch on message type
             actions: Dict[str, Callable[[], None]] = {
+                "identifier":
+                    lambda: self.register_processor(message_object),
                 "boundingBoxes":
                     lambda: self.send_bounding_boxes(message_object),
                 "featureMap":
@@ -118,8 +118,24 @@ class ProcessorSocket(WebSocketHandler):
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
 
+    def register_processor(self, message) -> None:
+        """Registers a processor under the given identifier.
+
+        Args:
+            message:
+                JSON message that was received. It should contain the following property:
+                    - "id" | The identifier of the processor under which this socket should be registered.
+        """
+        identifier = message["id"]
+
+        self.identifier = identifier
+        processors[self.identifier] = self
+
+        logger.log(f"Processor registered with id {self.identifier} from {self.request.remote_ip}")
+        print(f"Processor registered with id {self.identifier}")
+
     def send_bounding_boxes(self, message) -> None:
-        """Sends bounding boxes to all clients
+        """Sends bounding boxes to all clients.
 
         Args:
             message:
