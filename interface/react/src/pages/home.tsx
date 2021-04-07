@@ -1,6 +1,9 @@
-import React, { Component } from 'react'
-import VideoPlayer from '../components/VideojsPlayer'
-import { Container, Col, Row, ButtonGroup, Button, Card, OverlayTrigger, Popover } from 'react-bootstrap'
+import React from 'react'
+import { Component } from 'react'
+import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
+
+import { VideoPlayer } from '../components/VideojsPlayer'
+import { Canvas } from '../components/canvas'
 
 type indicator = 'All' | 'Selection' | 'None'
 type source = { id: number, name: string, srcObject: { src: string, type: string } }
@@ -14,6 +17,7 @@ export class Home extends Component<{}, homeState> {
   }
 
   async componentDidMount() {
+    console.log(await fetch(process.env.PUBLIC_URL + '/config.json'))
     var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json()
     var nexId = 0
     this.setState({
@@ -85,14 +89,18 @@ export class Home extends Component<{}, homeState> {
             <Row className="d-flex justify-content-center" style={{ margin: "5px", width: "100%" }}>
               {
                 mainSource
-                  ? <VideoPlayer key={mainSource.name} autoplay={true} controls={true} {...bigSize} sources={[mainSource.srcObject]} />
+                  ? <Canvas onClickCallback={(id) => alert(id)} cameraId={mainSource.id} width={bigSize.width} height={bigSize.height - 30}>
+                    <VideoPlayer key={mainSource.name} autoplay={true} controls={true} {...bigSize} sources={[mainSource.srcObject]} />
+                  </Canvas>
                   : <div style={{ width: `${bigSize.width}px`, height: `${bigSize.height}px` }}>please select video on the left hand side</div>
               }
             </Row>
 
             <Row className="d-flex justify-content-center" style={{ margin: "5px", width: "100%" }}>
               {
-                otherSources.map((source) => <VideoPlayer key={source.name} autoplay={true} controls={true} {...smallSize} sources={[source.srcObject]} />)
+                otherSources.map((source) => <Canvas onClickCallback={(id) => alert(id)} cameraId={source.id} width={smallSize.width} height={smallSize.height - 30}>
+                  <VideoPlayer onClick={() => this.viewSource(source)} key={source.name} autoplay={true} controls={true} {...smallSize} sources={[source.srcObject]} />
+                </Canvas>)
               }
             </Row>
           </Col>
@@ -115,8 +123,8 @@ export class Home extends Component<{}, homeState> {
 
   private number = 0
   async addSelection() {
-    const pictures = ["car", "guy", "garden"];
-    const picture = pictures[Math.floor(Math.random() * pictures.length)];
+    const pictures = ["car", "guy", "garden"]
+    const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
     var result = await fetch(process.env.PUBLIC_URL + `/${picture}.png`)
     var blob = await result.blob()

@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
-import { Navbar, Nav, NavbarProps, NavItem, Button , Form} from 'react-bootstrap'
+import React from 'react'
+import { Component } from 'react'
+import { Navbar, Nav, Button, Form } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 import LoginButton from './LoginButton'
 
@@ -9,16 +11,16 @@ export class NavMenu extends Component {
     return (
       <header>
         <Navbar bg="primary" variant="dark" expand="lg">
-          <Navbar.Brand href="/" >
+          <Navbar.Brand as={Link} to="/" >
             Tracktech
            {/*  <img style={{maxHeight: "100px", maxWidth:"100px"}} src={"https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif"} alt="logo" /> */}
           </Navbar.Brand>
           <Navbar.Toggle style={{ float: "right" }} aria-controls="basic-navbar-nav" />
           <Navbar.Collapse className="mr-auto">
             <Nav>
-              <Nav.Link style={{ padding: "8px 25px" }} color="light" href="/">Home</Nav.Link>
-              <Nav.Link style={{ padding: "8px 25px" }} href="/websockets">Websockets</Nav.Link>
-              <Nav.Link style={{ padding: "8px 25px" }} href="/Logging">Logging</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} color="light" to="/">Home</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/websockets">Websockets</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Canvas">Canvas</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
               <LoginButton />

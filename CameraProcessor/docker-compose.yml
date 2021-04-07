@@ -1,4 +1,5 @@
 version: "3"
+<<<<<<< HEAD
  
 services:
   camera-processor-test-service:
@@ -12,6 +13,24 @@ services:
  
   processor-orchestrator-test-service:
     image: processor-orchestrator
+=======
+
+services:
+  camera-processor-yolov5-service:
+    image: camera-processor-yolov5:latest
+    ports:
+      - 9090:9090
+    command: ["python3.8", "src/main.py"]
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+
+  processor-orchestrator-service:
+    image: processor-orchestrator:latest
+>>>>>>> develop
     ports:
       - 80:80
     deploy:
