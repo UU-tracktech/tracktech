@@ -1,35 +1,31 @@
 import os
 from pathlib import Path
 import pkgutil
-from typing import List
 import pdoc
 import pdoc.web
 
 
-def main():
-    """Generates pdoc documentation for all Python modules in CameraProcessor project."""
-    # Take file level of current Python modules as root_folder.
-    root_folder = os.path.dirname(__file__)
+def generate_documentation(root_folder):
+    """Generates pdoc documentation for all Python modules in CameraProcessor project.
 
+    Args:
+        root_folder (Path): path to root folder of Python code.
+    """
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
     pdoc.render.configure(template_directory=Path(os.path.join(root_folder, '../docs/template')),
                           docformat='google')
 
+    # Add to_tree to Jinja2 environment filters to generate tree from modules list.
     pdoc.render.env.filters['to_tree'] = to_tree
-
-    # Get all project modules.
-    modules = get_modules(root_folder)
 
     # Create docs html dir if it doesn't exist.
     Path("../docs/html").mkdir(parents=True, exist_ok=True)
 
     # Generate documentation for all found modules in the /docs.
-    pdoc.pdoc(*modules, output_directory=Path(os.path.join(root_folder, '../docs/html')))
-
-    # pdoc.web.DocServer(addr=('localhost', 63500), all_modules=pdoc.web.AllModules())
+    pdoc.pdoc(root_folder, output_directory=Path(os.path.join(root_folder, '../docs/html')))
 
 
-def get_modules(root_folder: str) -> List[str]:
+def get_modules(root_folder):
     """Gets all modules starting from the top folder,
     excludes Python modules that are deemed as hidden.
 
@@ -39,10 +35,10 @@ def get_modules(root_folder: str) -> List[str]:
     Looks for modules in all found folders (root_folder + both direct and indirect sub folders).
 
     Args:
-        root_folder: root folder to look through modules at current level and in the sub folders
+        root_folder (str): root folder to look through modules at current level and in the sub folders
 
     Returns:
-        List of all Python modules located in root_folder and its sub folders
+        list[str]: list of all Python modules located in root_folder and its sub folders
     """
     # Find all valid sub folders (dir name doesn't start with
     # '.' or '_', starting at the root_folder.
@@ -83,9 +79,10 @@ def to_tree(modules):
     a module are filled with all contained module dictionaries.
 
     Args:
-        modules: list of strings of all module paths (like used in an import statement).
+        modules (list[str]): list of strings of all module paths (like used in an import statement).
 
-    Returns: dictionary containing the tree structure as mentioned above.
+    Returns:
+        dict(str, dict): dictionary containing the tree structure as mentioned above.
     """
     tree = dict()
 
@@ -100,4 +97,22 @@ def to_tree(modules):
 
 
 if __name__ == '__main__':
-    main()
+    import argparse
+
+    # Set root_folder as required argument to call documentation.py.
+    parser = argparse.ArgumentParser(description="Generate documentation for provided root folder")
+    parser.add_argument('root_folder',
+                        type=str,
+                        help="Root folder containing all top-level modules. "
+                             "Includes all modules included via __init__.py, "
+                             "except for modules not included in __all__ inside __init__.py when provided."
+                        )
+
+    # Parse arguments.
+    args = parser.parse_args()
+
+    # Prepend .. to args root_folder to start one level higher (starting at root of project).
+    root_folder = Path(os.path.join('..', args.root_folder))
+
+    # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
+    generate_documentation(root_folder)
