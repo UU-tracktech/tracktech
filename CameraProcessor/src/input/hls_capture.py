@@ -160,8 +160,8 @@ class HlsCapture(ICapture):
         try:
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         # Json did not contain key
-        except KeyError as err:
-            logging.warning(f'Json does not contain keys for start_time: {err}')
+        except KeyError as error:
+            logging.warning(f'Json does not contain keys for {error}')
 
     def to_json(self):
         """Converts HLS URL into JSON with correct type included."""
