@@ -98,9 +98,10 @@ It defines multiple functions that can be called using specified json messages.<
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span>
 <span class="kn">import</span> <span class="nn">tornado.web</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
 <span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">httputil</span>
 <span class="kn">from</span> <span class="nn">tornado.websocket</span> <span class="kn">import</span> <span class="n">WebSocketHandler</span>
-<span class="kn">from</span> <span class="nn">objectManager</span> <span class="kn">import</span> <span class="n">TrackingObject</span><span class="p">,</span> <span class="n">objects</span>
+<span class="kn">from</span> <span class="nn">object_manager</span> <span class="kn">import</span> <span class="n">TrackingObject</span><span class="p">,</span> <span class="n">objects</span>
 <span class="kn">from</span> <span class="nn">connections</span> <span class="kn">import</span> <span class="n">processors</span><span class="p">,</span> <span class="n">clients</span>
 <span class="kn">import</span> <span class="nn">logger</span>
 
@@ -927,28 +928,27 @@ of other websockets.</p>
                                 <dl>
                                     <div><dt>tornado.websocket.WebSocketHandler</dt>
                                 <dd id="ClientSocket.get" class="function">get</dd>
-                <dd id="ClientSocket.ping_interval" class="variable">ping_interval</dd>
-                <dd id="ClientSocket.ping_timeout" class="variable">ping_timeout</dd>
-                <dd id="ClientSocket.max_message_size" class="variable">max_message_size</dd>
                 <dd id="ClientSocket.write_message" class="function">write_message</dd>
                 <dd id="ClientSocket.select_subprotocol" class="function">select_subprotocol</dd>
-                <dd id="ClientSocket.selected_subprotocol" class="variable">selected_subprotocol</dd>
                 <dd id="ClientSocket.get_compression_options" class="function">get_compression_options</dd>
                 <dd id="ClientSocket.ping" class="function">ping</dd>
                 <dd id="ClientSocket.on_pong" class="function">on_pong</dd>
-                <dd id="ClientSocket.on_ping" class="function">on_ping</dd>
                 <dd id="ClientSocket.close" class="function">close</dd>
                 <dd id="ClientSocket.set_nodelay" class="function">set_nodelay</dd>
                 <dd id="ClientSocket.on_connection_close" class="function">on_connection_close</dd>
-                <dd id="ClientSocket.on_ws_connection_close" class="function">on_ws_connection_close</dd>
                 <dd id="ClientSocket.send_error" class="function">send_error</dd>
                 <dd id="ClientSocket.get_websocket_protocol" class="function">get_websocket_protocol</dd>
+                <dd id="ClientSocket.set_status" class="function">set_status</dd>
+                <dd id="ClientSocket.set_header" class="function">set_header</dd>
+                <dd id="ClientSocket.set_cookie" class="function">set_cookie</dd>
+                <dd id="ClientSocket.redirect" class="function">redirect</dd>
+                <dd id="ClientSocket.write" class="function">write</dd>
+                <dd id="ClientSocket.flush" class="function">flush</dd>
+                <dd id="ClientSocket.finish" class="function">finish</dd>
 
             </div>
             <div><dt>tornado.web.RequestHandler</dt>
                                 <dd id="ClientSocket.SUPPORTED_METHODS" class="variable">SUPPORTED_METHODS</dd>
-                <dd id="ClientSocket.path_args" class="variable">path_args</dd>
-                <dd id="ClientSocket.path_kwargs" class="variable">path_kwargs</dd>
                 <dd id="ClientSocket.initialize" class="function">initialize</dd>
                 <dd id="ClientSocket.settings" class="variable">settings</dd>
                 <dd id="ClientSocket.head" class="function">head</dd>
@@ -961,9 +961,7 @@ of other websockets.</p>
                 <dd id="ClientSocket.on_finish" class="function">on_finish</dd>
                 <dd id="ClientSocket.clear" class="function">clear</dd>
                 <dd id="ClientSocket.set_default_headers" class="function">set_default_headers</dd>
-                <dd id="ClientSocket.set_status" class="function">set_status</dd>
                 <dd id="ClientSocket.get_status" class="function">get_status</dd>
-                <dd id="ClientSocket.set_header" class="function">set_header</dd>
                 <dd id="ClientSocket.add_header" class="function">add_header</dd>
                 <dd id="ClientSocket.clear_header" class="function">clear_header</dd>
                 <dd id="ClientSocket.get_argument" class="function">get_argument</dd>
@@ -975,26 +973,15 @@ of other websockets.</p>
                 <dd id="ClientSocket.decode_argument" class="function">decode_argument</dd>
                 <dd id="ClientSocket.cookies" class="variable">cookies</dd>
                 <dd id="ClientSocket.get_cookie" class="function">get_cookie</dd>
-                <dd id="ClientSocket.set_cookie" class="function">set_cookie</dd>
                 <dd id="ClientSocket.clear_cookie" class="function">clear_cookie</dd>
                 <dd id="ClientSocket.clear_all_cookies" class="function">clear_all_cookies</dd>
                 <dd id="ClientSocket.set_secure_cookie" class="function">set_secure_cookie</dd>
                 <dd id="ClientSocket.create_signed_value" class="function">create_signed_value</dd>
                 <dd id="ClientSocket.get_secure_cookie" class="function">get_secure_cookie</dd>
-                <dd id="ClientSocket.get_secure_cookie_key_version" class="function">get_secure_cookie_key_version</dd>
-                <dd id="ClientSocket.redirect" class="function">redirect</dd>
-                <dd id="ClientSocket.write" class="function">write</dd>
                 <dd id="ClientSocket.render" class="function">render</dd>
-                <dd id="ClientSocket.render_linked_js" class="function">render_linked_js</dd>
-                <dd id="ClientSocket.render_embed_js" class="function">render_embed_js</dd>
-                <dd id="ClientSocket.render_linked_css" class="function">render_linked_css</dd>
-                <dd id="ClientSocket.render_embed_css" class="function">render_embed_css</dd>
                 <dd id="ClientSocket.render_string" class="function">render_string</dd>
                 <dd id="ClientSocket.get_template_namespace" class="function">get_template_namespace</dd>
                 <dd id="ClientSocket.create_template_loader" class="function">create_template_loader</dd>
-                <dd id="ClientSocket.flush" class="function">flush</dd>
-                <dd id="ClientSocket.finish" class="function">finish</dd>
-                <dd id="ClientSocket.detach" class="function">detach</dd>
                 <dd id="ClientSocket.write_error" class="function">write_error</dd>
                 <dd id="ClientSocket.locale" class="variable">locale</dd>
                 <dd id="ClientSocket.get_user_locale" class="function">get_user_locale</dd>

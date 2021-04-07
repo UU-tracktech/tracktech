@@ -1,8 +1,10 @@
 import os
-from test_pre_annotations import example_text_file
+import pytest
 from src.training.pre_annotations import PreAnnotations
+from tests.unittests.preannotations.test_pre_annotations import example_text_file
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestTextParsing:
 
     def setup_method(self):
@@ -29,3 +31,7 @@ class TestTextParsing:
         first_line.replace(',', ' ')
         information = self.annotations.parse_line(first_line, ',')
         assert information == [1, 1, 17, 150, 77, 191]
+
+
+if __name__ == '__main__':
+    pytest.main(TestTextParsing)

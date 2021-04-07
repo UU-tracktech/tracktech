@@ -1,5 +1,6 @@
 import json
 
+
 class BoundingBox:
     """
     Contains information about a single bounding box
@@ -19,10 +20,10 @@ class BoundingBox:
         Returns: JSON representation of the object
 
         """
-        str = json.dumps({
+        string = json.dumps({
             "boxId": self.identifier,
             "rect": self.rectangle,
         })
 
         # We need to decode the string so we don't get top-level double encoding
-        return json.JSONDecoder().decode(str)
+        return json.JSONDecoder().decode(string)

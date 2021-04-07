@@ -21,5 +21,4 @@ COPY testconfig.json /build/config.json
 # Copy the build program
 COPY --from=builder /react/build /build
 
-
 ENTRYPOINT ["serve", "-s", "build"]
