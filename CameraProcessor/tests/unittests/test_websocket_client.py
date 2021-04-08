@@ -1,6 +1,6 @@
 import pytest
 import json
-from src.websocket_client import WebsocketClient
+from processor.websocket_client import WebsocketClient
 
 
 # pylint: disable=attribute-defined-outside-init, no-member

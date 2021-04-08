@@ -3,7 +3,7 @@
 """
 
 import json
-from src.websocket_client import WebsocketClient
+from processor.websocket_client import WebsocketClient
 
 
 async def create_dummy_client(url, identifier=None):
