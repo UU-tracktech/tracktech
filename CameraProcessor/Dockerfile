@@ -15,7 +15,7 @@ WORKDIR /app
 
 # Install pip requirements
 COPY requirements.txt .
-COPY src/pipeline/detection/yolov5/requirements.txt src/pipeline/detection/yolov5/requirements.txt
+COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
 
 # Keeps Python from generating .pyc files in the container
@@ -29,9 +29,9 @@ ENV PYTHONPATH=/app
 # COPY webpage webpage
 COPY configs.ini .
 COPY coco.names .
-COPY src src
+COPY processor processor
 
-WORKDIR src
+WORKDIR processor
 
 CMD ["python3.8", "main.py"]
 
