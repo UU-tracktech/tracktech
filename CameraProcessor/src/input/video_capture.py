@@ -6,9 +6,10 @@ from src.input.icapture import ICapture
 class VideoCapture(ICapture):
     # Default path is the path to venice.mp4
     def __init__(self, path='/data/videos/venice.mp4'):
-        logging.info("Opening video from path")
+        logging.info(f"Opening video from path: {path}")
         self.cap = cv2.VideoCapture(path)
         logging.info("Successfully opened video file")
+        logging.info(f"Video has {self.get_vid_length()} frames")
 
     # Check if video stream is stopped, either due to error or eof
     def opened(self):
