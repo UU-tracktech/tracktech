@@ -1,6 +1,6 @@
 import os
 import pytest
-from src.training.pre_annotations import PreAnnotations
+from processor.training.pre_annotations import PreAnnotations
 from tests.unittests.preannotations.test_pre_annotations import example_text_file
 
 

@@ -43,9 +43,9 @@ torchvision==0.9.0+cu101
 -f https://download.pytorch.org/whl/torch_stable.html
 
 # YOLOv4deepsort
-# -r src/pipeline/detection/yolov4deepsort/requirements.txt
+# -r processor/pipeline/detection/yolov4deepsort/requirements.txt
 # YOLOv5
--r src/pipeline/detection/yolov5/requirements.txt
+-r processor/pipeline/detection/yolov5/requirements.txt
 
 # linting
 pylint

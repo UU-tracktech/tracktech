@@ -5,7 +5,7 @@ services:
     image: camera-processor-yolov5:latest
     ports:
       - 9090:9090
-    command: ["python3.8", "src/main.py"]
+    command: ["python3.8", "processor/main.py"]
     deploy:
       replicas: 1
       resources:

@@ -1,6 +1,6 @@
 import os
 from tests.unittests.preannotations.test_pre_annotations import example_json_file
-from src.training.pre_annotations import PreAnnotations
+from processor.training.pre_annotations import PreAnnotations
 
 
 # pylint: disable=attribute-defined-outside-init

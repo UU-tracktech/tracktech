@@ -4,7 +4,7 @@
 import asyncio
 import pytest
 from utils.utils import with_timeout
-from src.websocket_client import create_client
+from processor.websocket_client import create_client
 
 
 # PC_URL = 'ws://processor-orchestrator-test-service/processor'
