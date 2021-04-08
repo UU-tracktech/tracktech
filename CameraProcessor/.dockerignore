@@ -27,4 +27,5 @@
 **/.idea
 README.md
 *.pyc
+*.log
 **/yolov4deepsort
