@@ -21,6 +21,7 @@ camera-processor_docker_test_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
+      when: always
         
 camera-processor_unit-testing:
   stage: test
@@ -37,6 +38,7 @@ camera-processor_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
+      when: always
 
 orchestrator_docker_build:
   stage: build
@@ -46,6 +48,7 @@ orchestrator_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - ProcessorOrchestrator/*
+      when: always
 
 orchestrator_unit-testing:
   stage: test
@@ -56,6 +59,8 @@ orchestrator_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - ProcessorOrchestrator/*
+      when: always
+     
 
 interface_docker_build:
   stage: build
@@ -66,6 +71,7 @@ interface_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - interface/*
+      when: always
 
 interface_unit-testing:
   stage: test
@@ -76,3 +82,4 @@ interface_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - interface/*
+      when: always
