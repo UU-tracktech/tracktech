@@ -26,18 +26,6 @@ ENV PYTHONUNBUFFERED=1
 
 ENV PYTHONPATH=/app
 
-<<<<<<< HEAD
-ENV PYTHONPATH="$PYTHONPATH:/usr/app/src"
-
-WORKDIR /app
-copy webpage webpage
-COPY src src
-COPY tests tests
-
-EXPOSE 80
-
-# CMD ["python", "src/localhost.py"]
-=======
 # COPY webpage webpage
 COPY configs.ini .
 COPY coco.names .
@@ -48,4 +36,3 @@ WORKDIR src
 CMD ["python3.8", "main.py"]
 
 # https://developer.nvidia.com/cuda/wsl/download
->>>>>>> develop
