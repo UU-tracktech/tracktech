@@ -1,5 +1,3 @@
-
-
 ## websocket_client.py
 
 Connects with an url to the orchestrator or another websocket
