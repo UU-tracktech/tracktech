@@ -1,6 +1,7 @@
 stages:
   - build
-  - test
+  - unittest
+  - integrationtest
   - documentation
 
 camera_processor_documentation:
@@ -24,13 +25,30 @@ camera-processor_docker_test_build:
       when: always
         
 camera-processor_unit-testing:
-  stage: test
+  stage: unittest
   needs: [camera-processor_docker_test_build]
   script:
     - cd CameraProcessor
     - docker container prune -f
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
     - docker cp camera-processor-test-container:/app/report.xml report.xml
+  artifacts:
+    reports:
+      junit: CameraProcessor/report.xml
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
+     
+camera-processor_integration-testing:
+  stage: integrationtest
+  needs: [camera-processor_docker_test_build, orchestrator_docker_build]
+  script:
+    - cd CameraProcessor
+    - docker container prune -f
+    - docker-compose up
+    - docker cp camera-processor-integration-test-container:/app/report.xml report.xml
   artifacts:
     reports:
       junit: CameraProcessor/report.xml
@@ -51,7 +69,7 @@ orchestrator_docker_build:
       when: always
 
 orchestrator_unit-testing:
-  stage: test
+  stage: unittest
   needs: [orchestrator_docker_build]
   script:
     - docker run processor-orchestrator
@@ -74,7 +92,7 @@ interface_docker_build:
       when: always
 
 interface_unit-testing:
-  stage: test
+  stage: unittest
   needs: [interface_docker_build]
   script:
     - docker run interface

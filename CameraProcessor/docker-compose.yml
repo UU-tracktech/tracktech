@@ -1,21 +1,19 @@
 version: "3"
 
 services:
-  camera-processor-yolov5-service:
-    image: camera-processor-yolov5:latest
-    ports:
-      - 9090:9090
-    command: ["python3.8", "src/main.py"]
+  camera-processor-test-service:
+    image: camera-processor-test:latest
+    container_name: camera-processor-integration-test-container
+    command: ["python3.8", "-m", "pytest", "tests/integrationtests", "--junitxml=report.xml"]
     deploy:
       replicas: 1
-      resources:
-        reservations:
-          devices:
-            - capabilities: [ gpu ]
+#      resources:
+#        reservations:
+#          devices:
+#            - capabilities: [ gpu ]
 
-  processor-orchestrator-service:
+  processor-orchestrator-test-service:
     image: processor-orchestrator:latest
-    ports:
-      - 80:80
+    command: ["python3.8", "src/main.py"]
     deploy:
       replicas: 1
