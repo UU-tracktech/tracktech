@@ -1,7 +1,7 @@
 import os
 import sys
 import pytest
-from src.training.pre_annotations import PreAnnotations
+from processor.training.pre_annotations import PreAnnotations
 
 example_text_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.txt')
 example_json_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.json')
