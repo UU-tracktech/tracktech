@@ -1,19 +1,4 @@
 version: "3"
-<<<<<<< HEAD
- 
-services:
-  camera-processor-test-service:
-    image: camera-processor
-    ports:
-      - 9090:9090
-    command: ["python", "src/websocket_client.py",
-              "--ws-url", "ws://processor-orchestrator-test-service/processor"]
-    deploy:
-      replicas: 1
- 
-  processor-orchestrator-test-service:
-    image: processor-orchestrator
-=======
 
 services:
   camera-processor-yolov5-service:
@@ -30,7 +15,6 @@ services:
 
   processor-orchestrator-service:
     image: processor-orchestrator:latest
->>>>>>> develop
     ports:
       - 80:80
     deploy:

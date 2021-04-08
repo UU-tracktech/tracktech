@@ -46,10 +46,6 @@ Input following command terminal:
 ```
 pip install pylint
 ```
-<<<<<<< HEAD
-docker run tracktech.ml:50007/camera-processor 
-```
-=======
 
 Install the PyCharm plugin:
 
@@ -84,4 +80,3 @@ Check `Pylint real-time scan`
 Mark desired folder as Excluded in PyCharm. (for local development)
 
 Add folder name to `ignore=` in `pylintrc` (for CI pipeline)
->>>>>>> develop
