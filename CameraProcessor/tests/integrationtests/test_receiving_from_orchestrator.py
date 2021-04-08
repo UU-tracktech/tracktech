@@ -1,20 +1,22 @@
+""" Tests receiving messages from orchestrator, example message pipeline with interface and processor connected
+
+"""
+# pylint: disable=unused-import, unused-variable, unused-argument
 import asyncio
 import pytest
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
 from utils.utils import with_timeout, __eq__
 
-# Listens to what orchestrator sends through
-
-# Expects to hear messages from orchestrator via other processor
-# Gets to hear feature map API calls from orchestrator when other processor sends them
-
-# pc_url = 'ws://processor-orchestrator-test-service/processor'
+# PC_URL= 'ws://processor-orchestrator-test-service/processor'
 PC_URL = 'ws://localhost:80/processor'
 IF_URL = 'ws://localhost:80/client'
 
 
 class TestReceivingFromOrchestrator:
+    """Class that contains receiving from orchestrator tests
+
+    """
     @pytest.mark.asyncio
     @with_timeout(10)
     async def test_confirm_connection(self):
@@ -27,10 +29,16 @@ class TestReceivingFromOrchestrator:
 
     @pytest.fixture(params=['featureMap'])
     def message_type(self, request):
+        """Fixture to generate message types
+
+        """
         return request.param
 
     @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
     def amount(self, request):
+        """Fixture to generate message amounts and whether or not invalid messages
+
+        """
         return request.param
 
     @pytest.mark.asyncio
