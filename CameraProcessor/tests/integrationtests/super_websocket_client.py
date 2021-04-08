@@ -1,15 +1,35 @@
-from src.websocket_client import WebsocketClient
+"""Contains a dummy class that inherits from websocket client and adds a queue for received messages
+
+"""
+
 import json
+from src.websocket_client import WebsocketClient
+
+
+async def create_dummy_client(url, identifier=None):
+    """
+    Method used to create a dummy websocket client object
+    Args:
+        url: Websocket url to connect to
+        id: Identifier of the websocket. If the websocket is not used as a processor socket,
+        set id to None. Otherwise, set to an identifier.
+
+    Returns: Websocket dummy client object
+    """
+    client = WebsocketClientDummy(url, identifier)
+    await client.connect()
+    return client
 
 
 class WebsocketClientDummy(WebsocketClient):
-    """Superclass of WebsocketClient to test receiving messages
+    """Superclass of WebsocketClient to test receiving messages. Don't instantiate directly, call method
+    create_dummy_client instead.
 
     """
 
-    def __init__(self, url):
+    def __init__(self, url, identifier):
 
-        super().__init__(url)
+        super().__init__(url, identifier)
         self.message_list = []
 
     def on_message(self, message):
