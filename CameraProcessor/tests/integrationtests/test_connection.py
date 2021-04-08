@@ -7,8 +7,8 @@ from utils.utils import with_timeout
 from src.websocket_client import create_client
 
 
-# PC_URL = 'ws://processor-orchestrator-test-service/processor'
-PC_URL = 'ws://localhost:80/processor' # Processor websocket url
+PC_URL = 'ws://processor-orchestrator-test-service/processor'
+# PC_URL = 'ws://localhost:80/processor' # Processor websocket url
 
 
 @pytest.mark.asyncio
