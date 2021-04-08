@@ -1,16 +1,3 @@
-opencv-python
-tornado
-numpy
-pdoc
-regex
-
-# Testing
-pytest
-pytest-asyncio
-async-timeout
-
-# Flags
-argparse
 # Install these dependencies using
 # pip install -r requirements.txt
 
@@ -60,3 +47,4 @@ torchvision==0.9.0+cu101
 
 # linting
 pylint
+
