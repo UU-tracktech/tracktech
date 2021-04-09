@@ -9,9 +9,9 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application, StaticFileHandler
 
-from src.client_socket import ClientSocket
-from src.processor_socket import ProcessorSocket
-from src.log_handler import LogHandler
+from client_socket import ClientSocket
+from processor_socket import ProcessorSocket
+from log_handler import LogHandler
 
 
 def main():
