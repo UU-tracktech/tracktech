@@ -91,12 +91,15 @@ pylint:
   script: |
     pip install pylint
     FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    pylint ${FILES}
+    PYLINTRC = $(find . -name ".pylintrc")
+    pylint -rcfile=${PYLINTC} ${FILES}
 
 pyflakes:
   image: python:3.8.8
   stage: test
   script: |
-    pip install pyflakes
+    pip install pyflakes --rcfile=.pylintrc
     FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
     python3 -m pyflakes ${FILES}
+  rules:
+    - when: never
