@@ -4,6 +4,11 @@ stages:
   - documentation
   - deploy
 
+before_script:
+  # pip install -r requirements.txt
+  - which pip3 && pip3 install Flask-Cache pyflakes
+  - which pip3 && pip3 install pylint
+
 camera_processor_documentation:
   stage: documentation
   trigger:
@@ -86,16 +91,17 @@ interface_unit-testing:
       when: always
 
 pylint:
+  image: python:3.8.8
   stage: test
   script: |
     pip install pylint
     FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-
     pylint ${FILES}
 
 pyflakes:
+  image: python:3.8.8
   stage: test
   script: |
-    pip install Flask-Cache pyflakes
+    pip install pyflakes
     FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
     python3 -m pyflakes ${FILES}
