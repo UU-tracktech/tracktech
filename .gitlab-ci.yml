@@ -26,7 +26,7 @@ camera-processor_docker_test_build:
         
 camera-processor_unit-testing:
   stage: test
-  needs: [camera-processor_docker_test_build]
+  needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
     - cd CameraProcessor
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
@@ -76,7 +76,7 @@ orchestrator_container_removal:
 
 orchestrator_unit-testing:
   stage: test
-  needs: [orchestrator_docker_build, orchestrator_container_build]
+  needs: [orchestrator_docker_build, orchestrator_container_removal]
   script:
     - docker run --name po-unit-testing processor-orchestrator
     - docker cp po-unit-testing:report.xml ProcessorOrchestrator/report.xml
