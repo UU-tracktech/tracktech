@@ -54,7 +54,7 @@ orchestrator_unit-testing:
   stage: test
   needs: [orchestrator_docker_build]
   script:
-    - docker docker rm --force po-unit-testing
+    - docker docker rm po-unit-testing
     - docker run --name po-unit-testing processor-orchestrator
     - docker cp po-unit-testing:report.xml ProcessorOrchestrator/report.xml
   artifacts:
