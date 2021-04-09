@@ -4,14 +4,14 @@ stages:
   - integrationtest
   - documentation
 
-camera_processor_documentation:
-  stage: documentation
-  trigger:
-    include: CameraProcessor/.gitlab-ci-docs.yml
-  rules:
-    - when: never
-      changes:
-        - CameraProcessor/*
+# camera_processor_documentation:
+#   stage: documentation
+#   trigger:
+#     include: CameraProcessor/.gitlab-ci-docs.yml
+#   rules:
+#     - when: never
+#       changes:
+#         - CameraProcessor/*
 
 camera-processor_docker_test_build:
   stage: build
@@ -57,51 +57,51 @@ camera-processor_integration-testing:
         - CameraProcessor/*
       when: always
 
-orchestrator_docker_build:
-  stage: build
-  script:
-    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
+# orchestrator_docker_build:
+#   stage: build
+#   script:
+#     - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       changes:
+#         - ProcessorOrchestrator/*
+#       when: always
 
-orchestrator_unit-testing:
-  stage: unittest
-  needs: [orchestrator_docker_build]
-  script:
-    - docker rm -f po-unit-testing
-    - docker run --name po-unit-testing processor-orchestrator
-    - docker cp po-unit-testing:report.xml ProcessorOrchestrator/report.xml
-  artifacts:
-    reports:
-      junit: ProcessorOrchestrator/report.xml
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
+# orchestrator_unit-testing:
+#   stage: unittest
+#   needs: [orchestrator_docker_build]
+#   script:
+#     - docker rm -f po-unit-testing
+#     - docker run --name po-unit-testing processor-orchestrator
+#     - docker cp po-unit-testing:report.xml ProcessorOrchestrator/report.xml
+#   artifacts:
+#     reports:
+#       junit: ProcessorOrchestrator/report.xml
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       changes:
+#         - ProcessorOrchestrator/*
+#       when: always
      
 
-interface_docker_build:
-  stage: build
-  script:
-    - cd interface
-    - docker build -t interface -f Dockerfile.test .
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - interface/*
-      when: always
+# interface_docker_build:
+#   stage: build
+#   script:
+#     - cd interface
+#     - docker build -t interface -f Dockerfile.test .
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       changes:
+#         - interface/*
+#       when: always
 
-interface_unit-testing:
-  stage: unittest
-  needs: [interface_docker_build]
-  script:
-    - docker run interface
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - interface/*
-      when: always
+# interface_unit-testing:
+#   stage: unittest
+#   needs: [interface_docker_build]
+#   script:
+#     - docker run interface
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       changes:
+#         - interface/*
+#       when: always
