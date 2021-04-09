@@ -21,7 +21,6 @@ camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build]
   script:
-    - docker rm -f camera-processor-test-container
     - cd CameraProcessor
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
     - docker cp camera-processor-test-container:/app/report.xml report.xml
