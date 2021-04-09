@@ -33,7 +33,7 @@ camera-processor_unit-testing:
      
 camera-processor_integration-testing:
   stage: integrationtest
-  needs: [camera-processor_docker_test_build, orchestrator_docker_build]
+  needs: [camera-processor_docker_test_build]
   script:
     - docker-compose -f CameraProcessor/docker-compose.yml up
     - docker cp cp-po-processor-integration-test-container:/app/report.xml report.xml
