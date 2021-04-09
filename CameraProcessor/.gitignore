@@ -170,4 +170,4 @@ fabric.properties
 
 # Ignores weird cuda install files
 [0-9\.]*cu\+[0-9]*
-src/yolov5s.pt
+processor/yolov5s.pt
