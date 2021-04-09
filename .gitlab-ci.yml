@@ -91,7 +91,7 @@ pylint:
   script:
     - pip install pylint
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint --rcfile=.pylintrc ${FILES}
+    - pylint ${FILES} --rcfile=.pylintrc
 
 pyflakes:
   image: python:3.8.8
