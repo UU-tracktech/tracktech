@@ -27,4 +27,4 @@ EXPOSE 80
 EXPOSE 443
 
 # Run server
-ENTRYPOINT ["pytest", "testing"]
+ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
