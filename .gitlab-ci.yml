@@ -1,5 +1,6 @@
 stages:
   - build
+  - removal
   - test
   - documentation
 
@@ -51,7 +52,7 @@ orchestrator_docker_build:
       when: always
     
 orchestrator_container_build:
-  stage: build
+  stage: removal
   needs: [orchestrator_docker_build]
   allow_failure: true
   script:
