@@ -4,11 +4,6 @@ stages:
   - documentation
   - deploy
 
-before_script:
-  # pip install -r requirements.txt
-  - which pip3 && pip3 install Flask-Cache pyflakes
-  - which pip3 && pip3 install pylint
-
 camera_processor_documentation:
   stage: documentation
   trigger:
