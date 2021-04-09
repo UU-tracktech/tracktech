@@ -5,6 +5,18 @@ stages:
   - build
   - unittest
   - integrationtest
+  - removal
+  - test
+  - documentation
+
+camera_processor_documentation:
+  stage: documentation
+  trigger:
+    include: CameraProcessor/.gitlab-ci-docs.yml
+  rules:
+    - when: never
+      changes:
+        - CameraProcessor/*
 
 camera-processor_docker_test_build:
   stage: build
@@ -16,10 +28,23 @@ camera-processor_docker_test_build:
       changes:
         - CameraProcessor/*
       when: always
+
+camera_container_removal:
+  stage: removal
+  needs: [camera-processor_docker_test_build]
+  allow_failure: true
+  script:
+    - docker rm -f camera-processor-test-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
+
         
 camera-processor_unit-testing:
   stage: unittest
-  needs: [camera-processor_docker_test_build]
+  needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
     - cd CameraProcessor
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
@@ -32,19 +57,12 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
-     
+
 camera-processor_integration-testing:
   stage: integrationtest
-  needs: [camera-processor_docker_test_build]
+  needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
     - docker-compose -f CameraProcessor/docker-compose.yml up --abort-on-container-exit
     - docker cp processor-integration-test-container:/app/report.xml report.xml
     - docker-compose -f CameraProcessor/docker-compose.yml down
-  artifacts:
-    reports:
-      junit: CameraProcessor/report.xml
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - CameraProcessor/*
-      when: always
+
