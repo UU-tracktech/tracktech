@@ -10,6 +10,7 @@ python-time
 
 # Testing
 pytest
+coverage
 
 # Images / Video
 pillow
