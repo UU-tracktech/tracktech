@@ -11,6 +11,7 @@ python-time
 # Testing
 pytest
 coverage
+coverage-badge
 
 # Images / Video
 pillow

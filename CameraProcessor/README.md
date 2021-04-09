@@ -1,3 +1,5 @@
+[![coverage report](https://https://git.science.uu.nl/e.w.j.bangma/tracktech/badges/SPC-285_Analyze_Code_Coverage/coverage.svg)](https://https://git.science.uu.nl/e.w.j.bangma/tracktech/commits/SPC-285_Analyze_Code_Coverage)
+
 # Running the application
 Running the app locally:
 
