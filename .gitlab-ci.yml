@@ -1,3 +1,6 @@
+image:
+  name: docker/compose:latest
+
 stages:
   - build
   - unittest
