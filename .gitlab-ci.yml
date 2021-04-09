@@ -107,3 +107,15 @@ pylint:
     reports:
       codequality: codeclimate.json
     when: always
+    
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo
+  artifacts:
+    paths:
+      - public
+  only:
+    refs:
+      - SPC-268_Add_pylint_to_CI_pipeline
