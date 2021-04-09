@@ -46,8 +46,8 @@ camera-processor_unit-testing:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
     - cd CameraProcessor
-    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
-    - docker cp camera-processor-test-container:/app/report.xml report.xml
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=unit-report.xml
+    - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
   artifacts:
     reports:
       junit: CameraProcessor/report.xml
@@ -62,6 +62,6 @@ camera-processor_integration-testing:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
     - docker-compose -f CameraProcessor/docker-compose.yml up --abort-on-container-exit
-    - docker cp processor-integration-test-container:/app/report.xml report.xml
+    - docker cp processor-integration-test-container:/app/integration-report.xml integration-report.xml
     - docker-compose -f CameraProcessor/docker-compose.yml down
 
