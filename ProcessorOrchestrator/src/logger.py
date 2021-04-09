@@ -21,7 +21,7 @@ def log(message):
     logging.info(message)
 
 
-def log_get_request(location, ip):
+def log_get_request(location, ip_address):
     """Writes a get request to the log.
 
     Args:
