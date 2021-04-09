@@ -12,8 +12,8 @@ import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from src.object_manager import TrackingObject, objects
-from src.connections import processors, clients
+from object_manager import TrackingObject, objects
+from connections import processors, clients
 import logger
 
 

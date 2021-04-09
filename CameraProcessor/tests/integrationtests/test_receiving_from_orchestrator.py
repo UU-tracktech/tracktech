@@ -54,7 +54,7 @@ class TestReceivingFromOrchestrator:
 
         """
         # Get a connected processor client
-        processor_client = await create_dummy_client(PC_URL, "mock_id")
+        # processor_client = await create_dummy_client(PC_URL, "mock_id")
 
         # Get a connected interface client
         # interface_client = await create_dummy_client(IF_URL)
