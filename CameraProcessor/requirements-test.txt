@@ -10,8 +10,7 @@ python-time
 
 # Testing
 pytest
-coverage
-coverage-badge
+pytest-cov
 
 # Images / Video
 pillow
