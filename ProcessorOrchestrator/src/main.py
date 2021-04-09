@@ -7,7 +7,7 @@ import ssl
 
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado.web import Application, StaticFileHandler
+from tornado.web import Application
 
 from client_socket import ClientSocket
 from processor_socket import ProcessorSocket
