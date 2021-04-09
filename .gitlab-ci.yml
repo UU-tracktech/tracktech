@@ -87,35 +87,15 @@ interface_unit-testing:
 
 pylint:
   stage: test
-  image: python:3.8-slim
-  before_script:
-    - mkdir -p public/badges public/lint
-    - echo undefined > public/badges/$CI_JOB_NAME.score
-    - pip install pylint-gitlab
-  script:
-    - pylint --rcfile=.pylintrc --exit-zero --output-format=text $(find -type f -name "*.py" ! -path "**/.venv/**") | tee /tmp/pylint.txt
-    - sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' /tmp/pylint.txt > public/badges/$CI_JOB_NAME.score
-    - pylint --exit-zero --output-format=pylint_gitlab.GitlabCodeClimateReporter $(find -type f -name "*.py" ! -path "**/.venv/**") > codeclimate.json
-    - pylint --exit-zero --output-format=pylint_gitlab.GitlabPagesHtmlReporter $(find -type f -name "*.py" ! -path "**/.venv/**") > public/lint/index.html
-  after_script:
-    - anybadge --overwrite --label $CI_JOB_NAME --value=$(cat public/badges/$CI_JOB_NAME.score) --file=public/badges/$CI_JOB_NAME.svg 4=red 6=orange 8=yellow 10=green
-    - |
-      echo "Your score is: $(cat public/badges/$CI_JOB_NAME.score)"
-  artifacts:
-    paths:
-      - public
-    reports:
-      codequality: codeclimate.json
-    when: always
-    
-pages:
-  stage: deploy
-  image: alpine:latest
-  script:
-    - echo
-  artifacts:
-    paths:
-      - public
-  only:
-    refs:
-      - SPC-268_Add_pylint_to_CI_pipeline
+  script: |
+    pip install pylint
+    FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
+
+    pylint ${FILES}
+
+pyflakes:
+  stage: test
+  script: |
+    pip install Flask-Cache pyflakes
+    FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
+    python3 -m pyflakes ${FILES}
