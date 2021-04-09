@@ -34,7 +34,7 @@ class ClientSocket(WebSocketHandler):
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
 
-    def check_origin(self, origin) -> bool:
+    def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
 
         Args:
@@ -43,7 +43,7 @@ class ClientSocket(WebSocketHandler):
         """
         return True
 
-    def open(self, _pattern) -> None:
+    def open(self) -> None:
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket. After connecting, it appends this component
