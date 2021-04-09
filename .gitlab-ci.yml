@@ -45,10 +45,9 @@ camera-processor_integration-testing:
   stage: integrationtest
   needs: [camera-processor_docker_test_build, orchestrator_docker_build]
   script:
-    - cd CameraProcessor
-    - docker container prune -f
-    - docker-compose up
-    - docker cp camera-processor-integration-test-container:/app/report.xml report.xml
+    - docker-compose -f CameraProcessor/docker-compose.yml up
+    - docker cp cp-po-processor-integration-test-container:/app/report.xml report.xml
+    - docker-compose -f CameraProcessor/docker-compose.yml down 
   artifacts:
     reports:
       junit: CameraProcessor/report.xml
