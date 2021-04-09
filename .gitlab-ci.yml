@@ -38,7 +38,6 @@ camera-processor_integration-testing:
   stage: integrationtest
   needs: [camera-processor_docker_test_build]
   script:
-    - apt-get install -y docker-compose
     - docker-compose -f CameraProcessor/docker-compose.yml up
     - docker cp cp-po-processor-integration-test-container:/app/report.xml report.xml
     - docker-compose -f CameraProcessor/docker-compose.yml down 
