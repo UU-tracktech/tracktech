@@ -5,7 +5,7 @@ set containerName=po-container
 docker rm -f %containerName%
 
 :: Create new image
-docker build -t %imageName% .
+docker build --target=build -t %imageName% .
 
 :: Remove dangling images
 docker image prune -f
