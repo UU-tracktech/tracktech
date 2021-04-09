@@ -19,7 +19,7 @@ def __get_images_dir():
     return __images_dir
 
 
-@pytest.fixture(params=[ImageCapture(__get_images_dir())])
+@pytest.fixture(params=[ImageCapture(__get_images_dir()), HlsCapture()], ids=["Image", "HLS Stream"])
 def capture_implementation(request):
     """ Defines capture_implementation as multiple implementations of iCapture,
     to be use in generic capture tests.

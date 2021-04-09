@@ -4,6 +4,7 @@
 
 import asyncio
 import pytest
+import conftest
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
 from utils.utils import with_timeout
@@ -25,20 +26,6 @@ class TestSendToOrchestrator:
         ws_client = await create_dummy_client(PC_URL, "mock_id")
         assert ws_client.connection is not None
         ws_client.connection.close()
-
-    @pytest.fixture(params=['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid', 'bad'])
-    def message_type(self, request):
-        """Fixture to generate message types
-
-        """
-        return request.param
-
-    @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
-    def amount(self, request):
-        """Fixture to generate message amounts and whether or not invalid messages
-
-        """
-        return request.param
 
     @pytest.mark.asyncio
     async def test_send_message(self, message_type, amount):
