@@ -16,7 +16,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(curr_dir, '../../processor/pipel
 
 
 def main(_argv):
-    """Runs YOLOv5 detection on a video file specified in configs.ini
+    """Runs YOLOv5 detection on a videofile specified in line 33
+    and saves the JSON objecs to testdata/output.json
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
