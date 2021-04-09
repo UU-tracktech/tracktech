@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import pkgutil
 import pdoc
-import pdoc.web
 
 
 def generate_documentation(root_folder):
@@ -11,18 +10,25 @@ def generate_documentation(root_folder):
     Args:
         root_folder (Path): path to root folder of Python code.
     """
+    doc_folder = os.path.dirname(__file__)
+
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
-    pdoc.render.configure(template_directory=Path(os.path.join(root_folder, '../docs/template')),
+    pdoc.render.configure(template_directory=Path(os.path.join(doc_folder, 'template')),
                           docformat='google')
 
     # Add to_tree to Jinja2 environment filters to generate tree from modules list.
     pdoc.render.env.filters['to_tree'] = to_tree
 
+    # Output directory
+    output_dir = Path(os.path.join(doc_folder, 'html', root_folder))
+
     # Create docs html dir if it doesn't exist.
-    Path("../docs/html").mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    real_root = os.path.join(doc_folder, '..', root_folder)
 
     # Generate documentation for all found modules in the /docs.
-    pdoc.pdoc(root_folder, output_directory=Path(os.path.join(root_folder, '../docs/html')))
+    pdoc.pdoc(real_root, output_directory=output_dir)
 
 
 def get_modules(root_folder):
@@ -100,19 +106,19 @@ if __name__ == '__main__':
     import argparse
 
     # Set root_folder as required argument to call documentation.py.
-    parser = argparse.ArgumentParser(description="Generate documentation for provided root folder")
+    parser = argparse.ArgumentParser(description='Generate documentation for provided root folder')
     parser.add_argument('root_folder',
                         type=str,
-                        help="Root folder containing all top-level modules. "
-                             "Includes all modules included via __init__.py, "
-                             "except for modules not included in __all__ inside __init__.py when provided."
+                        help='Root folder containing all top-level modules. '
+                             'Includes all modules included via __init__.py, '
+                             'except for modules not included in __all__ inside __init__.py when provided.'
                         )
 
     # Parse arguments.
     args = parser.parse_args()
 
     # Prepend .. to args root_folder to start one level higher (starting at root of project).
-    root_folder = Path(os.path.join('..', args.root_folder))
+    root = Path(args.root_folder)
 
     # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
-    generate_documentation(root_folder)
+    generate_documentation(root)
