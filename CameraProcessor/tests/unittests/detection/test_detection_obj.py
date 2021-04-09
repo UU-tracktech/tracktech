@@ -1,8 +1,8 @@
 import pytest
 import os
 import cv2
-from src.pipeline.detection.bounding_box import BoundingBox
-from src.pipeline.detection.detection_obj import DetectionObj
+from processor.pipeline.detection.bounding_box import BoundingBox
+from processor.pipeline.detection.detection_obj import DetectionObj
 from tests.unittests.utils import get_sample_frame, is_same_frame_image
 
 
