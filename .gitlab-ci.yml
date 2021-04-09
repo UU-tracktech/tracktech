@@ -3,10 +3,9 @@ image:
 
 stages:
   - build
+  - removal
   - unittest
   - integrationtest
-  - removal
-  - test
   - documentation
 
 camera_processor_documentation:
