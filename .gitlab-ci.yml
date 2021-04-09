@@ -28,7 +28,6 @@ camera-processor_unit-testing:
   stage: test
   needs: [camera-processor_docker_test_build]
   script:
-    - docker rm -f camera-processor-test-container
     - cd CameraProcessor
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests --junitxml=report.xml
     - docker cp camera-processor-test-container:/app/report.xml report.xml
@@ -51,7 +50,19 @@ orchestrator_docker_build:
         - ProcessorOrchestrator/*
       when: always
     
-orchestrator_container_build:
+camera_container_removal:
+  stage: removal
+  needs: [camera-processor_docker_test_build]
+  allow_failure: true
+  script:
+    - docker rm -f camera-processor-test-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
+
+orchestrator_container_removal:
   stage: removal
   needs: [orchestrator_docker_build]
   allow_failure: true
