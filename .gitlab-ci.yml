@@ -2,6 +2,7 @@ stages:
   - build
   - removal
   - test
+  - coverage
   - documentation
 
 camera_processor_documentation:
@@ -30,6 +31,8 @@ camera-processor_unit-testing:
   script:
     - cd CameraProcessor
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m coverage run -m pytest tests/unittests --junitxml=report.xml
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m coverage report -m
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m coverage-badge
     - docker cp camera-processor-test-container:/app/report.xml report.xml
   artifacts:
     reports:
@@ -39,6 +42,7 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
 orchestrator_docker_build:
   stage: build
