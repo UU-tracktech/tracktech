@@ -1,4 +1,11 @@
 FROM python:3.8-slim-buster as test
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
 RUN apt update
 RUN apt install -y ffmpeg
 
@@ -12,6 +19,7 @@ RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
+
 
 ENTRYPOINT ["python3.8", "-m", "pytest", "tests/unittests", "--junitxml=unit-report.xml"]
 
