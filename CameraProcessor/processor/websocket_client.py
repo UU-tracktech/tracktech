@@ -69,7 +69,7 @@ class WebsocketClient:
                         "id": self.identifier
                     })
                     logging.info(f'Identified with: {id_message}')
-                    self.connection.write_message(id_message)
+                    await self.connection.write_message(id_message)
 
                 connected = True
 
@@ -82,8 +82,6 @@ class WebsocketClient:
         if not connected:
             logging.error("Could never connect with orchestrator")
             raise TimeoutError("Never connected with orchestrator")
-
-
 
     def write_message(self, message):
         """
