@@ -7,7 +7,6 @@ import pytest
 import conftest
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
-from utils.utils import with_timeout
 
 PC_URL = 'ws://processor-orchestrator-service/processor'
 # PC_URL = 'ws://localhost:80/processor'
@@ -18,7 +17,7 @@ class TestSendToOrchestrator:
 
     """
     @pytest.mark.asyncio
-    @with_timeout(10)
+    @pytest.mark.timeout(10)
     async def test_confirm_connection(self):
         """Confirms connection with websocket
 
