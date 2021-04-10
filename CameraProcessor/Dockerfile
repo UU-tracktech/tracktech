@@ -1,6 +1,30 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-# FROM tracktech.ml:50007/opencv-python:latest
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+FROM python:3.8-slim-buster as test
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+RUN apt update
+RUN apt install -y ffmpeg
+
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+# Install pip requirements
+COPY requirements-test.txt .
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
+
+COPY data/annotated/test data/annotated/test
+COPY processor processor
+COPY tests tests
+
+
+ENTRYPOINT ["python3.8", "-m", "pytest", "tests/unittests", "--junitxml=unit-report.xml"]
+
+
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
 RUN apt update
 RUN apt install -y ffmpeg
@@ -11,7 +35,7 @@ RUN ["apt", "install", "-y", "python3-pip"]
 RUN ["python3.8", "-m", "pip", "install", "--upgrade", "pip", "setuptools", "wheel"]
 RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", "https://download.pytorch.org/whl/torch_stable.html"]
 
-WORKDIR /app
+WORKDIR app
 
 # Install pip requirements
 COPY requirements.txt .
@@ -33,6 +57,8 @@ COPY processor processor
 
 WORKDIR processor
 
-CMD ["python3.8", "main.py"]
+ENTRYPOINT ["python3.8", "main.py"]
+
+
 
 # https://developer.nvidia.com/cuda/wsl/download
