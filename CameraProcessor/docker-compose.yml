@@ -2,12 +2,12 @@
 version: "3.4"
 services:
   # Take the already built test container from the camera processor
-  camera-processor-service:
+  camera-processor-test-service:
     image: camera-processor-test:latest
     container_name: processor-integration-test-container
     entrypoint: ["python3.8", "-m", "pytest", "tests/integrationtests" ,"--junitxml=integration-report.xml"]
   # Build the build stage from the processor orchestrator manually (since it is not yet done in pipeline)
-  processor-orchestrator-test-service:
+  processor-orchestrator-service:
     build:
       context: ../ProcessorOrchestrator
       target: build
