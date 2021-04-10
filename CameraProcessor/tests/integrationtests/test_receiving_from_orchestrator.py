@@ -8,7 +8,7 @@ from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
 from utils.utils import with_timeout, __eq__
 
-PC_URL = 'ws://processor-orchestrator-test-service/processor'
+PC_URL = 'ws://processor-orchestrator-service/processor'
 # PC_URL = 'ws://localhost:80/processor'
 # IF_URL = 'ws://localhost:80/client'
 
