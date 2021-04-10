@@ -2,27 +2,6 @@
 
 """
 
-from async_timeout import timeout
-
-
-def with_timeout(time):
-    """Time out function for testing
-
-    Args:
-        time: seconds as integer
-
-    Returns: async timer
-
-    """
-
-    def wrapper(corofunc):
-        async def run(*args, **kwargs):
-            with timeout(time):
-                return await corofunc(*args, **kwargs)
-        return run
-    return wrapper
-
-
 def __eq__(self, other):
     """Custom equalize function
 
