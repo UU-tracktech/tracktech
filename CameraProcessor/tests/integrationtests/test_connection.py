@@ -3,11 +3,8 @@
 """
 import asyncio
 import pytest
+from utils.utils import PC_URL
 from processor.websocket_client import create_client
-
-
-PC_URL = 'ws://processor-orchestrator-service/processor'
-# PC_URL = 'ws://localhost:80/processor' # Processor websocket url
 
 
 @pytest.mark.asyncio
