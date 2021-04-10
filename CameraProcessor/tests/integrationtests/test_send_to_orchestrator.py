@@ -6,10 +6,8 @@ import asyncio
 import pytest
 import conftest
 from super_websocket_client import create_dummy_client
+from utils.utils import PC_URL
 from utils.jsonloader import load_data
-
-PC_URL = 'ws://processor-orchestrator-service/processor'
-# PC_URL = 'ws://localhost:80/processor'
 
 
 class TestSendToOrchestrator:
