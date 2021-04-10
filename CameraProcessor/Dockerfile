@@ -1,3 +1,21 @@
+FROM python:3.8-slim-buster as test
+RUN apt update
+RUN apt install -y ffmpeg
+
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+# Install pip requirements
+COPY requirements-test.txt .
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
+
+COPY data/annotated/test data/annotated/test
+COPY processor processor
+COPY tests tests
+
+ENTRYPOINT ["python3.8", "-m", "pytest", "tests/unittests", "--junitxml=unit-report.xml"]
+
+
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
 RUN apt update
@@ -33,22 +51,6 @@ WORKDIR processor
 
 ENTRYPOINT ["python3.8", "main.py"]
 
-FROM python:3.8-slim-buster as test
-RUN apt update
-RUN apt install -y ffmpeg
-
-WORKDIR /app
-ENV PYTHONPATH=/app
-
-# Install pip requirements
-COPY requirements-test.txt .
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
-
-COPY data/annotated/test data/annotated/test
-COPY processor processor
-COPY tests tests
-
-ENTRYPOINT ["python3.8", "-m", "pytest", "tests/unittests", "--junitxml=unit-report.xml"]
 
 
 # https://developer.nvidia.com/cuda/wsl/download
