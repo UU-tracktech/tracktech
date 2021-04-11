@@ -18,3 +18,10 @@ def amount(request):
 
     """
     return request.param
+
+@pytest.fixture(params=['full'])
+def message_type_receiving(request):
+    """"Fixture that sends start, featureMap, and stop"
+
+    """
+    return request.param
