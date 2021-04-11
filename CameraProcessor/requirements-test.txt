@@ -11,7 +11,6 @@ python-time
 # Testing
 pytest
 pytest-asyncio
-async-timeout
 coverage
 
 # Images / Video
