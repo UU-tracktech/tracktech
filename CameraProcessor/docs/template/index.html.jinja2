@@ -1,13 +1,242 @@
-{% extends "default/index.html.jinja2" %}
-<style type="text/css">
-    {% block style_theme %}
-        :root {
-            --pdoc-background: #212529;
+{% extends "frame.html.jinja2" %}
+{% block title %}module list &ndash; pdoc {{ __version__ }}{% endblock %}
+{% block style %}
+    {{ super() | safe }}
+    <style type="text/css">
+        {% block style_theme %}
+            :root {
+                --pdoc-background: #212529;
+            }
+            .pdoc {
+                --text: #f7f7f7;
+                --accent: #333;
+                --active: #9e7700;
+            }
+        {% endblock %}
+
+        {% block style_layout %}
+        html, body {
+            width: 100%;
+            background-color: var(--pdoc-background);
+
         }
-        .pdoc {
-            --text: #f7f7f7;
-            --accent: #333;
-            --active: #9e7700;
+        {% endblock %}
+
+        {% block style_content %}
+        .pdoc-index {
+            color: var(--text);
+            text-align: center;
         }
-    {% endblock %}
-</style>
+
+        #pdoc-logo {
+            background-image: url("data:image/svg+xml,{% filter urlencode %}{% include "logo.svg" %}{% endfilter %}");
+            background-position: center;
+            background-size: contain;
+            display: block;
+            height: 6rem;
+            width: 12rem;
+            margin: 2rem auto;
+            transition: all 100ms;
+        }
+
+        #pdoc-logo:hover {
+            filter: saturate(150%);
+            transform: scale(1.02);
+        }
+
+        #pdoc-search {
+            color: var(--text);
+            background-color: var(--accent);
+            display: block;
+            margin: 0 auto;
+            border: solid gray 1px;
+            border-radius: 4px;
+            text-align: center;
+            padding: .4rem;
+            width: 20rem;
+        }
+
+        .pdoc h5 {
+            margin-top: 2rem;
+        }
+
+        #pdoc-modules {
+            padding: 0;
+            text-align: left;
+            float: left;
+            list-style: none;
+            max-width: 75rem;
+            margin: 0;
+        }
+
+        ul li {
+            list-style: none;
+            margin-left: 15px;
+            position: relative;
+            padding-left: 5px;
+        }
+        ul li::before {
+            content: " ";
+            position: absolute;
+            width: 1px;
+            background-color: #EEE;
+            top: 5px;
+            bottom: -12px;
+            left: -10px;
+        }
+        body > ul > li:first-child::before {top: 12px;}
+        ul li:not(:first-child):last-child::before {display: none;}
+        ul li:only-child::before {
+            display: list-item;
+            content: " ";
+            position: absolute;
+            width: 1px;
+            background-color: #EEE;
+            top: 5px;
+            bottom: 7px;
+            height: 7px;
+            left: -10px;
+        }
+        ul li::after {
+            content: " ";
+            position: absolute;
+            left: -10px;
+            width: 10px;
+            height: 1px;
+            background-color: #EEE;
+            top: 12px;
+        }
+
+        #pdoc-modules a {
+            display: inline-block;
+            margin: .1rem;
+            padding: .1rem .5rem;
+            color: var(--text);
+            text-decoration: none;
+            background-color: var(--accent);
+        }
+
+        #pdoc-modules a:hover {
+            background-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        #pdoc-modules .active {
+            background-color: var(--active);
+        }
+        {% endblock %}
+    </style>
+{% endblock %}
+{% block body %}
+<div class="pdoc pdoc-index">
+    <a id="pdoc-logo" title="pdoc {{ __version__ }}" href="https://pdoc.dev"></a>
+    <input id="pdoc-search" type="text" placeholder="search" aria-label="search for a module"/>
+    <h5>Available Modules</h5>
+    <ul id="pdoc-modules">
+{#    {% for module in all_modules %}#}
+{#        <a href="{{ module.replace(".","/") }}.html">{{ module }}</a>#}
+{#    {% endfor %}#}
+    </ul>
+    <script>
+        const modules = {{ all_modules | tojson }};
+        const module_list = document.getElementById("pdoc-modules");
+        const searchbox = document.getElementById("pdoc-search")
+
+        const modulesTree = {{ all_modules | to_tree | tojson }};
+
+        renderTree("");
+
+        searchbox.addEventListener("input", (e) => {
+            renderTree(e.target.value);
+        });
+        searchbox.addEventListener("keyup", (e) => {
+            let active = module_list.querySelector("a.active")
+            if (e.key === "Enter" && active) {
+                active.click();
+            }
+        })
+        searchbox.focus()
+
+        function renderTree(filter) {
+            pdocModules = document.getElementById("pdoc-modules");
+            pdocModules.textContent = "";
+
+            if (filter.length === 0) {
+                buildTree(modulesTree, pdocModules);
+            }
+            else {
+                let tree = applyFilter(JSON.parse(JSON.stringify(modulesTree)), filter);
+
+                buildTree(tree, pdocModules);
+            }
+        }
+
+        function applyFilter(tree, filter) {
+            return filterTree(tree, filter)["tree_result"];
+        }
+
+        function filterTree(tree, filter, trace = []) {
+            let include = false;
+
+            for (let branchKey in tree) {
+                trace.push(branchKey);
+
+                if (trace.join('.').includes(filter)) {
+                    include = true;
+                }
+                else {
+                    if (filterTree(tree[branchKey], filter, trace)["branch_remains"]) {
+                        include = true
+                    }
+                    else {
+                        delete tree[branchKey];
+                    }
+                }
+
+                trace.pop();
+            }
+
+            return {tree_result: tree, branch_remains: include};
+        }
+
+        function buildTree(tree, documentObj, trace = []) {
+            for (let branchKey in tree) {
+                trace.push(branchKey);
+
+                let li = document.createElement("li");
+
+                let liA = document.createElement("a");
+                liA.href = `${trace.join("/")}.html`;
+
+                let liAText = document.createTextNode(branchKey);
+
+                liA.appendChild(liAText);
+
+                let treeObj = tree[branchKey];
+                if (Object.keys(treeObj).length > 0) {
+                    li.className = "tree-section";
+
+                    {#let liInput = document.createElement("input");#}
+                    {#liInput.type = "checkbox";#}
+                    {##}
+                    {#li.appendChild(liInput);#}
+                    li.appendChild(liA);
+
+                    let liUl = document.createElement("ul");
+
+                    buildTree(treeObj, liUl, trace);
+
+                    li.appendChild(liUl);
+                }
+                else {
+                    li.appendChild(liA);
+                }
+
+                documentObj.appendChild(li);
+
+                trace.pop();
+            }
+        }
+    </script>
+</div>
+{% endblock %}
