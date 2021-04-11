@@ -10,8 +10,9 @@ python-time
 
 # Testing
 pytest
-pytest-cov
 pytest-asyncio
+async-timeout
+coverage
 
 # Images / Video
 pillow

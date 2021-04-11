@@ -20,8 +20,7 @@ COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
 
-
-ENTRYPOINT ["python3.8", "-m", "pytest", "tests/unittests", "--junitxml=unit-report.xml"]
+ENTRYPOINT ["/bin/sh", "-c" , "coverage run -m pytest tests/unittests --junitxml=unit-report.xml && coverage xml --omit='*yolov4deepsort*,*yolov5*,*venv*,*tests*'"]
 
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
@@ -35,7 +34,7 @@ RUN ["apt", "install", "-y", "python3-pip"]
 RUN ["python3.8", "-m", "pip", "install", "--upgrade", "pip", "setuptools", "wheel"]
 RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", "https://download.pytorch.org/whl/torch_stable.html"]
 
-WORKDIR app
+WORKDIR /app
 
 # Install pip requirements
 COPY requirements.txt .
@@ -55,7 +54,7 @@ COPY configs.ini .
 COPY coco.names .
 COPY processor processor
 
-WORKDIR processor
+WORKDIR /processor
 
 ENTRYPOINT ["python3.8", "main.py"]
 
