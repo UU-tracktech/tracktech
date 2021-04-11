@@ -4,7 +4,7 @@ import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
 
 import { Grid, source } from '../components/grid'
 
-type indicator = 'All' | 'Selection' | 'None'
+export type indicator = 'All' | 'Selection' | 'None'
 type tracked = { id: number, name: string, image: string, data: string }
 type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], mainSourceId?: number }
 export class Home extends Component<{}, homeState> {
@@ -81,7 +81,10 @@ export class Home extends Component<{}, homeState> {
             </Row>
           </Col>
           <Col lg={10} style={{ overflowY: 'scroll', ...colStyle }}>
-            <Grid sources={this.state.sources} mainSourceId={this.state.mainSourceId} />
+            <Grid 
+              sources={this.state.sources} 
+              mainSourceId={this.state.mainSourceId} 
+              indicator={this.state.currentIndicator}/>
           </Col>
         </Row>
       </Container >
