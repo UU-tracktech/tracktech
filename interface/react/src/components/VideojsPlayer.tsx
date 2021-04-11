@@ -15,6 +15,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
     private updateInterval //Interval ID
     private startUri    //The first URI the player gets
     private startTime   //The timestamp where the player started
+    private timeStamp
 
     componentDidMount() {
         // instantiate video.js
@@ -117,9 +118,9 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
 
         let currentPlayer = this.player?.currentTime()
         //dont ask why -4, it just works
-        let timeStamp = this.startTime + currentPlayer - 4
+        this.timeStamp = this.startTime + currentPlayer - 4
 
-        console.log('Timestamp: ', PrintTimestamp(timeStamp))
+        console.log('Timestamp: ', PrintTimestamp(this.timeStamp))
         console.log('frameID: ',  this.GetFrameID())
     }
 
@@ -127,11 +128,11 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
 
         // frameID hadden we bij de camera processor in Milliseconde vastgesteld
         // dus als je bij de 8ste segment bent dan is de frameID 8 x 2 x 1000
-        let uri = this.getURI()
-        if(uri) {
-            //GetSegmentStarttime returns the segment number * 2
-            return GetSegmentStarttime(uri) * 1000
-        }
+        //
+        // dus ik neem aan dat ik gewoon de timestamp naar ms kan omzetten en dat is het ID
+        if(this.timeStamp)
+            return Math.floor(this.timeStamp * 1000)
+
         //dit zou alleen moeten gebeuren helemaal aan de start
         //van een stream als het nog aan het laden is
         return -1
