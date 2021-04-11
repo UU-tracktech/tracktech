@@ -53,10 +53,12 @@ camera-processor_unit-testing:
     - cd CameraProcessor
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
     - docker run --name camera-processor-test-container camera-processor-test
+    - docker cp camera-processor-test-container:/app/coverage.xml coverage.xml
     - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
   artifacts:
     reports:
       junit: CameraProcessor/unit-report.xml
+      cobertura: coverage.xml
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
