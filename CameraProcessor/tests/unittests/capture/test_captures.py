@@ -1,14 +1,14 @@
-import pytest
 import os
-from src.input.icapture import ICapture
-from src.input.image_capture import ImageCapture
-from src.input.hls_capture import HlsCapture
-from src.input.cam_capture import CamCapture
+import pytest
+from processor.input.icapture import ICapture
+from processor.input.image_capture import ImageCapture
+from processor.input.hls_capture import HlsCapture
+from processor.input.cam_capture import CamCapture
 
 
 class TestCaptures:
 
-    @pytest.mark.skip(reason="Skipping for CI/CD Test")
+    @pytest.mark.timeout(3)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -16,8 +16,10 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
-        assert capture_implementation.opened()
+        while not capture_implementation.opened():
+            pass
 
+    @pytest.mark.timeout(3)
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
@@ -26,4 +28,5 @@ class TestCaptures:
 
         """
         capture_implementation.close()
-        assert not capture_implementation.opened()
+        while capture_implementation.opened():
+            pass

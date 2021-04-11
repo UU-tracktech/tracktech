@@ -1,3 +1,4 @@
+import React from 'react'
 import { Component } from 'react'
 import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
 
@@ -14,6 +15,7 @@ export class Home extends Component<{}, homeState> {
   }
 
   async componentDidMount() {
+    console.log(await fetch(process.env.PUBLIC_URL + '/config.json'))
     var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json()
     var nexId = 0
     this.setState({
