@@ -14,6 +14,7 @@ export class OverlayVideo extends Component {
         width={300}
         height={300}
         sources={[{ src: 'http://localhost:80/testvid.m3u8' }]}
+        showBoxes="All"
     />
   }
 }
