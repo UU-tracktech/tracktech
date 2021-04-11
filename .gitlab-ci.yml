@@ -1,8 +1,16 @@
+image:
+  name: docker/compose:latest
+
 stages:
   - build
   - removal
+<<<<<<< HEAD
   - test
   - coverage
+=======
+  - unittest
+  - integrationtest
+>>>>>>> develop
   - documentation
 
 camera_processor_documentation:
@@ -18,23 +26,54 @@ camera-processor_docker_test_build:
   stage: build
   script:
     - cd CameraProcessor
-    - docker build -f Dockerfile.test -t camera-processor-test .
+    - docker build --target=test -t camera-processor-test .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
       when: always
+
+camera_container_removal:
+  stage: removal
+  needs: [camera-processor_docker_test_build]
+  allow_failure: true
+  script:
+    - docker rm -f camera-processor-test-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
+
         
 camera-processor_unit-testing:
-  stage: test
+  stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
     - cd CameraProcessor
-    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests --junitxml=report.xml
-    - docker cp camera-processor-test-container:/app/report.xml report.xml
+    #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
+    - docker run --name camera-processor-test-container camera-processor-test
+    - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
   artifacts:
     reports:
-      junit: CameraProcessor/report.xml
+      junit: CameraProcessor/unit-report.xml
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
+
+camera-processor_integration-testing:
+  stage: integrationtest
+  needs: [camera-processor_docker_test_build, camera_container_removal]
+  script:
+    - cd CameraProcessor
+    - docker-compose up --exit-code-from camera-processor-test-service
+    - docker cp processor-integration-test-container:/app/integration-report.xml integration-report.xml
+    - docker-compose down
+  artifacts:
+    reports:
+      junit: CameraProcessor/integration-report.xml
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -50,18 +89,6 @@ orchestrator_docker_build:
       changes:
         - ProcessorOrchestrator/*
       when: always
-    
-camera_container_removal:
-  stage: removal
-  needs: [camera-processor_docker_test_build]
-  allow_failure: true
-  script:
-    - docker rm -f camera-processor-test-container
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - CameraProcessor/*
-      when: always
 
 orchestrator_container_removal:
   stage: removal
@@ -76,7 +103,7 @@ orchestrator_container_removal:
       when: always
 
 orchestrator_unit-testing:
-  stage: test
+  stage: unittest
   needs: [orchestrator_docker_build, orchestrator_container_removal]
   script:
     - docker run --name po-unit-testing processor-orchestrator
@@ -103,7 +130,7 @@ interface_docker_build:
       when: always
 
 interface_unit-testing:
-  stage: test
+  stage: unittest
   needs: [interface_docker_build]
   script:
     - docker run interface
@@ -112,3 +139,5 @@ interface_unit-testing:
       changes:
         - interface/*
       when: always
+
+
