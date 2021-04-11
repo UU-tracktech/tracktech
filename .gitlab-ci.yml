@@ -4,13 +4,8 @@ image:
 stages:
   - build
   - removal
-<<<<<<< HEAD
-  - test
-  - coverage
-=======
   - unittest
   - integrationtest
->>>>>>> develop
   - documentation
 
 camera_processor_documentation:
