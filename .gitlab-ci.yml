@@ -53,7 +53,7 @@ camera-processor_unit-testing:
   artifacts:
     reports:
       junit: CameraProcessor/unit-report.xml
-      cobertura: coverage.xml
+      cobertura: CameraProcessor/coverage.xml
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
