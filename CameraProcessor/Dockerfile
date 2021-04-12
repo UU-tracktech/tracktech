@@ -9,8 +9,8 @@ ENV PYTHONUNBUFFERED=1
 RUN apt update
 RUN apt install -y ffmpeg
 
-WORKDIR /app
-ENV PYTHONPATH=/app
+WORKDIR /CameraProcessor
+ENV PYTHONPATH=/CameraProcessor
 
 # Install pip requirements
 COPY requirements-test.txt .
