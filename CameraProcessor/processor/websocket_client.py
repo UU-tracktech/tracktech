@@ -202,12 +202,29 @@ class WebsocketClient:
     # pylint: enable=R0201
 
 def dead_code(a, b):
-    return a-b 
+    c = a * b - b
+    d = c * a
+    if c == d:
+        return a - b
+    else:
+        return d - c 
+    return a-b
 
 async def main():
     """
     Main function that runs the video processing loop and listens on the websocket in parallel
     """
+    dead_code(1,1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+    dead_code(1, 1)
+
 
     capture = HlsCapture()
     # ws_client = await create_client("wss://echo.websocket.org")
