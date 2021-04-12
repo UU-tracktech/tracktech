@@ -12,8 +12,6 @@ python-time
 
 # Testing
 pytest
-pytest-asyncio
-async-timeout
 
 # Images / Video
 pillow

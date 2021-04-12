@@ -2,25 +2,10 @@
 
 """
 
-from async_timeout import timeout
-
-
-def with_timeout(time):
-    """Time out function for testing
-
-    Args:
-        time: seconds as integer
-
-    Returns: async timer
-
-    """
-
-    def wrapper(corofunc):
-        async def run(*args, **kwargs):
-            with timeout(time):
-                return await corofunc(*args, **kwargs)
-        return run
-    return wrapper
+PC_URL= 'ws://processor-orchestrator-service/processor'
+IF_URL= 'ws://processor-orchestrator-service/client'
+# PC_URL = 'ws://localhost:80/processor' # For local testing
+# IF_URL = 'ws://localhost:80/client'
 
 
 def __eq__(self, other):

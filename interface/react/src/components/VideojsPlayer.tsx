@@ -2,6 +2,9 @@ import * as React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
+//for now the forwarder sends at 24fps so it can be hardcoded
+const frameRate = 24
+
 export type VideoPlayerProps = { onButtonClick: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
 export class VideoPlayer extends React.Component<VideoPlayerProps> {
     private player?: videojs.Player
@@ -12,6 +15,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
     private updateInterval //Interval ID
     private startUri    //The first URI the player gets
     private startTime   //The timestamp where the player started
+    private timeStamp
 
     componentDidMount() {
         // instantiate video.js
@@ -95,7 +99,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             if(typeof currentUri === 'string') {
                 console.log('URI changed: ', currentUri)
                 this.startTime = GetSegmentStarttime(currentUri)
-                console.log('Starttime: ', CreateTimestamp(this.startTime))
+                console.log('Starttime: ', PrintTimestamp(this.startTime))
                 this.player?.clearInterval(this.changeInterval)
             }
         }
@@ -114,9 +118,24 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
 
         let currentPlayer = this.player?.currentTime()
         //dont ask why -4, it just works
-        let timeStamp = CreateTimestamp(this.startTime + currentPlayer - 4)
+        this.timeStamp = this.startTime + currentPlayer - 4
 
-        console.log('Timestamp: ', timeStamp)
+        console.log('Timestamp: ', PrintTimestamp(this.timeStamp))
+        console.log('frameID: ',  this.GetFrameID())
+    }
+
+    GetFrameID() : number {
+
+        // frameID hadden we bij de camera processor in Milliseconde vastgesteld
+        // dus als je bij de 8ste segment bent dan is de frameID 8 x 2 x 1000
+        //
+        // dus ik neem aan dat ik gewoon de timestamp naar ms kan omzetten en dat is het ID
+        if(this.timeStamp)
+            return Math.floor(this.timeStamp * 1000)
+
+        //dit zou alleen moeten gebeuren helemaal aan de start
+        //van een stream als het nog aan het laden is
+        return -1
     }
 
     onResize() {
@@ -181,12 +200,12 @@ class ToggleSizeButton extends videojs.getComponent('Button') {
 }
 
 /**
- * Takes a timestamp in seconds and converts it to the format
- * mm:ss:ms
+ * Takes a timestamp in seconds and converts it to a string
+ * with the format mm:ss:ms
  * @param {number} time The time in seconds
  * @returns {string} The time formatted as mm:ss:ms
  */
-function CreateTimestamp(time : number) : string {
+function PrintTimestamp(time : number) : string {
 
     let min = Math.floor(time / 60)
     //toFixed(1) makes it so it is rounded to 1 decimal
