@@ -1,4 +1,5 @@
 import pytest
+import os
 import json
 import cv2
 from processor.pipeline.detection.bounding_box import BoundingBox
@@ -169,7 +170,6 @@ class TestDetectionObj:
             "frameId": self.timestamp,
             "boxes": [bbox.to_dict() for bbox in self.bounding_box]
         })
-
 
 if __name__ == '__main__':
     pytest.main(TestDetectionObj)
