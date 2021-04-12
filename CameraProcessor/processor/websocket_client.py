@@ -207,7 +207,7 @@ def dead_code(a, b):
     if c == d:
         return a - b
     else:
-        return d - c 
+        return d - c
     return a-b
 
 async def main():
@@ -224,6 +224,7 @@ async def main():
     dead_code(1, 1)
     dead_code(1, 1)
     dead_code(1, 1)
+    dead_code(1,1)
 
 
     capture = HlsCapture()
