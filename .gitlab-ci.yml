@@ -68,7 +68,7 @@ camera-processor_integration-testing:
   script:
     - cd CameraProcessor
     - docker-compose up --exit-code-from camera-processor-test-service
-    - docker cp processor-integration-test-container:/app/integration-report.xml integration-report.xml
+    - docker cp processor-integration-test-container:/CameraProcessor/integration-report.xml integration-report.xml
     - docker-compose down
   artifacts:
     reports:
