@@ -120,6 +120,7 @@ interface_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - interface/*
+        - interface/react/*
       when: always
 
 interface_unit-testing:
@@ -131,6 +132,7 @@ interface_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - interface/*
+        - interface/react/*
       when: always
 
 
