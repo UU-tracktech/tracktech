@@ -201,6 +201,8 @@ class WebsocketClient:
         logging.info(f'Stop tracking object {object_id}')
     # pylint: enable=R0201
 
+def dead_code(a, b):
+    return a-b 
 
 async def main():
     """
