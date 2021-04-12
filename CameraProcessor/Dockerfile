@@ -19,10 +19,10 @@ RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
-COPY .coveragerc .coveragerc 
+COPY .coveragerc .coveragerc
 
 # ENTRYPOINT ["/bin/sh", "-c" , "cd .. && coverage run -m pytest CameraProcessor/tests/unittests --junitxml=unit-report.xml && coverage report && coverage xml --omit='*yolov4deepsort*,*venv*'"]
-ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--junitxml=unit-report.xml", "tests/unittests"]
+ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--junitxml=unit-report.xml", "tests/unittests"]
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 

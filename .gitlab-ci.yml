@@ -48,9 +48,12 @@ camera-processor_unit-testing:
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
     - docker run --name camera-processor-test-container camera-processor-test
     - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
+    - docker cp camera-processor-test-container:/app/coverage_html coverage_html
   artifacts:
     reports:
       junit: unit-report.xml
+    paths:
+      - coverage_html
     when: always 
     expire_in: 10 days 
   rules:
