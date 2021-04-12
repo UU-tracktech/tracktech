@@ -95,13 +95,14 @@ pylint:
     - pip install pylint_junit
     - pip install pylint-gitlab
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} --rcfile=.pylintrc --exit-zero
+    - pylint ${FILES} --rcfile=.pylintrc --exit-zero --output-format=pylint_junit.JUnitReporter > public/report.xml
+    - pylint %{FILES} --rcfile=.pylintrc --exit-zero --output-format=pylint_gitlab.GitlabCodeClimateReporter > public/codeclimate.json
   artifacts:
     paths:
     - public
     reports:
-      codequality: codeclimate.json
-      junit: report.xml
+      codequality: public/codeclimate.json
+      junit: public/report.xml
     when: always
 
 
