@@ -33,6 +33,9 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
     super(props)
 
     this.state = { connectionState: 'NONE', socketUrl: 'wss://tracktech.ml:50010/client' }
+  }
+
+  componentDidMount(){
     this.setSocket(this.state.socketUrl)
   }
 
