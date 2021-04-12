@@ -98,7 +98,7 @@ pylint:
     paths:
     - CameraProcessor/report.xml
     reports:
-      junit: CameraProcessor/report.xml
+      junit: report.xml
 
 
 pyflakes:
