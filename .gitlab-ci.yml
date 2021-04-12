@@ -88,30 +88,10 @@ interface_unit-testing:
 pylint:
   image: python:3.8.8
   stage: test
+  allow_failure: true
   script:
-    - REQ=$(find . -name "requirements.txt" | grep -v "ci-scripts/")
-    - pip install -r ${REQ}
     - pip install pylint
     - pip install pylint-exit
-    #- pip install junit-xml
-    #- pip install pylint_junit
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail $?
-  #artifacts:
-    #paths:
-      #- CameraProcessor/report.xml
-    #reports:
-      #junit:
-        #- CameraProcessor/report.xml
+    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
   when: always
-    #expire_in: 30 days
-
-pyflakes:
-  image: python:3.8.8
-  stage: test
-  script: |
-    pip install pyflakes --rcfile=.pylintrc
-    FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    python3 -m pyflakes ${FILES}
-  rules:
-    - when: never
