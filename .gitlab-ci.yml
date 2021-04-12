@@ -87,6 +87,9 @@ interface_unit-testing:
 
 pylint:
   image: python:3.8.8
+  before_script:
+    - apt-get update
+    - apt-get install -y libgl1-mesa-dev
   stage: test
   script:
     - mkdir -p public
