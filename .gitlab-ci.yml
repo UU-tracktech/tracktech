@@ -92,7 +92,6 @@ pylint:
     # - apt-get install -y libgl1-mesa-dev
   stage: test
   script:
-    - mkdir -p public
     - pip install pylint
     - pip install junit-xml
     - pip install pylint_junit
@@ -102,11 +101,10 @@ pylint:
     # - pylint %{FILES} --rcfile=.pylintrc --exit-zero --output-format=pylint_gitlab.GitlabCodeClimateReporter > public/codeclimate.json
   artifacts:
     paths:
-    - public
+    - CameraProcessor/report.xml
     reports:
-      # codequality: [public/codeclimate.json]
-      junit: public/report.xml
-    when: always
+      junit: CameraProcessor/report.xml
+
 
 
 pyflakes:
