@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { Button, Form } from 'react-bootstrap'
 
 import { StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/OrchestratorMessage'
@@ -25,7 +25,7 @@ export class WebsocketUser extends Component<{}, WebsocketUserState> {
             <p>STATE: {connectionState}</p>
 
             <Form>
-              <Button onClick={() => setSocket('wss://tracktech.ml:50010/client')}>Change Socket Url</Button>
+              <Button onClick={() => setSocket('wss://tracktech.ml:50010/client2')}>Change Socket Url</Button>
               <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new TestOrchestratorMessage(0))}>Send test json</Button>
               <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new StartOrchestratorMessage(1, 2, 3))}>Send start json</Button>
               <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new StopOrchestratorMessage(1))}>Send stop json</Button>

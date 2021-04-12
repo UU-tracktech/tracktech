@@ -2,13 +2,11 @@ import React from 'react'
 import { Component } from 'react'
 import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
 
-import { VideoPlayer } from '../components/VideojsPlayer'
-import { Canvas } from '../components/canvas'
+import { Grid, source } from '../components/grid'
 
-type indicator = 'All' | 'Selection' | 'None'
-type source = { id: number, name: string, srcObject: { src: string, type: string } }
+export type indicator = 'All' | 'Selection' | 'None'
 type tracked = { id: number, name: string, image: string, data: string }
-type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], currentSource?: number }
+type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], mainSourceId?: number }
 export class Home extends Component<{}, homeState> {
 
   constructor(props: any) {
@@ -32,20 +30,18 @@ export class Home extends Component<{}, homeState> {
     })
   }
 
+  viewSource(sourceId: number) {
+    this.setState({ mainSourceId: sourceId })
+  }
 
   render() {
-    const boxStyle = { margin: '10px', padding: '5px', borderRadius: "5px", borderStyle: "outset" }
-    const colStyle = { padding: '0px' }
-    const bigSize = { width: 500, height: 400 }
-    const smallSize = { width: 300, height: 200 }
-
-    var mainSource = this.state.sources.find((source) => source.id === this.state.currentSource)
-    var otherSources = this.state.sources.filter((source) => source.id !== this.state.currentSource)
+    const boxStyle: React.CSSProperties = { margin: '10px', padding: '5px', borderRadius: "5px", borderStyle: "outset" }
+    const colStyle: React.CSSProperties = { padding: '0px', height: '100vh' }
 
     return (
-      <Container fluid className='fill-height' style={{ height: '100%' }}>
-        <Row className='fill-height' style={{ height: '100%' }}>
-          <Col lg={2} className='border-right' style={colStyle}>
+      <Container fluid className='fill-height'>
+        <Row className='fill-height' >
+          <Col lg={2} className='border-right' style={{ overflowY: 'scroll', ...colStyle }}>
             <Row style={boxStyle}>
               <Container>
                 <h2>Indicators</h2>
@@ -61,10 +57,10 @@ export class Home extends Component<{}, homeState> {
                 <h2>Cameras</h2>
                 {
                   this.state.sources && this.state.sources.map((source) =>
-                    <Card>
+                    <Card key={source.id}>
                       <Card.Body>
                         <Card.Title>{source.name}</Card.Title>
-                        <Button variant="primary" onClick={() => this.viewSource(source)}>View</Button>
+                        <Button variant="primary" onClick={() => this.viewSource(source.id)}>View</Button>
                       </Card.Body>
                     </Card>)
                 }
@@ -84,28 +80,14 @@ export class Home extends Component<{}, homeState> {
               </Container>
             </Row>
           </Col>
-          <Col lg={10} style={colStyle}>
-
-            <Row className="d-flex justify-content-center" style={{ margin: "5px", width: "100%" }}>
-              {
-                mainSource
-                  ? <Canvas onClickCallback={(id) => alert(id)} cameraId={mainSource.id} width={bigSize.width} height={bigSize.height - 30}>
-                    <VideoPlayer key={mainSource.name} autoplay={true} controls={true} {...bigSize} sources={[mainSource.srcObject]} />
-                  </Canvas>
-                  : <div style={{ width: `${bigSize.width}px`, height: `${bigSize.height}px` }}>please select video on the left hand side</div>
-              }
-            </Row>
-
-            <Row className="d-flex justify-content-center" style={{ margin: "5px", width: "100%" }}>
-              {
-                otherSources.map((source) => <Canvas onClickCallback={(id) => alert(id)} cameraId={source.id} width={smallSize.width} height={smallSize.height - 30}>
-                  <VideoPlayer onClick={() => this.viewSource(source)} key={source.name} autoplay={true} controls={true} {...smallSize} sources={[source.srcObject]} />
-                </Canvas>)
-              }
-            </Row>
+          <Col lg={10} style={{ overflowY: 'scroll', ...colStyle }}>
+            <Grid 
+              sources={this.state.sources} 
+              mainSourceId={this.state.mainSourceId} 
+              indicator={this.state.currentIndicator}/>
           </Col>
         </Row>
-      </Container>
+      </Container >
     )
   }
 
@@ -136,10 +118,6 @@ export class Home extends Component<{}, homeState> {
       }
     }
     reader.readAsDataURL(blob)
-  }
-
-  viewSource(source: source) {
-    this.setState({ currentSource: source.id })
   }
 
   removeSelection(id: number) {

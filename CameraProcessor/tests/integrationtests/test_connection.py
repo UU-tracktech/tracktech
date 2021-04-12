@@ -3,16 +3,12 @@
 """
 import asyncio
 import pytest
-from utils.utils import with_timeout
+from utils.utils import PC_URL
 from processor.websocket_client import create_client
 
 
-# PC_URL = 'ws://processor-orchestrator-test-service/processor'
-PC_URL = 'ws://localhost:80/processor' # Processor websocket url
-
-
 @pytest.mark.asyncio
-@with_timeout(10)
+@pytest.mark.timeout(10)
 async def test_websocket_construction():
     """Test connecting to websocket
 
@@ -26,7 +22,7 @@ async def test_websocket_construction():
 
 @pytest.mark.skip(reason='Possibly unnecessary test; No build in disconnect implemented.')
 @pytest.mark.asyncio
-@with_timeout(5)
+@pytest.mark.timeout(5)
 async def test_websocket_disconnecting():
     """Test disconnection from websocket
 
@@ -34,7 +30,7 @@ async def test_websocket_disconnecting():
 
 
 @pytest.mark.asyncio
-@with_timeout(10)
+@pytest.mark.timeout(10)
 async def test_websocket_reconnect():
     """Test connecting, disconnecting and automatic reconnecting
 
