@@ -96,9 +96,9 @@ pylint:
     - pylint ${FILES} --rcfile=.pylintrc --exit-zero
   artifacts:
     paths:
-    - CameraProcessor
+    - CameraProcessor/report.xml
     reports:
-      junit: report.xml
+      junit: CameraProcessor/report.xml
 
 
 pyflakes:
