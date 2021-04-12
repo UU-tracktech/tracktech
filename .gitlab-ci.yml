@@ -6,7 +6,9 @@ stages:
   - removal
   - unittest
   - integrationtest
+  - linting
   - documentation
+  - deploy
 
 camera_processor_documentation:
   stage: documentation
@@ -131,8 +133,16 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/*
         - interface/react/*
       when: always
 
-
+pylint:
+  image: python:3.8.8
+  stage: linting
+  allow_failure: true
+  script:
+    - pip install pylint
+    - pip install pylint-exit
+    - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
+    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
+  when: always
