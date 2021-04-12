@@ -87,24 +87,18 @@ interface_unit-testing:
 
 pylint:
   image: python:3.8.8
-  # before_script:
-    # - apt-get update
-    # - apt-get install -y libgl1-mesa-dev
   stage: test
   script:
     - pip install pylint
     - pip install junit-xml
     - pip install pylint_junit
-    - pip install pylint-gitlab
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} --rcfile=.pylintrc --exit-zero
-    # - pylint %{FILES} --rcfile=.pylintrc --exit-zero --output-format=pylint_gitlab.GitlabCodeClimateReporter > public/codeclimate.json
+    - pylint ${FILES} --rcfile=.pylintrc
   artifacts:
     paths:
     - CameraProcessor/report.xml
     reports:
       junit: CameraProcessor/report.xml
-
 
 
 pyflakes:
