@@ -92,13 +92,16 @@ pylint:
     - pip install pylint
     - pip install junit-xml
     - pip install pylint_junit
+    - pip install pylint-gitlab
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
     - pylint ${FILES} --rcfile=.pylintrc --exit-zero
   artifacts:
     paths:
-    - CameraProcessor/report.xml
+    - CameraProcessor
     reports:
+      codequality: codeclimate.json
       junit: CameraProcessor/report.xml
+    when: always
 
 
 pyflakes:
