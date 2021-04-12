@@ -5,7 +5,7 @@ set containerName=camera-processor-test-container
 docker rm -f %containerName%
 
 :: Create new image
-docker build -f Dockerfile.test -t %imageName% .
+docker build --target=test -t %imageName% .
 
 :: Remove dangling images
 docker image prune -f

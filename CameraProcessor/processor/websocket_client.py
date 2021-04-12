@@ -41,9 +41,9 @@ class WebsocketClient:
             logging.root.removeHandler(handler)
 
         logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
-                            filename='client.log',
                             level=logging.INFO,
-                            filemode='w')
+                            handlers=[logging.FileHandler(filename="client.log", encoding='utf-8', mode='w')])
+
 
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
@@ -69,7 +69,7 @@ class WebsocketClient:
                         "id": self.identifier
                     })
                     logging.info(f'Identified with: {id_message}')
-                    self.connection.write_message(id_message)
+                    await self.connection.write_message(id_message)
 
                 connected = True
 
@@ -92,7 +92,10 @@ class WebsocketClient:
         Args:
             message: the message to write
         """
-        asyncio.get_event_loop().create_task(self._write_message(message))
+        try:
+            asyncio.get_running_loop().create_task(self._write_message(message))
+        except RuntimeError:
+            return
 
     async def _write_message(self, message):
         """
