@@ -8,7 +8,7 @@ from processor.input.cam_capture import CamCapture
 
 class TestCaptures:
 
-    @pytest.mark.timeout(10)
+    @pytest.mark.timeout(3)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -19,9 +19,13 @@ class TestCaptures:
         while not capture_implementation.opened():
             pass
 
-    @pytest.mark.timeout(10)
+    @pytest.mark.timeout(3)
+    def test_next_frame(self, capture_implementation):
+        assert capture_implementation.get_next_frame()[0]
+
+    @pytest.mark.timeout(3)
     def test_closed(self, capture_implementation):
-        """Asserts capture to be closed
+        """Asserts capture to not be opened after calling closed.
 
         Args:
             capture_implementation: see capture_implementation.

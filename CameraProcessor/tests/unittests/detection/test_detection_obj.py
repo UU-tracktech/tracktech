@@ -1,5 +1,6 @@
 import pytest
 import os
+import json
 import cv2
 from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.detection_obj import DetectionObj
@@ -160,6 +161,15 @@ class TestDetectionObj:
         self.data.draw_rectangles()
         assert not is_same_frame_image(self.original_frame, self.data.frame)
 
+    def test_to_json(self):
+        """Asserts if the to_json() method works properly
+
+        """
+        assert self.data.to_json() == json.dumps({
+            "type": "boundingBoxes",
+            "frameId": self.timestamp,
+            "boxes": [bbox.to_dict() for bbox in self.bounding_box]
+        })
 
 if __name__ == '__main__':
     pytest.main(TestDetectionObj)
