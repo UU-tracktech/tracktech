@@ -47,7 +47,7 @@ camera-processor_unit-testing:
   script:
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
     - docker run --name camera-processor-test-container camera-processor-test
-    - docker cp camera-processor-test-container:app/unit-report.xml unit-report.xml
+    - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
   artifacts:
     reports:
       junit: unit-report.xml
@@ -65,7 +65,7 @@ camera-processor_integration-testing:
   script:
     - cd CameraProcessor
     - docker-compose up --exit-code-from camera-processor-test-service
-    - docker cp processor-integration-test-container:/CameraProcessor/integration-report.xml integration-report.xml
+    - docker cp processor-integration-test-container:/app/integration-report.xml integration-report.xml
     - docker-compose down
   artifacts:
     reports:
