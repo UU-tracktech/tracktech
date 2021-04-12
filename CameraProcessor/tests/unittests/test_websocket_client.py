@@ -19,7 +19,7 @@ def __eq__(self, other):
     return False
 
 
-class TestWebsocketClient:
+class TestWebsocketClient():
     """Tests websocket_client.py
 
     """
