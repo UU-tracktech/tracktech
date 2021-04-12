@@ -4,16 +4,14 @@ This file sets up the tornado application.
 """
 import os
 import ssl
-from pathlib import Path
 
-import pdoc
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado.web import Application, StaticFileHandler
+from tornado.web import Application
 
-from src.client_socket import ClientSocket
-from src.processor_socket import ProcessorSocket
-from src.log_handler import LogHandler
+from client_socket import ClientSocket
+from processor_socket import ProcessorSocket
+from log_handler import LogHandler
 
 
 def main():
@@ -26,18 +24,6 @@ def main():
     cert = os.environ.get('SSL_CERT')
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
-
-    # Create documentation page
-    pdoc.render.configure(docformat="google")
-    pdoc.pdoc(
-        'main',
-        'client_socket',
-        'processor_socket',
-        'connections',
-        'object_manager',
-        'logger',
-        output_directory=Path(os.path.join(os.path.dirname(__file__), "../docs"))
-    )
 
     app = create_app()
 
@@ -69,11 +55,7 @@ def create_app():
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
-        ('/logs', LogHandler),
-        ('/docs/(.*)', StaticFileHandler,
-         {'path': os.path.join(os.path.dirname(__file__), "../docs"),
-          'default_filename': "index.html"}
-         )
+        ('/logs', LogHandler)
     ]
 
     # Construct and serve the tornado application.

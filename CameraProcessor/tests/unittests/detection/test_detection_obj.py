@@ -1,7 +1,9 @@
 import pytest
+import os
 import cv2
-from src.pipeline.detection.bounding_box import BoundingBox
-from src.pipeline.detection.detection_obj import DetectionObj
+from processor.pipeline.detection.bounding_box import BoundingBox
+from processor.pipeline.detection.detection_obj import DetectionObj
+from tests.unittests.utils import get_sample_frame, is_same_frame_image
 
 
 # pylint: disable=attribute-defined-outside-init, no-member
@@ -30,7 +32,8 @@ class TestDetectionObj:
         """Set ups detection_obj for unit testing.
 
         """
-        self.data = DetectionObj(1.0, 1, 1)
+        self.original_frame = get_sample_frame()
+        self.data = DetectionObj(1.0, get_sample_frame(), 1)
         self.timestamp = self.data.timestamp
         self.frame = self.data.frame
         self.frame_nr = self.data.frame_nr
@@ -134,7 +137,7 @@ class TestDetectionObj:
         """Asserts if value of frame is correct.
 
         """
-        assert self.frame == 1
+        assert is_same_frame_image(self.original_frame, self.data.frame)
 
     def test_value_frame_nr(self):
         """Asserts if value of frame_nr is correct.
@@ -149,22 +152,13 @@ class TestDetectionObj:
         assert self.data.bounding_boxes.__eq__(self.bounding_box_value_test)
 
     # Testing form
-    @pytest.mark.skip(reason="BUG NEEDS FIXING")
-    def test_draw_length(self):
-        """Asserts if length of test frame is equal to expected length
+    def test_draw_changes_frame(self):
+        """Asserts that the draw rectangles actually draws something on the screen
 
         """
+        assert is_same_frame_image(self.original_frame, self.data.frame)
         self.data.draw_rectangles()
-        assert len(self.data.frame) == len(self.box_frame)
-
-    @pytest.mark.skip(reason="BUG NEEDS FIXING")
-    def test_draw_equal(self):
-        """Asserts if drawn rectangles are equal to expected rectangles
-
-        """
-        self.data.draw_rectangles()
-        for test, expected in zip(self.data.frame, self.box_frame):
-            assert test.__eq__(expected)
+        assert not is_same_frame_image(self.original_frame, self.data.frame)
 
 
 if __name__ == '__main__':
