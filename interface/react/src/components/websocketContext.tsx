@@ -32,7 +32,10 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
   constructor(props: any) {
     super(props)
 
-    this.state = { connectionState: 'NONE', socketUrl: 'wss://echo.websocket.org' }
+    this.state = { connectionState: 'NONE', socketUrl: 'wss://tracktech.ml:50010/client' }
+  }
+
+  componentDidMount(){
     this.setSocket(this.state.socketUrl)
   }
 
@@ -54,7 +57,7 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
   onMessage(ev: MessageEvent<any>) {
     console.log('socket message', ev.data)
     var message: any = JSON.parse(ev.data)
-    this.listeners.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback([message.boxes]))
+    this.listeners.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback(message.boxes))
   }
 
   onClose(ev: CloseEvent) {

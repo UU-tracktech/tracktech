@@ -2,15 +2,10 @@
 
 """
 # pylint: disable=unused-import, unused-variable, unused-argument
-import asyncio
 import pytest
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
-from utils.utils import with_timeout, __eq__
-
-# PC_URL= 'ws://processor-orchestrator-test-service/processor'
-PC_URL = 'ws://localhost:80/processor'
-IF_URL = 'ws://localhost:80/client'
+from utils.utils import  __eq__, PC_URL, IF_URL
 
 
 class TestReceivingFromOrchestrator:
@@ -18,7 +13,7 @@ class TestReceivingFromOrchestrator:
 
     """
     @pytest.mark.asyncio
-    @with_timeout(10)
+    @pytest.mark.timeout(10)
     async def test_confirm_connection(self):
         """Confirms connection with websocket
 
@@ -54,10 +49,10 @@ class TestReceivingFromOrchestrator:
 
         """
         # Get a connected processor client
-        processor_client = await create_dummy_client(PC_URL, "mock_id")
+        # processor_client = await create_dummy_client(PC_URL, "mock_id")
 
         # Get a connected interface client
-        interface_client = await create_dummy_client(IF_URL)
+        # interface_client = await create_dummy_client(IF_URL)
 
         # msg = load_data(message_type, amount[0], amount[1])
         # ws_client = await self.get_connected_websocket()
