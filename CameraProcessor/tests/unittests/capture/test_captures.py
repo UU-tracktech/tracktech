@@ -20,6 +20,10 @@ class TestCaptures:
             pass
 
     @pytest.mark.timeout(3)
+    def test_next_frame(self, capture_implementation):
+        assert capture_implementation.get_next_frame()[0]
+
+    @pytest.mark.timeout(3)
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
