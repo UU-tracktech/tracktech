@@ -44,7 +44,6 @@ class WebsocketClient:
                             level=logging.INFO,
                             handlers=[logging.FileHandler(filename="client.log", encoding='utf-8', mode='w')])
 
-
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     async def connect(self):
@@ -201,32 +200,11 @@ class WebsocketClient:
         logging.info(f'Stop tracking object {object_id}')
     # pylint: enable=R0201
 
-def dead_code(a, b):
-    c = a * b - b
-    d = c * a
-    if c == d:
-        return a - b
-    else:
-        return d - c
-    return a-b
 
 async def main():
     """
     Main function that runs the video processing loop and listens on the websocket in parallel
     """
-    dead_code(1,1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1, 1)
-    dead_code(1,1)
-
-
     capture = HlsCapture()
     # ws_client = await create_client("wss://echo.websocket.org")
     ws_client = await create_client('ws://localhost:80/processor')
