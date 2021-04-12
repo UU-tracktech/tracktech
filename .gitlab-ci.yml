@@ -90,7 +90,7 @@ pylint:
   stage: test
   script:
     - REQ=$(find . -name "requirements.txt" | grep -v "ci-scripts/")
-    - pip install ${REQ}
+    - pip install -r ${REQ}
     - pip install pylint
     - pip install pylint-exit
     #- pip install junit-xml
