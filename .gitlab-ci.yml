@@ -93,12 +93,13 @@ pylint:
     - pip install junit-xml
     - pip install pylint_junit
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} --rcfile=.pylintrc --exit-zero
+    - pylint ${FILES} --rcfile=.pylintrc
   artifacts:
     paths:
     - CameraProcessor/report.xml
     reports:
       junit: CameraProcessor/report.xml
+    when: on_failure
 
 
 pyflakes:
