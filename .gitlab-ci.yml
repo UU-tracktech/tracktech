@@ -4,6 +4,9 @@ stages:
   - documentation
   - deploy
 
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 camera_processor_documentation:
   stage: documentation
   trigger:
@@ -101,7 +104,7 @@ pylint:
     paths:
     - public
     reports:
-      codequality: public/codeclimate.json
+      codequality: [public/codeclimate.json]
       # junit: public/report.xml
     when: always
 
