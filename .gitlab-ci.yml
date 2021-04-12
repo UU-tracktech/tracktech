@@ -95,6 +95,8 @@ pylint:
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
     - pylint ${FILES} --rcfile=.pylintrc --exit-zero
   artifacts:
+    paths:
+    - CameraProcessor
     reports:
       junit: report.xml
 
