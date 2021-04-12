@@ -92,7 +92,7 @@ pylint:
     - mkdir -p public
     - pip install pylint
     - pip install junit-xml
-    # - pip install pylint_junit
+    - pip install pylint_junit
     - pip install pylint-gitlab
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
     # - pylint ${FILES} --rcfile=.pylintrc --exit-zero --output-format=pylint_junit.JUnitReporter > public/report.xml
