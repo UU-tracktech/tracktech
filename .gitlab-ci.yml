@@ -94,7 +94,7 @@ pylint:
     #- pip install pylint_junit
     - pip install pylint2junit
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} -–output-format=pylint2junit.JunitReporter --rcfile=.pylintrc --exit-zero
+    - pylint -–output-format=pylint2junit.JunitReporter ${FILES} --rcfile=.pylintrc --exit-zero
   artifacts:
     paths:
       - CameraProcessor/report.xml
