@@ -20,7 +20,7 @@ COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
 
-ENTRYPOINT ["/bin/sh", "-c" , "coverage run -m pytest tests/unittests --junitxml=unit-report.xml && coverage xml --omit='*yolov4deepsort*,*venv*'"]
+ENTRYPOINT ["/bin/sh", "-c" , "coverage run -m pytest tests/unittests --junitxml=unit-report.xml && coverage report && coverage xml --omit='*yolov4deepsort*,*venv*'"]
 
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
