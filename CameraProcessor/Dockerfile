@@ -9,8 +9,8 @@ ENV PYTHONUNBUFFERED=1
 RUN apt update
 RUN apt install -y ffmpeg
 
-WORKDIR /CameraProcessor
-ENV PYTHONPATH=/CameraProcessor
+WORKDIR /app
+ENV PYTHONPATH=/app
 
 # Install pip requirements
 COPY requirements-test.txt .
@@ -19,9 +19,10 @@ RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
+COPY .coveragerc .coveragerc 
 
-ENTRYPOINT ["/bin/sh", "-c" , "cd .. && coverage run -m pytest CameraProcessor/tests/unittests --junitxml=unit-report.xml && coverage report && coverage xml --omit='*yolov4deepsort*,*venv*'"]
-
+# ENTRYPOINT ["/bin/sh", "-c" , "cd .. && coverage run -m pytest CameraProcessor/tests/unittests --junitxml=unit-report.xml && coverage report && coverage xml --omit='*yolov4deepsort*,*venv*'"]
+ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--junitxml=unit-report.xml", "tests/unittests"]
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
