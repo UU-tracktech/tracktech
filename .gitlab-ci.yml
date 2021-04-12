@@ -45,15 +45,14 @@ camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
   script:
-    - cd CameraProcessor
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
     - docker run --name camera-processor-test-container camera-processor-test
     - docker cp camera-processor-test-container:coverage.xml coverage.xml
     - docker cp camera-processor-test-container:/unit-report.xml unit-report.xml
   artifacts:
     reports:
-      junit: CameraProcessor/unit-report.xml
-      cobertura: CameraProcessor/coverage.xml
+      junit: unit-report.xml
+      cobertura: coverage.xml
     when: always 
     expire_in: 10 days 
   rules:
