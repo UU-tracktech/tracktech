@@ -111,7 +111,6 @@ orchestrator_unit-testing:
         - ProcessorOrchestrator/*
       when: always
      
-
 interface_docker_build:
   stage: build
   script:
