@@ -1,9 +1,10 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 
 import { Overlay } from '../components/overlay'
+import { indicator } from '../pages/home'
 
 export type source = { id: number, name: string, srcObject: { src: string, type: string } }
-export type gridProps = { mainSourceId?: number, sources: source[] }
+export type gridProps = { mainSourceId?: number, sources: source[], indicator: indicator }
 type gridState = { mainSourceId?: number }
 export class Grid extends Component<gridProps, gridState> {
 
@@ -28,7 +29,12 @@ export class Grid extends Component<gridProps, gridState> {
       {
         this.props.sources.map((source) => {
           return <div key={source.id} style={{ ...(this.state.mainSourceId === source.id ? { gridRowStart: 1, gridRowEnd: 3, gridColumnStart: 1, gridColumnEnd: -1 } : {}), justifySelf: 'stretch' }}>
-            <Overlay onBoxClick={(id) => alert(id)} cameraId={source.id} onButtonClick={() => this.viewSource(source.id)} sources={[source.srcObject]} />
+            <Overlay 
+              onBoxClick={(id) => alert(id)} 
+              cameraId={source.id} 
+              onButtonClick={() => this.viewSource(source.id)} 
+              sources={[source.srcObject]}
+              showBoxes={this.props.indicator} />
           </div>
         })
       }
