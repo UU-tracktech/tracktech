@@ -10,8 +10,6 @@ python-time
 
 # Testing
 pytest
-pytest-cov
-pytest-timeout
 pytest-asyncio
 coverage
 
