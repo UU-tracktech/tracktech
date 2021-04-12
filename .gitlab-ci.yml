@@ -91,7 +91,7 @@ pylint:
   script:
     - mkdir -p public
     - pip install pylint
-    # - pip install junit-xml
+    - pip install junit-xml
     # - pip install pylint_junit
     - pip install pylint-gitlab
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
