@@ -171,6 +171,5 @@ class TestDetectionObj:
             "boxes": [bbox.to_dict() for bbox in self.bounding_box]
         })
 
-
 if __name__ == '__main__':
     pytest.main(TestDetectionObj)
