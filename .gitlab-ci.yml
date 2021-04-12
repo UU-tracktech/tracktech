@@ -90,10 +90,11 @@ pylint:
   stage: test
   script:
     - pip install pylint
-    - pip install junit-xml
-    - pip install pylint_junit
+    #- pip install junit-xml
+    #- pip install pylint_junit
+    - pip install pylint2junit
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} --rcfile=.pylintrc --exit-zero
+    - pylint ${FILES} -–output-format=pylint2junit.JunitReporter --rcfile=.pylintrc --exit-zero
   artifacts:
     paths:
       - CameraProcessor/report.xml
