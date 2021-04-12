@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 
 import { Overlay } from '../components/overlay'
 import { indicator } from '../pages/home'
