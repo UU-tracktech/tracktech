@@ -119,7 +119,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             # Create the master playlist
                             '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount,
-                            '-hls_flags', 'delete_segments', '-hls_flags', 'omit_endlist',
+                            '-hls_flags', 'delete_segments',
                             '-start_number', '1',  # Configure segment properties
                             f'{root}/{camera}_V%v.m3u8'
                         ]) if entry.audio else Popen([
@@ -134,7 +134,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             '4275k',
                             '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',
-                            'delete_segments', '-hls_flags', 'omit_endlist', '-start_number', '1',
+                            'delete_segments', '-start_number', '1',
                             f'{root}/{camera}_V%v.m3u8'
                         ])
 
