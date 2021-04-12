@@ -141,7 +141,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
     onResize() {
         if (this.player && this.props.onResize) {
             var player = this.player?.currentDimensions()
-
+            
             var playerWidth = player.width
             var playerHeight = player.height
             var playerAspect = playerWidth / playerHeight
@@ -150,7 +150,10 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             var videoHeight = this.player.videoHeight()
             var videoAspect = videoWidth / videoHeight
 
-            if (playerAspect < videoAspect) {
+            if (isNaN(videoAspect)){
+                this.props.onResize(playerWidth, playerHeight, 0, 0)
+            }
+            else if (playerAspect < videoAspect) {
                 var widthRatio = playerWidth / videoWidth
                 var actualVideoHeight = widthRatio * videoHeight
                 this.props.onResize(playerWidth, actualVideoHeight, 0, (playerHeight - actualVideoHeight) / 2)
