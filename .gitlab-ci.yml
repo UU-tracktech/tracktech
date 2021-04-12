@@ -94,6 +94,12 @@ pylint:
     - pip install pylint_junit
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
     - pylint ${FILES} --rcfile=.pylintrc
+  artifacts:
+    paths:
+    - CameraProcessor/report.xml
+    reports:
+      junit: CameraProcessor/report.xml
+
 
 pyflakes:
   image: python:3.8.8
