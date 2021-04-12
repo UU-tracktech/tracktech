@@ -4,9 +4,6 @@ stages:
   - documentation
   - deploy
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
 camera_processor_documentation:
   stage: documentation
   trigger:
