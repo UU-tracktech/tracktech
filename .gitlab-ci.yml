@@ -89,6 +89,7 @@ pylint:
   image: python:3.8.8
   stage: test
   script:
+    - mkdir -p public
     - pip install pylint
     - pip install junit-xml
     - pip install pylint_junit
@@ -97,10 +98,10 @@ pylint:
     - pylint ${FILES} --rcfile=.pylintrc --exit-zero
   artifacts:
     paths:
-    - CameraProcessor
+    - public
     reports:
       codequality: codeclimate.json
-      junit: CameraProcessor/report.xml
+      junit: report.xml
     when: always
 
 
