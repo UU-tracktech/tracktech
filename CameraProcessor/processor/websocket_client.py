@@ -44,7 +44,6 @@ class WebsocketClient:
                             level=logging.INFO,
                             handlers=[logging.FileHandler(filename="client.log", encoding='utf-8', mode='w')])
 
-
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     async def connect(self):
@@ -82,8 +81,6 @@ class WebsocketClient:
         if not connected:
             logging.error("Could never connect with orchestrator")
             raise TimeoutError("Never connected with orchestrator")
-
-
 
     def write_message(self, message):
         """
@@ -208,7 +205,6 @@ async def main():
     """
     Main function that runs the video processing loop and listens on the websocket in parallel
     """
-
     capture = HlsCapture()
     # ws_client = await create_client("wss://echo.websocket.org")
     ws_client = await create_client('ws://localhost:80/processor')
