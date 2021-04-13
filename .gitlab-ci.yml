@@ -6,7 +6,7 @@ stages:
   - removal
   - unittest
   - integrationtest
-#  - linting
+  - linting
   - documentation
   - deploy
 
@@ -47,12 +47,12 @@ camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
-  image: camera-processor-test 
+  image: 
   script:
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
-    - python3.8 -m pytest tests/unittests
-    # - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
-    # - docker cp camera-processor-test-container:/app/coverage_html coverage_html
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests
+    - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
+    - docker cp camera-processor-test-container:/app/coverage_html coverage_html
   artifacts:
     reports:
       junit: unit-report.xml
@@ -65,6 +65,7 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
+  
 
 camera-processor_integration-testing:
   stage: integrationtest
@@ -85,4 +86,16 @@ camera-processor_integration-testing:
         - CameraProcessor/*
       when: always
 
-
+camera-processor_linting:
+  stage: unittest
+  needs: [camera-processor_docker_test_build, camera_container_removal]
+  allow_failure: true 
+  image: 
+  script:
+    #  cd .. && pylint app --rcfile=.pylintrc && cd app"
+    - docker run --name camera-processor-test-container camera-processor-test "cd .. && pylint app --rcfile=.pylintrc && cd app"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
