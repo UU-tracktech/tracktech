@@ -8,6 +8,7 @@ omit =
     # Don't test the detection repositories
     */pipeline/detection/yolov5/*
     */pipeline/detection/yolov4deepsort/*
+    */documentation.py
 
 [report]
 ignore_errors = True
