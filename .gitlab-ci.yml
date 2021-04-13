@@ -147,17 +147,9 @@ pylint:
   image: python:3.8.8
   stage: linting
   allow_failure: true
-  before_script:
-    - mkdir -p public/badges public/lint
-    - echo undefined > public/badges/pylintBadge.score
   script:
     - pip install pylint
     - pip install pylint-exit
     - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $? | tee /tmp/pylint.txt
-    - sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' /tmp/pylint.txt > public/badges/pylintBadge.score
-  after_script:
-    - anybadge --overwrite --label pylintBadge  --value=$(cat public/badges/pylintBadge.score) --file=public/badges/pylintBadge.svg 4=red 6=orange 8=yellow 10=green
-    - |
-      echo "Your score is: $(cat public/badges/pylintBadge.score)"
+    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
   when: always
