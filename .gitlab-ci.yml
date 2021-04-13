@@ -47,11 +47,12 @@ camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
+  image: camera-processor-test 
   script:
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
-    - docker run --name camera-processor-test-container camera-processor-test
-    - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
-    - docker cp camera-processor-test-container:/app/coverage_html coverage_html
+    - python3.8 -m pytest tests/unittests
+    # - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
+    # - docker cp camera-processor-test-container:/app/coverage_html coverage_html
   artifacts:
     reports:
       junit: unit-report.xml
@@ -84,73 +85,4 @@ camera-processor_integration-testing:
         - CameraProcessor/*
       when: always
 
-orchestrator_docker_build:
-  stage: build
-  script:
-    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
 
-orchestrator_container_removal:
-  stage: removal
-  needs: [orchestrator_docker_build]
-  allow_failure: true
-  script:
-    - docker rm -f po-unit-testing
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
-
-orchestrator_unit-testing:
-  stage: unittest
-  needs: [orchestrator_docker_build, orchestrator_container_removal]
-  script:
-    - docker run --name po-unit-testing processor-orchestrator
-    - docker cp po-unit-testing:report.xml ProcessorOrchestrator/report.xml
-  artifacts:
-    reports:
-      junit: ProcessorOrchestrator/report.xml
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
-     
-interface_docker_build:
-  stage: build
-  script:
-    - cd interface
-    - docker build -t interface -f Dockerfile.test .
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - interface/*
-        - interface/react/*
-      when: always
-
-interface_unit-testing:
-  stage: unittest
-  needs: [interface_docker_build]
-  script:
-    - docker run interface
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - interface/react/*
-      when: always
-
-#pylint:
-#  image: python:3.8.8
-#  stage: linting
-#  allow_failure: true
-#  script:
-#    - pip install pylint
-#    - pip install pylint-exit
-#    - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
-#    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
-#  when: always
