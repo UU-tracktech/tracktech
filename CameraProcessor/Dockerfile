@@ -24,7 +24,7 @@ COPY tests tests
 COPY .coveragerc .coveragerc
 
 # ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--cov-report", "term", "--junitxml=unit-report.xml", "tests/unittests"]
-ENTRYPOINT ["/bin/sh", "-c", "python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests && FILES=$(find . -name \"*.py\" | grep -v \"ci-scripts/\") && pylint \${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?"]
+ENTRYPOINT ["../bin/sh", "-c", "cd /app && python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests && FILES=$(find . -name \"*.py\" | grep -v \"ci-scripts/\") && pylint \${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?"]
 
 #    - pip install pylint
 #    - pip install pylint-exit
