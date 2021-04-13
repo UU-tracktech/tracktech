@@ -87,7 +87,7 @@ camera-processor_integration-testing:
       when: always
 
 camera-processor_linting:
-  stage: unittest
+  stage: linting
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
   image: 
