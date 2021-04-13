@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { Queue } from 'queue-typescript'
 
 import { OrchestratorMessage } from '../classes/OrchestratorMessage'
-import { ClientMessage, Box } from '../classes/ClientMessage'
+import { ClientMessage, Box, BoxesClientMessage } from '../classes/ClientMessage'
 
 export type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
 
 export type websocketArgs = {
   setSocket: (url: string) => void
   send: (message: OrchestratorMessage) => void
-  addListener: (id: number, callback: (boxes: Box[]) => void) => void
+  addListener: (id: string, callback: (boxes: Box[], frameId: number) => void) => void
   connectionState: connectionState
   socketUrl: string
 }
@@ -17,7 +17,7 @@ export type websocketArgs = {
 export const websocketContext = React.createContext<websocketArgs>({
   setSocket: (url: string) => alert(JSON.stringify(url)),
   send: (message: OrchestratorMessage) => alert(JSON.stringify(message)),
-  addListener: (_: number, _2: (boxes: Box[]) => void) => { },
+  addListener: (_: string, _2: (boxes: Box[], frameId: number) => void) => { },
   connectionState: 'NONE',
   socketUrl: 'NO URL'
 })
@@ -26,7 +26,7 @@ type WebsocketProviderState = { socketUrl: string, connectionState: connectionSt
 export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
 
   socket?: WebSocket
-  listeners: { id: number, callback: (boxes: Box[]) => void }[] = []
+  listeners: { id: string, callback: (boxes: Box[], frameId: number) => void }[] = []
   queue = new Queue<ClientMessage>()
 
   constructor(props: any) {
@@ -56,8 +56,8 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
 
   onMessage(ev: MessageEvent<any>) {
     console.log('socket message', ev.data)
-    var message: any = JSON.parse(ev.data)
-    this.listeners.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback(message.boxes))
+    var message: BoxesClientMessage = JSON.parse(ev.data)
+    this.listeners.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback(message.boxes, message.frameId))
   }
 
   onClose(ev: CloseEvent) {
@@ -70,7 +70,7 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
     this.setState({ connectionState: 'ERROR' })
   }
 
-  addListener(id: number, callback: (boxes: Box[]) => void) {
+  addListener(id: string, callback: (boxes: Box[], frameId: number) => void) {
     this.listeners.push({ id: id, callback: callback })
   }
 
@@ -85,7 +85,7 @@ export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
         {
           setSocket: (url: string) => this.setSocket(url),
           send: (message: OrchestratorMessage) => this.send(message),
-          addListener: (id: number, callback: (boxes: Box[]) => void) => this.addListener(id, callback),
+          addListener: (id: string, callback: (boxes: Box[], frameId: number) => void) => this.addListener(id, callback),
           connectionState: this.state.connectionState,
           socketUrl: this.state.socketUrl
         }}>
