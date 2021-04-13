@@ -46,7 +46,6 @@ camera_container_removal:
 camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
-  allow_failure: true 
   image: 
   script:
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
