@@ -7,7 +7,7 @@ export abstract class OrchestratorMessage {
 }
 
 export class StartOrchestratorMessage extends OrchestratorMessage {
-  constructor(cameraId: number, frameId: number, boxId: number) {
+  constructor(cameraId: string, frameId: number, boxId: number) {
     super('start')
 
     this.cameraId = cameraId
@@ -15,7 +15,7 @@ export class StartOrchestratorMessage extends OrchestratorMessage {
     this.boxId = boxId
   }
 
-  cameraId: number
+  cameraId: string
   frameId: number
   boxId: number
 }
@@ -31,11 +31,11 @@ export class StopOrchestratorMessage extends OrchestratorMessage {
 }
 
 export class TestOrchestratorMessage extends OrchestratorMessage {
-  constructor(cameraId: number) {
+  constructor(cameraId: string) {
     super('test')
 
     this.cameraId = cameraId
   }
 
-  cameraId: number
+  cameraId: string
 }
