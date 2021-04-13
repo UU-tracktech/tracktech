@@ -49,7 +49,7 @@ camera-processor_unit-testing:
   image: 
   script:
     #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
-    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest tests/unittests
+    - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests
     - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
     - docker cp camera-processor-test-container:/app/coverage_html coverage_html
   artifacts:
