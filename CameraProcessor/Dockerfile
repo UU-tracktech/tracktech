@@ -15,13 +15,22 @@ ENV PYTHONPATH=/app
 # Install pip requirements
 COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
+RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
 COPY .coveragerc .coveragerc
 
-ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--cov-report", "term", "--junitxml=unit-report.xml", "tests/unittests"]
+# ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--cov-report", "term", "--junitxml=unit-report.xml", "tests/unittests"]
+ENTRYPOINT ["/bin/sh", "-c", "python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests && FILES=$(find . -name \"*.py\" | grep -v \"ci-scripts/\") && pylint \${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?"]
+
+#    - pip install pylint
+#    - pip install pylint-exit
+#    - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
+#    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
+
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
