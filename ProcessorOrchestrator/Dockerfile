@@ -29,7 +29,7 @@ EXPOSE 443
 # Run server
 ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
 
-FROM python:3 AS linting
+FROM python:3.8 AS linting
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1

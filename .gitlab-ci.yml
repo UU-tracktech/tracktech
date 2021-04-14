@@ -89,7 +89,7 @@ camera-processor_linting:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
   script:
-    - docker run --name camera-processor-lint-container camera-processor-test pylint app || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
+    - docker run --name camera-processor-lint-container camera-processor-test pylint app 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -146,10 +146,10 @@ orchestrator_unit-testing:
 
 orchestrator_linting:
   stage: linting
-  needs: [orchestrator_docker_build, orchestrator_container_removal]
+  needs: [orchestrator_docker_build_lint, orchestrator_container_removal]
   allow_failure: true
   script:
-    - docker run --name po-lint-container processor-orchestrator pylint app || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
+    - docker run --name po-lint-container processor-orchestrator-lint pylint app
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
