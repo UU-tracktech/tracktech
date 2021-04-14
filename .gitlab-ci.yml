@@ -97,7 +97,7 @@ camera-processor_linting:
         - CameraProcessor/*
       when: always
 
-      orchestrator_docker_build:
+orchestrator_docker_build:
   stage: build
   script:
     - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
