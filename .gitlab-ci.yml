@@ -46,7 +46,6 @@ camera_container_removal:
 camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
-  image: 
   script:
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests
     - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
@@ -88,7 +87,6 @@ camera-processor_linting:
   stage: linting
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
-  image: 
   script:
     - docker run --name camera-processor-test-container camera-processor-test "cd .. && pylint app --rcfile=.pylintrc && cd app"
   rules:
