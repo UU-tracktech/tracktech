@@ -100,15 +100,6 @@ orchestrator_docker_build:
   stage: build
   script:
     - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
-
-orchestrator_docker_build_lint:
-  stage: build
-  script:
     - docker build -t processor-orchestrator_lint --target linting ./ProcessorOrchestrator
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -146,10 +137,10 @@ orchestrator_unit-testing:
 
 orchestrator_linting:
   stage: linting
-  needs: [orchestrator_docker_build_lint, orchestrator_container_removal]
+  needs: [orchestrator_docker_build, orchestrator_container_removal]
   allow_failure: true
   script:
-    - docker run --name po-lint-container orchestrator_docker_build_lint pylint app
+    - docker run --name po-lint-container processor-orchestrator-lint pylint app
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
