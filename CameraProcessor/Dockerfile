@@ -25,8 +25,6 @@ COPY .coveragerc .coveragerc
 COPY .pylintrc ../.pylintrc
 COPY pylint_ignore.py pylint_ignore.py
 
-# ENTRYPOINT ["../bin/sh", "-c", "python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests && cd .. && pylint app --rcfile=.pylintrc && cd app"]
-
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
 RUN apt update
