@@ -99,7 +99,17 @@ camera-processor_linting:
 orchestrator_docker_build:
   stage: build
   script:
-    - docker build -t processor-orchestrator --target testing .
+    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/*
+      when: always
+
+orchestrator_docker_build_lint:
+  stage: build
+  script:
+    - docker build -t processor-orchestrator_lint --target linting ./ProcessorOrchestrator
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -112,7 +122,7 @@ orchestrator_container_removal:
   allow_failure: true
   script:
     - docker rm -f po-unit-testing
-    - docker rm -f po-lint-testing
+    - docker rm -f po-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -123,7 +133,7 @@ orchestrator_unit-testing:
   stage: unittest
   needs: [orchestrator_docker_build, orchestrator_container_removal]
   script:
-    - docker run --name po-unit-testing processor-orchestrator python3 -m pytest --junitxml=report.xml
+    - docker run --name po-unit-testing processor-orchestrator
     - docker cp po-unit-testing:report.xml ProcessorOrchestrator/report.xml
   artifacts:
     reports:
@@ -136,10 +146,10 @@ orchestrator_unit-testing:
 
 orchestrator_linting:
   stage: linting
-  needs: [po-unit-testing, orchestrator_container_removal]
+  needs: [processor-orchestrator_lint, orchestrator_container_removal]
   allow_failure: true
   script:
-    - docker run --name po-lint-container po-unit-testing pylint .
+    - docker run --name po-lint-container processor-orchestrator_lint pylint app
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
