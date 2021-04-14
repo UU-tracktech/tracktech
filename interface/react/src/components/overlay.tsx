@@ -5,9 +5,10 @@ import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from '../components/VideojsPlayer'
 import { Box } from '../classes/ClientMessage'
 import { websocketContext } from './websocketContext'
+import { StartOrchestratorMessage } from '../classes/OrchestratorMessage'
 
-export type overlayProps = { cameraId: number, onBoxClick: (id?: number) => void, showBoxes: indicator }
-type overlayState = { boxes: Box[], width: number, height: number, left: number, top: number }
+export type overlayProps = { cameraId: string, showBoxes: indicator }
+type overlayState = { boxes: Box[], frameId: number, width: number, height: number, left: number, top: number }
 export class Overlay extends React.Component<overlayProps & VideoPlayerProps, overlayState> {
 
   queue = new Queue<Box[]>()
@@ -17,7 +18,7 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
 
   constructor(props: any) {
     super(props)
-    this.state = { boxes: [], width: 100, height: 100, left: 100, top: 100 }
+    this.state = { boxes: [], frameId: 0, width: 100, height: 100, left: 100, top: 100 }
   }
 
   onPlayerResize(width: number, height: number, left: number, top: number) {
@@ -25,10 +26,8 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
   }
 
   componentDidMount() {
-    var cameraId = this.props.cameraId
-    cameraId = 1
-    this.context.addListener(cameraId, (boxes: Box[]) => {
-      this.setState({ boxes: boxes })
+    this.context.addListener(this.props.cameraId, (boxes: Box[], frameId: number) => {
+      this.setState({ boxes: boxes, frameId: frameId })
     })
   }
 
@@ -62,13 +61,19 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
     </div >
   }
 
+  onBoxClick(boxId: number, frameId: number){
+    if(window.confirm("Start tracking this object?")){
+      this.context.send(new StartOrchestratorMessage(this.props.cameraId, frameId, boxId))
+    }
+  }
+
   DrawOverlay(): JSX.Element {
     switch (this.props.showBoxes) {
       case "All": {
-        return this.DrawBoxes(this.state.boxes);
+        return this.DrawBoxes(this.state.boxes, this.state.frameId);
       }
       case "Selection": {
-        return this.DrawBoxes(this.state.boxes.filter(x => x.boxId > 0));
+        return this.DrawBoxes(this.state.boxes.filter(x => x.objectId != undefined), this.state.frameId);
       }
       default : {
         return <div/>
@@ -76,7 +81,10 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
     }
   }
 
-  DrawBoxes(boxes: Box[]): JSX.Element{
+  DrawBoxes(boxes: Box[], frameId: number): JSX.Element{
+    // TODO: make sure objectIds can be infinitely big without causing an index out of bounds
+    var colordict : string[] = ["Green", "Red", "Yellow", "Blue", "Purple", "Brown", "Aqua", "Navy"] 
+
     return <Fragment>
           {
             boxes.map((box) => {
@@ -97,11 +105,12 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
                   position: 'absolute',
                   left: `${x1 * this.state.width + this.state.left}px`, top: `${y1 * this.state.height + this.state.top}px`,
                   width: `${(x2 - x1) * this.state.width}px`, height: `${(y2 - y1) * this.state.height}px`,
-                  borderColor: "blue" /*colordict[box.boxId ?? 0]*/, borderStyle: 'solid',
+                  borderColor: colordict[box.objectId ?? 0], borderStyle: 'solid',
                   /* transitionProperty: 'all', transitionDuration: '1s', */
-                  zIndex: 1000
+                  zIndex: 1000,
+                  cursor: box.objectId === undefined ? "pointer" : "default"
                 }
-              } onClick={() => this.props.onBoxClick(box.boxId)} />
+              } onClick={() => {if(box.objectId === undefined) this.onBoxClick(box.boxId, this.state.frameId)}} />
             })
           }
         </Fragment>

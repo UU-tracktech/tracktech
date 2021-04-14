@@ -26,8 +26,8 @@ export class WebsocketUser extends Component<{}, WebsocketUserState> {
 
             <Form>
               <Button onClick={() => setSocket('wss://tracktech.ml:50010/client2')}>Change Socket Url</Button>
-              <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new TestOrchestratorMessage(0))}>Send test json</Button>
-              <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new StartOrchestratorMessage(1, 2, 3))}>Send start json</Button>
+              <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new TestOrchestratorMessage("Test"))}>Send test json</Button>
+              <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new StartOrchestratorMessage("Test", 2, 3))}>Send start json</Button>
               <Button disabled={connectionState !== 'OPEN'} onClick={() => send(new StopOrchestratorMessage(1))}>Send stop json</Button>
             </Form>
           </div>
