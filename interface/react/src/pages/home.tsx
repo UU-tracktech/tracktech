@@ -6,7 +6,7 @@ import { Grid, source } from '../components/grid'
 
 export type indicator = 'All' | 'Selection' | 'None'
 type tracked = { id: number, name: string, image: string, data: string }
-type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], mainSourceId?: number }
+type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], mainSourceId?: string }
 export class Home extends Component<{}, homeState> {
 
   constructor(props: any) {
@@ -30,7 +30,7 @@ export class Home extends Component<{}, homeState> {
     })
   }
 
-  viewSource(sourceId: number) {
+  viewSource(sourceId: string) {
     this.setState({ mainSourceId: sourceId })
   }
 
