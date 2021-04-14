@@ -1,10 +1,10 @@
 FROM python:3 AS build
 
 # install dependencies
-COPY ProcessorOrchestrator/requirements.txt .
-RUN pip install --no-cache-dir -r ProcessorOrchestrator/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ProcessorOrchestrator/src src
+COPY src src
 
 # Make sure port is available
 EXPOSE 80
@@ -16,19 +16,15 @@ ENTRYPOINT ["python","-u","/src/main.py"]
 FROM python:3 AS testing
 
 # install dependencies
-COPY ProcessorOrchestrator/requirements.txt .
-RUN pip install --no-cache-dir -r ProcessorOrchestrator/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ProcessorOrchestrator/src src
-COPY ProcessorOrchestrator/testing testing
-
-COPY .pylintrc ../.pylintrc
-COPY pylint_ignore.py pylint_ignore.py
-COPY .coveragerc .coveragerc
+COPY src src
+COPY testing testing
 
 # Make sure port is available
 EXPOSE 80
 EXPOSE 443
 
 # Run server
-# ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
+ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
