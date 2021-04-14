@@ -146,10 +146,10 @@ orchestrator_unit-testing:
 
 orchestrator_linting:
   stage: linting
-  needs: [processor-orchestrator_lint, orchestrator_container_removal]
+  needs: [orchestrator_docker_build_lint, orchestrator_container_removal]
   allow_failure: true
   script:
-    - docker run --name po-lint-container processor-orchestrator_lint pylint app
+    - docker run --name po-lint-container orchestrator_docker_build_lint pylint app
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
