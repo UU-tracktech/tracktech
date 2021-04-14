@@ -21,9 +21,13 @@ RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
-COPY .coveragerc .coveragerc
+
+WORKDIR /
+
 COPY .pylintrc ../.pylintrc
 COPY pylint_ignore.py pylint_ignore.py
+COPY .coveragerc .coveragerc
+
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
