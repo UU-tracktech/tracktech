@@ -48,7 +48,6 @@ camera-processor_unit-testing:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   image: 
   script:
-    #  python3.8 -m pytest --cov-report xml --cov=CameraProcessor/processor tests/unittests
     - docker run --name camera-processor-test-container camera-processor-test python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=unit-report.xml tests/unittests
     - docker cp camera-processor-test-container:/app/unit-report.xml unit-report.xml
     - docker cp camera-processor-test-container:/app/coverage_html coverage_html
@@ -91,7 +90,6 @@ camera-processor_linting:
   allow_failure: true 
   image: 
   script:
-    #  cd .. && pylint app --rcfile=.pylintrc && cd app"
     - docker run --name camera-processor-test-container camera-processor-test "cd .. && pylint app --rcfile=.pylintrc && cd app"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
