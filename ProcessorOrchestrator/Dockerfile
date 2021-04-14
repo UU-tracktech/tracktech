@@ -55,4 +55,4 @@ COPY testing testing
 WORKDIR /
 
 COPY .pylintrc ../.pylintrc
-COPY pylint_ignore.py pylint_ignore.py
+COPY pylint_ignore.py ../pylint_ignore.py
