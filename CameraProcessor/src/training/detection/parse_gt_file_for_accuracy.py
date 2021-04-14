@@ -30,7 +30,7 @@ newData = ""
 # The X and Y of the ground truth boundingboxes are sometimes negative
 for line in lines:
     (frame_nr, person_id, x, y, w, h) = [int(i) for i in line.split(delimiter)[:6]]
-    parsed_box = "person " + str(x) + ' ' + str(y) + ' ' + str(x + w) + ' ' + str(x + h)
+    parsed_box = "undefined " + str(x) + ' ' + str(y) + ' ' + str(x + w) + ' ' + str(x + h)
     newData += parsed_box + '\n'
 
 gt_accuracy_file = open(gt_accuracy, "w")

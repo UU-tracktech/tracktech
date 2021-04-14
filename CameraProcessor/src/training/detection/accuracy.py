@@ -13,6 +13,8 @@ from src.input.image_capture import ImageCapture
 from src.pipeline.detection.detection_obj import DetectionObj
 from src.training.pre_annotations import PreAnnotations
 
+
+
 root_dir = os.path.abspath(__file__ + '/../../../../')
 logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
@@ -35,6 +37,8 @@ tp = 0
 fp = 0
 fn = 0
 frame_index = 0
+
+
 
 
 def iou(boundingbox_gt, boundingbox_pred, threshold=0.5):
