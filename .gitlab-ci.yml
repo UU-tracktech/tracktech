@@ -70,7 +70,7 @@ camera-processor_integration-testing:
   script:
     - cd CameraProcessor
     - docker-compose up --exit-code-from camera-processor-test-service
-    - docker cp processor-integration-test-container:/app/integration-report.xml integration-report.xml
+    - docker cp processor-integration-test-container:/integration-report.xml integration-report.xml
     - docker-compose down
   artifacts:
     reports:
@@ -88,7 +88,7 @@ camera-processor_linting:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
   script:
-    - docker run --name camera-processor-lint-container camera-processor-test pylint app 
+    - docker exec camera-processor-test-container pylint app 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
