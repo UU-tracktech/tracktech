@@ -1,0 +1,111 @@
+diff a/CameraProcessor/src/localhost.py b/CameraProcessor/src/localhost.py	(rejected hunks)
+@@ -43,65 +43,92 @@
+             # Page not found, generate template
+             err_tmpl = tornado.template.Template('<html> Err 404, Page {{ name }} not found</html>')
+             err_html = err_tmpl.generate(name=file_name)
+-            logging.error(f'no index.html found at path {file_name}')
++            logging.error(f'no index.html found at path {index_page}')
+             # Send response
+             self.finish(err_html)
+ 
++    def data_received(self, chunk: bytes):
++        tornado.web.RequestHandler.data_received(self, chunk)
++
+ 
+ class StreamHandler(tornado.web.RequestHandler):
++    """Handler for the frame stream
++
++    """
++    server_image_timestamp = 0
++
+     @tornado.gen.coroutine
+     def get(self):
++        # Sets headers of the handler
+         logging.info('set headers')
+-        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
++        self.set_header('Cache-Control',
++                        'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
+         self.set_header('Pragma', 'no-cache')
+         self.set_header('Content-Type', 'multipart/x-mixed-replace;boundary=--jpgboundary')
+         self.set_header('Connection', 'close')
+ 
+-        self.served_image_timestamp = time.time()
++        served_image_timestamp = time.time()
+         my_boundary = '--jpgboundary'
++
++        # Create capture and start read loop
++        capture = HlsCapture()
+         while capture.opened():
+-            ret, frame = capture.get_next_frame()
++            # Get frame
++            ret, frame, _ = capture.get_next_frame()
++            if not ret:
++                continue
++            
++            # If it does get the image the frame gets encoded
+             ret, jpeg = cv2.imencode('.jpg', frame)
+             img = jpeg.tobytes()
+-            # Generating images for mjpeg stream and wraps them into http resp
+ 
++            # Every .1 seconds the frame gets sent to the browser
+             interval = 0.1
+-            if self.served_image_timestamp + interval < time.time():
++            if served_image_timestamp + interval < time.time():
+                 self.write(my_boundary)
+                 self.write('Content-type: image/jpeg\r\n')
+                 self.write('Content-length: %s\r\n\r\n' % len(img))
+                 self.write(img)
+-                self.served_image_timestamp = time.time()
++                served_image_timestamp = time.time()
+ 
+             try:
+                 self.flush()
+-            except Exception:
+-                print('connection lost with client')
+-                break
++            except Exception as err:
++                raise Exception('connection lost with client') from err
++
++    def data_received(self, chunk: bytes):
++        tornado.web.RequestHandler.data_received(self, chunk)
++
+ 
++def make_app() -> tornado.web.Application:
++    """Creates the tornado web app
+ 
+-def make_app():
++    Returns:
++        Tornado web app with the main page and video handler
++    """
+     logging.info('creating app')
+-    # add handlers
+     return tornado.web.Application([
+         (r'/', HtmlPageHandler),
+         (r'/video_feed', StreamHandler)
+     ])
+ 
+ 
+-# Print to console link to stream
+-def generate_message():
++def generate_message(port) -> None:
++    """Generates message to terminal so user can click link
++    """
+     print('*' * 30)
+     print('*' + ' ' * 28 + '*')
+-    print(f'*   open TORNADO stream on   *')
++    print('*   open TORNADO stream on   *')
+     print(f'*   http://localhost:{PORT}    *')
+     print('*' + ' ' * 28 + '*')
+     print('*' * 30)
+ 
+ 
+ if __name__ == '__main__':
+-    # bind server on 9090 port
++    """Start tornado event loop
++    """
++    PORT = 9090
+     app = make_app()
+     app.listen(PORT)
+-    generate_message()
++    generate_message(PORT)
+     tornado.ioloop.IOLoop.current().start()
