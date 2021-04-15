@@ -1,6 +1,4 @@
-"""Import utils to be able to give proper commands to pylint. Pylint default functionality is broken;
-it is not ignoring folders that are added to the ignore= part of the .pylintrc.
-Therefore we had to override the file .py filesselection.
+"""Import utils to be able to give proper commands to pylint
 
 """
 from pylint.utils import utils
