@@ -5,7 +5,7 @@ set containerName=camera-processor-yolov5-container
 docker rm -f %containerName%
 
 :: Create new image
-docker build --target=build -t %imageName% .
+docker build --target=deploy -t %imageName% .
 
 :: Remove dangling images
 docker image prune -f
