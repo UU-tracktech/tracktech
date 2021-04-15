@@ -82,7 +82,7 @@ camera-processor_integration-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
-      when: always
+      when: never
 
 camera-processor_linting:
   stage: linting
@@ -90,8 +90,9 @@ camera-processor_linting:
   allow_failure: true 
   script:
     - docker run -d -t --name camera-processor-lint-container camera-processor-test
-    - docker cp utils/.pylintrc camera-processor-lint-container:/app
-    - docker cp utils/pylint_ignore.py camera-processor-lint-container:/app
+    - docker cp .pylintrc camera-processor-lint-container:/app
+    - docker cp utils/pylint_ignore.py camera-processor-lint-container:/app/utils
+    - docker cp utils/__init__.py camera-processor-lint-container:/app/utils
     - docker exec camera-processor-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
