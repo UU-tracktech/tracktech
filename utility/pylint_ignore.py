@@ -1,7 +1,7 @@
 """Import utils to be able to give proper commands to pylint.
 
 """
-from pylint.utils import utils
+from pylint.utils import utils as pylintutils
 
 
 class PylintIgnorePaths:
@@ -13,8 +13,8 @@ class PylintIgnorePaths:
 
         """
         self.paths = paths
-        self.original_expand_modules = utils.expand_modules
-        utils.expand_modules = self.patched_expand
+        self.original_expand_modules = pylintutils.expand_modules
+        pylintutils.expand_modules = self.patched_expand
 
     def patched_expand(self, *args, **kwargs):
         """Get correct filepaths for linting
