@@ -1,0 +1,6 @@
+diff a/CameraProcessor/requirements.txt b/CameraProcessor/requirements.txt	(rejected hunks)
+@@ -2,3 +3,4 @@
++<<<<<<< HEAD
+ opencv-python
+ tornado
+ numpy
