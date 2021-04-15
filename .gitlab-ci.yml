@@ -91,9 +91,9 @@ camera-processor_linting:
   script:
     - docker run -d -t --name camera-processor-lint-container camera-processor-test
     - docker cp .pylintrc camera-processor-lint-container:/app
-    - docker cp utility/pylint_ignore.py camera-processor-lint-container:/app/utility
-    - docker cp utility/__init__.py camera-processor-lint-container:/app/utility
+    - docker cp utility camera-processor-lint-container:/app/utility
     - docker exec camera-processor-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
+    - docker stop camera-processor-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
