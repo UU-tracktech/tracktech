@@ -89,8 +89,8 @@ camera-processor_linting:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
   script:
-    - docker cp utils/. camera-processor-lint-container:/app
-    - docker cp camera-processor-lint-container:/utils/. app
+    - docker cp utils/. camera-processor-test:/app
+    - docker cp camera-processor-test:/utils/. app
     - docker run --name camera-processor-lint-container camera-processor-test pylint app 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
