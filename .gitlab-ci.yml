@@ -88,10 +88,9 @@ camera-processor_linting:
   stage: linting
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
-  before-script:
-  - apt-get update
-  - apt-get install -y libgl1-mesa-dev
   script:
+    - apt-get update
+    - apt-get install -y libgl1-mesa-dev
     #- docker start camera-processor-test-container
     #- docker exec -it camera-processor-test-container ls
     - docker run -d -t --name camera-processor-lint-container camera-processor-test
