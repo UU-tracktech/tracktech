@@ -15,13 +15,18 @@ ENV PYTHONPATH=/app
 # Install pip requirements
 COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
+RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
+RUN ["mkdir", "utility"]
+
+WORKDIR /
+
 COPY .coveragerc .coveragerc
 
-ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--cov-report", "term", "--junitxml=unit-report.xml", "tests/unittests"]
 
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
