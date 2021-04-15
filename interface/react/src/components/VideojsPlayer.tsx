@@ -2,9 +2,6 @@ import * as React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-//for now the forwarder sends at 24fps so it can be hardcoded
-const frameRate = 24
-
 export type VideoPlayerProps = { onButtonClick: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
 export class VideoPlayer extends React.Component<VideoPlayerProps> {
     private player?: videojs.Player
@@ -60,8 +57,12 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             //passing any argument suppresses a warning about
             //accessing the tech
             let tech = this.player?.tech({randomArg: true})
-            if(tech)
-                return tech['vhs'].playlists.media().segments[0].uri
+            if(tech) {
+                //ensure media is loaded before trying to access
+                let med = tech['vhs'].playlists.media()
+                if(med)
+                    return med.segments[0].uri
+            }
         } catch (e) {
             console.warn(e)
             return undefined
@@ -120,22 +121,13 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
         //dont ask why -4, it just works
         this.timeStamp = this.startTime + currentPlayer - 4
 
-        console.log('Timestamp: ', PrintTimestamp(this.timeStamp))
-        console.log('frameID: ',  this.GetFrameID())
-    }
-
-    GetFrameID() : number {
-
-        // frameID hadden we bij de camera processor in Milliseconde vastgesteld
-        // dus als je bij de 8ste segment bent dan is de frameID 8 x 2 x 1000
-        //
-        // dus ik neem aan dat ik gewoon de timestamp naar ms kan omzetten en dat is het ID
-        if(this.timeStamp)
-            return Math.floor(this.timeStamp * 1000)
-
-        //dit zou alleen moeten gebeuren helemaal aan de start
-        //van een stream als het nog aan het laden is
-        return -1
+        //print this videoplayer info to console as 1 object
+        let toPrint = {
+            timeStamp: PrintTimestamp(this.timeStamp),
+            frameID: this.timeStamp,            //ID in seconds
+            //frameID: this.timeStamp / 1000,   //ID in ms
+        }
+        console.log(toPrint)
     }
 
     onResize() {
@@ -232,6 +224,12 @@ function GetSegmentStarttime(segName : string) : number {
     if(!segName.endsWith('.ts')){
         console.warn('GetSegmentStarttime: ' +
             'expected .ts file but got something else')
+        return NaN
+    }
+
+    //filename should contain '_V' if it comes from the forwarder
+    if(segName.indexOf('_V') === -1) {
+        console.warn('Video file not from forwarder')
         return NaN
     }
 
