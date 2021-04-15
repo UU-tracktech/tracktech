@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3 AS build
 
 # install dependencies
 COPY requirements.txt .
@@ -27,4 +27,4 @@ EXPOSE 80
 EXPOSE 443
 
 # Run server
-ENTRYPOINT ["pytest", "testing"]
+ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]

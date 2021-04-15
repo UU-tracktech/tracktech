@@ -6,10 +6,12 @@ functions that can be called using specified json messages.
 
 import json
 from typing import Optional, Awaitable, Dict, Callable, Any
-import tornado.web
 from time import sleep
+
+import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
+
 from object_manager import objects, TrackingObject
 from connections import processors
 import client_socket
@@ -31,7 +33,7 @@ class ProcessorSocket(WebSocketHandler):
             request: The HTTP server request
         """
         super().__init__(application, request)
-        self.identifier = max(processors.keys(), default=0) + 1
+        self.identifier = None
 
     def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
@@ -45,12 +47,10 @@ class ProcessorSocket(WebSocketHandler):
     def open(self) -> None:
         """Called upon opening of the websocket.
 
-        Method called upon the opening of the websocket. After connecting, it appends this component to a dict
-        of other websockets.
+        Method called upon the opening of the websocket, will log connection
         """
         logger.log_connect("/processor", self.request.remote_ip)
-        print(f"New processor connected with id: {self.identifier}")
-        processors[self.identifier] = self
+        print(f"New processor connected")
 
     def on_message(self, message: str) -> None:
         """Handles a message from a processor that is received on the websocket.
@@ -75,6 +75,8 @@ class ProcessorSocket(WebSocketHandler):
 
             # Switch on message type
             actions: Dict[str, Callable[[], None]] = {
+                "identifier":
+                    lambda: self.register_processor(message_object),
                 "boundingBoxes":
                     lambda: self.send_bounding_boxes(message_object),
                 "featureMap":
@@ -85,7 +87,6 @@ class ProcessorSocket(WebSocketHandler):
 
             # Execute correct function
             function = actions.get(message_object["type"])
-            """type: Optional[Callable[[], None]]"""
 
             if function is None:
                 print("Someone gave an unknown command")
@@ -116,10 +117,25 @@ class ProcessorSocket(WebSocketHandler):
 
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
-        pass
+
+    def register_processor(self, message) -> None:
+        """Registers a processor under the given identifier.
+
+        Args:
+            message:
+                JSON message that was received. It should contain the following property:
+                    - "id" | The identifier of the processor under which this socket should be registered.
+        """
+        identifier = message["id"]
+
+        self.identifier = identifier
+        processors[self.identifier] = self
+
+        logger.log(f"Processor registered with id {self.identifier} from {self.request.remote_ip}")
+        print(f"Processor registered with id {self.identifier}")
 
     def send_bounding_boxes(self, message) -> None:
-        """Sends bounding boxes to all clients
+        """Sends bounding boxes to all clients.
 
         Args:
             message:
@@ -131,8 +147,8 @@ class ProcessorSocket(WebSocketHandler):
         boxes: json = message["boxes"]
 
         if len(client_socket.clients.values()) > 0:
-            for c in client_socket.clients.values():
-                c.send_message(json.dumps({
+            for client in client_socket.clients.values():
+                client.send_message(json.dumps({
                     "type": "boundingBoxes",
                     "cameraId": self.identifier,
                     "frameId": frame_id,
@@ -157,8 +173,8 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             print("Unknown object id")
 
-        for p in processors.values():
-            p.send_message(json.dumps({
+        for processor in processors.values():
+            processor.send_message(json.dumps({
                 "type": "featureMap",
                 "objectId": object_id,
                 "featureMap": feature_map

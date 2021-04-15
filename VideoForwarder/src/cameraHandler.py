@@ -21,17 +21,13 @@ class CameraHandler(tornado.web.StaticFileHandler):
     secret = os.environ.get('JWT_PUBLIC_SECRET')
     audience = os.environ.get('TOKEN_AUDIENCE')
     scope = os.environ.get('TOKEN_SCOPE')
+    publicKey = None
 
     def initialize(self, path):
         self.root = path
 
-        # Read the public key file if applicable
-        publicKeyPath = os.environ.get('PUBLIC_KEY_PATH')
-        print('using auth' if publicKeyPath else 'not using auth')
-        if publicKeyPath:
-            publicKeyFile = open(publicKeyPath, "r")
-            self.publicKey = publicKeyFile.read()
-            publicKeyFile.close()
+        # retrieve the public key
+        self.publicKey = self.application.settings.get('publicKey') 
 
     # Function to allow cors
     def set_default_headers(self):
@@ -62,7 +58,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
     # To authenticate
     def prepare(self):
         # If auth is enabled
-        if self.publicKey:
+        if self.publicKey is not None:
 
             # Try to decode the token using the public key
             try:
@@ -123,7 +119,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             # Create the master playlist
                             '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount,
-                            '-hls_flags', 'delete_segments', '-hls_flags', 'omit_endlist',
+                            '-hls_flags', 'delete_segments',
                             '-start_number', '1',  # Configure segment properties
                             f'{root}/{camera}_V%v.m3u8'
                         ]) if entry.audio else Popen([
@@ -138,7 +134,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             '4275k',
                             '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',
-                            'delete_segments', '-hls_flags', 'omit_endlist', '-start_number', '1',
+                            'delete_segments', '-start_number', '1',
                             f'{root}/{camera}_V%v.m3u8'
                         ])
 

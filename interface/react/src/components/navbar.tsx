@@ -1,8 +1,10 @@
+import React from 'react'
 import { Component } from 'react'
-import { Navbar, Nav, Button, Form } from 'react-bootstrap'
+import { Navbar, Nav, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import LoginButton from './LoginButton'
+import { LoggedInUser } from './loggedInUser'
 
 export class NavMenu extends Component {
 
@@ -19,9 +21,10 @@ export class NavMenu extends Component {
             <Nav>
               <Nav.Link as={Link} style={{ padding: "8px 25px" }} color="light" to="/">Home</Nav.Link>
               <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/websockets">Websockets</Nav.Link>
-              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Canvas">Canvas</Nav.Link>
+              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Overlay">Overlay</Nav.Link>
             </Nav>
             <Form inline className="ml-auto">
+              <LoggedInUser />
               <LoginButton />
             </Form>
           </Navbar.Collapse>

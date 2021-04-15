@@ -37,7 +37,7 @@ class TrackingObject:
 
 
 objects = dict()
-"""Dictionary which matches an object identifier to 
+"""Dictionary which matches an object identifier to
 
 type: Dict[str, TrackingObject]
 """
