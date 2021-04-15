@@ -1,0 +1,38 @@
+# Install these dependencies using
+# pip install -r requirements.txt
+
+# General imports
+matplotlib~=3.3.4
+
+# Images / Video
+pillow
+opencv-python-headless
+opencv-python==4.5.1.48
+ffmpeg-python
+
+# Threading / Async
+threaded
+asyncio
+
+# CPU AI learning
+# tensorboard==2.3.0
+# tensorflow==2.3.1
+
+# XML
+lxml
+# Loading bar
+tqdm~=4.59.0
+
+# GPU AI learning
+# tensorboard==2.2.0
+# tensorflow-gpu==2.3.0rc0
+
+torch==1.8.0+cu101
+torchvision==0.9.0+cu101
+-f https://download.pytorch.org/whl/torch_stable.html
+
+# YOLOv4deepsort
+# -r processor/pipeline/detection/yolov4deepsort/requirements.txt
+# YOLOv5
+-r processor/pipeline/detection/yolov5/requirements.txt
+
