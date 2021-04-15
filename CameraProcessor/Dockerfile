@@ -21,11 +21,10 @@ RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
+COPY utils ../../utils
 
 WORKDIR /
 
-
-COPY utils ../utils
 COPY .coveragerc .coveragerc
 
 
