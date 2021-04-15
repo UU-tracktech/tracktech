@@ -91,7 +91,7 @@ camera-processor_linting:
   script:
     - docker cp utils/. camera-processor-test-container:/app
     #- docker cp camera-processor-test-container:/utils/. app
-    - docker run --name camera-processor-lint-container camera-processor-test pylint app --rcfile=.pylintrc
+    - docker run --name camera-processor-lint-container camera-processor-test pylint app --rcfile=utils/.pylintrc
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
