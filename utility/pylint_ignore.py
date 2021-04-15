@@ -22,6 +22,15 @@ class PylintIgnorePaths:
         """
         result, errors = self.original_expand_modules(*args, **kwargs)
 
-        result = list(filter(not any(1 for path in self.paths if item['path'].startswith(path)), result))
+        def keep_item(item):
+            """Throws out all ignored file paths and subpaths
+
+            """
+            if any(1 for path in self.paths if item['path'].startswith(path)):
+                return False
+
+            return True
+
+        result = list(filter(keep_item, result))
 
         return result, errors
