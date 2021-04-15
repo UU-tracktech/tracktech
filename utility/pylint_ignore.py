@@ -1,9 +1,7 @@
-"""Import utils to be able to give proper commands to pylint. Pylint default functionality is broken;
-it is not ignoring folders that are added to the ignore= part of the .pylintrc.
-Therefore we had to override the file .py filesselection.
+"""Import utils to be able to give proper commands to pylint.
 
 """
-from pylint.utils import utils as pylint_utils
+from pylint.utils import utils
 
 
 class PylintIgnorePaths:
@@ -15,8 +13,8 @@ class PylintIgnorePaths:
 
         """
         self.paths = paths
-        self.original_expand_modules = pylint_utils.expand_modules
-        pylint_utils.expand_modules = self.patched_expand
+        self.original_expand_modules = utils.expand_modules
+        utils.expand_modules = self.patched_expand
 
     def patched_expand(self, *args, **kwargs):
         """Get correct filepaths for linting
