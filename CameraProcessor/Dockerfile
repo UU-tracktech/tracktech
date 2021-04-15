@@ -17,8 +17,6 @@ COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
 RUN ["python3.8", "-m", "pip", "install", "pylint"]
 RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
-RUN ["python3.8", "-m", "pip", "install", "os"]
-RUN ["python3.8", "-m", "pip", "install", "sys"]
 
 COPY data/annotated/test data/annotated/test
 COPY processor processor
