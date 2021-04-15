@@ -82,7 +82,7 @@ camera-processor_integration-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
-      when: never
+      when: always
 
 camera-processor_linting:
   stage: linting
