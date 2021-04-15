@@ -76,7 +76,7 @@ camera-processor_integration-testing:
   artifacts:
     reports:
       junit: CameraProcessor/integration-report.xml
-    when: always 
+    when: always
     expire_in: 10 days
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -89,10 +89,13 @@ camera-processor_linting:
   needs: [camera-processor_docker_test_build, camera_container_removal]
   allow_failure: true 
   script:
-    - docker cp utils/.pylintrc camera-processor-test-container:/app
-    - docker cp utils/pylint_ignore.py camera-processor-test-container:/app
+    #- docker start camera-processor-test-container
+    #- docker exec -it camera-processor-test-container ls
+    - docker run -d -t --name camera-processor-lint-container camera-processor-test
+    - docker cp utils/.pylintrc camera-processor-lint-container:/app
+    - docker cp utils/pylint_ignore.py camera-processor-lint-container:/app
     #- docker cp camera-processor-test-container:/utils/. app
-    - docker run --name camera-processor-lint-container camera-processor-test pylint app --rcfile=app/utils/.pylintrc || python pylint-exit.py --error-fail --warn-fail --refactor-fail --convention-fail $?
+    - docker exec camera-processor-lint-container pylint app --rcfile=app/.pylintrc || python pylint-exit.py --error-fail --warn-fail --refactor-fail --convention-fail $?
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
