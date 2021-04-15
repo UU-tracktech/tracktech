@@ -21,6 +21,7 @@ RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 COPY data/annotated/test data/annotated/test
 COPY processor processor
 COPY tests tests
+RUN ["mkdir", "utility"]
 
 WORKDIR /
 
