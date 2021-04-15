@@ -92,8 +92,8 @@ camera-processor_linting:
     #- docker start camera-processor-test-container
     #- docker exec -it camera-processor-test-container ls
     - docker run -d -t --name camera-processor-lint-container camera-processor-test
-    - docker cp utils/.pylintrc camera-processor-lint-container:/app
-    - docker cp utils/pylint_ignore.py camera-processor-lint-container:/app
+    - docker cp .pylintrc camera-processor-lint-container:/app
+    - docker cp utils/pylint_ignore.py camera-processor-lint-container:/app/utils
     #- docker cp camera-processor-test-container:/utils/. app
     - docker exec camera-processor-lint-container pylint app --rcfile=app/.pylintrc # || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
   rules:
