@@ -4,8 +4,8 @@ image:
 stages:
   - build
   - removal
-  #- unittest
-  #- integrationtest
+  - unittest
+  - integrationtest
   - linting
   - documentation
   - deploy
@@ -62,7 +62,7 @@ camera-processor_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
-      when: always
+      when: never
   
 
 camera-processor_integration-testing:
@@ -76,13 +76,13 @@ camera-processor_integration-testing:
   artifacts:
     reports:
       junit: CameraProcessor/integration-report.xml
-    when: always 
+    when: always
     expire_in: 10 days
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
-      when: always
+      when: never
 
 camera-processor_linting:
   stage: linting
