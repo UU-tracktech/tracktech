@@ -25,7 +25,7 @@ COPY tests tests
 WORKDIR /
 
 
-COPY .pylintrc .pylintrc
+COPY .pylintrc ../.pylintrc
 COPY ../utils/pylint_ignore.py utils/pylint_ignore.py
 COPY .coveragerc .coveragerc
 
