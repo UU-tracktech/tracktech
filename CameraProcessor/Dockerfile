@@ -25,7 +25,7 @@ COPY tests tests
 WORKDIR /
 
 
-COPY utils utils
+COPY utils ../utils
 COPY .coveragerc .coveragerc
 
 
