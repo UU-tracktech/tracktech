@@ -34,8 +34,6 @@ RUN ["mkdir", "utility"]
 
 WORKDIR /
 
-
-
 # This does not seem to work well? 
 # ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--cov-report", "term", "--junitxml=unit-report.xml tests/unittests"]
 
