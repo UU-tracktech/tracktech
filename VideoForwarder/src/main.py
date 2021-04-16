@@ -1,7 +1,5 @@
-"""entrypoint stuff
-1
-2
-3
+"""
+Reads the first environment variables and starts the webserver.
 """
 import os
 import json
@@ -16,49 +14,52 @@ from camera_handler import CameraHandler
 if __name__ == "__main__":
     print('starting server')
 
-    # Read the config file
     configFile = open(os.environ.get('CONFIG_PATH'), "r")
     configJson = json.loads(configFile.read())
     configFile.close()
+    """Get the config path, read it and parse the json and close it."""
 
-    # Save the cameras in the stat
     CameraHandler.cameras = {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in configJson}
+    """Process the json config and store the individual cameras"""
 
-    # Get ssl ready, if provided in the environment variables
     cert = os.environ.get('SSL_CERT')
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
+    """Get the ssl certificate and key if supplied, use_tls to indicate both are present"""
 
-    # Read the public key file if applicable
     publicKeyPath = os.environ.get('PUBLIC_KEY_PATH')
     print('using auth' if publicKeyPath is not None else 'not using auth')
-    PUBLIC_KEY = None
+    """Get the public key path used for authentication"""
+
+    publicKey = None
     if publicKeyPath is not None:
         publicKeyFile = open(publicKeyPath, "r")
         publicKey = publicKeyFile.read()
         publicKeyFile.close()
+    """If the public key path was supplied, read the file and store it"""
 
-    # Create a web application
     app = tornado.web.Application(
         [
             (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
-        ], publicKey = publicKey) #store the public key
+        ], publicKey = publicKey)
+    """Create the web application with the camera handler and the public key"""
+
 
     if use_tls:
-        # Create a ssl context
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_ctx.load_cert_chain(cert, key)
+        """If using tls, create a context and load the certificate and key in it"""
 
-        # Create a http server, with optional ssl.
         http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
         http_server.listen(443)
         print('listening on port 443 over https')
+        """Start the secure webserver on port 443"""
 
     else:
-        # Create a http server, with optional ssl.
         http_server = tornado.httpserver.HTTPServer(app)
         http_server.listen(80)
         print('listening on port 80 over http')
+        """Start the insecure webserver on port 80"""
 
-    # Start io loop
     tornado.ioloop.IOLoop.current().start()
+    """Start the IO loop (used by tornado itself)"""

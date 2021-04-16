@@ -94,7 +94,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
         if self.publicKey is not None:
             """If a key is specified"""
-]
+
             try:
                 decoded = jwt.decode(self.request.headers.get('Authorization').split()[
                                      1], self.publicKey, algorithms=['RS256'], audience=self.audience)
