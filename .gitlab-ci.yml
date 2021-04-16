@@ -123,13 +123,13 @@ orchestrator_unit-testing:
 interface_docker_build:
   stage: build
   script:
-    - cd interface
+    - cd Interface
     - docker build -t interface -f Dockerfile.test .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/*
-        - interface/react/*
+        - Interface/*
+        - Interface/react/*
       when: always
 
 interface_unit-testing:
@@ -140,7 +140,7 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/react/*
+        - Interface/react/*
       when: always
 
 pylint:
