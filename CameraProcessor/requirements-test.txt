@@ -9,7 +9,7 @@ regex
 python-time
 absl-py
 requests
-yaml
+pyyaml
 
 # Testing
 pytest
