@@ -14,6 +14,10 @@ from camera import Camera
 
 
 class CameraHandler(tornado.web.StaticFileHandler):
+    """
+    The camera file request handler
+    """
+
     cameras = {}
     """A dictionary to store all camera objects with their name as key"""
 
@@ -43,14 +47,12 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
     publicKey = None
     """The public key used to validate tokens"""
-    
-    root = None
-    """The root directory of the video streams"""
 
     # pylint: disable=arguments-differ
     def initialize(self, path):
         """Set the root path and load the public key from application settings, run at the start of every request"""
 
+        # noinspection PyAttributeOutsideInit
         self.root = path
         """Needed for the library"""
 
@@ -63,11 +65,13 @@ class CameraHandler(tornado.web.StaticFileHandler):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Cache-control", "no-store")
 
-    def stop_stream(self, root, camera):
-        """Function to stop a given camera stream, will be called once a stream is no longer used for a specific amount of time"""
+    @staticmethod
+    def stop_stream(root, camera):
+        """Function to stop a given camera stream, will be called once a stream is no longer used for a specific
+        amount of time """
 
         print(f'stopping {camera}')
-        """Print stopping for loggin purposes"""
+        """Print stopping for logging purposes"""
 
         entry = CameraHandler.cameras[camera]
         """Get the camera object that should be stopped"""
@@ -77,7 +81,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         try:
             entry.conversion.wait(60)
             """Wait a few seconds for it stop, so it does not lock any files"""
-        except Popen.TimeoutExpired:
+        except TimeoutExpired:
             """Handle a timeout exception if the process does not stop"""
             pass
         finally:
@@ -103,12 +107,12 @@ class CameraHandler(tornado.web.StaticFileHandler):
             except ValueError as exc:
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
-                """If decoding fails, return a 401 not authorized status"""
+            """If decoding fails, return a 401 not authorized status"""
 
             if self.scope in decoded['resource_access'][self.audience]:
                 self.set_status(403)
                 raise tornado.web.Finish()
-                """If decoding succeeds, but the scope is invalid, return 403"""
+            """If decoding succeeds, but the scope is invalid, return 403"""
 
     def get_absolute_path(self, root, path):
         """Handle all file logic, including starting and stopping the conversion"""
@@ -138,7 +142,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                 if entry.conversion is None:
                     print(f'starting {camera}')
 
-                    # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new for hardware limits
+                    # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
                     entry.conversion = Popen(
                         [
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
