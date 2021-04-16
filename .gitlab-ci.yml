@@ -147,7 +147,7 @@ orchestrator_linting:
     - docker cp .pylintrc orchestrator-lint-container:/
     - docker cp utility/pylint_ignore.py camera-processor-lint-container:/utility
     - docker cp utility/__init__.py camera-processor-lint-container:/utility
-    - docker exec orchestrator-lint-container python3 -m pylint -j 2 src testing --rcfile=.pylintrc --output-format=colorized
+    - docker exec orchestrator-lint-container python3 -m pylint src --rcfile=.pylintrc --output-format=colorized
     - docker stop orchestrator-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
