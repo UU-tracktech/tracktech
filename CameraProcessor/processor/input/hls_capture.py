@@ -9,6 +9,7 @@ from processor.input.icapture import ICapture
 
 run_thread = True
 
+
 class HlsCapture(ICapture):
     """Implementation of the ICapture class which handles an HLS stream with timestamps.
 
@@ -169,3 +170,7 @@ class HlsCapture(ICapture):
         # Json did not contain key
         except KeyError as error:
             logging.warning(f'Json does not contain keys for {error}')
+
+    def get_capture_length(self) -> int:
+        """Returns None, since its theoretically infinite"""
+        return None
