@@ -37,7 +37,6 @@ class TestProcessFrames:
         config = configs["Yolov5"]
         return Yolov5Detector(config)
 
-    @pytest.mark.asyncio
     @pytest.mark.timeout(90)
     @pytest.mark.skip("YOLOv5 GPU acceleration does not work in Docker yet")
     def test_process_stream_with_yolov5(self, clients):
