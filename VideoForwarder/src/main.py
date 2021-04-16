@@ -41,7 +41,7 @@ if __name__ == "__main__":
     # Create a web application
     app = tornado.web.Application(
         [
-            (r'/(.*)', CameraHandler, {'path': 'streams'}),
+            (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
         ], publicKey = publicKey) #store the public key
 
     if use_tls:
