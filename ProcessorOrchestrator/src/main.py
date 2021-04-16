@@ -5,6 +5,7 @@ This file sets up the tornado application.
 import os
 import ssl
 
+from keycloak import KeycloakOpenID
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
@@ -25,7 +26,15 @@ def main():
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
 
-    app = create_app()
+    # Get auth ready by reading the environment variables 
+    server_url, client_id, realm_name = os.environ.get('SERVER_URL'), os.environ.get('CLIENT_ID'), os.environ.get('REALM_NAME')
+    keycloak_openid = None
+    if server_url is not None and client_id is not None and realm_name is not None:
+        keycloak_openid = KeycloakOpenID(server_url=server_url,
+                        client_id=client_id,
+                        realm_name=realm_name)
+
+    app = create_app(keycloak_openid)
 
     if use_tls:
         # Create a ssl context
@@ -40,16 +49,21 @@ def main():
     else:
         # Create a http server, with optional ssl.
         http_server = HTTPServer(app)
-        http_server.listen(80)
+        http_server.listen(81)
         print('listening over http')
 
     IOLoop.current().start()
 
 
-def create_app():
+def create_app(keycloak):
     """Creates tornado application.
 
     Creates the routing in the application and returns the complete app.
+
+    Args:
+        keycloak:
+            Starting app, needing the following argument:
+                 - "keycloak" | A keycloak object containing identity provider information
     """
     # Define socket for both client and processor
     handlers = [
@@ -59,7 +73,7 @@ def create_app():
     ]
 
     # Construct and serve the tornado application.
-    return Application(handlers)
+    return Application(handlers, keycloak = keycloak)
 
 
 if __name__ == "__main__":
