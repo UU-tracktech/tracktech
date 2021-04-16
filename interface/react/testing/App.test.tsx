@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { App } from '../src/App';
+import { App } from '../src/app';
 import fetchMock from 'jest-fetch-mock';
 
 jest.mock("@react-keycloak/web", () => {

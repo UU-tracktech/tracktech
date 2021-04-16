@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Form } from 'react-bootstrap'
 
-import { StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/OrchestratorMessage'
-import { Box } from '../classes/ClientMessage'
+import { StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/orchestratorMessage'
+import { Box } from '../classes/clientMessage'
 import { websocketArgs, websocketContext } from '../components/websocketContext'
 
 type WebsocketUserState = { boxes: Box[] }
