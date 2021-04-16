@@ -19,7 +19,7 @@ if __name__ == "__main__":
     configFile.close()
     """Get the config path, read it and parse the json and close it."""
 
-    CameraHandler.cameras = {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in configJson}
+    CameraHandler.cameras = {camera["Name"]: camera(camera["Ip"], camera["Audio"]) for camera in configJson}
     """Process the json config and store the individual cameras"""
 
     cert = os.environ.get('SSL_CERT')
@@ -43,7 +43,6 @@ if __name__ == "__main__":
             (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
         ], publicKey = publicKey)
     """Create the web application with the camera handler and the public key"""
-
 
     if use_tls:
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
