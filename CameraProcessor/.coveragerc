@@ -8,11 +8,24 @@ omit =
     # Don't test the detection repositories
     */pipeline/detection/yolov5/*
     */pipeline/detection/yolov4deepsort/*
+    # Don't test any documentation or testing files
+    */documentation.py
+    */processor/localhost.py
+    */processor/scheduling/*
+    */processor/yolov4deepsort.py
+    */processor/yolov5_test.py
 
 [report]
 ignore_errors = True
 # Regexes for lines to exclude from consideration
 exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+
     # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError
     raise NotImplementedError

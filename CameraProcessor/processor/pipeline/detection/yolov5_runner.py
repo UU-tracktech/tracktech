@@ -12,9 +12,10 @@ from processor.pipeline.detection.yolov5.utils.general import check_img_size,\
     scale_coords, set_logging
 from processor.pipeline.detection.yolov5.utils.torch_utils import select_device,\
     load_classifier, time_synchronized
+from processor.pipeline.detection.idetector import IDetector
 
 
-class Detector:
+class Yolov5Detector(IDetector):
     """Make it inherit from a generic Detector class
     """
 
@@ -107,7 +108,9 @@ class Detector:
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
                     height, width, _ = det_obj.frame.shape
-                    bbox = BoundingBox(bb_id, [int(xyxy[0])/width, int(xyxy[1])/height, int(xyxy[2])/width, int(xyxy[3])/height],
+                    bbox = BoundingBox(bb_id,
+                                       [int(xyxy[0])/width, int(xyxy[1])/height,
+                                        int(xyxy[2])/width, int(xyxy[3])/height],
                                        self.names[int(cls)], conf)
                     if any(x == bbox.classification for x in self.filter):
                         det_obj.bounding_boxes.append(bbox)

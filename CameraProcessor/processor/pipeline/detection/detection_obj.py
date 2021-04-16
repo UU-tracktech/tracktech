@@ -3,7 +3,8 @@ import cv2
 import math
 
 
-class DetectionObj:
+
+class DetectionObj():
     """Object that holds all the bounding boxes for a specific frame
     """
     def __init__(self, timestamp, frame, frame_nr):
