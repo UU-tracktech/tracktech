@@ -4,13 +4,12 @@ It handles authentication/authorization and makes sure conversion processes of c
 """
 
 import os
-import tornado.web
 import re
 import threading
 import time
-from subprocess import Popen
+from subprocess import Popen, TimeoutExpired
+import tornado.web
 import jwt
-
 from camera import Camera
 
 
@@ -44,7 +43,11 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
     publicKey = None
     """The public key used to validate tokens"""
+    
+    root = None
+    """The root directory of the video streams"""
 
+    # pylint: disable=arguments-differ
     def initialize(self, path):
         """Set the root path and load the public key from application settings, run at the start of every request"""
 
@@ -97,10 +100,10 @@ class CameraHandler(tornado.web.StaticFileHandler):
                                      1], self.publicKey, algorithms=['RS256'], audience=self.audience)
                 """Decode the token using the given key and the header token"""
 
-            except:
+            except ValueError as exc:
                 self.set_status(401)
-                raise tornado.web.Finish()
-                """If decoding fails, return a 401 status"""
+                raise tornado.web.Finish() from exc
+                """If decoding fails, return a 401 not authorized status"""
 
             if self.scope in decoded['resource_access'][self.audience]:
                 self.set_status(403)
@@ -113,7 +116,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         abspath = os.path.abspath(os.path.join(root, path))
         """Get the path on the file system"""
 
-        match = re.search('(.*?)(?:_V.*)?\.(m3u8|ts)', path)
+        match = re.search(r'(.*?)(?:_V.*)?\.(m3u8|ts)', path)
         """Regex the file path"""
 
         if match is None:
@@ -162,12 +165,12 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
                             '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
-                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate', '900k', '-bufsize',
-                            '1200k',
-                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize',
-                            '2138k',
-                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize',
-                            '4275k',
+                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', 
+                            '800k', '-maxrate', '900k', '-bufsize', '1200k',
+                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1', 
+                            '1425k', '-maxrate', '1600k', '-bufsize', '2138k',
+                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2', 
+                            '2850k', '-maxrate', '3200k', '-bufsize', '4275k',
                             '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',
                             'delete_segments', '-start_number', '1',
@@ -185,7 +188,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                         self.stop_stream(root, camera)
 
         # If it requests an stream file
-        if extension == 'm3u8' or extension == 'ts':
+        if extension in ('m3u8', 'ts'):
             if camera in CameraHandler.cameras:
                 entry = CameraHandler.cameras[camera]
 
