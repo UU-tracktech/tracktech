@@ -5,11 +5,11 @@ from processor.input.icapture import ICapture
 
 class VideoCapture(ICapture):
     # Default path is the path to venice.mp4
-    def __init__(self, path='/data/videos/venice.mp4'):
+    def __init__(self, path='/data/videos/test.mp4'):
         logging.info(f"Opening video from path: {path}")
         self.cap = cv2.VideoCapture(path)
         logging.info("Successfully opened video file")
-        logging.info(f"Video has {self.get_vid_length()} frames")
+        logging.info(f"Video has {self.get_capture_length()} frames")
 
     # Check if video stream is stopped, either due to error or eof
     def opened(self):
@@ -24,5 +24,5 @@ class VideoCapture(ICapture):
         return *self.cap.read(), None
 
     # Returns the amount of total frames in the video
-    def get_vid_length(self):
+    def get_capture_length(self):
         return self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
