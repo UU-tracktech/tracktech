@@ -19,12 +19,17 @@ FROM python:3 AS testing
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN ["python3.8", "-m", "pip", "install", "pylint"]
+
 COPY src src
 COPY testing testing
+
+RUN ["mkdir", "utility"]
 
 # Make sure port is available
 EXPOSE 80
 EXPOSE 443
 
 # Run server
-ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
+# ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
+
