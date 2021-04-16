@@ -6,7 +6,7 @@ services:
     image: camera-processor-test:latest
     container_name: processor-integration-test-container
     # Overwrite entrypoint to run integration tests instead
-    entrypoint: ["python3.8", "-m", "pytest", "app/tests/integrationtests" ,"--junitxml=integration-report.xml"]
+    entrypoint: ["python3.8", "-m", "pytest", "app/tests/integrationtests" ,"--junitxml=cp-integration-report.xml"]
   # Build the build stage from the processor orchestrator manually (since it is not yet done in pipeline)
   processor-orchestrator-service:
     build:
