@@ -128,7 +128,7 @@ orchestrator_unit-testing:
   stage: unittest
   needs: [orchestrator_docker_build, orchestrator_container_removal]
   script:
-    - docker run --name po-unit-testing processor-orchestrator pytest testing --junitxml=report.xml
+    - docker run --name po-unit-testing processor-orchestrator pytest app/testing --junitxml=report.xml
     - docker cp po-unit-testing:app/report.xml app/report.xml
   artifacts:
     reports:
