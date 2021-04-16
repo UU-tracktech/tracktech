@@ -5,7 +5,6 @@ import threading
 import time
 from subprocess import Popen
 import jwt
-from jwt.algorithms import get_default_algorithms
 
 from camera import Camera
 
@@ -17,6 +16,8 @@ class CameraHandler(tornado.web.StaticFileHandler):
     segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
     removeDelay = float(os.environ.get('REMOVE_DELAY') or '60.0')
     timeoutDelay = int(os.environ.get('TIMEOUT_DELAY') or '30')
+
+    encoding = os.environ['ENCODING']
 
     secret = os.environ.get('JWT_PUBLIC_SECRET')
     audience = os.environ.get('TOKEN_AUDIENCE')
@@ -32,7 +33,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
     # Function to allow cors
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Cache-control", "no-cache")
+        self.set_header("Cache-control", "no-store")
 
     # Function to stop a stream
     def stop_stream(self, root, camera):
@@ -100,6 +101,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                 if entry.conversion is None:
                     print(f'starting {camera}')
 
+                    # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new for hardware limits
                     entry.conversion = Popen(
                         [
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
@@ -108,11 +110,11 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48',
                             '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
                             # Set common properties of the video variances
-                            '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '800k', '-maxrate',
+                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate',
                             '900k', '-bufsize', '1200k',  # 360p - Low bit-rate Stream
-                            '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1', '1425k', '-maxrate',
+                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1', '1425k', '-maxrate',
                             '1600k', '-bufsize', '2138k',  # 420p - Medium bit-rate Stream
-                            '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2', '2850k', '-maxrate',
+                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2', '2850k', '-maxrate',
                             '3200k', '-bufsize', '4275k',  # 720p - High bit-rate Stream
                             '-c:a', 'copy',  # Copy original audio to the video variances
                             '-var_stream_map', 'v:0,a:0 v:1,a:1 v:2,a:2',
@@ -126,11 +128,11 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
                             '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
-                            '-s:v:0', '640x360', '-c:v:0', 'libx264', '-b:v:0', '800k', '-maxrate', '900k', '-bufsize',
+                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate', '900k', '-bufsize',
                             '1200k',
-                            '-s:v:1', '854x480', '-c:v:1', 'libx264', '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize',
+                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1', '1425k', '-maxrate', '1600k', '-bufsize',
                             '2138k',
-                            '-s:v:2', '1280x720', '-c:v:2', 'libx264', '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize',
+                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2', '2850k', '-maxrate', '3200k', '-bufsize',
                             '4275k',
                             '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',
