@@ -1,10 +1,10 @@
-import cv2
 import os
 import logging
 import sys
-from src.input.image_capture import ImageCapture
-from src.pipeline.detection.detection_obj import DetectionObj
-from src.training.pre_annotations import PreAnnotations
+import cv2
+from processor.input.image_capture import ImageCapture
+from processor.pipeline.detection.detection_obj import DetectionObj
+from processor.training.pre_annotations import PreAnnotations
 
 root_dir = os.path.abspath(__file__ + '/../../../../')
 logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
@@ -31,7 +31,8 @@ newData = ""
 for line in lines:
     (frame_nr, person_id, x, y, w, h) = [int(i) for i in line.split(delimiter)[:6]]
     parsed_box = "undefined " + str(x) + ' ' + str(y) + ' ' + str(x + w) + ' ' + str(x + h)
-    newData += parsed_box + '\n'
+    if frame_nr == 1:
+        newData += parsed_box + '\n'
 
 gt_accuracy_file = open(gt_accuracy, "w")
 gt_accuracy_file.write(newData)
