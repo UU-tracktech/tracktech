@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Queue } from 'queue-typescript'
 
-import { OrchestratorMessage } from '../classes/OrchestratorMessage'
-import { ClientMessage, Box, BoxesClientMessage } from '../classes/ClientMessage'
+import { OrchestratorMessage } from '../classes/orchestratorMessage'
+import { ClientMessage, Box, BoxesClientMessage } from '../classes/clientMessage'
 
 export type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
 
