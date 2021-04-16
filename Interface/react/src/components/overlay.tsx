@@ -2,10 +2,10 @@ import React, { Fragment } from 'react'
 import { Queue } from 'queue-typescript'
 
 import { indicator } from '../pages/home'
-import { VideoPlayer, VideoPlayerProps } from '../components/VideojsPlayer'
-import { Box } from '../classes/ClientMessage'
+import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
+import { Box } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
-import { StartOrchestratorMessage } from '../classes/OrchestratorMessage'
+import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
 export type overlayProps = { cameraId: string, showBoxes: indicator }
 type overlayState = { boxes: Box[], frameId: number, width: number, height: number, left: number, top: number }
