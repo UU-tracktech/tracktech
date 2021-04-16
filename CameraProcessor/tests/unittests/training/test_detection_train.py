@@ -8,6 +8,7 @@ class TestDetectionTrainMain:
 
     """
     @pytest.mark.timeout(20)
+    @pytest.mark.skip("Can't test because it tries to open a window and Docker hates that")
     def test_train(self):
         """Runs train.py"""
         train_main()
