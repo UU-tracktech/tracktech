@@ -7,6 +7,7 @@ numpy>=1.16<1.19
 scipy<=1.6.1
 regex
 python-time
+absl
 
 # Testing
 pytest
@@ -29,3 +30,8 @@ asyncio
 lxml
 # Loading bar
 tqdm
+
+# GPU
+torch==1.8.0+cu101
+torchvision==0.9.0+cu101
+-f https://download.pytorch.org/whl/torch_stable.html
