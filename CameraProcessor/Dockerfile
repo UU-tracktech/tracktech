@@ -1,5 +1,5 @@
 # Base image for all camera processor components 
-FROM python:3.8-slim-buster as base 
+FROM python:3.8-slim-buster AS base
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -18,13 +18,21 @@ RUN apt install -y ffmpeg
 COPY requirements.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
 
-
-FROM base as test 
+FROM base AS test
 
 COPY processor processor
 COPY data/annotated/test data/annotated/test
 COPY tests tests
 COPY .coveragerc .coveragerc
+
+FROM test AS lint
+
+RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
+
+RUN ["mkdir", "utility"]
+
+WORKDIR /
 
 # This does not seem to work well? 
 # ENTRYPOINT ["python3.8", "-m", "pytest", "--cov-config=.coveragerc", "--cov=processor", "--cov-report", "html", "--cov-report", "term", "--junitxml=unit-report.xml tests/unittests"]

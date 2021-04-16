@@ -1,7 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
+<<<<<<< HEAD:interface/react/src/index.tsx
 import { App } from './App'
+=======
+import { App } from './app'
+>>>>>>> 9f9c67c8b7ba1395dc99b9ef33f6c9182b448f18:Interface/react/src/index.tsx
 import reportWebVitals from './reportWebVitals'
 import './bootstrap.css'
 

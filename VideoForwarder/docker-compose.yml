@@ -5,6 +5,23 @@ services:
     image: tracktech.ml:50007/tt-forwarder-image
     build: .
     environment:
+<<<<<<< HEAD
       CONFIG_PATH: /NetworkConfig.json
     ports:
       - 80:80
+=======
+      SEGMENT_SIZE: 5
+      SEGMENT_AMOUNT: 10
+      CONFIG_PATH: /NetworkConfig.json
+      STREAM_FOLDER: /streams
+      ENCODING: libx264
+    ports:
+      - 80:80
+  forwarder-docs:
+    image: tracktech.ml:50007/tt-forwarder-docs-image
+    build:
+      context: .
+      target: pdoc
+    ports:
+      - 8080:8080
+>>>>>>> 9f9c67c8b7ba1395dc99b9ef33f6c9182b448f18
