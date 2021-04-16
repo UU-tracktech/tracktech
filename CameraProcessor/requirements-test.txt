@@ -7,7 +7,7 @@ numpy>=1.16<1.19
 scipy<=1.6.1
 regex
 python-time
-absl
+absl-py
 
 # Testing
 pytest
