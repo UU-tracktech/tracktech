@@ -8,6 +8,7 @@ scipy<=1.6.1
 regex
 python-time
 absl-py
+requests
 
 # Testing
 pytest
