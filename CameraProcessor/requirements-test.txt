@@ -10,6 +10,7 @@ matplotlib
 python-time
 absl-py
 requests
+yaml
 
 # Testing
 pytest
