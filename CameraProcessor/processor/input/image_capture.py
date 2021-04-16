@@ -54,3 +54,6 @@ class ImageCapture(ICapture):
         # Reads the image file and returns it
         frame = cv2.imread(image_path)
         return True, frame, None
+
+    def get_capture_length(self) -> int:
+        return self.nr_images
