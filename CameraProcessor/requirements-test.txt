@@ -9,6 +9,7 @@ regex
 matplotlib
 python-time
 absl-py
+requests
 
 # Testing
 pytest
