@@ -28,13 +28,14 @@ ENV PYTHONPATH=/app
 
 # Install pip requirements
 COPY requirements.txt .
-RUN ["pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
+RUN ["python3", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
 
-RUN ["python3.8", "-m", "pip", "install", "pylint"]
-RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
+RUN ["python3", "-m", "pip", "install", "pylint"]
+RUN ["python3", "-m", "pip", "install", "pylint-exit"]
 
 COPY src src 
-COPY testing testing 
+COPY testing testing
+COPY report.xml report.xml
 
 RUN ["mkdir", "utility"]
 
