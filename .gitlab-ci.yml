@@ -117,6 +117,7 @@ orchestrator_container_removal:
   allow_failure: true
   script:
     - docker rm -f po-unit-testing
+    - docker rm -f orchestrator-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
