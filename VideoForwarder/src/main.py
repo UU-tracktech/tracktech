@@ -4,14 +4,14 @@
 3
 """
 import os
+import json
+import ssl
 import tornado.httpserver
 import tornado.web
 import tornado.ioloop
-import json
-import ssl
 
 from camera import Camera
-from cameraHandler import CameraHandler
+from camera_handler import CameraHandler
 
 if __name__ == "__main__":
     print('starting server')
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # Read the public key file if applicable
     publicKeyPath = os.environ.get('PUBLIC_KEY_PATH')
     print('using auth' if publicKeyPath is not None else 'not using auth')
-    publicKey = None
+    PUBLIC_KEY = None
     if publicKeyPath is not None:
         publicKeyFile = open(publicKeyPath, "r")
         publicKey = publicKeyFile.read()
