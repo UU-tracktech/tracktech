@@ -8,6 +8,7 @@ import json
 from time import sleep
 from typing import Optional, Awaitable, Dict, Callable, Any
 
+from keycloak import KeycloakOpenID
 import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
@@ -33,6 +34,7 @@ class ClientSocket(WebSocketHandler):
         """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
+        self.authenticated = False
 
     def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
@@ -76,6 +78,8 @@ class ClientSocket(WebSocketHandler):
 
             # Switch on message type
             actions: Dict[str, Callable[[], None]] = {
+                "authenticate":
+                    lambda: self.authenticate(message_object),
                 "start":
                     lambda: self.start_tracking(message_object),
                 "stop":
@@ -115,6 +119,16 @@ class ClientSocket(WebSocketHandler):
         logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
         print(f"Client with id {self.identifier} disconnected")
+
+    def authenticate(message) -> None:
+        """Creates tracking object and sends start tracking command to specified processor
+
+        Args:
+            message:
+                JSON message that was received. It should contain the following property:
+                    - "jwt" | The jwt token containing information about a user
+        """
+        jwt: Any = message["jwt"]
 
     @staticmethod
     def start_tracking(message) -> None:
