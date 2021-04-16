@@ -1,20 +1,44 @@
-FROM python:3-slim-buster
+# Installation
+FROM python:3-slim-buster as install
 
-#Install ffmpeg
-RUN apt update
-RUN apt install -y ffmpeg
-
-# install python dependencies
+# Install python dependencies
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# create a streams folder
+
+# Documentation container
+FROM install as pdoc
+
+# Install pdoc
+RUN pip install pdoc
+
+# Copy the source code
+COPY src src
+
+# Set src as the working directory
+WORKDIR /src
+
+# Make sure port is available
+EXPOSE 8080
+
+# Run pdoc
+ENTRYPOINT ["pdoc","-h","0.0.0.0","main.py","camera.py","cameraHandler.py"]
+
+
+# Production container
+FROM install as production
+
+# Install ffmpeg
+RUN apt update
+RUN apt install -y ffmpeg
+
+# Create a streams folder
 RUN ["mkdir","streams"]
 
-# copy a test config
+# Copy a test config
 COPY NetworkConfig.json /NetworkConfig.json
 
-# copy the source code
+# Copy the source code
 COPY src src
 
 # Make sure port is available
