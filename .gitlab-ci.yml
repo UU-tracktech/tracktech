@@ -141,13 +141,13 @@ orchestrator_unit-testing:
 interface_docker_build:
   stage: build
   script:
-    - cd interface
+    - cd Interface
     - docker build -t interface -f Dockerfile.test .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/*
-        - interface/react/*
+        - Interface/*
+        - Interface/react/*
       when: always
 
 interface_unit-testing:
@@ -158,5 +158,16 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/react/*
+        - Interface/react/*
       when: always
+
+pylint:
+  image: python:3.8.8
+  stage: linting
+  allow_failure: true
+  script:
+    - pip install pylint
+    - pip install pylint-exit
+    - FILES=$(find . -name "*.py" | grep -v "ci-scripts/")
+    - pylint ${FILES} --rcfile=.pylintrc --output-format=colorized || pylint-exit --error-fail --warn-fail --refactor-fail --convention-fail $?
+  when: always

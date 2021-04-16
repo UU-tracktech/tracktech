@@ -3,7 +3,7 @@ import { Component } from 'react'
 import { Navbar, Nav, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-import LoginButton from './LoginButton'
+import LoginButton from './loginButton'
 import { LoggedInUser } from './loggedInUser'
 
 export class NavMenu extends Component {
