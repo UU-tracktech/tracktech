@@ -3,7 +3,7 @@ version: "3.4"
 services:
   # Take the already built test container from the camera processor
   camera-processor-test-service:
-    image: camera-processor-test:latest
+    image: camera-processor:latest
     container_name: processor-integration-test-container
     # Overwrite entrypoint to run integration tests instead
     entrypoint: ["python3.8", "-m", "pytest", "app/tests/integrationtests" ,"--junitxml=cp-integration-report.xml"]
