@@ -147,8 +147,8 @@ orchestrator_linting:
   script:
     - docker run -d -t --name orchestrator-lint-container processor-orchestrator
     - docker cp .pylintrc orchestrator-lint-container:/app
-    - docker cp utility/pylint_ignore.py camera-processor-lint-container:/app/utility
-    - docker cp utility/__init__.py camera-processor-lint-container:/app/utility
+    - docker cp utility/pylint_ignore.py orchestrator-lint-container:/app/utility
+    - docker cp utility/__init__.py orchestrator-lint-container:/app/utility
     - docker exec orchestrator-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
     - docker stop orchestrator-lint-container
   rules:
