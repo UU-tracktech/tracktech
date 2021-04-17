@@ -179,3 +179,36 @@ interface_unit-testing:
       changes:
         - interface/react/*
       when: always
+
+interface-linting:
+  stage: linting
+  script:
+    - cd Interface
+    - docker build -t interface_linting -f Dockerfile_lint .
+    - docker run -d -t --name interface-lint-container interface_linting
+    - docker cp .pylintrc interface-lint-container:/app
+    - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
+    - docker cp utility/__init__.py interface-lint-container:/app/utility
+    - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
+    - docker stop interface-lint-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - Interface/*
+        - Interface/react/*
+      when: always
+
+interface_container_removal:
+  stage: removal
+  needs: [interface_docker_build]
+  allow_failure: true
+  script:
+    - docker rm -f interface
+    - docker rm -f interface_linting
+    - docker rm -f interface-lint-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - Interface/*
+        - Interface/react/*
+      when: always
