@@ -117,10 +117,45 @@ COPY processor processor
 
 WORKDIR /app/processor
 
-# Run python3.8 main.py 
+
+# WSL docker build that works for windows
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS wslbuild
+
+RUN apt update
+RUN apt install -y ffmpeg
+RUN ["apt", "install", "-y", "python3.8"]
+RUN ["apt", "install", "-y", "python3-pip"]
+
+WORKDIR /app
+
+# Install pip requirements
+COPY requirements.txt .
+COPY requirements-gpu.txt .
+COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+ENV PYTHONPATH=/app
+
+# COPY webpage webpage
+COPY configs.ini .
+COPY coco.names .
+COPY processor processor
+
+WORKDIR /processor
+
+ENTRYPOINT ["python3.8", "main.py"]
+
+# Run python3.8 main.py
 
 # docker build --target=deploy -t test-gpu:latest .
 #
 # docker run -itd --gpus all --name gpu-container test-gpu:latest
-#  
+#
 # docker exec -it gpu-container bin/bash
