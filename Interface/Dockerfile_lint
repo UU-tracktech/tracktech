@@ -4,7 +4,7 @@ WORKDIR /app
 ENV PYTHONPATH=/app
 
 RUN ["python3.8", "-m", "pip", "install", "-U", "selenium"]
-RUN ["python3.8", "-m", "pip", "install", "unittest"]
+RUN ["python3.8", "-m", "pip", "install", "unittest2"]
 RUN ["python3.8", "-m", "pip", "install", "subprocess"]
 RUN ["python3.8", "-m", "pip", "install", "pylint"]
 
