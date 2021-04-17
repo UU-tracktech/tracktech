@@ -183,6 +183,7 @@ interface_unit-testing:
 interface-linting:
   stage: linting
   needs: [interface_docker_build]
+  allow_failure: true
   script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_lint .
