@@ -89,7 +89,7 @@ RUN apt-mark hold libcublas10
 
 
 ###########################################################################
-#cudnn7 next
+#cudnn7 (not cudnn8) next
 
 ENV CUDNN_VERSION 7.6.5.32
 
