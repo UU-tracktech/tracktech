@@ -224,7 +224,7 @@ forwarder_docker_build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - src
+        - src/*
       when: always
 
 forwarder-linting:
@@ -244,7 +244,7 @@ forwarder-linting:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - src
+        - src/*
       when: always
 
 forwarder_container_removal:
@@ -258,5 +258,5 @@ forwarder_container_removal:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - src
+        - src/*
       when: always
