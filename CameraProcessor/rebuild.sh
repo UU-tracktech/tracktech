@@ -1,5 +1,5 @@
-IMAGE_NAME="camera-processor-yolov5" 
-CONTAINER_NAME="camera-processor-yolov5-container"
+IMAGE_NAME="gpu-test" 
+CONTAINER_NAME="gpu-container"
 
 # Remove old container 
 docker rm -f $CONTAINER_NAME
@@ -11,4 +11,4 @@ docker build --target=deploy -t $IMAGE_NAME .
 docker image prune -f 
 
 # Run new container 
-docker run -t -d --gpus all --name $CONTAINER_NAME $IMAGE_NAME 
+docker run -itd --gpus all --name $CONTAINER_NAME $IMAGE_NAME 

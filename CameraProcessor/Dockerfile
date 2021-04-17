@@ -89,7 +89,7 @@ RUN apt-mark hold libcublas10
 
 
 ###########################################################################
-#cudnn7 (not cudnn8) next
+#cudnn7 next
 
 ENV CUDNN_VERSION 7.6.5.32
 
@@ -103,14 +103,14 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES all
 ENV NVIDIA_REQUIRE_CUDA "cuda>=10.1"
 
-
-
 COPY requirements-gpu.txt requirements-gpu.txt
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
 
 COPY configs.ini .
 COPY coco.names .
+COPY processor processor 
+
 
 # docker build --target=deploy -t test-gpu:latest .
 
