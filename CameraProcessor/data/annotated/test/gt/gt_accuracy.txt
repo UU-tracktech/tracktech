@@ -1,8 +1,0 @@
-undefined 17 150 94 208
-undefined 20 136 89 210
-undefined 240 199 265 306
-undefined 566 181 794 664
-undefined -73 152 272 72
-undefined 307 213 319 339
-undefined 493 187 517 542
-undefined 114 154 199 290

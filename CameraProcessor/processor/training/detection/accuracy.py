@@ -19,17 +19,15 @@ from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.training.pre_annotations import PreAnnotations
 
 def parseboxes(boxes_to_parse):
-    list_parsed_boxes: List[List[BoundingBox]] = []
+    list_parsed_boxes: List[BoundingBox] = []
     for t in range(len(boxes_to_parse)):
         boxes = boxes_to_parse[t]
-        parsedboxes: List[BoundingBox] = []
         for box in boxes:
             width = box.rectangle[2]
             height = box.rectangle[3]
             parsedbox = BoundingBox(label="undefined", xtl=box.rectangle[0]/10000, ytl=box.rectangle[1]/10000, xbr=width/10000,
                                     ybr=height/10000, image_name=str(t), score=box.certainty)
-            parsedboxes.append(parsedbox)
-        list_parsed_boxes.append(parsedboxes)
+            list_parsed_boxes.append(parsedbox)
     return list_parsed_boxes
 
 
@@ -93,17 +91,11 @@ boundingboxes_gt = parseboxes(bounding_boxes_gt)
 
 tp = 0
 fp = 0
-recall = 0
 
-for i in range(len(boundingboxes_gt)):
-    gt_boxes = boundingboxes_gt[i]
-    if len(boundingboxes_det) < i + 1:
-        det_boxes = []
-    else:
-        det_boxes = boundingboxes_det[i]
-    result = get_pascal_voc_metrics(gt_boxes, det_boxes, 0.5)
-    tp += result['undefined'].tp
-    fp += result['undefined'].fp
+result = get_pascal_voc_metrics(boundingboxes_gt, boundingboxes_det, 0.5)
+
+tp += result['undefined'].tp
+fp += result['undefined'].fp
 print("tp: " + str(tp))
 print("fp: " + str(fp))
 
