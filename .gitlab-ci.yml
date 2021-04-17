@@ -224,6 +224,7 @@ forwarder_docker_build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
+        - VideoForwarder/*
         - VideoForwarder/src/*
       when: always
 
@@ -244,6 +245,7 @@ forwarder-linting:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
+        - VideoForwarder/*
         - VideoForwarder/src/*
       when: always
 
@@ -258,5 +260,6 @@ forwarder_container_removal:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
+        - VideoForwarder/*
         - VideoForwarder/src/*
       when: always
