@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
+
 # IMPORTANT all testcases need to start with test_
 class FirstTest(unittest.TestCase):
 
@@ -11,13 +12,13 @@ class FirstTest(unittest.TestCase):
         self.driver = webdriver.Chrome()
         self.driver.maximize_window()
 
-        #Go to local host
+        # Go to local host
         self.driver.get("http://127.0.0.1:3000/")
 
-        #Confirmation that it went to local host
+        # Confirmation that it went to local host
         time.sleep(3)
 
-        #self.driver.find_element_by_class_name("App-link").click()
+        # self.driver.find_element_by_class_name("App-link").click()
         self.driver.find_element_by_link_text("Learn React").click()
         time.sleep(3)
 
@@ -73,8 +74,7 @@ class FirstTest(unittest.TestCase):
         self.driver.find_element_by_xpath("//*[@id='i0118']").send_keys("FakeP@ssw0rd")
         time.sleep(2)
 
-        #In this case, we expect a failure when we try to click on this button
-        #self.driver.find_element_by_xpath("invalidID").click()
+        # In this case, we expect a failure when we try to click on this button
+        # self.driver.find_element_by_xpath("invalidID").click()
 
         self.driver.quit()
-
