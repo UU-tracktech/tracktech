@@ -187,12 +187,12 @@ interface-linting:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_lint .
     - cd ..
-    - docker run -d -t --name interface-lint-container interface_linting
-    - docker cp .pylintrc interface-lint-container:/app
-    - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
-    - docker cp utility/__init__.py interface-lint-container:/app/utility
-    - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
-    - docker stop interface-lint-container
+    - docker run -d -t --name interface-linting-container interface_linting
+    - docker cp .pylintrc interface-linting-container:/app
+    - docker cp utility/pylint_ignore.py interface-linting-container:/app/utility
+    - docker cp utility/__init__.py interface-linting-container:/app/utility
+    - docker exec interface-linting-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
+    - docker stop interface-linting-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -208,6 +208,7 @@ interface_container_removal:
     - docker rm -f interface
     - docker rm -f interface_linting
     - docker rm -f interface-lint-container
+    - docker rm -f interface-linting-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
