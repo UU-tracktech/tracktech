@@ -220,7 +220,7 @@ forwarder_docker_build:
   stage: build
   script:
     - cd VideoForwarder
-    - docker build -t interface -f Dockerfile_lint .
+    - docker build -t forwarder -f Dockerfile_lint .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
