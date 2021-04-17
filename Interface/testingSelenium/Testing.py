@@ -77,4 +77,4 @@ class FirstTest(unittest.TestCase):
         # In this case, we expect a failure when we try to click on this button
         # self.driver.find_element_by_xpath("invalidID").click()
 
-        self.driver.quit()\
+        self.driver.quit()
