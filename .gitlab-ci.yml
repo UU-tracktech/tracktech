@@ -185,6 +185,7 @@ interface-linting:
   script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_lint .
+    - cd ..
     - docker run -d -t --name interface-lint-container interface_linting
     - docker cp .pylintrc interface-lint-container:/app
     - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
