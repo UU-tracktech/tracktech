@@ -166,7 +166,6 @@ interface_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
-        - Interface/react/*
       when: always
 
 interface_unit-testing:
@@ -177,7 +176,7 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/react/*
+        - interface/*
       when: always
 
 interface-linting:
@@ -198,7 +197,6 @@ interface-linting:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
-        - Interface/react/*
       when: always
 
 interface_container_removal:
@@ -213,7 +211,6 @@ interface_container_removal:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
-        - Interface/react/*
       when: always
 
 forwarder_docker_build:
@@ -225,7 +222,6 @@ forwarder_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
-        - VideoForwarder/src/*
       when: always
 
 forwarder-linting:
@@ -246,7 +242,6 @@ forwarder-linting:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
-        - VideoForwarder/src/*
       when: always
 
 forwarder_container_removal:
@@ -261,5 +256,4 @@ forwarder_container_removal:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
-        - VideoForwarder/src/*
       when: always
