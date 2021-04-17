@@ -1,5 +1,5 @@
 # Installation
-FROM python:3-slim-buster
+FROM python:3.8-slim-buster
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -7,15 +7,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-RUN apt update
-RUN apt install -y ffmpeg
-
 WORKDIR /app
 ENV PYTHONPATH=/app
 
 # Install python dependencies
 COPY requirements.txt /requirements.txt
-RUN ["pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
+RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements.txt"]
 RUN ["python3.8", "-m", "pip", "install", "pylint"]
 
 # Copy a test config
