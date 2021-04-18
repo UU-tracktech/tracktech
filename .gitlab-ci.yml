@@ -111,17 +111,23 @@ orchestrator_unit-testing:
   before_script:
     - docker rm -f po-unit-testing || true
   script:
-    - docker run --name po-unit-testing processor-orchestrator pytest app/testing --junitxml=po-unit-report.xml
+    - docker run --name po-unit-testing processor-orchestrator pytest --cov-config=app/.coveragerc --cov=app/src --cov-report html --cov-report term --junitxml=po-unit-report.xml app/testing
   after_script:
     - docker cp po-unit-testing:po-unit-report.xml po-unit-report.xml
+    - docker cp po-unit-testing:/po_coverage_html po_coverage_html
   artifacts:
     reports:
       junit: po-unit-report.xml
+    paths:
+      - po_coverage_html
+    expire_in: 10 days
+    when: always
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - ProcessorOrchestrator/*
       when: always
+
 
 orchestrator_linting:
   stage: linting
