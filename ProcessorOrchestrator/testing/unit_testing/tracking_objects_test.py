@@ -1,3 +1,5 @@
+"""Unit testing module that only tests tracking object class."""
+
 # pytest resolves this reference internally
 # noinspection PyUnresolvedReferences
 from src.object_manager import TrackingObject, objects

@@ -119,7 +119,26 @@ orchestrator_unit-testing:
       changes:
         - ProcessorOrchestrator/*
       when: always
-     
+
+orchestrator_integration-testing:
+  stage: integrationtest
+  needs: [orchestrator_docker_build, orchestrator_container_removal]
+  script:
+    - cd ProcessorOrchestrator
+    - docker-compose -f docker-compose.testing.yml up
+    - docker cp processor-orchestrator-integration-tests:report.xml ProcessorOrchestrator/integration-report.xml
+    - docker-compose down
+  artifacts:
+    reports:
+      junit: ProcessorOrchestrator/integration-report.xml
+    when: always
+    expire_in: 10 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/*
+      when: always
+
 interface_docker_build:
   stage: build
   script:
