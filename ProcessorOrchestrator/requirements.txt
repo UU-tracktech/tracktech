@@ -1,2 +1,4 @@
 tornado
 pytest
+coverage
+pytest-cov
