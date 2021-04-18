@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box } from '../classes/ClientMessage'
+import { Box } from '../classes/clientMessage'
 
 import { Overlay } from '../components/overlay'
 import { indicator } from '../pages/home'

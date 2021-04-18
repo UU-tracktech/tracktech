@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-# Object to store camera stream information in
-class Camera:
-    def __init__(self, ip, audio):
-        self.ip = ip
-        self.conversion = None
-        self.callback = None
-        self.audio = audio
-=======
 """
 Contains information about a single camera object
 """
@@ -29,4 +20,3 @@ class Camera:
 
         self.audio = audio
         """Whether the camera stream contains audio"""
->>>>>>> 9f9c67c8b7ba1395dc99b9ef33f6c9182b448f18

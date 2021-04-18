@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-FROM python:3-slim-buster
-
-#Install ffmpeg
-RUN apt update
-RUN apt install -y ffmpeg
-
-# install python dependencies
-COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-=======
 # Installation
 FROM python:3-slim-buster as install
 
@@ -42,16 +31,11 @@ FROM install as production
 # Install ffmpeg
 RUN apt update
 RUN apt install -y ffmpeg
->>>>>>> 9f9c67c8b7ba1395dc99b9ef33f6c9182b448f18
 
 # Create a streams folder
 RUN ["mkdir","streams"]
 
-<<<<<<< HEAD
-# copy a test config
-=======
 # Copy a test config
->>>>>>> 9f9c67c8b7ba1395dc99b9ef33f6c9182b448f18
 COPY NetworkConfig.json /NetworkConfig.json
 
 # Copy the source code
