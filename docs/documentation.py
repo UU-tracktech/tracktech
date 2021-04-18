@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 import pkgutil
+import pkg_resources
 import pdoc
 import mock
 import dis
@@ -54,8 +55,19 @@ def generate_documentation(root_folder):
                 if module_import_part not in included_modules:
                     mock_modules.add(module_import_part)
 
-    # Add mock if sys.modules doesn't include an import statement.
+    installed_packages = [p.project_name for p in pkg_resources.working_set]
+
+    # Add mock if sys.modules doesn't include an import statement or if the package is already installed.
     for mod_name in mock_modules:
+        # Don't mock object if it has already been installed.
+        skip = False
+        for package in installed_packages:
+            if mod_name == package or mod_name.startswith(f'{package}.'):
+                skip = True
+
+        if skip:
+            continue
+
         if mod_name not in sys.modules:
             mod_mock = mock.Mock(name=mod_name)
             sys.modules[mod_name] = mod_mock
@@ -156,7 +168,7 @@ def get_modules(root_folder):
             includes[module_path] = all_included
 
     # Find all modules in found folders and append the full path.
-    modules = []
+    modules = [root_folder]
     for module in pkgutil.iter_modules(folders):
         if module.name.startswith('_'):
             continue
