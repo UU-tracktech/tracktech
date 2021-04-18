@@ -1,5 +1,5 @@
 # Compose file for integration testing. Builds processor orchestrator and runs tests.
-version: "3.9"
+version: "3.8"
 services:
   processor-orchestrator-service:
     # Use the existing testing image, but actually run the application
