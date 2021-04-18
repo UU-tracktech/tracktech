@@ -42,7 +42,7 @@ camera_container_removal:
         - CameraProcessor/*
       when: always
 
-        
+
 camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_test_build, camera_container_removal]
@@ -56,8 +56,8 @@ camera-processor_unit-testing:
       junit: unit-report.xml
     paths:
       - coverage_html
-    when: always 
-    expire_in: 10 days 
+    when: always
+    expire_in: 10 days
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -75,7 +75,7 @@ camera-processor_integration-testing:
   artifacts:
     reports:
       junit: CameraProcessor/integration-report.xml
-    when: always 
+    when: always
     expire_in: 10 days
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
