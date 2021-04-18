@@ -35,6 +35,7 @@ RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 
 COPY src src 
 COPY testing testing
+COPY .coveragerc .coveragerc
 
 RUN ["mkdir", "utility"]
 
