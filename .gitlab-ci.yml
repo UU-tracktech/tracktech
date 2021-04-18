@@ -101,10 +101,9 @@ camera-processor_linting:
 
 orchestrator_container_removal:
   stage: removal
-  allow_failure: true
   script:
-    - docker rm -f po-unit-testing
-    - docker rm -f orchestrator-lint-container
+    - docker rm -f po-unit-testing || true
+    - docker rm -f orchestrator-lint-container || true
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -163,16 +162,87 @@ interface_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
-        - Interface/react/*
       when: always
 
 interface_unit-testing:
   stage: unittest
   needs: [interface_docker_build]
   script:
-    - docker run interface
+    - docker run --name interface-unit-test-container interface
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/react/*
+        - interface/*
+      when: always
+
+interface-linting:
+  stage: linting
+  needs: [interface_docker_build]
+  allow_failure: true
+  script:
+    - cd Interface
+    - docker build -t interface_linting -f Dockerfile_lint .
+    - cd ..
+    - docker run -d -t --name interface-lint-container interface_linting
+    - docker cp .pylintrc interface-lint-container:/app
+    - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
+    - docker cp utility/__init__.py interface-lint-container:/app/utility
+    - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
+    - docker stop interface-lint-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - Interface/*
+      when: always
+
+interface_container_removal:
+  stage: removal
+  script:
+    - docker rm -f interface-lint-container || true
+    - docker rm -f interface-unit-test-container || true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - Interface/*
+      when: always
+
+forwarder_docker_build:
+  stage: build
+  script:
+    - cd VideoForwarder
+    - docker build -t forwarder -f Dockerfile_lint .
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/*
+      when: always
+
+forwarder-linting:
+  stage: linting
+  needs: [forwarder_docker_build]
+  allow_failure: true
+  script:
+    - cd VideoForwarder
+    - docker build -t forwarder_linting -f Dockerfile_lint .
+    - cd ..
+    - docker run -d -t --name forwarder-lint-container forwarder_linting
+    - docker cp .pylintrc forwarder-lint-container:/app
+    - docker cp utility/pylint_ignore.py forwarder-lint-container:/app/utility
+    - docker cp utility/__init__.py forwarder-lint-container:/app/utility
+    - docker exec forwarder-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
+    - docker stop forwarder-lint-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/*
+      when: always
+
+forwarder_container_removal:
+  stage: removal
+  script:
+    - docker rm -f forwarder-lint-container || true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/*
       when: always

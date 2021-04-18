@@ -19,11 +19,9 @@ class TestCaptures:
         while not capture_implementation.opened():
             pass
 
+
     @pytest.mark.timeout(10)
     def test_closed(self, capture_implementation):
-        """Asserts capture to not be opened after calling closed.
-
-        Args:
             capture_implementation: see capture_implementation.
 
         """

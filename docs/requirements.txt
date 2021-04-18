@@ -1,0 +1,3 @@
+pdoc==6.4.2
+argparse
+tornado

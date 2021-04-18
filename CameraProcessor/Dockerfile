@@ -20,6 +20,7 @@ RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
 
 FROM base AS test
 
+COPY pytest.ini pytest.ini
 COPY processor processor
 COPY data/annotated/test data/annotated/test
 COPY tests tests
