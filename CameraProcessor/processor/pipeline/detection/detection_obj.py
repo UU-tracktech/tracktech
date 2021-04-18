@@ -11,20 +11,19 @@ class DetectionObj:
         self.frame_nr = frame_nr
         self.bounding_boxes = []
 
-    def draw_rectangles(self, filter='person') -> None:
+    def draw_rectangles(self) -> None:
         """Draws the bounding boxes on the frame
         """
         red = (255, 0, 0)
         for bounding_box in self.bounding_boxes:
-            if(bounding_box.classification == filter):
-                height, width, _ = self.frame.shape
-                self.frame = cv2.rectangle(self.frame,
-                                           (int(bounding_box.rectangle[0] * width),
-                                           int(bounding_box.rectangle[1] * height)),
-                                           (int(bounding_box.rectangle[2] * width),
-                                            int(bounding_box.rectangle[3] * height)),
-                                           red,
-                                           2)
+            height, width, _ = self.frame.shape
+            self.frame = cv2.rectangle(self.frame,
+                                       (int(bounding_box.rectangle[0] * width),
+                                       int(bounding_box.rectangle[1] * height)),
+                                       (int(bounding_box.rectangle[2] * width),
+                                        int(bounding_box.rectangle[3] * height)),
+                                       red,
+                                       2)
 
     def to_json(self) -> json:
         """Converts the object to JSON format
