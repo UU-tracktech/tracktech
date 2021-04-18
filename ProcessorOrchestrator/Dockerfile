@@ -13,23 +13,6 @@ EXPOSE 443
 # Run server
 ENTRYPOINT ["python","-u","/src/main.py"]
 
-<<<<<<< HEAD
-FROM python:3 AS testing
-
-# install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY src src
-COPY testing testing
-
-# Make sure port is available
-EXPOSE 80
-EXPOSE 443
-
-# Run server
-ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
-=======
 FROM python:3.8-slim-buster as testing
 
 # Keeps Python from generating .pyc files in the container
@@ -60,4 +43,4 @@ WORKDIR /
 EXPOSE 80
 EXPOSE 443
 
->>>>>>> 9f9c67c8b7ba1395dc99b9ef33f6c9182b448f18
+

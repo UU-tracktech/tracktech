@@ -130,7 +130,7 @@ orchestrator_unit-testing:
     - docker cp po-unit-testing:po-unit-report.xml po-unit-report.xml
   artifacts:
     reports:
-      junit: po-unnt-report.xml
+      junit: po-unit-report.xml
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
