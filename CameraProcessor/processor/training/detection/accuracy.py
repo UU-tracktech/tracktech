@@ -10,6 +10,7 @@ import logging
 from typing import List, Any, Union
 
 from podm.podm import BoundingBox, get_pascal_voc_metrics
+import configparser
 from processor.pipeline.detection.bounding_box import BoundingBox as bounding_box
 import sys
 import cv2
@@ -18,36 +19,65 @@ from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.training.pre_annotations import PreAnnotations
 
-def parseboxes(boxes_to_parse):
-    list_parsed_boxes: List[BoundingBox] = []
-    for t in range(len(boxes_to_parse)):
-        boxes = boxes_to_parse[t]
-        for box in boxes:
-            width = box.rectangle[2]
-            height = box.rectangle[3]
-            parsedbox = BoundingBox(label="undefined", xtl=box.rectangle[0]/10000, ytl=box.rectangle[1]/10000, xbr=width/10000,
-                                    ybr=height/10000, image_name=str(t), score=box.certainty)
-            list_parsed_boxes.append(parsedbox)
-    return list_parsed_boxes
+class AccuracyObject:
+
+    def parseboxes(self, boxes_to_parse):
+        list_parsed_boxes: List[BoundingBox] = []
+        for t in range(len(boxes_to_parse)):
+            boxes = boxes_to_parse[t]
+            for box in boxes:
+                width = box.rectangle[2]
+                height = box.rectangle[3]
+                parsedbox = BoundingBox(label="undefined", xtl=box.rectangle[0]/10000, ytl=box.rectangle[1]/10000,
+                                        xbr=width/10000, ybr=height/10000, image_name=str(t), score=box.certainty)
+                list_parsed_boxes.append(parsedbox)
+        return list_parsed_boxes
+
+    def readboxes(self, dirImage, pathToBoxes):
+        capture = ImageCapture(dirImage)
+        bounding_boxes_annotations = PreAnnotations(pathToBoxes, capture.nr_images)
+        bounding_boxes_annotations.parse_file()
+        bounding_boxes = bounding_boxes_annotations.boxes
+        return self.parseboxes(bounding_boxes)
+
+    def detect(self, det_dir):
+        bounding_boxes_path_mock = f'{self.root_dir}/data/annotated/{self.folder_name}/{det_dir}'
+        boundingboxes_det = self.readboxes(self.images_dir, bounding_boxes_path_mock)
+
+        result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
+
+        tps = 0
+        for key in result.keys():
+            tps += result[key].tp
+
+        print("tp (all classes): " + str(tps))
+        print("accuracy: " + str(result['undefined'].tp / len(boundingboxes_det)))
+        print("tp (only undefined): " + str(result['undefined'].tp))
+        print("fp: " + str(result['undefined'].fp))
+
+    def __init__(self, root_dir, folder_name, gt_dir):
+        self.root_dir = root_dir
+        self.folder_name = folder_name
+        self.gt_dir = gt_dir
+        self.images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
+
+        bounding_boxes_path_gt = f'{root_dir}/data/annotated/{folder_name}/{gt_dir}'
+
+        self.boundingboxes_gt = self.readboxes(self.images_dir, bounding_boxes_path_gt)
+
+        configs = configparser.ConfigParser(allow_no_value=True)
+        configs.read(f'{root_dir}/configs.ini')
+        yolo_config = configs['Yolov5']
+
+        self.iou_threshold = float(yolo_config['iou-thres'])
 
 
-root_dir = os.path.abspath(__file__ + '/../../../../')
-logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
-                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-                    level=logging.INFO,
-                    datefmt='%Y-%m-%d %H:%M:%S')
+dir_to_root = os.path.abspath(__file__ + '/../../../../')
+object = AccuracyObject(os.path.abspath(__file__ + '/../../../../'), 'test', 'gt/gt.txt')
+object.detect('mockyolo/gt.txt')
 
-folder_name = 'test'
-gt = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
-
-
-with open(gt) as file:
-    lines = [line.rstrip('\n') for line in file]
-
-# Determine delimiter automatically
-delimiter = ' '
-if lines[0].__contains__(','):
-    delimiter = ','
+#        bounding_boxes_path_mock = f'{root_dir}/data/annotated/{folder_name}/mockyolo/gt.txt'
+#        boundingboxes_det = readboxes(images_dir, bounding_boxes_path_mock)
 
 #for line in lines:
 #    (frame_nr, person_id, x, y, w, h) = [int(i) for i in line.split(delimiter)[:6]]
@@ -69,38 +99,6 @@ if lines[0].__contains__(','):
 #                                ybr=height, image_name=box.identifier)
 #        parsedBoxes.append(parsedBox)
 #    boundingboxes_gt.append(parsedBoxes)
-images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
-
-bounding_boxes_path = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
-capture_gt = ImageCapture(images_dir)
-bounding_boxes_gt_annotations = PreAnnotations(bounding_boxes_path, capture_gt.nr_images)
-bounding_boxes_gt_annotations.parse_file()
-bounding_boxes_gt = bounding_boxes_gt_annotations.boxes
-
-bounding_boxes_path_mock = f'{root_dir}/data/annotated/{folder_name}/mockyolo/gt.txt'
-capture_mock = ImageCapture(images_dir)
-bounding_boxes_mock_annotations = PreAnnotations(bounding_boxes_path_mock, capture_mock.nr_images)
-bounding_boxes_mock_annotations.parse_file()
-bounding_boxes_mock = bounding_boxes_mock_annotations.boxes
-
-
-logging.info('start accuracy measurement')
-
-boundingboxes_det = parseboxes(bounding_boxes_mock)
-boundingboxes_gt = parseboxes(bounding_boxes_gt)
-
-tp = 0
-fp = 0
-
-result = get_pascal_voc_metrics(boundingboxes_gt, boundingboxes_det, 0.5)
-
-tp += result['undefined'].tp
-fp += result['undefined'].fp
-print("tp: " + str(tp))
-print("fp: " + str(fp))
-
-
-
 
 #root_dir = os.path.abspath(__file__ + '/../../../../')
 #logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
