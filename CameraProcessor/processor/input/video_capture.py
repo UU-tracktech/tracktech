@@ -1,9 +1,16 @@
+"""Contains the video capture class
+
+"""
+
 import logging
 import cv2
 from processor.input.icapture import ICapture
 
 
 class VideoCapture(ICapture):
+    """ Captures video from a video file on the system
+
+    """
     # Default path is the path to venice.mp4
     def __init__(self, path='/data/videos/venice.mp4'):
         logging.info(f"Opening video from path: {path}")
@@ -23,6 +30,10 @@ class VideoCapture(ICapture):
     def get_next_frame(self):
         return *self.cap.read(), None
 
-    # Returns the amount of total frames in the video
     def get_vid_length(self):
+        """ Gets the video length
+
+        Returns: Number of frames in the video
+
+        """
         return self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
