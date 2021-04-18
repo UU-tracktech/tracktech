@@ -106,9 +106,14 @@ fabric.properties
 # CodeStream plugin
 # https://plugins.jetbrains.com/plugin/12206-codestream
 .idea/codestream.xml
+<<<<<<<<< Temporary merge branch 1
 .vscode/*
 
 # virtualenv
 .venv
 venv/
+
+*.pyc
+CameraProcessor/src/yolov5s.pt
+
 CameraProcessor/.pylintrc
