@@ -1,6 +1,35 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-# FROM tracktech.ml:50007/opencv-python:latest
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+FROM python:3.8-slim-buster as test
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+RUN apt update
+RUN apt install -y ffmpeg
+
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+# Install pip requirements
+COPY requirements-test.txt .
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-test.txt"]
+RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
+
+COPY pytest.ini pytest.ini
+COPY data/annotated/test data/annotated/test
+COPY processor processor
+COPY tests tests
+RUN ["mkdir", "utility"]
+
+WORKDIR /
+
+COPY .coveragerc .coveragerc
+
+
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS build
 
 RUN apt update
 RUN apt install -y ffmpeg
@@ -15,7 +44,7 @@ WORKDIR /app
 
 # Install pip requirements
 COPY requirements.txt .
-COPY src/pipeline/detection/yolov5/requirements.txt src/pipeline/detection/yolov5/requirements.txt
+COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
 
 # Keeps Python from generating .pyc files in the container
@@ -29,10 +58,12 @@ ENV PYTHONPATH=/app
 # COPY webpage webpage
 COPY configs.ini .
 COPY coco.names .
-COPY src src
+COPY processor processor
 
-WORKDIR src
+WORKDIR /processor
 
-CMD ["python3.8", "main.py"]
+ENTRYPOINT ["python3.8", "main.py"]
+
+
 
 # https://developer.nvidia.com/cuda/wsl/download

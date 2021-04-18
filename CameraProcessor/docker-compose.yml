@@ -1,21 +1,17 @@
-version: "3"
-
+# Compose file for integration testing. Builds processor orchestrator build image from source, takes camera-processor image from
+version: "3.4"
 services:
-  camera-processor-yolov5-service:
-    image: camera-processor-yolov5:latest
-    ports:
-      - 9090:9090
-    command: ["python3.8", "src/main.py"]
-    deploy:
-      replicas: 1
-      resources:
-        reservations:
-          devices:
-            - capabilities: [ gpu ]
-
+  # Take the already built test container from the camera processor
+  camera-processor-test-service:
+    image: camera-processor-test:latest
+    container_name: processor-integration-test-container
+    depends_on:
+      - "processor-orchestrator-service"
+    # Overwrite entrypoint to run integration tests instead
+    entrypoint: ["python3.8", "-m", "pytest", "app/tests/integrationtests" ,"--junitxml=cp-integration-report.xml"]
+  # Build the build stage from the processor orchestrator manually (since it is not yet done in pipeline)
   processor-orchestrator-service:
-    image: processor-orchestrator:latest
-    ports:
-      - 80:80
-    deploy:
-      replicas: 1
+    build:
+      context: ../ProcessorOrchestrator
+      target: build
+    container_name: ext-orchestrator-integration-test-container
