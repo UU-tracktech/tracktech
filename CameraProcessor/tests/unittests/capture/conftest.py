@@ -1,8 +1,9 @@
-import os
+"""Fixtures and configurations available to other capture unit tests
 
+"""
+import os
 import pytest
 
-from processor.input.cam_capture import CamCapture
 from processor.input.hls_capture import HlsCapture
 from processor.input.image_capture import ImageCapture
 

@@ -1,5 +1,7 @@
+"""Tests pre annotations for each file type to see whether data is loaded in correctly
+
+"""
 import os
-import sys
 import pytest
 from processor.training.pre_annotations import PreAnnotations
 

@@ -1,5 +1,7 @@
+"""Tests detection object by checking properties and whether drawing changes something
+
+"""
 import pytest
-import os
 import cv2
 from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.detection_obj import DetectionObj

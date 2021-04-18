@@ -1,6 +1,9 @@
+"""Contains the bounding box class
+
+"""
+
 import json
 from typing import List
-
 
 
 class BoundingBox:

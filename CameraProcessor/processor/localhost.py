@@ -1,3 +1,7 @@
+"""File that displays the video stream on a localhost for testing.
+
+"""
+
 import time
 import logging
 import os
@@ -63,6 +67,9 @@ class StreamHandler(tornado.web.RequestHandler):
 
     @tornado.gen.coroutine
     def get(self):
+        """ Get request handler for the webpage to show video stream.
+
+        """
         # Sets headers of the handler
         logging.info('set headers')
         self.set_header('Cache-Control',
@@ -81,7 +88,6 @@ class StreamHandler(tornado.web.RequestHandler):
             ret, frame, _ = capture.get_next_frame()
             if not ret:
                 continue
-            
             # If it does get the image the frame gets encoded
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()
@@ -123,7 +129,7 @@ def generate_message(port) -> None:
     print('*' * 30)
     print('*' + ' ' * 28 + '*')
     print('*   open TORNADO stream on   *')
-    print(f'*   http://localhost:{PORT}    *')
+    print(f'*   http://localhost:{port}    *')
     print('*' + ' ' * 28 + '*')
     print('*' * 30)
 

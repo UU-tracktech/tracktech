@@ -1,15 +1,17 @@
+"""
+
+"""
 import time
 import os
 import sys
+import json
 import configparser
 import cv2
-import json
+
 from absl import app
 from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.yolov5_runner import Detector
 from processor.input.video_capture import VideoCapture
-from processor.input.hls_capture import HlsCapture
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(curr_dir, '../../processor/pipeline/detection/yolov5')))
@@ -21,7 +23,7 @@ def main(_argv):
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
-    configs.read(('../../configs.ini'))
+    configs.read('../../configs.ini')
     trueconfig = configs['Yolov5']
     filterconfig = configs['Filter']
 

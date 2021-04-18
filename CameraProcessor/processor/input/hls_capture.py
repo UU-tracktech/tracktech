@@ -1,7 +1,8 @@
+"""Contains the HlsCapture class"""
+
 import threading
 import time
 import logging
-import json
 from typing import List
 import ffmpeg
 import cv2
@@ -78,10 +79,10 @@ class HlsCapture(ICapture):
         """Closes the capture object and the thread that is responsible
         for serving the current frame
         """
-        global run_thread
+        global RUN_THREAD
         logging.info('HLS stream closing')
         logging.info("Joining thread")
-        run_thread = False
+        RUN_THREAD = False
         self.thread.join()
         logging.info("Thread joined, releasing capture")
         self.cap.release()
@@ -107,8 +108,8 @@ class HlsCapture(ICapture):
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long
         """
-        global run_thread
-        while run_thread:
+        global RUN_THREAD
+        while RUN_THREAD:
             # Reads next frame
             ret, self.current_frame = self.cap.read()
 

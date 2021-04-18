@@ -1,3 +1,5 @@
+"""Contains the main methods for running YOLOv5 object detection on a frame"""
+
 import os
 import sys
 import logging
@@ -107,7 +109,8 @@ class Detector:
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
                     height, width, _ = det_obj.frame.shape
-                    bbox = BoundingBox(bb_id, [int(xyxy[0])/width, int(xyxy[1])/height, int(xyxy[2])/width, int(xyxy[3])/height],
+                    bbox = BoundingBox(bb_id, [int(xyxy[0])/width, int(xyxy[1])/height,
+                                               int(xyxy[2])/width, int(xyxy[3])/height],
                                        self.names[int(cls)], conf)
                     if any(x == bbox.classification for x in self.filter):
                         det_obj.bounding_boxes.append(bbox)

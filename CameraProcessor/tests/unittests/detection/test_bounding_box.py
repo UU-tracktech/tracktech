@@ -1,3 +1,6 @@
+"""Tests the bounding box by creating one and testing the properties
+
+"""
 import pytest
 from processor.pipeline.detection.bounding_box import BoundingBox
 

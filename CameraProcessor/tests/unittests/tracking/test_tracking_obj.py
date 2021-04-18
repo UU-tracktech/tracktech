@@ -1,3 +1,6 @@
+"""Unittests tracking object
+
+"""
 import pytest
 from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.detection_obj import DetectionObj

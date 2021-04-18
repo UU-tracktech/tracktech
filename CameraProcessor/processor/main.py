@@ -1,3 +1,7 @@
+""" Main file running the video processing pipeline.
+
+"""
+
 import sys
 import logging
 import os

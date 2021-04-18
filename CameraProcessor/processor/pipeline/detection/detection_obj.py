@@ -1,3 +1,7 @@
+"""Contains the detection object class
+
+"""
+
 import json
 import cv2
 

@@ -1,3 +1,7 @@
+""" Testing file to display yolov5 functionality with our proprietary pipeline.
+
+"""
+
 import time
 import os
 import sys
@@ -7,7 +11,6 @@ from absl import app
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Detector
 from processor.input.video_capture import VideoCapture
-from processor.input.hls_capture import HlsCapture
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
@@ -45,7 +48,6 @@ def main(_argv):
         ret, frame, _ = vidstream.get_next_frame()
 
         if not ret:
-            continue
             if counter == vidstream.get_vid_length():
                 print("End of file")
             else:

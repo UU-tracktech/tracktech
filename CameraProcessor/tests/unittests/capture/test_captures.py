@@ -1,4 +1,6 @@
-import os
+"""Tests the captures opening and closing
+
+"""
 import pytest
 from processor.input.icapture import ICapture
 from processor.input.image_capture import ImageCapture
