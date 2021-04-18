@@ -23,6 +23,7 @@ def main(_argv):
     configs = configparser.ConfigParser(allow_no_value=True)
     configs.read(('../../configs.ini'))
     trueconfig = configs['Yolov5']
+    filterconfig = configs['Filter']
 
     local_time = time.localtime()
 
@@ -34,7 +35,7 @@ def main(_argv):
 
     # Instantiate the detector
     print("Instantiating detector...")
-    detector = Detector(trueconfig)
+    detector = Detector(trueconfig, filterconfig)
 
     # Open Json file, go to 0th line to overwrite
     outfile = open("testdata/output.json", "w")

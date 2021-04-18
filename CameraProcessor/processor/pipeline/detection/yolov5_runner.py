@@ -18,11 +18,15 @@ class Detector:
     """Make it inherit from a generic Detector class
     """
 
-    def __init__(self, config):
+    def __init__(self, config, filters):
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolov5'))
 
         self.config = config
+        self.filter = []
+        with open(filters['targets']) as filter_names:
+            self.filter = filter_names.read().splitlines()
+        print('I am filtering on the following objects: ' + str(self.filter))
 
         # Initialize
         set_logging()
@@ -105,9 +109,9 @@ class Detector:
                     height, width, _ = det_obj.frame.shape
                     bbox = BoundingBox(bb_id, [int(xyxy[0])/width, int(xyxy[1])/height, int(xyxy[2])/width, int(xyxy[3])/height],
                                        self.names[int(cls)], conf)
-                    det_obj.bounding_boxes.append(bbox)
-
-                    bb_id += 1
+                    if any(x == bbox.classification for x in self.filter):
+                        det_obj.bounding_boxes.append(bbox)
+                        bb_id += 1
 
         # Print time (inference + NMS)
         time_one = time_synchronized()

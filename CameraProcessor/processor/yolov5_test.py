@@ -21,6 +21,7 @@ def main(_argv):
     configs = configparser.ConfigParser(allow_no_value=True)
     configs.read(('../configs.ini'))
     trueconfig = configs['Yolov5']
+    filterconfig = configs['Filter']
 
     local_time = time.localtime()
 
@@ -29,11 +30,11 @@ def main(_argv):
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
-    vidstream = HlsCapture()
+    # vidstream = HlsCapture()
 
     # Instantiate the detector
     print("Instantiating detector...")
-    detector = Detector(trueconfig)
+    detector = Detector(trueconfig, filterconfig)
 
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
