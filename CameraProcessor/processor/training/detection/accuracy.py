@@ -44,16 +44,16 @@ class AccuracyObject:
         bounding_boxes_path_mock = f'{self.root_dir}/data/annotated/{self.folder_name}/{det_dir}'
         boundingboxes_det = self.readboxes(self.images_dir, bounding_boxes_path_mock)
 
-        result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
+        self.result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
 
         tps = 0
-        for key in result.keys():
-            tps += result[key].tp
+        for key in self.result.keys():
+            tps += self.result[key].tp
 
         print("tp (all classes): " + str(tps))
-        print("accuracy: " + str(result['undefined'].tp / len(boundingboxes_det)))
-        print("tp (only undefined): " + str(result['undefined'].tp))
-        print("fp: " + str(result['undefined'].fp))
+        print("accuracy: " + str(self.result['undefined'].tp / len(boundingboxes_det)))
+        print("tp (only undefined): " + str(self.result['undefined'].tp))
+        print("fp: " + str(self.result['undefined'].fp))
 
     def __init__(self, root_dir, folder_name, gt_dir):
         self.root_dir = root_dir
