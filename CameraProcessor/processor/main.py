@@ -34,13 +34,14 @@ def main(_):
     configs = configparser.ConfigParser(allow_no_value=True)
     configs.read('../configs.ini')
     yolo_config = configs['Yolov5']
+    config_filter = configs['Filter']
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(None, None, 0)
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
-    detector = Detector(yolo_config)
+    detector = Detector(yolo_config, config_filter)
 
     # Frame counter starts at 0. Will probably work differently for streams
     logging.info("Starting video stream...")
