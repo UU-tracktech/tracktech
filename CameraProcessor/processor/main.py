@@ -4,6 +4,7 @@ import os
 import asyncio
 import configparser
 from absl import app
+
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
@@ -48,7 +49,6 @@ def main(_):
     logging.info("Starting video stream...")
 
     hls_config = configs['HLS']
-    orchestrator_config = configs['Orchestrator']
 
     hls_enabled = hls_config.getboolean('enabled')
 
@@ -57,6 +57,9 @@ def main(_):
         vid_stream = HlsCapture(hls_config['url'])
     else:
         vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
+
+    # Get orchestrator configuration
+    orchestrator_config = configs['Orchestrator']
 
     asyncio.get_event_loop().run_until_complete(initialize(vid_stream, det_obj, detector, orchestrator_config['url']))
 
