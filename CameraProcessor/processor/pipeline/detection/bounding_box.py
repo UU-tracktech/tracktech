@@ -28,10 +28,16 @@ class BoundingBox:
         Returns: JSON representation of the object
 
         """
-        string = json.dumps({
-            "boxId": self.identifier,
-            "rect": self.rectangle,
-        })
+        return json.dumps(self.to_dict())
 
-        # We need to decode the string so we don't get top-level double encoding
-        return json.JSONDecoder().decode(string)
+    def to_dict(self) -> dict:
+        """Readies the data of the bounding box object
+        for conversion into a JSON object
+
+        Returns: A python dict for the corresponding JSON object
+
+        """
+        return {
+            "boxId": self.identifier,
+            "rect": self.rectangle
+        }
