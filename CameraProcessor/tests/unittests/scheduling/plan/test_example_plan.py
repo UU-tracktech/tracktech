@@ -1,15 +1,24 @@
+"""Import pytest and example_plan.py for testing.
+
+"""
 import pytest
-import processor.scheduling.plan.example_plan
 
 
 # pylint: disable=attribute-defined-outside-init
-class TestPlan:
+class TestPlan():
     """Tests bounding_box.py.
     """
 
     # Setup
     def setup_method(self):
-        pass
+        """Setup method for testing.
+
+        """
+
+    def test_example_plan(self):
+        """Automatic pass due to lack of functions in example_plan.py
+
+        """
 
 
 if __name__ == '__main__':
