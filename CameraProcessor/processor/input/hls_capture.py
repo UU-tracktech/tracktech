@@ -74,7 +74,6 @@ class HlsCapture(ICapture):
             return self.cap.isOpened()
         return False
 
-    # When everything is done release the capture
     def close(self) -> None:
         """Closes the capture object and the thread that is responsible
         for serving the current frame
