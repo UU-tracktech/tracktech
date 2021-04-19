@@ -122,20 +122,20 @@ def assert_boxes_message(message):
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(15)
+@pytest.mark.timeout(20)
 async def test_stop_tracking():
     """Test if an interface can send a stop tracking message and if it is correctly received by the processor"""
 
     processor = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
-    processor.write_message(json.dumps({
+    await processor.write_message(json.dumps({
         "type": "identifier",
         "id": "processor_1"
     }))
 
     interface = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/client")
-    interface.write_message(json.dumps({
+    await interface.write_message(json.dumps({
         "type": "stop",
         "objectId": 1
     }))
