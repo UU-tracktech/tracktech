@@ -1,3 +1,6 @@
 tornado
 pyjwt
 cryptography
+pytest-tornado
+pytest-timeout
+pytest

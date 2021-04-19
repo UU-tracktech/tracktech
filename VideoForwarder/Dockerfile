@@ -41,6 +41,9 @@ COPY NetworkConfig.json /NetworkConfig.json
 # Copy the source code
 COPY src src
 
+# Copy integration and unit test code
+COPY test test
+
 # Make sure port is available
 EXPOSE 80
 EXPOSE 443
