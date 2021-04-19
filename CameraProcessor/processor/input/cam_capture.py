@@ -34,3 +34,8 @@ class CamCapture(ICapture):
             Next webcam frame.
         """
         return *self.cap.read(), None
+
+    def get_capture_length(self) -> int:
+        """Returns None, because webcam streams
+        are theoretically infinite"""
+        return None

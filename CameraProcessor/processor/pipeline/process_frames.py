@@ -4,7 +4,7 @@ import cv2
 # pylint: disable=unused-import
 import processor.websocket_client as client
 from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.yolov5_runner import Detector
+from processor.pipeline.detection.idetector import IDetector as Detector
 from processor.input.hls_capture import HlsCapture
 # pylint: enable=unused-import
 
@@ -29,6 +29,9 @@ async def process_stream(capture, det_obj, detector, ws_client=None):
         ret, frame, timestamp = capture.get_next_frame()
 
         if not ret:
+            if frame_nr == capture.get_capture_length():
+                logging.info("End of file reached")
+                break
             continue
 
         # update frame, frame number, and time
