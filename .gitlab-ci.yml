@@ -120,7 +120,6 @@ orchestrator_unit-testing:
   after_script:
     - docker cp po-unit-testing:po-unit-report.xml po-unit-report.xml
     - docker cp po-unit-testing:/po_coverage_html po_coverage_html
-  coverage: ^TOTAL.*\s+(\d+\%)$
   artifacts:
     reports:
       junit: po-unit-report.xml
