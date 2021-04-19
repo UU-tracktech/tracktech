@@ -168,11 +168,18 @@ interface_unit-testing:
     - docker rm -f interface-unit-test-container || true
   script:
     - docker run --name interface-unit-test-container interface
+  after_script:
+    - docker cp interface-unit-test-container:/react/coverage/lrepo
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - interface/*
       when: always
+
+          - npx nyc --reporter cobertura mocha
+  artifacts:
+    reports:
+      cobertura: coverage/cobertura-coverage.xml
 
 interface-linting:
   stage: linting
