@@ -36,7 +36,7 @@ camera-processor_unit-testing:
     - docker rm -f camera-processor-test-container || true
   script:
     - docker run --name camera-processor-test-container camera-processor python3.8 -m pytest --cov-config=.coveragerc --cov=processor/ --junitxml=cp-unit-report.xml tests/unittests
-    - docker exec
+    # - docker run --name camera-processor-test-container camera-processor python3.8 -m pytest --cov-config=.coveragerc --cov=processor/ --cov-report html --cov-report term --junitxml=cp-unit-report.xml tests/unittests
   after_script:
     - docker exec camera-processor-test-container coverage xml
     - docker cp camera-processor-test-container:/app/cp-unit-report.xml cp-unit-report.xml
