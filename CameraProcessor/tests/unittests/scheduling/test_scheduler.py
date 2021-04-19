@@ -3,7 +3,7 @@ import processor.scheduling.scheduler
 
 
 # pylint: disable=attribute-defined-outside-init
-class Scheduler:
+class TestScheduler:
     """Tests bounding_box.py.
     """
 
@@ -13,4 +13,4 @@ class Scheduler:
 
 
 if __name__ == '__main__':
-    pytest.main(Scheduler)
+    pytest.main(TestScheduler)

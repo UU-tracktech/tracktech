@@ -3,7 +3,7 @@ import processor.scheduling.component.base_component
 
 
 # pylint: disable=attribute-defined-outside-init
-class BaseComponent:
+class TestBaseComponent:
     """Tests bounding_box.py.
     """
 
@@ -13,4 +13,4 @@ class BaseComponent:
 
 
 if __name__ == '__main__':
-    pytest.main(BaseComponent)
+    pytest.main(TestBaseComponent)

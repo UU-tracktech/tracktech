@@ -3,7 +3,7 @@ import processor.scheduling.plan.example_plan
 
 
 # pylint: disable=attribute-defined-outside-init
-class Plan:
+class TestPlan:
     """Tests bounding_box.py.
     """
 
@@ -13,4 +13,4 @@ class Plan:
 
 
 if __name__ == '__main__':
-    pytest.main(Plan)
+    pytest.main(TestPlan)
