@@ -10,4 +10,4 @@ services:
     depends_on:
       - processor-orchestrator-service
     image: processor-orchestrator:latest
-    entrypoint: ["pytest", "testing/integration_testing", "--junitxml=report.xml"]
+    entrypoint: ["pytest", "testing/integration_testing", "--junitxml=integration-report.xml"]

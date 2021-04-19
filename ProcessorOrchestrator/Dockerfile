@@ -43,4 +43,4 @@ EXPOSE 80
 EXPOSE 443
 
 # Run server
-ENTRYPOINT ["pytest", "testing/unit_testing", "--junitxml=report.xml"]
+ENTRYPOINT ["pytest", "testing/unit_testing", "--cov-config=app/.coveragerc", "--cov=app/src", "--cov-report html", "--cov-report term", "--junitxml=po-unit-report.xml"]
