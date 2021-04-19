@@ -9,6 +9,7 @@ from tests.unittests.utils.fake_websocket import FakeWebsocket
 # def clients(request):
 #     return request.param
 
+
 @pytest.fixture(params=[FakeWebsocket()], ids=["Fake Client"])
 def clients(request):
     return request.param
