@@ -10,7 +10,7 @@ from processor.scheduling.component.example_components.example_component import 
 # pylint: disable=unused-argument
 def func(ignore):
     """Dummy function"""
-    pass
+    return
 
 
 # Last node/layer.

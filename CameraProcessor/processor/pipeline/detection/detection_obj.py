@@ -4,7 +4,6 @@
 
 import json
 import cv2
-import math
 
 
 class DetectionObj:

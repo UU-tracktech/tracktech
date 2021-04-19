@@ -55,9 +55,6 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             # Send response
             self.finish(err_html)
 
-    def data_received(self, chunk: bytes):
-        tornado.web.RequestHandler.data_received(self, chunk)
-
 
 class StreamHandler(tornado.web.RequestHandler):
     """Handler for the frame stream
@@ -105,9 +102,6 @@ class StreamHandler(tornado.web.RequestHandler):
                 self.flush()
             except Exception as err:
                 raise Exception('connection lost with client') from err
-
-    def data_received(self, chunk: bytes):
-        tornado.web.RequestHandler.data_received(self, chunk)
 
 
 def make_app() -> tornado.web.Application:

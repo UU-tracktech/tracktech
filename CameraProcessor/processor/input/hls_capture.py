@@ -8,8 +8,6 @@ import ffmpeg
 import cv2
 from processor.input.icapture import ICapture
 
-RUN_THREAD = True
-
 
 class HlsCapture(ICapture):
     """Implementation of the ICapture class which handles an HLS stream with timestamps.
@@ -49,6 +47,7 @@ class HlsCapture(ICapture):
         # Create thread that syncs streams
         self.thread = threading.Thread(target=self.sync)
         self.thread.daemon = True
+        self.thread_running = True
         self.thread.start()
 
         # Reconnect with timeout
@@ -80,11 +79,10 @@ class HlsCapture(ICapture):
         """Closes the capture object and the thread that is responsible
         for serving the current frame
         """
-        global RUN_THREAD
         logging.info('HLS stream closing')
         logging.info("Joining thread")
-        RUN_THREAD = False
         self.thread.join()
+        self.thread_running = False
         logging.info("Thread joined, releasing capture")
         self.cap.release()
 
@@ -109,8 +107,7 @@ class HlsCapture(ICapture):
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long
         """
-        global RUN_THREAD
-        while RUN_THREAD:
+        while self.thread_running:
             # Reads next frame
             ret, self.current_frame = self.cap.read()
 
