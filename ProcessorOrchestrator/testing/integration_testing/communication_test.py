@@ -122,7 +122,7 @@ def assert_boxes_message(message):
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(15)
 async def test_stop_tracking():
     """Test if an interface can send a stop tracking message and if it is correctly received by the processor"""
 
