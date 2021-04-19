@@ -8,7 +8,7 @@ class TestCaptures:
     """Tests the captures opening and closing
 
     """
-    @pytest.mark.timeout(3)
+    @pytest.mark.timeout(10)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -19,9 +19,9 @@ class TestCaptures:
         while not capture_implementation.opened():
             pass
 
-    @pytest.mark.timeout(3)
+    @pytest.mark.timeout(10)
     def test_closed(self, capture_implementation):
-        """Asserts capture to not be opened after calling closed.
+        """Asserts capture to be closed
 
         Args:
             capture_implementation: see capture_implementation.

@@ -1,4 +1,4 @@
-set imageName=camera-processor-test
+set imageName=camera-processor
 set containerName=camera-processor-test-container
 
 :: Remove old container
