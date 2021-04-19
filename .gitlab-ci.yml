@@ -40,6 +40,7 @@ camera-processor_unit-testing:
     - docker cp camera-processor-test-container:/app/cp-unit-report.xml cp-unit-report.xml
     - docker cp camera-processor-test-container:/app/coverage.xml cp-coverage.xml
     - docker cp camera-processor-test-container:/app/coverage_html cp-coverage_html
+  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: cp-unit-report.xml
@@ -118,6 +119,7 @@ orchestrator_unit-testing:
   after_script:
     - docker cp po-unit-testing:po-unit-report.xml po-unit-report.xml
     - docker cp po-unit-testing:/po_coverage_html po_coverage_html
+  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: po-unit-report.xml
