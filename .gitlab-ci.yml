@@ -172,8 +172,8 @@ interface_unit-testing:
     - docker cp interface-unit-test-container:/react/coverage i-coverage
   artifacts:
     when: always
-      reports:
-        cobertura: i-coverage/cobertura-coverage.xml
+    reports:
+      cobertura: i-coverage/cobertura-coverage.xml
     paths:
       - i-coverage
   coverage: /All\sfiles.*?\s+(\d+.\d+)/
