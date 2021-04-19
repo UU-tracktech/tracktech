@@ -19,6 +19,7 @@ def __get_images_dir():
     __images_dir = os.path.realpath(os.path.join(__root_dir, 'data/annotated/test/img1/'))
     return __images_dir
 
+
 def __get_video():
     """Get the path to a video
 
@@ -29,6 +30,7 @@ def __get_video():
     # __folder_name = 'test'
     __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/venice.mp4'))
     return __videos_dir
+
 
 @pytest.fixture(params=[ImageCapture(__get_images_dir()), VideoCapture(__get_video()), HlsCapture()], ids=["Image", "video", "HLS Stream"])
 def capture_implementation(request):
