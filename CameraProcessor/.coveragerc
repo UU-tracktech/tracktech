@@ -14,6 +14,8 @@ omit =
     */processor/scheduling/*
     */processor/yolov4deepsort.py
     */processor/yolov5_test.py
+    # Don't cover main.py files
+    */main.py
 
 [report]
 ignore_errors = True
