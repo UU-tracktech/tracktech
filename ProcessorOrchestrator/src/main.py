@@ -27,21 +27,21 @@ def main():
 
     app = create_app()
 
-    if use_tls:
-        # Create a ssl context
-        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ssl_ctx.load_cert_chain(cert, key)
-
-        # Create a http server, with optional ssl.
-        http_server = HTTPServer(app, ssl_options=ssl_ctx)
-        http_server.listen(443)
-        print('listening over https')
-
-    else:
-        # Create a http server, with optional ssl.
-        http_server = HTTPServer(app)
-        http_server.listen(80)
-        print('listening over http')
+    # if use_tls:
+    #     # Create a ssl context
+    #     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    #     ssl_ctx.load_cert_chain(cert, key)
+    #
+    #     # Create a http server, with optional ssl.
+    #     http_server = HTTPServer(app, ssl_options=ssl_ctx)
+    #     http_server.listen(443)
+    #     print('listening over https')
+    #
+    # else:
+    # Create a http server, with optional ssl.
+    http_server = HTTPServer(app)
+    http_server.listen(80)
+    print('listening over http')
 
     IOLoop.current().start()
 
