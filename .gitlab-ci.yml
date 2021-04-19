@@ -177,7 +177,7 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - interface/*
+        - Interface/*
       when: always
 
 interface-linting:
