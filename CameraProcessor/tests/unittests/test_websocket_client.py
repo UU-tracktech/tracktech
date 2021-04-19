@@ -2,8 +2,6 @@
 
 """
 import json
-import threading
-import time
 import pytest
 from processor.websocket_client import WebsocketClient
 
@@ -69,6 +67,7 @@ class TestWebsocketClient:
         assert self.message_object_update_feature_map["objectId"] == 1
         assert self.message_object_update_feature_map["featureMap"] == []
 
+    # pylint: disable=protected-access
     def test_read_msg_start_tracking(self):
         """Checks if read_msg correctly parses start tracking message
 
@@ -90,7 +89,6 @@ class TestWebsocketClient:
         json_temp_feature_map = self.ws_client._on_message(self.message_object_update_feature_map_string)
         assert json_temp_feature_map.__eq__(self.message_object_update_feature_map)
 
-    # pylint: disable=W0212
     def test_read_msg_type_error_exception(self):
         """Checks if read_msg raises exception with invalid input
 
@@ -98,13 +96,13 @@ class TestWebsocketClient:
         with pytest.raises(Exception):
             assert self.ws_client._on_message('"invalidJson": "yes"')
 
-    # pylint: disable=W0212
     def test_read_msg_key_error_exception(self):
         """Checks if read_msg raises exception with missing value in input
 
         """
         with pytest.raises(Exception):
             assert self.ws_client._on_message('{"type": "start", "objectId": 1, "frameId": 1}')
+    # pylint: enable=protected-access
 
     def test_unparsed_json_input_start_tracking(self):
         """Checks if start_tracking raises exception with is parsed JSON

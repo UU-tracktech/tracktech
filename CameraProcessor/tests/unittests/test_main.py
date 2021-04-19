@@ -1,13 +1,15 @@
-import pytest
+"""Test main file inside unittest
+
+"""
 import logging
 import time
+import pytest
 
-# from processor.main import main as processor_main # More ugly commenting
 from tests.unittests.utils.exception_handler_process import EProcess
 
 
 class TestProcessorMain:
-    """
+    """Test main file
 
     """
     @pytest.mark.timeout(30)
@@ -16,17 +18,16 @@ class TestProcessorMain:
         """Runs the main in processor folder
 
         """
-        # p = EProcess(target=processor_main, args=([],))
-        p = EProcess(target=None)
-        p.start()
+        process = EProcess(target=None)
+        process.start()
         now = time.time()
         while now + 15 > time.time():
-            if p.exception:
-                p.join()
+            if process.exception:
+                process.join()
                 logging.info("Exception raised in main.py")
-                raise p.exception
-        p.terminate()
-        p.join()
+                raise process.exception
+        process.terminate()
+        process.join()
 
 
 if __name__ == '__main__':

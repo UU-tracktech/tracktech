@@ -10,7 +10,6 @@ import cv2
 
 from absl import app
 from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 
