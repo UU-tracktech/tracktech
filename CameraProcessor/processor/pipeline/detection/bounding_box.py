@@ -4,7 +4,7 @@ from typing import List
 
 
 class BoundingBox:
-    """Contains information about a single bounding box
+    """Contains information about a single bounding box.
     """
     def __init__(self, identifier: int, rectangle: List[int], classification: str, certainty: float):
         """
