@@ -6,7 +6,8 @@ import json
 import cv2
 
 
-class DetectionObj:
+
+class DetectionObj():
     """Object that holds all the bounding boxes for a specific frame
     """
     def __init__(self, timestamp, frame, frame_nr):
@@ -52,5 +53,5 @@ class DetectionObj:
         return json.dumps({
             "type": "boundingBoxes",
             "frameId": self.timestamp,
-            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_boxes],
+            "boxes": [bounding_box.to_dict() for bounding_box in self.bounding_boxes],
         })

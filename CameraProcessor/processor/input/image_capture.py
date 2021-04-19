@@ -39,10 +39,10 @@ class ImageCapture(ICapture):
 
     def close(self) -> None:
         """Close the capture by setting the index higher than the number of images
+
         """
         self.image_index = self.nr_images + 1
 
-    # Gets the next frame from the stream
     def get_next_frame(self) -> (bool, List[List[int]]):
         """Gets the next frame from the list of images
 
@@ -61,3 +61,12 @@ class ImageCapture(ICapture):
         # Reads the image file and returns it
         frame = cv2.imread(image_path)
         return True, frame, None
+
+    def get_capture_length(self) -> int:
+        """Get the number of images left in folder
+
+        Returns:
+            An integer indicating amount of images left
+
+        """
+        return self.nr_images

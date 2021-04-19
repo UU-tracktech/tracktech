@@ -2,6 +2,8 @@
 
 """
 import json
+import threading
+import time
 import pytest
 from processor.websocket_client import WebsocketClient
 
@@ -27,6 +29,7 @@ class TestWebsocketClient:
 
     """
 
+    @pytest.mark.timeout(10)
     def setup_method(self):
         """Set ups mock messages for unit testing.
 
@@ -44,6 +47,7 @@ class TestWebsocketClient:
 
         self.connect = self.ws_client.connect
 
+    @pytest.mark.timeout(10)
     def test_start_tracking(self):
         """Checks if start_tracking takes correct values from message
 
@@ -126,7 +130,3 @@ class TestWebsocketClient:
 
         """
         self.ws_client.update_feature_map(self.message_object_update_feature_map)
-
-
-if __name__ == '__main__':
-    pytest.main(TestWebsocketClient)

@@ -29,6 +29,6 @@ def get_sample_frame():
     Returns (frame):
         Opencv frame from test data
     """
-    __root_dir = os.path.abspath(os.path.join(__file__, '../../../'))
+    __root_dir = os.path.abspath(os.path.join(__file__, '../../../../'))
     __images_name = f'{__root_dir}/data/annotated/test/img1/000001.jpg'
     return cv2.imread(__images_name)
