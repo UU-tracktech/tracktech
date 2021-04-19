@@ -18,6 +18,7 @@ class DetectionObj:
         red = (0, 0, 255)
         for bounding_box in self.bounding_boxes:
             height, width, _ = self.frame.shape
+            # Object bounding box.
             self.frame = cv2.rectangle(self.frame,
                                        (int(bounding_box.rectangle[0] * width),
                                        int(bounding_box.rectangle[1] * height)),
@@ -25,6 +26,7 @@ class DetectionObj:
                                         int(bounding_box.rectangle[3] * height)),
                                        red,
                                        2)
+            # Tag background.
             cv2.rectangle(self.frame,
                           (int(bounding_box.rectangle[0] * width),
                           int(bounding_box.rectangle[1] * height) - 35),
@@ -32,6 +34,7 @@ class DetectionObj:
                           int(bounding_box.rectangle[1] * height)),
                           red,
                           -1)
+            # Tag with confidence.
             cv2.putText(self.frame, f'{bounding_box.classification} {round(float(bounding_box.certainty), 2)}',
                         (int(bounding_box.rectangle[0] * width), int(bounding_box.rectangle[1] * height) - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 2)
