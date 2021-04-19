@@ -1,8 +1,10 @@
 import json
 import cv2
+import math
 
 
-class DetectionObj:
+
+class DetectionObj():
     """Object that holds all the bounding boxes for a specific frame
     """
     def __init__(self, timestamp, frame, frame_nr):
@@ -14,9 +16,10 @@ class DetectionObj:
     def draw_rectangles(self) -> None:
         """Draws the bounding boxes on the frame
         """
-        red = (255, 0, 0)
+        red = (0, 0, 255)
         for bounding_box in self.bounding_boxes:
             height, width, _ = self.frame.shape
+            # Object bounding box.
             self.frame = cv2.rectangle(self.frame,
                                        (int(bounding_box.rectangle[0] * width),
                                        int(bounding_box.rectangle[1] * height)),
@@ -24,6 +27,18 @@ class DetectionObj:
                                         int(bounding_box.rectangle[3] * height)),
                                        red,
                                        2)
+            # Tag background.
+            cv2.rectangle(self.frame,
+                          (int(bounding_box.rectangle[0] * width),
+                          int(bounding_box.rectangle[1] * height) - 35),
+                          (int(bounding_box.rectangle[0] * width + (len(bounding_box.classification) + 4) * 15),
+                          int(bounding_box.rectangle[1] * height)),
+                          red,
+                          -1)
+            # Tag with confidence.
+            cv2.putText(self.frame, f'{bounding_box.classification} {round(float(bounding_box.certainty), 2)}',
+                        (int(bounding_box.rectangle[0] * width), int(bounding_box.rectangle[1] * height) - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 2)
 
     def to_json(self) -> json:
         """Converts the object to JSON format
@@ -35,5 +50,5 @@ class DetectionObj:
         return json.dumps({
             "type": "boundingBoxes",
             "frameId": self.timestamp,
-            "boxes": [bounding_box.to_json() for bounding_box in self.bounding_boxes],
+            "boxes": [bounding_box.to_dict() for bounding_box in self.bounding_boxes],
         })

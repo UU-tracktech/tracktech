@@ -1,0 +1,17 @@
+# Install these dependencies using
+# pip install -r requirements.txt
+
+# Threading / Async
+threaded==4.1.0
+asyncio==3.4.3
+
+# Loading bar
+tqdm==4.59.0
+
+torch==1.8.0+cu101
+torchvision==0.9.0+cu101
+-f https://download.pytorch.org/whl/torch_stable.html
+
+# YOLOv5
+-r processor/pipeline/detection/yolov5/requirements.txt
+

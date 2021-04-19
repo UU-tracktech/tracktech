@@ -5,7 +5,7 @@ import configparser
 import cv2
 from absl import app
 from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.yolov5_runner import Detector
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
 
@@ -21,6 +21,7 @@ def main(_argv):
     configs = configparser.ConfigParser(allow_no_value=True)
     configs.read(('../configs.ini'))
     trueconfig = configs['Yolov5']
+    filterconfig = configs['Filter']
 
     local_time = time.localtime()
 
@@ -29,11 +30,11 @@ def main(_argv):
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
-    vidstream = HlsCapture()
+    # vidstream = HlsCapture()
 
     # Instantiate the detector
     print("Instantiating detector...")
-    detector = Detector(trueconfig)
+    detector = Yolov5Detector(trueconfig, filterconfig)
 
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
@@ -45,7 +46,7 @@ def main(_argv):
 
         if not ret:
             continue
-            if counter == vidstream.get_vid_length():
+            if counter == vidstream.get_capture_length():
                 print("End of file")
             else:
                 raise ValueError("Feed has been interrupted")
