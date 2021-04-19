@@ -135,7 +135,7 @@ orchestrator_integration-testing:
   script:
     - cd ProcessorOrchestrator
     - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
-    - docker cp processor-orchestrator-integration-tests:report.xml ProcessorOrchestrator/integration-report.xml
+    - docker cp processor-orchestrator-integration-tests:report.xml integration-report.xml
     - docker-compose down
   artifacts:
     reports:
