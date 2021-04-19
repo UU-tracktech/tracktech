@@ -106,18 +106,6 @@ orchestrator_docker_build:
         - ProcessorOrchestrator/*
       when: always
 
-orchestrator_container_removal:
-  stage: removal
-  needs: [orchestrator_docker_build]
-  allow_failure: true
-  script:
-    - docker rm -f po-unit-testing
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
-
 orchestrator_unit-testing:
   stage: unittest
   needs: [orchestrator_docker_build]
