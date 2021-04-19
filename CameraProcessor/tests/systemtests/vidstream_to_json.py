@@ -1,4 +1,4 @@
-"""
+"""Gives a way to have the data stream written to a json file to help repeating
 
 """
 import time

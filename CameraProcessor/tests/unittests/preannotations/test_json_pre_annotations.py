@@ -1,3 +1,6 @@
+"""Tests whether pre_annotations are correctly loaded in from a json file
+
+"""
 import os
 from tests.unittests.preannotations.test_pre_annotations import example_json_file
 from processor.training.pre_annotations import PreAnnotations

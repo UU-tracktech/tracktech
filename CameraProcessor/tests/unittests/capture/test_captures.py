@@ -2,10 +2,6 @@
 
 """
 import pytest
-from processor.input.icapture import ICapture
-from processor.input.image_capture import ImageCapture
-from processor.input.hls_capture import HlsCapture
-from processor.input.cam_capture import CamCapture
 
 
 class TestCaptures:
