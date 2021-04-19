@@ -35,20 +35,18 @@ camera-processor_unit-testing:
   before_script:
     - docker rm -f camera-processor-test-container || true
   script:
-    - docker run -d -t --name camera-processor-test-container camera-processor python3.8 -m pytest --cov-config=.coveragerc --cov=processor/ --junitxml=cp-unit-report.xml tests/unittests
+    - docker run --name camera-processor-test-container camera-processor python3.8 -m pytest --cov-config=.coveragerc --cov-report xml --cov-report html --cov=processor/ --junitxml=cp-unit-report.xml tests/unittests
     # - docker run --name camera-processor-test-container camera-processor python3.8 -m pytest --cov-config=.coveragerc --cov=processor/ --cov-report html --cov-report term --junitxml=cp-unit-report.xml tests/unittests
   after_script:
-    - docker exec camera-processor-test-container coverage xml
     - docker cp camera-processor-test-container:/app/cp-unit-report.xml cp-unit-report.xml
     - docker cp camera-processor-test-container:/app/coverage.xml cp-coverage.xml
-    - docker stop camera-processor-test-container
-#   - docker cp camera-processor-test-container:/app/coverage_html coverage_html
+#    - docker cp camera-processor-test-container:/app/coverage_html coverage_html
   artifacts:
     reports:
       junit: cp-unit-report.xml
       cobertura: cp-coverage.xml
-#   paths:
-#     - coverage_html
+#    paths:
+#      - coverage_html
     when: always 
     expire_in: 10 days 
   rules:
