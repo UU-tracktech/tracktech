@@ -8,9 +8,15 @@ scipy<=1.6.1
 regex
 matplotlib
 python-time
+
+# Things YOLOv5 needs
 absl-py
 requests
 pyyaml
+matplotlib
+pandas
+numpy
+seaborn
 
 # Testing
 pytest
