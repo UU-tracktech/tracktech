@@ -7,7 +7,7 @@ import os
 from processor.pipeline.process_frames import process_stream
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.input.video_capture import VideoCapture
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+# from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from tests.unittests.utils.fake_detector import FakeDetector
 
 
@@ -35,7 +35,8 @@ class TestProcessFrames:
         __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
         configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
         config = configs["Yolov5"]
-        return Yolov5Detector(config)
+#       return Yolov5Detector(config) # ugly commenting to limit the import time in docker
+        return None
 
     @pytest.mark.timeout(90)
     @pytest.mark.skip("YOLOv5 GPU acceleration does not work in Docker yet")
