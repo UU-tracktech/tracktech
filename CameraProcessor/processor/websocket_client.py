@@ -6,11 +6,7 @@ import asyncio
 import json
 import sys
 import logging
-from datetime import datetime
-import cv2
 from tornado import websocket
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.input.hls_capture import HlsCapture
 
 
 async def create_client(url, identifier=None):

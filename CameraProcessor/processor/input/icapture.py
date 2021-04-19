@@ -1,4 +1,4 @@
-"""Contains the ICapture interface for different capture methods 
+"""Contains the ICapture interface for different capture methods
 
 """
 

@@ -22,7 +22,7 @@ def main(_argv):
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
-    configs.read(('../configs.ini'))
+    configs.read('../configs.ini')
     trueconfig = configs['Yolov5']
     filterconfig = configs['Filter']
 

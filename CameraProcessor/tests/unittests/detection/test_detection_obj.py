@@ -98,6 +98,7 @@ class TestDetectionObj:
         """
         assert self.data.bounding_boxes is not None
 
+    # pylint: disable=duplicate-code
     # Testing exceptions
     def test_exception_timestamp(self):
         """Asserts if timestamp throws exception.
@@ -119,6 +120,7 @@ class TestDetectionObj:
         """
         with pytest.raises(Exception):
             assert str(self.frame_nr) == 'some invalid value'
+    # pylint: enable=duplicate-code
 
     def test_exception_bounding_boxes(self):
         """Asserts if bounding_boxes throws exception.

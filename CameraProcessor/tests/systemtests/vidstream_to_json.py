@@ -17,6 +17,7 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.abspath(os.path.join(curr_dir, '../../processor/pipeline/detection/yolov5')))
 
 
+# pylint: disable=duplicate-code
 def main(_argv):
     """Runs YOLOv5 detection on a videofile specified in line 33
     and saves the JSON objecs to testdata/output.json
@@ -68,11 +69,11 @@ def main(_argv):
         detector.detect(det_obj)
 
         # Create a new dictionary and dump as json object
-        d = {}
-        d["type"] = "boundingBoxes"
-        d["frameId"] = counter
-        d["boxes"] = [b.rectangle for b in det_obj.bounding_boxes]
-        j_string = json.dumps(d)
+        json_obj = {}
+        json_obj["type"] = "boundingBoxes"
+        json_obj["frameId"] = counter
+        json_obj["boxes"] = [b.rectangle for b in det_obj.bounding_boxes]
+        j_string = json.dumps(json_obj)
 
         # Write the JSON object to the file, add a comma and a newline
         if counter == vidstream.get_vid_length() - 1:

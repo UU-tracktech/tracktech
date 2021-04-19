@@ -8,7 +8,8 @@ import ffmpeg
 import cv2
 from processor.input.icapture import ICapture
 
-run_thread = True
+RUN_THREAD = True
+
 
 class HlsCapture(ICapture):
     """Implementation of the ICapture class which handles an HLS stream with timestamps.

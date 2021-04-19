@@ -1,3 +1,6 @@
+"""Simplest definition of a component
+
+"""
 from typing import Callable
 
 

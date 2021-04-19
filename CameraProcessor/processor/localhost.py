@@ -135,8 +135,6 @@ def generate_message(port) -> None:
 
 
 if __name__ == '__main__':
-    """Start tornado event loop
-    """
     PORT = 9090
     app = make_app()
     app.listen(PORT)

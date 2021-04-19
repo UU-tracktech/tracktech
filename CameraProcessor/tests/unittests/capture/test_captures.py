@@ -1,11 +1,13 @@
-"""Tests the captures opening and closing
+"""Tests the captures
 
 """
 import pytest
 
 
 class TestCaptures:
+    """Tests the captures opening and closing
 
+    """
     @pytest.mark.timeout(3)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
