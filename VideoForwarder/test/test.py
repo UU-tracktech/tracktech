@@ -5,7 +5,7 @@ import os
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("Hello, world")
+        self.write("")
 
 application = tornado.web.Application([
     (r"/", MainHandler),
@@ -14,7 +14,6 @@ application = tornado.web.Application([
 @pytest.fixture
 def app():
     return application
-
 
 class TestVideoForwarder():
     def setup_method(self):
