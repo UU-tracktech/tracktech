@@ -28,7 +28,7 @@ def __get_video():
     """
     __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
     # __folder_name = 'test'
-    __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/venice.mp4'))
+    __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/test.mp4'))
     return __videos_dir
 
 

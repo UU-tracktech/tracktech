@@ -23,6 +23,7 @@ FROM base AS test
 COPY pytest.ini pytest.ini
 COPY processor processor
 COPY data/annotated/test data/annotated/test
+COPY data/videos/test.mp4 data/videos/test.mp4
 COPY tests tests
 COPY .coveragerc .coveragerc
 
