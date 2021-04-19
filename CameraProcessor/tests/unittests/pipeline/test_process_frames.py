@@ -70,6 +70,9 @@ class TestProcessFrames:
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, det_obj, detector, clients))
 
     async def await_detection(self, captor, det_obj, detector, ws_client):
+        """Async function that runs process_stream
+
+        """
         await process_stream(captor, det_obj, detector, ws_client)
 
 

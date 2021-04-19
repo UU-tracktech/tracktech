@@ -9,5 +9,11 @@ class FakeWebsocket:
     """
 
     def write_message(self, message):
+        """Takes a message and asserts if it has the correct type property
+
+        Args:
+            message: a JSON object
+
+        """
         msg = json.loads(message)
         assert msg["type"] == 'boundingBoxes'

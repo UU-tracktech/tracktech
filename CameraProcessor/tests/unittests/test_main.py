@@ -13,6 +13,9 @@ class TestProcessorMain:
     @pytest.mark.timeout(30)
     @pytest.mark.skip("YOLOv5 GPU Acceleration does not work yet in Docker")
     def test_run_main(self):
+        """Runs the main in processor folder
+
+        """
         # p = EProcess(target=processor_main, args=([],))
         p = EProcess(target=None)
         p.start()
