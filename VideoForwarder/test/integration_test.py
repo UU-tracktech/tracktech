@@ -64,16 +64,14 @@ class TestVideoForwarder():
                     break
         assert version_counter == len(versions)
 
-    @pytest.mark.gen_test(timeout=15)
-    def test_delete_files(self, http_client):
-        camera = self.camera
-        yield http_client.fetch(self.camera_url)
-        time.sleep(61)
-        for file in os.listdir(self.stream_dir):
-            if file.startswith(camera):
-                assert False
-        assert True
-
+    # @pytest.mark.gen_test(timeout=15)
+    # def test_delete_files(self, http_client):
+    #     camera = self.camera
+    #     yield http_client.fetch(self.camera_url)
+    #     time.sleep(61)
+    #     for file in os.listdir(self.stream_dir):
+    #         if file.startswith(camera):
+    #             assert False
 if __name__ == '__main__':
     pytest.main(TestVideoForwarder)
 
