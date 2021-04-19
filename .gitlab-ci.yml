@@ -172,10 +172,9 @@ interface_unit-testing:
     - docker cp interface-unit-test-container:/react/coverage i-coverage
   artifacts:
     when: always
-    reports:
-      cobertura: i-coverage/cobertura-coverage.xml
     paths:
       - i-coverage
+    expire_in: 5 days
   coverage: /All\sfiles.*?\s+(\d+.\d+)/
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'

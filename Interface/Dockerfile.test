@@ -15,7 +15,5 @@ COPY react/testing ./testing
 
 # copy static files
 COPY testconfig.json /build/config.json
-RUN ["npm", "install", "nyc"]
 
-#ENTRYPOINT ["npm", "test", "--", "--coverage"]
-ENTRYPOINT ["npx", "nyc", "--reporter=cobertura", "npm", "test", "--", "--coverage"]
+ENTRYPOINT ["npm", "test", "--", "--coverage"]
