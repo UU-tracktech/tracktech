@@ -7,9 +7,15 @@ numpy>=1.16<1.19
 scipy<=1.6.1
 regex
 python-time
+
+# Things YOLOv5 needs
 absl-py
 requests
 pyyaml
+matplotlib
+pandas
+numpy
+seaborn
 
 # Testing
 pytest
