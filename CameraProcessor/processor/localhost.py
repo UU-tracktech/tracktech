@@ -127,16 +127,16 @@ def generate_message(port) -> None:
     print('*' + ' ' * 28 + '*')
     print('*' * 30)
 
+
 def main():
-    """Creates the tornado app
+    """Creates the tornado app and starts event loop
     """
-    PORT = 9090
+    port = 9090
     app = make_app()
-    app.listen(PORT)
-    generate_message(PORT)
+    app.listen(port)
+    generate_message(port)
     tornado.ioloop.IOLoop.current().start()
 
+
 if __name__ == '__main__':
-    """Start tornado event loop
-    """
     main()

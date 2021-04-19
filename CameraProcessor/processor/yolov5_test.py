@@ -32,7 +32,6 @@ def main(_argv):
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
-    # vidstream = HlsCapture()
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -47,7 +46,6 @@ def main(_argv):
         ret, frame, _ = vidstream.get_next_frame()
 
         if not ret:
-            continue
             if counter == vidstream.get_capture_length():
                 print("End of file")
             else:
