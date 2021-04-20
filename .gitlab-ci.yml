@@ -83,7 +83,7 @@ camera-processor-video-forwarder_integration-testing:
     - cd CameraProcessor
     - docker-compose -f docker-compose+forwarder.yml up --exit-code-from camera-processor-test-service
   after_script:
-    - docker cp processor-integration-test-container:/app/cp-f-integration-report.xml cp-f-integration-report.xml
+    - docker cp processor-forwarder-integration-test-container:/app/cp-f-integration-report.xml cp-f-integration-report.xml
     - docker-compose down
   artifacts:
     reports:

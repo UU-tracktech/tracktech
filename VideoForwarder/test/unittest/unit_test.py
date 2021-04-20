@@ -1,48 +1,64 @@
-import pytest
+"""Unit test of the forwarder checks camera.py + json conversion
+
+"""
 import os
-import sys
 import json
 
 from src.camera import Camera
-from src.camera_handler import CameraHandler
-from src.main import convertJsonToCamera
+from src.main import convert_json_to_camera
 
 
-@pytest.fixture
-def empty_camera():
-    return Camera(None, None)
+def create_camera(ip_address, audio):
+    """Creates camera with properties in constructor
+
+    Args:
+        ip_address: Ip address of a camera
+        audio:
+
+    Returns:
+        Create a camera with properties
+    """
+    return Camera(ip_address, audio)
 
 
-def create_camera(ip, audio):
-    return Camera(ip, audio)
+def test_default_properties(empty_camera):
+    """Tests default properties of an empty camera object
 
+    Args:
+        empty_camera (Camera): Empty camera
 
-def test_default_initial_conversion(empty_camera):
+    """
     assert not empty_camera.conversion
-
-
-def test_default_initial_callback(empty_camera):
     assert not empty_camera.callback
 
 
-def test_ip_property():
-    ip = "test"
-    camera = create_camera(ip, None)
-    assert camera.ip_adress == ip
+def test_camera_properties():
+    """Test whether ip_address property has been set correctly
 
-
-def test_audio_property():
+    """
+    # Init camera
+    ip_address = "test"
     audio = True
-    camera = create_camera(None, audio)
+    camera = create_camera(ip_address, audio)
+
+    # Asserts properties
+    assert camera.ip_adress == ip_address
     assert camera.audio
 
 
 def test_json_conversion():
+    """Tests json conversion from testConfig.json
+
+    """
+    # Gets json content from file
     json_content = open(os.path.join(os.path.dirname(__file__), 'testConfig.json'))
     json_data = json.load(json_content)
     json_content.close()
 
-    cameras = convertJsonToCamera(json_data)
+    # Create camera from json
+    cameras = convert_json_to_camera(json_data)
     camera = cameras["testvid"]
+
+    # Assert properties are set correctly
     assert camera.ip_adress == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
     assert camera.audio

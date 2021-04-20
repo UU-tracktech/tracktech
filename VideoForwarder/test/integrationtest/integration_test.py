@@ -2,10 +2,11 @@
 
 """
 
-import pytest
-import tornado.web
 import time
 import os
+import pytest
+import tornado.web
+from tornado.simple_httpclient import HTTPStreamClosedError
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -34,6 +35,7 @@ def app():
     return application
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestVideoForwarder:
     """Tests video forwarder http requests, headers and file behavior
 
@@ -80,7 +82,7 @@ class TestVideoForwarder:
             yield http_client.fetch(self.camera_url)
             assert False
         # Asserts exception is raised
-        except Exception as e:
+        except HTTPStreamClosedError:
             assert True
 
     @pytest.mark.gen_test(timeout=15)
