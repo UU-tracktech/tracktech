@@ -16,13 +16,14 @@ from src.processor_socket import ProcessorSocket
 from src.log_handler import LogHandler
 from tornado.websocket import WebSocketHandler
 
-thread = None
-server = None
-stop = False
+global thread
+global server
+global stop
 
 
 def test_start_testing_server():
     global stop
+    stop = False
 
     main()
 
@@ -33,6 +34,7 @@ def main():
     _setup_server()
 
     global stop
+    global thread
 
     while not stop:
         time.sleep(1)
@@ -65,6 +67,8 @@ def _start_server():
 
 
 def _stop_server():
+    global server
+
     server.stop()
     io_loop = IOLoop.instance()
     io_loop.add_callback(io_loop.stop)
