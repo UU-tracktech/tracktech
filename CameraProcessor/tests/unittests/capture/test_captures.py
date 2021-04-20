@@ -2,6 +2,8 @@
 
 """
 import pytest
+import ffmpeg
+import asyncio
 
 
 class TestCaptures:
@@ -29,8 +31,9 @@ class TestCaptures:
         """
         assert capture_implementation.get_next_frame()[0]
 
-    @pytest.mark.timeout(300)
-    def test_closed(self, capture_implementation):
+    @pytest.mark.timeout(120)
+    @pytest.mark.asyncio
+    async def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
         Args:
