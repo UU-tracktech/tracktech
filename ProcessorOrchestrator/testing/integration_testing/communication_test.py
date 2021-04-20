@@ -2,14 +2,18 @@
 
 import json
 import pytest
+import time
 
 from tornado import websocket
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(20)
 async def test_start_tracking():
     """Test if interface can send a start tracking command that is then send to the correct processor."""
+
+    # Wait a little bit so the test server can start
+    time.sleep(5)
     processor = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     processor.write_message(json.dumps({
@@ -150,3 +154,10 @@ def assert_stop_tracking(message):
     assert message_json["type"] == "stop"
     assert message_json["objectId"] == 1
     return True
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(10)
+async def test_stop_server():
+    socket = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/stop")
+    await socket.write_message("stop")

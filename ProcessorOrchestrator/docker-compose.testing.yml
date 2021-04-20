@@ -4,7 +4,8 @@ services:
   processor-orchestrator-service:
     # Use the existing testing image, but actually run the application
     image: processor-orchestrator:latest
-    entrypoint: ["python","-u","/src/main.py"]
+    container_name: processor-orchestrator-service
+    entrypoint: ["pytest","testing/testing_server","--cov-config=.coveragerc", "--cov=src", "--cov-report=html", "--cov-report=term"]
   processor-orchestrator-integration-tests:
     # Use the existing testing image again, but run integration tests
     depends_on:
