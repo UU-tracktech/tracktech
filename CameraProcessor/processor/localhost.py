@@ -1,3 +1,7 @@
+"""File that displays the video stream on a localhost for testing.
+
+"""
+
 import time
 import logging
 import os
@@ -51,9 +55,6 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             # Send response
             self.finish(err_html)
 
-    def data_received(self, chunk: bytes):
-        tornado.web.RequestHandler.data_received(self, chunk)
-
 
 class StreamHandler(tornado.web.RequestHandler):
     """Handler for the frame stream
@@ -63,6 +64,9 @@ class StreamHandler(tornado.web.RequestHandler):
 
     @tornado.gen.coroutine
     def get(self):
+        """ Get request handler for the webpage to show video stream.
+
+        """
         # Sets headers of the handler
         logging.info('set headers')
         self.set_header('Cache-Control',
@@ -81,7 +85,6 @@ class StreamHandler(tornado.web.RequestHandler):
             ret, frame, _ = capture.get_next_frame()
             if not ret:
                 continue
-            
             # If it does get the image the frame gets encoded
             ret, jpeg = cv2.imencode('.jpg', frame)
             img = jpeg.tobytes()
@@ -99,9 +102,6 @@ class StreamHandler(tornado.web.RequestHandler):
                 self.flush()
             except Exception as err:
                 raise Exception('connection lost with client') from err
-
-    def data_received(self, chunk: bytes):
-        tornado.web.RequestHandler.data_received(self, chunk)
 
 
 def make_app() -> tornado.web.Application:
@@ -123,16 +123,20 @@ def generate_message(port) -> None:
     print('*' * 30)
     print('*' + ' ' * 28 + '*')
     print('*   open TORNADO stream on   *')
-    print(f'*   http://localhost:{PORT}    *')
+    print(f'*   http://localhost:{port}    *')
     print('*' + ' ' * 28 + '*')
     print('*' * 30)
 
 
-if __name__ == '__main__':
-    """Start tornado event loop
+def main():
+    """Creates the tornado app and starts event loop
     """
-    PORT = 9090
+    port = 9090
     app = make_app()
-    app.listen(PORT)
-    generate_message(PORT)
+    app.listen(port)
+    generate_message(port)
     tornado.ioloop.IOLoop.current().start()
+
+
+if __name__ == '__main__':
+    main()

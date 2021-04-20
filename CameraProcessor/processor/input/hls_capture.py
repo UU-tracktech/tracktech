@@ -1,13 +1,14 @@
+"""Contains the HlsCapture class"""
+
 import threading
 import time
 import logging
-import json
 from typing import List
 import ffmpeg
 import cv2
 from processor.input.icapture import ICapture
 
-run_thread = True
+
 
 class HlsCapture(ICapture):
     """Implementation of the ICapture class which handles an HLS stream with timestamps.
@@ -47,6 +48,7 @@ class HlsCapture(ICapture):
         # Create thread that syncs streams
         self.thread = threading.Thread(target=self.sync)
         self.thread.daemon = True
+        self.thread_running = True
         self.thread.start()
 
         # Reconnect with timeout
@@ -73,16 +75,14 @@ class HlsCapture(ICapture):
             return self.cap.isOpened()
         return False
 
-    # When everything is done release the capture
     def close(self) -> None:
         """Closes the capture object and the thread that is responsible
         for serving the current frame
         """
-        global run_thread
         logging.info('HLS stream closing')
         logging.info("Joining thread")
-        run_thread = False
         self.thread.join()
+        self.thread_running = False
         logging.info("Thread joined, releasing capture")
         self.cap.release()
 
@@ -107,8 +107,7 @@ class HlsCapture(ICapture):
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long
         """
-        global run_thread
-        while run_thread:
+        while self.thread_running:
             # Reads next frame
             ret, self.current_frame = self.cap.read()
 
@@ -169,3 +168,7 @@ class HlsCapture(ICapture):
         # Json did not contain key
         except KeyError as error:
             logging.warning(f'Json does not contain keys for {error}')
+
+    def get_capture_length(self) -> int:
+        """Returns None, since its theoretically infinite"""
+        return None

@@ -1,10 +1,13 @@
+"""Contains the bounding box class
+
+"""
+
 import json
 from typing import List
 
 
-
 class BoundingBox:
-    """Contains information about a single bounding box
+    """Contains information about a single bounding box.
     """
     def __init__(self, identifier: int, rectangle: List[int], classification: str, certainty: float):
         """
@@ -28,10 +31,16 @@ class BoundingBox:
         Returns: JSON representation of the object
 
         """
-        string = json.dumps({
-            "boxId": self.identifier,
-            "rect": self.rectangle,
-        })
+        return json.dumps(self.to_dict())
 
-        # We need to decode the string so we don't get top-level double encoding
-        return json.JSONDecoder().decode(string)
+    def to_dict(self) -> dict:
+        """Readies the data of the bounding box object
+        for conversion into a JSON object
+
+        Returns: A python dict for the corresponding JSON object
+
+        """
+        return {
+            "boxId": self.identifier,
+            "rect": self.rectangle
+        }

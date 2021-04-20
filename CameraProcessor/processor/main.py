@@ -1,11 +1,16 @@
+""" Main file running the video processing pipeline.
+
+"""
+
 import sys
 import logging
 import os
 import asyncio
 import configparser
 from absl import app
+
 from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.yolov5_runner import Detector
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
 import processor.websocket_client as client
@@ -32,7 +37,8 @@ def main(_):
 
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
-    configs.read('../configs.ini')
+    __root_dir = os.path.join(os.path.dirname(__file__), '../')
+    configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
     yolo_config = configs['Yolov5']
     config_filter = configs['Filter']
 
@@ -41,13 +47,12 @@ def main(_):
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
-    detector = Detector(yolo_config, config_filter)
+    detector = Yolov5Detector(yolo_config, config_filter)
 
     # Frame counter starts at 0. Will probably work differently for streams
     logging.info("Starting video stream...")
 
     hls_config = configs['HLS']
-    orchestrator_config = configs['Orchestrator']
 
     hls_enabled = hls_config.getboolean('enabled')
 
@@ -56,6 +61,9 @@ def main(_):
         vid_stream = HlsCapture(hls_config['url'])
     else:
         vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
+
+    # Get orchestrator configuration
+    orchestrator_config = configs['Orchestrator']
 
     asyncio.get_event_loop().run_until_complete(initialize(vid_stream, det_obj, detector, orchestrator_config['url']))
 
@@ -66,7 +74,7 @@ async def initialize(vid_stream, det_obj, detector, url):
     Args:
         vid_stream (ICapture): video stream object.
         det_obj (DetectionObj): stores detections with all necessary information.
-        detector (Detector): detector object performing yolov5 detections.
+        detector (Yolov5Detector): detector object performing yolov5 detections.
         url (str): url to the processor orchestrator.
 
     Returns:

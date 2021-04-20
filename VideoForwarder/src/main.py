@@ -13,7 +13,7 @@ from camera_handler import CameraHandler
 
 def convertJsonToCamera(jsonFile):
     return {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in jsonFile}
-    
+
 if __name__ == "__main__":
     print('starting server')
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     configFile.close()
     """Get the config path, read it and parse the json and close it."""
 
-    CameraHandler.cameras = convertJsonToCamera(configJson)
+    CameraHandler.cameras = {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in configJson}
     """Process the json config and store the individual cameras"""
 
     cert = os.environ.get('SSL_CERT')

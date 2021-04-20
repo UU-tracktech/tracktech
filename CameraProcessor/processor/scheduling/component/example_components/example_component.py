@@ -1,3 +1,6 @@
+"""An example component
+
+"""
 from typing import Callable
 
 
