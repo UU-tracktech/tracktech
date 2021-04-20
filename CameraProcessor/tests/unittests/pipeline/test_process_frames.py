@@ -30,6 +30,7 @@ class TestProcessFrames:
         __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/test.mp4'))
         return VideoCapture(__videos_dir)
 
+    @pytest.mark.skip()
     def __get_yolov5runner(self):
         """Get the Yolov5 runner
 
