@@ -172,18 +172,10 @@ interface_unit-testing:
     - docker rm -f interface-unit-test-container || true
   script:
     - docker run --name interface-unit-test-container interface
-  after_script:
-    - docker cp interface-unit-test-container:/react/coverage i-coverage
-  artifacts:
-    when: always
-    paths:
-      - i-coverage
-    expire_in: 5 days
-  coverage: /All\sfiles.*?\s+(\d+.\d+)/
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - Interface/*
+        - interface/*
       when: always
 
 interface-linting:
@@ -193,7 +185,8 @@ interface-linting:
   before_script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_lint .
-    - docker rm -f interface-lint-container || true
+    - cd ..
+    - docker rm -f interface-unit-test-container || true
   script:
     - docker run -d -t --name interface-lint-container interface_linting
     - docker cp .pylintrc interface-lint-container:/app
@@ -226,6 +219,7 @@ forwarder-linting:
   before_script:
     - cd VideoForwarder
     - docker build -t forwarder_linting -f Dockerfile_lint .
+    - cd ..
     - docker rm -f forwarder-lint-container || true
   script:
     - docker run -d -t --name forwarder-lint-container forwarder_linting
