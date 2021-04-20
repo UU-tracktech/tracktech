@@ -29,7 +29,7 @@ class TestCaptures:
         """
         assert capture_implementation.get_next_frame()[0]
 
-    @pytest.mark.timeout(60)
+    @pytest.mark.timeout(300)
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
