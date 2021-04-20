@@ -1,3 +1,6 @@
+"""Tests whether pre_annotations are correctly loaded in from a text file
+
+"""
 import os
 import pytest
 from processor.training.pre_annotations import PreAnnotations

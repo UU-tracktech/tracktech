@@ -1,3 +1,6 @@
+"""Example component that points to other components and has output
+
+"""
 from typing import Callable
 
 

@@ -1,3 +1,6 @@
+"""IComponent class that enforces certain methods to be implemented
+
+"""
 from typing import Callable
 
 

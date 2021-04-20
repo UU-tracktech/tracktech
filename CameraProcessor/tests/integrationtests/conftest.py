@@ -1,3 +1,6 @@
+"""Defines fixtures other integration tests can use for parameterized testing
+
+"""
 import sys
 import os
 import pytest
@@ -18,6 +21,7 @@ def amount(request):
 
     """
     return request.param
+
 
 @pytest.fixture(params=['full'])
 def message_type_receiving(request):

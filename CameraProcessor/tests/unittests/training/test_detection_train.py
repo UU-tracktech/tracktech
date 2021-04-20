@@ -1,3 +1,6 @@
+"""Tests the detection of training.
+
+"""
 import pytest
 
 from processor.training.detection.train import main as train_main

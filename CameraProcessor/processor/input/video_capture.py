@@ -1,9 +1,16 @@
+"""Contains the video capture class
+
+"""
+
 import logging
 import cv2
 from processor.input.icapture import ICapture
 
 
 class VideoCapture(ICapture):
+    """ Captures video from a video file on the system
+
+    """
     # Default path is the path to venice.mp4
     def __init__(self, path='/data/videos/test.mp4'):
         """

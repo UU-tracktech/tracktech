@@ -1,3 +1,7 @@
+"""Contains the ICapture interface for different capture methods
+
+"""
+
 from typing import List
 
 

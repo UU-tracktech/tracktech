@@ -1,17 +1,15 @@
+""" Websocket client class that can connect to a websocket client url and write/read messages asynchronously.
+
+"""
+
 import asyncio
 import json
-import os
 import sys
 import logging
-import configparser
-from datetime import datetime
-import cv2
 from tornado import websocket
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.input.hls_capture import HlsCapture
 
 
-async def create_client(url, id=None):
+async def create_client(url, identifier=None):
     """
     Method used to create a websocket client object
     Args:
@@ -21,7 +19,7 @@ async def create_client(url, id=None):
 
     Returns: Websocket client object
     """
-    client = WebsocketClient(url, id)
+    client = WebsocketClient(url, identifier)
     await client.connect()
     return client
 

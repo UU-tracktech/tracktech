@@ -1,3 +1,5 @@
+"""Contains the main methods for running YOLOv5 object detection on a frame"""
+
 import os
 import sys
 import logging

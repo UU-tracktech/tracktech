@@ -1,3 +1,5 @@
+"""Contains main video processing pipeline function"""
+
 import logging
 import asyncio
 import cv2

@@ -1,18 +1,21 @@
+"""Loads json data from json file containing messages that can be sent to the orchestrator.
+
+"""
 import json
 import random
 import os
 import sys
 
 
-def load_data(datatype, nr=1, rng=False):
+def load_data(datatype, number=1, rng=False):
     """Load a JSON test data file of chosen type.
 
     Args:
-        - A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'}
-        - A number which defaults to None. If it is not None, it will load 'nr' random json objects
+        - A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'}.
+        - A number which defaults to one. If it is not None, it will load 'nr' random json objects.
 
     Returns:
-        A dictionary of test data of the chosen JSON message type
+        A dictionary of test data of the chosen JSON message type.
     """
     switcher = {
         'boundingBoxes': 'boxes',
@@ -20,19 +23,30 @@ def load_data(datatype, nr=1, rng=False):
         'stop': 'stop',
         'featureMap': 'featuremaps',
         'invalid': 'invalid',
-        'bad' : 'baddata',
+        'bad': 'baddata',
         'full': 'startfeaturestop'
     }
+
+    # Gets file name
     filename = switcher.get(datatype)
-    if filename is None:
+    if not filename:
         raise NameError('The JSON object requested is not in scope.')
-    else:
-        cd = os.path.join(sys.path[0], f'tests/integrationtests/testdata/{filename}.json')
-        f = open(cd, encoding="utf-8")
-        jfile = json.load(f)
-        if nr > len(jfile):
-            nr = len(jfile)
-        d = []
-        for i in range(nr):
-            d.append(json.dumps(random.choice(jfile))) if rng else d.append(json.dumps(jfile[i]))
-        return d
+
+    # File path and load content
+    json_path = os.path.join(sys.path[0], f'tests/integrationtests/testdata/{filename}.json')
+    json_content = open(json_path, encoding="utf-8")
+    json_objects = json.load(json_content)
+
+    # Adjust number if it is different
+    if number > len(json_objects):
+        number = len(json_objects)
+    send_data = []
+
+    # Add each object
+    for i in range(number):
+        if rng:
+            send_data.append(json.dumps(random.choice(json_objects)))
+        else:
+            send_data.append(json.dumps(json_objects[i]))
+
+    return send_data

@@ -1,3 +1,7 @@
+""" File that runs training using a custom dataset
+
+"""
+
 # Determine training set
 # Determine test set
 # Verification sets
@@ -15,6 +19,9 @@ from processor.training.pre_annotations import PreAnnotations
 
 
 def main():
+    """Main training function
+
+    """
     root_dir = os.path.abspath(__file__ + '/../../../../')
     logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
                         format='%(asctime)s %(levelname)s %(name)s - %(message)s',

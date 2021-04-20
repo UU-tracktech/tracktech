@@ -1,7 +1,8 @@
-import pytest
+"""Test the websocket client for what is possible with unit testing
+
+"""
 import json
-import threading
-import time
+import pytest
 from processor.websocket_client import WebsocketClient
 
 
@@ -21,7 +22,7 @@ def __eq__(self, other):
     return False
 
 
-class TestWebsocketClient():
+class TestWebsocketClient:
     """Tests websocket_client.py
 
     """
@@ -41,11 +42,8 @@ class TestWebsocketClient():
         self.message_object_start_tracking_string = self.start_json
         self.message_object_stop_tracking_string = self.stop_json
         self.message_object_update_feature_map_string = self.feature_map_json
-        self.start_tracking = self.ws_client.start_tracking(self.message_object_start_tracking)
-        self.stop_tracking = self.ws_client.stop_tracking(self.message_object_stop_tracking)
-        self.update_feature_map = self.ws_client.update_feature_map(self.message_object_update_feature_map)
+
         self.connect = self.ws_client.connect
-        self.write_message = self.ws_client._write_message("test")
 
     @pytest.mark.timeout(10)
     def test_start_tracking(self):
@@ -69,6 +67,7 @@ class TestWebsocketClient():
         assert self.message_object_update_feature_map["objectId"] == 1
         assert self.message_object_update_feature_map["featureMap"] == []
 
+    # pylint: disable=protected-access,assignment-from-none
     def test_read_msg_start_tracking(self):
         """Checks if read_msg correctly parses start tracking message
 
@@ -103,6 +102,7 @@ class TestWebsocketClient():
         """
         with pytest.raises(Exception):
             assert self.ws_client._on_message('{"type": "start", "objectId": 1, "frameId": 1}')
+    # pylint: enable=protected-access
 
     def test_unparsed_json_input_start_tracking(self):
         """Checks if start_tracking raises exception with is parsed JSON
