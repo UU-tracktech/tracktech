@@ -286,7 +286,7 @@ video-forwarder_integration-testing:
 
 forwarder-linting:
   stage: linting
-  needs: [forwarder_docker_build]
+  needs: [video-forwarder_docker_build]
   allow_failure: true
   before_script:
     - cd VideoForwarder
