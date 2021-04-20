@@ -32,6 +32,8 @@ COPY src src
 COPY testing testing
 COPY .coveragerc .coveragerc
 
+RUN ["mkdir", "utility"]
+
 WORKDIR /
 
 # Make sure port is available
