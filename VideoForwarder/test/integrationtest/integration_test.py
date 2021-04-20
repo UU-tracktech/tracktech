@@ -6,7 +6,6 @@ import time
 import os
 import pytest
 import tornado.web
-from tornado.simple_httpclient import HTTPStreamClosedError
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -82,7 +81,7 @@ class TestVideoForwarder:
             yield http_client.fetch(self.camera_url + 'jibberish')
             assert False
         # Asserts exception is raised
-        except HTTPStreamClosedError:
+        except Exception:
             assert True
 
     @pytest.mark.gen_test(timeout=15)
