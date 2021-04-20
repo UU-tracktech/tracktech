@@ -1,3 +1,6 @@
+"""Just an example of a plan that can be executed by scheduler
+
+"""
 from processor.scheduling.node.schedule_node import ScheduleNode
 from processor.scheduling.component.example_components.input_component import InputComponent
 from processor.scheduling.component.example_components.output_component import OutputComponent
@@ -6,7 +9,8 @@ from processor.scheduling.component.example_components.example_component import 
 
 # pylint: disable=unused-argument
 def func(ignore):
-    pass
+    """Dummy function"""
+    return
 
 
 # Last node/layer.
