@@ -55,3 +55,12 @@ class DetectionObj():
             "frameId": self.timestamp,
             "boxes": [bounding_box.to_dict() for bounding_box in self.bounding_boxes],
         })
+
+    def to_txt(self):
+        s=""
+        for bounding_box in self.bounding_boxes:
+            height, width, _ = self.frame.shape
+            s += (f'{self.frame_nr},{bounding_box.identifier},{int(bounding_box.rectangle[0] * width)},' \
+                    f'{int(bounding_box.rectangle[1] * height)},{int((bounding_box.rectangle[2] - bounding_box.rectangle[0]) * width)},' \
+                    f'{int((bounding_box.rectangle[3] - bounding_box.rectangle[1]) * height)},1,1,1 \n')
+        print(s)
