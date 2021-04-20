@@ -87,6 +87,7 @@ class TestDetectionObj:
         """
         assert self.frame is not None
 
+    @pytest.mark.skip(reason="utils function get_sample_frame() is broken")
     def test_empty_frame_nr(self):
         """Asserts if frame_nr is not None.
 
