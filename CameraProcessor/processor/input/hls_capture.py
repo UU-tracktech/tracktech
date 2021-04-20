@@ -50,7 +50,7 @@ class HlsCapture(ICapture):
         self.thread.start()
 
         # Reconnect with timeout
-        timeout_left = 10
+        timeout_left = 20
         sleep = 1
         # Sleep is essential so processor has a prepared self.cap
         while not self.cap_initialized and timeout_left > 0:
@@ -100,7 +100,7 @@ class HlsCapture(ICapture):
         self.last_frame_time_stamp = self.frame_time_stamp
         return True, self.current_frame, self.frame_time_stamp
 
-    def read(self) -> None:
+    def _read(self) -> None:
         """Method that runs in seperate thread that goes through the frames of the
         stream at a consistent pace
 
@@ -154,7 +154,7 @@ class HlsCapture(ICapture):
         # Get the FPS of the hls stream and turn it into a delay of when
         # each frame should be displayed
         self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
-        self.read()
+        self._read()
 
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
