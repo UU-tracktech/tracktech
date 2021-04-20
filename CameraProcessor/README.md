@@ -1,5 +1,5 @@
 # Running the application
-Running the app locally:
+#### Running the app locally:
 
 Installing python dependencies:
 Download [python 3.8] and install the dependencies in requirements.txt in the base Camera Processor directory with 
@@ -15,7 +15,7 @@ Dependencies install
 pip install -r requirements.txt
 ```
 
-##### Running in Docker. 
+##### Running in Docker:
 If you really want to be able to run it with GPU, it is a lot of hassle and not recommended for the average user.
 Windows insider program slows down speed of pc a lot. Please ask Max or Gerard to verify if it is worth it.
 

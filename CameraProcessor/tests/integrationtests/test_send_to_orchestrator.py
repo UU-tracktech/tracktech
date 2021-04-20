@@ -4,14 +4,13 @@
 
 import asyncio
 import pytest
-import conftest
 from super_websocket_client import create_dummy_client
 from utils.utils import PC_URL
 from utils.jsonloader import load_data
 
 
 class TestSendToOrchestrator:
-    """Class that contains sending to orchestrator tests
+    """Class that contains the sending part to orchestrator tests
 
     """
     @pytest.mark.asyncio

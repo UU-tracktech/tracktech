@@ -1,3 +1,7 @@
+""" Contains the ImageCapture class
+
+"""
+
 import os
 import logging
 from typing import List
@@ -6,6 +10,9 @@ from processor.input.icapture import ICapture
 
 
 class ImageCapture(ICapture):
+    """Reads all images from a folder one by one
+
+    """
     def __init__(self, images_dir: str):
         """Gets all the paths to images inside the folder and stores them in order
 
@@ -33,10 +40,10 @@ class ImageCapture(ICapture):
 
     def close(self) -> None:
         """Close the capture by setting the index higher than the number of images
+
         """
         self.image_index = self.nr_images + 1
 
-    # Gets the next frame from the stream
     def get_next_frame(self) -> (bool, List[List[int]]):
         """Gets the next frame from the list of images
 
@@ -55,3 +62,12 @@ class ImageCapture(ICapture):
         # Reads the image file and returns it
         frame = cv2.imread(image_path)
         return True, frame, None
+
+    def get_capture_length(self) -> int:
+        """Get the number of images left in folder
+
+        Returns:
+            An integer indicating amount of images left
+
+        """
+        return self.nr_images

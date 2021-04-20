@@ -1,3 +1,7 @@
+""" Loads the ground truth and converts it to a list of bounding boxes.
+
+"""
+
 import json
 import re
 import logging
@@ -5,6 +9,9 @@ from processor.pipeline.detection.bounding_box import BoundingBox
 
 
 class PreAnnotations:
+    """ Class that loads the ground truth and converts it to a list of bounding boxes.
+
+    """
     def __init__(self, file_path: str, nr_frames: int):
         """Constructor for the preAnnotations object.
 

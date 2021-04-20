@@ -1,3 +1,7 @@
+"""Contains the ICapture interface for different capture methods
+
+"""
+
 from typing import List
 
 
@@ -26,3 +30,12 @@ class ICapture:
             Frame from the capture object
         """
         raise NotImplementedError('No implementation for getting next frame')
+
+    def get_capture_length(self) -> int:
+        """Returns the length of the video, image directory, or if its a stream,
+        None
+
+        Returns:
+            An integer describing the length
+        """
+        raise NotImplementedError("No implementation for get_vid_length")
