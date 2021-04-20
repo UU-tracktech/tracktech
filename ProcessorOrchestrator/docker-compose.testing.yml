@@ -10,4 +10,5 @@ services:
     depends_on:
       - processor-orchestrator-service
     image: processor-orchestrator:latest
+    container_name: processor-orchestrator-integration-tests
     entrypoint: ["pytest", "testing/integration_testing", "--junitxml=integration-report.xml"]

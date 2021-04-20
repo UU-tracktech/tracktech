@@ -48,14 +48,14 @@ async def test_feature_map_distribution():
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     processor_1.write_message(json.dumps({
         "type": "identifier",
-        "id": "processor_1"
+        "id": "processor_2"
     }))
 
     processor_2 = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     processor_2.write_message(json.dumps({
         "type": "identifier",
-        "id": "processor_2"
+        "id": "processor_3"
     }))
 
     processor_1.write_message(json.dumps({
@@ -89,7 +89,7 @@ async def test_bounding_boxes_distribution():
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     processor.write_message(json.dumps({
         "type": "identifier",
-        "id": "processor_1"
+        "id": "processor_4"
     }))
 
     interface = \
@@ -112,7 +112,7 @@ def assert_boxes_message(message):
     """Help method to assert if the received boxes message is as expected"""
     message_json = json.loads(message)
     assert message_json["type"] == "boundingBoxes"
-    assert message_json["cameraId"] == "processor_1"
+    assert message_json["cameraId"] == "processor_4"
     assert message_json["frameId"] == 1
     assert message_json["boxes"] == {
             "box1": {},
@@ -122,7 +122,7 @@ def assert_boxes_message(message):
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(20)
+@pytest.mark.timeout(30)
 async def test_stop_tracking():
     """Test if an interface can send a stop tracking message and if it is correctly received by the processor"""
 
@@ -130,7 +130,7 @@ async def test_stop_tracking():
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     await processor.write_message(json.dumps({
         "type": "identifier",
-        "id": "processor_1"
+        "id": "processor_5"
     }))
 
     interface = \
