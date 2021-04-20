@@ -11,7 +11,7 @@ File containting the accuracy class
 import os
 from typing import List
 import configparser
-from podm.podm import BoundingBox, get_pascal_voc_metrics
+from podm.podm import BoundingBox, get_pascal_voc_metrics, MetricPerClass
 from podm.visualize import plot_precision_recall_curve
 from processor.input.image_capture import ImageCapture
 from processor.training.pre_annotations import PreAnnotations
@@ -98,10 +98,15 @@ class AccuracyObject:
         tps = 0
         for value in self.result.values():
             tps += value.tp
+        fn = len(self.boundingboxes_gt) - len(boundingboxes_det)
+        if fn < 0:
+            fn = 0
 
+        print("F1-score:" + str((2 * self.result['undefined'].recall * self.result['undefined'].precision )/
+                                (self.result['undefined'].recall + self.result['undefined'].precision)))
 
+        print("mAP: " + str(MetricPerClass.get_mAP(self.result)))
         print("tp (all classes): " + str(tps))
-        print("accuracy: " + str(self.result['undefined'].tp / len(self.boundingboxes_gt)))
         print("tp (only undefined): " + str(self.result['undefined'].tp))
         print("fp: " + str(self.result['undefined'].fp))
         print("fns:" + str(len(self.boundingboxes_gt) - len(boundingboxes_det)))
