@@ -12,6 +12,7 @@ import os
 from typing import List
 import configparser
 from podm.podm import BoundingBox, get_pascal_voc_metrics
+from podm.visualize import plot_precision_recall_curve
 from processor.input.image_capture import ImageCapture
 from processor.training.pre_annotations import PreAnnotations
 
@@ -92,6 +93,7 @@ class AccuracyObject:
         boundingboxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
 
         self.result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
+        plot_precision_recall_curve(self.result['undefined'],f'{self.root_dir}/processor/training/detection/plots/map')
 
         tps = 0
         for value in self.result.values():
