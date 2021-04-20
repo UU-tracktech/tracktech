@@ -61,6 +61,7 @@ def _start_server():
     server = HTTPServer(app)
     server.listen(80)
     IOLoop.current().start()
+    print("Test server is listening")
 
 
 def _stop_server():
