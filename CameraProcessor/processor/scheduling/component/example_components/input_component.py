@@ -1,3 +1,6 @@
+"""Component that gets input from previous stage
+
+"""
 from typing import Callable
 
 

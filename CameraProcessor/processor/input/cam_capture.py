@@ -1,3 +1,7 @@
+"""Contains camera capture class
+
+"""
+
 import logging
 from typing import List
 from cv2 import VideoCapture
@@ -7,6 +11,9 @@ vcap = VideoCapture(0)
 
 
 class CamCapture(ICapture):
+    """ Captures video from a webcam or other connected camera on the computer
+
+    """
     def __init__(self):
         """Opens capture that connects to webcam.
         """

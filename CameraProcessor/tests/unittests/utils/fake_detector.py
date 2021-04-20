@@ -1,5 +1,6 @@
-import os
-import json
+"""Mock detector for testing.
+
+"""
 import logging
 import random
 

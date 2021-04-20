@@ -1,8 +1,11 @@
-import pytest
+"""Testing files for process frames.
+
+"""
 import asyncio
 import configparser
 import time
 import os
+import pytest
 
 from processor.pipeline.process_frames import process_stream
 from processor.pipeline.detection.detection_obj import DetectionObj
@@ -27,6 +30,8 @@ class TestProcessFrames:
         __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/test.mp4'))
         return VideoCapture(__videos_dir)
 
+    # pylint: disable=useless-return
+    @pytest.mark.skip()
     def __get_yolov5runner(self):
         """Get the Yolov5 runner
 
@@ -34,8 +39,9 @@ class TestProcessFrames:
         configs = configparser.ConfigParser(allow_no_value=True)
         __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
         configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
-        config = configs["Yolov5"]
-#       return Yolov5Detector(config) # ugly commenting to limit the import time in docker
+        # config = configs['Yolov5']
+        # filters = configs['Filter']
+        # return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
         return None
 
     @pytest.mark.timeout(90)

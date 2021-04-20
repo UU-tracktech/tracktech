@@ -1,12 +1,15 @@
-import pytest
+"""Tests detection object by checking properties and whether drawing changes something
+
+"""
 import json
+import pytest
 import cv2
 from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.detection_obj import DetectionObj
 from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
 
 
-# pylint: disable=attribute-defined-outside-init, no-member
+# pylint: disable=attribute-defined-outside-init,no-member
 def __eq__(self, other):
     """Custom equalize function
 
@@ -96,6 +99,7 @@ class TestDetectionObj:
         """
         assert self.data.bounding_boxes is not None
 
+    # pylint: disable=duplicate-code
     # Testing exceptions
     def test_exception_timestamp(self):
         """Asserts if timestamp throws exception.
@@ -117,6 +121,7 @@ class TestDetectionObj:
         """
         with pytest.raises(Exception):
             assert str(self.frame_nr) == 'some invalid value'
+    # pylint: enable=duplicate-code
 
     def test_exception_bounding_boxes(self):
         """Asserts if bounding_boxes throws exception.

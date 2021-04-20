@@ -1,3 +1,6 @@
+"""Tests whether pre_annotations are correctly loaded in from a json file
+
+"""
 import os
 from tests.unittests.preannotations.test_pre_annotations import example_json_file
 from processor.training.pre_annotations import PreAnnotations
@@ -5,6 +8,9 @@ from processor.training.pre_annotations import PreAnnotations
 
 # pylint: disable=attribute-defined-outside-init
 class TestJsonParsing:
+    """Checks whether the json file is parsed in a correct way
+
+    """
     def setup_method(self) -> None:
         """Sets up an annotations object that can be parsed.
         """

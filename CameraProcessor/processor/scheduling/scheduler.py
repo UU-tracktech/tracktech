@@ -1,3 +1,6 @@
+"""Defines the scheduler class, is for executing tasks concurrently by creating node structure
+
+"""
 from queue import Queue
 from processor.scheduling.node.schedule_node import INode
 

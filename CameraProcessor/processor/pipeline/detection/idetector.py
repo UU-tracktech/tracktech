@@ -1,3 +1,6 @@
+"""Detection abstract class
+
+"""
 from processor.pipeline.detection.detection_obj import DetectionObj
 
 

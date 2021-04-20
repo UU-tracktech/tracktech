@@ -1,7 +1,12 @@
+"""Contains tracking object class"""
+
 from processor.pipeline.detection.detection_obj import DetectionObj
 
 
 class TrackingObj:
+    """ Defines the properties of a tracking object (frame with bounding boxes)
+
+    """
     def __init__(self, detection_obj: DetectionObj, tracking_feature_maps):
         self.timestamp = detection_obj.timestamp
         self.frame = detection_obj.frame
