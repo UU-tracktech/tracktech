@@ -52,7 +52,7 @@ class HlsCapture(ICapture):
         self.thread.start()
 
         # Reconnect with timeout
-        timeout_left = 10
+        timeout_left = 30
         sleep = 1
         # Sleep is essential so processor has a prepared self.cap
         while not self.cap_initialized and timeout_left > 0:
