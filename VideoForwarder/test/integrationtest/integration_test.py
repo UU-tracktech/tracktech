@@ -79,7 +79,7 @@ class TestVideoForwarder:
 
         # Create connection with invalid url
         try:
-            yield http_client.fetch(self.camera_url)
+            yield http_client.fetch(self.camera_url + 'jibberish')
             assert False
         # Asserts exception is raised
         except HTTPStreamClosedError:
@@ -140,7 +140,7 @@ class TestVideoForwarder:
         yield http_client.fetch(self.camera_url)
 
         # After 60 seconds files are deleted on server
-        time.sleep(61)
+        time.sleep(70)
 
         # Checks whether files are actually deleted
         for file in os.listdir(self.stream_dir):

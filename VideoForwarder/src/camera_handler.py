@@ -12,16 +12,11 @@ import tornado.web
 import jwt
 
 
+# pylint: disable=attribute-defined-outside-init
 class CameraHandler(tornado.web.StaticFileHandler):
     """
     The camera file request handler
     """
-    def __init__(self):
-        """Create attributes
-
-        """
-        self.root = None
-        self.public_key = None
 
     cameras = {}
     """A dictionary to store all camera objects with their name as key"""

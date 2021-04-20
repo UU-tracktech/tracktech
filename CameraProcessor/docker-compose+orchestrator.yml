@@ -13,5 +13,5 @@ services:
   processor-orchestrator-service:
     build:
       context: ../ProcessorOrchestrator
-      target: build
+      target: production
     container_name: ext-orchestrator-integration-test-container
