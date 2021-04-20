@@ -76,7 +76,7 @@ camera-processor_integration-testing:
         - CameraProcessor/*
       when: always
 
-camera-processor_integration-testing:
+camera-processor-video-forwarder_integration-testing:
   stage: integrationtest
   needs: [camera-processor_docker_build, video-forwarder_docker_build]
   script:
@@ -232,7 +232,7 @@ video-forwarder_docker_build:
   stage: build
   script:
     - cd VideoForwarder
-    - docker build -t video-forwarder -f Dockerfile_lint .
+    - docker build --target=testing -t video-forwarder -f .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -269,9 +269,11 @@ video-forwarder_integration-testing:
   before_script:
     - docker rm -f video-forwarder-test-container || true
   script:
-    - docker run --name video-forwarder-test-container video-forwarder python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
+    - docker run --name video-forwarder-test-container video-forwarder python3.8 src/main.py
+    - docker exec video-forwarder-test-container python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
   after_script:
     - docker cp video-forwarder-test-container:/app/vf-integration-report.xml vf-integration-report.xml
+    - docker stop video-forwarder-test-container
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:

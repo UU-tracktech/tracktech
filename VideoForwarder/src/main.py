@@ -8,8 +8,8 @@ import tornado.httpserver
 import tornado.web
 import tornado.ioloop
 
-from camera import Camera
-from camera_handler import CameraHandler
+from src.camera import Camera
+from src.camera_handler import CameraHandler
 
 def convertJsonToCamera(jsonFile):
     return {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in jsonFile}

@@ -1,5 +1,5 @@
 # Installation
-FROM python:3-slim-buster as install
+FROM python:3.8-slim-buster as install
 
 # Install python dependencies
 COPY requirements.txt /requirements.txt
@@ -26,7 +26,7 @@ ENTRYPOINT ["pdoc","-h","0.0.0.0","main.py","camera.py","cameraHandler.py"]
 
 
 # Production container
-FROM install as production
+FROM install as testing
 
 ENV SEGMENT_SIZE 5
 ENV SEGMENT_AMOUNT 10
@@ -41,6 +41,8 @@ RUN apt install -y ffmpeg
 # Create a streams folder
 RUN ["mkdir","streams"]
 
+WORKDIR /
+
 # Copy a test config
 COPY NetworkConfig.json /NetworkConfig.json
 
@@ -53,6 +55,10 @@ COPY test test
 # Make sure port is available
 EXPOSE 80
 EXPOSE 443
+
+ENV PYTHONPATH=/
+
+FROM testing AS production
 
 # Run server
 ENTRYPOINT ["python","-u","/src/main.py"]

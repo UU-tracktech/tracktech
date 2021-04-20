@@ -3,40 +3,46 @@ import os
 import sys
 import json
 
-sys.path.insert(1, '/src')
-from camera import Camera
-from camera_handler import CameraHandler
-from main import convertJsonToCamera
+from src.camera import Camera
+from src.camera_handler import CameraHandler
+from src.main import convertJsonToCamera
 
 
 @pytest.fixture
 def empty_camera():
     return Camera(None, None)
 
+
 def create_camera(ip, audio):
     return Camera(ip, audio)
 
+
 def test_default_initial_conversion(empty_camera):
-    assert empty_camera.conversion == None
+    assert not empty_camera.conversion
+
 
 def test_default_initial_callback(empty_camera):
-    assert empty_camera.callback == None
+    assert not empty_camera.callback
+
 
 def test_ip_property():
     ip = "test"
     camera = create_camera(ip, None)
-    assert camera.ip == ip
+    assert camera.ip_adress == ip
+
 
 def test_audio_property():
     audio = True
     camera = create_camera(None, audio)
-    assert camera.audio == True
+    assert camera.audio
+
 
 def test_json_conversion():
-    json_file = open('testConfig.json', )
-    json_data = json.load(json_file)
-    json_file.close()
+    json_content = open(os.path.join(os.path.dirname(__file__), 'testConfig.json'))
+    json_data = json.load(json_content)
+    json_content.close()
 
     cameras = convertJsonToCamera(json_data)
     camera = cameras["testvid"]
-    assert camera.ip == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov" and camera.audio
+    assert camera.ip_adress == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+    assert camera.audio

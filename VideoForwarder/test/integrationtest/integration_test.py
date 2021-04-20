@@ -3,19 +3,34 @@ import tornado.web
 import time
 import os
 
+
 class MainHandler(tornado.web.RequestHandler):
+    """Tornado web application
+
+    """
     def get(self):
         self.write("")
+
 
 application = tornado.web.Application([
     (r"/", MainHandler),
 ])
 
+
 @pytest.fixture
 def app():
+    """Creates application
+
+    Return:
+         application: tornado application
+    """
     return application
 
-class TestVideoForwarder():
+
+class TestVideoForwarder:
+    """
+
+    """
     def setup_method(self):
         self.port = 80
         self.camera = 'testvid'
@@ -49,7 +64,6 @@ class TestVideoForwarder():
         response = yield http_client.fetch(self.camera_url)
         assert response.headers['Access-Control-Allow-Origin'] == '*'
 
-
     @pytest.mark.gen_test(timeout=15)
     def test_generate_multiple_video_outputs(self, http_client):
         camera = self.camera
@@ -64,26 +78,15 @@ class TestVideoForwarder():
                     break
         assert version_counter == len(versions)
 
-    # @pytest.mark.gen_test(timeout=15)
-    # def test_delete_files(self, http_client):
-    #     camera = self.camera
-    #     yield http_client.fetch(self.camera_url)
-    #     time.sleep(61)
-    #     for file in os.listdir(self.stream_dir):
-    #         if file.startswith(camera):
-    #             assert False
+    @pytest.mark.gen_test(timeout=15)
+    def test_delete_files(self, http_client):
+        camera = self.camera
+        yield http_client.fetch(self.camera_url)
+        time.sleep(61)
+        for file in os.listdir(self.stream_dir):
+            if file.startswith(camera):
+                assert False
+
+
 if __name__ == '__main__':
     pytest.main(TestVideoForwarder)
-
-
-
-
-
-
-
-
-
-
-
-
-
