@@ -14,6 +14,7 @@ from processor.input.video_capture import VideoCapture
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
+accuracy_testing = True
 
 
 def main(_argv):
@@ -60,6 +61,8 @@ def main(_argv):
 
         # Draw the frame with bounding boxes
         det_obj.draw_rectangles()
+        if accuracy_testing:
+            det_obj.to_txt()
         counter += 1
 
         # Play the video in a window called "Output Video"
