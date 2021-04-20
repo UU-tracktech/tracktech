@@ -102,7 +102,7 @@ camera-processor_linting:
 orchestrator_docker_build:
   stage: build
   script:
-    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
