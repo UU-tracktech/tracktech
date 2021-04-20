@@ -1,3 +1,7 @@
+"""Integration testing of forwarder with a dummy interface
+
+"""
+
 import pytest
 import tornado.web
 import time
@@ -9,6 +13,9 @@ class MainHandler(tornado.web.RequestHandler):
 
     """
     def get(self):
+        """Empty get
+
+        """
         self.write("")
 
 
@@ -28,26 +35,45 @@ def app():
 
 
 class TestVideoForwarder:
-    """
+    """Tests video forwarder http requests, headers and file behavior
 
     """
     def setup_method(self):
+        """Setup method for testing
+
+        """
         self.port = 80
         self.camera = 'testvid'
-        self.baseURL = 'http://localhost'
+        self.base_url = 'http://localhost'
         self.extension = 'm3u8'
-        self.camera_url = f'{self.baseURL}:{self.port}/{self.camera}.{self.extension}'
+        self.camera_url = f'{self.base_url}:{self.port}/{self.camera}.{self.extension}'
 
         self.stream_dir = '/streams'
         self.camera_versions = ['_V0', '_V1', '_V2']
 
     @pytest.mark.gen_test(timeout=15)
     def test_valid_http_request(self, http_client):
+        """Checks connection between forwarder and mock client with valid url
+
+        Args:
+            http_client: Httpclient that connects
+
+        """
         response = yield http_client.fetch(self.camera_url)
+
+        # OK
         assert response.code == 200
 
     @pytest.mark.gen_test(timeout=15)
     def test_invalid_http_request(self, http_client):
+        """Checks connection between forwarder and mock client with invalid url
+
+        Args:
+            http_client: Httpclient that connects
+
+        """
+
+        # Fetch httpclient
         try:
             yield http_client.fetch(self.camera_url)
             assert False

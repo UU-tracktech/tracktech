@@ -57,7 +57,7 @@ camera-processor_unit-testing:
       
 camera-processor_integration-testing:
   stage: integrationtest
-  needs: [camera-processor_docker_build, orchestrator_docker_build]
+  needs: [camera-processor_docker_build]
   script:
     - cd CameraProcessor
     - docker-compose -f docker-compose+orchestrator.yml up --exit-code-from camera-processor-test-service

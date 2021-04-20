@@ -7,15 +7,21 @@ import os
 import re
 import threading
 import time
+from subprocess import Popen, TimeoutExpired
 import tornado.web
 import jwt
-from subprocess import Popen, TimeoutExpired
 
 
 class CameraHandler(tornado.web.StaticFileHandler):
     """
     The camera file request handler
     """
+    def __init__(self):
+        """Create attributes
+
+        """
+        self.root = None
+        self.public_key = None
 
     cameras = {}
     """A dictionary to store all camera objects with their name as key"""
