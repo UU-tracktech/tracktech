@@ -16,8 +16,8 @@ ENTRYPOINT ["python","-u","/src/main.py"]
 FROM python:3.8-slim-buster as testing
 
 
-WORKDIR /app
-ENV PYTHONPATH=/app
+WORKDIR /
+ENV PYTHONPATH=/
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -36,8 +36,6 @@ COPY testing testing
 COPY .coveragerc .coveragerc
 
 RUN ["mkdir", "utility"]
-
-WORKDIR /
 
 # Make sure port is available
 EXPOSE 80

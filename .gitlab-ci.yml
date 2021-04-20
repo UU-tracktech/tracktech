@@ -203,9 +203,9 @@ interface-linting:
     - docker rm -f interface-unit-test-container || true
   script:
     - docker run -d -t --name interface-lint-container interface_linting
-    - docker cp .pylintrc interface-lint-container:/app
-    - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
-    - docker cp utility/__init__.py interface-lint-container:/app/utility
+    - docker cp .pylintrc interface-lint-container:/
+    - docker cp utility/pylint_ignore.py interface-lint-container:/utility
+    - docker cp utility/__init__.py interface-lint-container:/utility
     - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
   after_script:
     - docker stop interface-lint-container
