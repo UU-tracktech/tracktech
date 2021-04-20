@@ -3,7 +3,6 @@ image:
 
 stages:
   - build
-  - removal
   - unittest
   - integrationtest
   - linting
@@ -29,7 +28,7 @@ camera-processor_docker_build:
       changes:
         - CameraProcessor/*
       when: always
-
+        
 camera-processor_unit-testing:
   stage: unittest
   needs: [camera-processor_docker_build]
@@ -45,14 +44,14 @@ camera-processor_unit-testing:
       junit: cp-unit-report.xml
     paths:
       - coverage_html
-    when: always
-    expire_in: 10 days
+    when: always 
+    expire_in: 10 days 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
       when: always
-
+  
 
 camera-processor_integration-testing:
   stage: integrationtest
@@ -78,7 +77,7 @@ camera-processor_integration-testing:
 camera-processor_linting:
   stage: linting
   needs: [camera-processor_docker_build]
-  allow_failure: true
+  allow_failure: true 
   before_script:
     - docker rm -f camera-processor-lint-container || true
     - docker build --target=lint -t camera-processor-lint ./CameraProcessor
@@ -99,7 +98,8 @@ camera-processor_linting:
 orchestrator_docker_build:
   stage: build
   script:
-    - docker build -t processor-orchestrator --target testing ./ProcessorOrchestrator
+    - cd ProcessorOrchestrator
+    - docker build -t processor-orchestrator .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -112,7 +112,7 @@ orchestrator_unit-testing:
   before_script:
     - docker rm -f po-unit-testing || true
   script:
-    - docker run --name po-unit-testing processor-orchestrator
+    - docker run --name po-unit-testing processor-orchestrator pytest --cov-config=app/.coveragerc --cov=app/src --cov-report html --cov-report term --junitxml=po-unit-report.xml app/testing
   after_script:
     - docker cp po-unit-testing:po-unit-report.xml po-unit-report.xml
     - docker cp po-unit-testing:/po_coverage_html po_coverage_html
@@ -129,24 +129,6 @@ orchestrator_unit-testing:
         - ProcessorOrchestrator/*
       when: always
 
-orchestrator_integration-testing:
-  stage: integrationtest
-  needs: [orchestrator_docker_build]
-  script:
-    - cd ProcessorOrchestrator
-    - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
-    - docker cp processor-orchestrator-integration-tests:integration-report.xml integration-report.xml
-    - docker-compose -f docker-compose.testing.yml down
-  artifacts:
-    reports:
-      junit: ProcessorOrchestrator/integration-report.xml
-    when: always
-    expire_in: 10 days
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - ProcessorOrchestrator/*
-      when: always
 
 orchestrator_linting:
   stage: linting
@@ -156,11 +138,11 @@ orchestrator_linting:
     - docker rm -f orchestrator-lint-container || true
   script:
     - docker run -d -t --name orchestrator-lint-container processor-orchestrator
-    - docker cp .pylintrc orchestrator-lint-container:/app
-    - docker cp utility/pylint_ignore.py orchestrator-lint-container:/app/utility
-    - docker cp utility/__init__.py orchestrator-lint-container:/app/utility
+    - docker cp .pylintrc orchestrator-lint-container:/
+    - docker cp utility/pylint_ignore.py orchestrator-lint-container:/utility
+    - docker cp utility/__init__.py orchestrator-lint-container:/utility
     - docker exec orchestrator-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
-  after_script:
+  after_script:  
     - docker stop orchestrator-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -189,7 +171,7 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - Interface/*
+        - interface/*
       when: always
 
 interface-linting:
@@ -203,9 +185,9 @@ interface-linting:
     - docker rm -f interface-unit-test-container || true
   script:
     - docker run -d -t --name interface-lint-container interface_linting
-    - docker cp .pylintrc interface-lint-container:/
-    - docker cp utility/pylint_ignore.py interface-lint-container:/utility
-    - docker cp utility/__init__.py interface-lint-container:/utility
+    - docker cp .pylintrc interface-lint-container:/app
+    - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
+    - docker cp utility/__init__.py interface-lint-container:/app/utility
     - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
   after_script:
     - docker stop interface-lint-container
