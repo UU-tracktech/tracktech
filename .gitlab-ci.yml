@@ -232,7 +232,7 @@ video-forwarder_docker_build:
   stage: build
   script:
     - cd VideoForwarder
-    - docker build --target=testing -t video-forwarder -f .
+    - docker build --target=testing -t video-forwarder .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
