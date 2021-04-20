@@ -2,7 +2,6 @@
 
 """
 import pytest
-import json
 from processor.pipeline.detection.bounding_box import BoundingBox
 
 
@@ -183,7 +182,7 @@ class TestBoundingBox:
 
         """
         with pytest.raises(AttributeError):
-            wrongboundingbox = BoundingBox(3, [5, 3, 2, 1, 1, 9], "Multidimensional Antediluvian Evil", 1.0)
+            BoundingBox(3, [5, 3, 2, 1, 1, 9], "Multidimensional Antediluvian Evil", 1.0)
 
 
 if __name__ == '__main__':

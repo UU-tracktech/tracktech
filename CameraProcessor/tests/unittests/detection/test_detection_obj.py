@@ -1,15 +1,15 @@
 """Tests detection object by checking properties and whether drawing changes something
 
 """
-import pytest
 import json
+import pytest
 import cv2
 from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.detection_obj import DetectionObj
 from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
 
 
-# pylint: disable=attribute-defined-outside-init, no-member
+# pylint: disable=attribute-defined-outside-init,no-member
 def __eq__(self, other):
     """Custom equalize function
 

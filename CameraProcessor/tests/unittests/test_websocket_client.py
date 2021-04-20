@@ -67,7 +67,7 @@ class TestWebsocketClient:
         assert self.message_object_update_feature_map["objectId"] == 1
         assert self.message_object_update_feature_map["featureMap"] == []
 
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access,assignment-from-none
     def test_read_msg_start_tracking(self):
         """Checks if read_msg correctly parses start tracking message
 
