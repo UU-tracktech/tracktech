@@ -45,6 +45,7 @@ class AccuracyObject:
         yolo_config = configs['Yolov5']
 
         self.iou_threshold = float(yolo_config['iou-thres'])
+
     def parse_boxes(self, boxes_to_parse):
         """
         Args:
@@ -93,12 +94,12 @@ class AccuracyObject:
         boundingboxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
 
         self.result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
-        plot_precision_recall_curve(self.result['undefined'],f'{self.root_dir}/processor/training/detection/plots/threshold10-1')
+        plot_precision_recall_curve(self.result['undefined'],
+                                    f'{self.root_dir}/processor/training/detection/plots/threshold10-1')
 
         tps = 0
         for value in self.result.values():
             tps += value.tp
-
 
         print("tp (all classes): " + str(tps))
         print("accuracy: " + str(self.result['undefined'].tp / len(self.boundingboxes_gt)))
@@ -107,8 +108,8 @@ class AccuracyObject:
         print("fns:" + str(len(self.boundingboxes_gt) - len(boundingboxes_det)))
         print(len(self.boundingboxes_gt))
 
+
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
 object_to_detect = AccuracyObject(os.path.abspath(__file__ + '/../../../../'), 'test', 'gt/gt.txt')
 object_to_detect.detect('mockyolo/threshold10.txt')
-
