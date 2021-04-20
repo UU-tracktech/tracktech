@@ -1,25 +1,19 @@
 """Import pytest and example_plan.py for testing.
 
 """
+import os
+import runpy
 import pytest
+from tests.conftest import root_path
 
 
-# pylint: disable=attribute-defined-outside-init
-class TestPlan():
-    """Tests bounding_box.py.
+def test_example_plan():
+    """Test example plan by running the file
+
     """
-
-    # Setup
-    def setup_method(self):
-        """Setup method for testing.
-
-        """
-
-    def test_example_plan(self):
-        """Automatic pass due to lack of functions in example_plan.py
-
-        """
+    plan_path = os.path.join(root_path, 'processor', 'scheduling', 'plan', 'example_plan.py')
+    runpy.run_path(plan_path)
 
 
 if __name__ == '__main__':
-    pytest.main(TestPlan)
+    pytest.main(test_example_plan)

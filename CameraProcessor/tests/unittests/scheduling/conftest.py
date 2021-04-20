@@ -1,0 +1,20 @@
+import pytest
+from processor.scheduling.node.schedule_node import ScheduleNode
+from tests.unittests.scheduling.utils.input_component import InputComponent
+
+
+@pytest.fixture(params=[
+    ScheduleNode(0, [], InputComponent()),
+    ScheduleNode(1, [()], InputComponent()),
+    ScheduleNode(2, [(), ()], InputComponent())
+])
+def example_schedule_node(request):
+    """ Several examples of schedule nodes
+
+    Args:
+        request: different implementations of capture.
+
+    Returns: A node.
+
+    """
+    return request.param

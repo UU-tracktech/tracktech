@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # Inits scheduler with starting node.
     scheduler = Scheduler(schedule_input_node)
     # Runs iteration of schedule_graph.
-    scheduler.schedule_graph("test")
+    scheduler.schedule_graph("test,")
 
     # Find output in output node.
     curr_node = schedule_input_node
