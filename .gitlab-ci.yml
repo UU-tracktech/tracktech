@@ -247,8 +247,8 @@ video-forwarder_unit-testing:
   script:
     - docker run --name video-forwarder-test-container video-forwarder python3.8 -m pytest --cov-config=.coveragerc --cov-report term --cov-report html --cov=src/ --junitxml=vf-unit-report.xml test/unittest
   after_script:
-    - docker cp video-forwarder-test-container:/app/vf-unit-report.xml vf-unit-report.xml
-    - docker cp video-forwarder-test-container:/app/coverage_html vf-coverage_html
+    - docker cp video-forwarder-test-container:/vf-unit-report.xml vf-unit-report.xml
+    - docker cp video-forwarder-test-container:/coverage_html vf-coverage_html
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
@@ -272,7 +272,7 @@ video-forwarder_integration-testing:
     - docker run --name video-forwarder-test-container video-forwarder python3.8 src/main.py
     - docker exec video-forwarder-test-container python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
   after_script:
-    - docker cp video-forwarder-test-container:/app/vf-integration-report.xml vf-integration-report.xml
+    - docker cp video-forwarder-test-container:/vf-integration-report.xml vf-integration-report.xml
     - docker stop video-forwarder-test-container
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
