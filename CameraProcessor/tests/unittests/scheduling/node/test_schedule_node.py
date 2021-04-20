@@ -62,9 +62,16 @@ class TestScheduleNode:
         """Tests the functionality of INode: execute().
 
         """
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent())
+        schedule_node = ScheduleNode(3, [], InputComponent())
         schedule_node.assign('val', 2)
         assert pytest.raises(Exception, schedule_node.assign, 'val', 2)
+
+    def test_argument_out_of_range(self):
+        """Assigned argument out of range raises exception
+
+        """
+        schedule_node = ScheduleNode(1, [], InputComponent())
+        assert pytest.raises(IndexError, schedule_node.assign, 'val', 2)
 
 
 if __name__ == '__main__':
