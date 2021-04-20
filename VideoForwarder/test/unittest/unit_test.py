@@ -33,22 +33,10 @@ def test_audio_property():
     assert camera.audio == True
 
 def test_json_conversion():
-    json_file = open('testConfig.json',) 
+    json_file = open('testConfig.json', )
     json_data = json.load(json_file)
     json_file.close()
 
     cameras = convertJsonToCamera(json_data)
     camera = cameras["testvid"]
-    assert camera.ip == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov" and camera.audio == True
-
-
-
-
-
-
-
-
-
-
-
-
+    assert camera.ip == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov" and camera.audio

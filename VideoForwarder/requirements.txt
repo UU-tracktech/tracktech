@@ -4,3 +4,5 @@ cryptography
 pytest-tornado
 pytest-timeout
 pytest
+pytest-cov==2.11.1
+coverage==5.5
