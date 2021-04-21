@@ -1,5 +1,9 @@
 """Tests whether pre_annotations are correctly loaded in from a text file
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import os
 import pytest
