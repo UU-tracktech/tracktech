@@ -166,17 +166,17 @@ class HlsCapture(ICapture):
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
-        while self.thread_running:
-            # extract the start_time from the meta-data to get the absolute segment time
-            logging.info('Retrieving meta data from HLS stream')
-            # pylint: disable=no-member
-            meta_data = ffmpeg.probe(self.hls_url)
-            # pylint: enable=no-member
-            try:
-                self.hls_start_time_stamp = float(meta_data['format']['start_time'])
-            # Json did not contain key
-            except KeyError as error:
-                logging.warning(f'Json does not contain keys for {error}')
+        # extract the start_time from the meta-data to get the absolute segment time
+        logging.info('Retrieving meta data from HLS stream')
+        # pylint: disable=no-member
+        meta_data = ffmpeg.probe(self.hls_url)
+        # pylint: enable=no-member
+        try:
+            self.hls_start_time_stamp = float(meta_data['format']['start_time'])
+        # Json did not contain key
+        except KeyError as error:
+            logging.warning(f'Json does not contain keys for {error}')
+
 
     def get_capture_length(self) -> int:
         """Returns None, since its theoretically infinite"""
