@@ -140,7 +140,7 @@ orchestrator_integration-testing:
     - cd ProcessorOrchestrator
     - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
     - docker cp processor-orchestrator-integration-tests:integration-report.xml integration-report.xml
-    - docker cp po-unit-testing:/po_coverage_html po_coverage_html
+    - docker cp processor-orchestrator-integration-tests:/po_coverage_html po_coverage_html
     - docker-compose -f docker-compose.testing.yml down
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
