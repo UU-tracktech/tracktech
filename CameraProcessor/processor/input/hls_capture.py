@@ -84,8 +84,8 @@ class HlsCapture(ICapture):
         """
         logging.info('HLS stream closing')
         logging.info("Joining thread")
-        self.thread.join()
         self.thread_running = False
+        self.thread.join()
         logging.info("Thread joined, releasing capture")
         self.cap.release()
 
