@@ -1,4 +1,8 @@
-"""Contains the HlsCapture class"""
+"""Contains the HlsCapture class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)"""
 
 import threading
 import time
@@ -7,7 +11,6 @@ from typing import List
 import ffmpeg
 import cv2
 from processor.input.icapture import ICapture
-
 
 
 class HlsCapture(ICapture):
@@ -45,14 +48,21 @@ class HlsCapture(ICapture):
         self.current_frame = 0
         self.current_frame_nr = 0
 
-        # Create thread that syncs streams
-        self.thread = threading.Thread(target=self.sync)
-        self.thread.daemon = True
+        # Tells threads they should keep running
         self.thread_running = True
-        self.thread.start()
+
+        # Create meta data thread
+        self.meta_thread = threading.Thread(target=self.get_meta_data)
+        self.meta_thread.daemon = True
+        self.meta_thread.start()
+
+        # Create thread that reads streams
+        self.reading_thread = threading.Thread(target=self.sync)
+        self.reading_thread.daemon = True
+        self.reading_thread.start()
 
         # Reconnect with timeout
-        timeout_left = 30
+        timeout_left = 10
         sleep = 1
         # Sleep is essential so processor has a prepared self.cap
         while not self.cap_initialized and timeout_left > 0:
@@ -80,10 +90,11 @@ class HlsCapture(ICapture):
         for serving the current frame
         """
         logging.info('HLS stream closing')
-        logging.info("Joining thread")
-        self.thread.join(30)
+        logging.info("Joining threads")
         self.thread_running = False
-        logging.info("Thread joined, releasing capture")
+        self.reading_thread.join()
+        self.meta_thread.join()
+        logging.info("Threads joined, releasing capture")
         self.cap.release()
 
     def get_next_frame(self) -> (bool, List[List[int]], float):
@@ -137,9 +148,6 @@ class HlsCapture(ICapture):
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
-        # Starts a separate thread to request meta-data
-        threading.Thread(target=self.get_meta_data).start()
-
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
 
@@ -158,16 +166,17 @@ class HlsCapture(ICapture):
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
-        # extract the start_time from the meta-data to get the absolute segment time
-        logging.info('Retrieving meta data from HLS stream')
-        # pylint: disable=no-member
-        meta_data = ffmpeg.probe(self.hls_url)
-        # pylint: enable=no-member
-        try:
-            self.hls_start_time_stamp = float(meta_data['format']['start_time'])
-        # Json did not contain key
-        except KeyError as error:
-            logging.warning(f'Json does not contain keys for {error}')
+        while self.thread_running:
+            # extract the start_time from the meta-data to get the absolute segment time
+            logging.info('Retrieving meta data from HLS stream')
+            # pylint: disable=no-member
+            meta_data = ffmpeg.probe(self.hls_url)
+            # pylint: enable=no-member
+            try:
+                self.hls_start_time_stamp = float(meta_data['format']['start_time'])
+            # Json did not contain key
+            except KeyError as error:
+                logging.warning(f'Json does not contain keys for {error}')
 
     def get_capture_length(self) -> int:
         """Returns None, since its theoretically infinite"""
