@@ -195,6 +195,7 @@ interface-linting:
     - docker build -t interface_linting -f Dockerfile_lint .
     - docker rm -f interface-lint-container || true
   script:
+    - cd ..
     - docker run -d -t --name interface-lint-container interface_linting
     - docker cp .pylintrc interface-lint-container:/app
     - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
@@ -228,6 +229,7 @@ forwarder-linting:
     - docker build -t forwarder_linting -f Dockerfile_lint .
     - docker rm -f forwarder-lint-container || true
   script:
+    - cd ..
     - docker run -d -t --name forwarder-lint-container forwarder_linting
     - docker cp .pylintrc forwarder-lint-container:/app
     - docker cp utility/pylint_ignore.py forwarder-lint-container:/app/utility
