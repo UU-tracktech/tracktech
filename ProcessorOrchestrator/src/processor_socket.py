@@ -2,6 +2,11 @@
 
 This file contains a websocket class to handle websocket connections coming from camera processors. It defines multiple
 functions that can be called using specified json messages.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import json
