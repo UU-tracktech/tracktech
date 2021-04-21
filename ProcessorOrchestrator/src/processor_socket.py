@@ -14,8 +14,8 @@ from tornado.websocket import WebSocketHandler
 
 from src.object_manager import objects, TrackingObject
 from src.connections import processors
-import src.client_socket
-import src.logger
+import src.client_socket as client_socket
+import src.logger as logger
 
 
 class ProcessorSocket(WebSocketHandler):

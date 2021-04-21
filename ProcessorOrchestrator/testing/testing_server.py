@@ -1,24 +1,16 @@
-import threading
-import time
-import sys
-import os
-
 import pytest
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
-
-# pytest resolves this reference internally
-# noinspection PyUnresolvedReferences
-from src.client_socket import ClientSocket
-# noinspection PyUnresolvedReferences
-from src.processor_socket import ProcessorSocket
-# noinspection PyUnresolvedReferences
-from src.log_handler import LogHandler
 from tornado.websocket import WebSocketHandler
+
+from src.client_socket import ClientSocket
+from src.processor_socket import ProcessorSocket
+from src.log_handler import LogHandler
 
 global server
 global stop
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(20000)
