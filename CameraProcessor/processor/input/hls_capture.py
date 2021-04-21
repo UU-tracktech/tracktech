@@ -141,7 +141,11 @@ class HlsCapture(ICapture):
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
         # Starts a separate thread to request meta-data
-        threading.Thread(target=self.get_meta_data).start()
+        t = threading.Thread(target=self.get_meta_data)
+
+        # Set Thread.daemon to True, so thread t will shutdown when main thread shuts down
+        t.daemon = True
+        t.start()
 
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
