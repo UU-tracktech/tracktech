@@ -147,7 +147,7 @@ orchestrator_integration-testing:
     reports:
       junit: ProcessorOrchestrator/integration-report.xml
     paths:
-      - po_coverage_html
+      - ProcessorOrchestrator/po_coverage_html
     when: always
     expire_in: 10 days
   rules:
