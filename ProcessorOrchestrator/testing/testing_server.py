@@ -52,7 +52,7 @@ def _setup_server():
 
     print("Starting setup server")
     thread = threading.Thread(target=_start_server)
-    thread.daemon = True
+    # thread.daemon = True
     thread.start()
 
 
