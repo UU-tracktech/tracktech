@@ -80,7 +80,6 @@ camera-processor_integration-testing:
 camera-processor_linting:
   stage: linting
   needs: [camera-processor_docker_build]
-  allow_failure: true 
   before_script:
     - docker rm -f camera-processor-lint-container || true
     - docker build --target=lint -t camera-processor-lint ./CameraProcessor
@@ -137,7 +136,6 @@ orchestrator_unit-testing:
 orchestrator_linting:
   stage: linting
   needs: [orchestrator_docker_build]
-  allow_failure: true
   before_script:
     - docker rm -f orchestrator-lint-container || true
   script:
@@ -189,7 +187,6 @@ interface_unit-testing:
 interface-linting:
   stage: linting
   needs: [interface_docker_build]
-  allow_failure: true
   before_script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_lint .
@@ -223,7 +220,6 @@ forwarder_docker_build:
 forwarder-linting:
   stage: linting
   needs: [forwarder_docker_build]
-  allow_failure: true
   before_script:
     - cd VideoForwarder
     - docker build -t forwarder_linting -f Dockerfile_lint .
