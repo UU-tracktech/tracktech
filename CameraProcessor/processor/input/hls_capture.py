@@ -54,11 +54,13 @@ class HlsCapture(ICapture):
         # Create meta data thread
         self.meta_thread = threading.Thread(target=self.get_meta_data)
         self.meta_thread.daemon = True
-        self.meta_thread.start()
 
         # Create thread that reads streams
         self.reading_thread = threading.Thread(target=self.sync)
         self.reading_thread.daemon = True
+
+        # Start threads
+        self.meta_thread.start()
         self.reading_thread.start()
 
         # Reconnect with timeout
