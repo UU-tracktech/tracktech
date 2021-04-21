@@ -140,10 +140,14 @@ orchestrator_integration-testing:
     - cd ProcessorOrchestrator
     - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
     - docker cp processor-orchestrator-integration-tests:integration-report.xml integration-report.xml
+    - docker cp po-unit-testing:/po_coverage_html po_coverage_html
     - docker-compose -f docker-compose.testing.yml down
+  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: ProcessorOrchestrator/integration-report.xml
+    paths:
+      - po_coverage_html
     when: always
     expire_in: 10 days
   rules:
