@@ -2,6 +2,11 @@
 
 This file contains a class for tracking objects. Creating an object will automatically add it to a dictionary, which
 it removes itself from upon removal.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import json
 

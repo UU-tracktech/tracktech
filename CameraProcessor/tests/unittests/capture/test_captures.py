@@ -1,5 +1,9 @@
 """Tests the captures
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import pytest
 
@@ -30,7 +34,6 @@ class TestCaptures:
         assert capture_implementation.get_next_frame()[0]
 
     @pytest.mark.timeout(10)
-    @pytest.mark.skip(reason="Bugged for now")
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 

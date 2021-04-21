@@ -1,5 +1,9 @@
 """Gives a way to have the data stream written to a json file to help repeating
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import time
 import os
