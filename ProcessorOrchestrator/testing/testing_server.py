@@ -35,28 +35,34 @@ def test_start_testing_server():
 def main():
     print("Starting main")
 
-    _setup_server()
+    _setup_stop_waiter()
+
+    _start_server()
 
     global stop
     global thread
 
+    thread.join()
+
+
+def _wait_for_stop():
     while not stop:
         time.sleep(1)
 
     _stop_server()
-    thread.join()
 
 
-def _setup_server():
+def _setup_stop_waiter():
     global thread
 
-    print("Starting setup server")
-    thread = threading.Thread(target=_start_server)
+    thread = threading.Thread(target=_wait_for_stop)
     # thread.daemon = True
     thread.start()
 
 
 def _start_server():
+    print("Starting setup server")
+
     global server
     handlers = [
         ('/client', ClientSocket),
