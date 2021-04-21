@@ -1,5 +1,9 @@
 """ Websocket client class that can connect to a websocket client url and write/read messages asynchronously.
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import asyncio
