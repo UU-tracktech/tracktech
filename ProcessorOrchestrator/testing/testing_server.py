@@ -17,47 +17,19 @@ from src.processor_socket import ProcessorSocket
 from src.log_handler import LogHandler
 from tornado.websocket import WebSocketHandler
 
-global thread
 global server
 global stop
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(20000)
 def test_start_testing_server():
-    global stop
-    stop = False
-
     main()
-
-    assert stop
 
 
 def main():
     print("Starting main")
 
-    _setup_stop_waiter()
-
     _start_server()
-
-    global stop
-    global thread
-
-    thread.join()
-
-
-def _wait_for_stop():
-    while not stop:
-        time.sleep(1)
-
-    _stop_server()
-
-
-def _setup_stop_waiter():
-    global thread
-
-    thread = threading.Thread(target=_wait_for_stop)
-    # thread.daemon = True
-    thread.start()
 
 
 def _start_server():
@@ -100,7 +72,6 @@ class StopSocket(WebSocketHandler):
         return True
 
     def on_message(self, message) -> None:
-        global stop
         """Waits for test message"""
         if message == "stop":
-            stop = True
+            _stop_server()
