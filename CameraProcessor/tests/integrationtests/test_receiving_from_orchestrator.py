@@ -9,7 +9,7 @@ Utrecht University within the Software Project course.
 import pytest
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
-from utils.utils import  __eq__, PC_URL, IF_URL
+from utils.utils import __eq__, PC_URL, IF_URL
 
 
 class TestReceivingFromOrchestrator:

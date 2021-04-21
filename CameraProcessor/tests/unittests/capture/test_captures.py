@@ -6,8 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 import pytest
-import ffmpeg
-import asyncio
 
 
 class TestCaptures:
