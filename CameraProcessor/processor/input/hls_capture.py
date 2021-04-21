@@ -13,7 +13,6 @@ import cv2
 from processor.input.icapture import ICapture
 
 
-
 class HlsCapture(ICapture):
     """Implementation of the ICapture class which handles an HLS stream with timestamps.
 
