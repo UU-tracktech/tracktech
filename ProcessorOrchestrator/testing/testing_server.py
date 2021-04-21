@@ -31,6 +31,8 @@ def test_start_testing_server():
 
 
 def main():
+    print("Starting main")
+
     _setup_server()
 
     global stop
@@ -45,6 +47,8 @@ def main():
 
 def _setup_server():
     global thread
+
+    print("Starting setup server")
     thread = threading.Thread(target=_start_server)
     thread.daemon = True
     thread.start()
@@ -62,8 +66,8 @@ def _start_server():
     app = Application(handlers)
     server = HTTPServer(app)
     server.listen(80)
-    IOLoop.current().start()
     print("Test server is listening")
+    IOLoop.current().start()
 
 
 def _stop_server():
