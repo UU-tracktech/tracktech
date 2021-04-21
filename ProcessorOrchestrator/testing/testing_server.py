@@ -3,6 +3,7 @@ import time
 import sys
 import os
 
+import pytest
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
@@ -20,7 +21,8 @@ global thread
 global server
 global stop
 
-
+@pytest.mark.asyncio
+@pytest.mark.timeout(20000)
 def test_start_testing_server():
     global stop
     stop = False
