@@ -94,8 +94,8 @@ class AccuracyObject:
         boundingboxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
 
         self.result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
-        plot_precision_recall_curve(self.result['undefined'],
-                                    f'{self.root_dir}/processor/training/detection/plots/threshold10-1')
+        #plot_precision_recall_curve(self.result['undefined'],
+        #                            f'{self.root_dir}/processor/training/detection/plots/threshold10-1')
 
         tps = 0
         for value in self.result.values():
