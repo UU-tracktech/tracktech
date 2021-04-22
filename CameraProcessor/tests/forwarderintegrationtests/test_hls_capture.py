@@ -36,7 +36,7 @@ class TestVideoForwarder:
         """
         # Url set correctly and thread has correct setting
         assert hls_capture.hls_url == self.hls_url
-        assert hls_capture.thread.daemon
+        assert hls_capture.reading_thread.daemon
 
     @pytest.mark.timeout(20)
     def test_hls_opened_correctly(self, hls_capture):
@@ -52,7 +52,6 @@ class TestVideoForwarder:
         # Bool set to initialized and capture exists
         assert hls_capture.cap_initialized
         assert hls_capture.cap
-
 
     @pytest.mark.timeout(20)
     @pytest.mark.skip("Close throws exception")
