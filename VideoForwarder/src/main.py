@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     # If the public key path was supplied, read the file and store it
     public_key = None
-    if public_key_path is not None:
+    if public_key_path:
         public_key_file = open(public_key_path, "r")
         public_key = public_key_file.read()
         public_key_file.close()
