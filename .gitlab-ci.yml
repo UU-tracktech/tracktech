@@ -269,7 +269,7 @@ video-forwarder_integration-testing:
   before_script:
     - docker rm -f video-forwarder-test-container || true
   script:
-    - docker run --name video-forwarder-test-container video-forwarder
+    - docker run -t -d --name video-forwarder-test-container video-forwarder
     - docker exec -d video-forwarder-test-container python3.8 src/main.py
     - docker exec video-forwarder-test-container python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
   after_script:
