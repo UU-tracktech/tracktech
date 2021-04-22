@@ -81,7 +81,7 @@ camera-processor-video-forwarder_integration-testing:
   needs: [camera-processor_docker_build]
   script:
     - cd CameraProcessor
-    - docker-compose -f docker-compose+forwarder.yml --force-recreate up --exit-code-from camera-processor-test-service2
+    - docker-compose -f docker-compose+forwarder.yml up --force-recreate --exit-code-from camera-processor-test-service2
   after_script:
     - docker cp processor-forwarder-integration-test-container:/app/cp-f-integration-report.xml cp-f-integration-report.xml
     - docker-compose down
