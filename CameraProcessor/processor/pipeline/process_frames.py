@@ -13,11 +13,12 @@ import cv2
 import processor.websocket_client as client
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.idetector import IDetector as Detector
+from processor.pipeline.tracking.tracking_obj import TrackingObj
 from processor.input.hls_capture import HlsCapture
 # pylint: enable=unused-import
 
 
-async def process_stream(capture, det_obj, detector, ws_client=None):
+async def process_stream(capture, detector, tracker, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -25,15 +26,15 @@ async def process_stream(capture, det_obj, detector, ws_client=None):
 
     Args:
         capture (ICapture): capture object to process a stream of frames.
-        det_obj (DetectionObj): detection object containing all information about detections
-        in the current frame.
         detector (Detector): Yolov5 detector performing the detection using det_obj.
+        tracker (SortTracker): tracker performing SORT tracking.
+        ws_client (WebsocketClient): processor orchestrator to pass through detections.
     """
+    track_obj = TrackingObj()
+
     frame_nr = 0
 
     while capture.opened():
-        # Set the detected bounding box list to empty
-        det_obj.bounding_boxes = []
         ret, frame, timestamp = capture.get_next_frame()
 
         if not ret:
@@ -42,20 +43,22 @@ async def process_stream(capture, det_obj, detector, ws_client=None):
                 break
             continue
 
-        # update frame, frame number, and time
-        det_obj.frame = frame
-        det_obj.frame_nr = frame_nr
-        det_obj.timestamp = timestamp
+        # Create detection object for this frame.
+        det_obj = DetectionObj(timestamp, frame, frame_nr)
 
         detector.detect(det_obj)
 
+        track_obj.update(det_obj)
+
+        tracker.track(track_obj)
+
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
         if ws_client:
-            ws_client.write_message(det_obj.to_json())
-            logging.info(det_obj.to_json())
+            ws_client.write_message(track_obj.to_json())
+            logging.info(track_obj.to_json())
         else:
-            # Draw the frame with bounding boxes
-            det_obj.draw_rectangles()
+            # Draw bounding boxes with ID
+            track_obj.draw_rectangles()
 
             # Play the video in a window called "Output Video"
             try:
