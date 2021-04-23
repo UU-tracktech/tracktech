@@ -1,8 +1,8 @@
 """Integration testing module that tests the communication functionality of the orchestrator."""
 
 import json
-import pytest
 import time
+import pytest
 
 from tornado import websocket
 
@@ -158,6 +158,7 @@ def assert_stop_tracking(message):
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_stop_server():
+    """Sends message to test server so it can be stopped."""
     socket = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/stop")
     await socket.write_message("stop")

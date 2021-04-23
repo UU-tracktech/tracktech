@@ -55,7 +55,7 @@ class ProcessorSocket(WebSocketHandler):
         Method called upon the opening of the websocket, will log connection
         """
         logger.log_connect("/processor", self.request.remote_ip)
-        print(f"New processor connected")
+        print("New processor connected")
 
     def on_message(self, message: str) -> None:
         """Handles a message from a processor that is received on the websocket.

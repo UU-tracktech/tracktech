@@ -10,8 +10,7 @@ from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
 from src.log_handler import LogHandler
 
-global server
-global stop
+SERVER = None
 
 
 @pytest.mark.asyncio
@@ -32,7 +31,7 @@ def _start_server():
     """Creates handlers and starts the IO loop."""
     print("Starting setup server")
 
-    global server
+    global SERVER
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
@@ -41,17 +40,17 @@ def _start_server():
     ]
 
     app = Application(handlers)
-    server = HTTPServer(app)
-    server.listen(80)
+    SERVER = HTTPServer(app)
+    SERVER.listen(80)
     print("Test server is listening")
     IOLoop.current().start()
 
 
 def _stop_server():
     """Stops the server."""
-    global server
+    global SERVER
 
-    server.stop()
+    SERVER.stop()
     io_loop = IOLoop.instance()
     io_loop.add_callback(io_loop.stop)
 
