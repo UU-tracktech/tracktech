@@ -14,6 +14,7 @@ from tests.unittests.scheduling.utils.input_component import InputComponent
 class TestScheduleNode:
     """Tests Scheduler node behavior
     """
+
     def test_schedule_node_constructor(self, example_schedule_node):
         """Tests the constructor of the node
 
@@ -29,7 +30,13 @@ class TestScheduleNode:
 
         """
         schedule_node = ScheduleNode(3, [(), ()], InputComponent())
-        assert all([not arg for arg in schedule_node.arguments])
+
+        def yield_node_arg():
+            for arg in schedule_node.arguments:
+                yield arg
+
+        for x in yield_node_arg():
+            assert not x
         schedule_node.assign('val', 2)
         assert schedule_node.arguments[2] == 'val'
 
@@ -40,7 +47,13 @@ class TestScheduleNode:
         schedule_node = ScheduleNode(3, [(), ()], InputComponent())
         schedule_node.assign('val', 2)
         schedule_node.reset()
-        assert all([not arg for arg in schedule_node.arguments])
+
+        def yield_node_arg():
+            for arg in schedule_node.arguments:
+                yield arg
+
+        for x in yield_node_arg():
+            assert not x
 
     def test_node_executable(self, example_schedule_node):
         """Whether the node is executable is correctly
