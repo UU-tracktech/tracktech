@@ -20,3 +20,6 @@ exclude_lines =
 
 [html]
 directory = po_coverage_html
+
+[xml]
+directory = po_coverage_xml

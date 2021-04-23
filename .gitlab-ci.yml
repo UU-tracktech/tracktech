@@ -123,6 +123,7 @@ orchestrator_unit-testing:
   artifacts:
     reports:
       junit: po-unit-report.xml
+      cobertura: po-coverage.xml
     paths:
       - po_coverage_html
     expire_in: 10 days
@@ -147,6 +148,7 @@ orchestrator_integration-testing:
   artifacts:
     reports:
       junit: ProcessorOrchestrator/integration-report.xml
+      cobertura: po-coverage.xml
     paths:
       - ProcessorOrchestrator/po_coverage_html
     when: always
