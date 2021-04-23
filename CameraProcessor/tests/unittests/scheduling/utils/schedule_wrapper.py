@@ -20,7 +20,6 @@ def func(_):
     """An empty function for testing purposes, to be passed to Output Components
 
     """
-    pass
 
 
 class ScheduleWrapper:
