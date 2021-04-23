@@ -149,7 +149,7 @@ orchestrator_integration-testing:
   artifacts:
     reports:
       junit: ProcessorOrchestrator/integration-report.xml
-      cobertura: po-coverage.xml
+      cobertura: ProcessorOrchestrator/po-coverage.xml
     paths:
       - ProcessorOrchestrator/po_coverage_html
     when: always
