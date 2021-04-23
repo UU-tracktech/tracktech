@@ -1,5 +1,11 @@
+"""Tests the bounding box by creating one and testing the properties
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import pytest
-import json
 from processor.pipeline.detection.bounding_box import BoundingBox
 
 
@@ -180,7 +186,7 @@ class TestBoundingBox:
 
         """
         with pytest.raises(AttributeError):
-            wrongboundingbox = BoundingBox(3, [5, 3, 2, 1, 1, 9], "Multidimensional Antediluvian Evil", 1.0)
+            BoundingBox(3, [5, 3, 2, 1, 1, 9], "Multidimensional Antediluvian Evil", 1.0)
 
 
 if __name__ == '__main__':

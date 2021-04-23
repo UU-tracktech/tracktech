@@ -1,3 +1,11 @@
+""" Loads the ground truth and converts it to a list of bounding boxes.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import json
 import re
 import logging
@@ -5,6 +13,9 @@ from processor.pipeline.detection.bounding_box import BoundingBox
 
 
 class PreAnnotations:
+    """ Class that loads the ground truth and converts it to a list of bounding boxes.
+
+    """
     def __init__(self, file_path: str, nr_frames: int):
         """Constructor for the preAnnotations object.
 

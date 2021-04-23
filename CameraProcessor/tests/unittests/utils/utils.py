@@ -1,3 +1,6 @@
+"""Util methods that are available to other unit tests as well
+
+"""
 import os
 import cv2
 
@@ -14,12 +17,10 @@ def is_same_frame_image(original, second):
     """
     # Calculate difference
     difference = cv2.subtract(original, second)
-    b, g, r = cv2.split(difference)
+    blue, green, red = cv2.split(difference)
 
     # Return true if it is the same image
-    if cv2.countNonZero(b) == 0 and cv2.countNonZero(g) == 0 and cv2.countNonZero(r) == 0:
-        return True
-    return False
+    return cv2.countNonZero(blue) == 0 and cv2.countNonZero(green) == 0 and cv2.countNonZero(red) == 0
 
 
 def get_sample_frame():

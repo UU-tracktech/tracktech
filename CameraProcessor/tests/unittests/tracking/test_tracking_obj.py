@@ -1,3 +1,10 @@
+"""Unittests tracking object
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import pytest
 from processor.pipeline.detection.bounding_box import BoundingBox
 from processor.pipeline.detection.detection_obj import DetectionObj
@@ -118,6 +125,7 @@ class TestTrackingObj:
         """
         assert self.data.tracked_boxes is not None
 
+    # pylint: disable=duplicate-code
     # Testing exceptions
     def test_exception_timestamp(self):
         """Asserts if timestamp throws exception.
@@ -139,6 +147,7 @@ class TestTrackingObj:
         """
         with pytest.raises(Exception):
             assert str(self.frame_nr) == 'some invalid value'
+    # pylint: enable=duplicate-code
 
     def test_exception_tracking_feature_maps(self):
         """Asserts if tracking_feature_maps throws exception.

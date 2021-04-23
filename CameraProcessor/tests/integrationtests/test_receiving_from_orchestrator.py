@@ -1,11 +1,15 @@
 """ Tests receiving messages from orchestrator, example message pipeline with interface and processor connected
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 # pylint: disable=unused-import, unused-variable, unused-argument
 import pytest
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
-from utils.utils import  __eq__, PC_URL, IF_URL
+from utils.utils import __eq__, PC_URL, IF_URL
 
 
 class TestReceivingFromOrchestrator:

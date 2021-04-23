@@ -1,13 +1,16 @@
+"""Contains the HlsCapture class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)"""
+
 import threading
 import time
 import logging
-import json
 from typing import List
 import ffmpeg
 import cv2
 from processor.input.icapture import ICapture
-
-run_thread = True
 
 
 class HlsCapture(ICapture):
@@ -45,10 +48,13 @@ class HlsCapture(ICapture):
         self.current_frame = 0
         self.current_frame_nr = 0
 
-        # Create thread that syncs streams
-        self.thread = threading.Thread(target=self.sync)
-        self.thread.daemon = True
-        self.thread.start()
+        # Tells thread they should keep running
+        self.thread_running = True
+
+        # Create thread that reads streams
+        self.reading_thread = threading.Thread(target=self.sync)
+        self.reading_thread.daemon = True
+        self.reading_thread.start()
 
         # Reconnect with timeout
         timeout_left = 10
@@ -78,11 +84,10 @@ class HlsCapture(ICapture):
         """Closes the capture object and the thread that is responsible
         for serving the current frame
         """
-        global run_thread
         logging.info('HLS stream closing')
         logging.info("Joining thread")
-        run_thread = False
-        self.thread.join()
+        self.thread_running = False
+        self.reading_thread.join()
         logging.info("Thread joined, releasing capture")
         self.cap.release()
 
@@ -107,8 +112,7 @@ class HlsCapture(ICapture):
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long
         """
-        global run_thread
-        while run_thread:
+        while self.thread_running:
             # Reads next frame
             ret, self.current_frame = self.cap.read()
 
@@ -138,8 +142,9 @@ class HlsCapture(ICapture):
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
-        # Starts a separate thread to request meta-data
-        threading.Thread(target=self.get_meta_data).start()
+        meta_thread = threading.Thread(target=self.get_meta_data)
+        meta_thread.daemon = True
+        meta_thread.start()
 
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
@@ -155,6 +160,7 @@ class HlsCapture(ICapture):
         # each frame should be displayed
         self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
         self.read()
+        meta_thread.join()
 
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,

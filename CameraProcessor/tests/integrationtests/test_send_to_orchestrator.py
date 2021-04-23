@@ -1,17 +1,20 @@
 """ Tests the sending of all possibly message types to the processor orchestrator, asserts that nothing is sent back
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import asyncio
 import pytest
-import conftest
 from super_websocket_client import create_dummy_client
 from utils.utils import PC_URL
 from utils.jsonloader import load_data
 
 
 class TestSendToOrchestrator:
-    """Class that contains sending to orchestrator tests
+    """Class that contains the sending part to orchestrator tests
 
     """
     @pytest.mark.asyncio

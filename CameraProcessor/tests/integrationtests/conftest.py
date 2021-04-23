@@ -1,3 +1,10 @@
+"""Defines fixtures other integration tests can use for parameterized testing
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import sys
 import os
 import pytest
@@ -18,6 +25,7 @@ def amount(request):
 
     """
     return request.param
+
 
 @pytest.fixture(params=['full'])
 def message_type_receiving(request):
