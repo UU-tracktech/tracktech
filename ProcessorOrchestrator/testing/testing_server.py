@@ -1,3 +1,5 @@
+"""Server used for testing purposes. It is run as a test so that coverage may be measured."""
+
 import pytest
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
@@ -15,16 +17,19 @@ global stop
 @pytest.mark.asyncio
 @pytest.mark.timeout(20000)
 def test_start_testing_server():
+    """Starts the server as a test, so that the coverage may be measured."""
     main()
 
 
 def main():
+    """Starts the server."""
     print("Starting main")
 
     _start_server()
 
 
 def _start_server():
+    """Creates handlers and starts the IO loop."""
     print("Starting setup server")
 
     global server
@@ -43,6 +48,7 @@ def _start_server():
 
 
 def _stop_server():
+    """Stops the server."""
     global server
 
     server.stop()
@@ -51,6 +57,7 @@ def _stop_server():
 
 
 class StopSocket(WebSocketHandler):
+    """Websocket handler that can only be used to stop the server."""
     def data_received(self, chunk):
         pass
 
@@ -64,6 +71,11 @@ class StopSocket(WebSocketHandler):
         return True
 
     def on_message(self, message) -> None:
-        """Waits for test message"""
+        """Waits for test message
+
+        Args:
+            message:
+                String that should contain the string 'stop', which will stop the server.
+        """
         if message == "stop":
             _stop_server()
