@@ -1,3 +1,4 @@
 tornado
 pytest
-python-keycloak
+pyjwt
+cryptography

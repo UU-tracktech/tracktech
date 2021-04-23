@@ -19,7 +19,7 @@ ENTRYPOINT ["pytest", "testing", "--junitxml=report.xml"]
 FROM build as production
 
 # Make sure port is available
-EXPOSE 81
+EXPOSE 80
 EXPOSE 443
 
 # Run server

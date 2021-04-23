@@ -5,11 +5,11 @@ This file sets up the tornado application.
 import os
 import ssl
 
-from keycloak import KeycloakOpenID
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 
+from auth import Auth
 from client_socket import ClientSocket
 from processor_socket import ProcessorSocket
 from log_handler import LogHandler
@@ -27,14 +27,13 @@ def main():
     use_tls = cert is not None and key is not None
 
     # Get auth ready by reading the environment variables 
-    server_url, client_id, realm_name = os.environ.get('SERVER_URL'), os.environ.get('CLIENT_ID'), os.environ.get('REALM_NAME')
-    keycloak_openid = None
-    if server_url is not None and client_id is not None and realm_name is not None:
-        keycloak_openid = KeycloakOpenID(server_url=server_url,
-                        client_id=client_id,
-                        realm_name=realm_name)
+    public_key, audience, role = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE'), os.environ.get('ROLE')
+    auth = None
+    if public_key is not None and audience is not None and role is not None:
+        print("using token validation")
+        auth = Auth(public_key_path=public_key, algorithms=['RS256'], audience=audience, role=role)
 
-    app = create_app(keycloak_openid)
+    app = create_app(auth)
 
     if use_tls:
         # Create a ssl context
@@ -49,21 +48,19 @@ def main():
     else:
         # Create a http server, with optional ssl.
         http_server = HTTPServer(app)
-        http_server.listen(81)
+        http_server.listen(80)
         print('listening over http')
 
     IOLoop.current().start()
 
 
-def create_app(keycloak):
+def create_app(auth):
     """Creates tornado application.
 
     Creates the routing in the application and returns the complete app.
 
     Args:
-        keycloak:
-            Starting app, needing the following argument:
-                 - "keycloak" | A keycloak object containing identity provider information
+        auth:  A auth object containing identity provider information
     """
     # Define socket for both client and processor
     handlers = [
@@ -71,9 +68,9 @@ def create_app(keycloak):
         ('/processor', ProcessorSocket),
         ('/logs', LogHandler)
     ]
-
+    
     # Construct and serve the tornado application.
-    return Application(handlers, keycloak = keycloak)
+    return Application(handlers, auth=auth)
 
 
 if __name__ == "__main__":

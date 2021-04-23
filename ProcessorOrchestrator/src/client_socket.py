@@ -8,7 +8,6 @@ import json
 from time import sleep
 from typing import Optional, Awaitable, Dict, Callable, Any
 
-from keycloak import KeycloakOpenID
 import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
@@ -34,7 +33,10 @@ class ClientSocket(WebSocketHandler):
         """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
-        self.authenticated = False
+        self.authorized = False
+        
+        # Load the auth object from appsettings
+        self.auth = self.application.settings.get('auth')
 
     def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
@@ -95,12 +97,14 @@ class ClientSocket(WebSocketHandler):
             else:
                 function()
 
-        except ValueError:
+        except ValueError as e:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
-            print("Someone wrote bad json")
-        except KeyError:
+            print("Someone wrote bad json", e)
+        except KeyError as e:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
-            print("Someone missed a property in their json")
+            print("Someone missed a property in their json", e)
+        except Exception as e:
+            print(e)
 
     def send_message(self, message) -> None:
         """Sends a message over the websocket and logs it.
@@ -120,7 +124,7 @@ class ClientSocket(WebSocketHandler):
         del clients[self.identifier]
         print(f"Client with id {self.identifier} disconnected")
 
-    def authenticate(message) -> None:
+    def authenticate(self, message) -> None:
         """Creates tracking object and sends start tracking command to specified processor
 
         Args:
@@ -128,7 +132,10 @@ class ClientSocket(WebSocketHandler):
                 JSON message that was received. It should contain the following property:
                     - "jwt" | The jwt token containing information about a user
         """
-        jwt: Any = message["jwt"]
+        
+        if self.auth is not None:
+            self.auth.validate(message["jwt"])
+        self.authorized = True
 
     @staticmethod
     def start_tracking(message) -> None:
