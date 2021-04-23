@@ -7,12 +7,18 @@ from copy import deepcopy
 sys.path.append('/')  # to run '$ python *.py' files in subdirectories
 logger = logging.getLogger(__name__)
 
-from processor.pipeline.detection.yolov5.models.common import *
-from processor.pipeline.detection.yolov5.models.experimental import *
-from processor.pipeline.detection.yolov5.utils.autoanchor import check_anchor_order
-from processor.pipeline.detection.yolov5.utils.general import make_divisible, check_file, set_logging
-from processor.pipeline.detection.yolov5.utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, \
+from models.common import *
+from models.experimental import *
+from utils.autoanchor import check_anchor_order
+from utils.general import make_divisible, check_file, set_logging
+from utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, \
     scale_img, initialize_weights, select_device, copy_attr
+# from processor.pipeline.detection.yolov5.models.common import *
+# from processor.pipeline.detection.yolov5.models.experimental import *
+# from processor.pipeline.detection.yolov5.utils.autoanchor import check_anchor_order
+# from processor.pipeline.detection.yolov5.utils.general import make_divisible, check_file, set_logging
+# from processor.pipeline.detection.yolov5.utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, \
+#     scale_img, initialize_weights, select_device, copy_attr
 
 try:
     import thop  # for FLOPS computation
