@@ -1,9 +1,20 @@
+"""Contains the video capture class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import logging
 import cv2
 from processor.input.icapture import ICapture
 
 
 class VideoCapture(ICapture):
+    """ Captures video from a video file on the system
+
+    """
     # Default path is the path to venice.mp4
     def __init__(self, path='/data/videos/test.mp4'):
         """

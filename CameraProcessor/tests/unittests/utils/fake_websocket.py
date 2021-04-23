@@ -1,6 +1,7 @@
-import pytest
+"""Mock websocket for testing.
+
+"""
 import json
-import logging
 
 
 class FakeWebsocket:

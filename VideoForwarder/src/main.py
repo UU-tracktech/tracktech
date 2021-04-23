@@ -1,5 +1,9 @@
-"""
-Reads the first environment variables and starts the webserver.
+"""Reads the first environment variables and starts the webserver.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import os
 import json
@@ -19,7 +23,7 @@ if __name__ == "__main__":
     configFile.close()
     """Get the config path, read it and parse the json and close it."""
 
-    CameraHandler.cameras = {camera["Name"]: camera(camera["Ip"], camera["Audio"]) for camera in configJson}
+    CameraHandler.cameras = {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in configJson}
     """Process the json config and store the individual cameras"""
 
     cert = os.environ.get('SSL_CERT')

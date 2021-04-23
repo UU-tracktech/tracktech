@@ -1,3 +1,11 @@
+""" Contains the ImageCapture class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import os
 import logging
 from typing import List
@@ -6,6 +14,9 @@ from processor.input.icapture import ICapture
 
 
 class ImageCapture(ICapture):
+    """Reads all images from a folder one by one
+
+    """
     def __init__(self, images_dir: str):
         """Gets all the paths to images inside the folder and stores them in order
 

@@ -1,3 +1,11 @@
+"""Contains the main methods for running YOLOv5 object detection on a frame
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import os
 import sys
 import logging

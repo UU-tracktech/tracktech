@@ -1,3 +1,10 @@
+"""Defines node class for scheduler with its connections to other nodes
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 from typing import Callable, Any, List
 import numpy as np
 from processor.scheduling.component.component_interface import IComponent
