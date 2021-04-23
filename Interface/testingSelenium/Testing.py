@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  """
 
-import timegit
+import time
 import unittest
 from selenium import webdriver
 
