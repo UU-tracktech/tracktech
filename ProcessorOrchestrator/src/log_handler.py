@@ -1,4 +1,10 @@
-"""HTTP handler to serve the logs"""
+"""HTTP handler to serve the logs
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 from typing import Optional, Awaitable
 from tornado.web import RequestHandler
 

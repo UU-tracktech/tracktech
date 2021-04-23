@@ -3,7 +3,6 @@ image:
 
 stages:
   - build
-  - removal
   - unittest
   - integrationtest
   - linting
@@ -55,7 +54,7 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
-
+  
 
 camera-processor_integration-testing:
   stage: integrationtest
@@ -81,7 +80,6 @@ camera-processor_integration-testing:
 camera-processor_linting:
   stage: linting
   needs: [camera-processor_docker_build]
-  allow_failure: true
   before_script:
     - docker rm -f camera-processor-lint-container || true
     - docker build --target=lint -t camera-processor-lint ./CameraProcessor
@@ -163,7 +161,6 @@ orchestrator_integration-testing:
 orchestrator_linting:
   stage: linting
   needs: [orchestrator_docker_build]
-  allow_failure: true
   before_script:
     - docker rm -f orchestrator-lint-container || true
   script:
@@ -215,16 +212,16 @@ interface_unit-testing:
 interface-linting:
   stage: linting
   needs: [interface_docker_build]
-  allow_failure: true
   before_script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_lint .
     - docker rm -f interface-lint-container || true
   script:
+    - cd ..
     - docker run -d -t --name interface-lint-container interface_linting
-    - docker cp .pylintrc interface-lint-container:/
-    - docker cp utility/pylint_ignore.py interface-lint-container:/utility
-    - docker cp utility/__init__.py interface-lint-container:/utility
+    - docker cp .pylintrc interface-lint-container:/app
+    - docker cp utility/pylint_ignore.py interface-lint-container:/app/utility
+    - docker cp utility/__init__.py interface-lint-container:/app/utility
     - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
   after_script:
     - docker stop interface-lint-container
@@ -248,12 +245,12 @@ forwarder_docker_build:
 forwarder-linting:
   stage: linting
   needs: [forwarder_docker_build]
-  allow_failure: true
   before_script:
     - cd VideoForwarder
     - docker build -t forwarder_linting -f Dockerfile_lint .
     - docker rm -f forwarder-lint-container || true
   script:
+    - cd ..
     - docker run -d -t --name forwarder-lint-container forwarder_linting
     - docker cp .pylintrc forwarder-lint-container:/app
     - docker cp utility/pylint_ignore.py forwarder-lint-container:/app/utility
