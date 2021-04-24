@@ -13,47 +13,45 @@ from src.processor_socket import ProcessorSocket
 from src.log_handler import LogHandler
 
 
-class TestServer:
-    """Class containing a test server that needs to be started to use in integration testing."""
+@pytest.mark.asyncio
+def test_start_testing_server():
+    """Starts the server as a test, so that the coverage may be measured."""
+    main()
 
-    def __init__(self):
-        """Creates a server member"""
-        self.server = None
 
-    @pytest.mark.asyncio
-    def test_start_testing_server(self):
-        """Starts the server as a test, so that the coverage may be measured."""
-        self.main()
+def main():
+    """Starts the server."""
+    print("Starting main")
 
-    def main(self):
-        """Starts the server."""
-        print("Starting main")
+    _start_server()
 
-        self._start_server()
 
-    def _start_server(self):
-        """Creates handlers and starts the IO loop."""
-        print("Starting setup server")
+def _start_server():
+    """Creates handlers and starts the IO loop."""
+    print("Starting setup server")
 
-        handlers = [
-            ('/client', ClientSocket),
-            ('/processor', ProcessorSocket),
-            ('/logs', LogHandler),
-            ('/stop', StopSocket, dict(server=self.server))
-        ]
+    server = None
 
-        app = Application(handlers)
-        self.server = HTTPServer(app)
-        self.server.listen(80)
-        print("Test server is listening")
-        IOLoop.current().start()
+    handlers = [
+        ('/client', ClientSocket),
+        ('/processor', ProcessorSocket),
+        ('/logs', LogHandler),
+        ('/stop', StopSocket, dict(server=server))
+    ]
 
-    def stop_server(self):
-        """Stops the server."""
+    app = Application(handlers)
+    server = HTTPServer(app)
+    server.listen(80)
+    print("Test server is listening")
+    IOLoop.current().start()
 
-        self.server.stop()
-        io_loop = IOLoop.instance()
-        io_loop.add_callback(io_loop.stop)
+
+def stop_server(server):
+    """Stops the server."""
+
+    server.stop()
+    io_loop = IOLoop.instance()
+    io_loop.add_callback(io_loop.stop)
 
 
 class StopSocket(WebSocketHandler):
@@ -88,4 +86,4 @@ class StopSocket(WebSocketHandler):
                 String that should contain the string 'stop', which will stop the server.
         """
         if message == "stop":
-            self.server.stop_server()
+            stop_server(self.server)
