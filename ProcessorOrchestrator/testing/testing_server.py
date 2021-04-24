@@ -30,17 +30,18 @@ def _start_server():
     """Creates handlers and starts the IO loop."""
     print("Starting setup server")
 
-    server = None
+    server_container = []
 
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
         ('/logs', LogHandler),
-        ('/stop', StopSocket, dict(server=server))
+        ('/stop', StopSocket, dict(server=server_container))
     ]
 
     app = Application(handlers)
     server = HTTPServer(app)
+    server_container[0] = server
     server.listen(80)
     print("Test server is listening")
     IOLoop.current().start()
@@ -86,4 +87,4 @@ class StopSocket(WebSocketHandler):
                 String that should contain the string 'stop', which will stop the server.
         """
         if message == "stop":
-            stop_server(self.server)
+            stop_server(self.server[0])
