@@ -115,9 +115,9 @@ orchestrator_unit-testing:
   script:
     - docker run --name po-unit-testing processor-orchestrator
   after_script:
-    - docker cp po-unit-testing:po-unit-report.xml po-unit-report.xml
-    - docker cp po-unit-testing:/po_coverage_html po_coverage_html
-    - docker cp po-unit-testing:/coverage.xml po-coverage.xml
+    - docker cp po-unit-testing:/app/po-unit-report.xml po-unit-report.xml
+    - docker cp po-unit-testing:/app/po_coverage_html po_coverage_html
+    - docker cp po-unit-testing:/app/coverage.xml po-coverage.xml
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
@@ -139,9 +139,9 @@ orchestrator_integration-testing:
   script:
     - cd ProcessorOrchestrator
     - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
-    - docker cp processor-orchestrator-integration-tests:integration-report.xml integration-report.xml
-    - docker cp processor-orchestrator-service:/po_coverage_html po_coverage_html
-    - docker cp processor-orchestrator-service:/coverage.xml po-coverage.xml
+    - docker cp processor-orchestrator-integration-tests:/app/integration-report.xml integration-report.xml
+    - docker cp processor-orchestrator-service:/app/po_coverage_html po_coverage_html
+    - docker cp processor-orchestrator-service:/app/coverage.xml po-coverage.xml
     - docker-compose -f docker-compose.testing.yml down
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
@@ -165,9 +165,9 @@ orchestrator_linting:
     - docker rm -f orchestrator-lint-container || true
   script:
     - docker run -d -t --name orchestrator-lint-container processor-orchestrator
-    - docker cp .pylintrc orchestrator-lint-container:/
-    - docker cp utility/. orchestrator-lint-container:/utility/
-    - docker exec orchestrator-lint-container pylint src testing --rcfile=.pylintrc --output-format=colorized
+    - docker cp .pylintrc orchestrator-lint-container:/app
+    - docker cp utility/. orchestrator-lint-container:/app/utility/
+    - docker exec orchestrator-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
   after_script:
     - docker stop orchestrator-lint-container
   rules:
