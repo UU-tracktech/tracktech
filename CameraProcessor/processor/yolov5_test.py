@@ -16,6 +16,7 @@ from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(f'{curr_dir}/../')
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 accuracy_testing = True
@@ -34,6 +35,13 @@ def main(_argv):
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(local_time, None, 0)
+    accuracy_dest =os.path.abspath(f'{root_dir}/data/annotated/test/mockyolo/testfile.txt')
+
+    if accuracy_testing:
+        file = open(accuracy_dest, 'w')
+        file.truncate(0)
+        file.close()
+        det_obj.to_txt_file(accuracy_dest)
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
@@ -65,9 +73,12 @@ def main(_argv):
 
         # Draw the frame with bounding boxes
         det_obj.draw_rectangles()
-        if accuracy_testing:
-            det_obj.to_txt()
+
         counter += 1
+
+        # Write detection object to txt file for later accuracy testing
+        if accuracy_testing:
+            det_obj.to_txt_file(accuracy_dest)
 
         # Play the video in a window called "Output Video"
         try:

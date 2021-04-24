@@ -10,10 +10,10 @@ import json
 import cv2
 
 
-
-class DetectionObj():
+class DetectionObj:
     """Object that holds all the bounding boxes for a specific frame
     """
+
     def __init__(self, timestamp, frame, frame_nr):
         self.timestamp = timestamp
         self.frame = frame
@@ -29,7 +29,7 @@ class DetectionObj():
             # Object bounding box.
             self.frame = cv2.rectangle(self.frame,
                                        (int(bounding_box.rectangle[0] * width),
-                                       int(bounding_box.rectangle[1] * height)),
+                                        int(bounding_box.rectangle[1] * height)),
                                        (int(bounding_box.rectangle[2] * width),
                                         int(bounding_box.rectangle[3] * height)),
                                        red,
@@ -37,9 +37,9 @@ class DetectionObj():
             # Tag background.
             cv2.rectangle(self.frame,
                           (int(bounding_box.rectangle[0] * width),
-                          int(bounding_box.rectangle[1] * height) - 35),
+                           int(bounding_box.rectangle[1] * height) - 35),
                           (int(bounding_box.rectangle[0] * width + (len(bounding_box.classification) + 4) * 15),
-                          int(bounding_box.rectangle[1] * height)),
+                           int(bounding_box.rectangle[1] * height)),
                           red,
                           -1)
             # Tag with confidence.
@@ -60,11 +60,25 @@ class DetectionObj():
             "boxes": [bounding_box.to_dict() for bounding_box in self.bounding_boxes],
         })
 
-    def to_txt(self):
-        s=""
+    def to_txt_file(self, dest):
+        """Write the detection object to a txt file, so that accuracy testing can read it.
+
+        Args:
+            dest: Filepath (including file name)
+
+        """
+        detection_obj_as_txt = ""
         for bounding_box in self.bounding_boxes:
             height, width, _ = self.frame.shape
-            s += (f'{self.frame_nr},{bounding_box.identifier},{int(bounding_box.rectangle[0] * width)},' \
-                    f'{int(bounding_box.rectangle[1] * height)},{int((bounding_box.rectangle[2] - bounding_box.rectangle[0]) * width)},' \
-                    f'{int((bounding_box.rectangle[3] - bounding_box.rectangle[1]) * height)},1,1,1 \n')
-        print(s)
+            detection_obj_as_txt += (
+                f'{self.frame_nr},{bounding_box.identifier},'
+                f'{int(bounding_box.rectangle[0] * width)}, '
+                f'{int(bounding_box.rectangle[1] * height)},'
+                f'{int((bounding_box.rectangle[2] - bounding_box.rectangle[0]) * width)}, '
+                f'{int((bounding_box.rectangle[3] - bounding_box.rectangle[1]) * height)},1,1,1 \n')
+        try:
+            file = open(dest, 'a')
+            file.write(detection_obj_as_txt)
+            file.close()
+        except RuntimeError:
+            print(f'{dest}: Cannot write to this file')
