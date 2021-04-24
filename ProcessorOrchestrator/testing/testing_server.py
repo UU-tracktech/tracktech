@@ -1,8 +1,6 @@
 """Server used for testing purposes. It is run as a test so that coverage may be measured."""
 
 import pytest
-import tornado
-from tornado import httputil
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
@@ -36,7 +34,7 @@ def _start_server():
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
         ('/logs', LogHandler),
-        ('/stop', StopSocket, dict(server=server_container))
+        ('/stop', StopSocket, {'server':server_container})
     ]
 
     app = Application(handlers)
@@ -58,13 +56,9 @@ def stop_server(server):
 class StopSocket(WebSocketHandler):
     """Websocket handler that can only be used to stop the server."""
 
-    def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
-        """Initialises testing server."""
-        super().__init__(application, request)
-        self.server = None
-
     def initialize(self, server):
         """Sets server."""
+        # noinspection PyAttributeOutsideInit | In tornado, the init funciton should be replaced with initialize.
         self.server = server
 
     def data_received(self, chunk):
@@ -88,3 +82,7 @@ class StopSocket(WebSocketHandler):
         """
         if message == "stop":
             stop_server(self.server[0])
+
+
+if __name__ == "__main__":
+    main()
