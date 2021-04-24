@@ -39,6 +39,12 @@ COPY .coveragerc .coveragerc
 
 RUN ["mkdir", "utility"]
 
+WORKDIR /utility
+
+RUN ["mkdir", "utility"]
+
+WORKDIR /
+
 # Make sure port is available
 EXPOSE 80
 EXPOSE 443
