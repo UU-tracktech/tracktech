@@ -59,6 +59,7 @@ class StopSocket(WebSocketHandler):
     def initialize(self, server):
         """Sets server."""
         # noinspection PyAttributeOutsideInit | In tornado, the init funciton should be replaced with initialize.
+        # pylint: disable=attribute-defined-outside-init
         self.server = server
 
     def data_received(self, chunk):
