@@ -33,7 +33,7 @@ COPY .coveragerc .coveragerc
 
 FROM test AS lint
 
-RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint==2.6.0"]
 RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
