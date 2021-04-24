@@ -11,8 +11,8 @@ File containting the accuracy class
 import os
 from typing import List
 import configparser
-from podm.podm import BoundingBox, get_pascal_voc_metrics, MetricPerClass
-from podm.visualize import plot_precision_recall_curve
+from podm.podm import BoundingBox, get_pascal_voc_metrics
+from podm.visualize import plot_precision_recall_curve, plot_precision_recall_curve_all
 from processor.input.image_capture import ImageCapture
 from processor.training.pre_annotations import PreAnnotations
 
@@ -32,13 +32,13 @@ class AccuracyObject:
         self.folder_name = folder_name
         self.gt_dir = gt_dir
         self.images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
-        self.result = {}
+        self.results = {}
         self.image_width = 10000
         self.image_height = 10000
 
         bounding_boxes_path_gt = f'{root_dir}/data/annotated/{folder_name}/{gt_dir}'
 
-        self.boundingboxes_gt = self.read_boxes(self.images_dir, bounding_boxes_path_gt)
+        self.bounding_boxes_gt = self.read_boxes(self.images_dir, bounding_boxes_path_gt)
 
         configs = configparser.ConfigParser(allow_no_value=True)
         configs.read(f'{root_dir}/configs.ini')
@@ -60,10 +60,10 @@ class AccuracyObject:
             for box in boxes:
                 width = box.rectangle[2]
                 height = box.rectangle[3]
-                parsedbox = BoundingBox(label="undefined", xtl=box.rectangle[0]/self.image_width,
+                parsed_box = BoundingBox(label="undefined", xtl=box.rectangle[0]/self.image_width,
                                         ytl=box.rectangle[1]/self.image_height, xbr=width/self.image_width,
                                         ybr=height/self.image_height, image_name=str(i[0]), score=box.certainty)
-                list_parsed_boxes.append(parsedbox)
+                list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
     def read_boxes(self, dir_image, path_to_boxes):
@@ -91,24 +91,32 @@ class AccuracyObject:
             This method currently has no returns.
         """
         bounding_boxes_path_mock = f'{self.root_dir}/data/annotated/{self.folder_name}/{det_dir}'
-        boundingboxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
+        bounding_boxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
 
-        self.result = get_pascal_voc_metrics(self.boundingboxes_gt, boundingboxes_det, self.iou_threshold)
-        #plot_precision_recall_curve(self.result['undefined'],
-        #                            f'{self.root_dir}/processor/training/detection/plots/threshold10-1')
+        self.results = get_pascal_voc_metrics(self.bounding_boxes_gt, bounding_boxes_det, self.iou_threshold)
 
         tps = 0
-        for value in self.result.values():
+        for value in self.results.values():
             tps += value.tp
 
         print("tp (all classes): " + str(tps))
-        print("tp (only undefined): " + str(self.result['undefined'].tp))
-        print("fp: " + str(self.result['undefined'].fp))
-        print("fns:" + str(len(self.boundingboxes_gt) - len(boundingboxes_det)))
-        print(len(self.boundingboxes_gt))
+        print("tp (only undefined): " + str(self.results['undefined'].tp))
+        print("fp: " + str(self.results['undefined'].fp))
+        print("fns:" + str(len(self.bounding_boxes_gt) - len(bounding_boxes_det)))
+        print(len(self.bounding_boxes_gt))
 
+    def draw_pr_plot(self, result, file_prefix):
+        try:
+            plot_precision_recall_curve(result,
+                                        f'{self.root_dir}/processor/training/detection/plots/{file_prefix}-{result.label}')
+        except RuntimeError:
+            print(f'{file_prefix}-{result.label}: Cannot plot')
+
+    def draw_all_pr_plots(self, file_prefix):
+        for result in self.results:
+            self.draw_pr_plot(self, result, file_prefix)
 
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
-object_to_detect = AccuracyObject(os.path.abspath(__file__ + '/../../../../'), 'test', 'gt/gt.txt')
-object_to_detect.detect('mockyolo/threshold10.txt')
+accuracy_object = AccuracyObject(os.path.abspath(__file__ + '/../../../../'), 'test', 'gt/gt.txt')
+accuracy_object.detect('mockyolo/threshold10.txt')
