@@ -1,5 +1,5 @@
 """
-File containting the accuracy class
+File containing the accuracy class
 """
 # Determine training set
 # Determine test set
@@ -7,12 +7,14 @@ File containting the accuracy class
 
 # Run test set in epochs
 
+import configparser
 # Determine accuracy of a bounding box estimate
 import os
 from typing import List
-import configparser
+
 from podm.podm import BoundingBox, get_pascal_voc_metrics
-from podm.visualize import plot_precision_recall_curve, plot_precision_recall_curve_all
+from podm.visualize import plot_precision_recall_curve
+
 from processor.input.image_capture import ImageCapture
 from processor.training.pre_annotations import PreAnnotations
 
@@ -21,6 +23,7 @@ class AccuracyObject:
     """
     This class is used to test the accuracy of predictions
     """
+
     def __init__(self, root_dir, folder_name, gt_dir):
         """
         Args:
@@ -52,7 +55,7 @@ class AccuracyObject:
             boxes_to_parse: A list of list of bounding boxes
 
         Returns:
-            A list of boundingboxes as specified by the podm.podm library
+            A list of bounding boxes as specified by the podm.podm library
         """
         list_parsed_boxes: List[BoundingBox] = []
         for i in enumerate(boxes_to_parse):
@@ -60,19 +63,19 @@ class AccuracyObject:
             for box in boxes:
                 width = box.rectangle[2]
                 height = box.rectangle[3]
-                parsed_box = BoundingBox(label="undefined", xtl=box.rectangle[0]/self.image_width,
-                                        ytl=box.rectangle[1]/self.image_height, xbr=width/self.image_width,
-                                        ybr=height/self.image_height, image_name=str(i[0]), score=box.certainty)
+                parsed_box = BoundingBox(label="undefined", xtl=box.rectangle[0] / self.image_width,
+                                         ytl=box.rectangle[1] / self.image_height, xbr=width / self.image_width,
+                                         ybr=height / self.image_height, image_name=str(i[0]), score=box.certainty)
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
     def read_boxes(self, dir_image, path_to_boxes):
-        """A method for reading the boundingboxes with the pre_annotions
+        """A method for reading the bounding boxes with the pre_annotations.
         Args:
-            dirImage: The directory to the image
-            pathToBoxes: Path to the file where the boxes are stored
+            dir_image: The directory to the image.
+            path_to_boxes: Path to the file where the boxes are stored.
         Returns:
-            A list of boundingboxes
+            A list of bounding boxes.
         """
         capture = ImageCapture(dir_image)
         self.image_width = capture.image_shape[0]
@@ -108,13 +111,15 @@ class AccuracyObject:
     def draw_pr_plot(self, result, file_prefix):
         try:
             plot_precision_recall_curve(result,
-                                        f'{self.root_dir}/processor/training/detection/plots/{file_prefix}-{result.label}')
+                                        f'{self.root_dir}/processor/training/detection/plots/{file_prefix}'
+                                        f'-{result.label}')
         except RuntimeError:
             print(f'{file_prefix}-{result.label}: Cannot plot')
 
     def draw_all_pr_plots(self, file_prefix):
         for result in self.results:
             self.draw_pr_plot(self, result, file_prefix)
+
 
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
