@@ -111,6 +111,7 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=10.1"
 
 COPY requirements-gpu.txt requirements-gpu.txt
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
+COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
 
 COPY configs.ini .
