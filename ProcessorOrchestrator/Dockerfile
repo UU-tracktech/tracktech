@@ -16,8 +16,8 @@ ENTRYPOINT ["python","-u","/src/main.py"]
 FROM python:3.8-slim-buster as testing
 
 
-WORKDIR /app
-ENV PYTHONPATH=/app
+WORKDIR /
+ENV PYTHONPATH=/
 
 RUN apt update
 # Keeps Python from generating .pyc files in the container
@@ -44,4 +44,4 @@ EXPOSE 80
 EXPOSE 443
 
 # Run server
-ENTRYPOINT ["pytest", "app/testing/unit_testing", "--cov-config=app/.coveragerc", "--cov=app/src", "--cov-report=html", "--cov-report=xml", "--cov-report=term", "--junitxml=po-unit-report.xml"]
+ENTRYPOINT ["pytest", "testing/unit_testing", "--cov-config=.coveragerc", "--cov=src", "--cov-report=html", "--cov-report=xml", "--cov-report=term", "--junitxml=po-unit-report.xml"]
