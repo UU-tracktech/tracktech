@@ -165,9 +165,9 @@ orchestrator_linting:
     - docker rm -f orchestrator-lint-container || true
   script:
     - docker run -d -t --name orchestrator-lint-container processor-orchestrator
-    - docker cp .pylintrc orchestrator-lint-container
-    - docker cp utility/pylint_ignore.py orchestrator-lint-container:utility
-    - docker cp utility/__init__.py orchestrator-lint-container:utility
+    - docker cp .pylintrc orchestrator-lint-container:.pylintrc
+    - docker cp utility/pylint_ignore.py orchestrator-lint-container:utility/pylint_ignore.py
+    - docker cp utility/__init__.py orchestrator-lint-container:utility/__init__.py
     - docker exec orchestrator-lint-container python3.8 -m pylint src --rcfile=.pylintrc --output-format=colorized
     - docker exec orchestrator-lint-container python3.8 -m pylint testing --rcfile=.pylintrc --output-format=colorized
   after_script:
