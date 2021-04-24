@@ -41,7 +41,7 @@ def _start_server():
 
     app = Application(handlers)
     server = HTTPServer(app)
-    server_container[0] = server
+    server_container.append(server)
     server.listen(80)
     print("Test server is listening")
     IOLoop.current().start()
