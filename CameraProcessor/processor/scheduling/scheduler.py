@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 from queue import Queue
 from processor.scheduling.node.schedule_node import INode
 
-
+# pylint: disable=duplicate-code
 class Scheduler:
     """Sequential scheduler executing a starting node and all children of
     said node when they are ready for execution.
