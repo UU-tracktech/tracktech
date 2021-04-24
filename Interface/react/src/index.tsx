@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { App } from './app'
 import reportWebVitals from './reportWebVitals'
-import './bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.css'
 
 import  { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
