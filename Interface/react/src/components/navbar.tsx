@@ -11,7 +11,7 @@ import { Component } from 'react'
 import { Navbar, Nav, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-import LoginButton from './loginButton'
+import { LoginButton } from './loginButton'
 import { LoggedInUser } from './loggedInUser'
 
 export class NavMenu extends Component {
@@ -21,8 +21,8 @@ export class NavMenu extends Component {
       <header>
         <Navbar bg="primary" variant="dark" expand="lg">
           <Navbar.Brand as={Link} to="/" >
-            Tracktech
-           {/*  <img style={{maxHeight: "100px", maxWidth:"100px"}} src={"https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif"} alt="logo" /> */}
+
+            <img style={{ maxHeight: "100px", maxWidth: "100px", marginTop: "-50px", marginBottom: "-50px" }} src={"https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif"} alt="logo" />
           </Navbar.Brand>
           <Navbar.Toggle style={{ float: "right" }} aria-controls="basic-navbar-nav" />
           <Navbar.Collapse className="mr-auto">

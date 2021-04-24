@@ -9,8 +9,9 @@ Utrecht University within the Software Project course.
 import * as React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
-export type VideoPlayerProps = { onButtonClick: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
+export type VideoPlayerProps = { onUp: () => void, onDown: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
 export class VideoPlayer extends React.Component<VideoPlayerProps> {
     private player?: videojs.Player
     private videoNode?: HTMLVideoElement
@@ -26,8 +27,8 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
         // instantiate video.js
         this.player = videojs(this.videoNode, this.props, () => {
 
-            var toggleSizeButton = new ToggleSizeButton(this.player, { onClick: this.props.onButtonClick });
-            this.player?.controlBar.addChild(toggleSizeButton, { Text: 'Toggle main' }, 0)
+            this.player?.controlBar.addChild(new resizeButton(this.player, { onPress: this.props.onUp, icon: 'bi-arrow-up-circle', text: 'Increase size' }), {}, 0)
+            this.player?.controlBar.addChild(new resizeButton(this.player, { onPress: this.props.onDown, icon: 'bi-arrow-down-circle', text: 'Decrease size' }), {}, 1)
             this.player?.on('playerresize', () => this.onResize())
             this.player?.on('play', () => this.onResize())
 
@@ -60,15 +61,15 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
      * Accesses the video player tech and returns the URI
      * from the first segment in the playlist
      */
-    getURI() : string | undefined {
+    getURI(): string | undefined {
         try {
             //passing any argument suppresses a warning about
             //accessing the tech
-            let tech = this.player?.tech({randomArg: true})
-            if(tech) {
+            let tech = this.player?.tech({ randomArg: true })
+            if (tech) {
                 //ensure media is loaded before trying to access
                 let med = tech['vhs'].playlists.media()
-                if(med)
+                if (med)
                     return med.segments[0].uri
             }
         } catch (e) {
@@ -84,14 +85,14 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
      */
     getInitialUri() {
         let currentUri = this.getURI()
-        if(currentUri) {
+        if (currentUri) {
             console.log('InitialURI: ', currentUri)
 
             this.startUri = currentUri
             this.player?.clearInterval(this.initialUriInterval)
             this.changeInterval = this.player?.setInterval(() => {
                 this.lookForUriUpdate()
-            }, 1000/24)
+            }, 1000 / 24)
         }
     }
 
@@ -103,9 +104,9 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
      */
     lookForUriUpdate() {
         let currentUri = this.getURI()
-        if(currentUri !== this.startUri) {
+        if (currentUri !== this.startUri) {
             //ensure it is a string because typescript
-            if(typeof currentUri === 'string') {
+            if (typeof currentUri === 'string') {
                 console.log('URI changed: ', currentUri)
                 this.startTime = GetSegmentStarttime(currentUri)
                 console.log('Starttime: ', PrintTimestamp(this.startTime))
@@ -120,7 +121,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
      */
     updateTimestamp() {
 
-        if(!this.startTime) {
+        if (!this.startTime) {
             console.log('Timestamp: Loading...')
             return
         }
@@ -141,7 +142,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
     onResize() {
         if (this.player && this.props.onResize) {
             var player = this.player?.currentDimensions()
-            
+
             var playerWidth = player.width
             var playerHeight = player.height
             var playerAspect = playerWidth / playerHeight
@@ -150,7 +151,7 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
             var videoHeight = this.player.videoHeight()
             var videoAspect = videoWidth / videoHeight
 
-            if (isNaN(videoAspect)){
+            if (isNaN(videoAspect)) {
                 this.props.onResize(playerWidth, playerHeight, 0, 0)
             }
             else if (playerAspect < videoAspect) {
@@ -185,16 +186,16 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
 }
 
 //https://stackoverflow.com/questions/35604358/videojs-v5-adding-custom-components-in-es6-am-i-doing-it-right
-export type ToggleSizeButtonOptions = { onClick: () => void }
-class ToggleSizeButton extends videojs.getComponent('Button') {
+export type ToggleSizeButtonOptions = { onPress: () => void, icon: string, text: string }
+class resizeButton extends videojs.getComponent('Button') {
 
     private onClick: () => void
 
     constructor(player, options: ToggleSizeButtonOptions) {
         super(player, {})
-        this.controlText('Toggle main')
-        this.onClick = options.onClick
-        this.addClass('vjs-icon-circle');
+        this.controlText(options.text)
+        this.onClick = options.onPress
+        this.addClass(options.icon);
     }
 
     public handleClick(_e) {
@@ -208,13 +209,13 @@ class ToggleSizeButton extends videojs.getComponent('Button') {
  * @param {number} time The time in seconds
  * @returns {string} The time formatted as mm:ss:ms
  */
-function PrintTimestamp(time : number) : string {
+function PrintTimestamp(time: number): string {
 
     let min = Math.floor(time / 60)
     //toFixed(1) makes it so it is rounded to 1 decimal
     let sec = (time % 60).toFixed(1)
     //to make it look pretty
-    if(parseFloat(sec) < 10)
+    if (parseFloat(sec) < 10)
         sec = '0' + sec
     return min + ':' + sec
 }
@@ -225,18 +226,18 @@ function PrintTimestamp(time : number) : string {
  * @param {string} segName The filename of the segment
  * @returns {number} The time in seconds
  */
-function GetSegmentStarttime(segName : string) : number {
+function GetSegmentStarttime(segName: string): number {
 
     //Assuming the forwarder will always send a stream using
     //HLS, which gives .ts files afaik
-    if(!segName.endsWith('.ts')){
+    if (!segName.endsWith('.ts')) {
         console.warn('GetSegmentStarttime: ' +
             'expected .ts file but got something else')
         return NaN
     }
 
     //filename should contain '_V' if it comes from the forwarder
-    if(segName.indexOf('_V') === -1) {
+    if (segName.indexOf('_V') === -1) {
         console.warn('Video file not from forwarder')
         return NaN
     }
@@ -244,7 +245,7 @@ function GetSegmentStarttime(segName : string) : number {
     //filename ends with _VXYYY.ts where X is a version
     //and YYY is the segment number
     let end = segName.split('_V')[1]
-    let number = end.slice(1, end.length-3)
+    let number = end.slice(1, end.length - 3)
     //Every segment is 2 seconds, therefore
     //the number * 2 is the timestamp
     return parseInt(number) * 2

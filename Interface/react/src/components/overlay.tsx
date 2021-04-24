@@ -61,16 +61,16 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
 
     return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
-        { this.DrawOverlay() }
+        {this.DrawOverlay()}
       </div>
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
-        <VideoPlayer onResize={(w, h, l, t) => this.onPlayerResize(w, h, l, t)} autoplay={false} controls={true} onButtonClick={() => this.props.onButtonClick()} sources={this.props.sources} />
+        <VideoPlayer onResize={(w, h, l, t) => this.onPlayerResize(w, h, l, t)} autoplay={false} controls={true} onUp={() => this.props.onUp()} onDown={() => this.props.onDown()} sources={this.props.sources} />
       </div>
     </div >
   }
 
-  onBoxClick(boxId: number, frameId: number){
-    if(window.confirm("Start tracking this object?")){
+  onBoxClick(boxId: number, frameId: number) {
+    if (window.confirm("Start tracking this object?")) {
       this.context.send(new StartOrchestratorMessage(this.props.cameraId, frameId, boxId))
     }
   }
@@ -83,44 +83,44 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
       case "Selection": {
         return this.DrawBoxes(this.state.boxes.filter(x => x.objectId != undefined), this.state.frameId);
       }
-      default : {
-        return <div/>
+      default: {
+        return <div />
       }
     }
   }
 
-  DrawBoxes(boxes: Box[], frameId: number): JSX.Element{
+  DrawBoxes(boxes: Box[], frameId: number): JSX.Element {
     // TODO: make sure objectIds can be infinitely big without causing an index out of bounds
-    var colordict : string[] = ["Green", "Red", "Yellow", "Blue", "Purple", "Brown", "Aqua", "Navy"] 
+    var colordict: string[] = ["Green", "Red", "Yellow", "Blue", "Purple", "Brown", "Aqua", "Navy"]
 
     return <Fragment>
-          {
-            boxes.map((box) => {
-              var x1 = box.rect[0], x2 = box.rect[2], y1 = box.rect[1], y2 = box.rect[3]
-              if (x1 > x2) {
-                var tempx = x1
-                x1 = x2
-                x2 = tempx
-              }
-              if (y1 > y2) {
-                var tempy = y1
-                y1 = y2
-                y2 = tempy
-              }
-
-              return <div key={box.boxId} style={
-                {
-                  position: 'absolute',
-                  left: `${x1 * this.state.width + this.state.left}px`, top: `${y1 * this.state.height + this.state.top}px`,
-                  width: `${(x2 - x1) * this.state.width}px`, height: `${(y2 - y1) * this.state.height}px`,
-                  borderColor: colordict[box.objectId ?? 0], borderStyle: 'solid',
-                  /* transitionProperty: 'all', transitionDuration: '1s', */
-                  zIndex: 1000,
-                  cursor: box.objectId === undefined ? "pointer" : "default"
-                }
-              } onClick={() => {if(box.objectId === undefined) this.onBoxClick(box.boxId, this.state.frameId)}} />
-            })
+      {
+        boxes.map((box) => {
+          var x1 = box.rect[0], x2 = box.rect[2], y1 = box.rect[1], y2 = box.rect[3]
+          if (x1 > x2) {
+            var tempx = x1
+            x1 = x2
+            x2 = tempx
           }
-        </Fragment>
+          if (y1 > y2) {
+            var tempy = y1
+            y1 = y2
+            y2 = tempy
+          }
+
+          return <div key={box.boxId} style={
+            {
+              position: 'absolute',
+              left: `${x1 * this.state.width + this.state.left}px`, top: `${y1 * this.state.height + this.state.top}px`,
+              width: `${(x2 - x1) * this.state.width}px`, height: `${(y2 - y1) * this.state.height}px`,
+              borderColor: colordict[box.objectId ?? 0], borderStyle: 'solid',
+              /* transitionProperty: 'all', transitionDuration: '1s', */
+              zIndex: 1000,
+              cursor: box.objectId === undefined ? "pointer" : "default"
+            }
+          } onClick={() => { if (box.objectId === undefined) this.onBoxClick(box.boxId, this.state.frameId) }} />
+        })
+      }
+    </Fragment>
   }
 }

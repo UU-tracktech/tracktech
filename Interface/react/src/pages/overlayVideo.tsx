@@ -12,9 +12,11 @@ import { Overlay } from '../components/overlay'
 
 export class OverlayVideo extends Component {
   render() {
-    return <Overlay
+    return <div style={{ display: "grid", height: "100%", width: "100%" }}>
+      <Overlay
         cameraId={"test"}
-        onButtonClick={() => alert('resize')}
+        onUp={() => alert('up')}
+        onDown={() => alert('down')}
         key={'testvid'}
         autoplay={true}
         controls={true}
@@ -22,6 +24,7 @@ export class OverlayVideo extends Component {
         height={300}
         sources={[{ src: 'http://localhost:80/testvid.m3u8' }]}
         showBoxes="All"
-    />
+      />
+    </div>
   }
 }
