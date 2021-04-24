@@ -6,8 +6,7 @@ import yaml
 from scipy.cluster.vq import kmeans
 from tqdm import tqdm
 
-from utils.general import colorstr
-# from processor.pipeline.detection.yolov5.utils.general import colorstr
+from processor.pipeline.detection.yolov5.utils.general import colorstr
 
 
 def check_anchor_order(m):

@@ -21,8 +21,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-import test
-# from processor.pipeline.detection.yolov5 import test
+from processor.pipeline.detection.yolov5 import test
 from models.experimental import attempt_load
 from models.yolo import Model
 from utils.autoanchor import check_anchors
