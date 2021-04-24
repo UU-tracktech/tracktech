@@ -48,7 +48,7 @@ class ClientSocket(WebSocketHandler):
         """
         return True
 
-    def open(self) -> None:
+    def open(self, *args, **kwargs) -> None:
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket. After connecting, it appends this component

@@ -17,10 +17,15 @@ from tests.unittests.scheduling.utils.output_component import OutputComponent
 
 # pylint: disable=unused-argument
 def func(_):
-    pass
+    """An empty function for testing purposes, to be passed to Output Components
+
+    """
 
 
 class ScheduleWrapper:
+    """A schedule wrapper for testing purposes
+
+    """
     def __init__(self):
         self.scheduler = None
         self.schedule_output_node = None
