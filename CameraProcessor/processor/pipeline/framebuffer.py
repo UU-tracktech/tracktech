@@ -79,7 +79,7 @@ class FrameBuffer:
             track_obj = self.buffer[track_obj_id]
 
             # Does a slow as balls O(n) search over the entire list to see if the searched for tracked object occurs
-            # TODO: Maybe change the collection type of bounding boxes so we can search in O(1)
+            # TODO: Maybe change the collection type of bounding boxes so we can search in O(1) # pylint: disable=fixme
             for box in track_obj["boxes"]:
                 if box["boxId"] == bbox_id:
                     rect = box["rect"]
