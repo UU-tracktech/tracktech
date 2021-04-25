@@ -42,7 +42,10 @@ export class Grid extends Component<gridProps, gridState> {
               cameraId={source.id} 
               onButtonClick={() => this.viewSource(source.id)} 
               sources={[source.srcObject]}
-              showBoxes={this.props.indicator} />
+              showBoxes={this.props.indicator}
+              onTimestampUpdate={(x) => {}}
+            />
+
           </div>
         })
       }

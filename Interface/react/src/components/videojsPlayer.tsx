@@ -10,7 +10,7 @@ import * as React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-export type VideoPlayerProps = { onButtonClick: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
+export type VideoPlayerProps = { onTimestampUpdate: (stamp: number) => void, onButtonClick: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
 export class VideoPlayer extends React.Component<VideoPlayerProps> {
     private player?: videojs.Player
     private videoNode?: HTMLVideoElement
@@ -129,13 +129,15 @@ export class VideoPlayer extends React.Component<VideoPlayerProps> {
         //dont ask why -4, it just works
         this.timeStamp = this.startTime + currentPlayer - 4
 
+        this.props.onTimestampUpdate(this.timeStamp)
+
         //print this videoplayer info to console as 1 object
         let toPrint = {
             timeStamp: PrintTimestamp(this.timeStamp),
             frameID: this.timeStamp,            //ID in seconds
             //frameID: this.timeStamp / 1000,   //ID in ms
         }
-        console.log(toPrint)
+        //console.log(toPrint)
     }
 
     onResize() {

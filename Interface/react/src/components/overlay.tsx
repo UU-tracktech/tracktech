@@ -16,7 +16,7 @@ import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
 export type overlayProps = { cameraId: string, showBoxes: indicator }
-type overlayState = { boxes: Box[], frameId: number, width: number, height: number, left: number, top: number }
+type overlayState = { boxes: Box[], frameId: number, width: number, height: number, left: number, top: number, playerData: { timeStamp: number } }
 export class Overlay extends React.Component<overlayProps & VideoPlayerProps, overlayState> {
 
   queue = new Queue<Box[]>()
@@ -26,7 +26,7 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
 
   constructor(props: any) {
     super(props)
-    this.state = { boxes: [], frameId: 0, width: 100, height: 100, left: 100, top: 100 }
+    this.state = { boxes: [], frameId: 0, width: 100, height: 100, left: 100, top: 100, playerData: { timeStamp: 0 } }
   }
 
   onPlayerResize(width: number, height: number, left: number, top: number) {
@@ -37,6 +37,10 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
     this.context.addListener(this.props.cameraId, (boxes: Box[], frameId: number) => {
       this.setState({ boxes: boxes, frameId: frameId })
     })
+  }
+
+  updateTimestamp(newVal) {
+    this.setState({ playerData: { timeStamp: newVal }})
   }
 
   /*  enqueue(message: ClientMessage) {
@@ -64,7 +68,7 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
         { this.DrawOverlay() }
       </div>
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
-        <VideoPlayer onResize={(w, h, l, t) => this.onPlayerResize(w, h, l, t)} autoplay={false} controls={true} onButtonClick={() => this.props.onButtonClick()} sources={this.props.sources} />
+        <VideoPlayer onTimestampUpdate={(val) => this.updateTimestamp(val)} onResize={(w, h, l, t) => this.onPlayerResize(w, h, l, t)} autoplay={false} controls={true} onButtonClick={() => this.props.onButtonClick()} sources={this.props.sources} />
       </div>
     </div >
   }
