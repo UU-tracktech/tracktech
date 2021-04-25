@@ -13,17 +13,17 @@ import { App } from './app'
 import reportWebVitals from './reportWebVitals'
 import 'bootstrap/dist/css/bootstrap.css'
 
-import  { ReactKeycloakProvider } from "@react-keycloak/web";
-import keycloak from "./keycloak";
+import  { ReactKeycloakProvider } from '@react-keycloak/web'
+import keycloak from './keycloak'
 
 /** Writes keycloak events to the console for debugging */
 const keycloakEventLogger = (event, error) => {
-    console.log('onKeycloakEvent:', event, error);
+    console.log('onKeycloakEvent:', event, error)
 }
 
 /** Writes received tokens to the console for debugging */
 const keycloakTokenLogger = (tokens) => {
-    console.log('onKeycloakToken:', tokens);
+    console.log('onKeycloakToken:', tokens)
 }
 
 ReactDOM.render(
@@ -39,4 +39,4 @@ ReactDOM.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+reportWebVitals(console.log)

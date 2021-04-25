@@ -6,8 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import React, { Fragment } from 'react'
-import { Queue } from 'queue-typescript'
+import React from 'react'
 
 import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
@@ -16,28 +15,22 @@ import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
 export type overlayProps = { cameraId: string, showBoxes: indicator }
-type overlayState = { boxes: Box[], frameId: number, width: number, height: number, left: number, top: number }
-export class Overlay extends React.Component<overlayProps & VideoPlayerProps, overlayState> {
+type size = { width: number, height: number, left: number, top: number }
+export function Overlay(props: overlayProps & VideoPlayerProps) {
 
-  queue = new Queue<Box[]>()
+  const [boxes, setBoxes] = React.useState<Box[]>([])
+  const [frameId, setFrameId] = React.useState(0)
+  const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 })
 
-  static contextType = websocketContext
-  context!: React.ContextType<typeof websocketContext>
+  const socketContext = React.useContext(websocketContext)
 
-  constructor(props: any) {
-    super(props)
-    this.state = { boxes: [], frameId: 0, width: 100, height: 100, left: 100, top: 100 }
-  }
-
-  onPlayerResize(width: number, height: number, left: number, top: number) {
-    this.setState({ width: width, height: height, left: left, top: top })
-  }
-
-  componentDidMount() {
-    this.context.addListener(this.props.cameraId, (boxes: Box[], frameId: number) => {
-      this.setState({ boxes: boxes, frameId: frameId })
+  React.useEffect(() => {
+    var id = socketContext.addListener(props.cameraId, (boxes: Box[], frameId: number) => {
+      setBoxes(boxes)
+      setFrameId(frameId)
     })
-  }
+    return socketContext.removeListener(id)
+  })
 
   /*  enqueue(message: ClientMessage) {
        this.queue.enqueue(message)
@@ -56,32 +49,28 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
       this.setState({ queueLength: this.queue.length })
   }*/
 
-  render() {
-    const colordict = { 0: 'red', 1: 'green', 2: 'blue' }
+  return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
+      {DrawOverlay()}
+    </div>
+    <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
+      <VideoPlayer onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
+    </div>
+  </div >
 
-    return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
-        {this.DrawOverlay()}
-      </div>
-      <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
-        <VideoPlayer onResize={(w, h, l, t) => this.onPlayerResize(w, h, l, t)} autoplay={false} controls={true} onUp={() => this.props.onUp()} onDown={() => this.props.onDown()} sources={this.props.sources} />
-      </div>
-    </div >
-  }
-
-  onBoxClick(boxId: number, frameId: number) {
-    if (window.confirm("Start tracking this object?")) {
-      this.context.send(new StartOrchestratorMessage(this.props.cameraId, frameId, boxId))
+  function onBoxClick(boxId: number, frameId: number) {
+    if (window.confirm('Start tracking this object?')) {
+      socketContext.send(new StartOrchestratorMessage(props.cameraId, frameId, boxId))
     }
   }
 
-  DrawOverlay(): JSX.Element {
-    switch (this.props.showBoxes) {
-      case "All": {
-        return this.DrawBoxes(this.state.boxes, this.state.frameId);
+  function DrawOverlay(): JSX.Element {
+    switch (props.showBoxes) {
+      case 'All': {
+        return DrawBoxes(boxes, frameId)
       }
-      case "Selection": {
-        return this.DrawBoxes(this.state.boxes.filter(x => x.objectId != undefined), this.state.frameId);
+      case 'Selection': {
+        return DrawBoxes(boxes.filter(x => x.objectId !== undefined), frameId)
       }
       default: {
         return <div />
@@ -89,11 +78,11 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
     }
   }
 
-  DrawBoxes(boxes: Box[], frameId: number): JSX.Element {
+  function DrawBoxes(boxes: Box[], frameId: number): JSX.Element {
     // TODO: make sure objectIds can be infinitely big without causing an index out of bounds
-    var colordict: string[] = ["Green", "Red", "Yellow", "Blue", "Purple", "Brown", "Aqua", "Navy"]
+    var colordict: string[] = ['Green', 'Red', 'Yellow', 'Blue', 'Purple', 'Brown', 'Aqua', 'Navy']
 
-    return <Fragment>
+    return <div>
       {
         boxes.map((box) => {
           var x1 = box.rect[0], x2 = box.rect[2], y1 = box.rect[1], y2 = box.rect[3]
@@ -111,16 +100,16 @@ export class Overlay extends React.Component<overlayProps & VideoPlayerProps, ov
           return <div key={box.boxId} style={
             {
               position: 'absolute',
-              left: `${x1 * this.state.width + this.state.left}px`, top: `${y1 * this.state.height + this.state.top}px`,
-              width: `${(x2 - x1) * this.state.width}px`, height: `${(y2 - y1) * this.state.height}px`,
+              left: `${x1 * size.width + size.left}px`, top: `${y1 * size.height + size.top}px`,
+              width: `${(x2 - x1) * size.width}px`, height: `${(y2 - y1) * size.height}px`,
               borderColor: colordict[box.objectId ?? 0], borderStyle: 'solid',
               /* transitionProperty: 'all', transitionDuration: '1s', */
               zIndex: 1000,
-              cursor: box.objectId === undefined ? "pointer" : "default"
+              cursor: box.objectId === undefined ? 'pointer' : 'default'
             }
-          } onClick={() => { if (box.objectId === undefined) this.onBoxClick(box.boxId, this.state.frameId) }} />
+          } onClick={() => { if (box.objectId === undefined) onBoxClick(box.boxId, frameId) }} />
         })
       }
-    </Fragment>
+    </div>
   }
 }
