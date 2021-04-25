@@ -9,6 +9,7 @@ Utrecht University within the Software Project course.
 
 """
 import json
+import src.logger as logger
 
 
 class TrackingObject:
@@ -34,7 +35,7 @@ class TrackingObject:
                 json containing the features that should become the new feature map on this object.
         """
         self.feature_map = feature_map
-        print(f"updated feature map of object {self.identifier}")
+        logger.log(f"updated feature map of object {self.identifier}")
 
     def remove_self(self):
         """Removes self from objects dict."""
