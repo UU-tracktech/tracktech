@@ -30,6 +30,12 @@ class TestVideoForwarder:
         return HlsCapture(self.hls_url)
 
     @pytest.mark.timeout(30)
+    def test_start_forwarder(self):
+        # IMPORTANT: Be sure the video forwarder is opened for the next stream
+        # This is an integration test, without this timeout the forwarder will not have started fully
+        time.sleep(20)
+
+    @pytest.mark.timeout(20)
     def test_hls_constructor(self, hls_capture):
         """Checks whether constructor of hls capture has been set correctly
 
@@ -39,10 +45,6 @@ class TestVideoForwarder:
         # Url set correctly and thread has correct setting
         assert hls_capture.hls_url == self.hls_url
         assert hls_capture.reading_thread.daemon
-
-        # IMPORTANT: Be sure the video forwarder is opened for the next stream
-        # This is an integration test, without this timeout the forwarder will not have started fully
-        time.sleep(10)
 
     @pytest.mark.timeout(20)
     def test_hls_opened_correctly(self, hls_capture):
