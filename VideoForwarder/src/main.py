@@ -49,17 +49,17 @@ if __name__ == "__main__":
     print('using auth' if public_key_path is not None else 'not using auth')
 
     # If the public key path was supplied, read the file and store it
-    public_key = None
+    PUBLIC_KEY = None
     if public_key_path:
         public_key_file = open(public_key_path, "r")
-        public_key = public_key_file.read()
+        PUBLIC_KEY = public_key_file.read()
         public_key_file.close()
 
     # Create the web application with the camera handler and the public key
     app = tornado.web.Application(
         [
             (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
-        ], publicKey=public_key)
+        ], publicKey=PUBLIC_KEY)
 
     # If using tls, create a context and load the certificate and key in it
     if use_tls:
