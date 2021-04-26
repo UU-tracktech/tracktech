@@ -123,6 +123,10 @@ orchestrator_docker_build:
       changes:
         - ProcessorOrchestrator/*
       when: always
+  - if: '$CI_PIPELINE_SOURCE == "processor_orchestrator"'
+      changes:
+        - CameraProcessor/*
+      when: always
 
 orchestrator_unit-testing:
   stage: unittest
@@ -147,6 +151,10 @@ orchestrator_unit-testing:
       changes:
         - ProcessorOrchestrator/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "processor_orchestrator"'
+      changes:
+        - CameraProcessor/*
+      when: always
 
 
 orchestrator_linting:
@@ -167,6 +175,10 @@ orchestrator_linting:
       changes:
         - ProcessorOrchestrator/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "processor_orchestrator"'
+      changes:
+        - CameraProcessor/*
+      when: always
 
 interface_docker_build:
   stage: build
@@ -177,6 +189,10 @@ interface_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "interface"'
+      changes:
+        - CameraProcessor/*
       when: always
 
 interface_unit-testing:
@@ -198,6 +214,10 @@ interface_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "interface"'
+      changes:
+        - CameraProcessor/*
       when: always
 
 interface-linting:
@@ -221,6 +241,10 @@ interface-linting:
       changes:
         - Interface/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "interface"'
+      changes:
+        - CameraProcessor/*
+      when: always
 
 forwarder_docker_build:
   stage: build
@@ -231,6 +255,10 @@ forwarder_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "forwarder"'
+      changes:
+        - CameraProcessor/*
       when: always
 
 forwarder-linting:
@@ -253,4 +281,8 @@ forwarder-linting:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "forwarder"'
+      changes:
+        - CameraProcessor/*
       when: always
