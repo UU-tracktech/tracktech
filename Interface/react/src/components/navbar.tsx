@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
+import React from 'react'
 import { Navbar, Nav, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 

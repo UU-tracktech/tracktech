@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
+import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 
 import { NavMenu } from './components/navbar'

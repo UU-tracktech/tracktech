@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
+import React from 'react'
 import { Button } from 'react-bootstrap'
 import { useKeycloak } from '@react-keycloak/web'
 
