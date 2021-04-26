@@ -28,6 +28,14 @@ camera-processor_docker_build:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$PIPELINE == "camera_processor"'
+      when: always
+    - if: '$PIPELINE == "unit_testing"'
+      when: always
+    - if: '$PIPELINE == "integration_testing"'
+      when: always
+    - if: '$PIPELINE == "linting"'
+      when: always
         
 camera-processor_unit-testing:
   stage: unittest
@@ -54,6 +62,10 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$PIPELINE == "camera_processor"'
+      when: always
+    - if: '$PIPELINE == "unit_testing"'
+      when: always
   
 
 camera-processor_integration-testing:
@@ -76,6 +88,10 @@ camera-processor_integration-testing:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$PIPELINE == "camera_processor"'
+      when: always
+    - if: '$PIPELINE == "integration_testing"'
+      when: always
 
 camera-processor_linting:
   stage: linting
@@ -96,6 +112,10 @@ camera-processor_linting:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$PIPELINE == "camera_processor"'
+      when: always
+    - if: '$PIPELINE == "linting"'
+      when: always
 
 orchestrator_docker_build:
   stage: build
@@ -106,6 +126,12 @@ orchestrator_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - ProcessorOrchestrator/*
+      when: always
+    - if: '$PIPELINE == "processor_orchestrator"'
+      when: always
+    - if: '$PIPELINE == "unit_testing"'
+      when: always
+    - if: '$PIPELINE == "linting"'
       when: always
 
 orchestrator_unit-testing:
@@ -131,6 +157,10 @@ orchestrator_unit-testing:
       changes:
         - ProcessorOrchestrator/*
       when: always
+    - if: '$PIPELINE == "processor_orchestrator"'
+      when: always
+    - if: '$PIPELINE == "unit_testing"'
+      when: always
 
 
 orchestrator_linting:
@@ -151,6 +181,10 @@ orchestrator_linting:
       changes:
         - ProcessorOrchestrator/*
       when: always
+    - if: '$PIPELINE == "processor_orchestrator"'
+      when: always
+    - if: '$PIPELINE == "linting"'
+      when: always
 
 interface_docker_build:
   stage: build
@@ -161,6 +195,12 @@ interface_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
+      when: always
+    - if: '$PIPELINE == "interface"'
+      when: always
+    - if: '$PIPELINE == "unit_testing"'
+      when: always
+    - if: '$PIPELINE == "linting"'
       when: always
 
 interface_unit-testing:
@@ -182,6 +222,10 @@ interface_unit-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/*
+      when: always
+    - if: '$PIPELINE == "interface"'
+      when: always
+    - if: '$PIPELINE == "unit_testing"'
       when: always
 
 interface-linting:
@@ -205,6 +249,10 @@ interface-linting:
       changes:
         - Interface/*
       when: always
+    - if: '$PIPELINE == "interface"'
+      when: always
+    - if: '$PIPELINE == "linting"'
+      when: always
 
 forwarder_docker_build:
   stage: build
@@ -215,6 +263,10 @@ forwarder_docker_build:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
+      when: always
+    - if: '$PIPELINE == "forwarder"'
+      when: always
+    - if: '$PIPELINE == "linting"'
       when: always
 
 forwarder-linting:
@@ -237,4 +289,8 @@ forwarder-linting:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - VideoForwarder/*
+      when: always
+    - if: '$PIPELINE == "forwarder"'
+      when: always
+    - if: '$PIPELINE == "linting"'
       when: always
