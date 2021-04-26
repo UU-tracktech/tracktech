@@ -53,9 +53,8 @@ class TestVideoForwarder:
         self.stream_dir = '/streams'
         self.camera_versions = ['_V0', '_V1', '_V2']
 
-    @pytest.mark.asyncio
-    @pytest.mark.gen_test(timeout=25)
-    async def test_valid_http_request(self, http_client):
+    @pytest.mark.gen_test(timeout=15)
+    def test_valid_http_request(self, http_client):
         """Checks connection between forwarder and mock client with valid url
 
         Args:
@@ -63,7 +62,6 @@ class TestVideoForwarder:
 
         """
         # Wait until main.py is up and running
-        await asyncio.sleep(10)
         response = yield http_client.fetch(self.camera_url)
 
         # OK

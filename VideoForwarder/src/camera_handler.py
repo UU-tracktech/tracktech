@@ -148,7 +148,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_adress,
                             '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0',
                             '-map', '0:1',  # Create 3 variances of video + audio stream
-                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*1)', '-sc_threshold', '0', '-g', '24', '-muxdelay', 0, '-keyint_min', 24,
+                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)', '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
                             '-keyint_min', '24', '-c:a', 'aac', '-ar', '48000',
                             # Set common properties of the video variances
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate',
@@ -168,7 +168,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                         ]) if entry.audio else Popen([
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_adress,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
-                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*1)', '-sc_threshold', '0', '-g', '24', '-muxdelay', 0, '-keyint_min', 24,
+                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)', '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0',
                             '800k', '-maxrate', '900k', '-bufsize', '1200k',
                             '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1',
