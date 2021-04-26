@@ -259,7 +259,7 @@ interface-linting-ESLint:
   needs: [interface_docker_build]
   before_script:
     - cd Interface
-    - docker build -t interface_linting -f Dockerfile_lint .
+    - docker build -t interface_linting -f Dockerfile_eslint .
     - docker rm -f interface-lint-container || true
   script:
     - cd ..
