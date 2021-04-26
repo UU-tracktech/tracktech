@@ -17,10 +17,10 @@ import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from object_manager import objects, TrackingObject
-from connections import processors
-import client_socket
-import logger
+from src.object_manager import objects, TrackingObject
+from src.connections import processors
+import src.client_socket as client_socket
+import src.logger as logger
 
 
 class ProcessorSocket(WebSocketHandler):

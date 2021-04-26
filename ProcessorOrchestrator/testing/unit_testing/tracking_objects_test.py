@@ -4,6 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
+Unit testing module that only tests tracking object class.
 """
 
 # pytest resolves this reference internally
