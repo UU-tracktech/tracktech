@@ -7,113 +7,92 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Component } from 'react'
-import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
+import { ButtonGroup, Button, Card } from 'react-bootstrap'
 
 import { Grid, source } from '../components/grid'
 
 export type indicator = 'All' | 'Selection' | 'None'
 type tracked = { id: number, name: string, image: string, data: string }
-type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], mainSourceId?: string }
-export class Home extends Component<{}, homeState> {
+export function Home() {
+  const [sources, setSources] = React.useState<source[]>()
+  const [currentIndicator, setCurrentIndicator] = React.useState<indicator>('All')
+  const [tracking, setTracking] = React.useState<tracked[]>([])
+  const [sourceSizes, setSourceSizes] = React.useState<Map<string, number>>(new Map())
 
-  constructor(props: any) {
-    super(props)
-    this.state = { sources: [], currentIndicator: 'All', tracking: [] }
-  }
+  const selectionRef = React.useRef(0)
 
-  async componentDidMount() {
-    console.log(await fetch(process.env.PUBLIC_URL + '/config.json'))
-    var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json()
-    var nexId = 0
-    this.setState({
-      sources: config.map((stream) => ({
-        id: nexId++,
-        name: stream.Name,
-        srcObject: {
-          src: stream.Forwarder,
-          type: stream.Type
-        }
+  React.useEffect(() => {
+    fetch(process.env.PUBLIC_URL + '/config.json').then((text) =>
+      text.json().then((json) => {
+        var nexId = 0
+        setSources(json.map((stream) => ({
+          id: nexId++,
+          name: stream.Name,
+          srcObject: {
+            src: stream.Forwarder,
+            type: stream.Type
+          }
+        })))
       }))
-    })
+  }, [])
+
+  function setSize(sourceId: string, size: number) {  
+    setSourceSizes(new Map(sourceSizes.set(sourceId, size)))
   }
+  
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 4fr', gridAutoRows: '100%', overflow: 'hidden' }}>
+      <div style={{ padding: '5px', overflowY: 'auto', display: 'grid', gap: '5px' }}>
+        <Card>
+          <h2>Indicators</h2>
+          <ButtonGroup>
+            <Button variant={currentIndicator === 'All' ? 'secondary' : 'light'} onClick={() => setCurrentIndicator('All')}>All</Button>
+            <Button variant={currentIndicator === 'Selection' ? 'secondary' : 'light'} onClick={() => setCurrentIndicator('Selection')}>Selection</Button>
+            <Button variant={currentIndicator === 'None' ? 'secondary' : 'light'} onClick={() => setCurrentIndicator('None')}>None</Button>
+          </ButtonGroup>
+        </Card>
+        <Card>
+          <div>
+            <h2>Selection</h2>
+            <Button onClick={async () => await addSelection()}>+</Button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridAutoRows: '100px' }}>
+            {
+              tracking && tracking.map((tracked) =>
+                <img alt='tracked person' onClick={() => removeSelection(tracked.id)} style={{ width: '100%', height: '100%', margin: '5px' }} src={tracked.image} />
+              )
+            }
+          </div>
+        </Card>
 
-  viewSource(sourceId: string) {
-    this.setState({ mainSourceId: sourceId })
-  }
+        <Card>
+          <h2>Cameras</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))' }}>
+            {
+              sources && sources.map((source) =>
+                <Card key={source.id}>
+                  <Card.Body>
+                    <Card.Title>{source.name}</Card.Title>
+                    <Button variant='primary' onClick={() => setSize(source.id, 3)}>View</Button>
+                  </Card.Body>
+                </Card>
+              )
+            }
+          </div>
+        </Card>
+      </div>
 
-  render() {
-    const boxStyle: React.CSSProperties = { margin: '10px', padding: '5px', borderRadius: "5px", borderStyle: "outset" }
-    const colStyle: React.CSSProperties = { padding: '0px', height: '100vh' }
+      <div style={{ overflowY: 'auto' }}>
+        {sources && <Grid
+          sources={sources}
+          sourceSizes={sourceSizes}
+          setSize={(sourceId: string, size: number) => setSize(sourceId, size)}
+          indicator={currentIndicator} />}
+      </div>
+    </div>)
 
-    return (
-      <Container fluid className='fill-height'>
-        <Row className='fill-height' >
-          <Col lg={2} className='border-right' style={{ overflowY: 'scroll', ...colStyle }}>
-            <Row style={boxStyle}>
-              <Container>
-                <h2>Indicators</h2>
-                <ButtonGroup>
-                  <Button variant={this.state.currentIndicator === 'All' ? 'secondary' : 'light'} onClick={() => this.indicatorAll()}>All</Button>
-                  <Button variant={this.state.currentIndicator === 'Selection' ? 'secondary' : 'light'} onClick={() => this.indicatorSelection()}>Selection</Button>
-                  <Button variant={this.state.currentIndicator === 'None' ? 'secondary' : 'light'} onClick={() => this.indicatorNone()}>None</Button>
-                </ButtonGroup>
-              </Container>
-            </Row>
-            <Row style={boxStyle}>
-              <Container>
-                <h2>Cameras</h2>
-                {
-                  this.state.sources && this.state.sources.map((source) =>
-                    <Card key={source.id}>
-                      <Card.Body>
-                        <Card.Title>{source.name}</Card.Title>
-                        <Button variant="primary" onClick={() => this.viewSource(source.id)}>View</Button>
-                      </Card.Body>
-                    </Card>)
-                }
-              </Container>
-            </Row>
-            <Row style={boxStyle}>
-              <Container>
-                <Row className="d-flex justify-content-between">
-                  <h2>Selection</h2>
-                  <Button onClick={async () => await this.addSelection()}>+</Button>
-                </Row>
-                {
-                  this.state.tracking && this.state.tracking.map((tracked) =>
-                    <img alt="tracked person" onClick={() => this.removeSelection(tracked.id)} style={{ width: "75px", height: "75px", margin: "5px" }} src={tracked.image} />
-                  )
-                }
-              </Container>
-            </Row>
-          </Col>
-          <Col lg={10} style={{ overflowY: 'scroll', ...colStyle }}>
-            <Grid 
-              sources={this.state.sources} 
-              mainSourceId={this.state.mainSourceId} 
-              indicator={this.state.currentIndicator}/>
-          </Col>
-        </Row>
-      </Container >
-    )
-  }
-
-  indicatorAll() {
-    this.setState({ currentIndicator: 'All' })
-  }
-
-  indicatorSelection() {
-    this.setState({ currentIndicator: 'Selection' })
-  }
-
-  indicatorNone() {
-    this.setState({ currentIndicator: 'None' })
-  }
-
-  private number = 0
-  async addSelection() {
-    const pictures = ["car", "guy", "garden"]
+  async function addSelection() {
+    const pictures = ['car', 'guy', 'garden']
     const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
     var result = await fetch(process.env.PUBLIC_URL + `/${picture}.png`)
@@ -122,13 +101,13 @@ export class Home extends Component<{}, homeState> {
     reader.onload = () => {
       if (typeof reader.result === 'string') {
         console.log(reader.result)
-        this.setState({ tracking: this.state.tracking.concat({ id: this.number++, name: "abc", image: reader.result, data: "" }) })
+        setTracking(tracking.concat({ id: selectionRef.current++, name: 'abc', image: reader.result, data: '' }))
       }
     }
     reader.readAsDataURL(blob)
   }
 
-  removeSelection(id: number) {
-    this.setState({ tracking: this.state.tracking.filter(tracked => tracked.id !== id) })
+  function removeSelection(id: number) {
+    setTracking(tracking.filter(tracked => tracked.id !== id))
   }
 }

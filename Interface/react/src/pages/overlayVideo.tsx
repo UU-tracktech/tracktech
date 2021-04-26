@@ -6,22 +6,22 @@ Utrecht University within the Software Project course.
 
  */
 
-import { Component } from 'react'
-
+import React from 'react'
 import { Overlay } from '../components/overlay'
 
-export class OverlayVideo extends Component {
-  render() {
-    return <Overlay
-        cameraId={"test"}
-        onButtonClick={() => alert('resize')}
-        key={'testvid'}
-        autoplay={true}
-        controls={true}
-        width={300}
-        height={300}
-        sources={[{ src: 'http://localhost:80/testvid.m3u8' }]}
-        showBoxes="All"
+export function OverlayVideo() {
+  return <div style={{ display: 'grid', height: '100%', width: '100%' }}>
+    <Overlay
+      cameraId={'test'}
+      onUp={() => alert('up')}
+      onDown={() => alert('down')}
+      key={'testvid'}
+      autoplay={true}
+      controls={true}
+      width={300}
+      height={300}
+      sources={[{ src: 'http://localhost:80/testvid.m3u8' }]}
+      showBoxes='All'
     />
-  }
+  </div>
 }
