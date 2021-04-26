@@ -8,6 +8,7 @@ import cv2
 from processor.input.hls_capture import HlsCapture
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestVideoForwarder:
     """Tests the video forwarder in combination with the camera processor
 

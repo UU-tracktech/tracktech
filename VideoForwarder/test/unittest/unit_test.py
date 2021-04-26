@@ -42,7 +42,7 @@ def test_camera_properties():
     camera = create_camera(ip_address, audio)
 
     # Asserts properties
-    assert camera.ip_adress == ip_address
+    assert camera.ip_address == ip_address
     assert camera.audio
 
 
@@ -60,5 +60,5 @@ def test_json_conversion():
     camera = cameras["testvid"]
 
     # Assert properties are set correctly
-    assert camera.ip_adress == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+    assert camera.ip_address == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
     assert camera.audio
