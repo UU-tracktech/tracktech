@@ -3,7 +3,9 @@ version: "3.4"
 services:
   # Take the already built test container from the camera processor
   camera-processor-test-service:
-    image: camera-processor:latest
+    build:
+      context: .
+      target: test
     container_name: processor-forwarder-integration-test-container
     depends_on:
       - "forwarder-test-service"
