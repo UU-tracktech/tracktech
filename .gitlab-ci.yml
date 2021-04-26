@@ -28,6 +28,10 @@ camera-processor_docker_build:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "camera_processor"'
+      changes:
+        - CameraProcessor/*
+      when: always
         
 camera-processor_unit-testing:
   stage: unittest
@@ -54,6 +58,10 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "camera_processor"'
+      changes:
+        - CameraProcessor/*
+      when: always
   
 
 camera-processor_integration-testing:
@@ -76,6 +84,10 @@ camera-processor_integration-testing:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "camera_processor"'
+      changes:
+        - CameraProcessor/*
+      when: always
 
 camera-processor_linting:
   stage: linting
@@ -93,6 +105,10 @@ camera-processor_linting:
     - docker stop camera-processor-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - CameraProcessor/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "camera_processor"'
       changes:
         - CameraProcessor/*
       when: always
