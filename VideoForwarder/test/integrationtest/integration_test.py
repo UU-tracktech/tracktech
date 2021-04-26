@@ -51,7 +51,7 @@ class TestVideoForwarder:
         self.camera_url = self.base_url + self.extension
         self.stream_dir = '/streams'
 
-    @pytest.mark.gen_test(timeout=15)
+    @pytest.mark.gen_test(timeout=30)
     def test_valid_http_request(self, http_client):
         """Checks connection between forwarder and mock client with valid url
 

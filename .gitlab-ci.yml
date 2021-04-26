@@ -275,7 +275,7 @@ video-forwarder_integration-testing:
 #    - docker exec -d video-forwarder-test-container python3.8 src/main.py
 #    - docker exec video-forwarder-test-container python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
   after_script:
-    - docker cp video-forwarder-test-container:/vf-integration-report.xml vf-integration-report.xml
+    - docker cp video-forwarder_integration-testing-container:/vf-integration-report.xml vf-integration-report.xml
 #    - docker stop video-forwarder-test-container
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
