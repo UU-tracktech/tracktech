@@ -32,6 +32,18 @@ camera-processor_docker_build:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "unit_testing"'
+      changes:
+        - CameraProcessor/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "integration_testing"'
+      changes:
+        - CameraProcessor/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
+      changes:
+        - CameraProcessor/*
+      when: always
         
 camera-processor_unit-testing:
   stage: unittest
@@ -62,6 +74,10 @@ camera-processor_unit-testing:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "unit_testing"'
+      changes:
+        - CameraProcessor/*
+      when: always
   
 
 camera-processor_integration-testing:
@@ -85,6 +101,10 @@ camera-processor_integration-testing:
         - CameraProcessor/*
       when: always
     - if: '$CI_PIPELINE_SOURCE == "camera_processor"'
+      changes:
+        - CameraProcessor/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "integration_testing"'
       changes:
         - CameraProcessor/*
       when: always
@@ -112,6 +132,10 @@ camera-processor_linting:
       changes:
         - CameraProcessor/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
+      changes:
+        - CameraProcessor/*
+      when: always
 
 orchestrator_docker_build:
   stage: build
@@ -124,6 +148,14 @@ orchestrator_docker_build:
         - ProcessorOrchestrator/*
       when: always
     - if: '$CI_PIPELINE_SOURCE == "processor_orchestrator"'
+      changes:
+        - ProcessorOrchestrator/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "unit_testing"'
+      changes:
+        - ProcessorOrchestrator/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
       changes:
         - ProcessorOrchestrator/*
       when: always
@@ -155,6 +187,10 @@ orchestrator_unit-testing:
       changes:
         - ProcessorOrchestrator/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "unit_testing"'
+      changes:
+        - ProcessorOrchestrator/*
+      when: always
 
 
 orchestrator_linting:
@@ -179,6 +215,10 @@ orchestrator_linting:
       changes:
         - ProcessorOrchestrator/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
+      changes:
+        - ProcessorOrchestrator/*
+      when: always
 
 interface_docker_build:
   stage: build
@@ -191,6 +231,14 @@ interface_docker_build:
         - Interface/*
       when: always
     - if: '$CI_PIPELINE_SOURCE == "interface"'
+      changes:
+        - Interface/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "unit_testing"'
+      changes:
+        - Interface/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
       changes:
         - Interface/*
       when: always
@@ -216,6 +264,10 @@ interface_unit-testing:
         - Interface/*
       when: always
     - if: '$CI_PIPELINE_SOURCE == "interface"'
+      changes:
+        - Interface/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "unit_testing"'
       changes:
         - Interface/*
       when: always
@@ -245,6 +297,10 @@ interface-linting:
       changes:
         - Interface/*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
+      changes:
+        - Interface/*
+      when: always
 
 forwarder_docker_build:
   stage: build
@@ -257,6 +313,10 @@ forwarder_docker_build:
         - VideoForwarder/*
       when: always
     - if: '$CI_PIPELINE_SOURCE == "forwarder"'
+      changes:
+        - VideoForwarder/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
       changes:
         - VideoForwarder/*
       when: always
@@ -283,6 +343,10 @@ forwarder-linting:
         - VideoForwarder/*
       when: always
     - if: '$CI_PIPELINE_SOURCE == "forwarder"'
+      changes:
+        - VideoForwarder/*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "linting"'
       changes:
         - VideoForwarder/*
       when: always
