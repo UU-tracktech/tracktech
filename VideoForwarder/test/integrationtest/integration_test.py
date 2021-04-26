@@ -2,10 +2,7 @@
 
 """
 
-import time
-import os
 import pytest
-import runpy
 import tornado.web
 
 
