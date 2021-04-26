@@ -14,7 +14,7 @@ class FrameBuffer:
     """
 
     def __init__(self):
-        """
+        """Set buffer size and initialize deque
 
         """
         self.buffer_size = 50
