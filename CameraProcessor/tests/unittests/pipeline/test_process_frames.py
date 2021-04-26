@@ -7,15 +7,13 @@ Utrecht University within the Software Project course.
 """
 import asyncio
 import configparser
-import time
 import os
 import pytest
 
 from processor.pipeline.process_frames import process_stream
-from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.input.video_capture import VideoCapture
-# from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from tests.unittests.utils.fake_detector import FakeDetector
+from tests.unittests.utils.fake_tracker import FakeTracker
 
 
 class TestProcessFrames:
@@ -48,6 +46,13 @@ class TestProcessFrames:
         # return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
         return None
 
+    # pylint: disable=useless-return
+    @pytest.mark.skip()
+    def __get_sort_tracker(self):
+        """Get the SORT tracker.
+        """
+        return None
+
     @pytest.mark.timeout(90)
     @pytest.mark.skip("YOLOv5 GPU acceleration does not work in Docker yet")
     def test_process_stream_with_yolov5(self, clients):
@@ -59,11 +64,9 @@ class TestProcessFrames:
         captor = self.__get_video()
         detector = self.__get_yolov5runner()
 
-        # Create a detection object
-        local_time = time.localtime()
-        det_obj = DetectionObj(local_time, None, 0)
+        tracker = self.__get_sort_tracker()
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, det_obj, detector, clients))
+        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
 
     @pytest.mark.timeout(90)
     def test_process_stream_with_fake(self, clients):
@@ -73,17 +76,15 @@ class TestProcessFrames:
         captor = self.__get_video()
         detector = FakeDetector()
 
-        # create a detection object
-        local_time = time.localtime()
-        det_obj = DetectionObj(local_time, None, 0)
+        tracker = FakeTracker()
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, det_obj, detector, clients))
+        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
 
-    async def await_detection(self, captor, det_obj, detector, ws_client):
+    async def await_detection(self, captor, detector, tracker, ws_client):
         """Async function that runs process_stream
 
         """
-        await process_stream(captor, det_obj, detector, ws_client)
+        await process_stream(captor, detector, tracker, ws_client)
 
 
 if __name__ == '__main__':
