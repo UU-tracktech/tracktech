@@ -14,6 +14,7 @@ import processor.websocket_client as client
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.idetector import IDetector as Detector
 from processor.pipeline.tracking.tracking_obj import TrackingObj
+from processor.pipeline.framebuffer import FrameBuffer
 from processor.input.hls_capture import HlsCapture
 # pylint: enable=unused-import
 
@@ -31,6 +32,8 @@ async def process_stream(capture, detector, tracker, ws_client=None):
         ws_client (WebsocketClient): processor orchestrator to pass through detections.
     """
     track_obj = TrackingObj()
+
+    framebuffer = FrameBuffer()
 
     frame_nr = 0
 
@@ -51,6 +54,10 @@ async def process_stream(capture, detector, tracker, ws_client=None):
         track_obj.update(det_obj)
 
         tracker.track(track_obj)
+
+        # Buffer the tracked object
+        framebuffer.add(track_obj.to_dict())
+        framebuffer.clean_up()
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
         if ws_client:
