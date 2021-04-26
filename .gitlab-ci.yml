@@ -263,7 +263,7 @@ interface-linting-ESLint:
     - docker rm -f interface-lint-container || true
   script:
     - cd ..
-    - docker run -d -t --name interface-lint-container interface_linting
+    - docker run --name interface-lint-container interface_linting
   after_script:
     - docker stop interface-lint-container
   rules:
