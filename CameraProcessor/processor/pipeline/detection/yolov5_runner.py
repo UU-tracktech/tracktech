@@ -108,7 +108,7 @@ class Yolov5Detector(IDetector):
 
         # Process detections
         for _, det in enumerate(pred):  # detections per image
-            if len(det):
+            if len(det) > 0:
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], det_obj.frame.shape).round()
 
