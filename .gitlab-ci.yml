@@ -269,6 +269,7 @@ video-forwarder_integration-testing:
   before_script:
 #    - docker rm -f video-forwarder-test-container || true
   script:
+    - cd VideoForwarder
     - docker-compose -f docker-compose-test.yml up --force-recreate --build --exit-code-from video-forwarder-testing-service
 #    - docker run -t -d --name video-forwarder-test-container video-forwarder
 #    - docker exec -d video-forwarder-test-container python3.8 src/main.py
