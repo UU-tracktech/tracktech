@@ -75,12 +75,49 @@ def generate_documentation(root_folder):
         if skip:
             continue
 
+        # Add mock object with associated module name if it hasn't been loaded in yet.
         if mod_name not in sys.modules:
             mod_mock = mock.Mock(name=mod_name)
             sys.modules[mod_name] = mod_mock
 
+    # Modules loaded before executing pdoc.
+    # Convert keys to list to copy current content (otherwise object changes during pdoc run).
+    preloaded_modules = list(sys.modules.keys())
+
     # Generate documentation for all found modules in the /docs.
     pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
+
+    # All modules loaded after executing pdoc (in a list like before).
+    loaded_modules = list(sys.modules.keys())
+
+    # Remove modules loaded in for documentation generation.
+    for module in loaded_modules:
+        if module not in preloaded_modules:
+            del sys.modules[module]
+
+
+def generate_index():
+    root = os.path.join(os.path.dirname(__file__), 'html')
+
+    index_loc = os.path.join(root, 'index.html')
+
+    # Removes current index.html to later generate it anew.
+    # Must be removed before searching to prevent conflicting finds.
+    if os.path.exists(index_loc):
+        os.remove(index_loc)
+
+    index_paths = []
+
+    for path, sub_dirs, files in os.walk(root):
+        if 'index.html' in files:
+            index_paths.append(os.path.join(path, 'index.html').replace(root, '', 1).replace('\\', '/'))
+
+            # Stop walking into sub_dirs, index has already been found in current branch.
+            sub_dirs[:] = []
+
+    with open(index_loc, 'w') as index_file:
+        for index_path in index_paths:
+            index_file.write(f'<a href="{index_path}">{index_path}</a>\n<hr>\n')
 
 
 def get_imports(file_path):
@@ -193,6 +230,8 @@ def get_modules(root_folder):
         if include:
             modules.append(module_path)
 
+    sys.path.remove(component_root)
+
     return modules
 
 
@@ -282,20 +321,44 @@ def to_tree(modules):
 if __name__ == '__main__':
     import argparse
 
+    # Argument parser for configuration.
+    parser = argparse.ArgumentParser(description='Generate documentation.')
+
+    # Create index if flag is given.
+    # Generates index combining all documentation index.html files together in a root html/index.html file.
+    parser.add_argument(
+        '-ci',
+        '--create-index',
+        action='store_true',
+        help='Create new index if flag is specified.',
+        dest='create_index'
+    )
+
     # Set root_folder as required argument to call documentation.py.
-    parser = argparse.ArgumentParser(description='Generate documentation for provided root folder')
-    parser.add_argument('root_folder',
-                        type=str,
-                        help='Root folder containing all top-level modules. '
-                             'Includes all modules included via __init__.py, '
-                             'except for modules not included in __all__ inside __init__.py when provided.'
-                        )
+    parser.add_argument(
+        '-rs',
+        '--roots',
+        action='extend',
+        nargs='*',
+        default=[],
+        type=str,
+        help='Root folders containing all top-level modules. '
+             'Includes all modules included via __init__.py, '
+             'except for modules not included in __all__ inside __init__.py when provided.',
+        metavar='root_folder',
+        dest='roots'
+    )
 
     # Parse arguments.
     args = parser.parse_args()
 
-    # Prepend .. to args root_folder to start one level higher (starting at root of project).
-    root = Path(args.root_folder)
+    # Generate documentation for all provided roots.
+    for root in args.roots:
+        code_root_folder = Path(root)
 
-    # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
-    generate_documentation(root)
+        # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
+        generate_documentation(code_root_folder)
+
+    # Create index if flag was provided.
+    if args.create_index:
+        generate_index()
