@@ -40,7 +40,7 @@ export function WebsocketProvider(props) {
   const listenersRef = React.useRef<Listener[]>()
   const listenerRef = React.useRef<number>(0)
 
-  React.useEffect(() => setSocket(socketUrl))
+  React.useEffect(() => setSocket(socketUrl), [])
 
   function setSocket(url: string) {
     var socket = new WebSocket(url)
