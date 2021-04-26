@@ -25,7 +25,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
     cameras = {}
     """A dictionary to store all camera objects with their name as key"""
 
-    segmentSize = os.environ.get('SEGMENT_SIZE') or '1'
+    segmentSize = os.environ.get('SEGMENT_SIZE') or '2'
     """How long each video segment should be in seconds"""
 
     segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
@@ -148,8 +148,8 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_adress,
                             '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0',
                             '-map', '0:1',  # Create 3 variances of video + audio stream
-                            '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48',
-                            '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
+                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*1)', '-sc_threshold', '0', '-g', '24', '-muxdelay', 0, '-keyint_min', 24,
+                            '-keyint_min', '24', '-c:a', 'aac', '-ar', '48000',
                             # Set common properties of the video variances
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate',
                             '900k', '-bufsize', '1200k',  # 360p - Low bit-rate Stream
@@ -168,7 +168,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                         ]) if entry.audio else Popen([
                             'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_adress,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
-                            '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
+                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*1)', '-sc_threshold', '0', '-g', '24', '-muxdelay', 0, '-keyint_min', 24,
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0',
                             '800k', '-maxrate', '900k', '-bufsize', '1200k',
                             '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1',

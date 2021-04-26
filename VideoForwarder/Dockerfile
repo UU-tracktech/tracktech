@@ -28,8 +28,8 @@ ENTRYPOINT ["pdoc","-h","0.0.0.0","main.py","camera.py","cameraHandler.py"]
 # Production container
 FROM install as testing
 
-ENV SEGMENT_SIZE 5
-ENV SEGMENT_AMOUNT 10
+ENV SEGMENT_SIZE 2
+ENV SEGMENT_AMOUNT 5
 ENV CONFIG_PATH /NetworkConfig.json
 ENV STREAM_FOLDER /streams
 ENV ENCODING libx264
