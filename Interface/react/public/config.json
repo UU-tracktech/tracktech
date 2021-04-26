@@ -40,17 +40,5 @@
     "Ip": "192.168.178.30",
     "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8",
     "Type": "application/x-mpegURL"
-  },
-  {
-    "Name": "TestVid",
-    "Ip": "192.168.178.30",
-    "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8",
-    "Type": "application/x-mpegURL"
-  },
-  {
-    "Name": "TestVid",
-    "Ip": "192.168.178.30",
-    "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8",
-    "Type": "application/x-mpegURL"
   }
 ]
