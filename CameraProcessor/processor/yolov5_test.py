@@ -19,8 +19,6 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
-accuracy_testing = True
-
 
 def main(_argv):
     """Runs YOLOv5 detection on a video file specified in configs.ini
@@ -30,6 +28,7 @@ def main(_argv):
     configs.read('../configs.ini')
     trueconfig = configs['Yolov5']
     filterconfig = configs['Filter']
+    accuracy_config = configs['Accuracy']
 
     local_time = time.localtime()
 
@@ -37,11 +36,13 @@ def main(_argv):
     det_obj = DetectionObj(local_time, None, 0)
     accuracy_dest =os.path.abspath(f'{root_dir}/data/annotated/test/mockyolo/testfile.txt')
 
-    if accuracy_testing:
+    if accuracy_config['writing-to-txt']:
         file = open(accuracy_dest, 'w')
         file.truncate(0)
         file.close()
-        det_obj.to_txt_file(accuracy_dest)
+        print('I will write the detection objects to a txt file')
+        if accuracy_config['iou-thres'] != trueconfig['iou-thres']:
+            print('The iou-threshold of the accuracy tester differs from the true config threshold')
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
@@ -77,7 +78,7 @@ def main(_argv):
         counter += 1
 
         # Write detection object to txt file for later accuracy testing
-        if accuracy_testing:
+        if accuracy_config['writing-to-txt']:
             det_obj.to_txt_file(accuracy_dest)
 
         # Play the video in a window called "Output Video"

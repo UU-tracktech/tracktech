@@ -109,6 +109,15 @@ class AccuracyObject:
         print(len(self.bounding_boxes_gt))
 
     def draw_pr_plot(self, result, file_prefix):
+        """Draw a pr plot of a class.
+
+        Args:
+            result: A MetricPerClass object from the PODM library.
+            file_prefix: String that is part of the name of the pr image.
+
+        Returns: An image file in the plots folder called file_prefix-result.class
+
+        """
         try:
             plot_precision_recall_curve(result,
                                         f'{self.root_dir}/processor/training/detection/plots/{file_prefix}'
@@ -117,11 +126,20 @@ class AccuracyObject:
             print(f'{file_prefix}-{result.label}: Cannot plot')
 
     def draw_all_pr_plots(self, file_prefix):
-        for result in self.results:
-            self.draw_pr_plot(self, result, file_prefix)
+        """Draws the pr plots for all classes in the (podm) result.
+
+        Args:
+            file_prefix: String that is part of the name of the pr image.
+
+        Returns: An image file for each class in the plots folder called file_prefix-result.class
+
+        """
+        for result in self.results.items():
+            self.draw_pr_plot(result[1], file_prefix)
 
 
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
 accuracy_object = AccuracyObject(os.path.abspath(__file__ + '/../../../../'), 'test', 'gt/gt.txt')
 accuracy_object.detect('mockyolo/threshold10.txt')
+accuracy_object.draw_all_pr_plots('threshold10')
