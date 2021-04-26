@@ -5,7 +5,7 @@
 import time
 import os
 import pytest
-import asyncio
+import runpy
 import tornado.web
 
 
@@ -44,14 +44,12 @@ class TestVideoForwarder:
         """Setup method for testing
 
         """
-        self.port = 80
-        self.camera = 'testvid'
-        self.base_url = 'http://video-forwarder-service'
-        self.extension = 'm3u8'
-        self.camera_url = f'{self.base_url}:{self.port}/{self.camera}.{self.extension}'
+        self.base_url = 'http://video-forwarder-service:80/testvid'
+        self.extension = '.m3u8'
 
+        # Complete url of camera
+        self.camera_url = self.base_url + self.extension
         self.stream_dir = '/streams'
-        self.camera_versions = ['_V0', '_V1', '_V2']
 
     @pytest.mark.gen_test(timeout=15)
     def test_valid_http_request(self, http_client):
@@ -80,7 +78,7 @@ class TestVideoForwarder:
 
         # Create connection with invalid url
         try:
-            yield http_client.fetch(self.camera_url + 'jibberish')
+            yield http_client.fetch(f'{self.base_url}jibberish{self.extension}')
             assert False
         # Asserts exception is raised
         except Exception:
@@ -99,7 +97,6 @@ class TestVideoForwarder:
         assert response.headers['Access-Control-Allow-Origin'] == '*'
 
     @pytest.mark.gen_test(timeout=15)
-    @pytest.mark.skip("Cannot test inside this CI container")
     def test_generate_multiple_video_outputs(self, http_client):
         """Tests whether the stream generates several headers
 
@@ -107,48 +104,15 @@ class TestVideoForwarder:
             http_client: Httpclient that connects
 
         """
-        # Create camera with versions
-        camera = self.camera
-        versions = self.camera_versions
-        camera_versions = [camera + version for version in versions]
-        version_counter = 0
-
         # Create a connection
-        yield http_client.fetch(self.camera_url)
+        response_low_res = yield http_client.fetch(f'{self.base_url}_V0{self.extension}')
+        response_med_res = yield http_client.fetch(f'{self.base_url}_V1{self.extension}')
+        response_high_res = yield http_client.fetch(f'{self.base_url}_V2{self.extension}')
 
-        # Foreach camera version
-        for camera_version in camera_versions:
-            # List all files inside directory that start with current version
-            for file in os.listdir(self.stream_dir):
-                if file.startswith(camera_version):
-                    version_counter += 1
-                    break
-
-        # Asserts number of versions is correct
-        assert version_counter == len(versions)
-
-    @pytest.mark.gen_test(timeout=15)
-    @pytest.mark.skip("Cannot test inside this CI container")
-    def test_delete_files(self, http_client):
-        """Tests whether files are properly deleted after 61 seconds
-
-        Args:
-            http_client: Httpclient that connects
-
-        """
-        # Create camera
-        camera = self.camera
-
-        # Create connection
-        yield http_client.fetch(self.camera_url)
-
-        # After 60 seconds files are deleted on server
-        time.sleep(70)
-
-        # Checks whether files are actually deleted
-        for file in os.listdir(self.stream_dir):
-            if file.startswith(camera):
-                assert False
+        # Assert response is OK
+        assert response_low_res.code == 200
+        assert response_med_res.code == 200
+        assert response_high_res.code == 200
 
 
 if __name__ == '__main__':
