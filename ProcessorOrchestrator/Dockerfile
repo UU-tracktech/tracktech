@@ -25,9 +25,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
-ENV PYTHONPATH=/app
-
 # Install pip requirements
 COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements-test.txt"]
