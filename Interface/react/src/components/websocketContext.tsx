@@ -37,7 +37,7 @@ export function WebsocketProvider(props) {
   const [socketUrl, setSocketUrl] = React.useState('wss://tracktech.ml:50010/client')
 
   const socketRef = React.useRef<WebSocket>()
-  const listenersRef = React.useRef<Listener[]>()
+  const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
   React.useEffect(() => setSocket(socketUrl), [])
