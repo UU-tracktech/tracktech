@@ -1,6 +1,7 @@
 """Tests the processor with a started video forwarder to see whether HlsCapture works correctly
 
 """
+import time
 import ffmpeg
 import pytest
 import cv2
@@ -17,7 +18,6 @@ class TestVideoForwarder:
         """Setup method that has url of the
         """
         self.hls_url = "http://forwarder-test-service/testvid.m3u8"
-        #self.hls_url = "http://forwarder-test-service/"
 
     @pytest.fixture
     def hls_capture(self):
@@ -28,7 +28,7 @@ class TestVideoForwarder:
         """
         return HlsCapture(self.hls_url)
 
-    @pytest.mark.timeout(20)
+    @pytest.mark.timeout(30)
     def test_hls_constructor(self, hls_capture):
         """Checks whether constructor of hls capture has been set correctly
 
@@ -38,6 +38,8 @@ class TestVideoForwarder:
         # Url set correctly and thread has correct setting
         assert hls_capture.hls_url == self.hls_url
         assert hls_capture.reading_thread.daemon
+        # Be sure the video forwarder is opened for the next stream
+        time.sleep(10)
 
     @pytest.mark.timeout(20)
     def test_hls_opened_correctly(self, hls_capture):
