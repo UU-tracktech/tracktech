@@ -46,7 +46,7 @@ class TestVideoForwarder:
         """
         self.port = 80
         self.camera = 'testvid'
-        self.base_url = 'http://localhost'
+        self.base_url = 'http://video-forwarder-service'
         self.extension = 'm3u8'
         self.camera_url = f'{self.base_url}:{self.port}/{self.camera}.{self.extension}'
 
@@ -99,6 +99,7 @@ class TestVideoForwarder:
         assert response.headers['Access-Control-Allow-Origin'] == '*'
 
     @pytest.mark.gen_test(timeout=15)
+    @pytest.mark.skip("Cannot test inside this CI container")
     def test_generate_multiple_video_outputs(self, http_client):
         """Tests whether the stream generates several headers
 
@@ -127,6 +128,7 @@ class TestVideoForwarder:
         assert version_counter == len(versions)
 
     @pytest.mark.gen_test(timeout=15)
+    @pytest.mark.skip("Cannot test inside this CI container")
     def test_delete_files(self, http_client):
         """Tests whether files are properly deleted after 61 seconds
 

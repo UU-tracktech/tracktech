@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  video-forwarder-service:
+    image: videoforwarder_video-forwarder-service:latest
+    build:
+      context: .
+      target: production
+    container_name: video-forwarder_runner
+  video-forwarder-testing-service:
+    image: videoforwarder_video-forwarder-testing-service:latest
+    build:
+      context: .
+      target: testing
+    container_name: video-forwarder_integration-testing-container
+    depends_on:
+      - "video-forwarder-service"
+    entrypoint: ["python3.8", "-m", "pytest", "--junitxml=vf-integration-report.xml", "test/integrationtest"]

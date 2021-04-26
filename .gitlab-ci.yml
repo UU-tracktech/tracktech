@@ -267,14 +267,15 @@ video-forwarder_integration-testing:
   stage: integrationtest
   needs: [video-forwarder_docker_build]
   before_script:
-    - docker rm -f video-forwarder-test-container || true
+#    - docker rm -f video-forwarder-test-container || true
   script:
-    - docker run -t -d --name video-forwarder-test-container video-forwarder
-    - docker exec -d video-forwarder-test-container python3.8 src/main.py
-    - docker exec video-forwarder-test-container python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
+    - docker-compose -f docker-compose-test.yml up --force-recreate --build --exit-code-from video-forwarder-testing-service
+#    - docker run -t -d --name video-forwarder-test-container video-forwarder
+#    - docker exec -d video-forwarder-test-container python3.8 src/main.py
+#    - docker exec video-forwarder-test-container python3.8 -m pytest --junitxml=vf-integration-report.xml test/integrationtest
   after_script:
     - docker cp video-forwarder-test-container:/vf-integration-report.xml vf-integration-report.xml
-    - docker stop video-forwarder-test-container
+#    - docker stop video-forwarder-test-container
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
