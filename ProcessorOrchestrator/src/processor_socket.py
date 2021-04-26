@@ -17,10 +17,10 @@ import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from object_manager import objects, TrackingObject
-from connections import processors
-import client_socket
-import logger
+from src.object_manager import objects, TrackingObject
+from src.connections import processors
+import src.client_socket as client_socket
+import src.logger as logger
 
 
 class ProcessorSocket(WebSocketHandler):
@@ -49,13 +49,13 @@ class ProcessorSocket(WebSocketHandler):
         """
         return True
 
-    def open(self) -> None:
+    def open(self, *args, **kwargs) -> None:
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket, will log connection
         """
         logger.log_connect("/processor", self.request.remote_ip)
-        print(f"New processor connected")
+        print("New processor connected")
 
     def on_message(self, message: str) -> None:
         """Handles a message from a processor that is received on the websocket.

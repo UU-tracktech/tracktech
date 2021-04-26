@@ -8,19 +8,19 @@ Utrecht University within the Software Project course.
 
 
 class Camera:
-    """
-    Camera information object
+    """Camera information object
+
     """
 
-    def __init__(self, ip_adress, audio):
-        self.ip_adress = ip_adress
-        """The ip address (with credentials) of the camera"""
+    def __init__(self, ip_address, audio):
+        # The ip address (with credentials) of the camera
+        self.ip_address = ip_address
 
+        # The conversion process creating a hls stream from the camera feed
         self.conversion = None
-        """The conversion process creating a hls stream from the camera feed"""
 
+        # A callback to stop the conversion at a set delay
         self.callback = None
-        """A callback to stop the conversion at a set delay"""
 
+        # Whether the camera stream contains audio
         self.audio = audio
-        """Whether the camera stream contains audio"""

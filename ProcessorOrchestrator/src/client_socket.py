@@ -17,9 +17,9 @@ import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from object_manager import TrackingObject, objects
-from connections import processors, clients
-import logger
+from src.object_manager import TrackingObject, objects
+from src.connections import processors, clients
+import src.logger as logger
 
 
 class ClientSocket(WebSocketHandler):
@@ -48,7 +48,7 @@ class ClientSocket(WebSocketHandler):
         """
         return True
 
-    def open(self) -> None:
+    def open(self, *args, **kwargs) -> None:
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket. After connecting, it appends this component

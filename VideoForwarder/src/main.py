@@ -71,6 +71,7 @@ if __name__ == "__main__":
         http_server.listen(443)
         print('listening on port 443 over https')
 
+    # Else start the insecure webserver on port 80
     else:
         # Start the insecure webserver on port 80
         http_server = tornado.httpserver.HTTPServer(app)

@@ -11,6 +11,7 @@ import os
 import re
 import threading
 import time
+from typing import Optional
 from subprocess import Popen, TimeoutExpired
 import tornado.web
 import jwt
@@ -22,46 +23,49 @@ class CameraHandler(tornado.web.StaticFileHandler):
     The camera file request handler
     """
 
+    # A dictionary to store all camera objects with their name as key
     cameras = {}
-    """A dictionary to store all camera objects with their name as key"""
 
+    # How long each video segment should be in seconds
     segmentSize = os.environ.get('SEGMENT_SIZE') or '2'
-    """How long each video segment should be in seconds"""
 
+    # How many segments of a video stream should be stored at once at a given time
     segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
-    """How many segments of a video stream should be stored at once at a given time"""
 
+    # How long the stream has no requests before stopping the conversion in seconds
     removeDelay = float(os.environ.get('REMOVE_DELAY') or '60.0')
-    """How long the stream has no requests before stopping the conversion in seconds"""
 
+    # The maximum amount of seconds we will wait with removing stream files after stopping the conversion
     timeoutDelay = int(os.environ.get('TIMEOUT_DELAY') or '30')
-    """The maximum amount of seconds we will wait with removing stream files after stopping the conversion"""
 
+    # The FFMPEG encoding that should be used to encode the video streams
     encoding = os.environ['ENCODING']
-    """The FFMPEG encoding that should be used to encode the video streams"""
 
+    # The public secret of the identity provider to validate the tokens with
     secret = os.environ.get('JWT_PUBLIC_SECRET')
-    """The public secret of the identity provider to validate the tokens with"""
 
+    # The audience the token should be for
     audience = os.environ.get('TOKEN_AUDIENCE')
-    """The audience the token should be for"""
 
+    # The scope the token should be for
     scope = os.environ.get('TOKEN_SCOPE')
-    """The scope the token should be for"""
 
     # pylint: disable=arguments-differ
-    def initialize(self, path):
-        """Set the root path and load the public key from application settings, run at the start of every request"""
+    def initialize(self, path: str, default_filename: Optional[str] = None) -> None:
+        """Set the root path and load the public key from application settings, run at the start of every request
+        """
 
         # noinspection PyAttributeOutsideInit
         # Needed for the library
+        super().initialize(path, default_filename)
         self.root = path
 
         # Load the public key from application settings
         self.public_key = self.application.settings.get('publicKey')
 
     def set_default_headers(self):
-        """Set the headers to allow cors and disable caching"""
+        """Set the headers to allow cors and disable caching
+        """
 
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Cache-control", "no-store")
@@ -100,13 +104,12 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
         # If a key is specified
         if self.public_key:
+            # Decode the token using the given key and the header token
             try:
-                # Decode the token using the given key and the header token
                 decoded = jwt.decode(self.request.headers.get('Authorization').split()[
                                      1], self.public_key, algorithms=['RS256'], audience=self.audience)
-
+            # If decoding fails, return a 401 not authorized status
             except ValueError as exc:
-                # If decoding fails, return a 401 not authorized status
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
 
@@ -116,7 +119,8 @@ class CameraHandler(tornado.web.StaticFileHandler):
                 raise tornado.web.Finish()
 
     def get_absolute_path(self, root, path):
-        """Handle all file logic, including starting and stopping the conversion"""
+        """Handle all file logic, including starting and stopping the conversion
+        """
 
         # Get the path on the file system
         abspath = os.path.abspath(os.path.join(root, path))
@@ -145,7 +149,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                     # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
                     entry.conversion = Popen(
                         [
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_adress,
+                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
                             '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0',
                             '-map', '0:1',  # Create 3 variances of video + audio stream
                             '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)', '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
@@ -166,7 +170,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             '-start_number', '1',  # Configure segment properties
                             f'{root}/{camera}_V%v.m3u8'
                         ]) if entry.audio else Popen([
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_adress,
+                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
                             '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)', '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0',
