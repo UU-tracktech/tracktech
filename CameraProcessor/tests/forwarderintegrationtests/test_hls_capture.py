@@ -38,7 +38,9 @@ class TestVideoForwarder:
         # Url set correctly and thread has correct setting
         assert hls_capture.hls_url == self.hls_url
         assert hls_capture.reading_thread.daemon
-        # Be sure the video forwarder is opened for the next stream
+
+        # IMPORTANT: Be sure the video forwarder is opened for the next stream
+        # This is an integration test, without this timeout the forwarder will not have started fully
         time.sleep(10)
 
     @pytest.mark.timeout(20)
@@ -56,8 +58,10 @@ class TestVideoForwarder:
         assert hls_capture.cap_initialized
         assert hls_capture.cap
 
+        # Close the Hls capture
+        hls_capture.close()
+
     @pytest.mark.timeout(20)
-    @pytest.mark.skip("Close throws exception")
     def test_hls_closed_correctly(self, hls_capture):
         """Tests whether the hls stream closed correctly
 
@@ -106,6 +110,9 @@ class TestVideoForwarder:
         meta_data_fps = int(streams_data[0]['avg_frame_rate'][:2])
         assert meta_data_fps == hls_capture.cap.get(cv2.CAP_PROP_FPS)
 
+        # Close the Hls capture
+        hls_capture.close()
+
     @pytest.mark.timeout(20)
     def test_get_next_frame(self, hls_capture):
         """Tests whether the hls capture can get a frame from the stream
@@ -126,3 +133,6 @@ class TestVideoForwarder:
 
         # Has returned with frame
         assert frame.any()
+
+        # Close the Hls capture
+        hls_capture.close()
