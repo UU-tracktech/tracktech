@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
+import React from 'react'
 import { Overlay } from '../components/overlay'
 
 export function OverlayVideo() {

@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
