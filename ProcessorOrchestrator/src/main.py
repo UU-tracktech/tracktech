@@ -14,9 +14,10 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 
-from client_socket import ClientSocket
-from processor_socket import ProcessorSocket
-from log_handler import LogHandler
+from src.client_socket import ClientSocket
+from src.processor_socket import ProcessorSocket
+from src.log_handler import LogHandler
+import src.logger as logger
 
 
 def main():
@@ -46,7 +47,7 @@ def main():
     # Create a http server, with optional ssl.
     http_server = HTTPServer(app)
     http_server.listen(80)
-    print('listening over http')
+    logger.log('listening over http')
 
     IOLoop.current().start()
 
