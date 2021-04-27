@@ -34,15 +34,19 @@ def main(_argv):
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(local_time, None, 0)
-    accuracy_dest =os.path.abspath(f'{root_dir}/data/annotated/test/mockyolo/testfile.txt')
+    accuracy_dest = os.path.abspath(f'{root_dir}/data/annotated/test/det/testfile.txt')
+    accuracy_info_dest = os.path.abspath(f'{root_dir}/data/annotated/test/det/testfile-info.txt')
+    detection_file = open(accuracy_dest, 'a')
+    detection_file_info = open(accuracy_info_dest, 'w')
 
     if accuracy_config['writing-to-txt']:
-        file = open(accuracy_dest, 'w')
-        file.truncate(0)
-        file.close()
+        detection_file.truncate(0)
         print('I will write the detection objects to a txt file')
         if accuracy_config['iou-thres'] != trueconfig['iou-thres']:
-            print('The iou-threshold of the accuracy tester differs from the true config threshold')
+            print('The iou-threshold of the accuracy tester differs from the yolo config threshold')
+    else:
+        detection_file.close()
+        detection_file_info.close()
 
     # Capture the video stream
     vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
@@ -62,6 +66,8 @@ def main(_argv):
         if not ret:
             if counter == vidstream.get_capture_length():
                 print("End of file")
+                detection_file.close()
+                detection_file_info.close()
             else:
                 raise ValueError("Feed has been interrupted")
 
@@ -79,7 +85,11 @@ def main(_argv):
 
         # Write detection object to txt file for later accuracy testing
         if accuracy_config['writing-to-txt']:
-            det_obj.to_txt_file(accuracy_dest)
+            det_obj.to_txt_file(accuracy_dest, detection_file)
+
+            # Overwrite the file info with the new detection object
+            detection_file_info
+            detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
 
         # Play the video in a window called "Output Video"
         try:
@@ -90,6 +100,8 @@ def main(_argv):
 
         # This next line is **ESSENTIAL** for the video to actually play
         if cv2.waitKey(1) & 0xFF == ord('q'):
+            detection_file.close()
+            detection_file_info.close()
             return
 
 

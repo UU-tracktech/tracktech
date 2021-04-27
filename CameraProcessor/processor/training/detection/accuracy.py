@@ -36,8 +36,8 @@ class AccuracyObject:
         self.gt_dir = gt_dir
         self.images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
         self.results = {}
-        self.image_width = 10000
-        self.image_height = 10000
+        self.image_width = 0
+        self.image_height = 0
 
         bounding_boxes_path_gt = f'{root_dir}/data/annotated/{folder_name}/{gt_dir}'
 
@@ -140,6 +140,6 @@ class AccuracyObject:
 
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
-accuracy_object = AccuracyObject(os.path.abspath(__file__ + '/../../../../'), 'test', 'gt/gt.txt')
+accuracy_object = AccuracyObject(dir_to_root, 'test', 'gt/gt.txt')
 accuracy_object.detect('mockyolo/threshold10.txt')
 accuracy_object.draw_all_pr_plots('threshold10')
