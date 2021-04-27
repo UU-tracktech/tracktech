@@ -17,7 +17,6 @@ import tornado.web
 import jwt
 
 
-# pylint: disable=attribute-defined-outside-init
 class CameraHandler(tornado.web.StaticFileHandler):
     """
     The camera file request handler
@@ -27,7 +26,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
     cameras = {}
 
     # How long each video segment should be in seconds
-    segmentSize = os.environ.get('SEGMENT_SIZE') or '2'
+    segmentSize = os.environ.get('SEGMENT_SIZE') or '1'
 
     # How many segments of a video stream should be stored at once at a given time
     segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
@@ -50,6 +49,9 @@ class CameraHandler(tornado.web.StaticFileHandler):
     # The scope the token should be for
     scope = os.environ.get('TOKEN_SCOPE')
 
+    # The public key used to validate tokens
+    public_key = None
+
     # pylint: disable=arguments-differ
     def initialize(self, path: str, default_filename: Optional[str] = None) -> None:
         """Set the root path and load the public key from application settings, run at the start of every request
@@ -58,7 +60,6 @@ class CameraHandler(tornado.web.StaticFileHandler):
         # noinspection PyAttributeOutsideInit
         # Needed for the library
         super().initialize(path, default_filename)
-        self.root = path
 
         # Load the public key from application settings
         self.public_key = self.application.settings.get('publicKey')
@@ -100,10 +101,11 @@ class CameraHandler(tornado.web.StaticFileHandler):
                     os.remove(os.path.join(root, file))
 
     def prepare(self):
-        """Validate and check the header token if a public key is specified"""
+        """Validate and check the header token if a public key is specified
+        """
 
         # If a key is specified
-        if self.public_key:
+        if self.public_key is not None:
             # Decode the token using the given key and the header token
             try:
                 decoded = jwt.decode(self.request.headers.get('Authorization').split()[
@@ -139,6 +141,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         if extension == 'm3u8':
             # If the request is for an index file of an existing camera
             if camera in CameraHandler.cameras:
+
                 # Get the camera object
                 entry = CameraHandler.cameras[camera]
 
@@ -149,12 +152,11 @@ class CameraHandler(tornado.web.StaticFileHandler):
                     # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
                     entry.conversion = Popen(
                         [
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
+                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
                             '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0',
                             '-map', '0:1',  # Create 3 variances of video + audio stream
-                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
-                            '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
-                            '-keyint_min', '24', '-c:a', 'aac', '-ar', '48000',
+                            '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48',
+                            '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
                             # Set common properties of the video variances
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate',
                             '900k', '-bufsize', '1200k',  # 360p - Low bit-rate Stream
@@ -171,10 +173,9 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             '-start_number', '1',  # Configure segment properties
                             f'{root}/{camera}_V%v.m3u8'
                         ]) if entry.audio else Popen([
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
+                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
-                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
-                            '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
+                            '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0',
                             '800k', '-maxrate', '900k', '-bufsize', '1200k',
                             '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1',

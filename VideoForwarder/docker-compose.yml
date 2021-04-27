@@ -5,8 +5,8 @@ services:
     image: tracktech.ml:50007/tt-forwarder-image
     build: .
     environment:
-      SEGMENT_SIZE: 2
-      SEGMENT_AMOUNT: 5
+      SEGMENT_SIZE: 5
+      SEGMENT_AMOUNT: 10
       CONFIG_PATH: /NetworkConfig.json
       STREAM_FOLDER: /streams
       ENCODING: libx264
