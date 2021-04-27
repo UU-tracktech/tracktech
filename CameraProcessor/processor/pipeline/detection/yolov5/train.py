@@ -21,18 +21,32 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-from processor.pipeline.detection.yolov5 import test
-from models.experimental import attempt_load
-from models.yolo import Model
-from utils.autoanchor import check_anchors
-from utils.datasets import create_dataloader
-from utils.general import labels_to_class_weights, increment_path, labels_to_image_weights, init_seeds, \
-    fitness, strip_optimizer, get_latest_run, check_dataset, check_file, check_git_status, check_img_size, \
-    check_requirements, print_mutation, set_logging, one_cycle, colorstr
-from utils.google_utils import attempt_download
-from utils.loss import ComputeLoss
-from utils.plots import plot_images, plot_labels, plot_results, plot_evolution
-from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first, is_parallel
+import test
+# from processor.pipeline.detection.yolov5 import test
+try:
+    from models.experimental import attempt_load
+    from models.yolo import Model
+    from utils.autoanchor import check_anchors
+    from utils.datasets import create_dataloader
+    from utils.general import labels_to_class_weights, increment_path, labels_to_image_weights, init_seeds, \
+        fitness, strip_optimizer, get_latest_run, check_dataset, check_file, check_git_status, check_img_size, \
+        check_requirements, print_mutation, set_logging, one_cycle, colorstr
+    from utils.google_utils import attempt_download
+    from utils.loss import ComputeLoss
+    from utils.plots import plot_images, plot_labels, plot_results, plot_evolution
+    from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first, is_parallel
+except ImportError:
+    from pipeline.detection.yolov5.models.experimental import attempt_load
+    from pipeline.detection.yolov5.models.yolo import Model
+    from pipeline.detection.yolov5.utils.autoanchor import check_anchors
+    from pipeline.detection.yolov5.utils.datasets import create_dataloader
+    from pipeline.detection.yolov5.utils.general import labels_to_class_weights, increment_path, labels_to_image_weights, init_seeds, \
+        fitness, strip_optimizer, get_latest_run, check_dataset, check_file, check_git_status, check_img_size, \
+        check_requirements, print_mutation, set_logging, one_cycle, colorstr
+    from pipeline.detection.yolov5.utils.google_utils import attempt_download
+    from pipeline.detection.yolov5.utils.loss import ComputeLoss
+    from pipeline.detection.yolov5.utils.plots import plot_images, plot_labels, plot_results, plot_evolution
+    from pipeline.detection.yolov5.utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first, is_parallel
 
 logger = logging.getLogger(__name__)
 

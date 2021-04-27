@@ -55,7 +55,7 @@ class ClientSocket(WebSocketHandler):
         to a dict of other websockets.
         """
         logger.log_connect("/client", self.request.remote_ip)
-        print(f"New client connected with id: {self.identifier}")
+        logger.log(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
     def on_message(self, message) -> None:
@@ -92,16 +92,16 @@ class ClientSocket(WebSocketHandler):
             # Execute correct function
             function: Optional[Callable[[], None]] = actions.get(message_object["type"])
             if function is None:
-                print("Someone gave an unknown command")
+                logger.log("Someone gave an unknown command")
             else:
                 function()
 
         except ValueError:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
-            print("Someone wrote bad json")
+            logger.log("Someone wrote bad json")
         except KeyError:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
-            print("Someone missed a property in their json")
+            logger.log("Someone missed a property in their json")
 
     def send_message(self, message) -> None:
         """Sends a message over the websocket and logs it.
@@ -119,7 +119,7 @@ class ClientSocket(WebSocketHandler):
         """Called when the websocket is closed, deletes itself from the dict of clients."""
         logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
-        print(f"Client with id {self.identifier} disconnected")
+        logger.log(f"Client with id {self.identifier} disconnected")
 
     @staticmethod
     def start_tracking(message) -> None:
@@ -139,12 +139,12 @@ class ClientSocket(WebSocketHandler):
         box_id: int = message["boxId"]
 
         if camera_id not in processors.keys():
-            print("Unknown processor")
+            logger.log("Unknown processor")
             return
 
         tracking_object: TrackingObject = TrackingObject()
 
-        print(
+        logger.log(
             f"New tracking object created with id {tracking_object.identifier}, "
             f"found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}")
 
@@ -166,7 +166,7 @@ class ClientSocket(WebSocketHandler):
         """
         object_id: int = message["objectId"]
         if object_id not in objects.keys():
-            print("unknown object")
+            logger.log("unknown object")
             return
 
         objects[object_id].remove_self()
@@ -178,7 +178,7 @@ class ClientSocket(WebSocketHandler):
                     "objectId": object_id
                 }))
 
-        print(f"stopped tracking of object with id {object_id}")
+        logger.log(f"stopped tracking of object with id {object_id}")
 
     def send_mock_data(self, message) -> None:
         """Sends a few mock messages to the client for testing purposes
