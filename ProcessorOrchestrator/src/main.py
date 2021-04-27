@@ -9,7 +9,7 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 
-from auth import Auth
+from auth.auth import Auth
 from client_socket import ClientSocket
 from processor_socket import ProcessorSocket
 from log_handler import LogHandler

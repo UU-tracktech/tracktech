@@ -3,7 +3,8 @@ FROM python:3 AS build
 # install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","Auth-1.0.tar.gz"]
 COPY src src
 
 
