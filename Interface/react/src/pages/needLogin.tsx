@@ -7,17 +7,14 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
+import { Alert } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
 
-/**If a user is logged in, this will display the text 'Signed in as: {username}' */
-export function LoggedInUser() {
+export function NeedLogin() {
 
-  //Obtain keycloak
   const { keycloak } = useKeycloak()
 
-  return (
-    keycloak.authenticated && keycloak.tokenParsed
-      ? <div>Logged in as: {keycloak.tokenParsed['name']}</div>
-      : <div>You are currently not logged in</div>
-  )
+  return <div style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
+    <Alert type='error' message='Login' description='You need to be logged-in to view this page.' onClose={() => keycloak.login()} closable />
+  </div>
 }
