@@ -11,44 +11,54 @@ import { Queue } from 'queue-typescript'
 
 import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
-import { Box, QueuItem } from '../classes/clientMessage'
+import { Box, QueueItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
 export type overlayProps = { cameraId: string, showBoxes: indicator }
 type size = { width: number, height: number, left: number, top: number }
 export function Overlay(props: overlayProps & VideoPlayerProps) {
-  var queue = new Queue<QueuItem>()
-  var playerFrameId = 0
-  var frameId = 0
-  var playerPlaying = false
-  
-  const [boxes, setBoxes] = React.useState<Box[]>([])
-  const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 })
+
+  //For some reason these only update properly as vars, useState didn't work
+  var queue = new Queue<QueueItem>()   //Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn
+  var playerFrameId = 0               //The frameID the video player is currently displaying
+  var frameId = 0                     //The frameID of the boxes that are currently drawn
+  var playerPlaying = false           //If the video player is paused or not
+
+  const [boxes, setBoxes] = React.useState<Box[]>([]) //Contains the boxes to be drawn this frame
+  const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 }) //Videoplayer dimensions/position
 
   const socketContext = React.useContext(websocketContext)
-  
+
   React.useEffect(() => {
+    //Create a listener for the websocket which receives boundingbox messages
+    //Put the messages in a Queue so the boxes are kept until it's time to draw them
     var id = socketContext.addListener(props.cameraId, (boxes: Box[], fID: number) => {
-      if(playerPlaying)
-      {
-        queue.enqueue(new QueuItem(fID, boxes))
+      //only accept new bounding boxes when the video is actually playing
+      //This prevents the boxes from updating while the video is paused
+      if(playerPlaying) {
+        queue.enqueue(new QueueItem(fID, boxes))
       }
     })
+    //Start an interval to take boxes from the queue for drawing
     setInterval(() => handleQueue(), 1000/24)
   }, [])
 
+  /**
+   * Dequeues boundingboxes until a set of boxes is found that correspond to the current frameID
+   * Once the correct set of boxes has been reached it will set these to be drawn
+   */
   function handleQueue() {
-    console.log(queue.length)
+    //Keep dequeue-ing until a set of boxes with matching frameID
     while(playerFrameId > frameId)
     {
       if(queue.length > 0)
       {
         let new_item = queue.dequeue()
+        //set the boxes to be drawn
         setBoxes(new_item.boxes)
         frameId = new_item.frameId
-      }else
-      {
+      } else {
         break
       }
     }

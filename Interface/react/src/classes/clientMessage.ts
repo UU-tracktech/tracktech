@@ -41,7 +41,10 @@ export class Box {
   
 }
 
-export class QueuItem {
+/**
+ * Used by the overlay to store bounding boxes alongside their frameID
+ */
+export class QueueItem {
   constructor( frameId: number, boxes: Box[]) {
     this.frameId = frameId
     this.boxes = boxes

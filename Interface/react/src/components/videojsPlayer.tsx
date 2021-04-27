@@ -138,6 +138,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     //dont ask why -4, it just works
     timeStamp = startTime + currentPlayer - 4
 
+    //Update timestamp for overlay
     props.onTimestamp(timeStamp)
 
     //print this videoplayer info to console as 1 object
