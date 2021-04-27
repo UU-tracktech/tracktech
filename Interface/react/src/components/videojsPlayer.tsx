@@ -11,7 +11,7 @@ import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-export type VideoPlayerProps = { onUp: () => void, onDown: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
+export type VideoPlayerProps = { onTimestamp: (time: number) => void, onPlayPause: (playing: boolean) => void ,onUp: () => void, onDown: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
 export function VideoPlayer(props: VideoPlayerProps) {
   var videoNode: HTMLVideoElement
 
@@ -49,6 +49,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         updateIntervalRef.current = player?.setInterval(() => {
           updateTimestamp()
         }, 100)
+        props.onPlayPause(true)
       })
 
       /* Every time the stream is paused we can stop updating the
@@ -56,6 +57,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       * background anyway */
       player?.on('pause', () => {
         if (updateIntervalRef.current) player?.clearInterval(updateIntervalRef.current)
+        props.onPlayPause(false)
       })
     })
 
@@ -136,13 +138,15 @@ export function VideoPlayer(props: VideoPlayerProps) {
     //dont ask why -4, it just works
     timeStamp = startTime + currentPlayer - 4
 
+    //Update timestamp for overlay
+    props.onTimestamp(timeStamp)
+
     //print this videoplayer info to console as 1 object
-    let toPrint = {
-      timeStamp: PrintTimestamp(timeStamp),
-      frameID: timeStamp,            //ID in seconds
-      //frameID: this.timeStamp / 1000,   //ID in ms
-    }
-    console.log(toPrint)
+    // let toPrint = {
+    //   timeStamp: PrintTimestamp(timeStamp),
+    //   frameID: timeStamp,
+    // }
+    //console.log(toPrint)
   }
 
   /**
