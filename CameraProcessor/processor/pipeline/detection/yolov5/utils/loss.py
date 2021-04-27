@@ -3,8 +3,12 @@
 import torch
 import torch.nn as nn
 
-from general import bbox_iou
-from torch_utils import is_parallel
+try:
+    from utils.general import bbox_iou
+    from utils.torch_utils import is_parallel
+except ImportError:
+    from pipeline.detection.yolov5.utils.general import bbox_iou
+    from pipeline.detection.yolov5.utils.torch_utils import is_parallel
 
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441

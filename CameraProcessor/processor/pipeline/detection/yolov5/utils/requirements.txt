@@ -1,0 +1,24 @@
+# Sending requests
+requests
+
+# Building
+absl-py
+
+# File reading
+PyYAML>=5.3.1
+
+# Plotting
+seaborn>=0.11.0
+pandas
+
+# logging when training -----------------------
+# wandb
+
+# export --------------------------------------
+# coremltools>=4.1
+# onnx>=1.8.1
+# scikit-learn==0.19.2  # for coreml quantization
+
+# extras --------------------------------------
+# thop  # FLOPS computation
+# pycocotools>=2.0  # COCO mAP
