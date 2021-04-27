@@ -15,7 +15,6 @@ ENTRYPOINT ["python","-u","/src/main.py"]
 
 FROM python:3.8-slim-buster as testing
 
-
 WORKDIR /
 ENV PYTHONPATH=/
 
