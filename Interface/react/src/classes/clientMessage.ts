@@ -40,3 +40,13 @@ export class Box {
   objectId?: number
   
 }
+
+export class QueuItem {
+  constructor( frameId: number, boxes: Box[]) {
+    this.frameId = frameId
+    this.boxes = boxes
+  }
+
+  frameId: number
+  boxes: Box[]
+}

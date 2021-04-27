@@ -146,7 +146,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       frameID: timeStamp,            //ID in seconds
       //frameID: this.timeStamp / 1000,   //ID in ms
     }
-    console.log(toPrint)
+    //console.log(toPrint)
   }
 
   /**

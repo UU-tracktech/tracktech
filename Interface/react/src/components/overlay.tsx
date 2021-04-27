@@ -7,17 +7,18 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
+import { Queue } from 'queue-typescript'
 
 import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
-import { Box } from '../classes/clientMessage'
+import { Box, QueuItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
 export type overlayProps = { cameraId: string, showBoxes: indicator }
 type size = { width: number, height: number, left: number, top: number }
 export function Overlay(props: overlayProps & VideoPlayerProps) {
-
+  var queue = new Queue<QueuItem>()
   const [boxes, setBoxes] = React.useState<Box[]>([])
   const [frameId, setFrameId] = React.useState(0)
   const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 })
@@ -27,9 +28,20 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   const socketContext = React.useContext(websocketContext)
 
   React.useEffect(() => {
-    var id = socketContext.addListener(props.cameraId, (boxes: Box[], frameId: number) => {
-      setBoxes(boxes)
-      setFrameId(frameId)
+    var id = socketContext.addListener(props.cameraId, (boxes: Box[], fID: number) => {
+      queue.enqueue(new QueuItem(fID, boxes))
+      while(playerFrameId > frameId)
+      {
+        if(queue.length > 0)
+        {
+          let new_item = queue.dequeue()
+          setBoxes(new_item.boxes)
+          setFrameId(new_item.frameId)
+        }else
+        {
+          break
+        }
+      }
     })
     return socketContext.removeListener(id)
   })
