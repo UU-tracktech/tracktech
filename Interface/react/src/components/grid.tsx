@@ -27,6 +27,8 @@ export function Grid(props: gridProps) {
             cameraId={source.id}
             onUp={() => props.setSize(source.id, (props.sourceSizes.get(source.id) ?? 1) + 1)}
             onDown={() => props.setSize(source.id, Math.max(1, (props.sourceSizes.get(source.id) ?? 1) - 1))}
+            onPlayPause={() => {}}
+            onTimestamp={() => {}}
             sources={[source.srcObject]}
             showBoxes={props.indicator} />
         </div>

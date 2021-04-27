@@ -21,6 +21,8 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   const [boxes, setBoxes] = React.useState<Box[]>([])
   const [frameId, setFrameId] = React.useState(0)
   const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 })
+  const [playerFrameId, setPlayerFrameId] = React.useState<number>(0)
+  const [playerPlaying, setPlayerState] = React.useState<boolean>(false)
 
   const socketContext = React.useContext(websocketContext)
 
@@ -32,33 +34,12 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     return socketContext.removeListener(id)
   })
 
-  updateTimestamp(newVal) {
-    this.setState({ playerData: { timeStamp: newVal }})
-  }
-
-  /*  enqueue(message: ClientMessage) {
-       this.queue.enqueue(message)
-       this.setState({ queueLength: this.queue.length })
-   }
-
-   dequeue(): ClientMessage {
-       var message = this.queue.dequeue()
-       this.setState({ queueLength: this.queue.length })
-       return message
-   }
-
-
-  clearQueue() {
-      this.queue = new Queue<ClientMessage>()
-      this.setState({ queueLength: this.queue.length })
-  }*/
-
   return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
       {DrawOverlay()}
     </div>
     <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
-      <VideoPlayer onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
+      <VideoPlayer onTimestamp={(t) => setPlayerFrameId(t)} onPlayPause={(p) => setPlayerState(p)} onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
     </div>
   </div >
 
