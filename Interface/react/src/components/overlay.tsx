@@ -19,39 +19,42 @@ export type overlayProps = { cameraId: string, showBoxes: indicator }
 type size = { width: number, height: number, left: number, top: number }
 export function Overlay(props: overlayProps & VideoPlayerProps) {
   var queue = new Queue<QueuItem>()
+  var playerFrameId
   const [boxes, setBoxes] = React.useState<Box[]>([])
-  const [frameId, setFrameId] = React.useState(0)
+  var frameId = 0
   const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 })
-  const [playerFrameId, setPlayerFrameId] = React.useState<number>(0)
   const [playerPlaying, setPlayerState] = React.useState<boolean>(false)
 
   const socketContext = React.useContext(websocketContext)
-
+  
   React.useEffect(() => {
     var id = socketContext.addListener(props.cameraId, (boxes: Box[], fID: number) => {
       queue.enqueue(new QueuItem(fID, boxes))
-      while(playerFrameId > frameId)
-      {
-        if(queue.length > 0)
-        {
-          let new_item = queue.dequeue()
-          setBoxes(new_item.boxes)
-          setFrameId(new_item.frameId)
-        }else
-        {
-          break
-        }
-      }
     })
-    return socketContext.removeListener(id)
-  })
+    setInterval(() => handleQueue(), 1000/60)
+  }, [])
+
+  function handleQueue() {
+    while(playerFrameId > frameId)
+    {
+      if(queue.length > 0)
+      {
+        let new_item = queue.dequeue()
+        setBoxes(new_item.boxes)
+        frameId = new_item.frameId
+      }else
+      {
+        break
+      }
+    }
+  }
 
   return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
       {DrawOverlay()}
     </div>
     <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
-      <VideoPlayer onTimestamp={(t) => setPlayerFrameId(t)} onPlayPause={(p) => setPlayerState(p)} onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
+      <VideoPlayer onTimestamp={(t) => playerFrameId = t} onPlayPause={(p) => setPlayerState(p)} onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
     </div>
   </div >
 
