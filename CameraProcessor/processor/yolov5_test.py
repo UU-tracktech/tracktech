@@ -68,6 +68,7 @@ def main(_argv):
                 print("End of file")
                 detection_file.close()
                 detection_file_info.close()
+                return
             else:
                 raise ValueError("Feed has been interrupted")
 
