@@ -40,6 +40,7 @@ export function WebsocketProvider(props) {
   const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => setSocket(socketUrl), [])
 
   function setSocket(url: string) {
@@ -54,23 +55,23 @@ export function WebsocketProvider(props) {
     socketRef.current = socket
   }
 
-  function onOpen(ev: Event) {
+  function onOpen(_ev: Event) {
     console.log('connected socket')
     setConnectionState('OPEN')
   }
 
   function onMessage(ev: MessageEvent<any>) {
-    console.log('socket message', ev.data)
+    //console.log('socket message', ev.data)
     var message: BoxesClientMessage = JSON.parse(ev.data)
     listenersRef.current?.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback(message.boxes, message.frameId))
   }
 
-  function onClose(ev: CloseEvent) {
+  function onClose(_ev: CloseEvent) {
     console.log('closed socket')
     setConnectionState('CLOSED')
   }
 
-  function onError(ev: Event) {
+  function onError(_ev: Event) {
     console.log('socket error')
     setConnectionState('ERROR')
   }

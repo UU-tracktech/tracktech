@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Overlay } from '../components/overlay'
+import { Overlay } from './overlay'
 import { indicator } from '../pages/home'
 
 export type source = { id: string, name: string, srcObject: { src: string, type: string } }

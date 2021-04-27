@@ -142,11 +142,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
     props.onTimestamp(timeStamp)
 
     //print this videoplayer info to console as 1 object
-    let toPrint = {
-      timeStamp: PrintTimestamp(timeStamp),
-      frameID: timeStamp,            //ID in seconds
-      //frameID: this.timeStamp / 1000,   //ID in ms
-    }
+    // let toPrint = {
+    //   timeStamp: PrintTimestamp(timeStamp),
+    //   frameID: timeStamp,
+    // }
     //console.log(toPrint)
   }
 
