@@ -1,20 +1,15 @@
-## Input of detection
-DetectionObj
-  * int: Frame nr
-  * DateTime: TimeStamp
-  * Frame: Frame itself
-  * [BoundingBox]: [ ]
+## how to run training
 
-## Output of detection
-DetectionObj
-  * int: Frame nr
-  * DateTime: TimeStamp
-  * Frame: Frame itself
-  * [BoundingBox]: Boxes of detected objects
+Change working directory to ```~/CameraProcessor/processor/pipeline/detection/yolov5``` and run the follwing command
 
-BoundingBox:
-  * int: Identifier
-  * Rectangle: (x1, y1, x2, y2)
-  * FeatureObj: TBD
-  * str: Classification (f.e. "Person")
-  * float: Certainty
+```
+python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --batch-size 4
+```
+
+```--data``` defines the location of the dataset
+
+```--cfg``` defines the config file for reading the weights from the dataset
+
+```--weights``` defines the weights to use for training
+
+```--batch-size``` defines the batch size to use. This can be set to 2-4 times your GPU memory.
