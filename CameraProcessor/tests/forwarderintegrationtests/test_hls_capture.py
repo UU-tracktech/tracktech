@@ -31,8 +31,11 @@ class TestVideoForwarder:
 
     @pytest.mark.timeout(30)
     def test_start_forwarder(self):
-        # IMPORTANT: Be sure the video forwarder is opened for the next stream
-        # This is an integration test, without this timeout the forwarder will not have started fully
+        """Gives forwarder extra time to start
+
+        IMPORTANT: Be sure the video forwarder is opened for the next stream
+        This is an integration test, without this timeout the forwarder will not have started fully
+        """
         time.sleep(20)
 
     @pytest.mark.timeout(20)
