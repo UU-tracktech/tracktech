@@ -7,11 +7,11 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Button } from 'react-bootstrap'
+import { Button } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
 
 /**This component shows a button, which when clicked either authorizes the user with keycloak
- * if not lgged in, and logs the user out if he is logged in */
+ * if not logged in, and logs the user out if he is logged in */
 export function LoginButton() {
 
   /*In order to have any keycloak functionality in a component,

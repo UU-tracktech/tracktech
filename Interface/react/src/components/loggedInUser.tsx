@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Navbar } from 'react-bootstrap'
 import { useKeycloak } from '@react-keycloak/web'
 
 /**If a user is logged in, this will display the text 'Signed in as: {username}' */
@@ -17,12 +16,8 @@ export function LoggedInUser() {
   const { keycloak } = useKeycloak()
 
   return (
-    <div style={{ margin: '5px' }}>
-      {
-        keycloak.authenticated && keycloak.tokenParsed
-          ? <Navbar.Text>Logged in as: {keycloak.tokenParsed['name']}</Navbar.Text>
-          : <Navbar.Text>You are currently not logged in</Navbar.Text>
-      }
-    </div>
+    keycloak.authenticated && keycloak.tokenParsed
+      ? <div>Logged in as: {keycloak.tokenParsed['name']}</div>
+      : <div>You are currently not logged in</div>
   )
 }

@@ -15,6 +15,8 @@ export function OverlayVideo() {
       cameraId={'test'}
       onUp={() => alert('up')}
       onDown={() => alert('down')}
+      onPlayPause={() => {}}
+      onTimestamp={() => {}}
       key={'testvid'}
       autoplay={true}
       controls={true}

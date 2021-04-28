@@ -7,10 +7,11 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
+import { Queue } from 'queue-typescript'
 
 import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
-import { Box } from '../classes/clientMessage'
+import { Box, QueueItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
@@ -18,43 +19,59 @@ export type overlayProps = { cameraId: string, showBoxes: indicator }
 type size = { width: number, height: number, left: number, top: number }
 export function Overlay(props: overlayProps & VideoPlayerProps) {
 
-  const [boxes, setBoxes] = React.useState<Box[]>([])
-  const [frameId, setFrameId] = React.useState(0)
-  const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 })
+  //For some reason these only update properly as vars, useState didn't work
+  var queue = new Queue<QueueItem>()   //Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn
+  var playerFrameId = 0               //The frameID the video player is currently displaying
+  var frameId = 0                     //The frameID of the boxes that are currently drawn
+  var playerPlaying = false           //If the video player is paused or not
+
+  const [boxes, setBoxes] = React.useState<Box[]>([]) //Contains the boxes to be drawn this frame
+  const [size, setSize] = React.useState<size>({ width: 100, height: 100, left: 100, top: 100 }) //Videoplayer dimensions/position
 
   const socketContext = React.useContext(websocketContext)
 
   React.useEffect(() => {
-    var id = socketContext.addListener(props.cameraId, (boxes: Box[], frameId: number) => {
-      setBoxes(boxes)
-      setFrameId(frameId)
+    //Create a listener for the websocket which receives boundingbox messages
+    //Put the messages in a Queue so the boxes are kept until it's time to draw them
+    var id = socketContext.addListener(props.cameraId, (boxes: Box[], fID: number) => {
+      //only accept new bounding boxes when the video is actually playing
+      //This prevents the boxes from updating while the video is paused
+      if(playerPlaying) {
+        queue.enqueue(new QueueItem(fID, boxes))
+      }
     })
+    //Start an interval to take boxes from the queue for drawing
+    setInterval(() => handleQueue(), 1000/24)
     return socketContext.removeListener(id)
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  /*  enqueue(message: ClientMessage) {
-       this.queue.enqueue(message)
-       this.setState({ queueLength: this.queue.length })
-   }
- 
-   dequeue(): ClientMessage {
-       var message = this.queue.dequeue()
-       this.setState({ queueLength: this.queue.length })
-       return message
-   }
-   
-   
-  clearQueue() {
-      this.queue = new Queue<ClientMessage>()
-      this.setState({ queueLength: this.queue.length })
-  }*/
+  /**
+   * Dequeues boundingboxes until a set of boxes is found that correspond to the current frameID
+   * Once the correct set of boxes has been reached it will set these to be drawn
+   */
+  function handleQueue() {
+    //Keep dequeue-ing until a set of boxes with matching frameID
+    while(playerFrameId > frameId)
+    {
+      if(queue.length > 0)
+      {
+        let new_item = queue.dequeue()
+        //set the boxes to be drawn
+        setBoxes(new_item.boxes)
+        frameId = new_item.frameId
+      } else {
+        break
+      }
+    }
+  }
 
   return <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <div style={{ position: 'absolute', width: '100%', height: '100%', overflow: 'hidden' }}>
       {DrawOverlay()}
     </div>
     <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
-      <VideoPlayer onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
+      <VideoPlayer onTimestamp={(t) => playerFrameId = t} onPlayPause={(p) => playerPlaying = p} onResize={(w, h, l, t) => setSize({ width: w, height: h, left: l, top: t })} autoplay={false} controls={true} onUp={() => props.onUp()} onDown={() => props.onDown()} sources={props.sources} />
     </div>
   </div >
 
