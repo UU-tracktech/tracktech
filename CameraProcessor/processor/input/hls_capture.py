@@ -57,7 +57,7 @@ class HlsCapture(ICapture):
         self.reading_thread.start()
 
         # Reconnect with timeout
-        timeout_left = 10
+        timeout_left = 20
         sleep = 1
         # Sleep is essential so processor has a prepared self.cap
         while not self.cap_initialized and timeout_left > 0:
@@ -88,8 +88,7 @@ class HlsCapture(ICapture):
         logging.info("Joining thread")
         self.thread_running = False
         self.reading_thread.join()
-        logging.info("Thread joined, releasing capture")
-        self.cap.release()
+        logging.info("Thread joined")
 
     def get_next_frame(self) -> (bool, List[List[int]], float):
         """Gets the next frame from the hls stream
@@ -105,7 +104,7 @@ class HlsCapture(ICapture):
         self.last_frame_time_stamp = self.frame_time_stamp
         return True, self.current_frame, self.frame_time_stamp
 
-    def read(self) -> None:
+    def _read(self) -> None:
         """Method that runs in seperate thread that goes through the frames of the
         stream at a consistent pace
 
@@ -135,6 +134,11 @@ class HlsCapture(ICapture):
 
             cv2.waitKey(wait_time)
 
+        # Release cap in thread that uses it to prevent following bug:
+        # Other thread stops cap whilst current thread is still reading the next frame
+        self.cap.release()
+        logging.info("Capture is released")
+
     def sync(self) -> None:
         """Method to instantiate the video connection with the HLS stream
 
@@ -159,17 +163,17 @@ class HlsCapture(ICapture):
         # Get the FPS of the hls stream and turn it into a delay of when
         # each frame should be displayed
         self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
-        self.read()
+        self._read()
         meta_thread.join()
 
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
-        # extract the start_time from the meta-data to get the absolute segment time
-        logging.info('Retrieving meta data from HLS stream')
         # pylint: disable=no-member
         meta_data = ffmpeg.probe(self.hls_url)
         # pylint: enable=no-member
+        # extract the start_time from the meta-data to get the absolute segment time
+        logging.info('Retrieved meta data from HLS stream')
         try:
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         # Json did not contain key
