@@ -49,7 +49,7 @@ export function NavMenu() {
       <div style={{ float: "right", marginRight: "10px" }}>
         <LoggedInUser />
       </div>
-      <Menu mode="horizontal" style={{ borderBottom: "3px solid #014584" }}>
+      <Menu mode="horizontal" style={{ borderBottom: "3px solid #096dd9" }}>
         <Menu.Item style={{ borderBottom: "0px" }}>
           <Link to="/">Home</Link>
         </Menu.Item>
