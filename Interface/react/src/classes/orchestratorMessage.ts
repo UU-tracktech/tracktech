@@ -8,42 +8,42 @@ Utrecht University within the Software Project course.
 
 export abstract class OrchestratorMessage {
   constructor(type: string) {
-    this.type = type
+    this.type = type;
   }
 
-  type: string
+  type: string;
 }
 
 export class StartOrchestratorMessage extends OrchestratorMessage {
   constructor(cameraId: string, frameId: number, boxId: number) {
-    super('start')
+    super("start");
 
-    this.cameraId = cameraId
-    this.frameId = frameId
-    this.boxId = boxId
+    this.cameraId = cameraId;
+    this.frameId = frameId;
+    this.boxId = boxId;
   }
 
-  cameraId: string
-  frameId: number
-  boxId: number
+  cameraId: string;
+  frameId: number;
+  boxId: number;
 }
 
 export class StopOrchestratorMessage extends OrchestratorMessage {
   constructor(objectId: number) {
-    super('stop')
+    super("stop");
 
-    this.objectId = objectId
+    this.objectId = objectId;
   }
 
-  objectId: number
+  objectId: number;
 }
 
 export class TestOrchestratorMessage extends OrchestratorMessage {
   constructor(cameraId: string) {
-    super('test')
+    super("test");
 
-    this.cameraId = cameraId
+    this.cameraId = cameraId;
   }
 
-  cameraId: string
+  cameraId: string;
 }
