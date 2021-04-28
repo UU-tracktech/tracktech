@@ -8,4 +8,4 @@ COPY react/public ./public
 COPY react/src ./src
 COPY react/testing ./testing
 
-ENTRYPOINT ["./node_modules/.bin/eslint", "src/*"]
+ENTRYPOINT ["./node_modules/.bin/eslint", "src/*.tsx", "src/*.ts"]
