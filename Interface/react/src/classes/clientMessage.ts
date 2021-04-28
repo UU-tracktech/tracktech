@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 export abstract class ClientMessage {
   constructor(type: string) {
-    this.type = type;
+    this.type = type
   }
 
   type: string;

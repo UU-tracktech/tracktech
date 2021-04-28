@@ -6,111 +6,111 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from "react";
+import React from 'react'
 
-import { OrchestratorMessage } from "../classes/orchestratorMessage";
-import { Box, BoxesClientMessage } from "../classes/clientMessage";
+import { OrchestratorMessage } from '../classes/orchestratorMessage'
+import { Box, BoxesClientMessage } from '../classes/clientMessage'
 
 export type connectionState =
-  | "NONE"
-  | "CONNECTING"
-  | "OPEN"
-  | "CLOSING"
-  | "CLOSED"
-  | "ERROR";
+  | 'NONE'
+  | 'CONNECTING'
+  | 'OPEN'
+  | 'CLOSING'
+  | 'CLOSED'
+  | 'ERROR'
 
 export type websocketArgs = {
-  setSocket: (url: string) => void;
-  send: (message: OrchestratorMessage) => void;
+  setSocket: (url: string) => void
+  send: (message: OrchestratorMessage) => void
   addListener: (
     id: string,
     callback: (boxes: Box[], frameId: number) => void
-  ) => number;
-  removeListener: (listener: number) => void;
-  connectionState: connectionState;
-  socketUrl: string;
-};
+  ) => number
+  removeListener: (listener: number) => void
+  connectionState: connectionState
+  socketUrl: string
+}
 
 export const websocketContext = React.createContext<websocketArgs>({
   setSocket: (url: string) => alert(JSON.stringify(url)),
   send: (message: OrchestratorMessage) => alert(JSON.stringify(message)),
   addListener: (_: string, _2: (boxes: Box[], frameId: number) => void) => 0,
   removeListener: (listener: number) => alert(`removing ${listener}`),
-  connectionState: "NONE",
-  socketUrl: "NO URL",
-});
+  connectionState: 'NONE',
+  socketUrl: 'NO URL'
+})
 
 type Listener = {
-  id: string;
-  listener: number;
-  callback: (boxes: Box[], frameId: number) => void;
-};
+  id: string
+  listener: number
+  callback: (boxes: Box[], frameId: number) => void
+}
 export function WebsocketProvider(props) {
   const [connectionState, setConnectionState] = React.useState<connectionState>(
-    "NONE"
-  );
+    'NONE'
+  )
   const [socketUrl, setSocketUrl] = React.useState(
-    "wss://tracktech.ml:50010/client"
-  );
+    'wss://tracktech.ml:50010/client'
+  )
 
-  const socketRef = React.useRef<WebSocket>();
-  const listenersRef = React.useRef<Listener[]>([]);
-  const listenerRef = React.useRef<number>(0);
+  const socketRef = React.useRef<WebSocket>()
+  const listenersRef = React.useRef<Listener[]>([])
+  const listenerRef = React.useRef<number>(0)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setSocket(socketUrl), []);
+  React.useEffect(() => setSocket(socketUrl), [])
 
   function setSocket(url: string) {
-    var socket = new WebSocket(url);
-    setConnectionState("CONNECTING");
-    socket.onopen = (ev: Event) => onOpen(ev);
-    socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev);
-    socket.onclose = (ev: CloseEvent) => onClose(ev);
-    socket.onerror = (ev: Event) => onError(ev);
-    setSocketUrl(url);
+    var socket = new WebSocket(url)
+    setConnectionState('CONNECTING')
+    socket.onopen = (ev: Event) => onOpen(ev)
+    socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev)
+    socket.onclose = (ev: CloseEvent) => onClose(ev)
+    socket.onerror = (ev: Event) => onError(ev)
+    setSocketUrl(url)
 
-    socketRef.current = socket;
+    socketRef.current = socket
   }
 
   function onOpen(_ev: Event) {
-    console.log("connected socket");
-    setConnectionState("OPEN");
+    console.log('connected socket')
+    setConnectionState('OPEN')
   }
 
   function onMessage(ev: MessageEvent<any>) {
     //console.log('socket message', ev.data)
-    var message: BoxesClientMessage = JSON.parse(ev.data);
+    var message: BoxesClientMessage = JSON.parse(ev.data)
     listenersRef.current
       ?.filter((listener) => listener.id === message.cameraId)
-      .forEach((listener) => listener.callback(message.boxes, message.frameId));
+      .forEach((listener) => listener.callback(message.boxes, message.frameId))
   }
 
   function onClose(_ev: CloseEvent) {
-    console.log("closed socket");
-    setConnectionState("CLOSED");
+    console.log('closed socket')
+    setConnectionState('CLOSED')
   }
 
   function onError(_ev: Event) {
-    console.log("socket error");
-    setConnectionState("ERROR");
+    console.log('socket error')
+    setConnectionState('ERROR')
   }
 
   function addListener(
     id: string,
     callback: (boxes: Box[], frameId: number) => void
   ) {
-    var listener = ++listenerRef.current;
-    listenersRef.current?.push({ id: id, listener, callback: callback });
-    return listener;
+    var listener = ++listenerRef.current
+    listenersRef.current?.push({ id: id, listener, callback: callback })
+    return listener
   }
 
   function removeListener(listener: number) {
-    listenersRef.current?.filter((x) => x.listener === listener);
+    listenersRef.current?.filter((x) => x.listener === listener)
   }
 
   function send(message: OrchestratorMessage) {
-    if (!socketRef.current) throw new Error("socket is undefined");
-    socketRef.current.send(JSON.stringify(message));
+    if (!socketRef.current) throw new Error('socket is undefined')
+    socketRef.current.send(JSON.stringify(message))
   }
 
   return (
@@ -124,10 +124,10 @@ export function WebsocketProvider(props) {
         ) => addListener(id, callback),
         removeListener: (listener: number) => removeListener(listener),
         connectionState: connectionState,
-        socketUrl: socketUrl,
+        socketUrl: socketUrl
       }}
     >
       {props.children}
     </websocketContext.Provider>
-  );
+  )
 }

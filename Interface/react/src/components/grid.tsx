@@ -6,44 +6,44 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from "react";
-import { Overlay } from "./overlay";
-import { indicator } from "../pages/home";
+import React from 'react'
+import { Overlay } from './overlay'
+import { indicator } from '../pages/home'
 
 export type source = {
-  id: string;
-  name: string;
-  srcObject: { src: string; type: string };
-};
+  id: string
+  name: string
+  srcObject: { src: string; type: string }
+}
 export type gridProps = {
-  sourceSizes: Map<string, number>;
-  setSize: (sourceId: string, size: number) => void;
-  sources: source[];
-  indicator: indicator;
-};
+  sourceSizes: Map<string, number>
+  setSize: (sourceId: string, size: number) => void
+  sources: source[]
+  indicator: indicator
+}
 
 export function Grid(props: gridProps) {
   return (
     <div
       style={{
-        width: "100%",
-        height: "100%",
-        padding: "5px",
-        display: "grid",
-        gap: "5px",
+        width: '100%',
+        height: '100%',
+        padding: '5px',
+        display: 'grid',
+        gap: '5px',
         gridTemplateColumns: `repeat(auto-fit,minmax(350px, 1fr))`,
-        gridAutoRows: "minmax(250px, 1fr)",
+        gridAutoRows: 'minmax(250px, 1fr)'
       }}
     >
       {props.sources.map((source) => {
-        var size = props.sourceSizes.get(source.id) ?? 1;
+        var size = props.sourceSizes.get(source.id) ?? 1
         return (
           <div
             key={source.id}
             style={{
               gridColumn: `span ${size}`,
               gridRow: `span ${size}`,
-              justifySelf: "stretch",
+              justifySelf: 'stretch'
             }}
           >
             <Overlay
@@ -66,8 +66,8 @@ export function Grid(props: gridProps) {
               showBoxes={props.indicator}
             />
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

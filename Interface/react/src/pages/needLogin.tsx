@@ -6,19 +6,19 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from "react";
-import { Alert } from "antd";
-import { useKeycloak } from "@react-keycloak/web";
+import React from 'react'
+import { Alert } from 'antd'
+import { useKeycloak } from '@react-keycloak/web'
 
 export function NeedLogin() {
-  const { keycloak } = useKeycloak();
+  const { keycloak } = useKeycloak()
 
   return (
     <div
       style={{
-        display: "grid",
-        justifyContent: "center",
-        alignContent: "center",
+        display: 'grid',
+        justifyContent: 'center',
+        alignContent: 'center'
       }}
     >
       <Alert
@@ -29,5 +29,5 @@ export function NeedLogin() {
         closable
       />
     </div>
-  );
+  )
 }
