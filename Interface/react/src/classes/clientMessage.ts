@@ -11,33 +11,33 @@ export abstract class ClientMessage {
     this.type = type
   }
 
-  type: string;
+  type: string
 }
 
 export class BoxesClientMessage extends ClientMessage {
   constructor(cameraId: string, frameId: number, boxes: Box[]) {
-    super("boundingBoxes");
+    super('boundingBoxes')
 
-    this.cameraId = cameraId;
-    this.frameId = frameId;
-    this.boxes = boxes;
+    this.cameraId = cameraId
+    this.frameId = frameId
+    this.boxes = boxes
   }
 
-  cameraId: string;
-  frameId: number;
-  boxes: Box[];
+  cameraId: string
+  frameId: number
+  boxes: Box[]
 }
 
 export class Box {
   constructor(boxId: number, rect: number[], objectId?: number) {
-    this.boxId = boxId;
-    this.rect = rect;
-    this.objectId = objectId;
+    this.boxId = boxId
+    this.rect = rect
+    this.objectId = objectId
   }
 
-  boxId: number;
-  rect: number[];
-  objectId?: number;
+  boxId: number
+  rect: number[]
+  objectId?: number
 }
 
 /**
@@ -45,10 +45,10 @@ export class Box {
  */
 export class QueueItem {
   constructor(frameId: number, boxes: Box[]) {
-    this.frameId = frameId;
-    this.boxes = boxes;
+    this.frameId = frameId
+    this.boxes = boxes
   }
 
-  frameId: number;
-  boxes: Box[];
+  frameId: number
+  boxes: Box[]
 }
