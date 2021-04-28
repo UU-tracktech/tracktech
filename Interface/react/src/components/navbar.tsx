@@ -27,11 +27,6 @@ export function NavMenu() {
         <LoggedInUser />
       </div>
       <Menu mode="horizontal" >
-        {/*  <Navbar.Brand as={Link} to='/' >
-         
-        </Navbar.Brand> */}
-        {/* <Navbar.Toggle style={{ float: 'right' }} aria-controls='basic-navbar-nav' /> */}
-
         <Menu.Item>
           <Link to="/" >
             Home

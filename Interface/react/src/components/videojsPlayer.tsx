@@ -11,7 +11,7 @@ import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-export type VideoPlayerProps = { onTimestamp: (time: number) => void, onPlayPause: (playing: boolean) => void ,onUp: () => void, onDown: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
+export type VideoPlayerProps = { onTimestamp: (time: number) => void, onPlayPause: (playing: boolean) => void, onPrimary: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
 export function VideoPlayer(props: VideoPlayerProps) {
   var videoNode: HTMLVideoElement
 
@@ -20,6 +20,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const initialUriIntervalRef = React.useRef<number>()
   const changeIntervalRef = React.useRef<number>()
   const updateIntervalRef = React.useRef<number>()
+  const delayRef = React.useRef<number>(-20)
 
   var startUri    //The first URI the player gets
   var startTime   //The timestamp where the player started
@@ -30,8 +31,9 @@ export function VideoPlayer(props: VideoPlayerProps) {
     playerRef.current = videojs(videoNode, props, () => {
       var player = playerRef.current
 
-      player?.controlBar.addChild(new resizeButton(player, { onPress: props.onUp, icon: 'bi-zoom-in', text: 'Increase size' }), {}, 0)
-      player?.controlBar.addChild(new resizeButton(player, { onPress: props.onDown, icon: 'bi-zoom-out', text: 'Decrease size' }), {}, 1)
+      player?.controlBar.addChild(new extraButton(player, { onPress: props.onPrimary, icon: 'bi-zoom-in', text: 'Set primary' }), {}, 0)
+      player?.controlBar.addChild(new extraButton(player, { onPress: () => delayRef.current--, icon: 'bi-skip-backward', text: 'Sync' }), {}, 1)
+      player?.controlBar.addChild(new extraButton(player, { onPress: () => delayRef.current++, icon: 'bi-skip-forward', text: 'Sync' }), {}, 2)
       player?.on('playerresize', () => onResize())
       player?.on('play', () => onResize())
 
@@ -62,7 +64,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     })
 
     return (() => playerRef.current?.dispose())
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /**
@@ -135,8 +137,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
 
     let currentPlayer = playerRef.current?.currentTime()
-    //dont ask why -4, it just works
-    timeStamp = startTime + currentPlayer - 4
+    timeStamp = startTime + currentPlayer + (delayRef.current / 10)
 
     //Update timestamp for overlay
     props.onTimestamp(timeStamp)
@@ -165,9 +166,17 @@ export function VideoPlayer(props: VideoPlayerProps) {
       var videoAspect = videoWidth / videoHeight
 
       if (isNaN(videoAspect)) {
-        props.onResize(playerWidth, playerHeight, 0, 0)
+        videoAspect = 16 / 9
+        if (playerAspect < videoAspect) {
+          videoWidth = playerWidth
+          videoHeight = playerWidth / 16 * 9
+        } else {
+          videoWidth = playerHeight / 9 * 16
+          videoHeight = playerHeight
+        }
       }
-      else if (playerAspect < videoAspect) {
+
+      if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
         props.onResize(playerWidth, actualVideoHeight, 0, (playerHeight - actualVideoHeight) / 2)
@@ -196,7 +205,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
  * See: https://stackoverflow.com/questions/35604358/videojs-v5-adding-custom-components-in-es6-am-i-doing-it-right
  */
 export type ToggleSizeButtonOptions = { onPress: () => void, icon: string, text: string }
-class resizeButton extends videojs.getComponent('Button') {
+class extraButton extends videojs.getComponent('Button') {
 
   private onClick: () => void
 
