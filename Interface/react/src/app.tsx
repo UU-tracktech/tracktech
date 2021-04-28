@@ -34,7 +34,7 @@ export function App() {
       <WebsocketProvider>
         <BrowserRouter key={1}>
           <NavMenu key={0} />
-          {true ? ( //keycloak.authenticated
+          {keycloak.authenticated ? (
             <>
               <Route exact path="/">
                 <Home />
