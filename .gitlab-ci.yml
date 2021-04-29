@@ -285,8 +285,8 @@ interface-linting-ESLint:
   before_script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_eslint .
-    - docker rm -f interface-lint-container || true
-    - docker exec interface-lint-container ./node_modules/.bin/eslint src/*.tsx
+    - docker rm -f interface-linting-container || true
+    - docker exec interface-linting-container ./node_modules/.bin/eslint src/*.tsx
   script:
     - cd ..
     - docker run --name interface-lint-container interface_linting
