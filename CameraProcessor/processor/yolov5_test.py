@@ -19,6 +19,7 @@ root_dir = os.path.abspath(f'{curr_dir}/../')
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
+
 def main(_argv):
     """Runs YOLOv5 detection on a video file specified in configs.ini
     """
