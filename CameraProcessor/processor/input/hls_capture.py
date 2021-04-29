@@ -48,9 +48,6 @@ class HlsCapture(ICapture):
         self.current_frame = 0
         self.current_frame_nr = 0
 
-        # Whether stream was found
-        self.found_stream = False
-
         # Tells thread they should keep running
         self.thread_running = True
 
@@ -58,11 +55,19 @@ class HlsCapture(ICapture):
         self.reading_thread = None
 
         # Reconnect with timeout
-        tries_left = 10
+        self.probe_done = False
+        self.found_stream = False
+        tries_left = 5
+
         # Sleep is essential so processor has a prepared self.cap
         while not self.cap_initialized and not self.found_stream and tries_left > 0:
+            self.probe_done = False
             self._connect_to_stream()
-            logging.info("Waiting 1 seconds before reconnecting to stream..")
+
+            # Probe did not yet finish
+            while not self.probe_done:
+                continue
+
             time.sleep(1)
             tries_left -= 1
 
@@ -72,7 +77,7 @@ class HlsCapture(ICapture):
             raise TimeoutError("HLS Capture never opened")
 
     def _connect_to_stream(self):
-        """Connects to hls stream
+        """Connects to hls stream in seperate thread
 
         """
         # Create thread that reads streams
@@ -155,7 +160,6 @@ class HlsCapture(ICapture):
         Makes a separate thread to request meta-data and sets the default values for the variables
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
-
         self.cap = None
 
         meta_thread = threading.Thread(target=self.get_meta_data)
@@ -167,23 +171,26 @@ class HlsCapture(ICapture):
 
         # Make sure thread has finished before starting main loop
         meta_thread.join()
+        self.probe_done = True
 
         # Exit thread if stream was not found
         if not self.found_stream:
             self.cap.release()
-            print("exit")
+            logging.warning('Stream was not found')
             exit()
-
-        self.cap_initialized = True
 
         # Saves the current time of a successful established connection
         self.thread_start_time = time.time()
 
-        logging.info('Opened HLS stream')
+        # Exit because capture did not start correctly
+        fps = self.cap.get(cv2.CAP_PROP_FPS)
+        if fps == 0:
+            logging.warning('Capture not found correctly')
+            exit()
 
-        # Get the FPS of the hls stream and turn it into a delay of when
-        # each frame should be displayed
-        self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
+        # How much time has to get awaited between frames
+        self.wait_ms = 1000 / fps
+        self.cap_initialized = True
         self._read()
 
     def get_meta_data(self) -> None:
@@ -194,7 +201,6 @@ class HlsCapture(ICapture):
         try:
             # pylint: disable=no-member
             meta_data = ffmpeg.probe(self.hls_url)
-            logging.info('Succesfully retrieved meta data from HLS stream')
             # pylint: enable=no-member
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
         except ffmpeg._run.Error as error:

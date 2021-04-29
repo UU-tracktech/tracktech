@@ -112,11 +112,11 @@ camera-processor-video-forwarder_integration-testing:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/*
-      when: never
+      when: always
     - if: '$PIPELINE == "camera_processor"'
-      when: never
+      when: always
     - if: '$PIPELINE == "integration_testing"'
-      when: never
+      when: always
 
 camera-processor_linting:
   stage: linting
