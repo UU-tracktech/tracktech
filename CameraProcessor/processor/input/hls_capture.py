@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)"""
 
 import threading
+import sys
 import time
 import logging
 from typing import List
@@ -49,26 +50,41 @@ class HlsCapture(ICapture):
         self.current_frame_nr = 0
 
         # Tells thread they should keep running
-        self.thread_running = True
+        self.thread_running = False
 
+        # Thread
+        self.reading_thread = None
+
+        # Reconnect with timeout
+        self.probe_done = False
+        self.found_stream = False
+        tries_left = 10
+
+        # Sleep is essential so processor has a prepared self.cap
+        while not self.cap_initialized and not self.found_stream and tries_left > 0:
+            self.probe_done = False
+            self._connect_to_stream()
+
+            # Probe did not yet finish
+            while not self.probe_done:
+                continue
+
+            time.sleep(1)
+            tries_left -= 1
+
+        # Raise error when capture is never created in other thread
+        if not self.found_stream:
+            logging.error("cv2.VideoCapture probably raised exception")
+            raise TimeoutError("HLS Capture never opened")
+
+    def _connect_to_stream(self):
+        """Connects to hls stream in seperate thread
+
+        """
         # Create thread that reads streams
         self.reading_thread = threading.Thread(target=self.sync)
         self.reading_thread.daemon = True
         self.reading_thread.start()
-
-        # Reconnect with timeout
-        timeout_left = 10
-        sleep = 1
-        # Sleep is essential so processor has a prepared self.cap
-        while not self.cap_initialized and timeout_left > 0:
-            logging.info("Waiting 1 seconds before rechecking if stream is opened..")
-            time.sleep(sleep)
-            timeout_left -= sleep
-
-        # Raise error when capture is never created in other thread
-        if not self.cap_initialized:
-            logging.error("cv2.VideoCapture probably raised exception")
-            raise TimeoutError("HLS Capture never opened")
 
     def opened(self) -> bool:
         """Check whether the current capture object is still opened
@@ -88,8 +104,7 @@ class HlsCapture(ICapture):
         logging.info("Joining thread")
         self.thread_running = False
         self.reading_thread.join()
-        logging.info("Thread joined, releasing capture")
-        self.cap.release()
+        logging.info("Thread joined")
 
     def get_next_frame(self) -> (bool, List[List[int]], float):
         """Gets the next frame from the hls stream
@@ -105,7 +120,7 @@ class HlsCapture(ICapture):
         self.last_frame_time_stamp = self.frame_time_stamp
         return True, self.current_frame, self.frame_time_stamp
 
-    def read(self) -> None:
+    def _read(self) -> None:
         """Method that runs in seperate thread that goes through the frames of the
         stream at a consistent pace
 
@@ -135,12 +150,18 @@ class HlsCapture(ICapture):
 
             cv2.waitKey(wait_time)
 
+        # Release cap in thread that uses it to prevent following bug:
+        # Other thread stops cap whilst current thread is still reading the next frame
+        self.cap.release()
+        logging.info("Capture is released")
+
     def sync(self) -> None:
         """Method to instantiate the video connection with the HLS stream
 
         Makes a separate thread to request meta-data and sets the default values for the variables
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
+        self.cap = None
 
         meta_thread = threading.Thread(target=self.get_meta_data)
         meta_thread.daemon = True
@@ -149,32 +170,56 @@ class HlsCapture(ICapture):
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
 
-        self.cap_initialized = True
+        # Make sure thread has finished before starting main loop
+        meta_thread.join()
+
+        # Exit thread if stream was not found
+        if not self.found_stream:
+            self.cap.release()
+            logging.warning('Stream was not found')
+            sys.exit()
 
         # Saves the current time of a successful established connection
         self.thread_start_time = time.time()
 
-        logging.info('Opened HLS stream')
+        # Exit because capture did not start correctly
+        fps = self.cap.get(cv2.CAP_PROP_FPS)
+        if fps == 0:
+            logging.warning('Capture not found correctly')
+            sys.exit()
 
-        # Get the FPS of the hls stream and turn it into a delay of when
-        # each frame should be displayed
-        self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
-        self.read()
-        meta_thread.join()
+        # How much time has to get awaited between frames
+        self.wait_ms = 1000 / fps
+
+        # Thread should continue running since it is initialized correctly
+        self.thread_running = True
+        logging.info("Thread started successfully!")
+
+        # Done with probing and cap is initialized
+        self.cap_initialized = True
+        self.probe_done = True
+
+        self._read()
 
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
         # extract the start_time from the meta-data to get the absolute segment time
         logging.info('Retrieving meta data from HLS stream')
-        # pylint: disable=no-member
-        meta_data = ffmpeg.probe(self.hls_url)
-        # pylint: enable=no-member
         try:
+            # pylint: disable=no-member
+            meta_data = ffmpeg.probe(self.hls_url)
+            # pylint: enable=no-member
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
+        # pylint: disable=protected-access
+        except ffmpeg._run.Error as error:
+            logging.error(f'ffmpeg could not find stream, giving the following error: {error}')
+            return
         # Json did not contain key
-        except KeyError as error:
-            logging.warning(f'Json does not contain keys for {error}')
+        except KeyError as key_error:
+            logging.warning(f'Json does not contain keys for {key_error}')
+
+        self.found_stream = True
 
     def get_capture_length(self) -> int:
         """Returns None, since its theoretically infinite"""
