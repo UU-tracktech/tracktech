@@ -111,9 +111,7 @@ class AccuracyObject:
         """
 
         # Getting and parsing the boundingboxes from the detection file
-
-        bounding_boxes_path_mock = f'{self.root_dir}/data/annotated/{self.folder_name}/{det_dir}'
-        bounding_boxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
+        bounding_boxes_det = self.read_boxes(self.images_dir, det_dir)
 
         # Using the podm.podm library to get the accuracy metrics
 
@@ -155,9 +153,12 @@ class AccuracyObject:
         for result in self.results.items():
             self.draw_pr_plot(result[1], file_prefix)
 
+# Load the config file, take the relevant Accuracy section
+configs = configparser.ConfigParser(allow_no_value=True)
+configs.read('../../../configs.ini')
+accuracy_config = configs['Accuracy']
 
-# TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
 accuracy_object = AccuracyObject(dir_to_root, 'test', 'gt/gt.txt')
-accuracy_object.detect('det/testfile.txt')
+accuracy_object.detect(os.path.abspath(f'{dir_to_root}{accuracy_config["det-folder"]}{accuracy_config["det-file-name"]}.txt'))
 accuracy_object.draw_all_pr_plots('800frames-11point')

@@ -14,7 +14,6 @@ from absl import app
 from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.input.video_capture import VideoCapture
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -38,8 +37,8 @@ def main(_argv):
     det_obj = DetectionObj(local_time, None, 0)
 
     # Opening files where the information is stored that is used to determine the accuracy
-    accuracy_dest = os.path.abspath(f'{root_dir}/data/annotated/test/det/testfile.txt')
-    accuracy_info_dest = os.path.abspath(f'{root_dir}/data/annotated/test/det/testfile-info.txt')
+    accuracy_dest = os.path.abspath(f'{root_dir}{accuracy_config["det-folder"]}{accuracy_config["det-file-name"]}.txt')
+    accuracy_info_dest = os.path.abspath(f'{root_dir}{accuracy_config["det-folder"]}{accuracy_config["det-file-name"]}-info.txt')
     detection_file = open(accuracy_dest, 'a')
     detection_file_info = open(accuracy_info_dest, 'w')
 
