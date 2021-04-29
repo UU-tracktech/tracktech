@@ -84,9 +84,9 @@ class DetectionObj:
             height, width, _ = self.frame.shape
             detection_obj_as_txt += (
                 f'{self.frame_nr},{bounding_box.identifier},'
-                f'{int(bounding_box.rectangle[0] * width)}, '
+                f'{int(bounding_box.rectangle[0] * width)},'
                 f'{int(bounding_box.rectangle[1] * height)},'
-                f'{int((bounding_box.rectangle[2] - bounding_box.rectangle[0]) * width)}, '
+                f'{int((bounding_box.rectangle[2] - bounding_box.rectangle[0]) * width)},'
                 f'{int((bounding_box.rectangle[3] - bounding_box.rectangle[1]) * height)},1,1,1 \n')
         try:
 

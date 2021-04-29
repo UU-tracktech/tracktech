@@ -31,6 +31,7 @@ class AccuracyObject:
             folder_name: Directory from the folder in the annotated map
             gt_dir:  Directory from the folder to the place where gt.txt is stored
         """
+        # Initializing class variables
         self.root_dir = root_dir
         self.folder_name = folder_name
         self.gt_dir = gt_dir
@@ -39,14 +40,14 @@ class AccuracyObject:
         self.image_width = 0
         self.image_height = 0
 
+        # Getting the bounding boxes from the gt file
         bounding_boxes_path_gt = f'{root_dir}/data/annotated/{folder_name}/{gt_dir}'
-
         self.bounding_boxes_gt = self.read_boxes(self.images_dir, bounding_boxes_path_gt)
 
+        # Getting the IOU Threshold from the config
         configs = configparser.ConfigParser(allow_no_value=True)
         configs.read(f'{root_dir}/configs.ini')
         yolo_config = configs['Yolov5']
-
         self.iou_threshold = float(yolo_config['iou-thres'])
 
     def parse_boxes(self, boxes_to_parse):
@@ -59,8 +60,17 @@ class AccuracyObject:
         """
         list_parsed_boxes: List[BoundingBox] = []
         for i in enumerate(boxes_to_parse):
+
+            # Getting the boundingboxes that are detected in frame i
+
             boxes = boxes_to_parse[i[0]]
+
+            # Parse every boundingbox into a boundingbox from the podm.podm library
+
             for box in boxes:
+
+                # Parse a single box and append it to the list of already parsed boxes
+
                 width = box.rectangle[2]
                 height = box.rectangle[3]
                 parsed_box = BoundingBox(label="undefined", xtl=box.rectangle[0] / self.image_width,
@@ -77,9 +87,15 @@ class AccuracyObject:
         Returns:
             A list of bounding boxes.
         """
+
+        # Using a capture to get the image size and the amount of frames that were detected
+
         capture = ImageCapture(dir_image)
         self.image_width = capture.image_shape[0]
         self.image_height = capture.image_shape[1]
+
+        # Using the PreAnnotations class to get the boundingboxes from a file
+
         bounding_boxes_annotations = PreAnnotations(path_to_boxes, capture.nr_images)
         bounding_boxes_annotations.parse_file()
         bounding_boxes = bounding_boxes_annotations.boxes
@@ -93,16 +109,18 @@ class AccuracyObject:
         Returns:
             This method currently has no returns.
         """
+
+        # Getting and parsing the boundingboxes from the detection file
+
         bounding_boxes_path_mock = f'{self.root_dir}/data/annotated/{self.folder_name}/{det_dir}'
         bounding_boxes_det = self.read_boxes(self.images_dir, bounding_boxes_path_mock)
 
+        # Using the podm.podm library to get the accuracy metrics
+
         self.results = get_pascal_voc_metrics(self.bounding_boxes_gt, bounding_boxes_det, self.iou_threshold)
 
-        tps = 0
-        for value in self.results.values():
-            tps += value.tp
+        # Printing a few metrics related to accuracy on the terminal
 
-        print("tp (all classes): " + str(tps))
         print("tp (only undefined): " + str(self.results['undefined'].tp))
         print("fp: " + str(self.results['undefined'].fp))
         print("fns:" + str(len(self.bounding_boxes_gt) - len(bounding_boxes_det)))
@@ -141,5 +159,5 @@ class AccuracyObject:
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
 accuracy_object = AccuracyObject(dir_to_root, 'test', 'gt/gt.txt')
-accuracy_object.detect('mockyolo/threshold10.txt')
+accuracy_object.detect('det/testfile.txt')
 accuracy_object.draw_all_pr_plots('threshold10')
