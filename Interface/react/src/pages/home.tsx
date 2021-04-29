@@ -7,7 +7,8 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { ButtonGroup, Button, Card } from 'react-bootstrap'
+import { Button, Card } from 'antd'
+import { Layout } from 'antd'
 
 import { Grid, source } from '../components/grid'
 
@@ -17,7 +18,7 @@ export function Home() {
   const [sources, setSources] = React.useState<source[]>()
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>('All')
   const [tracking, setTracking] = React.useState<tracked[]>([])
-  const [sourceSizes, setSourceSizes] = React.useState<Map<string, number>>(new Map())
+  const [primary, setPrimary] = React.useState<string>()
 
   const selectionRef = React.useRef(0)
 
@@ -36,20 +37,14 @@ export function Home() {
       }))
   }, [])
 
-  function setSize(sourceId: string, size: number) {  
-    setSourceSizes(new Map(sourceSizes.set(sourceId, size)))
-  }
-  
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 4fr', gridAutoRows: '100%', overflow: 'hidden' }}>
+    <Layout.Content style={{ display: 'grid', gridTemplateColumns: '1fr 4fr', gridAutoRows: '100%', overflow: 'hidden' }}>
       <div style={{ padding: '5px', overflowY: 'auto', display: 'grid', gap: '5px' }}>
         <Card>
           <h2>Indicators</h2>
-          <ButtonGroup>
-            <Button variant={currentIndicator === 'All' ? 'secondary' : 'light'} onClick={() => setCurrentIndicator('All')}>All</Button>
-            <Button variant={currentIndicator === 'Selection' ? 'secondary' : 'light'} onClick={() => setCurrentIndicator('Selection')}>Selection</Button>
-            <Button variant={currentIndicator === 'None' ? 'secondary' : 'light'} onClick={() => setCurrentIndicator('None')}>None</Button>
-          </ButtonGroup>
+          <Button type={currentIndicator === 'All' ? 'primary' : 'default'} onClick={() => setCurrentIndicator('All')}>All</Button>
+          <Button type={currentIndicator === 'Selection' ? 'primary' : 'default'} onClick={() => setCurrentIndicator('Selection')}>Selection</Button>
+          <Button type={currentIndicator === 'None' ? 'primary' : 'default'} onClick={() => setCurrentIndicator('None')}>None</Button>
         </Card>
         <Card>
           <div>
@@ -70,11 +65,8 @@ export function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))' }}>
             {
               sources && sources.map((source) =>
-                <Card key={source.id}>
-                  <Card.Body>
-                    <Card.Title>{source.name}</Card.Title>
-                    <Button variant='primary' onClick={() => setSize(source.id, 3)}>View</Button>
-                  </Card.Body>
+                <Card key={source.id} title={source.name}>
+                  <Button type='primary' onClick={() => setPrimary(source.id)}>View</Button>
                 </Card>
               )
             }
@@ -85,11 +77,11 @@ export function Home() {
       <div style={{ overflowY: 'auto' }}>
         {sources && <Grid
           sources={sources}
-          sourceSizes={sourceSizes}
-          setSize={(sourceId: string, size: number) => setSize(sourceId, size)}
+          primary={primary ?? sources[0]?.id}
+          setPrimary={(sourceId: string) => setPrimary(sourceId)}
           indicator={currentIndicator} />}
       </div>
-    </div>)
+    </Layout.Content>)
 
   async function addSelection() {
     const pictures = ['car', 'guy', 'garden']
@@ -100,7 +92,6 @@ export function Home() {
     var reader = new FileReader()
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        console.log(reader.result)
         setTracking(tracking.concat({ id: selectionRef.current++, name: 'abc', image: reader.result, data: '' }))
       }
     }
