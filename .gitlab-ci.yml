@@ -288,7 +288,7 @@ interface-linting-ESLint:
     - docker rm -f interface-lint-container || true
   script:
     - cd ..
-    - docker run --name interface-lint-container interface_linting
+    - docker run --name interface-lint-container interface_linting --log-driver=json
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
