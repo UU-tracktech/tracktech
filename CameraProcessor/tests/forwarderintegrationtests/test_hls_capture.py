@@ -127,8 +127,10 @@ class TestVideoForwarder:
         while not ret:
             ret, frame, _ = hls_capture.get_next_frame()
 
+        print(frame)
+        
         # Has returned with frame
-        assert frame.any()
+        assert frame.shape
 
         # Close the Hls capture
         hls_capture.close()
