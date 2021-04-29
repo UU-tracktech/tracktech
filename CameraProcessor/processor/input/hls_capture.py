@@ -48,27 +48,37 @@ class HlsCapture(ICapture):
         self.current_frame = 0
         self.current_frame_nr = 0
 
+        # Whether stream was found
+        self.found_stream = False
+
         # Tells thread they should keep running
         self.thread_running = True
 
-        # Create thread that reads streams
-        self.reading_thread = threading.Thread(target=self.sync)
-        self.reading_thread.daemon = True
-        self.reading_thread.start()
+        # Thread
+        self.reading_thread = None
 
         # Reconnect with timeout
-        timeout_left = 20
-        sleep = 1
+        tries_left = 10
         # Sleep is essential so processor has a prepared self.cap
-        while not self.cap_initialized and timeout_left > 0:
-            logging.info("Waiting 1 seconds before rechecking if stream is opened..")
-            time.sleep(sleep)
-            timeout_left -= sleep
+        while not self.cap_initialized and not self.found_stream and tries_left > 0:
+            self._connect_to_stream()
+            logging.info("Waiting 1 seconds before reconnecting to stream..")
+            time.sleep(1)
+            tries_left -= 1
 
         # Raise error when capture is never created in other thread
         if not self.cap_initialized:
             logging.error("cv2.VideoCapture probably raised exception")
             raise TimeoutError("HLS Capture never opened")
+
+    def _connect_to_stream(self):
+        """Connects to hls stream
+
+        """
+        # Create thread that reads streams
+        self.reading_thread = threading.Thread(target=self.sync)
+        self.reading_thread.daemon = True
+        self.reading_thread.start()
 
     def opened(self) -> bool:
         """Check whether the current capture object is still opened
@@ -146,12 +156,23 @@ class HlsCapture(ICapture):
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
+        self.cap = None
+
         meta_thread = threading.Thread(target=self.get_meta_data)
         meta_thread.daemon = True
         meta_thread.start()
 
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
+
+        # Make sure thread has finished before starting main loop
+        meta_thread.join()
+
+        # Exit thread if stream was not found
+        if not self.found_stream:
+            self.cap.release()
+            print("exit")
+            exit()
 
         self.cap_initialized = True
 
@@ -164,21 +185,26 @@ class HlsCapture(ICapture):
         # each frame should be displayed
         self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
         self._read()
-        meta_thread.join()
 
     def get_meta_data(self) -> None:
         """Make a http request with ffmpeg to get the meta-data of the HLS stream,
         """
-        # pylint: disable=no-member
-        meta_data = ffmpeg.probe(self.hls_url)
-        # pylint: enable=no-member
         # extract the start_time from the meta-data to get the absolute segment time
-        logging.info('Retrieved meta data from HLS stream')
+        logging.info('Retrieving meta data from HLS stream')
         try:
+            # pylint: disable=no-member
+            meta_data = ffmpeg.probe(self.hls_url)
+            logging.info('Succesfully retrieved meta data from HLS stream')
+            # pylint: enable=no-member
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
+        except ffmpeg._run.Error as error:
+            logging.error(f'ffmpeg could not find stream, giving the following error: {error}')
+            return
         # Json did not contain key
-        except KeyError as error:
-            logging.warning(f'Json does not contain keys for {error}')
+        except KeyError as key_error:
+            logging.warning(f'Json does not contain keys for {key_error}')
+
+        self.found_stream = True
 
     def get_capture_length(self) -> int:
         """Returns None, since its theoretically infinite"""
