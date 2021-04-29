@@ -285,12 +285,10 @@ interface-linting-ESLint:
   before_script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_eslint .
-    - docker rm -f interface-linting-container || true
+    - docker rm -f interface-lint-container || true
   script:
     - cd ..
     - docker run --name interface-lint-container interface_linting
-  after_script:
-    - docker stop interface-lint-container
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
