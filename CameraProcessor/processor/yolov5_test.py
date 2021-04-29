@@ -9,7 +9,6 @@ import time
 import os
 import sys
 import configparser
-import cv2
 from absl import app
 
 from processor.input.image_capture import ImageCapture
@@ -21,6 +20,7 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
+
 
 def main(_argv):
     """Runs YOLOv5 detection on a video file specified in configs.ini
@@ -36,6 +36,8 @@ def main(_argv):
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(local_time, None, 0)
+
+    # Opening files where the information is stored that is used to determine the accuracy
     accuracy_dest = os.path.abspath(f'{root_dir}/data/annotated/test/det/testfile.txt')
     accuracy_info_dest = os.path.abspath(f'{root_dir}/data/annotated/test/det/testfile-info.txt')
     detection_file = open(accuracy_dest, 'a')
@@ -66,6 +68,7 @@ def main(_argv):
         ret, frame, _ = vidstream.get_next_frame()
 
         if not ret:
+            # Closing the detection files when the end of the stream is reached
             if counter == vidstream.get_capture_length():
                 print("End of file")
                 detection_file.close()
@@ -81,9 +84,6 @@ def main(_argv):
 
         detector.detect(det_obj)
 
-        # Draw the frame with bounding boxes
-        det_obj.draw_rectangles()
-
         counter += 1
 
         # Write detection object to txt file for later accuracy testing
@@ -91,21 +91,9 @@ def main(_argv):
             det_obj.to_txt_file(accuracy_dest, detection_file)
 
             # Overwrite the file info with the new detection object
-            detection_file_info
-            detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
-
-        # Play the video in a window called "Output Video"
-        try:
-            cv2.imshow("Output Video", det_obj.frame)
-        except OSError:
-            # Figure out how to get Docker to use GUI
-            print("Error displaying video. Are you running this in Docker perhaps?")
-
-        # This next line is **ESSENTIAL** for the video to actually play
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            detection_file.close()
             detection_file_info.close()
-            return
+            detection_file_info = open(accuracy_info_dest, 'w')
+            detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
 
 
 if __name__ == '__main__':

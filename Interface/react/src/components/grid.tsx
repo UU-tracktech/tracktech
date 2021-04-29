@@ -7,26 +7,29 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Overlay } from '../components/overlay'
+import { Overlay } from './overlay'
 import { indicator } from '../pages/home'
 
 export type source = { id: string, name: string, srcObject: { src: string, type: string } }
-export type gridProps = { sourceSizes: Map<string, number>, setSize: (sourceId: string, size: number) => void, sources: source[], indicator: indicator }
+export type gridProps = { primary?: string, setPrimary: (sourceId: string) => void, sources: source[], indicator: indicator }
 
 export function Grid(props: gridProps) {
   return <div style={{
     width: '100%', height: '100%', padding: '5px',
     display: 'grid', gap: '5px',
-    gridTemplateColumns: `repeat(auto-fit,minmax(250px, 1fr))`, gridAutoRows: 'minmax(200px, 1fr)'
+    gridTemplateColumns: `repeat(auto-fit,minmax(30%, 1fr))`, gridTemplateRows: '60%', gridAutoRows: 'minmax(30%, 1fr)'
   }}>
     {
       props.sources.map((source) => {
-        var size = props.sourceSizes.get(source.id) ?? 1
-        return <div key={source.id} style={{ gridColumn: `span ${size}`, gridRow: `span ${size}`, justifySelf: 'stretch' }}>
+        return <div key={source.id} style={
+          props.primary === source.id
+          ? { gridRowStart: 1, gridColumnStart: 1, gridColumnEnd: -1 }
+          : { justifySelf: 'stretch' }}>
           <Overlay
-            cameraId={source.id}
-            onUp={() => props.setSize(source.id, (props.sourceSizes.get(source.id) ?? 1) + 1)}
-            onDown={() => props.setSize(source.id, Math.max(1, (props.sourceSizes.get(source.id) ?? 1) - 1))}
+            cameraId={source.srcObject.src}
+            onPrimary={() => props.setPrimary(source.id)}
+            onPlayPause={() => { }}
+            onTimestamp={() => { }}
             sources={[source.srcObject]}
             showBoxes={props.indicator} />
         </div>

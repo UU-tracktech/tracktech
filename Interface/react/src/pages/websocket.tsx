@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Button, Form } from 'antd'
 
 import { StartOrchestratorMessage, StopOrchestratorMessage, TestOrchestratorMessage } from '../classes/orchestratorMessage'
 import { websocketArgs, websocketContext } from '../components/websocketContext'
