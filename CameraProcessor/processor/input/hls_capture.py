@@ -58,7 +58,7 @@ class HlsCapture(ICapture):
         # Reconnect with timeout
         self.probe_done = False
         self.found_stream = False
-        tries_left = 5
+        tries_left = 10
 
         # Sleep is essential so processor has a prepared self.cap
         while not self.cap_initialized and not self.found_stream and tries_left > 0:
@@ -69,7 +69,6 @@ class HlsCapture(ICapture):
             while not self.probe_done:
                 continue
 
-            time.sleep(1)
             tries_left -= 1
 
         # Raise error when capture is never created in other thread
