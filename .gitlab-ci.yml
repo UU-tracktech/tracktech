@@ -278,7 +278,7 @@ interface_unit-testing:
     - if: '$PIPELINE == "unit_testing"'
       when: always
 
-interface-linting:
+interface-linting-selenium:
   stage: linting
   needs: [interface_docker_build]
   before_script:
@@ -294,6 +294,27 @@ interface-linting:
     - docker exec interface-lint-container python3.8 -m pylint app --rcfile=app/.pylintrc --output-format=colorized
   after_script:
     - docker stop interface-lint-container
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - Interface/*
+      when: always
+    - if: '$PIPELINE == "interface"'
+      when: always
+    - if: '$PIPELINE == "linting"'
+      when: always
+
+interface-linting-ESLint:
+  stage: linting
+  needs: [interface_docker_build]
+  allow_failure: true
+  before_script:
+    - cd Interface
+    - docker build -t interface_linting -f Dockerfile_eslint .
+    - docker rm -f interface-lint-container || true
+  script:
+    - cd ..
+    - docker run --name interface-lint-container interface_linting
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
