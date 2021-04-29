@@ -128,7 +128,7 @@ class TestVideoForwarder:
             ret, frame, _ = hls_capture.get_next_frame()
 
         print(frame)
-        
+
         # Has returned with frame
         assert frame.shape
 
