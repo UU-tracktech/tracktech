@@ -16,3 +16,4 @@ object_detection_metrics
 opencv-python-headless==4.5.1.48
 opencv-python==4.5.1.48
 ffmpeg-python==0.2.0
+matplotlib
