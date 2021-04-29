@@ -25,12 +25,16 @@ class AccuracyObject:
         self.plots_path = ''
         self.plots_prefix = ''
         self.results = {}
-        self.image_width = 10000
-        self.image_height = 10000
+        self.image_width = 0
+        self.image_height = 0
         self.iou_threshold = 0
+        self.frame_amount = 0
 
         # Assign class variables from config
         self.read_config()
+
+        # Get the image width, height and nr of frames
+        self.parse_info_file()
 
         # Getting the bounding boxes from the gt file
         self.bounding_boxes_gt = self.read_boxes(self.gt_path)
@@ -52,6 +56,22 @@ class AccuracyObject:
         self.plots_prefix = str(accuracy_config['plots-prefix'])
 
         self.iou_threshold = float(yolo_config['iou-thres'])
+
+    def parse_info_file(self) -> None:
+        """Reads frame height, width and the amount of frames from the info file."""
+        with open(self.det_info_path) as file:
+            lines = [line.rstrip('\n') for line in file]
+
+        line = lines[0]
+
+        # Determine delimiter automatically
+        if line.__contains__(','):
+            delimiter = ','
+        else:
+            return
+
+        # Extract information from line
+        (self.frame_amount, self.image_height, self.image_width) = [int(i) for i in line.split(delimiter)[:3]]
 
     def parse_boxes(self, boxes_to_parse):
         """
@@ -124,9 +144,6 @@ class AccuracyObject:
         Returns: An image file in the plots folder called file_prefix-result.class.
 
         """
-        print(os.path.join(self.plots_path, f'./{self.plots_prefix}-{result.label}'))
-        print(self.plots_path)
-        print(self.det_path)
         try:
             plot_precision_recall_curve(result,
                                         os.path.join(self.plots_path, f'./{self.plots_prefix}-{result.label}')
