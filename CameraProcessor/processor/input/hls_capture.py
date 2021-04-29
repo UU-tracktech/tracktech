@@ -50,7 +50,7 @@ class HlsCapture(ICapture):
         self.current_frame_nr = 0
 
         # Tells thread they should keep running
-        self.thread_running = True
+        self.thread_running = False
 
         # Thread
         self.reading_thread = None
@@ -69,10 +69,11 @@ class HlsCapture(ICapture):
             while not self.probe_done:
                 continue
 
+            time.sleep(1)
             tries_left -= 1
 
         # Raise error when capture is never created in other thread
-        if not self.cap_initialized:
+        if not self.found_stream:
             logging.error("cv2.VideoCapture probably raised exception")
             raise TimeoutError("HLS Capture never opened")
 
@@ -171,7 +172,6 @@ class HlsCapture(ICapture):
 
         # Make sure thread has finished before starting main loop
         meta_thread.join()
-        self.probe_done = True
 
         # Exit thread if stream was not found
         if not self.found_stream:
@@ -190,7 +190,15 @@ class HlsCapture(ICapture):
 
         # How much time has to get awaited between frames
         self.wait_ms = 1000 / fps
+
+        # Thread should continue running since it is initialized correctly
+        self.thread_running = True
+        logging.info("Thread started successfully!")
+
+        # Done with probing and cap is initialized
         self.cap_initialized = True
+        self.probe_done = True
+
         self._read()
 
     def get_meta_data(self) -> None:

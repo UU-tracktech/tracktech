@@ -39,7 +39,10 @@ class TestVideoForwarder:
         assert hls_capture.hls_url == self.hls_url
         assert hls_capture.reading_thread.daemon
 
-    @pytest.mark.timeout(20)
+        # Close the Hls capture
+        hls_capture.close()
+
+    @pytest.mark.timeout(40)
     def test_hls_opened_correctly(self, hls_capture):
         """Tests whether the hls stream opened correctly
 
@@ -57,7 +60,7 @@ class TestVideoForwarder:
         # Close the Hls capture
         hls_capture.close()
 
-    @pytest.mark.timeout(20)
+    @pytest.mark.timeout(40)
     def test_hls_closed_correctly(self, hls_capture):
         """Tests whether the hls stream closed correctly
 
@@ -74,7 +77,7 @@ class TestVideoForwarder:
         # Hls capture is indeed closed
         assert not hls_capture.opened()
 
-    @pytest.mark.timeout(20)
+    @pytest.mark.timeout(40)
     def test_format_data(self):
         """Tests if the meta data that we get from ffprobe function, contains the same url as our predefined url
         """
@@ -87,7 +90,7 @@ class TestVideoForwarder:
         assert format_data.__contains__('start_time')
         assert format_data['filename'] == self.hls_url
 
-    @pytest.mark.timeout(20)
+    @pytest.mark.timeout(40)
     def test_stream_data(self, hls_capture):
         """Tests whether the hls capture object correctly retrieves the average FPS value
 
@@ -109,7 +112,7 @@ class TestVideoForwarder:
         # Close the Hls capture
         hls_capture.close()
 
-    @pytest.mark.timeout(20)
+    @pytest.mark.timeout(40)
     def test_get_next_frame(self, hls_capture):
         """Tests whether the hls capture can get a frame from the stream
 
@@ -127,8 +130,6 @@ class TestVideoForwarder:
         while not ret:
             ret, frame, _ = hls_capture.get_next_frame()
 
-        print(frame)
-        
         # Has returned with frame
         assert frame.shape
 
