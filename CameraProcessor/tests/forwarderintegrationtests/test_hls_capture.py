@@ -29,15 +29,6 @@ class TestVideoForwarder:
         """
         return HlsCapture(self.hls_url)
 
-    @pytest.mark.timeout(30)
-    def test_start_forwarder(self):
-        """Gives forwarder extra time to start
-
-        IMPORTANT: Be sure the video forwarder is opened for the next stream
-        This is an integration test, without this timeout the forwarder will not have started fully
-        """
-        time.sleep(20)
-
     @pytest.mark.timeout(20)
     def test_hls_constructor(self, hls_capture):
         """Checks whether constructor of hls capture has been set correctly
