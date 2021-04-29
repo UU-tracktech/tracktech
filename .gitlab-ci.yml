@@ -282,13 +282,14 @@ interface-linting-selenium:
 interface-linting-ESLint:
   stage: linting
   needs: [interface_docker_build]
+  allow_failure: true
   before_script:
     - cd Interface
     - docker build -t interface_linting -f Dockerfile_eslint .
     - docker rm -f interface-lint-container || true
   script:
     - cd ..
-    - docker run --name interface-lint-container interface_linting --log-driver=json
+    - docker run --name interface-lint-container interface_linting
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
