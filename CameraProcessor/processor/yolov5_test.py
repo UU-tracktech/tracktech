@@ -37,19 +37,15 @@ def main(_argv):
     det_obj = DetectionObj(local_time, None, 0)
 
     # Opening files where the information is stored that is used to determine the accuracy
-    accuracy_dest = os.path.abspath(f'{root_dir}{accuracy_config["det-folder"]}{accuracy_config["det-file-name"]}.txt')
-    accuracy_info_dest = os.path.abspath(f'{root_dir}{accuracy_config["det-folder"]}{accuracy_config["det-file-name"]}-info.txt')
+    accuracy_dest = os.path.join('..', accuracy_config['det-path'])
+    accuracy_info_dest = os.path.join('..', accuracy_config['det-info-path'])
     detection_file = open(accuracy_dest, 'a')
     detection_file_info = open(accuracy_info_dest, 'w')
 
-    if accuracy_config['writing-to-txt']:
-        detection_file.truncate(0)
-        print('I will write the detection objects to a txt file')
-        if accuracy_config['iou-thres'] != trueconfig['iou-thres']:
-            print('The iou-threshold of the accuracy tester differs from the yolo config threshold')
-    else:
-        detection_file.close()
-        detection_file_info.close()
+    detection_file.truncate(0)
+    print('I will write the detection objects to a txt file')
+    if accuracy_config['iou-thres'] != trueconfig['iou-thres']:
+        print('The iou-threshold of the accuracy tester differs from the yolo config threshold')
 
     # Capture the video stream
     vidstream = ImageCapture(os.path.join(curr_dir, '..', trueconfig['source']))
@@ -86,14 +82,12 @@ def main(_argv):
 
         counter += 1
 
-        # Write detection object to txt file for later accuracy testing
-        if accuracy_config['writing-to-txt']:
-            det_obj.to_txt_file(accuracy_dest, detection_file)
+        det_obj.to_txt_file(accuracy_dest, detection_file)
 
-            # Overwrite the file info with the new detection object
-            detection_file_info.close()
-            detection_file_info = open(accuracy_info_dest, 'w')
-            detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
+        # Overwrite the file info with the new detection object
+        detection_file_info.close()
+        detection_file_info = open(accuracy_info_dest, 'w')
+        detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
 
 
 if __name__ == '__main__':

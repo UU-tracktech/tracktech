@@ -15,39 +15,45 @@ from typing import List
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
-from processor.input.image_capture import ImageCapture
 from processor.training.pre_annotations import PreAnnotations
-
 
 class AccuracyObject:
     """
     This class is used to test the accuracy of predictions
     """
 
-    def __init__(self, root_dir, folder_name, gt_dir):
-        """
-        Args:
-            root_dir: Directory to root of the project
-            folder_name: Directory from the folder in the annotated map
-            gt_dir:  Directory from the folder to the place where gt.txt is stored
-        """
+    def __init__(self):
         # Initializing class variables
-        self.root_dir = root_dir
-        self.folder_name = folder_name
-        self.gt_dir = gt_dir
-        self.images_dir = f'{root_dir}/data/annotated/{folder_name}/img1-complete'
+        self.gt_path = ''
+        self.det_path = ''
+        self.det_info_path = ''
         self.results = {}
-        self.image_width = 0
-        self.image_height = 0
+        self.image_width = 10000
+        self.image_height = 10000
+        self.iou_threshold = 0
+
+        #Assign class variables from config
+        self.read_configs()
 
         # Getting the bounding boxes from the gt file
-        bounding_boxes_path_gt = f'{root_dir}/data/annotated/{folder_name}/{gt_dir}'
-        self.bounding_boxes_gt = self.read_boxes(self.images_dir, bounding_boxes_path_gt)
+        self.bounding_boxes_gt = self.read_boxes(self.gt_path)
 
-        # Getting the IOU Threshold from the config
+
+
+    def read_configs(self):
+        """Assign class variables using the Accuracy and Yolov5 configs
+        """
+        # Load the config file, take the relevant Accuracy & Yolov5 section
+        path_to_root = '../../..'
         configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(f'{root_dir}/configs.ini')
+        configs.read(path_to_root + '/configs.ini')
+        accuracy_config = configs['Accuracy']
         yolo_config = configs['Yolov5']
+
+        self.gt_path = os.path.join(path_to_root, accuracy_config['gt-path'])
+        self.det_path = os.path.join(path_to_root, accuracy_config['det-path'])
+        self.det_info_path = os.path.join(path_to_root, accuracy_config['det-info-path'])
+
         self.iou_threshold = float(yolo_config['iou-thres'])
 
     def parse_boxes(self, boxes_to_parse):
@@ -79,29 +85,20 @@ class AccuracyObject:
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def read_boxes(self, dir_image, path_to_boxes):
+    def read_boxes(self, path_to_boxes):
         """A method for reading the bounding boxes with the pre_annotations.
         Args:
-            dir_image: The directory to the image.
             path_to_boxes: Path to the file where the boxes are stored.
         Returns:
             A list of bounding boxes.
         """
-
-        # Using a capture to get the image size and the amount of frames that were detected
-
-        capture = ImageCapture(dir_image)
-        self.image_width = capture.image_shape[0]
-        self.image_height = capture.image_shape[1]
-
         # Using the PreAnnotations class to get the boundingboxes from a file
-
-        bounding_boxes_annotations = PreAnnotations(path_to_boxes, capture.nr_images)
+        bounding_boxes_annotations = PreAnnotations(path_to_boxes, 836)
         bounding_boxes_annotations.parse_file()
         bounding_boxes = bounding_boxes_annotations.boxes
         return self.parse_boxes(bounding_boxes)
 
-    def detect(self, det_dir):
+    def detect(self):
         """
         Args:
             det_dir: The directory to the file for detections
@@ -111,10 +108,9 @@ class AccuracyObject:
         """
 
         # Getting and parsing the boundingboxes from the detection file
-        bounding_boxes_det = self.read_boxes(self.images_dir, det_dir)
+        bounding_boxes_det = self.read_boxes(self.det_path)
 
         # Using the podm.podm library to get the accuracy metrics
-
         self.results = get_pascal_voc_metrics(self.bounding_boxes_gt, bounding_boxes_det, self.iou_threshold)
 
         # Printing a few metrics related to accuracy on the terminal
@@ -153,12 +149,6 @@ class AccuracyObject:
         for result in self.results.items():
             self.draw_pr_plot(result[1], file_prefix)
 
-# Load the config file, take the relevant Accuracy section
-configs = configparser.ConfigParser(allow_no_value=True)
-configs.read('../../../configs.ini')
-accuracy_config = configs['Accuracy']
 
-dir_to_root = os.path.abspath(__file__ + '/../../../../')
-accuracy_object = AccuracyObject(dir_to_root, 'test', 'gt/gt.txt')
-accuracy_object.detect(os.path.abspath(f'{dir_to_root}{accuracy_config["det-folder"]}{accuracy_config["det-file-name"]}.txt'))
-accuracy_object.draw_all_pr_plots('800frames-11point')
+test_object = AccuracyObject()
+test_object.detect()
