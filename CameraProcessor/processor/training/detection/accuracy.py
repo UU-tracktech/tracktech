@@ -34,7 +34,7 @@ class AccuracyObject:
         self.root_dir = root_dir
         self.folder_name = folder_name
         self.gt_dir = gt_dir
-        self.images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
+        self.images_dir = f'{root_dir}/data/annotated/{folder_name}/img1-complete'
         self.results = {}
         self.image_width = 0
         self.image_height = 0
@@ -105,8 +105,8 @@ class AccuracyObject:
         print("tp (all classes): " + str(tps))
         print("tp (only undefined): " + str(self.results['undefined'].tp))
         print("fp: " + str(self.results['undefined'].fp))
-        print("fns:" + str(len(self.bounding_boxes_gt) - len(bounding_boxes_det)))
-        print(len(self.bounding_boxes_gt))
+        print("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp))
+        print("mAP: " + str(self.results['undefined'].get_mAP(self.results)))
 
     def draw_pr_plot(self, result, file_prefix):
         """Draw a pr plot of a class.
@@ -141,5 +141,5 @@ class AccuracyObject:
 # TEMPORARY, this is used to call the class and to test it
 dir_to_root = os.path.abspath(__file__ + '/../../../../')
 accuracy_object = AccuracyObject(dir_to_root, 'test', 'gt/gt.txt')
-accuracy_object.detect('mockyolo/threshold10.txt')
-accuracy_object.draw_all_pr_plots('threshold10')
+accuracy_object.detect('det/testfile.txt')
+accuracy_object.draw_all_pr_plots('800frames-11point')

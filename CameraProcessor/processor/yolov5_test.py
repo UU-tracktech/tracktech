@@ -11,6 +11,8 @@ import sys
 import configparser
 import cv2
 from absl import app
+
+from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
@@ -49,7 +51,7 @@ def main(_argv):
         detection_file_info.close()
 
     # Capture the video stream
-    vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
+    vidstream = ImageCapture(os.path.join(curr_dir, '..', trueconfig['source']))
 
     # Instantiate the detector
     print("Instantiating detector...")
