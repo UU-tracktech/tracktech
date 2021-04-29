@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
 def main(_argv):
-    """Runs YOLOv5 detection on a video file specified in configs.ini
+    """Runs YOLOv5 detection on a video file specified in configs.ini.
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
@@ -44,8 +44,6 @@ def main(_argv):
 
     detection_file.truncate(0)
     print('I will write the detection objects to a txt file')
-    if accuracy_config['iou-thres'] != trueconfig['iou-thres']:
-        print('The iou-threshold of the accuracy tester differs from the yolo config threshold')
 
     # Capture the video stream
     vidstream = ImageCapture(os.path.join(curr_dir, '..', trueconfig['source']))
@@ -71,7 +69,6 @@ def main(_argv):
             else:
                 raise ValueError("Feed has been interrupted")
             return
-
 
         # update frame, frame number, and time
         det_obj.frame = frame
