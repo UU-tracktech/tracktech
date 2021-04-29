@@ -50,7 +50,7 @@ export function WebsocketProvider(props) {
     'NONE'
   )
   const [socketUrl, setSocketUrl] = React.useState(
-    'wss://tracktech.ml:50010/client'
+    'wss://tracktech.ml:50011/client'
   )
 
   const socketRef = React.useRef<WebSocket>()

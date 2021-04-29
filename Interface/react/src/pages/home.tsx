@@ -22,9 +22,7 @@ export function Home() {
     'All'
   )
   const [tracking, setTracking] = React.useState<tracked[]>([])
-  const [sourceSizes, setSourceSizes] = React.useState<Map<string, number>>(
-    new Map()
-  )
+  const [primary, setPrimary] = React.useState<string>()
 
   const selectionRef = React.useRef(0)
 
@@ -45,10 +43,6 @@ export function Home() {
       })
     )
   }, [])
-
-  function setSize(sourceId: string, size: number) {
-    setSourceSizes(new Map(sourceSizes.set(sourceId, size)))
-  }
 
   return (
     <Layout.Content
@@ -148,7 +142,7 @@ export function Home() {
                 <CameraCard
                   id={source.id}
                   title={source.name}
-                  setSize={setSize}
+                  setSize={setPrimary}
                 />
               ))}
           </div>
@@ -159,10 +153,8 @@ export function Home() {
         {sources && (
           <Grid
             sources={sources}
-            sourceSizes={sourceSizes}
-            setSize={(sourceId: string, size: number) =>
-              setSize(sourceId, size)
-            }
+            primary={primary ?? sources[0]?.id}
+            setPrimary={(sourceId: string) => setPrimary(sourceId)}
             indicator={currentIndicator}
           />
         )}
@@ -179,7 +171,6 @@ export function Home() {
     var reader = new FileReader()
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        console.log(reader.result)
         setTracking(
           tracking.concat({
             id: selectionRef.current++,

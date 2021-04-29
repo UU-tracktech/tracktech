@@ -16,8 +16,8 @@ export type source = {
   srcObject: { src: string; type: string }
 }
 export type gridProps = {
-  sourceSizes: Map<string, number>
-  setSize: (sourceId: string, size: number) => void
+  primary?: string
+  setPrimary: (sourceId: string) => void
   sources: source[]
   indicator: indicator
 }
@@ -31,35 +31,24 @@ export function Grid(props: gridProps) {
         padding: '5px',
         display: 'grid',
         gap: '5px',
-        gridTemplateColumns: `repeat(auto-fit,minmax(350px, 1fr))`,
-        gridAutoRows: 'minmax(250px, 1fr)'
+        gridTemplateColumns: `repeat(auto-fit,minmax(30%, 1fr))`,
+        gridTemplateRows: '60%',
+        gridAutoRows: 'minmax(30%, 1fr)'
       }}
     >
       {props.sources.map((source) => {
-        var size = props.sourceSizes.get(source.id) ?? 1
         return (
           <div
             key={source.id}
-            style={{
-              gridColumn: `span ${size}`,
-              gridRow: `span ${size}`,
-              justifySelf: 'stretch'
-            }}
+            style={
+              props.primary === source.id
+                ? { gridRowStart: 1, gridColumnStart: 1, gridColumnEnd: -1 }
+                : { justifySelf: 'stretch' }
+            }
           >
             <Overlay
-              cameraId={source.id}
-              onUp={() =>
-                props.setSize(
-                  source.id,
-                  (props.sourceSizes.get(source.id) ?? 1) + 1
-                )
-              }
-              onDown={() =>
-                props.setSize(
-                  source.id,
-                  Math.max(1, (props.sourceSizes.get(source.id) ?? 1) - 1)
-                )
-              }
+              cameraId={source.srcObject.src}
+              onPrimary={() => props.setPrimary(source.id)}
               onPlayPause={() => {}}
               onTimestamp={() => {}}
               sources={[source.srcObject]}

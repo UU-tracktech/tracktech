@@ -14,8 +14,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 export type VideoPlayerProps = {
   onTimestamp: (time: number) => void
   onPlayPause: (playing: boolean) => void
-  onUp: () => void
-  onDown: () => void
+  onPrimary: () => void
   onResize?: (width: number, height: number, left: number, top: number) => void
 } & videojs.PlayerOptions
 export function VideoPlayer(props: VideoPlayerProps) {
@@ -26,6 +25,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const initialUriIntervalRef = React.useRef<number>()
   const changeIntervalRef = React.useRef<number>()
   const updateIntervalRef = React.useRef<number>()
+  const delayRef = React.useRef<number>(-20)
 
   var startUri //The first URI the player gets
   var startTime //The timestamp where the player started
@@ -37,22 +37,31 @@ export function VideoPlayer(props: VideoPlayerProps) {
       var player = playerRef.current
 
       player?.controlBar.addChild(
-        new resizeButton(player, {
-          onPress: props.onUp,
+        new extraButton(player, {
+          onPress: props.onPrimary,
           icon: 'bi-zoom-in',
-          text: 'Increase size'
+          text: 'Set primary'
         }),
         {},
         0
       )
       player?.controlBar.addChild(
-        new resizeButton(player, {
-          onPress: props.onDown,
-          icon: 'bi-zoom-out',
-          text: 'Decrease size'
+        new extraButton(player, {
+          onPress: () => delayRef.current--,
+          icon: 'bi-skip-backward',
+          text: 'Sync'
         }),
         {},
         1
+      )
+      player?.controlBar.addChild(
+        new extraButton(player, {
+          onPress: () => delayRef.current++,
+          icon: 'bi-skip-forward',
+          text: 'Sync'
+        }),
+        {},
+        2
       )
       player?.on('playerresize', () => onResize())
       player?.on('play', () => onResize())
@@ -158,8 +167,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
 
     let currentPlayer = playerRef.current?.currentTime()
-    //dont ask why -4, it just works
-    timeStamp = startTime + currentPlayer - 4
+    timeStamp = startTime + currentPlayer + delayRef.current / 10
 
     //Update timestamp for overlay
     props.onTimestamp(timeStamp)
@@ -188,8 +196,17 @@ export function VideoPlayer(props: VideoPlayerProps) {
       var videoAspect = videoWidth / videoHeight
 
       if (isNaN(videoAspect)) {
-        props.onResize(playerWidth, playerHeight, 0, 0)
-      } else if (playerAspect < videoAspect) {
+        videoAspect = 16 / 9
+        if (playerAspect < videoAspect) {
+          videoWidth = playerWidth
+          videoHeight = (playerWidth / 16) * 9
+        } else {
+          videoWidth = (playerHeight / 9) * 16
+          videoHeight = playerHeight
+        }
+      }
+
+      if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
         props.onResize(
@@ -239,7 +256,7 @@ export type ToggleSizeButtonOptions = {
   icon: string
   text: string
 }
-class resizeButton extends videojs.getComponent('Button') {
+class extraButton extends videojs.getComponent('Button') {
   private onClick: () => void
 
   constructor(player, options: ToggleSizeButtonOptions) {

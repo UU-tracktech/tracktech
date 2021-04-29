@@ -12,19 +12,17 @@ import { Button, Card } from 'antd'
 import {
   VideoCameraOutlined,
   SettingOutlined,
-  FullscreenOutlined,
-  FullscreenExitOutlined,
+  ExpandOutlined,
   CloseOutlined
 } from '@ant-design/icons'
 
 type cameraCardProps = {
   id: string
   title: string
-  setSize: (sourceId: string, size: number) => void
+  setSize: (sourceId: string) => void
 }
 
 export function CameraCard(props: cameraCardProps) {
-  const [isBig, setBig] = React.useState<boolean>(false)
 
   var iconStyle: CSS.Properties = {
     fontSize: '16pt'
@@ -57,12 +55,8 @@ export function CameraCard(props: cameraCardProps) {
       bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
-      <Button type="primary" onClick={() => toggleSize()} style={buttonStyle}>
-        {isBig ? (
-          <FullscreenExitOutlined style={iconStyle} />
-        ) : (
-          <FullscreenOutlined style={iconStyle} />
-        )}
+      <Button type="primary" onClick={() => props.setSize(props.id)} style={buttonStyle}>
+        <ExpandOutlined style={iconStyle} />
       </Button>
       <Button
         type="primary"
@@ -74,10 +68,4 @@ export function CameraCard(props: cameraCardProps) {
       </Button>
     </Card>
   )
-
-  function toggleSize() {
-    setBig(!isBig)
-    var size = isBig ? 1 : 3
-    props.setSize(props.id, size)
-  }
 }
