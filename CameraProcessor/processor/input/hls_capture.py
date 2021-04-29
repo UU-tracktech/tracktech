@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)"""
 
 import threading
+import sys
 import time
 import logging
 from typing import List
@@ -177,7 +178,7 @@ class HlsCapture(ICapture):
         if not self.found_stream:
             self.cap.release()
             logging.warning('Stream was not found')
-            exit()
+            sys.exit()
 
         # Saves the current time of a successful established connection
         self.thread_start_time = time.time()
@@ -186,7 +187,7 @@ class HlsCapture(ICapture):
         fps = self.cap.get(cv2.CAP_PROP_FPS)
         if fps == 0:
             logging.warning('Capture not found correctly')
-            exit()
+            sys.exit()
 
         # How much time has to get awaited between frames
         self.wait_ms = 1000 / fps
@@ -203,6 +204,7 @@ class HlsCapture(ICapture):
             meta_data = ffmpeg.probe(self.hls_url)
             # pylint: enable=no-member
             self.hls_start_time_stamp = float(meta_data['format']['start_time'])
+        # pylint: disable=protected-access
         except ffmpeg._run.Error as error:
             logging.error(f'ffmpeg could not find stream, giving the following error: {error}')
             return
