@@ -1,49 +1,44 @@
 """
 File containing the accuracy class
 """
-# Determine training set
-# Determine test set
-# Verification sets
-
-# Run test set in epochs
-
 import configparser
-# Determine accuracy of a bounding box estimate
 import os
 from typing import List
-
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
-
 from processor.training.pre_annotations import PreAnnotations
+
 
 class AccuracyObject:
     """
-    This class is used to test the accuracy of predictions
+    This class is used to test the accuracy of predictions.
     """
 
     def __init__(self):
+        """Initialise AccuracyObject by reading the config and the ground truth file.
+
+        """
         # Initializing class variables
         self.gt_path = ''
         self.det_path = ''
         self.det_info_path = ''
+        self.plots_path = ''
+        self.plots_prefix = ''
         self.results = {}
         self.image_width = 10000
         self.image_height = 10000
         self.iou_threshold = 0
 
-        #Assign class variables from config
-        self.read_configs()
+        # Assign class variables from config
+        self.read_config()
 
         # Getting the bounding boxes from the gt file
         self.bounding_boxes_gt = self.read_boxes(self.gt_path)
 
-
-
-    def read_configs(self):
-        """Assign class variables using the Accuracy and Yolov5 configs
+    def read_config(self):
+        """Assign class variables using the Accuracy config.
         """
-        # Load the config file, take the relevant Accuracy & Yolov5 section
+        # Load the config file, take the relevant Accuracy section
         path_to_root = '../../..'
         configs = configparser.ConfigParser(allow_no_value=True)
         configs.read(path_to_root + '/configs.ini')
@@ -53,28 +48,29 @@ class AccuracyObject:
         self.gt_path = os.path.join(path_to_root, accuracy_config['gt-path'])
         self.det_path = os.path.join(path_to_root, accuracy_config['det-path'])
         self.det_info_path = os.path.join(path_to_root, accuracy_config['det-info-path'])
+        self.plots_path = os.path.join(path_to_root, accuracy_config['plots-path'])
+        self.plots_prefix = str(accuracy_config['plots-prefix'])
 
         self.iou_threshold = float(yolo_config['iou-thres'])
 
     def parse_boxes(self, boxes_to_parse):
         """
         Args:
-            boxes_to_parse: A list of list of bounding boxes
+            boxes_to_parse: A list of list of bounding boxes.
 
         Returns:
-            A list of bounding boxes as specified by the podm.podm library
+            A list of bounding boxes as specified by the podm.podm library.
         """
         list_parsed_boxes: List[BoundingBox] = []
         for i in enumerate(boxes_to_parse):
 
-            # Getting the boundingboxes that are detected in frame i
+            # Getting the bounding boxes that are detected in frame i
 
             boxes = boxes_to_parse[i[0]]
 
-            # Parse every boundingbox into a boundingbox from the podm.podm library
+            # Parse every bounding box into a bounding box from the podm.podm library
 
             for box in boxes:
-
                 # Parse a single box and append it to the list of already parsed boxes
 
                 width = box.rectangle[2]
@@ -92,7 +88,7 @@ class AccuracyObject:
         Returns:
             A list of bounding boxes.
         """
-        # Using the PreAnnotations class to get the boundingboxes from a file
+        # Using the PreAnnotations class to get the bounding boxes from a file
         bounding_boxes_annotations = PreAnnotations(path_to_boxes, 836)
         bounding_boxes_annotations.parse_file()
         bounding_boxes = bounding_boxes_annotations.boxes
@@ -101,13 +97,12 @@ class AccuracyObject:
     def detect(self):
         """
         Args:
-            det_dir: The directory to the file for detections
-            (directory from the folder specified when the object was initialized)
+            (directory from the folder specified when the object was initialized).
         Returns:
             This method currently has no returns.
         """
 
-        # Getting and parsing the boundingboxes from the detection file
+        # Getting and parsing the bounding boxes from the detection file
         bounding_boxes_det = self.read_boxes(self.det_path)
 
         # Using the podm.podm library to get the accuracy metrics
@@ -120,35 +115,35 @@ class AccuracyObject:
         print("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp))
         print("mAP: " + str(self.results['undefined'].get_mAP(self.results)))
 
-    def draw_pr_plot(self, result, file_prefix):
+    def draw_pr_plot(self, result):
         """Draw a pr plot of a class.
 
         Args:
             result: A MetricPerClass object from the PODM library.
-            file_prefix: String that is part of the name of the pr image.
 
-        Returns: An image file in the plots folder called file_prefix-result.class
+        Returns: An image file in the plots folder called file_prefix-result.class.
 
         """
+        print(os.path.join(self.plots_path, f'./{self.plots_prefix}-{result.label}'))
+        print(self.plots_path)
+        print(self.det_path)
         try:
             plot_precision_recall_curve(result,
-                                        f'{self.root_dir}/processor/training/detection/plots/{file_prefix}'
-                                        f'-{result.label}')
+                                        os.path.join(self.plots_path, f'./{self.plots_prefix}-{result.label}')
+                                        )
         except RuntimeError:
-            print(f'{file_prefix}-{result.label}: Cannot plot')
+            print(f'{self.plots_prefix}-{result.label}: Cannot plot')
 
-    def draw_all_pr_plots(self, file_prefix):
+    def draw_all_pr_plots(self):
         """Draws the pr plots for all classes in the (podm) result.
 
-        Args:
-            file_prefix: String that is part of the name of the pr image.
-
-        Returns: An image file for each class in the plots folder called file_prefix-result.class
+        Returns: An image file for each class in the plots folder called file_prefix-result.class.
 
         """
         for result in self.results.items():
-            self.draw_pr_plot(result[1], file_prefix)
+            self.draw_pr_plot(result[1])
 
 
 test_object = AccuracyObject()
 test_object.detect()
+test_object.draw_all_pr_plots()
