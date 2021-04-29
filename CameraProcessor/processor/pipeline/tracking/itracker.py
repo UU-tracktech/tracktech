@@ -10,10 +10,13 @@ Utrecht University within the Software Project course.
 class ITracker:
     """Tracker interface.
     """
-    def track(self, track_obj):
+    def track(self, det_obj):
         """Performs tracking stage using the tracking object.
 
         Args:
-            track_obj (TrackingObj): tracking object to perform tracking stage with.
+            det_obj (DetectionObj): tracking object to perform tracking stage with.
+
+        Returns:
+            TrackingObj: object containing all trackers (bounding boxes of tracked objects).
         """
         raise NotImplementedError('Tracking stage not implemented')
