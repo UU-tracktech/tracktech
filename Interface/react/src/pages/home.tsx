@@ -18,7 +18,7 @@ export function Home() {
   const [sources, setSources] = React.useState<source[]>()
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>('All')
   const [tracking, setTracking] = React.useState<tracked[]>([])
-  const [sourceSizes, setSourceSizes] = React.useState<Map<string, number>>(new Map())
+  const [primary, setPrimary] = React.useState<string>()
 
   const selectionRef = React.useRef(0)
 
@@ -36,10 +36,6 @@ export function Home() {
         })))
       }))
   }, [])
-
-  function setSize(sourceId: string, size: number) {
-    setSourceSizes(new Map(sourceSizes.set(sourceId, size)))
-  }
 
   return (
     <Layout.Content style={{ display: 'grid', gridTemplateColumns: '1fr 4fr', gridAutoRows: '100%', overflow: 'hidden' }}>
@@ -70,7 +66,7 @@ export function Home() {
             {
               sources && sources.map((source) =>
                 <Card key={source.id} title={source.name}>
-                  <Button type='primary' onClick={() => setSize(source.id, 3)}>View</Button>
+                  <Button type='primary' onClick={() => setPrimary(source.id)}>View</Button>
                 </Card>
               )
             }
@@ -81,8 +77,8 @@ export function Home() {
       <div style={{ overflowY: 'auto' }}>
         {sources && <Grid
           sources={sources}
-          sourceSizes={sourceSizes}
-          setSize={(sourceId: string, size: number) => setSize(sourceId, size)}
+          primary={primary ?? sources[0]?.id}
+          setPrimary={(sourceId: string) => setPrimary(sourceId)}
           indicator={currentIndicator} />}
       </div>
     </Layout.Content>)
@@ -96,7 +92,6 @@ export function Home() {
     var reader = new FileReader()
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        console.log(reader.result)
         setTracking(tracking.concat({ id: selectionRef.current++, name: 'abc', image: reader.result, data: '' }))
       }
     }
