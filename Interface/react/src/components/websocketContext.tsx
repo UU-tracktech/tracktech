@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { OrchestratorMessage } from '../classes/orchestratorMessage'
 import { Box, BoxesClientMessage } from '../classes/clientMessage'
@@ -45,7 +45,12 @@ type Listener = {
   listener: number
   callback: (boxes: Box[], frameId: number) => void
 }
-export function WebsocketProvider(props) {
+
+type WebsocketProviderProps = {
+  children: ReactNode
+}
+
+export function WebsocketProvider(props: WebsocketProviderProps) {
   const [connectionState, setConnectionState] = React.useState<connectionState>(
     'NONE'
   )
@@ -57,7 +62,6 @@ export function WebsocketProvider(props) {
   const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => setSocket(socketUrl), [])
 
   function setSocket(url: string) {

@@ -23,7 +23,6 @@ type cameraCardProps = {
 }
 
 export function CameraCard(props: cameraCardProps) {
-
   var iconStyle: CSS.Properties = {
     fontSize: '16pt'
   }
@@ -55,7 +54,11 @@ export function CameraCard(props: cameraCardProps) {
       bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
-      <Button type="primary" onClick={() => props.setSize(props.id)} style={buttonStyle}>
+      <Button
+        type="primary"
+        onClick={() => props.setSize(props.id)}
+        style={buttonStyle}
+      >
         <ExpandOutlined style={iconStyle} />
       </Button>
       <Button

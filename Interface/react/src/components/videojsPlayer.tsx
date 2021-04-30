@@ -94,7 +94,6 @@ export function VideoPlayer(props: VideoPlayerProps) {
     })
 
     return () => playerRef.current?.dispose()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /**

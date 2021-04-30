@@ -111,14 +111,18 @@ export function Home() {
             }}
           >
             {tracking &&
-              tracking.map((tracked) => (
-                <img
-                  alt="tracked person"
-                  onClick={() => removeSelection(tracked.id)}
-                  style={{ width: '100%', height: '100%', margin: '5px' }}
-                  src={tracked.image}
-                />
-              ))}
+              tracking.map((tracked) => {
+                var iterator = 0
+                return (
+                  <img
+                    key={`image-${iterator++}`}
+                    alt="tracked person"
+                    onClick={() => removeSelection(tracked.id)}
+                    style={{ width: '100%', height: '100%', margin: '5px' }}
+                    src={tracked.image}
+                  />
+                )
+              })}
           </div>
         </Card>
 
@@ -138,13 +142,17 @@ export function Home() {
             }}
           >
             {sources &&
-              sources.map((source) => (
-                <CameraCard
-                  id={source.id}
-                  title={source.name}
-                  setSize={setPrimary}
-                />
-              ))}
+              sources.map((source) => {
+                var iterator = 0
+                return (
+                  <CameraCard
+                    key={`cameraCard-${iterator++}`}
+                    id={source.id}
+                    title={source.name}
+                    setSize={setPrimary}
+                  />
+                )
+              })}
           </div>
         </Card>
       </div>
