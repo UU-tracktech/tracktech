@@ -113,6 +113,7 @@ class ClientSocket(WebSocketHandler):
         except KeyError as exc:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json", exc)
+        # pylint: disable=broad-except
         except Exception as exc:
             print(exc)
             logger.log("Someone wrote bad json")
