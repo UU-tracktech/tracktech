@@ -11,8 +11,8 @@ import asyncio
 import cv2
 
 from processor.pipeline.framebuffer import FrameBuffer
-from processor.input.hls_capture import HlsCapture
-# pylint: enable=unused-import
+import processor.utils.draw as draw
+import processor.utils.convert as convert
 
 
 async def process_stream(capture, detector, tracker, ws_client=None):
@@ -32,18 +32,13 @@ async def process_stream(capture, detector, tracker, ws_client=None):
     frame_nr = 0
 
     while capture.opened():
-        ret, frame, timestamp = capture.get_next_frame()
+        ret, frame_obj = capture.get_next_frame()
 
         if not ret:
-            if frame_nr == capture.get_capture_length():
-                logging.info("End of file reached")
-                break
             continue
 
-        # Create detection object for this frame.
-        det_obj = DetectionObj(timestamp, frame, frame_nr)
-
-        detector.detect(det_obj)
+        # Get detections from running detection stage.
+        det_obj = detector.detect(frame_obj)
 
         # Get objects tracked in current frame from tracking stage.
         track_obj = tracker.track(frame_obj, det_obj)
