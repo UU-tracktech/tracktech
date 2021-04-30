@@ -20,7 +20,7 @@ class TestBoundingBox:
 
         """
         self.data = BoundingBox(1, [0, 0, 1, 1], "person", 0.5)
-        self.identifier = self.data.identifier
+        self.identifier = self.data.__identifier
         self.rectangle = self.data.rectangle
         self.feature = None
         self.classification = self.data.classification

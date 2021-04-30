@@ -30,7 +30,7 @@ def __eq__(self, other):
 
 
 class TestDetectionObj:
-    """Tests detection_obj.py.
+    """Tests bounding_boxes.py.
 
     """
 

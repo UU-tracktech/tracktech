@@ -76,7 +76,11 @@ class PreAnnotations:
                 continue
 
             # Create bounding box
-            rectangle = [pos_x, pos_y, pos_x + pos_w, pos_y + pos_h]
+            rectangle = Rectangle(
+                pos_x, pos_y,
+                (pos_x + pos_w), (pos_y + pos_h)
+            )
+            # Append box to list of boxes
             box = BoundingBox(person_id, rectangle, "UFO", 1)
             self.boxes[frame_nr - 1].append(box)
 
@@ -133,8 +137,11 @@ class PreAnnotations:
 
             # Create bounding box for a frame
             (pos_x, pos_y) = json_object[0]['path'][frame_nr]
-            rectangle = [pos_x - half_width, pos_y - half_height,
-                         pos_x + half_width, pos_y + half_height]
+            rectangle = Rectangle(
+                pos_x - half_width, (pos_y - half_height),
+                pos_x + half_width, (pos_y + half_height)
+            )
+
             box = BoundingBox(1, rectangle, 'UFO', 1)
             # Append to list
             self.boxes[int(frame_nr) - 1].append(box)

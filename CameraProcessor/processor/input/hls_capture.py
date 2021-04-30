@@ -77,10 +77,8 @@ class HlsCapture(ICapture):
             logging.error("cv2.VideoCapture probably raised exception")
             raise TimeoutError("HLS Capture never opened")
 
-    def _connect_to_stream(self):
-        """Connects to hls stream in seperate thread
-
-        """
+    def __connect_to_stream(self):
+        """Connects to hls stream in separate thread."""
         # Create thread that reads streams
         self.reading_thread = threading.Thread(target=self.sync)
         self.reading_thread.daemon = True
@@ -96,10 +94,8 @@ class HlsCapture(ICapture):
             return self.cap.isOpened()
         return False
 
-    def close(self) -> None:
-        """Closes the capture object and the thread that is responsible
-        for serving the current frame
-        """
+    def close(self):
+        """Closes the capture object and the thread that is responsible for serving the current frame."""
         logging.info('HLS stream closing')
         logging.info("Joining thread")
         self.thread_running = False
@@ -120,9 +116,11 @@ class HlsCapture(ICapture):
         self.last_frame_time_stamp = self.frame_time_stamp
         return True, self.current_frame, self.frame_time_stamp
 
-    def _read(self) -> None:
-        """Method that runs in seperate thread that goes through the frames of the
-        stream at a consistent pace
+        self.__last_frame_time_stamp = self.__frame_time_stamp
+        return True, FrameObj(self.__current_frame, self.__frame_time_stamp)
+
+    def __read(self):
+        """Method that runs in separate thread that goes through the frames of the stream at a consistent pace.
 
         Reads frames at frame rate of the stream and puts them in self.current_frame
         Calculates at what time the next frame is expected and waits that long

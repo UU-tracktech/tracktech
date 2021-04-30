@@ -18,6 +18,6 @@ class IDetector:
             frame_obj (FrameObj): object containing frame and timestamp.
 
         Returns:
-            DetectionObj: return bounding boxes in frame wrapped in DetectionObj.
+            BoundingBoxes: return bounding boxes in frame wrapped in DetectionObj.
         """
         raise NotImplementedError("Detect function not implemented")

@@ -9,11 +9,7 @@ Utrecht University within the Software Project course.
 import logging
 import asyncio
 import cv2
-# pylint: disable=unused-import
-import processor.websocket_client as client
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.idetector import IDetector as Detector
-from processor.pipeline.tracking.tracking_obj import TrackingObj
+
 from processor.pipeline.framebuffer import FrameBuffer
 from processor.input.hls_capture import HlsCapture
 # pylint: enable=unused-import
@@ -31,8 +27,6 @@ async def process_stream(capture, detector, tracker, ws_client=None):
         tracker (SortTracker): tracker performing SORT tracking.
         ws_client (WebsocketClient): processor orchestrator to pass through detections.
     """
-    track_obj = TrackingObj()
-
     framebuffer = FrameBuffer()
 
     frame_nr = 0
@@ -51,12 +45,11 @@ async def process_stream(capture, detector, tracker, ws_client=None):
 
         detector.detect(det_obj)
 
-        track_obj.update(det_obj)
-
-        tracker.track(track_obj)
+        # Get objects tracked in current frame from tracking stage.
+        track_obj = tracker.track(frame_obj, det_obj)
 
         # Buffer the tracked object
-        framebuffer.add(track_obj.to_dict())
+        framebuffer.add(convert.to_buffer_dict(frame_obj, track_obj))
         framebuffer.clean_up()
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
@@ -64,12 +57,15 @@ async def process_stream(capture, detector, tracker, ws_client=None):
             ws_client.write_message(track_obj.to_json())
             logging.info(track_obj.to_json())
         else:
+            # Copy frame to draw over.
+            frame_copy = frame_obj.get_frame().copy()
+
             # Draw bounding boxes with ID
-            track_obj.draw_rectangles()
+            draw.draw_tracking_boxes(frame_copy, track_obj.get_bounding_boxes())
 
             # Play the video in a window called "Output Video"
             try:
-                cv2.imshow("Output Video", det_obj.frame)
+                cv2.imshow("Output Video", frame_copy)
             except OSError as err:
                 # Figure out how to get Docker to use GUI
                 raise OSError("Error displaying video. Are you running this in Docker perhaps?")\

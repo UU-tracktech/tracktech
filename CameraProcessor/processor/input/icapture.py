@@ -10,11 +10,9 @@ from typing import List
 
 
 class ICapture:
-    """Superclass for a capture without implemented methods to enforce the definition of them
-
-    """
-    def opened(self) -> bool:
-        """Returns whether the capture object still opened
+    """Superclass for a capture without implemented methods to enforce the definition of them."""
+    def opened(self):
+        """Returns whether the capture object still opened.
 
         Returns:
             Boolean which indicates whether stream is still opened

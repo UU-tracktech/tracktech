@@ -42,9 +42,9 @@ class TestJsonParsing:
         first_box = self.annotations.boxes[0][0]
         second_box = self.annotations.boxes[1][0]
         assert first_box.rectangle == [1127, 100, 1165, 268]
-        assert first_box.identifier == 1
+        assert first_box.__identifier == 1
         assert second_box.rectangle == [1127, 103, 1165, 271]
-        assert second_box.identifier == 1
+        assert second_box.__identifier == 1
 
     def test_line_skipping(self):
         """Tests whether the pre annotations skips lines of frames that are beyond the number of frames given

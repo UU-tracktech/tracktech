@@ -5,7 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import time
 import os
 import sys
 import configparser
@@ -79,12 +78,9 @@ def main(_argv):
 
         counter += 1
 
-        det_obj.to_txt_file(accuracy_dest, detection_file)
-
-        # Overwrite the file info with the new detection object
-        detection_file_info.close()
-        detection_file_info = open(accuracy_info_dest, 'w')
-        detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
+    # Close files
+    detection_file.close()
+    detection_file_info.close()
 
 
 if __name__ == '__main__':
