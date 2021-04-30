@@ -32,7 +32,7 @@ logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
-    """Handler for the html page of the site that is for the main page
+    """Handler for the html page of the site that is for the main page.
 
     """
     def get(self, file_name='index.html') -> None:
