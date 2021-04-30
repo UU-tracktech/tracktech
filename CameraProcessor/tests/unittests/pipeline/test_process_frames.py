@@ -14,6 +14,7 @@ from processor.pipeline.process_frames import process_stream
 from processor.input.video_capture import VideoCapture
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
+from tests.conftest import root_path
 
 
 class TestProcessFrames:
@@ -27,9 +28,7 @@ class TestProcessFrames:
         Returns: a VideoCapture object streaming test.mp4
 
         """
-        __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
-        # __folder_name = 'test'
-        __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/test.mp4'))
+        __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
         return VideoCapture(__videos_dir)
 
     # pylint: disable=useless-return
@@ -39,8 +38,7 @@ class TestProcessFrames:
 
         """
         configs = configparser.ConfigParser(allow_no_value=True)
-        __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
-        configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
+        configs.read(os.path.realpath(os.path.join(root_path, 'configs.ini')))
         # config = configs['Yolov5']
         # filters = configs['Filter']
         # return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
