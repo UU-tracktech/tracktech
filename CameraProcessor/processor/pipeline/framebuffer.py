@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 from collections import deque
-from typing import List
 from math import floor
 
 
@@ -14,7 +13,6 @@ class FrameBuffer:
     """Class that handles frame buffering logic and holds the buffer
 
     """
-
     def __init__(self):
         """Set buffer size and initialize deque
 
@@ -64,12 +62,16 @@ class FrameBuffer:
 
         return rect, stack
 
-    def binary_search(self, search_list: List, key: str, value):
+    def binary_search(self, search_list, key, value):
         """Searches a *SORTED* list for a certain value occurrence in O(lg n)
+
+        Arguments:
+            search_list (list[dict]): a list of "tracking object" dictionary items
+            key (str): the key to access in each of the tracking object dicts
+            value (int): The value of the key to look for in each tracking object dict
 
         Returns:
             integer: the index of the searched for value
-
         """
         left = 0
         right = len(search_list) - 1
