@@ -40,7 +40,7 @@ def main():
     capture = ImageCapture(images_dir)
     pre_annotations = PreAnnotations(bounding_boxes_path, capture.nr_images)
     pre_annotations.parse_file()
-    bounding_boxes = pre_annotations.boxes
+    all_frame_bounding_boxes = pre_annotations.boxes
 
     logging.info('start training')
     while capture.opened():
@@ -61,6 +61,8 @@ def main():
         # Close loop when q is pressed
         if cv2.waitKey(30) & 0xFF == ord('q'):
             break
+
+        frame_nr += 1
 
     logging.info('training stopping')
     # When everything is done release the capture

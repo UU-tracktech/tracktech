@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 import pytest
-from processor.pipeline.tracking.tracking_obj import TrackingObj
 
 
 # pylint: disable=attribute-defined-outside-init

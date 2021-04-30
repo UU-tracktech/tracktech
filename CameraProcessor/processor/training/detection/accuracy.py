@@ -93,18 +93,26 @@ class AccuracyObject:
             for box in boxes:
                 # Parse a single box and append it to the list of already parsed boxes
 
-                width = box.rectangle[2]
-                height = box.rectangle[3]
-                parsed_box = BoundingBox(label="undefined", xtl=box.rectangle[0] / self.image_width,
-                                         ytl=box.rectangle[1] / self.image_height, xbr=width / self.image_width,
-                                         ybr=height / self.image_height, image_name=str(i[0]), score=box.certainty)
+                width = box.get_rectangle().get_x2()
+                height = box.get_rectangle().get_y2()
+                parsed_box = BoundingBox(
+                    label="undefined",
+                    xtl=box.get_rectangle().get_x1() / self.image_width,
+                    ytl=box.get_rectangle().get_y1() / self.image_height,
+                    xbr=width / self.image_width,
+                    ybr=height / self.image_height,
+                    image_name=str(i[0]),
+                    score=box.get_certainty()
+                )
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
     def read_boxes(self, path_to_boxes):
         """A method for reading the bounding boxes with the pre_annotations.
+
         Args:
             path_to_boxes: Path to the file where the boxes are stored.
+
         Returns:
             A list of bounding boxes.
         """
