@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 
 class IDetector:
-    """Superclass for detectors
+    """Superclass for detectors.
     """
 
     def detect(self, frame_obj):

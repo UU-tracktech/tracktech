@@ -34,9 +34,9 @@ logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 class HtmlPageHandler(tornado.web.RequestHandler):
     """Handler for the html page of the site that is for the main page."""
     def get(self, file_name='index.html') -> None:
-        """Gets the html page and renders it
+        """Gets the html page and renders it.
 
-        When the index.html page cannot be found it will send an error template to the webclient
+        When the index.html page cannot be found it will send an error template to the webclient.
 
         Args:
             file_name (str): html page it is getting.
@@ -58,9 +58,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
 
 
 class StreamHandler(tornado.web.RequestHandler):
-    """Handler for the frame stream
-
-    """
+    """Handler for the frame stream."""
     server_image_timestamp = 0
 
     @tornado.gen.coroutine

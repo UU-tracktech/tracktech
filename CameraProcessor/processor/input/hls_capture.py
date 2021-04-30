@@ -1,8 +1,10 @@
-"""Contains the HlsCapture class
+"""Contains the HlsCapture class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)"""
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 
 import threading
 import sys
@@ -22,12 +24,12 @@ class HlsCapture(ICapture):
     Another thread gets the time stamp of the stream once and going from there.
     """
     def __init__(self, hls_url='http://81.83.10.9:8001/mjpg/video.mjpg'):
-        """Initiates the capture object with a hls url and starts reading frames
+        """Initiates the capture object with a hls url and starts reading frames.
 
-        Default hls_url is of a public stream that is available 24/7
+        Default hls_url is of a public stream that is available 24/7.
 
         Args:
-            hls_url: Url the videocapture has to connect to
+            hls_url: Url the videocapture has to connect to.
         """
 
         # Stream related properties
@@ -122,8 +124,8 @@ class HlsCapture(ICapture):
     def __read(self):
         """Method that runs in separate thread that goes through the frames of the stream at a consistent pace.
 
-        Reads frames at frame rate of the stream and puts them in self.current_frame
-        Calculates at what time the next frame is expected and waits that long
+        Reads frames at frame rate of the stream and puts them in self.current_frame.
+        Calculates at what time the next frame is expected and waits that long.
         """
         while self.thread_running:
             # Reads next frame
@@ -156,7 +158,7 @@ class HlsCapture(ICapture):
     def sync(self) -> None:
         """Method to instantiate the video connection with the HLS stream
 
-        Makes a separate thread to request meta-data and sets the default values for the variables
+        Makes a separate thread to request meta-data and sets the default values for the variables.
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
         self.cap = None

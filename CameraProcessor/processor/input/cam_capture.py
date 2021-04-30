@@ -15,7 +15,7 @@ vcap = VideoCapture(0)
 
 
 class CamCapture(ICapture):
-    """ Captures video from a webcam or other connected camera on the computer
+    """Captures video from a webcam or other connected camera on the computer.
 
     """
     def __init__(self):

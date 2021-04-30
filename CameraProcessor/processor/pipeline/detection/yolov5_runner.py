@@ -12,7 +12,8 @@ import logging
 from numpy import random
 import numpy as np
 import torch
-from processor.pipeline.detection.bounding_box import BoundingBox
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.yolov5.models.experimental import attempt_load
 from processor.pipeline.detection.yolov5.utils.datasets import letterbox
 from processor.pipeline.detection.yolov5.utils.general import check_img_size,\
@@ -25,10 +26,17 @@ from processor.data_object.rectangle import Rectangle
 
 
 class Yolov5Detector(IDetector):
-    """Make it inherit from a generic Detector class
+    """Make it inherit from a generic Detector class.
+
     """
 
     def __init__(self, config, filters):
+        """Initialize Yolov5Detector.
+
+        Args:
+            config (): Yolov5 config file.
+            filters (): Filtering for boundingBoxes.
+        """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolov5'))
 

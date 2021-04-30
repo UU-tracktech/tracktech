@@ -57,7 +57,7 @@ class PreAnnotations:
     def parse_text_file(self) -> None:
         """Parses text file containing annotations
 
-        Reads file line by line and puts it inside a bounding box object
+        Reads file line by line and puts it inside a bounding box object.
         """
         # Read file
         with open(self.file_path) as file:
