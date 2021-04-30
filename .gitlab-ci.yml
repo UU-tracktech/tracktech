@@ -16,7 +16,7 @@ camera_processor_documentation:
   rules:
     - when: never
       changes:
-        - CameraProcessor/*
+        - CameraProcessor/**/*
 
 camera-processor_docker_build:
   stage: build
@@ -26,7 +26,7 @@ camera-processor_docker_build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - CameraProcessor/*
+        - CameraProcessor/**/*
       when: always
     - if: '$PIPELINE == "camera_processor"'
       when: always
@@ -60,7 +60,7 @@ camera-processor_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - CameraProcessor/*
+        - CameraProcessor/**/*
       when: always
     - if: '$PIPELINE == "camera_processor"'
       when: always
@@ -86,7 +86,7 @@ camera-processor_integration-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - CameraProcessor/*
+        - CameraProcessor/**/*
       when: always
     - if: '$PIPELINE == "camera_processor"'
       when: always
@@ -111,7 +111,7 @@ camera-processor-video-forwarder_integration-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - CameraProcessor/*
+        - CameraProcessor/**/*
       when: always
     - if: '$PIPELINE == "camera_processor"'
       when: always
@@ -135,7 +135,7 @@ camera-processor_linting:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - CameraProcessor/*
+        - CameraProcessor/**/*
       when: always
     - if: '$PIPELINE == "camera_processor"'
       when: always
@@ -149,7 +149,7 @@ orchestrator_docker_build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - ProcessorOrchestrator/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$PIPELINE == "processor_orchestrator"'
       when: always
@@ -181,7 +181,7 @@ orchestrator_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - ProcessorOrchestrator/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$PIPELINE == "processor_orchestrator"'
       when: always
@@ -210,7 +210,7 @@ orchestrator_integration-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - ProcessorOrchestrator/*
+        - ProcessorOrchestrator/**/*
       when: always
 
 orchestrator_linting:
@@ -229,7 +229,7 @@ orchestrator_linting:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - ProcessorOrchestrator/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$PIPELINE == "processor_orchestrator"'
       when: always
@@ -244,7 +244,7 @@ interface_docker_build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - Interface/*
+        - Interface/**/*
       when: always
     - if: '$PIPELINE == "interface"'
       when: always
@@ -271,7 +271,7 @@ interface_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - Interface/*
+        - Interface/**/*
       when: always
     - if: '$PIPELINE == "interface"'
       when: always
@@ -297,7 +297,7 @@ interface-linting-selenium:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - Interface/*
+        - Interface/**/*
       when: always
     - if: '$PIPELINE == "interface"'
       when: always
@@ -318,7 +318,7 @@ interface-linting-ESLint:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - Interface/*
+        - Interface/**/*
       when: always
     - if: '$PIPELINE == "interface"'
       when: always
@@ -333,7 +333,7 @@ video-forwarder_docker_build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - VideoForwarder/*
+        - VideoForwarder/**/*
       when: always
     - if: '$PIPELINE == "forwarder"'
       when: always
@@ -359,7 +359,7 @@ video-forwarder_unit-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - VideoForwarder/*
+        - VideoForwarder/**/*
       when: always
     - if: '$PIPELINE == "forwarder"'
       when: always
@@ -384,7 +384,7 @@ video-forwarder_integration-testing:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - VideoForwarder/*
+        - VideoForwarder/**/*
       when: always
     - if: '$PIPELINE == "forwarder"'
       when: always
@@ -410,7 +410,7 @@ forwarder-linting:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - VideoForwarder/*
+        - VideoForwarder/**/*
       when: always
     - if: '$PIPELINE == "forwarder"'
       when: always
