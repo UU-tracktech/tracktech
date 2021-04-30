@@ -32,18 +32,20 @@ def main():
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
 
-    # Get auth ready by reading the environment variables 
+    # Get auth ready by reading the environment variables
     public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
     client_auth, processor_auth = None, None
     if public_key is not None and audience is not None:
         client_role = os.environ.get('CLIENT_ROLE')
         if client_role is not None:
             print("using client token validation")
-            client_auth = Auth(public_key_path=public_key, algorithms=['RS256'], audience=audience, role=client_role)
+            client_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
+                audience=audience, role=client_role)
         processor_role = os.environ.get('PROCESSOR_ROLE')
         if processor_role is not None:
             print("using processor token validation")
-            processor_auth = Auth(public_key_path=public_key, algorithms=['RS256'], audience=audience, role=processor_role)
+            processor_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
+                audience=audience, role=processor_role)
 
     app = create_app(client_auth, processor_auth)
 
@@ -80,7 +82,7 @@ def create_app(client_auth, processor_auth):
         ('/processor', ProcessorSocket),
         ('/logs', LogHandler)
     ]
-    
+
     # Construct and serve the tornado application.
     return Application(handlers, client_auth=client_auth, processor_auth=processor_auth)
 
