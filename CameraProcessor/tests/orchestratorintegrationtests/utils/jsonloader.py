@@ -9,6 +9,9 @@ import json
 import random
 import os
 import sys
+from tests.conftest import root_path
+
+example_json_file = os.path.join(root_path, 'data/tests/unittests/example_pre_annotations.json')
 
 
 def load_data(datatype, number=1, rng=False):
@@ -37,7 +40,7 @@ def load_data(datatype, number=1, rng=False):
         raise NameError('The JSON object requested is not in scope.')
 
     # File path and load content
-    json_path = os.path.join(sys.path[0], f'tests/integrationtests/testdata/{filename}.json')
+    json_path = os.path.join(sys.path[0], example_json_file)
     json_content = open(json_path, encoding="utf-8")
     json_objects = json.load(json_content)
 

@@ -12,13 +12,26 @@ import tornado.httpserver
 import tornado.web
 import tornado.ioloop
 
-from camera import Camera
-from camera_handler import CameraHandler
+from src.camera import Camera
+from src.camera_handler import CameraHandler
+
+
+def convert_json_to_camera(json_file):
+    """Converts json file content to camera objects inside dict
+
+    Args:
+        jsonFile: Path to json file which contains cameras
+
+    Returns:
+        Dict{Camera_name, Camera_obj}: camera created from json file content in dictionary
+    """
+    return {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in json_file}
+
 
 if __name__ == "__main__":
     print('starting server')
 
-    # Get the config path, read it and parse the json and close it
+    # Get the config path, read it and parse the json and close it.
     configFile = open(os.environ.get('CONFIG_PATH'), "r")
     configJson = json.loads(configFile.read())
     configFile.close()
@@ -29,18 +42,18 @@ if __name__ == "__main__":
     # Get the ssl certificate and key if supplied, use_tls to indicate both are present
     cert = os.environ.get('SSL_CERT')
     key = os.environ.get('SSL_KEY')
-    use_tls = cert is not None and key is not None
+    use_tls = cert and key
 
     # Get the public key path used for authentication
     public_key_path = os.environ.get('PUBLIC_KEY_PATH')
     print('using auth' if public_key_path is not None else 'not using auth')
 
-    PUBLIC_KEY = None
     # If the public key path was supplied, read the file and store it
-    if public_key_path is not None:
-        publicKeyFile = open(public_key_path, "r")
-        PUBLIC_KEY = publicKeyFile.read()
-        publicKeyFile.close()
+    PUBLIC_KEY = None
+    if public_key_path:
+        public_key_file = open(public_key_path, "r")
+        PUBLIC_KEY = public_key_file.read()
+        public_key_file.close()
 
     # Create the web application with the camera handler and the public key
     app = tornado.web.Application(
@@ -60,9 +73,10 @@ if __name__ == "__main__":
 
     # Else start the insecure webserver on port 80
     else:
+        # Start the insecure webserver on port 80
         http_server = tornado.httpserver.HTTPServer(app)
         http_server.listen(80)
         print('listening on port 80 over http')
 
-    # Start the IO loop (used by tornado itself
+    # Start the IO loop (used by tornado itself)
     tornado.ioloop.IOLoop.current().start()

@@ -38,14 +38,13 @@ export class Box {
   boxId: number
   rect: number[]
   objectId?: number
-  
 }
 
 /**
  * Used by the overlay to store bounding boxes alongside their frameID
  */
 export class QueueItem {
-  constructor( frameId: number, boxes: Box[]) {
+  constructor(frameId: number, boxes: Box[]) {
     this.frameId = frameId
     this.boxes = boxes
   }
