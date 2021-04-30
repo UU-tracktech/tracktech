@@ -1,7 +1,6 @@
 """Util methods that are available to other unit tests as well
 
 """
-import os
 import cv2
 from tests.conftest import root_path
 
