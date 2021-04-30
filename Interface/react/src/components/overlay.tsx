@@ -49,7 +49,6 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     //Start an interval to take boxes from the queue for drawing
     setInterval(() => handleQueue(), 1000 / 24)
     return socketContext.removeListener(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /**
