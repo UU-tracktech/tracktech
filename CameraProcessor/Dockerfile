@@ -25,6 +25,7 @@ COPY processor processor
 COPY data/annotated/test data/annotated/test
 COPY data/videos/test.mp4 data/videos/test.mp4
 COPY tests tests
+COPY data data
 COPY .coveragerc .coveragerc
 
 # Entrypoint instead of docker run cmd does not seem to work well 
