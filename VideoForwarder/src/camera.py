@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 
 class Camera:
-    """Camera information object
+    """Camera information object.
 
     """
 
