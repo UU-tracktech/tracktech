@@ -6,6 +6,13 @@ Utrecht University within the Software Project course.
 
  */
 
+/*
+
+OverlayVideo is a page containing a single video player with an overlay for drawing
+objects on top of it. Mainly used to debug anything todo with the videoplayer or overlay
+
+*/
+
 import React from 'react'
 import { Overlay } from '../components/overlay'
 
