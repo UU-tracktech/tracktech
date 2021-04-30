@@ -10,12 +10,6 @@ import pytest
 from processor.training.pre_annotations import PreAnnotations
 from tests.unittests.preannotations.test_pre_annotations import example_text_file
 
-example_text_file = os.path.join(os.path.dirname(__file__),
-                                 '../../../data/tests/unittests/example_pre_annotations.txt')
-example_json_file = os.path.join(os.path.dirname(__file__),
-                                 '../../../data/tests/unittests/example_pre_annotations.json')
-example_py_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.py')
-
 
 # pylint: disable=attribute-defined-outside-init
 class TestTextParsing:

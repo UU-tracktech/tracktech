@@ -9,12 +9,9 @@ import json
 import random
 import os
 import sys
+from tests.conftest import root_path
 
-example_text_file = os.path.join(os.path.dirname(__file__),
-                                 '../../../data/tests/unittests/example_pre_annotations.txt')
-example_json_file = os.path.join(os.path.dirname(__file__),
-                                 '../../../data/tests/unittests/example_pre_annotations.json')
-example_py_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.py')
+example_json_file = os.path.join(root_path, 'data/tests/unittests/example_pre_annotations.json')
 
 
 def load_data(datatype, number=1, rng=False):
