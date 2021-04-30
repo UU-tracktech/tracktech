@@ -10,20 +10,21 @@ import React from 'react'
 import { Overlay } from '../components/overlay'
 
 export function OverlayVideo() {
-  return <div style={{ display: 'grid', height: '100%', width: '100%' }}>
-    <Overlay
-      cameraId={'test'}
-      onUp={() => alert('up')}
-      onDown={() => alert('down')}
-      onPlayPause={() => {}}
-      onTimestamp={() => {}}
-      key={'testvid'}
-      autoplay={true}
-      controls={true}
-      width={300}
-      height={300}
-      sources={[{ src: 'http://localhost:80/testvid.m3u8' }]}
-      showBoxes='All'
-    />
-  </div>
+  return (
+    <div style={{ display: 'grid', height: '100%', width: '100%' }}>
+      <Overlay
+        cameraId={'test'}
+        onPrimary={() => alert('on primary')}
+        onPlayPause={() => {}}
+        onTimestamp={() => {}}
+        key={'testvid'}
+        autoplay={true}
+        controls={true}
+        width={300}
+        height={300}
+        sources={[{ src: 'http://localhost:80/testvid.m3u8' }]}
+        showBoxes="All"
+      />
+    </div>
+  )
 }

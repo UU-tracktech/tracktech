@@ -9,33 +9,44 @@ import time
 import os
 import sys
 import configparser
-import cv2
 from absl import app
+
+from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.input.video_capture import VideoCapture
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(f'{curr_dir}/../')
 sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
 def main(_argv):
-    """Runs YOLOv5 detection on a video file specified in configs.ini
+    """Runs YOLOv5 detection on a video file specified in configs.ini.
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
     configs.read('../configs.ini')
     trueconfig = configs['Yolov5']
     filterconfig = configs['Filter']
+    accuracy_config = configs['Accuracy']
 
     local_time = time.localtime()
 
     # Instantiate the Detection Object
     det_obj = DetectionObj(local_time, None, 0)
 
+    # Opening files where the information is stored that is used to determine the accuracy
+    accuracy_dest = os.path.join('..', accuracy_config['det-path'])
+    accuracy_info_dest = os.path.join('..', accuracy_config['det-info-path'])
+    detection_file = open(accuracy_dest, 'a')
+    detection_file_info = open(accuracy_info_dest, 'w')
+
+    detection_file.truncate(0)
+    print('I will write the detection objects to a txt file')
+
     # Capture the video stream
-    vidstream = VideoCapture(os.path.join(curr_dir, '..', trueconfig['source']))
+    vidstream = ImageCapture(os.path.join(curr_dir, '..', trueconfig['source']))
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -50,10 +61,14 @@ def main(_argv):
         ret, frame, _ = vidstream.get_next_frame()
 
         if not ret:
+            # Closing the detection files when the end of the stream is reached
             if counter == vidstream.get_capture_length():
                 print("End of file")
+                detection_file.close()
+                detection_file_info.close()
             else:
                 raise ValueError("Feed has been interrupted")
+            return
 
         # update frame, frame number, and time
         det_obj.frame = frame
@@ -62,20 +77,14 @@ def main(_argv):
 
         detector.detect(det_obj)
 
-        # Draw the frame with bounding boxes
-        det_obj.draw_rectangles()
         counter += 1
 
-        # Play the video in a window called "Output Video"
-        try:
-            cv2.imshow("Output Video", det_obj.frame)
-        except OSError:
-            # Figure out how to get Docker to use GUI
-            print("Error displaying video. Are you running this in Docker perhaps?")
+        det_obj.to_txt_file(accuracy_dest, detection_file)
 
-        # This next line is **ESSENTIAL** for the video to actually play
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            return
+        # Overwrite the file info with the new detection object
+        detection_file_info.close()
+        detection_file_info = open(accuracy_info_dest, 'w')
+        detection_file_info.write(f'{det_obj.frame_nr},{det_obj.frame.shape[0]},{det_obj.frame.shape[1]}')
 
 
 if __name__ == '__main__':
