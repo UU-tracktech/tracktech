@@ -8,6 +8,7 @@ Utrecht University within the Software Project course.
 import os
 import pytest
 from processor.training.pre_annotations import PreAnnotations
+from tests.unittests.preannotations.test_pre_annotations import example_text_file
 
 example_text_file = os.path.join(os.path.dirname(__file__),
                                  '../../../data/tests/unittests/preannotated/example_pre_annotations.txt')
