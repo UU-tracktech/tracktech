@@ -3,6 +3,7 @@ WORKDIR /react
 COPY react/package.json ./package.json
 COPY react/package-lock.json ./package-lock.json
 COPY react/.eslintrc.json ./.eslintrc.json
+COPY react/.prettierrc.json ./.prettierrc.json
 RUN ["npm","install"]
 
 COPY react/public ./public

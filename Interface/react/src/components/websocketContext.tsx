@@ -6,17 +6,26 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { OrchestratorMessage } from '../classes/orchestratorMessage'
 import { Box, BoxesClientMessage } from '../classes/clientMessage'
 
-export type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
+export type connectionState =
+  | 'NONE'
+  | 'CONNECTING'
+  | 'OPEN'
+  | 'CLOSING'
+  | 'CLOSED'
+  | 'ERROR'
 
 export type websocketArgs = {
   setSocket: (url: string) => void
   send: (message: OrchestratorMessage) => void
-  addListener: (id: string, callback: (boxes: Box[], frameId: number) => void) => number
+  addListener: (
+    id: string,
+    callback: (boxes: Box[], frameId: number) => void
+  ) => number
   removeListener: (listener: number) => void
   connectionState: connectionState
   socketUrl: string
@@ -31,16 +40,28 @@ export const websocketContext = React.createContext<websocketArgs>({
   socketUrl: 'NO URL'
 })
 
-type Listener = { id: string, listener: number, callback: (boxes: Box[], frameId: number) => void }
-export function WebsocketProvider(props) {
-  const [connectionState, setConnectionState] = React.useState<connectionState>('NONE')
-  const [socketUrl, setSocketUrl] = React.useState('wss://tracktech.ml:50011/client')
+type Listener = {
+  id: string
+  listener: number
+  callback: (boxes: Box[], frameId: number) => void
+}
+
+type WebsocketProviderProps = {
+  children: ReactNode
+}
+
+export function WebsocketProvider(props: WebsocketProviderProps) {
+  const [connectionState, setConnectionState] = React.useState<connectionState>(
+    'NONE'
+  )
+  const [socketUrl, setSocketUrl] = React.useState(
+    'wss://tracktech.ml:50011/client'
+  )
 
   const socketRef = React.useRef<WebSocket>()
   const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => setSocket(socketUrl), [])
 
   function setSocket(url: string) {
@@ -63,7 +84,9 @@ export function WebsocketProvider(props) {
   function onMessage(ev: MessageEvent<any>) {
     //console.log('socket message', ev.data)
     var message: BoxesClientMessage = JSON.parse(ev.data)
-    listenersRef.current?.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback(message.boxes, message.frameId))
+    listenersRef.current
+      ?.filter((listener) => listener.id === message.cameraId)
+      .forEach((listener) => listener.callback(message.boxes, message.frameId))
   }
 
   function onClose(_ev: CloseEvent) {
@@ -76,14 +99,17 @@ export function WebsocketProvider(props) {
     setConnectionState('ERROR')
   }
 
-  function addListener(id: string, callback: (boxes: Box[], frameId: number) => void) {
+  function addListener(
+    id: string,
+    callback: (boxes: Box[], frameId: number) => void
+  ) {
     var listener = ++listenerRef.current
     listenersRef.current?.push({ id: id, listener, callback: callback })
     return listener
   }
 
   function removeListener(listener: number) {
-    listenersRef.current?.filter(x => x.listener === listener)
+    listenersRef.current?.filter((x) => x.listener === listener)
   }
 
   function send(message: OrchestratorMessage) {
@@ -92,15 +118,19 @@ export function WebsocketProvider(props) {
   }
 
   return (
-    <websocketContext.Provider value={
-      {
+    <websocketContext.Provider
+      value={{
         setSocket: (url: string) => setSocket(url),
         send: (message: OrchestratorMessage) => send(message),
-        addListener: (id: string, callback: (boxes: Box[], frameId: number) => void) => addListener(id, callback),
+        addListener: (
+          id: string,
+          callback: (boxes: Box[], frameId: number) => void
+        ) => addListener(id, callback),
         removeListener: (listener: number) => removeListener(listener),
         connectionState: connectionState,
         socketUrl: socketUrl
-      }}>
+      }}
+    >
       {props.children}
     </websocketContext.Provider>
   )
