@@ -114,8 +114,8 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
-        except Exception as e:
-            print(e)
+        except Exception as exc:
+            print(exc)
 
     def authenticate(self, message) -> None:
         """Authenticates a processor

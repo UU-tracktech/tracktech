@@ -39,7 +39,7 @@ class ClientSocket(WebSocketHandler):
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
         self.authorized = False
-        
+
         # Load the auth object from appsettings
         self.auth = self.application.settings.get('client_auth')
 
@@ -107,14 +107,14 @@ class ClientSocket(WebSocketHandler):
             else:
                 print("A client was not authenticated first")
 
-        except ValueError as e:
+        except ValueError as exc:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
-            print("Someone wrote bad json", e)
-        except KeyError as e:
+            print("Someone wrote bad json", exc)
+        except KeyError as exc:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
-            print("Someone missed a property in their json", e)
-        except Exception as e:
-            print(e)
+            print("Someone missed a property in their json", exc)
+        except Exception as exc:
+            print(exc)
             logger.log("Someone wrote bad json")
 
     def send_message(self, message) -> None:
@@ -143,7 +143,7 @@ class ClientSocket(WebSocketHandler):
                 JSON message that was received. It should contain the following property:
                     - "jwt" | The jwt token containing information about a user
         """
-        
+
         if self.auth is not None:
             self.auth.validate(message["jwt"])
             self.authorized = True
