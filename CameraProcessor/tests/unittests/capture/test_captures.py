@@ -1,14 +1,18 @@
-import os
+"""Tests the captures
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import pytest
-from processor.input.icapture import ICapture
-from processor.input.image_capture import ImageCapture
-from processor.input.hls_capture import HlsCapture
-from processor.input.cam_capture import CamCapture
 
 
 class TestCaptures:
+    """Tests the captures opening and closing
 
-    @pytest.mark.timeout(3)
+    """
+    @pytest.mark.timeout(10)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -19,7 +23,17 @@ class TestCaptures:
         while not capture_implementation.opened():
             pass
 
-    @pytest.mark.timeout(3)
+    @pytest.mark.timeout(10)
+    def test_next_frame(self, capture_implementation):
+        """Asserts that you can get the next frame of the capture implementation
+
+            Args:
+                capture_implementation: see capture_implementation.
+
+        """
+        assert capture_implementation.get_next_frame()[0]
+
+    @pytest.mark.timeout(10)
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 

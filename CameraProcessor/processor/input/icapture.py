@@ -1,3 +1,11 @@
+"""Contains the ICapture interface for different capture methods
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 from typing import List
 
 
@@ -26,3 +34,12 @@ class ICapture:
             Frame from the capture object
         """
         raise NotImplementedError('No implementation for getting next frame')
+
+    def get_capture_length(self) -> int:
+        """Returns the length of the video, image directory, or if its a stream,
+        None
+
+        Returns:
+            An integer describing the length
+        """
+        raise NotImplementedError("No implementation for get_vid_length")

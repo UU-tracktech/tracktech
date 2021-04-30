@@ -1,19 +1,26 @@
+"""Contains the bounding box class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import json
 from typing import List
 
 
-
 class BoundingBox:
-    """Contains information about a single bounding box
+    """Contains information about a single bounding box.
     """
     def __init__(self, identifier: int, rectangle: List[int], classification: str, certainty: float):
-        """
+        """Inits the bounding box.
 
         Args:
-            identifier (int):
-            rectangle :
-            classification:
-            certainty:
+            identifier (int): identifier of bounding box.
+            rectangle (List[int]): [x_left, y_bot, x_right, y_top], coords of bounding box.
+            classification (str): classification of the bounding box.
+            certainty (float): certainty/confidence of the bounding box detection.
         """
         self.identifier = identifier
         self.rectangle = rectangle
@@ -24,14 +31,21 @@ class BoundingBox:
         self.certainty = certainty
 
     def to_json(self) -> json:
-        """Converts the object to JSON format
-        Returns: JSON representation of the object
+        """Converts the object to JSON format.
+
+        Returns:
+            json: JSON representation of the object.
+        """
+        return json.dumps(self.to_dict())
+
+    def to_dict(self) -> dict:
+        """Readies the data of the bounding box object for conversion into a JSON object.
+
+        Returns:
+            dict: Python dict for the corresponding JSON object
 
         """
-        string = json.dumps({
+        return {
             "boxId": self.identifier,
-            "rect": self.rectangle,
-        })
-
-        # We need to decode the string so we don't get top-level double encoding
-        return json.JSONDecoder().decode(string)
+            "rect": self.rectangle
+        }

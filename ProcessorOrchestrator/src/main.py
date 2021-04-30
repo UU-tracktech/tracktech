@@ -1,6 +1,11 @@
 """Entry point of the application
 
 This file sets up the tornado application.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import os
 import ssl
@@ -10,9 +15,10 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application
 
 from auth.auth import Auth
-from client_socket import ClientSocket
-from processor_socket import ProcessorSocket
-from log_handler import LogHandler
+from src.client_socket import ClientSocket
+from src.processor_socket import ProcessorSocket
+from src.log_handler import LogHandler
+import src.logger as logger
 
 
 def main():
@@ -47,15 +53,14 @@ def main():
         ssl_ctx.load_cert_chain(cert, key)
 
         # Create a http server, with optional ssl.
-        http_server = HTTPServer(app, ssl_options=ssl_ctx)
-        http_server.listen(443)
-        print('listening over https')
+        https_server = HTTPServer(app, ssl_options=ssl_ctx)
+        https_server.listen(443)
+        logger.log('listening over https')
 
-    else:
-        # Create a http server, with optional ssl.
-        http_server = HTTPServer(app)
-        http_server.listen(80)
-        print('listening over http')
+    # Create a http server, with optional ssl.
+    http_server = HTTPServer(app)
+    http_server.listen(80)
+    logger.log('listening over http')
 
     IOLoop.current().start()
 
