@@ -10,6 +10,14 @@ import random
 import os
 import sys
 
+root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
+example_text_file = os.path.join(os.path.dirname(__file__),
+                                 '../../../data/tests/unittests/example_pre_annotations.txt')
+example_json_file = os.path.join(os.path.dirname(__file__),
+                                 '../../../data/tests/unittests/example_pre_annotations.json')
+example_py_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.py')
+
 
 def load_data(datatype, number=1, rng=False):
     """Load a JSON test data file of chosen type.
