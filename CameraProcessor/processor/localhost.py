@@ -79,11 +79,11 @@ class StreamHandler(tornado.web.RequestHandler):
         capture = HlsCapture()
         while capture.opened():
             # Get frame
-            ret, frame, _ = capture.get_next_frame()
+            ret, frame_obj = capture.get_next_frame()
             if not ret:
                 continue
             # If it does get the image the frame gets encoded
-            ret, jpeg = cv2.imencode('.jpg', frame)
+            ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
             img = jpeg.tobytes()
 
             # Every .1 seconds the frame gets sent to the browser

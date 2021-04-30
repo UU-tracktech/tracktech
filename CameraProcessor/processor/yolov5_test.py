@@ -11,8 +11,8 @@ import configparser
 from absl import app
 
 from processor.input.image_capture import ImageCapture
-from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.utils.text import boxes_to_txt
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -29,11 +29,6 @@ def main(_argv):
     filterconfig = configs['Filter']
     accuracy_config = configs['Accuracy']
 
-    local_time = time.localtime()
-
-    # Instantiate the Detection Object
-    det_obj = DetectionObj(local_time, None, 0)
-
     # Opening files where the information is stored that is used to determine the accuracy
     accuracy_dest = os.path.join('..', accuracy_config['det-path'])
     accuracy_info_dest = os.path.join('..', accuracy_config['det-info-path'])
@@ -44,7 +39,7 @@ def main(_argv):
     print('I will write the detection objects to a txt file')
 
     # Capture the video stream
-    vidstream = ImageCapture(os.path.join(curr_dir, '..', trueconfig['source']))
+    vidstream = ImageCapture(os.path.join(curr_dir, '..', accuracy_config['source']))
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -55,25 +50,32 @@ def main(_argv):
     counter = 0
     while vidstream.opened():
         # Set the detected bounding box list to empty
-        det_obj.bounding_box = []
-        ret, frame, _ = vidstream.get_next_frame()
+        ret, frame_obj = vidstream.get_next_frame()
 
         if not ret:
+            continue
             # Closing the detection files when the end of the stream is reached
-            if counter == vidstream.get_capture_length():
-                print("End of file")
-                detection_file.close()
-                detection_file_info.close()
-            else:
-                raise ValueError("Feed has been interrupted")
-            return
+            # if counter == vidstream.get_capture_length():
+            #     print("End of file")
+            #     detection_file.close()
+            #     detection_file_info.close()
+            # else:
+            #     raise ValueError("Feed has been interrupted")
+            # return
 
-        # update frame, frame number, and time
-        det_obj.frame = frame
-        det_obj.frame_nr = counter
-        det_obj.timestamp = time.localtime()
+        bounding_boxes = detector.detect(frame_obj)
 
-        detector.detect(det_obj)
+        # Convert boxes to string
+        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(), counter)
+
+        # Write boxes found by detection to
+        try:
+            detection_file.write(boxes_string)
+        except RuntimeError as run_error:
+            print(f'Cannot write to the file with following exception: {run_error}')
+
+        # Overwrite the file info with the new detection object
+        detection_file_info.write(f'{counter},{frame_obj.get_shape()[0]},{frame_obj.get_shape()[1]}')
 
         counter += 1
 
