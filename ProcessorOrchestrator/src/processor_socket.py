@@ -10,7 +10,6 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from typing import Optional, Awaitable, Dict, Callable, Any
 from time import sleep
 
 import tornado.web
@@ -30,40 +29,45 @@ class ProcessorSocket(WebSocketHandler):
         identifier: An int that serves as the unique identifier to this object.
     """
 
-    def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
+    def __init__(self, application, request):
         """Creates unique id and appends it to the dict of processors.
 
         Args:
-            application: The tornado web application
-            request: The HTTP server request
+            application (tornado.web.Application): The tornado web application
+            request (httputil.HTTPServerRequest): The HTTP server request
         """
         super().__init__(application, request)
         self.identifier = None
 
-    def check_origin(self, origin: str) -> bool:
+    def check_origin(self, origin):
         """Override to enable support for allowing alternate origins.
 
         Args:
-            origin:
+            origin (str):
                 Origin of the HTTP request, is ignored as all origins are allowed.
+        Returns:
+            bool
         """
         return True
 
-    def open(self, *args, **kwargs) -> None:
+    def open(self, *args, **kwargs):
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket, will log connection
+
+        Returns:
+            None
         """
         logger.log_connect("/processor", self.request.remote_ip)
         logger.log("New processor connected")
 
-    def on_message(self, message: str) -> None:
+    def on_message(self, message):
         """Handles a message from a processor that is received on the websocket.
 
         Method which handles messages coming in from a processor. The messages are expected in json format.
 
         Args:
-            message:
+            message (str):
                 JSON with at least a "type" property. This property can have the following values:
                     - "boundingBoxes" | This signifies a message that contains bounding boxes, see send_bounding_boxes
                                         for the other expected properties.
@@ -72,14 +76,16 @@ class ProcessorSocket(WebSocketHandler):
                     - "test"          | This values will be answered with a series of messages mocking the messages
                                         a processor might expect, see send_mock_commands for the other expected
                                         properties.
+        Returns:
+            None
         """
         logger.log_message_receive(message, "/processor", self.request.remote_ip)
 
         try:
-            message_object: json = json.loads(message)
+            message_object = json.loads(message)
 
             # Switch on message type
-            actions: Dict[str, Callable[[], None]] = {
+            actions = {
                 "identifier":
                     lambda: self.register_processor(message_object),
                 "boundingBoxes":
@@ -105,29 +111,35 @@ class ProcessorSocket(WebSocketHandler):
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             logger.log("Someone missed a property in their json")
 
-    def send_message(self, message) -> None:
+    def send_message(self, message):
         """Sends a message over the websocket and logs it.
 
         Args:
-            message: string which should be send over this websocket
+            message (string): string which should be send over this websocket
+        Returns:
+            None
         """
         logger.log_message_send(message, "/processor", self.request.remote_ip)
         self.write_message(message)
 
-    def on_close(self) -> None:
-        """Called when the websocket is closed, deletes itself from the dict of processors."""
+    def on_close(self):
+        """Called when the websocket is closed, deletes itself from the dict of processors.
+
+        Returns:
+            None
+        """
         logger.log_disconnect("/processor", self.request.remote_ip)
         del processors[self.identifier]
         logger.log(f"Processor with id {self.identifier} disconnected")
 
-    def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
+    def data_received(self, chunk):
         """Unused method that could handle streamed request data"""
 
     def register_processor(self, message) -> None:
         """Registers a processor under the given identifier.
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following property:
                     - "id" | The identifier of the processor under which this socket should be registered.
         """
@@ -139,17 +151,19 @@ class ProcessorSocket(WebSocketHandler):
         logger.log(f"Processor registered with id {self.identifier} from {self.request.remote_ip}")
         logger.log(f"Processor registered with id {self.identifier}")
 
-    def send_bounding_boxes(self, message) -> None:
+    def send_bounding_boxes(self, message):
         """Sends bounding boxes to all clients.
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following properties:
                     - "frameId" | The identifier of the frame for which these bounding boxes were computed.
                     - "boxes"   | An object containing the bounding boxes that were computed for this frame.
+        Returns:
+            None
         """
-        frame_id: Any = message["frameId"]
-        boxes: json = message["boxes"]
+        frame_id = message["frameId"]
+        boxes = message["boxes"]
 
         if len(client_socket.clients.values()) > 0:
             for client in client_socket.clients.values():
@@ -161,17 +175,19 @@ class ProcessorSocket(WebSocketHandler):
                 }))
 
     @staticmethod
-    def update_feature_map(message) -> None:
+    def update_feature_map(message):
         """Sends an updated feature map to all processors
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following properties:
                     - "objectId"   | The identifier of the object for which this feature map was computed.
                     - "featureMap" | An object containing the new feature map that was computed.
+        Returns:
+            None
         """
-        object_id: int = message["objectId"]
-        feature_map: json = message["featureMap"]
+        object_id = message["objectId"]
+        feature_map = message["featureMap"]
 
         try:
             objects[object_id].update_feature_map(feature_map)
@@ -185,20 +201,22 @@ class ProcessorSocket(WebSocketHandler):
                 "featureMap": feature_map
             }))
 
-    def send_mock_commands(self, message) -> None:
+    def send_mock_commands(self, message):
         """Sends a few mock messages to the processor for testing purposes
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following properties:
                     - "frameId"  | The identifier of a frame that should be used in the mock "start" command.
                     - "objectId" | The identifier of an object that should be used in the mock "start" command.
+        Returns:
+            None
         """
-        frame_id: Any = message["frameId"]
-        box_id: int = message["boxId"]
-        tracking_object1: TrackingObject = TrackingObject()
+        frame_id = message["frameId"]
+        box_id = message["boxId"]
+        tracking_object1 = TrackingObject()
 
-        tracking_object2: TrackingObject = TrackingObject()
+        tracking_object2 = TrackingObject()
 
         self.send_message(json.dumps({
             "type": "start",
