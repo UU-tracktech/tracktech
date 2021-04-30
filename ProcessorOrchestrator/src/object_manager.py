@@ -27,11 +27,11 @@ class TrackingObject:
         self.feature_map = {}
         objects[self.identifier] = self
 
-    def update_feature_map(self, feature_map: json):
+    def update_feature_map(self, feature_map):
         """Update feature map of this object.
 
         Args:
-            feature_map:
+            feature_map (json):
                 json containing the features that should become the new feature map on this object.
         """
         self.feature_map = feature_map
