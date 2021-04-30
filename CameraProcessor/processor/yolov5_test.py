@@ -21,8 +21,7 @@ sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
 def main(_argv):
-    """Runs YOLOv5 detection on a video file specified in configs.ini.
-    """
+    """Runs YOLOv5 detection on a video file specified in configs.ini."""
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
     configs.read('../configs.ini')

@@ -12,7 +12,7 @@ from processor.input.icapture import ICapture
 
 
 class VideoCapture(ICapture):
-    """ Captures video from a video file on the system
+    """ Captures video from a video file on the system.
 
     """
     # Default path is the path to venice.mp4
@@ -28,7 +28,7 @@ class VideoCapture(ICapture):
         logging.info(f"Video has {self.get_capture_length()} frames")
 
     def opened(self):
-        """Check if the video is still opened
+        """Check if the video is still opened.
 
         Returns:
             A boolean indicating if video is opened
@@ -43,7 +43,7 @@ class VideoCapture(ICapture):
         self.cap.release()
 
     def get_next_frame(self):
-        """Gets the next frame of the video
+        """Gets the next frame of the video.
 
         Returns:
             - A boolean indicating if next frame was returned

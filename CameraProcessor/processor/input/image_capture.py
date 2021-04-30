@@ -14,7 +14,7 @@ from processor.input.icapture import ICapture
 
 
 class ImageCapture(ICapture):
-    """Reads all images from a folder one by one
+    """Reads all images from a folder one by one.
 
     """
     def __init__(self, images_dir: str):
@@ -38,7 +38,7 @@ class ImageCapture(ICapture):
         """Capture is still opened when more images are available
 
         Returns:
-            Boolean whether there are more images to iterate
+            Boolean whether there are more images to iterate.
         """
         return self.image_index + 1 < self.nr_images
 
