@@ -114,6 +114,7 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
+        # pylint: disable=broad-except
         except Exception as exc:
             print(exc)
 
