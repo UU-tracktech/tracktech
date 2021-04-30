@@ -11,7 +11,12 @@ import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-export type VideoPlayerProps = { onTimestamp: (time: number) => void, onPlayPause: (playing: boolean) => void ,onUp: () => void, onDown: () => void, onResize?: (width: number, height: number, left: number, top: number) => void } & videojs.PlayerOptions
+export type VideoPlayerProps = {
+  onTimestamp: (time: number) => void
+  onPlayPause: (playing: boolean) => void
+  onPrimary: () => void
+  onResize?: (width: number, height: number, left: number, top: number) => void
+} & videojs.PlayerOptions
 export function VideoPlayer(props: VideoPlayerProps) {
   var videoNode: HTMLVideoElement
 
@@ -20,9 +25,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const initialUriIntervalRef = React.useRef<number>()
   const changeIntervalRef = React.useRef<number>()
   const updateIntervalRef = React.useRef<number>()
+  const delayRef = React.useRef<number>(-20)
 
-  var startUri    //The first URI the player gets
-  var startTime   //The timestamp where the player started
+  var startUri //The first URI the player gets
+  var startTime //The timestamp where the player started
   var timeStamp
 
   React.useEffect(() => {
@@ -30,8 +36,33 @@ export function VideoPlayer(props: VideoPlayerProps) {
     playerRef.current = videojs(videoNode, props, () => {
       var player = playerRef.current
 
-      player?.controlBar.addChild(new resizeButton(player, { onPress: props.onUp, icon: 'bi-zoom-in', text: 'Increase size' }), {}, 0)
-      player?.controlBar.addChild(new resizeButton(player, { onPress: props.onDown, icon: 'bi-zoom-out', text: 'Decrease size' }), {}, 1)
+      player?.controlBar.addChild(
+        new extraButton(player, {
+          onPress: props.onPrimary,
+          icon: 'bi-zoom-in',
+          text: 'Set primary'
+        }),
+        {},
+        0
+      )
+      player?.controlBar.addChild(
+        new extraButton(player, {
+          onPress: () => delayRef.current--,
+          icon: 'bi-skip-backward',
+          text: 'Sync'
+        }),
+        {},
+        1
+      )
+      player?.controlBar.addChild(
+        new extraButton(player, {
+          onPress: () => delayRef.current++,
+          icon: 'bi-skip-forward',
+          text: 'Sync'
+        }),
+        {},
+        2
+      )
       player?.on('playerresize', () => onResize())
       player?.on('play', () => onResize())
 
@@ -53,16 +84,16 @@ export function VideoPlayer(props: VideoPlayerProps) {
       })
 
       /* Every time the stream is paused we can stop updating the
-      * interval, player?.currentTime() will keep going in the
-      * background anyway */
+       * interval, player?.currentTime() will keep going in the
+       * background anyway */
       player?.on('pause', () => {
-        if (updateIntervalRef.current) player?.clearInterval(updateIntervalRef.current)
+        if (updateIntervalRef.current)
+          player?.clearInterval(updateIntervalRef.current)
         props.onPlayPause(false)
       })
     })
 
-    return (() => playerRef.current?.dispose())
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => playerRef.current?.dispose()
   }, [])
 
   /**
@@ -77,8 +108,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (tech) {
         //ensure media is loaded before trying to access
         let med = tech['vhs'].playlists.media()
-        if (med)
-          return med.segments[0].uri
+        if (med) return med.segments[0].uri
       }
     } catch (e) {
       console.warn(e)
@@ -97,7 +127,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
       console.log('InitialURI: ', currentUri)
 
       startUri = currentUri
-      if (initialUriIntervalRef.current) playerRef.current?.clearInterval(initialUriIntervalRef.current)
+      if (initialUriIntervalRef.current)
+        playerRef.current?.clearInterval(initialUriIntervalRef.current)
       changeIntervalRef.current = playerRef.current?.setInterval(() => {
         lookForUriUpdate()
       }, 1000 / 24)
@@ -118,7 +149,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
         console.log('URI changed: ', currentUri)
         startTime = GetSegmentStarttime(currentUri)
         console.log('Starttime: ', PrintTimestamp(startTime))
-        if (changeIntervalRef.current) playerRef.current?.clearInterval(changeIntervalRef.current)
+        if (changeIntervalRef.current)
+          playerRef.current?.clearInterval(changeIntervalRef.current)
       }
     }
   }
@@ -128,15 +160,13 @@ export function VideoPlayer(props: VideoPlayerProps) {
    * this interval should be stopped whenever the user pauses
    */
   function updateTimestamp() {
-
     if (!startTime) {
       console.log('Timestamp: Loading...')
       return
     }
 
     let currentPlayer = playerRef.current?.currentTime()
-    //dont ask why -4, it just works
-    timeStamp = startTime + currentPlayer - 4
+    timeStamp = startTime + currentPlayer + delayRef.current / 10
 
     //Update timestamp for overlay
     props.onTimestamp(timeStamp)
@@ -165,16 +195,34 @@ export function VideoPlayer(props: VideoPlayerProps) {
       var videoAspect = videoWidth / videoHeight
 
       if (isNaN(videoAspect)) {
-        props.onResize(playerWidth, playerHeight, 0, 0)
+        videoAspect = 16 / 9
+        if (playerAspect < videoAspect) {
+          videoWidth = playerWidth
+          videoHeight = (playerWidth / 16) * 9
+        } else {
+          videoWidth = (playerHeight / 9) * 16
+          videoHeight = playerHeight
+        }
       }
-      else if (playerAspect < videoAspect) {
+
+      if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
-        props.onResize(playerWidth, actualVideoHeight, 0, (playerHeight - actualVideoHeight) / 2)
+        props.onResize(
+          playerWidth,
+          actualVideoHeight,
+          0,
+          (playerHeight - actualVideoHeight) / 2
+        )
       } else {
         var heightRatio = playerHeight / videoHeight
         var actualVideoWidth = heightRatio * videoWidth
-        props.onResize(actualVideoWidth, playerHeight, (playerWidth - actualVideoWidth) / 2, 0)
+        props.onResize(
+          actualVideoWidth,
+          playerHeight,
+          (playerWidth - actualVideoWidth) / 2,
+          0
+        )
       }
     }
   }
@@ -183,9 +231,16 @@ export function VideoPlayer(props: VideoPlayerProps) {
   // so videojs won't create additional wrapper in the DOM
   // see https://github.com/videojs/video.js/pull/3856
   return (
-    <div className='c-player' style={{ width: '100%', height: '100%' }}>
-      <div className='c-player__screen vjs-fill' data-vjs-player='true' style={{ width: '100%', height: '100%' }}>
-        <video ref={(node: HTMLVideoElement) => videoNode = node} className='video-js' />
+    <div className="c-player" style={{ width: '100%', height: '100%' }}>
+      <div
+        className="c-player__screen vjs-fill"
+        data-vjs-player="true"
+        style={{ width: '100%', height: '100%' }}
+      >
+        <video
+          ref={(node: HTMLVideoElement) => (videoNode = node)}
+          className="video-js"
+        />
       </div>
     </div>
   )
@@ -195,9 +250,12 @@ export function VideoPlayer(props: VideoPlayerProps) {
  * Create an additional button on the control bar
  * See: https://stackoverflow.com/questions/35604358/videojs-v5-adding-custom-components-in-es6-am-i-doing-it-right
  */
-export type ToggleSizeButtonOptions = { onPress: () => void, icon: string, text: string }
-class resizeButton extends videojs.getComponent('Button') {
-
+export type ToggleSizeButtonOptions = {
+  onPress: () => void
+  icon: string
+  text: string
+}
+class extraButton extends videojs.getComponent('Button') {
   private onClick: () => void
 
   constructor(player, options: ToggleSizeButtonOptions) {
@@ -219,13 +277,11 @@ class resizeButton extends videojs.getComponent('Button') {
  * @returns {string} The time formatted as mm:ss:ms
  */
 function PrintTimestamp(time: number): string {
-
   let min = Math.floor(time / 60)
   //toFixed(1) makes it so it is rounded to 1 decimal
   let sec = (time % 60).toFixed(1)
   //to make it look pretty
-  if (parseFloat(sec) < 10)
-    sec = '0' + sec
+  if (parseFloat(sec) < 10) sec = '0' + sec
   return min + ':' + sec
 }
 
@@ -236,12 +292,12 @@ function PrintTimestamp(time: number): string {
  * @returns {number} The time in seconds
  */
 function GetSegmentStarttime(segName: string): number {
-
   //Assuming the forwarder will always send a stream using
   //HLS, which gives .ts files afaik
   if (!segName.endsWith('.ts')) {
-    console.warn('GetSegmentStarttime: ' +
-      'expected .ts file but got something else')
+    console.warn(
+      'GetSegmentStarttime: ' + 'expected .ts file but got something else'
+    )
     return NaN
   }
 

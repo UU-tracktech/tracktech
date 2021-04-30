@@ -16,9 +16,9 @@ from absl import app
 from processor.pipeline.detection.detection_obj import DetectionObj
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
+from tests.conftest import root_path
 
-curr_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.abspath(os.path.join(curr_dir, '../../processor/pipeline/detection/yolov5')))
+sys.path.insert(0, os.path.join(root_path, 'processor/pipeline/detection/yolov5'))
 
 
 # pylint: disable=duplicate-code
@@ -28,7 +28,7 @@ def main(_argv):
     """
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
-    configs.read('../../configs.ini')
+    configs.read(os.path.join(root_path, 'configs.ini'))
     trueconfig = configs['Yolov5']
     filterconfig = configs['Filter']
 
@@ -38,7 +38,7 @@ def main(_argv):
     det_obj = DetectionObj(local_time, None, 0)
 
     # Capture the video stream
-    vidstream = VideoCapture(os.path.abspath(os.path.join(curr_dir, "../../data/videos/test.mp4")))
+    vidstream = VideoCapture(os.path.join(root_path, "/data/videos/test.mp4"))
 
     # Instantiate the detector
     print("Instantiating detector...")
