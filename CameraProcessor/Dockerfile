@@ -151,6 +151,7 @@ ENV PYTHONPATH=/app
 COPY configs.ini .
 COPY coco.names .
 COPY processor processor
+COPY data data
 
 WORKDIR /processor
 
