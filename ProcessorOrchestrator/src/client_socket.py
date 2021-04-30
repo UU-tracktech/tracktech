@@ -12,8 +12,6 @@ Utrecht University within the Software Project course.
 import json
 from time import sleep
 
-import tornado.web
-from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
 from src.object_manager import TrackingObject, objects
