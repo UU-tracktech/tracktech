@@ -4,6 +4,6 @@ setup(name='Auth',
       version='1.0',
       packages=['auth'],
       install_requires=[
-          'jwt',
-      ],
+          'pyjwt'
+      ]
       )

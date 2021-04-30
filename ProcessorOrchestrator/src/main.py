@@ -27,13 +27,19 @@ def main():
     use_tls = cert is not None and key is not None
 
     # Get auth ready by reading the environment variables 
-    public_key, audience, role = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE'), os.environ.get('ROLE')
-    auth = None
-    if public_key is not None and audience is not None and role is not None:
-        print("using token validation")
-        auth = Auth(public_key_path=public_key, algorithms=['RS256'], audience=audience, role=role)
+    public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
+    client_auth, processor_auth = None, None
+    if public_key is not None and audience is not None:
+        client_role = os.environ.get('CLIENT_ROLE')
+        if client_role is not None:
+            print("using client token validation")
+            client_auth = Auth(public_key_path=public_key, algorithms=['RS256'], audience=audience, role=client_role)
+        processor_role = os.environ.get('PROCESSOR_ROLE')
+        if processor_role is not None:
+            print("using processor token validation")
+            processor_auth = Auth(public_key_path=public_key, algorithms=['RS256'], audience=audience, role=processor_role)
 
-    app = create_app(auth)
+    app = create_app(client_auth, processor_auth)
 
     if use_tls:
         # Create a ssl context
@@ -54,13 +60,14 @@ def main():
     IOLoop.current().start()
 
 
-def create_app(auth):
+def create_app(client_auth, processor_auth):
     """Creates tornado application.
 
     Creates the routing in the application and returns the complete app.
 
     Args:
-        auth:  A auth object containing identity provider information
+        client_auth:  A auth object to validate clients with
+        processor_auth:  A auth object to validate processors with
     """
     # Define socket for both client and processor
     handlers = [
@@ -70,7 +77,7 @@ def create_app(auth):
     ]
     
     # Construct and serve the tornado application.
-    return Application(handlers, auth=auth)
+    return Application(handlers, client_auth=client_auth, processor_auth=processor_auth)
 
 
 if __name__ == "__main__":

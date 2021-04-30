@@ -34,6 +34,10 @@ class ProcessorSocket(WebSocketHandler):
         """
         super().__init__(application, request)
         self.identifier = None
+        self.authorized = False
+
+        # Load the auth object from appsettings
+        self.auth = self.application.settings.get('processor_auth')
 
     def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
@@ -85,13 +89,19 @@ class ProcessorSocket(WebSocketHandler):
                     lambda: self.send_mock_commands(message_object)
             }
 
-            # Execute correct function
-            function = actions.get(message_object["type"])
+            action_type: str = message_object["type"]
 
-            if function is None:
-                print("Someone gave an unknown command")
+            if self.authorized or self.auth is None:
+                # Execute correct function
+                function: Optional[Callable[[], None]] = actions.get(action_type)
+                if function is None:
+                    print("Someone gave an unknown command")
+                else:
+                    function()
+            elif action_type == "authenticate":
+                self.authenticate(message_object)
             else:
-                function()
+                print("A processor was not authenticated first")
 
         except ValueError:
             logger.log_error("/processor", "ValueError", self.request.remote_ip)
@@ -99,6 +109,21 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
+        except Exception as e:
+            print(e)
+
+    def authenticate(self, message) -> None:
+        """Authenticates a processor
+
+        Args:
+            message:
+                JSON message that was received. It should contain the following property:
+                    - "jwt" | The jwt token containing information about a user
+        """
+
+        if self.auth is not None:
+            self.auth.validate(message["jwt"])
+            self.authorized = True
 
     def send_message(self, message) -> None:
         """Sends a message over the websocket and logs it.

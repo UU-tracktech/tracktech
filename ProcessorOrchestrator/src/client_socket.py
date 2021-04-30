@@ -36,7 +36,7 @@ class ClientSocket(WebSocketHandler):
         self.authorized = False
         
         # Load the auth object from appsettings
-        self.auth = self.application.settings.get('auth')
+        self.auth = self.application.settings.get('client_auth')
 
     def check_origin(self, origin: str) -> bool:
         """Override to enable support for allowing alternate origins.
@@ -80,8 +80,6 @@ class ClientSocket(WebSocketHandler):
 
             # Switch on message type
             actions: Dict[str, Callable[[], None]] = {
-                "authenticate":
-                    lambda: self.authenticate(message_object),
                 "start":
                     lambda: self.start_tracking(message_object),
                 "stop":
@@ -90,12 +88,19 @@ class ClientSocket(WebSocketHandler):
                     lambda: self.send_mock_data(message_object)
             }
 
-            # Execute correct function
-            function: Optional[Callable[[], None]] = actions.get(message_object["type"])
-            if function is None:
-                print("Someone gave an unknown command")
+            action_type: str = message_object["type"]
+
+            if self.authorized or self.auth is None:
+                # Execute correct function
+                function: Optional[Callable[[], None]] = actions.get(action_type)
+                if function is None:
+                    print("Someone gave an unknown command")
+                else:
+                    function()
+            elif action_type == "authenticate":
+                self.authenticate(message_object)
             else:
-                function()
+                print("A client was not authenticated first")
 
         except ValueError as e:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
@@ -125,7 +130,7 @@ class ClientSocket(WebSocketHandler):
         print(f"Client with id {self.identifier} disconnected")
 
     def authenticate(self, message) -> None:
-        """Creates tracking object and sends start tracking command to specified processor
+        """Authenticates a client
 
         Args:
             message:
@@ -135,7 +140,7 @@ class ClientSocket(WebSocketHandler):
         
         if self.auth is not None:
             self.auth.validate(message["jwt"])
-        self.authorized = True
+            self.authorized = True
 
     @staticmethod
     def start_tracking(message) -> None:
