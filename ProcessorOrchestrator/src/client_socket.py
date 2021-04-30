@@ -62,6 +62,7 @@ class ClientSocket(WebSocketHandler):
         logger.log(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
+    # pylint: disable=broad-except
     def on_message(self, message) -> None:
         """Handles a message from a client that is received on the websocket.
 
@@ -113,7 +114,6 @@ class ClientSocket(WebSocketHandler):
         except KeyError as exc:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json", exc)
-        # pylint: disable=broad-except
         except Exception as exc:
             print(exc)
             logger.log("Someone wrote bad json")

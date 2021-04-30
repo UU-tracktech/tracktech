@@ -61,6 +61,7 @@ class ProcessorSocket(WebSocketHandler):
         logger.log_connect("/processor", self.request.remote_ip)
         logger.log("New processor connected")
 
+    # pylint: disable=broad-except
     def on_message(self, message: str) -> None:
         """Handles a message from a processor that is received on the websocket.
 
@@ -114,7 +115,6 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
-        # pylint: disable=broad-except
         except Exception as exc:
             print(exc)
 
