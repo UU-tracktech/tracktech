@@ -8,7 +8,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import json
 import src.logger as logger
 
 
@@ -27,11 +26,11 @@ class TrackingObject:
         self.feature_map = {}
         objects[self.identifier] = self
 
-    def update_feature_map(self, feature_map: json):
+    def update_feature_map(self, feature_map):
         """Update feature map of this object.
 
         Args:
-            feature_map:
+            feature_map (json):
                 json containing the features that should become the new feature map on this object.
         """
         self.feature_map = feature_map
@@ -43,7 +42,7 @@ class TrackingObject:
 
 
 objects = dict()
-"""Dictionary which matches an object identifier to
+"""Dictionary which matches an object identifier to.
 
 type: Dict[str, TrackingObject]
 """

@@ -54,6 +54,19 @@ class TestFrameBuffer:
         framebuffer.clean_up()
         assert len(framebuffer.buffer) < 51
 
+    def test_binary_search(self):
+        """Tests if the Binary Search function works properly
+
+        """
+        framebuffer = FrameBuffer()
+        search_list = []
+        for i in range(10):
+            search_list.append({
+                "boxId": i,
+            })
+        assert framebuffer.binary_search(search_list, "boxId", 5) == 5
+        assert framebuffer.binary_search(search_list, "boxId", 10) is None
+
     def test_framebuffer_search(self):
         """Tests the search function
 
@@ -78,7 +91,7 @@ class TestFrameBuffer:
             "rect": [3, 3, 5, 5]
         })
 
-        bbox, framelist = framebuffer.search(10, 1)
+        bbox, framelist = framebuffer.search(1)
         assert len(framelist) == 10
         assert bbox == [3, 3, 5, 5]
 
