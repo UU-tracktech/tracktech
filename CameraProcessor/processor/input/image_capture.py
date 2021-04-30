@@ -28,6 +28,7 @@ class ImageCapture(ICapture):
         self.images_paths = sorted([os.path.join(images_dir, image_name)
                                     for image_name in os.listdir(images_dir)])
         self.nr_images = len(self.images_paths)
+        self.image_shape = cv2.imread(self.images_paths[0]).shape[:2]
 
         # Start index is -1 because we want to know the index of current after it has been incremented
         self.image_index = -1
