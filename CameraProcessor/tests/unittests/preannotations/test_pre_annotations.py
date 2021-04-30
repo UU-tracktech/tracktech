@@ -9,9 +9,8 @@ import os
 import pytest
 from processor.training.pre_annotations import PreAnnotations
 
-example_text_file = os.path.join(os.path.dirname(__file__), '../../../data/tests/unittests/example_pre_annotations.txt')
-example_json_file = os.path.join(os.path.dirname(__file__),
-                                 '../../../data/tests/unittests/example_pre_annotations.json')
+example_text_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.txt')
+example_json_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.json')
 example_py_file = os.path.join(os.path.dirname(__file__), 'example_pre_annotations.py')
 
 
