@@ -1,15 +1,19 @@
+""" Websocket client class that can connect to a websocket client url and write/read messages asynchronously.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import asyncio
 import json
 import sys
 import logging
-from datetime import datetime
-import cv2
 from tornado import websocket
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.input.hls_capture import HlsCapture
 
 
-async def create_client(url, id=None):
+async def create_client(url, identifier=None):
     """
     Method used to create a websocket client object
     Args:
@@ -19,7 +23,7 @@ async def create_client(url, id=None):
 
     Returns: Websocket client object
     """
-    client = WebsocketClient(url, id)
+    client = WebsocketClient(url, identifier)
     await client.connect()
     return client
 
@@ -199,60 +203,3 @@ class WebsocketClient:
         object_id = message["objectId"]
         logging.info(f'Stop tracking object {object_id}')
     # pylint: enable=R0201
-
-
-async def main():
-    """
-    Main function that runs the video processing loop and listens on the websocket in parallel
-    """
-    capture = HlsCapture()
-    # ws_client = await create_client("wss://echo.websocket.org")
-    ws_client = await create_client('ws://localhost:80/processor')
-    frame_nr = 0
-    feature_map_delay = 10
-
-    # Video processing loop
-    while capture.opened():
-
-        ret, frame, _ = capture.get_next_frame()
-
-        if not ret:
-            logging.warning('capture object frame missed')
-            continue
-
-        frame_nr += 1
-        print(frame_nr)
-
-        # Create detectionObj
-        detection_obj = DetectionObj(datetime.now(), frame, frame_nr)
-        # detection_obj = mock_detection_object(frame)
-        # Run detection on object
-
-        # Visualise rectangles and show it
-        detection_obj.draw_rectangles()
-        cv2.imshow('Frame', detection_obj.frame)
-
-        # Tracking phase
-
-        # Non-blocking call to send bounding boxes
-        # asyncio.get_event_loop().create_task(write_message(detection_obj.to_json()))
-
-        # test with echo web server
-        ws_client.write_message('{"type":"test", "frameId":2, "boxId":3}')
-
-        # Every 10 frames, send updated feature maps
-        if frame_nr % feature_map_delay == 0:
-            pass
-            # print("Sending feature maps")
-            # asyncio.get_event_loop().create_task(write_message(json.dumps(mock_feature_map_dict)))
-
-        # Close loop when q is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-        # Hand control back to event loop
-        await asyncio.sleep(5)
-
-
-if __name__ == '__main__':
-    asyncio.run(main())

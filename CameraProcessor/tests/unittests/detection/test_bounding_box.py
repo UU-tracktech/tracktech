@@ -1,3 +1,10 @@
+"""Tests the bounding box by creating one and testing the properties
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import pytest
 from processor.pipeline.detection.bounding_box import BoundingBox
 
@@ -167,6 +174,19 @@ class TestBoundingBox:
         """
         assert self.certainty <= 1
         assert self.certainty >= 0
+
+    def test_to_json(self):
+        """Asserts if the to_json() method works properly
+
+        """
+        assert self.data.to_json() == f"""{{"boxId": {self.identifier}, "rect": {self.rectangle}}}"""
+
+    def test_invalid_box(self):
+        """Asserts if a rectangle of wrong length raises the right exception
+
+        """
+        with pytest.raises(AttributeError):
+            BoundingBox(3, [5, 3, 2, 1, 1, 9], "Multidimensional Antediluvian Evil", 1.0)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,6 @@
+"""Just an example of a plan that can be executed by scheduler
+
+"""
 from processor.scheduling.node.schedule_node import ScheduleNode
 from processor.scheduling.component.example_components.input_component import InputComponent
 from processor.scheduling.component.example_components.output_component import OutputComponent
@@ -6,7 +9,8 @@ from processor.scheduling.component.example_components.example_component import 
 
 # pylint: disable=unused-argument
 def func(ignore):
-    pass
+    """Dummy function"""
+    return
 
 
 # Last node/layer.
@@ -29,7 +33,7 @@ if __name__ == '__main__':
     # Inits scheduler with starting node.
     scheduler = Scheduler(schedule_input_node)
     # Runs iteration of schedule_graph.
-    scheduler.schedule_graph("test")
+    scheduler.schedule_graph("test,")
 
     # Find output in output node.
     curr_node = schedule_input_node

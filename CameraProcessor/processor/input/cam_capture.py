@@ -1,3 +1,11 @@
+"""Contains camera capture class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import logging
 from typing import List
 from cv2 import VideoCapture
@@ -7,6 +15,9 @@ vcap = VideoCapture(0)
 
 
 class CamCapture(ICapture):
+    """ Captures video from a webcam or other connected camera on the computer
+
+    """
     def __init__(self):
         """Opens capture that connects to webcam.
         """
@@ -34,3 +45,8 @@ class CamCapture(ICapture):
             Next webcam frame.
         """
         return *self.cap.read(), None
+
+    def get_capture_length(self) -> int:
+        """Returns None, because webcam streams
+        are theoretically infinite"""
+        return None

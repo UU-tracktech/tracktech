@@ -1,66 +1,71 @@
-"""
-The request handler that serves the actual HLS index and segment files
+"""The request handler that serves the actual HLS index and segment files
 It handles authentication/authorization and makes sure conversion processes of cameras are started and stopped
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import os
 import re
 import threading
 import time
+from typing import Optional
 from subprocess import Popen, TimeoutExpired
 import tornado.web
 import jwt
-from camera import Camera
 
 
+# pylint: disable=attribute-defined-outside-init
 class CameraHandler(tornado.web.StaticFileHandler):
     """
     The camera file request handler
     """
 
+    # A dictionary to store all camera objects with their name as key
     cameras = {}
-    """A dictionary to store all camera objects with their name as key"""
 
-    segmentSize = os.environ.get('SEGMENT_SIZE') or '1'
-    """How long each video segment should be in seconds"""
+    # How long each video segment should be in seconds
+    segmentSize = os.environ.get('SEGMENT_SIZE') or '2'
 
+    # How many segments of a video stream should be stored at once at a given time
     segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
-    """How many segments of a video stream should be stored at once at a given time"""
 
+    # How long the stream has no requests before stopping the conversion in seconds
     removeDelay = float(os.environ.get('REMOVE_DELAY') or '60.0')
-    """How long the stream has no requests before stopping the conversion in seconds"""
 
+    # The maximum amount of seconds we will wait with removing stream files after stopping the conversion
     timeoutDelay = int(os.environ.get('TIMEOUT_DELAY') or '30')
-    """The maximum amount of seconds we will wait with removing stream files after stopping the conversion"""
 
-    encoding = os.environ['ENCODING']
-    """The FFMPEG encoding that should be used to encode the video streams"""
+    # The FFMPEG encoding that should be used to encode the video streams
+    encoding = os.environ.get('ENCODING') or 'libx264'
 
+    # The public secret of the identity provider to validate the tokens with
     secret = os.environ.get('JWT_PUBLIC_SECRET')
-    """The public secret of the identity provider to validate the tokens with"""
 
+    # The audience the token should be for
     audience = os.environ.get('TOKEN_AUDIENCE')
-    """The audience the token should be for"""
 
+    # The scope the token should be for
     scope = os.environ.get('TOKEN_SCOPE')
-    """The scope the token should be for"""
-
-    publicKey = None
-    """The public key used to validate tokens"""
 
     # pylint: disable=arguments-differ
-    def initialize(self, path):
-        """Set the root path and load the public key from application settings, run at the start of every request"""
+    def initialize(self, path: str, default_filename: Optional[str] = None) -> None:
+        """Set the root path and load the public key from application settings, run at the start of every request
+        """
 
         # noinspection PyAttributeOutsideInit
+        # Needed for the library
+        super().initialize(path, default_filename)
         self.root = path
-        """Needed for the library"""
 
-        self.publicKey = self.application.settings.get('publicKey')
-        """Load the public key from application settings"""
+        # Load the public key from application settings
+        self.public_key = self.application.settings.get('publicKey')
 
     def set_default_headers(self):
-        """Set the headers to allow cors and disable caching"""
+        """Set the headers to allow cors and disable caching
+        """
 
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Cache-control", "no-store")
@@ -70,73 +75,72 @@ class CameraHandler(tornado.web.StaticFileHandler):
         """Function to stop a given camera stream, will be called once a stream is no longer used for a specific
         amount of time """
 
+        # Print stopping for logging purposes
         print(f'stopping {camera}')
-        """Print stopping for logging purposes"""
 
+        # Get the camera object that should be stopped
         entry = CameraHandler.cameras[camera]
-        """Get the camera object that should be stopped"""
 
+        # Start stopping the conversion
         entry.conversion.terminate()
-        """Start stopping the conversion"""
+
         try:
+            # Wait a few seconds for it stop, so it does not lock any files
             entry.conversion.wait(60)
-            """Wait a few seconds for it stop, so it does not lock any files"""
         except TimeoutExpired:
-            """Handle a timeout exception if the process does not stop"""
+            # Handle a timeout exception if the process does not stop
             pass
         finally:
+            # Remove the conversion
             entry.conversion = None
-            """Remove the conversion"""
 
+            # Remove the old segment and index files
             for file in os.listdir(root):
                 if file.startswith(camera):
                     os.remove(os.path.join(root, file))
-            """Remove the old segment and index files"""
 
     def prepare(self):
         """Validate and check the header token if a public key is specified"""
 
-        if self.publicKey is not None:
-            """If a key is specified"""
-
+        # If a key is specified
+        if self.public_key:
+            # Decode the token using the given key and the header token
             try:
                 decoded = jwt.decode(self.request.headers.get('Authorization').split()[
-                                     1], self.publicKey, algorithms=['RS256'], audience=self.audience)
-                """Decode the token using the given key and the header token"""
-
+                                     1], self.public_key, algorithms=['RS256'], audience=self.audience)
+            # If decoding fails, return a 401 not authorized status
             except ValueError as exc:
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
-            """If decoding fails, return a 401 not authorized status"""
 
+            # If decoding succeeds, but the scope is invalid, return 403
             if self.scope in decoded['resource_access'][self.audience]:
                 self.set_status(403)
                 raise tornado.web.Finish()
-            """If decoding succeeds, but the scope is invalid, return 403"""
 
     def get_absolute_path(self, root, path):
-        """Handle all file logic, including starting and stopping the conversion"""
+        """Handle all file logic, including starting and stopping the conversion
+        """
 
+        # Get the path on the file system
         abspath = os.path.abspath(os.path.join(root, path))
-        """Get the path on the file system"""
 
+        # Regex the file path
         match = re.search(r'(.*?)(?:_V.*)?\.(m3u8|ts)', path)
-        """Regex the file path"""
 
+        # If there is no match, return the path as usual
         if match is None:
             return abspath
-        """If there is no match, return the path as usual"""
 
+        # Otherwise, grab the camera and extension information
         camera = match.group(1)
         extension = match.group(2)
-        """Otherwise, grab the camera and extension information"""
 
         if extension == 'm3u8':
+            # If the request is for an index file of an existing camera
             if camera in CameraHandler.cameras:
-                """If the request is for an index file of an existing camera"""
-
+                # Get the camera object
                 entry = CameraHandler.cameras[camera]
-                """Get the camera object"""
 
                 # If there is no current conversion, start one
                 if entry.conversion is None:
@@ -145,11 +149,12 @@ class CameraHandler(tornado.web.StaticFileHandler):
                     # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
                     entry.conversion = Popen(
                         [
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
+                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
                             '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0',
                             '-map', '0:1',  # Create 3 variances of video + audio stream
-                            '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48',
-                            '-keyint_min', '48', '-c:a', 'aac', '-ar', '48000',
+                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
+                            '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
+                            '-keyint_min', '24', '-c:a', 'aac', '-ar', '48000',
                             # Set common properties of the video variances
                             '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate',
                             '900k', '-bufsize', '1200k',  # 360p - Low bit-rate Stream
@@ -166,14 +171,15 @@ class CameraHandler(tornado.web.StaticFileHandler):
                             '-start_number', '1',  # Configure segment properties
                             f'{root}/{camera}_V%v.m3u8'
                         ]) if entry.audio else Popen([
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip,
+                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
                             '-map', '0:0', '-map', '0:0', '-map', '0:0',
-                            '-profile:v', 'main', '-crf', '20', '-sc_threshold', '0', '-g', '48', '-keyint_min', '48',
-                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', 
+                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
+                            '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
+                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0',
                             '800k', '-maxrate', '900k', '-bufsize', '1200k',
-                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1', 
+                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1',
                             '1425k', '-maxrate', '1600k', '-bufsize', '2138k',
-                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2', 
+                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2',
                             '2850k', '-maxrate', '3200k', '-bufsize', '4275k',
                             '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
                             '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',

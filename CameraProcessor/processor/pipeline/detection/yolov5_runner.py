@@ -1,3 +1,11 @@
+"""Contains the main methods for running YOLOv5 object detection on a frame
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import os
 import sys
 import logging
@@ -12,17 +20,22 @@ from processor.pipeline.detection.yolov5.utils.general import check_img_size,\
     scale_coords, set_logging
 from processor.pipeline.detection.yolov5.utils.torch_utils import select_device,\
     load_classifier, time_synchronized
+from processor.pipeline.detection.idetector import IDetector
 
 
-class Detector:
+class Yolov5Detector(IDetector):
     """Make it inherit from a generic Detector class
     """
 
-    def __init__(self, config):
+    def __init__(self, config, filters):
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolov5'))
 
         self.config = config
+        self.filter = []
+        with open(filters['targets']) as filter_names:
+            self.filter = filter_names.read().splitlines()
+        print('I am filtering on the following objects: ' + str(self.filter))
 
         # Initialize
         set_logging()
@@ -95,7 +108,7 @@ class Detector:
 
         # Process detections
         for _, det in enumerate(pred):  # detections per image
-            if len(det):
+            if len(det) > 0:
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], det_obj.frame.shape).round()
 
@@ -103,11 +116,13 @@ class Detector:
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
                     height, width, _ = det_obj.frame.shape
-                    bbox = BoundingBox(bb_id, [int(xyxy[0])/width, int(xyxy[1])/height, int(xyxy[2])/width, int(xyxy[3])/height],
+                    bbox = BoundingBox(bb_id,
+                                       [int(xyxy[0])/width, int(xyxy[1])/height,
+                                        int(xyxy[2])/width, int(xyxy[3])/height],
                                        self.names[int(cls)], conf)
-                    det_obj.bounding_boxes.append(bbox)
-
-                    bb_id += 1
+                    if any(x == bbox.classification for x in self.filter):
+                        det_obj.bounding_boxes.append(bbox)
+                        bb_id += 1
 
         # Print time (inference + NMS)
         time_one = time_synchronized()

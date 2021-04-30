@@ -1,3 +1,11 @@
+""" File that runs training using a custom dataset
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 # Determine training set
 # Determine test set
 # Verification sets
@@ -15,6 +23,9 @@ from processor.training.pre_annotations import PreAnnotations
 
 
 def main():
+    """Main training function
+
+    """
     root_dir = os.path.abspath(__file__ + '/../../../../')
     logging.basicConfig(filename=os.path.join(root_dir, 'app.log'), filemode='w',
                         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
@@ -54,6 +65,7 @@ def main():
     logging.info('training stopping')
     # When everything is done release the capture
     capture.close()
+
 
 if __name__ == '__main__':
     main()

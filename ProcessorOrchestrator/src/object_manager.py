@@ -2,8 +2,14 @@
 
 This file contains a class for tracking objects. Creating an object will automatically add it to a dictionary, which
 it removes itself from upon removal.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import json
+import src.logger as logger
 
 
 class TrackingObject:
@@ -29,7 +35,7 @@ class TrackingObject:
                 json containing the features that should become the new feature map on this object.
         """
         self.feature_map = feature_map
-        print(f"updated feature map of object {self.identifier}")
+        logger.log(f"updated feature map of object {self.identifier}")
 
     def remove_self(self):
         """Removes self from objects dict."""

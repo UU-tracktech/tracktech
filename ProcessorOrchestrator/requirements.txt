@@ -1,4 +1,1 @@
 tornado
-pytest
-pyjwt
-cryptography

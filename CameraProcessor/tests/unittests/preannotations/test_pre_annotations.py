@@ -1,5 +1,11 @@
+"""Tests pre annotations for each file type to see whether data is loaded in correctly
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import os
-import sys
 import pytest
 from processor.training.pre_annotations import PreAnnotations
 

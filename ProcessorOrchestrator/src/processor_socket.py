@@ -2,6 +2,11 @@
 
 This file contains a websocket class to handle websocket connections coming from camera processors. It defines multiple
 functions that can be called using specified json messages.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import json
@@ -12,10 +17,10 @@ import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from object_manager import objects, TrackingObject
-from connections import processors
-import client_socket
-import logger
+from src.object_manager import objects, TrackingObject
+from src.connections import processors
+import src.client_socket as client_socket
+import src.logger as logger
 
 
 class ProcessorSocket(WebSocketHandler):
@@ -48,13 +53,13 @@ class ProcessorSocket(WebSocketHandler):
         """
         return True
 
-    def open(self) -> None:
+    def open(self, *args, **kwargs) -> None:
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket, will log connection
         """
         logger.log_connect("/processor", self.request.remote_ip)
-        print(f"New processor connected")
+        logger.log("New processor connected")
 
     def on_message(self, message: str) -> None:
         """Handles a message from a processor that is received on the websocket.
@@ -105,7 +110,7 @@ class ProcessorSocket(WebSocketHandler):
 
         except ValueError:
             logger.log_error("/processor", "ValueError", self.request.remote_ip)
-            print("Someone wrote bad json")
+            logger.log("Someone wrote bad json")
         except KeyError:
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json")
@@ -138,7 +143,7 @@ class ProcessorSocket(WebSocketHandler):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
         del processors[self.identifier]
-        print(f"Processor with id {self.identifier} disconnected")
+        logger.log(f"Processor with id {self.identifier} disconnected")
 
     def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
         """Unused method that could handle streamed request data"""
@@ -157,7 +162,7 @@ class ProcessorSocket(WebSocketHandler):
         processors[self.identifier] = self
 
         logger.log(f"Processor registered with id {self.identifier} from {self.request.remote_ip}")
-        print(f"Processor registered with id {self.identifier}")
+        logger.log(f"Processor registered with id {self.identifier}")
 
     def send_bounding_boxes(self, message) -> None:
         """Sends bounding boxes to all clients.
@@ -196,7 +201,7 @@ class ProcessorSocket(WebSocketHandler):
         try:
             objects[object_id].update_feature_map(feature_map)
         except KeyError:
-            print("Unknown object id")
+            logger.log("Unknown object id")
 
         for processor in processors.values():
             processor.send_message(json.dumps({

@@ -2,6 +2,11 @@
 
 This file contains a websocket class to handle websocket connections coming from clients (using the interface).
 It defines multiple functions that can be called using specified json messages.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import json
@@ -12,9 +17,9 @@ import tornado.web
 from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from object_manager import TrackingObject, objects
-from connections import processors, clients
-import logger
+from src.object_manager import TrackingObject, objects
+from src.connections import processors, clients
+import src.logger as logger
 
 
 class ClientSocket(WebSocketHandler):
@@ -47,14 +52,14 @@ class ClientSocket(WebSocketHandler):
         """
         return True
 
-    def open(self) -> None:
+    def open(self, *args, **kwargs) -> None:
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket. After connecting, it appends this component
         to a dict of other websockets.
         """
         logger.log_connect("/client", self.request.remote_ip)
-        print(f"New client connected with id: {self.identifier}")
+        logger.log(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
     def on_message(self, message) -> None:
@@ -110,6 +115,7 @@ class ClientSocket(WebSocketHandler):
             print("Someone missed a property in their json", e)
         except Exception as e:
             print(e)
+            logger.log("Someone wrote bad json")
 
     def send_message(self, message) -> None:
         """Sends a message over the websocket and logs it.
@@ -127,7 +133,7 @@ class ClientSocket(WebSocketHandler):
         """Called when the websocket is closed, deletes itself from the dict of clients."""
         logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
-        print(f"Client with id {self.identifier} disconnected")
+        logger.log(f"Client with id {self.identifier} disconnected")
 
     def authenticate(self, message) -> None:
         """Authenticates a client
@@ -160,12 +166,12 @@ class ClientSocket(WebSocketHandler):
         box_id: int = message["boxId"]
 
         if camera_id not in processors.keys():
-            print("Unknown processor")
+            logger.log("Unknown processor")
             return
 
         tracking_object: TrackingObject = TrackingObject()
 
-        print(
+        logger.log(
             f"New tracking object created with id {tracking_object.identifier}, "
             f"found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}")
 
@@ -187,7 +193,7 @@ class ClientSocket(WebSocketHandler):
         """
         object_id: int = message["objectId"]
         if object_id not in objects.keys():
-            print("unknown object")
+            logger.log("unknown object")
             return
 
         objects[object_id].remove_self()
@@ -199,7 +205,7 @@ class ClientSocket(WebSocketHandler):
                     "objectId": object_id
                 }))
 
-        print(f"stopped tracking of object with id {object_id}")
+        logger.log(f"stopped tracking of object with id {object_id}")
 
     def send_mock_data(self, message) -> None:
         """Sends a few mock messages to the client for testing purposes
