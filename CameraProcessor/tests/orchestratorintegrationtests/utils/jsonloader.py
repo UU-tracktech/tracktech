@@ -10,8 +10,6 @@ import random
 import os
 import sys
 
-root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-
 example_text_file = os.path.join(os.path.dirname(__file__),
                                  '../../../data/tests/unittests/example_pre_annotations.txt')
 example_json_file = os.path.join(os.path.dirname(__file__),
@@ -45,7 +43,7 @@ def load_data(datatype, number=1, rng=False):
         raise NameError('The JSON object requested is not in scope.')
 
     # File path and load content
-    json_path = os.path.join(sys.path[0], f'tests/orchestratorintegrationtests/testdata/{filename}.json')
+    json_path = os.path.join(sys.path[0], example_json_file)
     json_content = open(json_path, encoding="utf-8")
     json_objects = json.load(json_content)
 
