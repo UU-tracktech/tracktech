@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
+/** Any message going to the orchestrator needs to be of type OrchestratorMessage */
 export abstract class OrchestratorMessage {
   constructor(type: string) {
     this.type = type
@@ -14,6 +15,10 @@ export abstract class OrchestratorMessage {
   type: string
 }
 
+/**
+ * The StartOrchestratorMessage lets the orchestrator know to start sending
+ * boundingbox data for the specified camera
+ */
 export class StartOrchestratorMessage extends OrchestratorMessage {
   constructor(cameraId: string, frameId: number, boxId: number) {
     super('start')
@@ -28,6 +33,10 @@ export class StartOrchestratorMessage extends OrchestratorMessage {
   boxId: number
 }
 
+/**
+ * The StopOrchestratorMessage will tell the orchestrator to stop sending
+ * data about the specified camera
+ */
 export class StopOrchestratorMessage extends OrchestratorMessage {
   constructor(objectId: number) {
     super('stop')
@@ -38,6 +47,10 @@ export class StopOrchestratorMessage extends OrchestratorMessage {
   objectId: number
 }
 
+/**
+ * The testOrchestratorMessage starts a short series of test messages to verify
+ * everything works as expected
+ */
 export class TestOrchestratorMessage extends OrchestratorMessage {
   constructor(cameraId: string) {
     super('test')
