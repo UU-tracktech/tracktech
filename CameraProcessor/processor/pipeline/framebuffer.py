@@ -6,6 +6,8 @@ Utrecht University within the Software Project course.
 
 """
 from collections import deque
+from typing import List
+from math import floor
 
 
 class FrameBuffer:
@@ -17,77 +19,73 @@ class FrameBuffer:
         """Set buffer size and initialize deque
 
         """
-        self.buffer_size = 50
-        self.buffer = deque()
+        self.__buffer_size = 50
+        self.__buffer = deque()
 
-    def clean_up(self) -> None:
+    def clean_up(self):
         """Removes buffer items over the maximum size
 
         TODO: add functionality to work with timestamp instead of buffer size
         """
-        while len(self.buffer) >= self.buffer_size:
-            self.buffer.pop()
+        while len(self.__buffer) >= self.__buffer_size:
+            self.__buffer.pop()
 
-    def add(self, track_obj: dict) -> None:
+    def add(self, track_obj):
         """Add a tracking object to the buffer
 
         Args:
-            track_obj: Tracking object in python dict format
+            track_obj (dict): Tracking object in python dict format
 
         """
-        self.buffer.appendleft(track_obj)
+        self.__buffer.appendleft(track_obj)
 
-    def search(self, timestamp, bbox_id):
-        """Searches in the buffer for the frame with given timestamp and bounding box id, then returns
-        a boundingbox of the object and list of frames since the last appearance of that box
+    def search(self, bbox_id):
+        """Searches in the buffer for the last frame that the bounding box with given id occurred, then returns
+        the list of frames since then AND the bounding box of the given box id.
 
         Args:
-            timestamp: timestamp of the frame we're looking in
-            bbox_id: id of the tracked object we want to look for
+            bbox_id (integer): id of the tracked object we want to look for
 
-        Returns: unpacked tuple of last spotted boundingbox of that id, and list of frames since last appearance,
-        including that of given bounding_box:
-            bounding_box, [frames]
+        Returns:
+            [integer], [numpy.ndarray]: unpacked tuple of last spotted boundingbox rectangle of that id, and list
+            of frames since last appearance, including that of given bounding_box
 
         """
 
         stack = []
         rect = []
-        iterator = len(self.buffer)
 
-        # Find the first occurrence of the searched for timestamp, with corresponding bounding box
-        # Iterates from first to last added item, aka from earliest timestamp to most recent
-        for track_obj in reversed(self.buffer):
-            # Iterate in reverse so we can continue from that index during the next loop
-            iterator -= 1
-
-            # If we found the corresponding timestamp, save the frame
-            if track_obj["frameId"] == timestamp:
-                stack = [track_obj["frame"]]
-
-                # Look for the bounding box id and save bounding box itself
-                for box in track_obj["boxes"]:
-                    if box["boxId"] == bbox_id:
-                        rect = box["rect"]
-                        # Break the loop
-                        break
-                # Break the outer loop
+        for track_obj in self.__buffer:
+            index = self.binary_search(track_obj["boxes"], "boxId", bbox_id)
+            stack.append(track_obj["frame"])
+            if index is not None:
+                rect = track_obj["boxes"][index]["rect"]
                 break
 
-        # Create reversed iterator over buffer
-        for track_obj_id in reversed(range(0, iterator)):
-            track_obj = self.buffer[track_obj_id]
-
-            # Does a slow as balls O(n) search over the entire list to see if the searched for tracked object occurs
-            # TODO: Maybe change the collection type of bounding boxes so we can search in O(1) # pylint: disable=fixme
-            for box in track_obj["boxes"]:
-                if box["boxId"] == bbox_id:
-                    rect = box["rect"]
-                    # Clear stack list since we found a more recent appearance of the tracked object
-                    stack = []
-                    break
-
-            # Append the frame to the stack list
-            stack.append(track_obj["frame"])
-
         return rect, stack
+
+    def binary_search(self, search_list: List, key: str, value):
+        """Searches a *SORTED* list for a certain value occurrence in O(lg n)
+
+        Returns:
+            integer: the index of the searched for value
+
+        """
+        left = 0
+        right = len(search_list) - 1
+        while left <= right:
+            middle = floor((left + right) / 2)
+            if search_list[middle][key] < value:
+                left = middle + 1
+            elif search_list[middle][key] > value:
+                right = middle - 1
+            else:
+                return middle
+        return None
+
+    @property
+    def buffer(self):
+        """Property for the buffer, used for testing
+
+        """
+        return self.__buffer
