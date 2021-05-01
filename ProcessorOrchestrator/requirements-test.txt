@@ -1,0 +1,8 @@
+tornado
+pylint==2.6.0
+pylint-exit
+pytest
+pytest-asyncio
+pytest-timeout
+pytest-cov
+coverage
