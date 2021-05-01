@@ -17,7 +17,7 @@ import tornado.process
 import tornado.template
 import tornado.gen
 
-from processor.localhost_stream_handler import StreamHandler
+from processor.stream_handler import StreamHandler
 
 logging.basicConfig(filename='localhost.log', filemode='w',
                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
