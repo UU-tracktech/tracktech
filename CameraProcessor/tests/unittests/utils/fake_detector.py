@@ -8,8 +8,10 @@ Utrecht University within the Software Project course.
 import logging
 import random
 
-from processor.pipeline.detection.bounding_box import BoundingBox
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.idetector import IDetector
+from processor.data_object.rectangle import Rectangle
 
 
 class FakeDetector(IDetector):
@@ -17,12 +19,12 @@ class FakeDetector(IDetector):
 
     """
 
-    def detect(self, det_obj):
+    def detect(self, frame_obj):
         """Appends a couple random bounding boxes
 
         """
-        det_obj.bounding_boxes = []
+        bounding_boxes = []
         for i in range(random.randrange(5)):
-            bbox = BoundingBox(i, [0, 0, 1, 1], "fake class", 0.5)
-            det_obj.bounding_boxes.append(bbox)
-        logging.info(f"Finished processing frame {det_obj.frame_nr}")
+            bounding_boxes.append(BoundingBox(i, Rectangle(0, 0, 1, 1), "fake class", 0.5))
+
+        return BoundingBoxes(bounding_boxes)
