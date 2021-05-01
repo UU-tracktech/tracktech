@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 from typing import Callable, List
 import numpy as np
 from processor.scheduling.component.component_interface import IComponent
-from processor.scheduling.node.inode_schedule_node import INode
+from processor.scheduling.node.inode import INode
 
 
 class ScheduleNode(INode):
