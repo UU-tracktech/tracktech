@@ -55,7 +55,7 @@ class FirstTest(unittest.TestCase):
         driver.quit()
 
     def test_element_is_displayed(self):
-        """Tests if an element is displayed by finding an element on the uu website
+        """Tests if an element is displayed by finding an element on the uu website.
 
         """
         driver = webdriver.Chrome()

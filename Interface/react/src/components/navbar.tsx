@@ -6,38 +6,69 @@ Utrecht University within the Software Project course.
 
  */
 
+/**
+  This component shows the navigation bar at the top of the page  
+*/
+
 import React from 'react'
-import { Component } from 'react'
-import { Navbar, Nav, Form } from 'react-bootstrap'
+import { Menu, Layout } from 'antd'
 import { Link } from 'react-router-dom'
 
-import LoginButton from './loginButton'
+import { LoginButton } from './loginButton'
 import { LoggedInUser } from './loggedInUser'
 
-export class NavMenu extends Component {
-
-  render() {
-    return (
-      <header>
-        <Navbar bg="primary" variant="dark" expand="lg">
-          <Navbar.Brand as={Link} to="/" >
-            Tracktech
-           {/*  <img style={{maxHeight: "100px", maxWidth:"100px"}} src={"https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif"} alt="logo" /> */}
-          </Navbar.Brand>
-          <Navbar.Toggle style={{ float: "right" }} aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse className="mr-auto">
-            <Nav>
-              <Nav.Link as={Link} style={{ padding: "8px 25px" }} color="light" to="/">Home</Nav.Link>
-              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/websockets">Websockets</Nav.Link>
-              <Nav.Link as={Link} style={{ padding: "8px 25px" }} to="/Overlay">Overlay</Nav.Link>
-            </Nav>
-            <Form inline className="ml-auto">
-              <LoggedInUser />
-              <LoginButton />
-            </Form>
-          </Navbar.Collapse>
-        </Navbar>
-      </header>
-    )
-  }
+export function NavMenu() {
+  return (
+    <Layout.Header
+      //Navbar styling
+      style={{
+        background: '#fff',
+        width: '100%',
+        height: '66px',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        zIndex: 10
+      }}
+    >
+      <div
+        //Tracktech image logo styling
+        style={{
+          display: 'grid',
+          width: '100px',
+          height: '64px',
+          overflow: 'hide',
+          alignContent: 'center',
+          float: 'left'
+        }}
+      >
+        <img
+          //The Tracktech logo at the left of the navbar
+          style={{ maxHeight: '100px', maxWidth: '100px' }}
+          src={
+            'https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif'
+          }
+          alt="logo"
+        />
+      </div>
+      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
+      <div style={{ float: 'right' }}>
+        <LoginButton />
+      </div>
+      <div style={{ float: 'right', marginRight: '10px' }}>
+        <LoggedInUser />
+      </div>
+      {/* Links to the pages in the navbar */}
+      <Menu mode="horizontal" style={{ borderBottom: '3px solid #096dd9' }}>
+        <Menu.Item style={{ borderBottom: '0px' }}>
+          <Link to="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item style={{ borderBottom: '0px' }}>
+          <Link to="/websockets">Websockets</Link>
+        </Menu.Item>
+        <Menu.Item style={{ borderBottom: '0px' }}>
+          <Link to="/Overlay">Overlay</Link>
+        </Menu.Item>
+      </Menu>
+    </Layout.Header>
+  )
 }
