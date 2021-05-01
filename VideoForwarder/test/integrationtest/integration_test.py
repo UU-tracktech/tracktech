@@ -1,35 +1,12 @@
 """Integration testing of forwarder with a dummy interface
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import pytest
-import tornado.web
-
-
-class MainHandler(tornado.web.RequestHandler):
-    """Tornado web application
-
-    """
-    def get(self):
-        """Empty get
-
-        """
-        self.write("")
-
-
-application = tornado.web.Application([
-    (r"/", MainHandler),
-])
-
-
-@pytest.fixture
-def app():
-    """Creates application
-
-    Return:
-         application: tornado application
-    """
-    return application
 
 
 # pylint: disable=attribute-defined-outside-init
