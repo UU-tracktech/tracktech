@@ -6,36 +6,47 @@ Utrecht University within the Software Project course.
 
  */
 
+/*
+  This component creates a videoplayer using the VideoJS plugin
+*/
+
 import React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
+/** The properties used by the videoplayer */
 export type VideoPlayerProps = {
-  onTimestamp: (time: number) => void
-  onPlayPause: (playing: boolean) => void
-  onPrimary: () => void
-  onResize?: (width: number, height: number, left: number, top: number) => void
+  onTimestamp: (time: number) => void //Callback which updates the timestamp for the overlay
+  onPlayPause: (playing: boolean) => void //Callback which updates the playback state for the overlay
+  onPrimary: () => void //Callback to make this videoplayer the primary video player
+  onResize?: (width: number, height: number, left: number, top: number) => void //Callback to update viewport on resize
 } & videojs.PlayerOptions
+
 export function VideoPlayer(props: VideoPlayerProps) {
+  /** The DOM node to attach the videplayer to */
   var videoNode: HTMLVideoElement
 
+  /** The videoplayer object */
   const playerRef = React.useRef<videojs.Player>()
 
-  const initialUriIntervalRef = React.useRef<number>()
-  const changeIntervalRef = React.useRef<number>()
-  const updateIntervalRef = React.useRef<number>()
-  const delayRef = React.useRef<number>(-20)
+  //Constants used to calculate the timestamp of the livestream based on segment file names
+  const initialUriIntervalRef = React.useRef<number>() //How often to check for the initial segment name
+  const changeIntervalRef = React.useRef<number>() //how often to check for a new segemnt after the inital has been obtained
+  const updateIntervalRef = React.useRef<number>() //How often to update the timestamp once it's known
 
-  var startUri //The first URI the player gets
-  var startTime //The timestamp where the player started
-  var timeStamp
+  const delayRef = React.useRef<number>(-20) //Value to finely tweak the timestamp to fix desync between video and boundingboxes
+
+  var startUri //The name of the first segment received by the videoplayer
+  var startTime //The timestamp of the stream where the player was started
+  var timeStamp //The current timestamp of the stream
 
   React.useEffect(() => {
     // instantiate video.js
     playerRef.current = videojs(videoNode, props, () => {
       var player = playerRef.current
 
+      //Add button to make this videoplayer the primary player at the top of the page
       player?.controlBar.addChild(
         new extraButton(player, {
           onPress: props.onPrimary,
@@ -45,6 +56,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
         {},
         0
       )
+
+      //Add button to reduce the delay used to sync the video and boundingboxes
       player?.controlBar.addChild(
         new extraButton(player, {
           onPress: () => delayRef.current--,
@@ -54,6 +67,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
         {},
         1
       )
+
+      //Add button to increase the delay used to sync the video and boundingboxes
       player?.controlBar.addChild(
         new extraButton(player, {
           onPress: () => delayRef.current++,
@@ -63,19 +78,20 @@ export function VideoPlayer(props: VideoPlayerProps) {
         {},
         2
       )
+
       player?.on('playerresize', () => onResize())
       player?.on('play', () => onResize())
 
-      //Timestamp stuff
-
+      //Timestamp calculation
       /* On the first time a stream is started, attempt getting the
-         URI and keep going with the interval until one is obtained */
+         segment name, keep going until a name is obtained */
       player?.on('firstplay', () => {
         initialUriIntervalRef.current = player?.setInterval(() => {
           getInitialUri()
         }, 200)
       })
 
+      //Every time the videoplayer is unpaused, go back to updating the timestamp
       player?.on('play', () => {
         updateIntervalRef.current = player?.setInterval(() => {
           updateTimestamp()
@@ -83,9 +99,9 @@ export function VideoPlayer(props: VideoPlayerProps) {
         props.onPlayPause(true)
       })
 
-      /* Every time the stream is paused we can stop updating the
-       * interval, player?.currentTime() will keep going in the
-       * background anyway */
+      //Every time the player is paused, stop our manual timestamp update
+      //The player.currentTime() method from videoJS will keep going in the background
+      //If we don't stop our own update it will think the time while paused is double
       player?.on('pause', () => {
         if (updateIntervalRef.current)
           player?.clearInterval(updateIntervalRef.current)
@@ -102,8 +118,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
    */
   function getURI(): string | undefined {
     try {
-      //passing any argument suppresses a warning about
-      //accessing the tech
+      //passing any argument suppresses a warning about accessing the tech
       let tech = playerRef.current?.tech({ randomArg: true })
       if (tech) {
         //ensure media is loaded before trying to access
@@ -122,8 +137,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
    * interval that waits for a change in URI
    */
   function getInitialUri() {
+    //attempt to get the segment name
     let currentUri = getURI()
     if (currentUri) {
+      //if a segment name has been found, save it and start looking for an updated name
       console.log('InitialURI: ', currentUri)
 
       startUri = currentUri
@@ -310,8 +327,8 @@ function GetSegmentStarttime(segName: string): number {
   //filename ends with _VXYYY.ts where X is a version
   //and YYY is the segment number
   let end = segName.split('_V')[1]
-  let number = end.slice(1, end.length - 3)
-  //Every segment is 2 seconds, therefore
-  //the number * 2 is the timestamp
+  let number = end.slice(1, end.length - 3) //remove the X and the .ts
+  //The segments have a certain length, so multiply the number with the length for the time
+  //TODO: make this not hardcoded
   return parseInt(number) * 2
 }

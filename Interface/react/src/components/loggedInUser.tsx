@@ -6,14 +6,20 @@ Utrecht University within the Software Project course.
 
  */
 
+/**
+ This component displays the login status
+ If the user is logged in, it shows "Loggin in as: {username}"
+ Otherwise, it shows "you are currently not logged in" 
+*/
+
 import React from 'react'
 import { useKeycloak } from '@react-keycloak/web'
 
-/**If a user is logged in, this will display the text 'Signed in as: {username}' */
 export function LoggedInUser() {
-  //Obtain keycloak
+  //Obtain keycloak so we can check for login info
   const { keycloak } = useKeycloak()
 
+  //If the user is logged in, obtain the username from the token and display it
   return keycloak.authenticated && keycloak.tokenParsed ? (
     <div>Logged in as: {keycloak.tokenParsed['name']}</div>
   ) : (

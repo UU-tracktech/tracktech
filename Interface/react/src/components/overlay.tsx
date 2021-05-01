@@ -6,6 +6,11 @@ Utrecht University within the Software Project course.
 
  */
 
+/**
+  This component takes a videoplayer component, and creates an overlay on top of it
+  to draw the bounding boxes received from the orchestrator
+*/
+
 import React from 'react'
 import { Queue } from 'queue-typescript'
 
@@ -15,22 +20,38 @@ import { Box, QueueItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
+/** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
 export type overlayProps = { cameraId: string; showBoxes: indicator }
-type size = { width: number; height: number; left: number; top: number }
-export function Overlay(props: overlayProps & VideoPlayerProps) {
-  const queueRef = React.useRef(new Queue<QueueItem>()) //Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn
-  const playerFrameIdRef = React.useRef(0) //The frameID the video player is currently displaying
-  const frameIdRef = React.useRef(0) //The frameID of the boxes that are currently drawn
-  const playerPlayingRef = React.useRef(false) //If the video player is paused or not
 
-  const [boxes, setBoxes] = React.useState<Box[]>([]) //Contains the boxes to be drawn this frame
+/** The size of the overlay, used to scale the drawing of the bounding boxes */
+type size = { width: number; height: number; left: number; top: number }
+
+export function Overlay(props: overlayProps & VideoPlayerProps) {
+  /** Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn */
+  const queueRef = React.useRef(new Queue<QueueItem>())
+
+  /** The frameID the video player is currently displaying */
+  const playerFrameIdRef = React.useRef(0)
+
+  /** The frameID of the boxes that are currently drawn */
+  const frameIdRef = React.useRef(0)
+
+  /** If the video player is paused or not */
+  const playerPlayingRef = React.useRef(false)
+
+  /** State containing the boxes to be drawn this frame */
+  const [boxes, setBoxes] = React.useState<Box[]>([])
+
+  /** State containing videoplayer dimensions/position on the page */
   const [size, setSize] = React.useState<size>({
+    //initial value
     width: 10,
     height: 10,
     left: 10,
     top: 10
-  }) //Videoplayer dimensions/position
+  })
 
+  //Access the websocket in order to create a listener for receiving boundingbox updates
   const socketContext = React.useContext(websocketContext)
 
   React.useEffect(() => {
@@ -56,7 +77,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * Once the correct set of boxes has been reached it will set these to be drawn
    */
   function handleQueue() {
-    //Keep dequeue-ing until a set of boxes with matching frameID
+    //Keep dequeueing until a set of boxes with matching frameID is reached
     while (playerFrameIdRef.current >= frameIdRef.current) {
       if (queueRef.current.length > 0) {
         let new_item = queueRef.current.dequeue()
@@ -97,6 +118,11 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     </div>
   )
 
+  /**
+   * Function called when clicking on a bounding box (TODO: implement start tracking on click)
+   * @param boxId The ID of the box that was clicked on
+   * @param frameId The frameID, or timestamp, when the box was clicked
+   */
   function onBoxClick(boxId: number, frameId: number) {
     if (window.confirm('Start tracking this object?')) {
       socketContext.send(
@@ -105,6 +131,9 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     }
   }
 
+  /**
+   * Draws the overlay with the bounding boxes according to the setting of which boxes to display
+   */
   function DrawOverlay(): JSX.Element {
     switch (props.showBoxes) {
       case 'All': {
@@ -122,6 +151,11 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     }
   }
 
+  /**
+   * Goes through all boxes given and draws then in the correct place on the overlay
+   * @param boxes The list of bounding boxes to draw
+   * @param frameId The timestamp when these boxes are being drawn
+   */
   function DrawBoxes(boxes: Box[], frameId: number): JSX.Element {
     // TODO: make sure objectIds can be infinitely big without causing an index out of bounds
     var colordict: string[] = [
