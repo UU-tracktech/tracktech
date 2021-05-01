@@ -9,14 +9,11 @@ Utrecht University within the Software Project course.
 import logging
 import asyncio
 import cv2
-# pylint: disable=unused-import
-import processor.websocket_client as client
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.idetector import IDetector as Detector
-from processor.pipeline.tracking.tracking_obj import TrackingObj
+
 from processor.pipeline.framebuffer import FrameBuffer
-from processor.input.hls_capture import HlsCapture
-# pylint: enable=unused-import
+import processor.utils.draw as draw
+import processor.utils.convert as convert
+import processor.utils.text as text
 
 
 async def process_stream(capture, detector, tracker, ws_client=None):
@@ -31,45 +28,41 @@ async def process_stream(capture, detector, tracker, ws_client=None):
         tracker (SortTracker): tracker performing SORT tracking.
         ws_client (WebsocketClient): processor orchestrator to pass through detections.
     """
-    track_obj = TrackingObj()
-
     framebuffer = FrameBuffer()
 
     frame_nr = 0
 
     while capture.opened():
-        ret, frame, timestamp = capture.get_next_frame()
+        ret, frame_obj = capture.get_next_frame()
 
         if not ret:
-            if frame_nr == capture.get_capture_length():
-                logging.info("End of file reached")
-                break
             continue
 
-        # Create detection object for this frame.
-        det_obj = DetectionObj(timestamp, frame, frame_nr)
+        # Get detections from running detection stage.
+        bounding_boxes = detector.detect(frame_obj)
 
-        detector.detect(det_obj)
-
-        track_obj.update(det_obj)
-
-        tracker.track(track_obj)
+        # Get objects tracked in current frame from tracking stage.
+        tracked_boxes = tracker.track(frame_obj, bounding_boxes)
 
         # Buffer the tracked object
-        framebuffer.add(track_obj.to_dict())
+        framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
         framebuffer.clean_up()
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
         if ws_client:
-            ws_client.write_message(track_obj.to_json())
-            logging.info(track_obj.to_json())
+            client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
+            ws_client.write_message(client_message)
+            logging.info(client_message)
         else:
+            # Copy frame to draw over.
+            frame_copy = frame_obj.get_frame().copy()
+
             # Draw bounding boxes with ID
-            track_obj.draw_rectangles()
+            draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
 
             # Play the video in a window called "Output Video"
             try:
-                cv2.imshow("Output Video", det_obj.frame)
+                cv2.imshow("Output Video", frame_copy)
             except OSError as err:
                 # Figure out how to get Docker to use GUI
                 raise OSError("Error displaying video. Are you running this in Docker perhaps?")\
