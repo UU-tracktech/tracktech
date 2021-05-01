@@ -55,6 +55,9 @@ def create_app():
     """Creates tornado application.
 
     Creates the routing in the application and returns the complete app.
+
+    Returns:
+        Application
     """
     # Define socket for both client and processor
     handlers = [
