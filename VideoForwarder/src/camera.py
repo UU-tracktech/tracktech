@@ -10,9 +10,19 @@ Utrecht University within the Software Project course.
 class Camera:
     """Camera information object.
 
+    Attributes:
+        ip_address (str): Address of the camera
+        conversion (str): Conversion used to encode camera
+        callback (func): Callback function to stop running after a delay
+        audio (bool): Does camera contain audio
     """
-
     def __init__(self, ip_address, audio):
+        """Initializes a camara object that holds values
+
+        Args:
+            ip_address (str): Address of the camera
+            audio (bool): Whether camera contains audio
+        """
         # The ip address (with credentials) of the camera
         self.ip_address = ip_address
 
