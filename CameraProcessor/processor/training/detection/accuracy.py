@@ -1,5 +1,9 @@
-"""
-File containing the accuracy class
+"""File containing the accuracy class.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import configparser
 import os
@@ -10,14 +14,10 @@ from processor.training.pre_annotations import PreAnnotations
 
 
 class AccuracyObject:
-    """
-    This class is used to test the accuracy of predictions.
-    """
+    """This class is used to test the accuracy of predictions."""
 
     def __init__(self):
-        """Initialise AccuracyObject by reading the config and the ground truth file.
-
-        """
+        """Initialise AccuracyObject by reading the config and the ground truth file."""
         # Initializing class variables
         self.gt_path = ''
         self.det_path = ''
@@ -40,8 +40,7 @@ class AccuracyObject:
         self.bounding_boxes_gt = self.read_boxes(self.gt_path)
 
     def read_config(self):
-        """Assign class variables using the Accuracy config.
-        """
+        """Assign class variables using the Accuracy config."""
         # Load the config file, take the relevant Accuracy section
         path_to_root = '../../..'
         configs = configparser.ConfigParser(allow_no_value=True)
@@ -74,12 +73,14 @@ class AccuracyObject:
         (self.frame_amount, self.image_height, self.image_width) = [int(i) for i in line.split(delimiter)[:3]]
 
     def parse_boxes(self, boxes_to_parse):
-        """
+        """Parses boxes to podm format.
+
         Args:
             boxes_to_parse: A list of list of bounding boxes.
 
         Returns:
             A list of bounding boxes as specified by the podm.podm library.
+
         """
         list_parsed_boxes: List[BoundingBox] = []
         for i in enumerate(boxes_to_parse):
@@ -93,18 +94,26 @@ class AccuracyObject:
             for box in boxes:
                 # Parse a single box and append it to the list of already parsed boxes
 
-                width = box.rectangle[2]
-                height = box.rectangle[3]
-                parsed_box = BoundingBox(label="undefined", xtl=box.rectangle[0] / self.image_width,
-                                         ytl=box.rectangle[1] / self.image_height, xbr=width / self.image_width,
-                                         ybr=height / self.image_height, image_name=str(i[0]), score=box.certainty)
+                width = box.get_rectangle().get_x2()
+                height = box.get_rectangle().get_y2()
+                parsed_box = BoundingBox(
+                    label="undefined",
+                    xtl=box.get_rectangle().get_x1() / self.image_width,
+                    ytl=box.get_rectangle().get_y1() / self.image_height,
+                    xbr=width / self.image_width,
+                    ybr=height / self.image_height,
+                    image_name=str(i[0]),
+                    score=box.get_certainty()
+                )
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
     def read_boxes(self, path_to_boxes):
         """A method for reading the bounding boxes with the pre_annotations.
+
         Args:
             path_to_boxes: Path to the file where the boxes are stored.
+
         Returns:
             A list of bounding boxes.
         """
@@ -115,7 +124,8 @@ class AccuracyObject:
         return self.parse_boxes(bounding_boxes)
 
     def detect(self):
-        """
+        """Retrieves accuracy of detections.
+
         Args:
             (directory from the folder specified when the object was initialized).
         Returns:
@@ -142,7 +152,6 @@ class AccuracyObject:
             result: A MetricPerClass object from the PODM library.
 
         Returns: An image file in the plots folder called file_prefix-result.class.
-
         """
         try:
             plot_precision_recall_curve(result,
@@ -155,7 +164,6 @@ class AccuracyObject:
         """Draws the pr plots for all classes in the (podm) result.
 
         Returns: An image file for each class in the plots folder called file_prefix-result.class.
-
         """
         for result in self.results.items():
             self.draw_pr_plot(result[1])

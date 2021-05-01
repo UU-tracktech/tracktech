@@ -6,15 +6,30 @@ Utrecht University within the Software Project course.
 
  */
 
+/**
+  The grid component creates a videoplayer and overlay for drawing on that player
+  for each camera source defined in the config file, which are passed in through the props
+*/
+
 import React from 'react'
 import { Overlay } from './overlay'
 import { indicator } from '../pages/home'
 
+/**
+ * Defines the properties of a single camera feed
+ * Contians an identifier, a name and the stream URL
+ */
 export type source = {
   id: string
   name: string
   srcObject: { src: string; type: string }
 }
+
+/**
+ * Properties of the grid component
+ * Contains which stream is the primary stream, displayed large at the top,
+ * contains a list of all video streams to display and which boundingboxes/indicators to draw
+ */
 export type gridProps = {
   primary?: string
   setPrimary: (sourceId: string) => void
@@ -37,6 +52,8 @@ export function Grid(props: gridProps) {
       }}
     >
       {props.sources.map((source) => {
+        //The map goes through every source and creates an overlay component,
+        //which includes the video player
         return (
           <div
             key={source.id}

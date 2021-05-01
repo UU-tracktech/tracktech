@@ -18,14 +18,14 @@ from tests.conftest import root_path
 
 
 class TestProcessFrames:
-    """Tests process_frames.py
+    """Tests process_frames.py.
 
     """
 
     def __get_video(self):
-        """Get the video capture
+        """Get the video capture.
 
-        Returns: a VideoCapture object streaming test.mp4
+        Returns: a VideoCapture object streaming test.mp4.
 
         """
         __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
@@ -34,7 +34,7 @@ class TestProcessFrames:
     # pylint: disable=useless-return
     @pytest.mark.skip()
     def __get_yolov5runner(self):
-        """Get the Yolov5 runner
+        """Get the Yolov5 runner.
 
         """
         configs = configparser.ConfigParser(allow_no_value=True)
@@ -54,7 +54,7 @@ class TestProcessFrames:
     @pytest.mark.timeout(90)
     @pytest.mark.skip("YOLOv5 GPU acceleration does not work in Docker yet")
     def test_process_stream_with_yolov5(self, clients):
-        """Tests process_stream function using Yolov5
+        """Tests process_stream function using Yolov5.
 
         Note: I tried parametrizing Yolov5 via a fixture, but that does not work for some reason.
 
@@ -68,7 +68,7 @@ class TestProcessFrames:
 
     @pytest.mark.timeout(90)
     def test_process_stream_with_fake(self, clients):
-        """Tests process_stream with a fake detector
+        """Tests process_stream with a fake detector.
 
         """
         captor = self.__get_video()
@@ -79,7 +79,7 @@ class TestProcessFrames:
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
 
     async def await_detection(self, captor, detector, tracker, ws_client):
-        """Async function that runs process_stream
+        """Async function that runs process_stream.
 
         """
         await process_stream(captor, detector, tracker, ws_client)
