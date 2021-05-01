@@ -8,10 +8,16 @@ Utrecht University within the Software Project course.
 import pytest
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestCaptures:
     """Tests the captures opening and closing
 
     """
+
+    def teardown_method(self):
+        """Ensures proper closure of capture_implementation, even when test fails.."""
+        self.capture_implementation.close()
+
     @pytest.mark.timeout(10)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
@@ -20,7 +26,8 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
-        while not capture_implementation.opened():
+        self.capture_implementation = capture_implementation
+        while not self.capture_implementation.opened():
             pass
 
     @pytest.mark.timeout(10)
@@ -31,7 +38,8 @@ class TestCaptures:
                 capture_implementation: see capture_implementation.
 
         """
-        assert capture_implementation.get_next_frame()[0]
+        self.capture_implementation = capture_implementation
+        assert self.capture_implementation.get_next_frame()
 
     @pytest.mark.timeout(10)
     def test_closed(self, capture_implementation):
@@ -41,6 +49,7 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
-        capture_implementation.close()
-        while capture_implementation.opened():
+        self.capture_implementation = capture_implementation
+        self.capture_implementation.close()
+        while self.capture_implementation.opened():
             pass

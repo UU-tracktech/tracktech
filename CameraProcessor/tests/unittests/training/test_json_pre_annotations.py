@@ -6,8 +6,9 @@ Utrecht University within the Software Project course.
 
 """
 import os
-from tests.unittests.preannotations.test_pre_annotations import example_json_file
+from tests.unittests.training.test_pre_annotations import example_json_file
 from processor.training.pre_annotations import PreAnnotations
+from processor.data_object.rectangle import Rectangle
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -36,15 +37,18 @@ class TestJsonParsing:
         assert number_boxes == expected
 
     def test_json_parsing(self) -> None:
-        """Test parsing of a json file that correct rectangles are generated.
+        """Test parsing of a json file that correct rectangle is generated.
         """
         self.annotations.parse_json_file()
-        first_box = self.annotations.boxes[0][0]
-        second_box = self.annotations.boxes[1][0]
-        assert first_box.rectangle == [1127, 100, 1165, 268]
-        assert first_box.identifier == 1
-        assert second_box.rectangle == [1127, 103, 1165, 271]
-        assert second_box.identifier == 1
+        bounding_box = self.annotations.boxes[0][0]
+        result = bounding_box.get_rectangle()
+        expected = Rectangle(1127, 100, 1165, 268)
+
+        # The coordinates are loaded in correctly
+        assert result.get_x1() == expected.get_x1()
+        assert result.get_y1() == expected.get_y1()
+        assert result.get_x2() == expected.get_x2()
+        assert result.get_y2() == expected.get_y2()
 
     def test_line_skipping(self):
         """Tests whether the pre annotations skips lines of frames that are beyond the number of frames given

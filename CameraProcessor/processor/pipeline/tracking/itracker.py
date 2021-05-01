@@ -10,10 +10,14 @@ Utrecht University within the Software Project course.
 class ITracker:
     """Tracker interface.
     """
-    def track(self, track_obj):
+    def track(self, frame_obj, det_obj):
         """Performs tracking stage using the tracking object.
 
         Args:
-            track_obj (TrackingObj): tracking object to perform tracking stage with.
+            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
+            det_obj (DetectionObj): detection object containing detections from detection stage.
+
+        Returns:
+            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
         """
         raise NotImplementedError('Tracking stage not implemented')

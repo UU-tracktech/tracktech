@@ -7,71 +7,66 @@ Utrecht University within the Software Project course.
 """
 
 import os
+import time
 import logging
-from typing import List
 import cv2
+
 from processor.input.icapture import ICapture
+from processor.data_object.frame_obj import FrameObj
 
 
 class ImageCapture(ICapture):
-    """Reads all images from a folder one by one
+    """Reads all images from a folder one by one.
 
+    Attributes:
+        image_paths List[str]: List of paths of images in folder.
+        nr_images (int): Number of images contained in folder.
+        __image_index (int): Index of current image frame.
     """
-    def __init__(self, images_dir: str):
-        """Gets all the paths to images inside the folder and stores them in order
+    def __init__(self, images_dir):
+        """Gets all the paths to images inside the folder and stores them in order.
 
         Args:
-            images_dir: Path to the directory that contains the images
+            images_dir (str): Path to the directory that contains the images.
         """
         logging.info(f'Using images from folder {images_dir}')
         # Gets the number of images from the folder
         self.images_paths = sorted([os.path.join(images_dir, image_name)
                                     for image_name in os.listdir(images_dir)])
         self.nr_images = len(self.images_paths)
-        self.image_shape = cv2.imread(self.images_paths[0]).shape[:2]
 
         # Start index is -1 because we want to know the index of current after it has been incremented
-        self.image_index = -1
+        self.__image_index = -1
         logging.info(f'Found {self.nr_images} images inside the folder')
 
-    def opened(self) -> bool:
-        """Capture is still opened when more images are available
+    def opened(self):
+        """Capture is still opened when more images are available.
 
         Returns:
-            Boolean whether there are more images to iterate
+            Boolean whether there are more images to iterate.
         """
-        return self.image_index + 1 < self.nr_images
+        return self.__image_index + 1 < self.nr_images
 
-    def close(self) -> None:
-        """Close the capture by setting the index higher than the number of images
+    def close(self):
+        """Close the capture by setting the index higher than the number of images."""
+        self.__image_index = self.nr_images + 1
 
+    def get_next_frame(self):
+        """Gets the next frame from the list of images.
+
+        Returns (bool, FrameObj):
+            Boolean whether a next image was found.
+            FrameObject containing frame and missing timestamp.
         """
-        self.image_index = self.nr_images + 1
-
-    def get_next_frame(self) -> (bool, List[List[int]]):
-        """Gets the next frame from the list of images
-
-        Returns:
-            Boolean whether a next image was found
-            If a frame was found gives a frame back too
-        """
-        self.image_index += 1
-        image_path = self.images_paths[self.image_index]
+        # Get path of next frame
+        self.__image_index += 1
+        image_path = self.images_paths[self.__image_index]
 
         # Skips when it is not a file but a directory
         if not os.path.isfile(image_path):
             logging.warning(f'File {image_path} is not a file!')
-            return False, None, None
+            return False, None
 
         # Reads the image file and returns it
         frame = cv2.imread(image_path)
-        return True, frame, None
-
-    def get_capture_length(self) -> int:
-        """Get the number of images left in folder
-
-        Returns:
-            An integer indicating amount of images left
-
-        """
-        return self.nr_images
+        return True, FrameObj(frame, time.time())
