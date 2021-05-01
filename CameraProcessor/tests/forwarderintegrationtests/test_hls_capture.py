@@ -11,7 +11,6 @@ import pytest
 import cv2
 
 from processor.input.hls_capture import HlsCapture
-from processor.data_object.frame_obj import FrameObj
 
 
 # pylint: disable=attribute-defined-outside-init
