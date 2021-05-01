@@ -32,17 +32,14 @@ logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
-    """Handler for the html page of the site that is for the main page.
-
-    """
+    """Handler for the html page of the site that is for the main page."""
     def get(self, file_name='index.html') -> None:
-        """Gets the html page and renders it
+        """Gets the html page and renders it.
 
-        When the index.html page cannot be found it will send an error template to the webclient
+        When the index.html page cannot be found it will send an error template to the webclient.
 
         Args:
-            file_name (str): html page it is getting
-
+            file_name (str): html page it is getting.
         """
         # Check if page exists
         logging.info('getting html page of browser')
@@ -61,16 +58,12 @@ class HtmlPageHandler(tornado.web.RequestHandler):
 
 
 class StreamHandler(tornado.web.RequestHandler):
-    """Handler for the frame stream
-
-    """
+    """Handler for the frame stream."""
     server_image_timestamp = 0
 
     @tornado.gen.coroutine
     def get(self):
-        """ Get request handler for the webpage to show video stream.
-
-        """
+        """Get request handler for the webpage to show video stream."""
         # Sets headers of the handler
         logging.info('set headers')
         self.set_header('Cache-Control',
@@ -86,11 +79,11 @@ class StreamHandler(tornado.web.RequestHandler):
         capture = HlsCapture()
         while capture.opened():
             # Get frame
-            ret, frame, _ = capture.get_next_frame()
+            ret, frame_obj = capture.get_next_frame()
             if not ret:
                 continue
             # If it does get the image the frame gets encoded
-            ret, jpeg = cv2.imencode('.jpg', frame)
+            ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
             img = jpeg.tobytes()
 
             # Every .1 seconds the frame gets sent to the browser
@@ -108,11 +101,11 @@ class StreamHandler(tornado.web.RequestHandler):
                 raise Exception('connection lost with client') from err
 
 
-def make_app() -> tornado.web.Application:
-    """Creates the tornado web app
+def make_app():
+    """Creates the tornado web app.
 
     Returns:
-        Tornado web app with the main page and video handler
+        tornado.web.Application: Tornado web app with the main page and video handler.
     """
     logging.info('creating app')
     return tornado.web.Application([
@@ -121,8 +114,11 @@ def make_app() -> tornado.web.Application:
     ])
 
 
-def generate_message(port) -> None:
-    """Generates message to terminal so user can click link
+def generate_message(port):
+    """Generates message to terminal so user can click link.
+
+    Args:
+        port (int): port at which localhost page is located.
     """
     print('*' * 30)
     print('*' + ' ' * 28 + '*')
@@ -133,8 +129,7 @@ def generate_message(port) -> None:
 
 
 def main():
-    """Creates the tornado app and starts event loop
-    """
+    """Creates the tornado app and starts event loop."""
     port = 9090
     app = make_app()
     app.listen(port)

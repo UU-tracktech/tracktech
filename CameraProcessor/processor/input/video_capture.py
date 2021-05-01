@@ -6,56 +6,62 @@ Utrecht University within the Software Project course.
 
 """
 
+import time
 import logging
 import cv2
 from processor.input.icapture import ICapture
+from processor.data_object.frame_obj import FrameObj
 
 
 class VideoCapture(ICapture):
-    """ Captures video from a video file on the system
+    """ Captures video from a video file on the system.
 
+    Attributes:
+        cap (cv2.VideoCapture): VideoCapture that reads stream as frames.
+        __nr_frames (int): Number of frames of video.
+        __current_frame_nr (int): Index number of current frame.
     """
     # Default path is the path to venice.mp4
     def __init__(self, path='/data/videos/test.mp4'):
-        """
+        """Create a VideoCapture given a path.
 
         Args:
-            path: path to the video
+            path (str): path to the video.
         """
+        # Open VideoCapture
         logging.info(f"Opening video from path: {path}")
         self.cap = cv2.VideoCapture(path)
         logging.info("Successfully opened video file")
-        logging.info(f"Video has {self.get_capture_length()} frames")
+
+        # Frame counter to stop at last frame
+        self.__nr_frames = self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.__current_frame_nr = 0
+        logging.info(f"Video has {self.__nr_frames} frames")
 
     def opened(self):
-        """Check if the video is still opened
+        """Check if the video is still opened.
 
         Returns:
-            A boolean indicating if video is opened
-
+            A boolean indicating if video is opened.
         """
+        # Frame is beyond what current frame is
+        if self.__current_frame_nr >= self.__nr_frames:
+            return False
+
         return self.cap.isOpened()
 
     def close(self):
-        """Close video capture
-
-        """
+        """Close video capture."""
+        self.__current_frame_nr = self.__nr_frames
         self.cap.release()
 
     def get_next_frame(self):
-        """Gets the next frame of the video
+        """Gets the next frame of the video.
 
-        Returns:
-            - A boolean indicating if next frame was returned
-            - an image object, in the form of a matrix of integers
+        Returns (bool, FrameObj):
+            Boolean indicating if next frame was returned.
+            FrameObj containing frame and an empty datetime.
         """
-        return *self.cap.read(), None
-
-    def get_capture_length(self):
-        """Returns the amount of total frames in the video
-
-        Returns:
-            An int indicating the amount of frames in the video
-
-        """
-        return self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.__current_frame_nr += 1
+        ret, frame = self.cap.read()
+        return ret, FrameObj(frame, time.time())
