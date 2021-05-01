@@ -75,6 +75,9 @@ def create_app(client_auth, processor_auth):
     Args:
         client_auth:  A auth object to validate clients with
         processor_auth:  A auth object to validate processors with
+
+    Returns:
+        Application
     """
     # Define socket for both client and processor
     handlers = [

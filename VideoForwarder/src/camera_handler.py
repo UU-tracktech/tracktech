@@ -11,49 +11,35 @@ import os
 import re
 import threading
 import time
-from typing import Optional
-from subprocess import Popen, TimeoutExpired
+from subprocess import TimeoutExpired
 import tornado.web
 import jwt
+
+from src.conversion_process import get_conversion_process
+from src.utils import get_stream_variables, get_token_variables
 
 
 # pylint: disable=attribute-defined-outside-init
 class CameraHandler(tornado.web.StaticFileHandler):
-    """
-    The camera file request handler
+    """The camera file request handler
+
+    cameras (dict): Dictionary containing all the cameras registered to this VideoForwarder
+
     """
 
     # A dictionary to store all camera objects with their name as key
     cameras = {}
 
-    # How long each video segment should be in seconds
-    segmentSize = os.environ.get('SEGMENT_SIZE') or '2'
-
-    # How many segments of a video stream should be stored at once at a given time
-    segmentAmount = os.environ.get('SEGMENT_AMOUNT') or '5'
-
-    # How long the stream has no requests before stopping the conversion in seconds
-    removeDelay = float(os.environ.get('REMOVE_DELAY') or '60.0')
-
-    # The maximum amount of seconds we will wait with removing stream files after stopping the conversion
-    timeoutDelay = int(os.environ.get('TIMEOUT_DELAY') or '30')
-
-    # The FFMPEG encoding that should be used to encode the video streams
-    encoding = os.environ.get('ENCODING') or 'libx264'
-
-    # The public secret of the identity provider to validate the tokens with
-    secret = os.environ.get('JWT_PUBLIC_SECRET')
-
-    # The audience the token should be for
-    audience = os.environ.get('TOKEN_AUDIENCE')
-
-    # The scope the token should be for
-    scope = os.environ.get('TOKEN_SCOPE')
-
     # pylint: disable=arguments-differ
-    def initialize(self, path: str, default_filename: Optional[str] = None) -> None:
+    def initialize(self, path, default_filename=None):
         """Set the root path and load the public key from application settings, run at the start of every request
+
+        Args:
+            path (str): path to root where files are stored
+            default_filename (Optional[str] = None): Optional file name
         """
+        # Set properties of the handler
+        self.remove_delay, self.timeout_delay = get_stream_variables()[3:]
 
         # noinspection PyAttributeOutsideInit
         # Needed for the library
@@ -66,14 +52,62 @@ class CameraHandler(tornado.web.StaticFileHandler):
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching
         """
-
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Cache-control", "no-store")
+
+    def create_stream_conversion(self, camera, abspath, root):
+        """Creates stream conversion and starts the stream
+
+        Args:
+            camera (str): Name of camera handler that needs to get started
+            abspath (str): Path of stream
+            root (str): Path to put the
+        """
+        # Gets camera object
+        entry = CameraHandler.cameras[camera]
+
+        # If there is no current conversion, start one
+        if entry.conversion is None:
+            print(f'starting {camera}')
+
+            # Configure entry conversion
+            entry.conversion = get_conversion_process(
+                entry.ip_address,
+                entry.audio,
+                camera,
+                root
+            )
+
+            # Wait and if not created, stop the conversion
+            started = self.stream_started(abspath)
+            if not started:
+                self.stop_stream(root, camera)
+
+    def stream_started(self, abspath):
+        """Wait a maximum of x seconds for the file to be created, otherwise
+
+        Args:
+             abspath (path): Path of the file that would be created when stream started
+        """
+        for _ in range(0, self.timeout_delay):
+            # See whether file exists
+            if os.path.exists(abspath):
+                return True
+
+            # Sleep and check again
+            time.sleep(1)
+
+        return False
 
     @staticmethod
     def stop_stream(root, camera):
         """Function to stop a given camera stream, will be called once a stream is no longer used for a specific
-        amount of time """
+        amount of time
+
+        Args:
+            root (str): Root directory of the stream
+            camera (Camera): Camera that has to get stopped
+        """
 
         # Print stopping for logging purposes
         print(f'stopping {camera}')
@@ -81,7 +115,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         # Get the camera object that should be stopped
         entry = CameraHandler.cameras[camera]
 
-        # Start stopping the conversion
+        # Stopping the conversion
         entry.conversion.terminate()
 
         try:
@@ -99,27 +133,57 @@ class CameraHandler(tornado.web.StaticFileHandler):
                 if file.startswith(camera):
                     os.remove(os.path.join(root, file))
 
+    def start_stream(self, camera, root):
+        """Starts the HLS stream by using the conversion process that was created
+
+        Args:
+            camera (Camera): Camera to start the stream on
+            root (str): Path to the where the stream files are located
+        """
+        entry = CameraHandler.cameras[camera]
+
+        # Cancel any current callbacks
+        if entry.callback is not None:
+            entry.callback.cancel()
+            entry.callback = None
+
+        # If there is an conversion
+        if entry.conversion is not None:
+            # Reschedule a new callback to stop the stream
+            entry.callback = threading.Timer(
+                self.remove_delay, self.stop_stream, [root, camera])
+            entry.callback.start()
+
     def prepare(self):
-        """Validate and check the header token if a public key is specified"""
+        """Validate and check the header token if a public key is specified
+        """
+
+        # Get variables of tokens
+        _, audience, scope = get_token_variables()
 
         # If a key is specified
         if self.public_key:
             # Decode the token using the given key and the header token
             try:
                 decoded = jwt.decode(self.request.headers.get('Authorization').split()[
-                                     1], self.public_key, algorithms=['RS256'], audience=self.audience)
+                                     1], self.public_key, algorithms=['RS256'], audience=audience)
             # If decoding fails, return a 401 not authorized status
             except ValueError as exc:
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
 
             # If decoding succeeds, but the scope is invalid, return 403
-            if self.scope in decoded['resource_access'][self.audience]:
+            if scope in decoded['resource_access'][audience]:
                 self.set_status(403)
                 raise tornado.web.Finish()
 
     def get_absolute_path(self, root, path):
-        """Handle all file logic, including starting and stopping the conversion
+        """Gets the path of the camera stream, when the camera is not yet started it does so automatically
+
+        Args:
+            root (str): path to the root of the system
+            path (str): Name of the file searched, which should be a camera stream
+
         """
 
         # Get the path on the file system
@@ -136,82 +200,13 @@ class CameraHandler(tornado.web.StaticFileHandler):
         camera = match.group(1)
         extension = match.group(2)
 
-        if extension == 'm3u8':
-            # If the request is for an index file of an existing camera
-            if camera in CameraHandler.cameras:
-                # Get the camera object
-                entry = CameraHandler.cameras[camera]
+        # If the request is for an index file of an existing camera
+        if extension == 'm3u8' and camera in CameraHandler.cameras:
+            self.create_stream_conversion(camera, abspath, root)
 
-                # If there is no current conversion, start one
-                if entry.conversion is None:
-                    print(f'starting {camera}')
+        # If it requests a stream file
+        if extension in ('m3u8', 'ts') and camera in CameraHandler.cameras:
+            self.start_stream(camera, root)
 
-                    # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
-                    entry.conversion = Popen(
-                        [
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
-                            '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0',
-                            '-map', '0:1',  # Create 3 variances of video + audio stream
-                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
-                            '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
-                            '-keyint_min', '24', '-c:a', 'aac', '-ar', '48000',
-                            # Set common properties of the video variances
-                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0', '800k', '-maxrate',
-                            '900k', '-bufsize', '1200k',  # 360p - Low bit-rate Stream
-                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1', '1425k', '-maxrate',
-                            '1600k', '-bufsize', '2138k',  # 420p - Medium bit-rate Stream
-                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2', '2850k', '-maxrate',
-                            '3200k', '-bufsize', '4275k',  # 720p - High bit-rate Stream
-                            '-c:a', 'copy',  # Copy original audio to the video variances
-                            '-var_stream_map', 'v:0,a:0 v:1,a:1 v:2,a:2',
-                            # Create the master playlist
-                            '-master_pl_name', f'{camera}.m3u8',
-                            '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount,
-                            '-hls_flags', 'delete_segments',
-                            '-start_number', '1',  # Configure segment properties
-                            f'{root}/{camera}_V%v.m3u8'
-                        ]) if entry.audio else Popen([
-                            'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', entry.ip_address,
-                            '-map', '0:0', '-map', '0:0', '-map', '0:0',
-                            '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
-                            '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
-                            '-s:v:0', '640x360', '-c:v:0', self.encoding, '-b:v:0',
-                            '800k', '-maxrate', '900k', '-bufsize', '1200k',
-                            '-s:v:1', '854x480', '-c:v:1', self.encoding, '-b:v:1',
-                            '1425k', '-maxrate', '1600k', '-bufsize', '2138k',
-                            '-s:v:2', '1280x720', '-c:v:2', self.encoding, '-b:v:2',
-                            '2850k', '-maxrate', '3200k', '-bufsize', '4275k',
-                            '-var_stream_map', 'v:0 v:1 v:2', '-master_pl_name', f'{camera}.m3u8',
-                            '-hls_time', self.segmentSize, '-hls_list_size', self.segmentAmount, '-hls_flags',
-                            'delete_segments', '-start_number', '1',
-                            f'{root}/{camera}_V%v.m3u8'
-                        ])
-
-                    # Wait a maximum of x seconds for the file to be created
-                    for _ in range(0, self.timeoutDelay):
-                        if os.path.exists(abspath):
-                            break
-                        time.sleep(1)
-
-                    # If not created, stop the conversion
-                    if not os.path.exists(abspath):
-                        self.stop_stream(root, camera)
-
-        # If it requests an stream file
-        if extension in ('m3u8', 'ts'):
-            if camera in CameraHandler.cameras:
-                entry = CameraHandler.cameras[camera]
-
-                # Cancel any current callbacks
-                if entry.callback is not None:
-                    entry.callback.cancel()
-                    entry.callback = None
-
-                # If there is an conversion
-                if entry.conversion is not None:
-                    # Reschedule a new callback to stop the stream
-                    entry.callback = threading.Timer(
-                        self.removeDelay, self.stop_stream, [root, camera])
-                    entry.callback.start()
-
+        # Return path to files
         return abspath

@@ -21,4 +21,4 @@ services:
     container_name: video-forwarder_integration-testing-container
     depends_on:
       - "video-forwarder-service"
-    entrypoint: ["python3.8", "-m", "pytest", "--junitxml=vf-integration-report.xml", "test/integrationtest"]
+    entrypoint: ["pytest", "--junitxml=vf-integration-report.xml", "test/integrationtest"]

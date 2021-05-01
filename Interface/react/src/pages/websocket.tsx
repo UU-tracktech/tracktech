@@ -6,6 +6,12 @@ Utrecht University within the Software Project course.
 
  */
 
+/*
+This page shows information about the websocket, adn allows the user to manually 
+send some commands.
+Used to see the state of the websocket, and for debugging the websocket
+*/
+
 import React from 'react'
 import { Button, Form } from 'antd'
 

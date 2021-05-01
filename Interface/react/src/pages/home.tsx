@@ -6,6 +6,11 @@ Utrecht University within the Software Project course.
 
  */
 
+/*
+  This component is the homepage of the website, which contains all the videoplayers,
+  the option to select what bounding boxes to draw, a list of the cameras, and TODO: a list of tracked suspects
+*/
+
 import React from 'react'
 import { Button, Card } from 'antd'
 import { Layout } from 'antd'
@@ -14,19 +19,30 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Grid, source } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
 
+/** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
+
+/** Data required to track an object (placeholder, TODO: implement tracking) */
 type tracked = { id: number; name: string; image: string; data: string }
 export function Home() {
+  /** State containing all the camera sources */
   const [sources, setSources] = React.useState<source[]>()
+
+  /** State containing which boundingboxes to draw */
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
     'All'
   )
+
+  /** State containing the tracked objects */
   const [tracking, setTracking] = React.useState<tracked[]>([])
+
+  /** State containing which camera currently is the primary camera */
   const [primary, setPrimary] = React.useState<string>()
 
   const selectionRef = React.useRef(0)
 
   React.useEffect(() => {
+    //Read all the sources from the config file and create sources for the videoplayers
     fetch(process.env.PUBLIC_URL + '/config.json').then((text) =>
       text.json().then((json) => {
         var nexId = 0
@@ -62,6 +78,7 @@ export function Home() {
         }}
       >
         <Card
+          //This card contains the buttons to change which boundingboxes are drawn
           bodyStyle={{ padding: '4px', display: 'flex' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -93,6 +110,7 @@ export function Home() {
         </Card>
 
         <Card
+          //This card contains the objects that are being tracked, TODO: implement tracking
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -127,6 +145,7 @@ export function Home() {
         </Card>
 
         <Card
+          //This card contains the list of cameras that are connected
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -145,6 +164,7 @@ export function Home() {
               sources.map((source) => {
                 var iterator = 0
                 return (
+                  //Create a cameracard for each stream
                   <CameraCard
                     key={`cameraCard-${iterator++}`}
                     id={source.id}
@@ -159,6 +179,7 @@ export function Home() {
 
       <div style={{ overflowY: 'auto' }}>
         {sources && (
+          //The grid contains all the videoplayers
           <Grid
             sources={sources}
             primary={primary ?? sources[0]?.id}
@@ -170,6 +191,7 @@ export function Home() {
     </Layout.Content>
   )
 
+  /** Placeholder to start tracking something. TODO: implement tracking */
   async function addSelection() {
     const pictures = ['car', 'guy', 'garden']
     const picture = pictures[Math.floor(Math.random() * pictures.length)]
@@ -192,6 +214,7 @@ export function Home() {
     reader.readAsDataURL(blob)
   }
 
+  /** Placeholder to stop tracking an object, TODO: implement tracking */
   function removeSelection(id: number) {
     setTracking(tracking.filter((tracked) => tracked.id !== id))
   }
