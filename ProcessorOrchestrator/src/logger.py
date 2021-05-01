@@ -20,85 +20,112 @@ def log(message):
     """Writes a general message to the log
 
     Args:
-        message:
+        message (string):
             The message to be logged.
+    Returns:
+        None
     """
     logging.info(message)
+    print(message)
 
 
 def log_get_request(location, ip_address):
     """Writes a get request to the log.
 
     Args:
-        location:
+        location (string):
             Url path where this request was made.
-        ip_address:
+        ip_address (string):
             Ip address of the request origin.
+    Returns:
+        None
     """
-    logging.info(f"GET Request made for {location} from {ip_address}")
+    message = f"GET Request made for {location} from {ip_address}"
+    logging.info(message)
+    print(message)
 
 
 def log_message_receive(message, location, ip_address):
     """Logs a message that was received.
 
     Args:
-        message:
+        message (string):
             The message that was received.
-        location:
+        location (string):
             Url path where this request was made.
-        ip_address:
+        ip_address (string):
             Ip address where the message was sent from.
+    Returns:
+        None
     """
-    logging.info(f"Received message on {location} from {ip_address}: {message}")
+    message = f"Received message on {location} from {ip_address}: {message}"
+    logging.info(message)
+    print(message)
 
 
 def log_message_send(message, location, ip_address):
     """Logs a message that was sent.
 
         Args:
-            message:
+            message (string):
                 The message that was sent.
-            location:
+            location (string):
                 Url path where this request was made.
-            ip_address:
+            ip_address (string):
                 Ip address where the message was sent to.
+    Returns:
+        None
     """
-    logging.info(f"Sent message on {location} from {ip_address}: {message}")
+    message = f"Sent message on {location} from {ip_address}: {message}"
+    logging.info(message)
+    print(message)
 
 
 def log_connect(location, ip_address):
     """Logs a new websocket connection.
 
         Args:
-            location:
+            location (string):
                 Url path where this connection was made.
-            ip_address:
+            ip_address (string):
                 Ip address of the connection origin.
+    Returns:
+        None
     """
-    logging.info(f"Websocket connected on {location} from {ip_address}")
+    message = f"Websocket connected on {location} from {ip_address}"
+    logging.info(message)
+    print(message)
 
 
 def log_disconnect(location, ip_address):
     """Logs a new websocket connection.
 
         Args:
-            location:
+            location (string):
                 Url path where this connection was stopped.
-            ip_address:
+            ip_address (string):
                 Ip address of the connection origin.
+    Returns:
+        None
     """
-    logging.info(f"Websocket disconnected on {location} from {ip_address}")
+    message = f"Websocket disconnected on {location} from {ip_address}"
+    logging.info(message)
+    print(message)
 
 
 def log_error(location, error, ip_address):
     """Logs an error.
 
         Args:
-            location:
+            location (string):
                 Url path where this error was handled.
-            error:
+            error (string):
                 The error that was handled.
-            ip_address:
+            ip_address (string):
                 Ip address of the source of the error.
+    Returns:
+        None
     """
-    logging.warning(f"{error} on {location} from {ip_address}")
+    message = f"{error} on {location} from {ip_address}"
+    logging.warning(message)
+    print(message)

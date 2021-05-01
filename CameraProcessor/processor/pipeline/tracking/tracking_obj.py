@@ -5,10 +5,11 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-
 import json
 import cv2
 import numpy as np
+
+from processor.pipeline.detection.detection_obj import DetectionObj
 
 
 class TrackingObj:
@@ -17,13 +18,13 @@ class TrackingObj:
     def __init__(self):
         """Inits TrackingObj with default values.
         """
-        self.det_obj = None
+        self.det_obj: DetectionObj = None
         self.frame = None
         self.height = 1
         self.width = 1
         self.bounding_boxes = []
 
-    def update(self, det_obj):
+    def update(self, det_obj: DetectionObj):
         """Update TrackingObj with det_obj and set bounding_boxes to an empty list.
 
         Args:
@@ -107,3 +108,16 @@ class TrackingObj:
             "frameId": self.det_obj.timestamp,
             "boxes": [bounding_box.to_dict() for bounding_box in self.bounding_boxes],
         })
+
+    def to_dict(self):
+        """Converts the object to a dict containing frame, timestamp, and list of bounding boxes
+
+        Returns:
+            A python dict of the object
+
+        """
+        return {
+            "frame": self.frame,
+            "frameId": self.det_obj.timestamp,
+            "boxes": [bounding_box.to_dict() for bounding_box in self.bounding_boxes]
+        }

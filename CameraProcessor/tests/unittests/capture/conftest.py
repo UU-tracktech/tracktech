@@ -11,6 +11,7 @@ import pytest
 from processor.input.hls_capture import HlsCapture
 from processor.input.image_capture import ImageCapture
 from processor.input.video_capture import VideoCapture
+from tests.conftest import root_path
 
 
 def __get_images_dir():
@@ -19,9 +20,7 @@ def __get_images_dir():
     Returns: a string containing the file path to the image folder.
 
     """
-    __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
-    # __folder_name = 'test'
-    __images_dir = os.path.realpath(os.path.join(__root_dir, 'data/annotated/test/img1/'))
+    __images_dir = os.path.realpath(os.path.join(root_path, 'data/annotated/test/img1/'))
     return __images_dir
 
 
@@ -31,9 +30,7 @@ def __get_video():
     Returns: a string containing the file path to a video
 
     """
-    __root_dir = os.path.join(os.path.dirname(__file__), '../../../')
-    # __folder_name = 'test'
-    __videos_dir = os.path.realpath(os.path.join(__root_dir, 'data/videos/test.mp4'))
+    __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
     return __videos_dir
 
 
