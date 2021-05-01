@@ -18,7 +18,6 @@ def draw_bounding_boxes(frame, bounding_boxes):
     """
     # Color and shape
     red = (0, 0, 255)
-    height, width, _ = frame.shape
 
     # Draw each box on frame
     for bounding_box in bounding_boxes:
@@ -34,7 +33,6 @@ def draw_detection_boxes(frame, bounding_boxes):
     """
     # Color and shape
     red = (0, 0, 255)
-    height, width, _ = frame.shape
 
     # Draw each box on the frame with tag
     for bounding_box in bounding_boxes:
@@ -57,7 +55,6 @@ def draw_tracking_boxes(frame, bounding_boxes):
     """
     # Color and shape
     white = (255, 255, 255)
-    height, width, _ = frame.shape
 
     # Draw each box on frame with identifier tag
     for bounding_box in bounding_boxes:

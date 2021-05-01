@@ -8,6 +8,7 @@ Utrecht University within the Software Project course.
 import pytest
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestCaptures:
     """Tests the captures opening and closing
 

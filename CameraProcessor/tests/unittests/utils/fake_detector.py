@@ -5,7 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import logging
 import random
 
 from processor.data_object.bounding_box import BoundingBox

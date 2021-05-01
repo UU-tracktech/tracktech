@@ -16,8 +16,8 @@ Utrecht University within the Software Project course.
 import os
 import logging
 import sys
-import cv2
 import configparser
+import cv2
 
 import processor.utils.draw as draw
 from processor.input.image_capture import ImageCapture
