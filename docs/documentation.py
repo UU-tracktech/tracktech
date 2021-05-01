@@ -97,9 +97,11 @@ def generate_documentation(root_folder):
 
 
 def generate_index():
-    root = os.path.join(os.path.dirname(__file__), 'html')
+    """Generate index.html file that links to all generated HTML in subfolders.
+    """
+    html_root = os.path.join(os.path.dirname(__file__), 'html')
 
-    index_loc = os.path.join(root, 'index.html')
+    index_loc = os.path.join(html_root, 'index.html')
 
     # Removes current index.html to later generate it anew.
     # Must be removed before searching to prevent conflicting finds.
@@ -108,9 +110,9 @@ def generate_index():
 
     index_paths = []
 
-    for path, sub_dirs, files in os.walk(root):
+    for path, sub_dirs, files in os.walk(html_root):
         if 'index.html' in files:
-            index_paths.append(os.path.join(path, 'index.html').replace(root, '', 1).replace('\\', '/'))
+            index_paths.append(os.path.join(path, 'index.html').replace(html_root, '', 1).replace('\\', '/'))
 
             # Stop walking into sub_dirs, index has already been found in current branch.
             sub_dirs[:] = []
