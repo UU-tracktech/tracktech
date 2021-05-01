@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 from subprocess import Popen
 
-from utils import get_stream_variables
+from src.utils import get_stream_variables
 
 
 def get_conversion_process(ip_address, audio, camera, root):
