@@ -6,6 +6,12 @@ Utrecht University within the Software Project course.
 
  */
 
+/**
+  The cameracard component is used in the cameras list.
+  There is a card for each connected camera, shows an identiefier and buttons
+  to enlarge, shrink or (TODO: delete) that camera's videoplayer
+*/
+
 import React from 'react'
 import CSS from 'csstype'
 import { Button, Card } from 'antd'
@@ -16,10 +22,11 @@ import {
   CloseOutlined
 } from '@ant-design/icons'
 
+// The properties each card has
 type cameraCardProps = {
-  id: string
-  title: string
-  setSize: (sourceId: string) => void
+  id: string //An identifier so we know what camera it belongs to
+  title: string //The name of the camera
+  setSize: (sourceId: string) => void //callback function for the resize button
 }
 
 export function CameraCard(props: cameraCardProps) {
@@ -27,6 +34,7 @@ export function CameraCard(props: cameraCardProps) {
     fontSize: '16pt'
   }
 
+  //Style property so it can be reused to prevent duplicate code
   var buttonStyle: CSS.Properties = {
     margin: '8px 4px 8px 0px',
     padding: '2px',
@@ -37,24 +45,29 @@ export function CameraCard(props: cameraCardProps) {
 
   return (
     <Card
+      //camera identifier
       key={props.id}
+      //The camera icon and the name next to it
       title={
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <VideoCameraOutlined style={{ padding: '0px 4px' }} />
           {props.title}
         </div>
       }
+      //The settings icon (TODO: implement camera settings)
       extra={
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <SettingOutlined />
         </div>
       }
+      //Styling
       size="small"
       headStyle={{ padding: '0px 8px' }}
       bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
       <Button
+        //Resize button
         type="primary"
         onClick={() => props.setSize(props.id)}
         style={buttonStyle}
@@ -62,6 +75,7 @@ export function CameraCard(props: cameraCardProps) {
         <ExpandOutlined style={iconStyle} />
       </Button>
       <Button
+        //Delete button (TODO: implement removing a camera feed)
         type="primary"
         danger
         onClick={() => alert('clicked on delete')}
