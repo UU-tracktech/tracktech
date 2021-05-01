@@ -14,6 +14,7 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 
+from auth.auth import Auth
 from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
 from src.log_handler import LogHandler
@@ -31,7 +32,22 @@ def main():
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
 
-    app = create_app()
+    # Get auth ready by reading the environment variables
+    public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
+    client_auth, processor_auth = None, None
+    if public_key is not None and audience is not None:
+        client_role = os.environ.get('CLIENT_ROLE')
+        if client_role is not None:
+            logger.log("using client token validation")
+            client_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
+                audience=audience, role=client_role)
+        processor_role = os.environ.get('PROCESSOR_ROLE')
+        if processor_role is not None:
+            logger.log("using processor token validation")
+            processor_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
+                audience=audience, role=processor_role)
+
+    app = create_app(client_auth, processor_auth)
 
     if use_tls:
         # Create a ssl context
@@ -51,10 +67,14 @@ def main():
     IOLoop.current().start()
 
 
-def create_app():
+def create_app(client_auth, processor_auth):
     """Creates tornado application.
 
     Creates the routing in the application and returns the complete app.
+
+    Args:
+        client_auth:  A auth object to validate clients with
+        processor_auth:  A auth object to validate processors with
 
     Returns:
         Application
@@ -67,7 +87,7 @@ def create_app():
     ]
 
     # Construct and serve the tornado application.
-    return Application(handlers)
+    return Application(handlers, client_auth=client_auth, processor_auth=processor_auth)
 
 
 if __name__ == "__main__":
