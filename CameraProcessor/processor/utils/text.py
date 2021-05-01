@@ -13,16 +13,18 @@ def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
     """Converts the bounding boxes to JSON format of API call.
 
     Args:
-        bounding_boxes (List[BoundingBox]): boxes that get converted to json.
+        bounding_boxes (BoundingBoxes): boxes that get converted to json.
         timestamp (Timestamp): timestamp of box used for syncing in interface.
 
     Returns:
         JSON representation of the object.
     """
+    boxes_list = bounding_boxes.get_bounding_boxes()
+
     return json.dumps({
         "type": "boundingBoxes",
         "frameId": timestamp,
-        "boxes": [__bounding_box_to_json(bounding_box) for bounding_box in bounding_boxes],
+        "boxes": [__bounding_box_to_json(bounding_box) for bounding_box in boxes_list],
     })
 
 
