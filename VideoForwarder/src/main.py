@@ -1,4 +1,4 @@
-"""Reads the first environment variables and starts the webserver.
+"""Starts the tornado webserver.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -20,7 +20,7 @@ def convert_json_to_camera(json_file):
     """Converts json file content to camera objects inside dict
 
     Args:
-        jsonFile: Path to json file which contains cameras
+        jsonFile (str): Path to json file which contains cameras
 
     Returns:
         Dict{Camera_name, Camera_obj}: camera created from json file content in dictionary
