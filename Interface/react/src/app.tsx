@@ -6,6 +6,11 @@ Utrecht University within the Software Project course.
 
  */
 
+/*
+  App is the starting point of the React app
+  This gets inserted into the DOM by index.tsx
+*/
+
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { useKeycloak } from '@react-keycloak/web'
@@ -31,6 +36,7 @@ export function App() {
         gridTemplateRows: 'auto 1fr'
       }}
     >
+      {/* Shows the navbar and page contents depending on user authentication */}
       <WebsocketProvider>
         <BrowserRouter key={1}>
           <NavMenu key={0} />
