@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
 """
 import os
-from tests.unittests.preannotations.test_pre_annotations import example_json_file
+from tests.unittests.training.test_pre_annotations import example_json_file
 from processor.training.pre_annotations import PreAnnotations
 
 

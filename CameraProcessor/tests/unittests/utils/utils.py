@@ -1,5 +1,9 @@
 """Util methods that are available to other unit tests as well
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import cv2
 from tests.conftest import root_path

@@ -1,6 +1,11 @@
 """Tests the processor with a started video forwarder to see whether HlsCapture works correctly
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
+
 import ffmpeg
 import pytest
 import cv2
