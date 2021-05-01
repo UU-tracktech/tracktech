@@ -16,10 +16,10 @@ paths_to_ignore = ['.git', 'CameraProcessor/processor/pipeline/detection/yolov5'
                    'venv', 'CameraProcessor/processor/pipeline/tracking/sort/']
 
 
-def get_files_too_many_classes():
+def get_files_too_many_classes(_):
     """Print the absolute paths of files with too many classes to the console."""
     skip = False
-    for path in pathlib.Path(os.path.join(os.getcwd()), '.').rglob('*.py'):
+    for path in pathlib.Path(os.path.join(os.getcwd()), '..').rglob('*.py'):
         amount_of_classes = 0
         for ignore_path in paths_to_ignore:
             if ignore_path in str(path.absolute()).replace('\\\\', '/').replace('\\', '/'):
