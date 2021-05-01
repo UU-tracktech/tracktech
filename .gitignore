@@ -118,3 +118,7 @@ venv/
 CameraProcessor/src/yolov5s.pt
 
 CameraProcessor/.pylintrc
+CameraProcessor/data/annotated/test/img1-complete/
+CameraProcessor/processor/training/detection/plots/
+CameraProcessor/utility/pylint_ignore.py
+CameraProcessor/utility/__init__.py
