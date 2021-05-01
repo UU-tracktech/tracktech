@@ -24,6 +24,7 @@ class ClientSocket(WebSocketHandler):
 
     Attributes:
         identifier: An int that serves as the unique identifier to this object.
+        authorized: A bool that shows whether the websocket connection is authorized.
     """
 
     def __init__(self, application, request):
@@ -35,12 +36,16 @@ class ClientSocket(WebSocketHandler):
         """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
+        self.authorized = False
+
+        # Load the auth object from appsettings
+        self.auth = self.application.settings.get('client_auth')
 
     def check_origin(self, origin):
         """Override to enable support for allowing alternate origins.
 
         Args:
-            origin (str):
+            origin (string):
                 Origin of the HTTP request, is ignored as all origins are allowed.
         Returns:
             bool
@@ -60,6 +65,7 @@ class ClientSocket(WebSocketHandler):
         logger.log(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
+    # pylint: disable=broad-except
     def on_message(self, message):
         """Handles a message from a client that is received on the websocket.
 
@@ -93,19 +99,29 @@ class ClientSocket(WebSocketHandler):
                     lambda: self.send_mock_data(message_object)
             }
 
-            # Execute correct function
-            function = actions.get(message_object["type"])
-            if function is None:
-                logger.log("Someone gave an unknown command")
-            else:
-                function()
+            action_type = message_object["type"]
 
-        except ValueError:
+            if self.authorized or self.auth is None:
+                # Execute correct function
+                function = actions.get(action_type)
+                if function is None:
+                    logger.log("Someone gave an unknown command")
+                else:
+                    function()
+            elif action_type == "authenticate":
+                self.authenticate(message_object)
+            else:
+                logger.log("A client was not authenticated first")
+
+        except ValueError as exc:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
-            logger.log("Someone wrote bad json")
-        except KeyError:
+            print("Someone wrote bad json", exc)
+        except KeyError as exc:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
-            logger.log("Someone missed a property in their json")
+            print("Someone missed a property in their json", exc)
+        except Exception as exc:
+            print(exc)
+            logger.log("Someone wrote bad json")
 
     def send_message(self, message):
         """Sends a message over the websocket and logs it.
@@ -130,6 +146,19 @@ class ClientSocket(WebSocketHandler):
         logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
         logger.log(f"Client with id {self.identifier} disconnected")
+
+    def authenticate(self, message):
+        """Authenticates a client
+
+        Args:
+            message(json):
+                JSON message that was received. It should contain the following property:
+                    - "jwt" | The jwt token containing information about a user
+        """
+
+        if self.auth is not None:
+            self.auth.validate(message["jwt"])
+            self.authorized = True
 
     @staticmethod
     def start_tracking(message):
@@ -168,7 +197,7 @@ class ClientSocket(WebSocketHandler):
         }))
 
     @staticmethod
-    def stop_tracking(message) -> None:
+    def stop_tracking(message):
         """Removes tracking object and sends stop tracking command to all processors
 
         Args:
@@ -192,7 +221,7 @@ class ClientSocket(WebSocketHandler):
 
         logger.log(f"stopped tracking of object with id {object_id}")
 
-    def send_mock_data(self, message) -> None:
+    def send_mock_data(self, message):
         """Sends a few mock messages to the client for testing purposes
 
         Args:

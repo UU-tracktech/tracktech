@@ -25,6 +25,7 @@ class ProcessorSocket(WebSocketHandler):
 
     Attributes:
         identifier: An int that serves as the unique identifier to this object.
+        authorized: A bool that shows whether or not the connection is authorized.
     """
 
     def __init__(self, application, request):
@@ -36,12 +37,16 @@ class ProcessorSocket(WebSocketHandler):
         """
         super().__init__(application, request)
         self.identifier = None
+        self.authorized = False
+
+        # Load the auth object from appsettings
+        self.auth = self.application.settings.get('processor_auth')
 
     def check_origin(self, origin):
         """Override to enable support for allowing alternate origins.
 
         Args:
-            origin (str):
+            origin (string):
                 Origin of the HTTP request, is ignored as all origins are allowed.
         Returns:
             bool
@@ -59,13 +64,14 @@ class ProcessorSocket(WebSocketHandler):
         logger.log_connect("/processor", self.request.remote_ip)
         logger.log("New processor connected")
 
+    # pylint: disable=broad-except
     def on_message(self, message):
         """Handles a message from a processor that is received on the websocket.
 
         Method which handles messages coming in from a processor. The messages are expected in json format.
 
         Args:
-            message (str):
+            message (string):
                 JSON with at least a "type" property. This property can have the following values:
                     - "boundingBoxes" | This signifies a message that contains bounding boxes, see send_bounding_boxes
                                         for the other expected properties.
@@ -94,13 +100,19 @@ class ProcessorSocket(WebSocketHandler):
                     lambda: self.send_mock_commands(message_object)
             }
 
-            # Execute correct function
-            function = actions.get(message_object["type"])
+            action_type = message_object["type"]
 
-            if function is None:
-                logger.log("Someone gave an unknown command")
+            if self.authorized or self.auth is None:
+                # Execute correct function
+                function = actions.get(action_type)
+                if function is None:
+                    logger.log("Someone gave an unknown command")
+                else:
+                    function()
+            elif action_type == "authenticate":
+                self.authenticate(message_object)
             else:
-                function()
+                logger.log("A processor was not authenticated first")
 
         except ValueError:
             logger.log_error("/processor", "ValueError", self.request.remote_ip)
@@ -108,6 +120,21 @@ class ProcessorSocket(WebSocketHandler):
         except KeyError:
             logger.log_error("/processor", "KeyError", self.request.remote_ip)
             logger.log("Someone missed a property in their json")
+        except Exception as exc:
+            logger.log_error("/processor", exc, self.request.remote_ip)
+
+    def authenticate(self, message):
+        """Authenticates a processor
+
+        Args:
+            message (json):
+                JSON message that was received. It should contain the following property:
+                    - "jwt" | The jwt token containing information about a user
+        """
+
+        if self.auth is not None:
+            self.auth.validate(message["jwt"])
+            self.authorized = True
 
     def send_message(self, message):
         """Sends a message over the websocket and logs it.
@@ -133,7 +160,7 @@ class ProcessorSocket(WebSocketHandler):
     def data_received(self, chunk):
         """Unused method that could handle streamed request data"""
 
-    def register_processor(self, message) -> None:
+    def register_processor(self, message):
         """Registers a processor under the given identifier.
 
         Args:
