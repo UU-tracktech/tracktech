@@ -160,7 +160,7 @@ class ProcessorSocket(WebSocketHandler):
     def data_received(self, chunk):
         """Unused method that could handle streamed request data"""
 
-    def register_processor(self, message) -> None:
+    def register_processor(self, message):
         """Registers a processor under the given identifier.
 
         Args:

@@ -147,7 +147,7 @@ class ClientSocket(WebSocketHandler):
         del clients[self.identifier]
         logger.log(f"Client with id {self.identifier} disconnected")
 
-    def authenticate(self, message) -> None:
+    def authenticate(self, message):
         """Authenticates a client
 
         Args:
@@ -197,7 +197,7 @@ class ClientSocket(WebSocketHandler):
         }))
 
     @staticmethod
-    def stop_tracking(message) -> None:
+    def stop_tracking(message):
         """Removes tracking object and sends stop tracking command to all processors
 
         Args:
@@ -221,7 +221,7 @@ class ClientSocket(WebSocketHandler):
 
         logger.log(f"stopped tracking of object with id {object_id}")
 
-    def send_mock_data(self, message) -> None:
+    def send_mock_data(self, message):
         """Sends a few mock messages to the client for testing purposes
 
         Args:
