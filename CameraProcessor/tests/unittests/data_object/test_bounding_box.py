@@ -6,7 +6,11 @@ Utrecht University within the Software Project course.
 
 """
 import pytest
-from processor.pipeline.detection.bounding_box import BoundingBox
+import json
+from processor.data_object.bounding_box import BoundingBox
+from processor.utils.text import bounding_boxes_to_json
+from processor.data_object.rectangle import Rectangle
+from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -19,12 +23,12 @@ class TestBoundingBox:
         """Set ups bounding_box for unit testing.
 
         """
-        self.data = BoundingBox(1, [0, 0, 1, 1], "person", 0.5)
-        self.identifier = self.data.__identifier
-        self.rectangle = self.data.rectangle
+        self.data = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5)
+        self.identifier = self.data.get_identifier()
+        self.rectangle = self.data.get_rectangle()
         self.feature = None
-        self.classification = self.data.classification
-        self.certainty = self.data.certainty
+        self.classification = self.data.get_classification()
+        self.certainty = self.data.get_certainty()
 
     # Testing typechecking
     def test_type_identifier(self):
@@ -141,7 +145,15 @@ class TestBoundingBox:
         """Asserts if value of rectangle is correct.
 
         """
-        assert self.rectangle == [0, 0, 1, 1]
+        assert1 = (Rectangle(0, 0, 1, 1).get_x1(),
+                   Rectangle(0, 0, 1, 1).get_y1(),
+                   Rectangle(0, 0, 1, 1).get_x2(),
+                   Rectangle(0, 0, 1, 1).get_y2())
+        assert2 = (self.rectangle.get_x1(),
+                   self.rectangle.get_y1(),
+                   self.rectangle.get_x2(),
+                   self.rectangle.get_y2())
+        assert assert1 == assert2
 
     def test_value_feature(self):
         """Asserts if value of feature is correct.
@@ -162,12 +174,6 @@ class TestBoundingBox:
         assert self.certainty == 0.5
 
     # Testing form
-    def test_length_rectangle(self):
-        """Asserts if rectangle is of length 4.
-
-        """
-        assert len(self.rectangle) == 4
-
     def test_range_certainty(self):
         """Asserts if certainty is within range 0...1.
 
@@ -179,14 +185,17 @@ class TestBoundingBox:
         """Asserts if the to_json() method works properly
 
         """
-        assert self.data.to_json() == f"""{{"boxId": {self.identifier}, "rect": {self.rectangle}}}"""
+        assert1 = json.loads(bounding_boxes_to_json(BoundingBoxes([self.data]), 1))
+        assert2 = json.loads(
+            json.dumps({"type": "boundingBoxes", "frameId": 1, "boxes": ['{"boxId": 1, "rect": [0, 0, 1, 1]}']}))
+        assert assert1 == assert2
 
     def test_invalid_box(self):
         """Asserts if a rectangle of wrong length raises the right exception
 
         """
-        with pytest.raises(AttributeError):
-            BoundingBox(3, [5, 3, 2, 1, 1, 9], "Multidimensional Antediluvian Evil", 1.0)
+        with pytest.raises(TypeError):
+            BoundingBox(3, Rectangle(5, 3, 2, 1, 1, 9), "Multidimensional Antediluvian Evil", 1.0)
 
 
 if __name__ == '__main__':

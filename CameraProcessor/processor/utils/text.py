@@ -44,7 +44,7 @@ def __bounding_box_to_json(bounding_box):
                 bounding_box.get_rectangle().get_x1(),
                 bounding_box.get_rectangle().get_y1(),
                 bounding_box.get_rectangle().get_x2(),
-                bounding_box.get_rectangle().get_y1()
+                bounding_box.get_rectangle().get_y2()
             ]
         }
     )
