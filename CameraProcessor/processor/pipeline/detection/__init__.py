@@ -1,4 +1,9 @@
-"""Excludes yolov5 folder from documentation generation
+"""Excludes yolov5 folder from documentation generation.__all__
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-__all__ = ['bounding_box', 'detection_obj', 'yolov5_runner']
+
+__all__ = ['idetector', 'yolov5_runner']

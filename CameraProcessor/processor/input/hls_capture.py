@@ -1,133 +1,171 @@
-"""Contains the HlsCapture class
+"""Contains the HlsCapture class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)"""
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 
 import threading
+import sys
 import time
 import logging
-from typing import List
 import ffmpeg
 import cv2
+
 from processor.input.icapture import ICapture
+from processor.data_object.frame_obj import FrameObj
 
 
 class HlsCapture(ICapture):
     """Implementation of the ICapture class which handles an HLS stream with timestamps.
 
     Main thread runs the implementation with open, close and getting the next frame.
-    Seperate thread runs the reading loop, which reads the next frame at a constant rate.
+    Separate thread runs the reading loop, which reads the next frame at a constant rate.
     Another thread gets the time stamp of the stream once and going from there.
+
+    Attributes:
+        hls_url (str): Url of hls stream.
+        cap (cv2.VideoCapture): Capture object that serves frame one by one.
+        __cap_initialized (bool): Whether the capture is initialized.
+
+        __start_time_stamp (float): Start time of capture object.
+        __frame_time_stamp (float): Time stamp of current frame.
+        __last_frame_time_stamp (float): Time stamp of previous frame.
+        __hls_start_time_stamp (float): Start time of hls stream.
+
+        __thread_start_time (float): Start time of thread.
+        __wait_ms (float): Time between frames in ms.
+
+        __current_frame (numpy.ndarray): Current frame.
+        __current_frame_nr (int): Current frame index.
+
+        __thread_running (bool): Whether separate thread is running.
+
+        __reading_thread (Thread): Contains thread that reads.
+
+        __probe_done (bool): Whether ffmpeg probe is done.
+        __found_stream (bool): Whether stream was found.
+
     """
     def __init__(self, hls_url='http://81.83.10.9:8001/mjpg/video.mjpg'):
-        """Initiates the capture object with a hls url and starts reading frames
+        """Initiates the capture object with a hls url and starts reading frames.
 
-        Default hls_url is of a public stream that is available 24/7
+        Default hls_url is of a public stream that is available 24/7.
 
         Args:
-            hls_url: Url the videocapture has to connect to
+            hls_url: Url the videocapture has to connect to.
         """
 
         # Stream related properties
         self.hls_url = hls_url
         self.cap = None
-        self.cap_initialized = False
+        self.__cap_initialized = False
 
         # Time stamps
-        self.start_time_stamp = 0
-        self.frame_time_stamp = 0
-        self.last_frame_time_stamp = 0
-        self.hls_start_time_stamp = 0
+        self.__start_time_stamp = 0
+        self.__frame_time_stamp = 0
+        self.__last_frame_time_stamp = 0
+        self.__hls_start_time_stamp = 0
 
         # Time
-        self.thread_start_time = 0
-        self.wait_ms = 0
+        self.__thread_start_time = 0
+        self.__wait_ms = 0
 
         # Frame numbers
-        self.current_frame = 0
-        self.current_frame_nr = 0
+        self.__current_frame = None
+        self.__current_frame_nr = 0
 
         # Tells thread they should keep running
-        self.thread_running = True
+        self.__thread_running = False
 
-        # Create thread that reads streams
-        self.reading_thread = threading.Thread(target=self.sync)
-        self.reading_thread.daemon = True
-        self.reading_thread.start()
+        # Thread
+        self.__reading_thread = None
 
         # Reconnect with timeout
-        timeout_left = 10
-        sleep = 1
+        self.__probe_done = False
+        self.__found_stream = False
+        tries_left = 10
+
         # Sleep is essential so processor has a prepared self.cap
-        while not self.cap_initialized and timeout_left > 0:
-            logging.info("Waiting 1 seconds before rechecking if stream is opened..")
-            time.sleep(sleep)
-            timeout_left -= sleep
+        while not self.__cap_initialized and not self.__found_stream and tries_left > 0:
+            self.__probe_done = False
+            self.__connect_to_stream()
+
+            # Probe did not yet finish
+            while not self.__probe_done:
+                continue
+
+            time.sleep(1)
+            tries_left -= 1
 
         # Raise error when capture is never created in other thread
-        if not self.cap_initialized:
+        if not self.__found_stream:
             logging.error("cv2.VideoCapture probably raised exception")
             raise TimeoutError("HLS Capture never opened")
 
-    def opened(self) -> bool:
-        """Check whether the current capture object is still opened
+    def __connect_to_stream(self):
+        """Connects to hls stream in separate thread."""
+        # Create thread that reads streams
+        self.__reading_thread = threading.Thread(target=self.sync)
+        self.__reading_thread.daemon = True
+        self.__reading_thread.start()
 
-        Returns:
-            Whether stream is still opened at this point of time
+    def opened(self):
+        """Check whether the current capture object is still opened.
+
+        Returns (bool):
+            Whether stream is still opened at this point of time.
         """
         if self.cap:
             return self.cap.isOpened()
         return False
 
-    def close(self) -> None:
-        """Closes the capture object and the thread that is responsible
-        for serving the current frame
-        """
+    def close(self):
+        """Closes the capture object and the thread that is responsible for serving the current frame."""
         logging.info('HLS stream closing')
         logging.info("Joining thread")
-        self.thread_running = False
-        self.reading_thread.join()
-        logging.info("Thread joined, releasing capture")
-        self.cap.release()
+        self.__thread_running = False
+        self.__reading_thread.join()
+        logging.info("Thread joined")
 
-    def get_next_frame(self) -> (bool, List[List[int]], float):
-        """Gets the next frame from the hls stream
+    def get_next_frame(self):
+        """Gets the next frame from the hls stream.
 
-        Returns:
+        Returns (bool, FrameObj):
             Boolean whether a new frame has been returned compared to the previous one.
-            Frame which is the current frame to be processed.
-            Timestamp of the current frame given back by the method.
+            Frame Object containing the next frame.
         """
         # Frame is not different from the last one
-        if self.frame_time_stamp == self.last_frame_time_stamp:
-            return False, None, None
-        self.last_frame_time_stamp = self.frame_time_stamp
-        return True, self.current_frame, self.frame_time_stamp
+        if self.__frame_time_stamp == self.__last_frame_time_stamp:
+            return False, None
 
-    def read(self) -> None:
-        """Method that runs in seperate thread that goes through the frames of the
-        stream at a consistent pace
+        self.__last_frame_time_stamp = self.__frame_time_stamp
+        return True, FrameObj(self.__current_frame, self.__frame_time_stamp)
 
-        Reads frames at frame rate of the stream and puts them in self.current_frame
-        Calculates at what time the next frame is expected and waits that long
+    def __read(self):
+        """Method that runs in separate thread that goes through the frames of the stream at a consistent pace.
+
+        Reads frames at frame rate of the stream and puts them in self.current_frame.
+        Calculates at what time the next frame is expected and waits that long.
         """
-        while self.thread_running:
+        while self.__thread_running:
             # Reads next frame
-            ret, self.current_frame = self.cap.read()
+            ret, self.__current_frame = self.cap.read()
 
             # If frame was not yet ready
             if not ret:
                 continue
-            self.current_frame_nr += 1
+
+            self.__current_frame_nr += 1
 
             # What is the wait time until next frame has to be prepared
-            expected_next_frame_time = self.wait_ms * self.current_frame_nr
-            time_into_stream = time.time() - self.thread_start_time
+            expected_next_frame_time = self.__wait_ms * self.__current_frame_nr
+            time_into_stream = time.time() - self.__thread_start_time
             wait_time = int(expected_next_frame_time - time_into_stream * 1000)
 
             # Saves timestamp and waits calculated amount
-            self.frame_time_stamp = self.hls_start_time_stamp + time_into_stream
+            self.__frame_time_stamp = self.__hls_start_time_stamp + time_into_stream
 
             # Next frame should already have been read
             if wait_time <= 0:
@@ -135,47 +173,76 @@ class HlsCapture(ICapture):
 
             cv2.waitKey(wait_time)
 
-    def sync(self) -> None:
-        """Method to instantiate the video connection with the HLS stream
+        # Release cap in thread that uses it to prevent following bug:
+        # Other thread stops cap whilst current thread is still reading the next frame
+        self.cap.release()
+        logging.info("Capture is released")
 
-        Makes a separate thread to request meta-data and sets the default values for the variables
+    def sync(self):
+        """Method to instantiate the video connection with the HLS stream.
+
+        Makes a separate thread to request meta-data and sets the default values for the variables.
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
+        self.cap = None
 
-        meta_thread = threading.Thread(target=self.get_meta_data)
+        meta_thread = threading.Thread(target=self.__get_meta_data)
         meta_thread.daemon = True
         meta_thread.start()
 
         # Instantiates the connection with the hls stream
         self.cap = cv2.VideoCapture(self.hls_url)
 
-        self.cap_initialized = True
-
-        # Saves the current time of a successful established connection
-        self.thread_start_time = time.time()
-
-        logging.info('Opened HLS stream')
-
-        # Get the FPS of the hls stream and turn it into a delay of when
-        # each frame should be displayed
-        self.wait_ms = 1000 / self.cap.get(cv2.CAP_PROP_FPS)
-        self.read()
+        # Make sure thread has finished before starting main loop
         meta_thread.join()
 
-    def get_meta_data(self) -> None:
-        """Make a http request with ffmpeg to get the meta-data of the HLS stream,
-        """
+        # Exit thread if stream was not found
+        if not self.__found_stream:
+            self.cap.release()
+            logging.warning('Stream was not found')
+            sys.exit()
+
+        # Saves the current time of a successful established connection
+        self.__thread_start_time = time.time()
+
+        # Exit because capture did not start correctly
+        fps = self.cap.get(cv2.CAP_PROP_FPS)
+        if fps == 0:
+            logging.warning('Capture not found correctly')
+            sys.exit()
+
+        # How much time has to get awaited between frames
+        self.__wait_ms = 1000 / fps
+
+        # Thread should continue running since it is initialized correctly
+        self.__thread_running = True
+        logging.info("Thread started successfully!")
+
+        # Done with probing and cap is initialized
+        self.__cap_initialized = True
+        self.__probe_done = True
+
+        self.__read()
+
+    # pylint: disable=protected-access
+    def __get_meta_data(self):
+        """Make a http request with ffmpeg to get the meta-data of the HLS stream."""
         # extract the start_time from the meta-data to get the absolute segment time
         logging.info('Retrieving meta data from HLS stream')
-        # pylint: disable=no-member
-        meta_data = ffmpeg.probe(self.hls_url)
-        # pylint: enable=no-member
+        # Probe HLS stream link
         try:
-            self.hls_start_time_stamp = float(meta_data['format']['start_time'])
-        # Json did not contain key
-        except KeyError as error:
-            logging.warning(f'Json does not contain keys for {error}')
+            # pylint: disable=no-member
+            meta_data = ffmpeg.probe(self.hls_url)
+            # pylint: enable=no-member
+            self.__hls_start_time_stamp = float(meta_data['format']['start_time'])
 
-    def get_capture_length(self) -> int:
-        """Returns None, since its theoretically infinite"""
-        return None
+        # Ffmpeg probe error
+        except ffmpeg._run.Error as error:
+            logging.error(f'ffmpeg could not find stream, giving the following error: {error}')
+            return
+
+        # Json did not contain key
+        except KeyError as key_error:
+            logging.warning(f'Json does not contain keys for {key_error}')
+
+        self.__found_stream = True

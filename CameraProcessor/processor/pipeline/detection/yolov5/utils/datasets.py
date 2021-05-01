@@ -20,9 +20,14 @@ from PIL import Image, ExifTags
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
-from processor.pipeline.detection.yolov5.utils.general import xyxy2xywh, xywh2xyxy, xywhn2xyxy, xyn2xy, segment2box, \
-    segments2boxes, resample_segments, clean_str
-from processor.pipeline.detection.yolov5.utils.torch_utils import torch_distributed_zero_first
+try:
+    from processor.pipeline.detection.yolov5.utils.general import xyxy2xywh, xywh2xyxy, xywhn2xyxy, xyn2xy, segment2box, \
+        segments2boxes, resample_segments, clean_str
+    from processor.pipeline.detection.yolov5.utils.torch_utils import torch_distributed_zero_first
+except ImportError:
+    from utils.general import xyxy2xywh, xywh2xyxy, xywhn2xyxy, xyn2xy, segment2box, \
+        segments2boxes, resample_segments, clean_str
+    from utils.torch_utils import torch_distributed_zero_first
 
 # Parameters
 help_url = 'https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'
