@@ -8,14 +8,8 @@ Utrecht University within the Software Project course.
 
 import time
 import logging
-import os
 import sys
-import tornado.ioloop
-import tornado.iostream
 import tornado.web
-import tornado.httpserver
-import tornado.process
-import tornado.template
 import tornado.gen
 import cv2
 

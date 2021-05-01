@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import time
 import logging
 import os
 import sys
@@ -17,9 +16,7 @@ import tornado.httpserver
 import tornado.process
 import tornado.template
 import tornado.gen
-import cv2
 
-from processor.input.hls_capture import HlsCapture
 from processor.localhost_stream_handler import StreamHandler
 
 logging.basicConfig(filename='localhost.log', filemode='w',

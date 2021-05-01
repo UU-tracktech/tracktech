@@ -5,7 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-from typing import Callable, Any, List
+from typing import Callable, List
 import numpy as np
 from processor.scheduling.component.component_interface import IComponent
 from processor.scheduling.node.inode_schedule_node import INode
