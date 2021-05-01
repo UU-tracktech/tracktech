@@ -1,35 +1,13 @@
 """Integration testing of forwarder with a dummy interface
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import pytest
-import tornado.web
-
-
-class MainHandler(tornado.web.RequestHandler):
-    """Tornado web application
-
-    """
-    def get(self):
-        """Empty get
-
-        """
-        self.write("")
-
-
-application = tornado.web.Application([
-    (r"/", MainHandler),
-])
-
-
-@pytest.fixture
-def app():
-    """Creates application
-
-    Return:
-         application: tornado application
-    """
-    return application
+from tornado.httpclient import HTTPClientError
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -42,6 +20,7 @@ class TestVideoForwarder:
 
         """
         self.base_url = 'http://video-forwarder-service:80/testvid'
+        # self.base_url = 'http://localhost:80/testvid'
         self.extension = '.m3u8'
 
         # Complete url of camera
@@ -78,7 +57,7 @@ class TestVideoForwarder:
             yield http_client.fetch(f'{self.base_url}jibberish{self.extension}')
             assert False
         # Asserts exception is raised
-        except Exception:
+        except HTTPClientError:
             assert True
 
     @pytest.mark.gen_test(timeout=15)
