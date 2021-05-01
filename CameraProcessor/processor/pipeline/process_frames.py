@@ -13,6 +13,7 @@ import cv2
 from processor.pipeline.framebuffer import FrameBuffer
 import processor.utils.draw as draw
 import processor.utils.convert as convert
+import processor.utils.text as text
 
 
 async def process_stream(capture, detector, tracker, ws_client=None):
@@ -38,25 +39,26 @@ async def process_stream(capture, detector, tracker, ws_client=None):
             continue
 
         # Get detections from running detection stage.
-        det_obj = detector.detect(frame_obj)
+        bounding_boxes = detector.detect(frame_obj)
 
         # Get objects tracked in current frame from tracking stage.
-        track_obj = tracker.track(frame_obj, det_obj)
+        tracked_boxes = tracker.track(frame_obj, bounding_boxes)
 
         # Buffer the tracked object
-        framebuffer.add(convert.to_buffer_dict(frame_obj, track_obj))
+        framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
         framebuffer.clean_up()
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
         if ws_client:
-            ws_client.write_message(track_obj.to_json())
-            logging.info(track_obj.to_json())
+            client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
+            ws_client.write_message(client_message)
+            logging.info(client_message)
         else:
             # Copy frame to draw over.
             frame_copy = frame_obj.get_frame().copy()
 
             # Draw bounding boxes with ID
-            draw.draw_tracking_boxes(frame_copy, track_obj.get_bounding_boxes())
+            draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
 
             # Play the video in a window called "Output Video"
             try:
