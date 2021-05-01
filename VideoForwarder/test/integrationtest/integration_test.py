@@ -7,6 +7,7 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
+from tornado.httpclient import HTTPClientError
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -19,6 +20,7 @@ class TestVideoForwarder:
 
         """
         self.base_url = 'http://video-forwarder-service:80/testvid'
+        # self.base_url = 'http://localhost:80/testvid'
         self.extension = '.m3u8'
 
         # Complete url of camera
@@ -55,7 +57,7 @@ class TestVideoForwarder:
             yield http_client.fetch(f'{self.base_url}jibberish{self.extension}')
             assert False
         # Asserts exception is raised
-        except Exception:
+        except HTTPClientError:
             assert True
 
     @pytest.mark.gen_test(timeout=15)
