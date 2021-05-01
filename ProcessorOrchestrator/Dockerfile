@@ -1,4 +1,4 @@
-FROM python:3 AS build
+FROM python:3.8-slim-buster AS build
 
 WORKDIR /
 ENV PYTHONPATH=/

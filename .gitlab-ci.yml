@@ -74,7 +74,7 @@ camera-processor_integration-testing:
   needs: [camera-processor_docker_build]
   script:
     - docker rm -f processor-integration-test-container || true
-    - docker-compose -f ./CameraProcessor/docker-compose+orchestrator.yml up --exit-code-from camera-processor-test-service
+    - docker-compose -f ./CameraProcessor/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
   after_script:
     - docker cp processor-integration-test-container:/app/cp-integration-report.xml cp-integration-report.xml
     - docker-compose -f ./CameraProcessor/docker-compose+orchestrator.yml down
