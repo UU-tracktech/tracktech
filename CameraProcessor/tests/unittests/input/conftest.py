@@ -9,7 +9,7 @@ import os
 import pytest
 
 from processor.input.hls_capture import HlsCapture
-from processor.input.image_capture import ImageCapture
+#  from processor.input.image_capture import ImageCapture
 from processor.input.video_capture import VideoCapture
 from tests.conftest import root_path
 

@@ -22,7 +22,7 @@ class FakeTracker(ITracker):
         self.config = config
         self.sort = None
 
-    def track(self, frame_obj, bounding_boxes):
+    def track(self, _, bounding_boxes):
         """Appends a couple random bounding boxes
         """
         tracked_bounding_boxes = []

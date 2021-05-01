@@ -5,8 +5,8 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import pytest
 import json
+import pytest
 from processor.data_object.bounding_box import BoundingBox
 from processor.utils.text import bounding_boxes_to_json
 from processor.data_object.rectangle import Rectangle
@@ -190,12 +190,13 @@ class TestBoundingBox:
             json.dumps({"type": "boundingBoxes", "frameId": 1, "boxes": ['{"boxId": 1, "rect": [0, 0, 1, 1]}']}))
         assert assert1 == assert2
 
-    def test_invalid_box(self):
-        """Asserts if a rectangle of wrong length raises the right exception
-
-        """
-        with pytest.raises(TypeError):
-            BoundingBox(3, Rectangle(5, 3, 2, 1, 1, 9), "Multidimensional Antediluvian Evil", 1.0)
+    def test_value_error(self):
+        with pytest.raises(ValueError):
+            assert Rectangle(1, 1, 0, 0)
+        with pytest.raises(ValueError):
+            assert Rectangle(1, 0, 0, 1)
+        with pytest.raises(ValueError):
+            assert Rectangle(0, 1, 1, 0)
 
 
 if __name__ == '__main__':

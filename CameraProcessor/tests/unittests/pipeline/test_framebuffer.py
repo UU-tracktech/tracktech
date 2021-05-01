@@ -9,7 +9,6 @@ Utrecht University within the Software Project course.
 
 import pytest
 
-from processor.data_object.bounding_box import BoundingBox
 from processor.pipeline.framebuffer import FrameBuffer
 
 
