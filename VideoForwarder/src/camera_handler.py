@@ -15,8 +15,8 @@ from subprocess import TimeoutExpired
 import tornado.web
 import jwt
 
-from conversion_process import get_conversion_process
-from utils import get_stream_variables, get_token_variables
+from src.conversion_process import get_conversion_process
+from src.utils import get_stream_variables, get_token_variables
 
 
 # pylint: disable=attribute-defined-outside-init

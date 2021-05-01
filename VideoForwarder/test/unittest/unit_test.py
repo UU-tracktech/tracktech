@@ -16,8 +16,8 @@ def create_camera(ip_address, audio):
     """Creates camera with properties in constructor
 
     Args:
-        ip_address: Ip address of a camera
-        audio:
+        ip_address (str): Ip address of a camera
+        audio (bool): Whether camera contains audio
 
     Returns:
         Create a camera with properties
