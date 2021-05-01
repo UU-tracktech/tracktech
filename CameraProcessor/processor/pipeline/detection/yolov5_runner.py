@@ -12,7 +12,8 @@ import logging
 from numpy import random
 import numpy as np
 import torch
-from processor.pipeline.detection.bounding_box import BoundingBox
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.yolov5.models.experimental import attempt_load
 from processor.pipeline.detection.yolov5.utils.datasets import letterbox
 from processor.pipeline.detection.yolov5.utils.general import check_img_size,\
@@ -21,13 +22,21 @@ from processor.pipeline.detection.yolov5.utils.general import check_img_size,\
 from processor.pipeline.detection.yolov5.utils.torch_utils import select_device,\
     load_classifier, time_synchronized
 from processor.pipeline.detection.idetector import IDetector
+from processor.data_object.rectangle import Rectangle
 
 
 class Yolov5Detector(IDetector):
-    """Make it inherit from a generic Detector class
+    """Make it inherit from a generic Detector class.
+
     """
 
     def __init__(self, config, filters):
+        """Initialize Yolov5Detector.
+
+        Args:
+            config (): Yolov5 config file.
+            filters (): Filtering for boundingBoxes.
+        """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolov5'))
 
@@ -74,14 +83,18 @@ class Yolov5Detector(IDetector):
                             imgsz).to(self.device).type_as(next(self.model.parameters())))
             # run once
 
-    def detect(self, det_obj):
-        """Run detection on a Detection Object
+    def detect(self, frame_obj):
+        """Run detection on a Detection Object.
 
-        RETURNS: a Detection Object with filled bounding box list
+        Args:
+            frame_obj (FrameObj): information object containing frame and timestamp.
+
+        Returns:
+            DetectionObj: a Detection Object with filled bounding box list.
         """
         # Padded resize
-        det_obj.bounding_boxes = []
-        img = letterbox(det_obj.frame, self.config.getint('img-size'), stride=self.stride)[0]
+        bounding_boxes = []
+        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'), stride=self.stride)[0]
 
         # Convert image
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -104,26 +117,30 @@ class Yolov5Detector(IDetector):
 
         # Apply secondary Classifier
         if self.classify:
-            pred = apply_classifier(pred, self.modelc, img, det_obj.frame)
+            pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
 
         # Process detections
         for _, det in enumerate(pred):  # detections per image
             if len(det) > 0:
                 # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], det_obj.frame.shape).round()
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], frame_obj.get_frame().shape).round()
 
                 bb_id = 0
                 # Get the xyxy, confidence, and class, attach them to det_obj
                 for *xyxy, conf, cls in reversed(det):
-                    height, width, _ = det_obj.frame.shape
-                    bbox = BoundingBox(bb_id,
-                                       [int(xyxy[0])/width, int(xyxy[1])/height,
-                                        int(xyxy[2])/width, int(xyxy[3])/height],
-                                       self.names[int(cls)], conf)
-                    if any(x == bbox.classification for x in self.filter):
-                        det_obj.bounding_boxes.append(bbox)
+                    width, height = frame_obj.get_shape()
+                    bbox = BoundingBox(
+                        bb_id,
+                        Rectangle(int(xyxy[0])/width, int(xyxy[1])/height, int(xyxy[2])/width, int(xyxy[3])/height),
+                        self.names[int(cls)],
+                        conf
+                    )
+                    if any(x == bbox.get_classification() for x in self.filter):
+                        bounding_boxes.append(bbox)
                         bb_id += 1
 
         # Print time (inference + NMS)
         time_one = time_synchronized()
-        print(f'Finished processing of frame {det_obj.frame_nr} in ({time_one - time_zero:.3f}s)')
+        print(f'Finished processing of frame {frame_obj.get_timestamp()} in ({time_one - time_zero:.3f}s)')
+
+        return BoundingBoxes(bounding_boxes)

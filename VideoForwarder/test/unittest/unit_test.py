@@ -1,5 +1,9 @@
 """Unit test of the forwarder checks camera.py + json conversion
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 import os
 import json
@@ -12,8 +16,8 @@ def create_camera(ip_address, audio):
     """Creates camera with properties in constructor
 
     Args:
-        ip_address: Ip address of a camera
-        audio:
+        ip_address (str): Ip address of a camera
+        audio (bool): Whether camera contains audio
 
     Returns:
         Create a camera with properties
