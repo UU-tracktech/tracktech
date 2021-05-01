@@ -6,8 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 from typing import Callable, Any, List
-import numpy as np
-from processor.scheduling.component.component_interface import IComponent
 
 
 class INode:
