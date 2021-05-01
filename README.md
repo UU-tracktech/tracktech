@@ -1,4 +1,4 @@
-##Running the pipeline:
+## Running the pipeline:
 
 * Navigate to the Run Pipeline page or <a href="https://git.science.uu.nl/e.w.j.bangma/tracktech/-/pipelines/new" target="_blank">Click Here</a>.
 * Select desired branch.
