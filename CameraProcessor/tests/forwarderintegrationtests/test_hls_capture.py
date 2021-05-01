@@ -1,9 +1,15 @@
 """Tests the processor with a started video forwarder to see whether HlsCapture works correctly
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
+
 import ffmpeg
 import pytest
 import cv2
+
 from processor.input.hls_capture import HlsCapture
 
 
@@ -29,20 +35,6 @@ class TestVideoForwarder:
         return HlsCapture(self.hls_url)
 
     @pytest.mark.timeout(60)
-    def test_hls_constructor(self, hls_capture):
-        """Checks whether constructor of hls capture has been set correctly
-
-        Args:
-            hls_capture (HlsCapture): Initialized hls capture with predefined link to forwarder
-        """
-        # Url set correctly and thread has correct setting
-        assert hls_capture.hls_url == self.hls_url
-        assert hls_capture.reading_thread.daemon
-
-        # Close the Hls capture
-        hls_capture.close()
-
-    @pytest.mark.timeout(60)
     def test_hls_opened_correctly(self, hls_capture):
         """Tests whether the hls stream opened correctly
 
@@ -52,10 +44,6 @@ class TestVideoForwarder:
         # Waits until hls capture has opened
         while not hls_capture.opened():
             continue
-
-        # Bool set to initialized and capture exists
-        assert hls_capture.cap_initialized
-        assert hls_capture.cap
 
         # Close the Hls capture
         hls_capture.close()
@@ -124,14 +112,14 @@ class TestVideoForwarder:
             continue
 
         ret = False
-        frame = None
+        frame_obj = None
 
         # Gets the first frame from the hls capture
         while not ret:
-            ret, frame, _ = hls_capture.get_next_frame()
+            ret, frame_obj = hls_capture.get_next_frame()
 
         # Has returned with frame
-        assert frame.shape
+        assert frame_obj is not None
 
         # Close the Hls capture
         hls_capture.close()
