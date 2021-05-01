@@ -19,12 +19,13 @@ class FakeTracker(ITracker):
 
     """
     def __init__(self, config=None):
+        """Init."""
         self.config = config
         self.sort = None
 
+    # pylint: ignore=unused-import
     def track(self, _, bounding_boxes):
-        """Appends a couple random bounding boxes
-        """
+        """Appends a couple random bounding boxes."""
         tracked_bounding_boxes = []
 
         for i in range(random.randrange(5)):

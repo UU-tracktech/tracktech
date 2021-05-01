@@ -191,6 +191,7 @@ class TestBoundingBox:
         assert assert1 == assert2
 
     def test_value_error(self):
+        """Tests if exceptions are thrown."""
         with pytest.raises(ValueError):
             assert Rectangle(1, 1, 0, 0)
         with pytest.raises(ValueError):
