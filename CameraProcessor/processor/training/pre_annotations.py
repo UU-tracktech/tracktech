@@ -1,11 +1,29 @@
+""" Loads the ground truth and converts it to a list of bounding boxes.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import json
 import re
 import logging
-from processor.pipeline.detection.bounding_box import BoundingBox
+
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.rectangle import Rectangle
 
 
 class PreAnnotations:
-    def __init__(self, file_path: str, nr_frames: int):
+    """ Class that loads the ground truth and converts it to a list of bounding boxes.
+
+    Attributes:
+        file_path (str): Path to file that contains annotations
+        skipped_lines (int): How many lines are not readable in file
+        nr_frames (int): Number of frames read by PreAnnotations
+        boxes List[List[BoundingBox]]: List of boxes for each frame
+    """
+    def __init__(self, file_path, nr_frames):
         """Constructor for the preAnnotations object.
 
         Creates list of lists, for each frame it contains a list of bounding boxes.
@@ -19,15 +37,16 @@ class PreAnnotations:
         """
         self.file_path = file_path
         self.skipped_lines = 0
+
         # Cannot contain negative frames.
         if nr_frames < 0:
             raise AttributeError('Cannot have negative number of frames')
         self.nr_frames = nr_frames
+
         # Foreach frame create a list.
         self.boxes = [[] for _ in range(nr_frames)]
-        self.skipped_lines = 0
 
-    def parse_file(self) -> None:
+    def parse_file(self):
         """Parses file containing annotations.
 
         Raises:
@@ -43,10 +62,10 @@ class PreAnnotations:
         else:
             raise NotImplementedError('No implementation exists for this file type')
 
-    def parse_text_file(self) -> None:
-        """Parses text file containing annotations
+    def parse_text_file(self):
+        """Parses text file containing annotations.
 
-        Reads file line by line and puts it inside a bounding box object
+        Reads file line by line and puts it inside a bounding box object.
         """
         # Read file
         with open(self.file_path) as file:
@@ -65,7 +84,11 @@ class PreAnnotations:
                 continue
 
             # Create bounding box
-            rectangle = [pos_x, pos_y, pos_x + pos_w, pos_y + pos_h]
+            rectangle = Rectangle(
+                pos_x, pos_y,
+                (pos_x + pos_w), (pos_y + pos_h)
+            )
+            # Append box to list of boxes
             box = BoundingBox(person_id, rectangle, "UFO", 1)
             self.boxes[frame_nr - 1].append(box)
 
@@ -74,7 +97,7 @@ class PreAnnotations:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
     @staticmethod
-    def parse_line(line: str, delimiter: str) -> [int]:
+    def parse_line(line, delimiter):
         """Parse line from file given a delimiter.
 
         First 6 values are
@@ -89,9 +112,8 @@ class PreAnnotations:
         """
         return [int(i) for i in line.split(delimiter)[:6]]
 
-    def parse_json_file(self) -> None:
-        """Parses JSON file
-        """
+    def parse_json_file(self):
+        """Parses JSON file."""
         # Open file
         with open(self.file_path) as json_file:
             # Every json object
@@ -99,7 +121,7 @@ class PreAnnotations:
             for json_obj in data:
                 self.parse_json_object(json_obj)
 
-    def parse_json_object(self, json_object: json) -> None:
+    def parse_json_object(self, json_object):
         """Extracts data from json object and puts them in class.
 
         JSON object (subject) has a path containing coordinates for each frame.
@@ -113,6 +135,7 @@ class PreAnnotations:
         pos_x0, pos_y0, pos_x1, pos_y1 = json_object[0]['boxes'][first_frame]
         half_width = int((pos_x1 - pos_x0) / 2)
         half_height = int((pos_y1 - pos_y0) / 2)
+
         # Add bounding box for each frame
         for frame_nr in json_object[0]['path']:
             # Skips frame when it does exceed list length
@@ -122,8 +145,11 @@ class PreAnnotations:
 
             # Create bounding box for a frame
             (pos_x, pos_y) = json_object[0]['path'][frame_nr]
-            rectangle = [pos_x - half_width, pos_y - half_height,
-                         pos_x + half_width, pos_y + half_height]
+            rectangle = Rectangle(
+                pos_x - half_width, (pos_y - half_height),
+                pos_x + half_width, (pos_y + half_height)
+            )
+
             box = BoundingBox(1, rectangle, 'UFO', 1)
             # Append to list
             self.boxes[int(frame_nr) - 1].append(box)

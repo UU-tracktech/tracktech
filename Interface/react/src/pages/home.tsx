@@ -1,111 +1,199 @@
+/*
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+ */
+
+/*
+  This component is the homepage of the website, which contains all the videoplayers,
+  the option to select what bounding boxes to draw, a list of the cameras, and TODO: a list of tracked suspects
+*/
+
 import React from 'react'
-import { Component } from 'react'
-import { Container, Col, Row, ButtonGroup, Button, Card } from 'react-bootstrap'
+import { Button, Card } from 'antd'
+import { Layout } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 
 import { Grid, source } from '../components/grid'
+import { CameraCard } from '../components/cameraCard'
 
+/** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
-type tracked = { id: number, name: string, image: string, data: string }
-type homeState = { sources: source[], currentIndicator: indicator, tracking: tracked[], mainSourceId?: string }
-export class Home extends Component<{}, homeState> {
 
-  constructor(props: any) {
-    super(props)
-    this.state = { sources: [], currentIndicator: 'All', tracking: [] }
-  }
+/** Data required to track an object (placeholder, TODO: implement tracking) */
+type tracked = { id: number; name: string; image: string; data: string }
+export function Home() {
+  /** State containing all the camera sources */
+  const [sources, setSources] = React.useState<source[]>()
 
-  async componentDidMount() {
-    console.log(await fetch(process.env.PUBLIC_URL + '/config.json'))
-    var config = await (await fetch(process.env.PUBLIC_URL + '/config.json')).json()
-    var nexId = 0
-    this.setState({
-      sources: config.map((stream) => ({
-        id: nexId++,
-        name: stream.Name,
-        srcObject: {
-          src: stream.Forwarder,
-          type: stream.Type
-        }
-      }))
-    })
-  }
+  /** State containing which boundingboxes to draw */
+  const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
+    'All'
+  )
 
-  viewSource(sourceId: string) {
-    this.setState({ mainSourceId: sourceId })
-  }
+  /** State containing the tracked objects */
+  const [tracking, setTracking] = React.useState<tracked[]>([])
 
-  render() {
-    const boxStyle: React.CSSProperties = { margin: '10px', padding: '5px', borderRadius: "5px", borderStyle: "outset" }
-    const colStyle: React.CSSProperties = { padding: '0px', height: '100vh' }
+  /** State containing which camera currently is the primary camera */
+  const [primary, setPrimary] = React.useState<string>()
 
-    return (
-      <Container fluid className='fill-height'>
-        <Row className='fill-height' >
-          <Col lg={2} className='border-right' style={{ overflowY: 'scroll', ...colStyle }}>
-            <Row style={boxStyle}>
-              <Container>
-                <h2>Indicators</h2>
-                <ButtonGroup>
-                  <Button variant={this.state.currentIndicator === 'All' ? 'secondary' : 'light'} onClick={() => this.indicatorAll()}>All</Button>
-                  <Button variant={this.state.currentIndicator === 'Selection' ? 'secondary' : 'light'} onClick={() => this.indicatorSelection()}>Selection</Button>
-                  <Button variant={this.state.currentIndicator === 'None' ? 'secondary' : 'light'} onClick={() => this.indicatorNone()}>None</Button>
-                </ButtonGroup>
-              </Container>
-            </Row>
-            <Row style={boxStyle}>
-              <Container>
-                <h2>Cameras</h2>
-                {
-                  this.state.sources && this.state.sources.map((source) =>
-                    <Card key={source.id}>
-                      <Card.Body>
-                        <Card.Title>{source.name}</Card.Title>
-                        <Button variant="primary" onClick={() => this.viewSource(source.id)}>View</Button>
-                      </Card.Body>
-                    </Card>)
-                }
-              </Container>
-            </Row>
-            <Row style={boxStyle}>
-              <Container>
-                <Row className="d-flex justify-content-between">
-                  <h2>Selection</h2>
-                  <Button onClick={async () => await this.addSelection()}>+</Button>
-                </Row>
-                {
-                  this.state.tracking && this.state.tracking.map((tracked) =>
-                    <img alt="tracked person" onClick={() => this.removeSelection(tracked.id)} style={{ width: "75px", height: "75px", margin: "5px" }} src={tracked.image} />
-                  )
-                }
-              </Container>
-            </Row>
-          </Col>
-          <Col lg={10} style={{ overflowY: 'scroll', ...colStyle }}>
-            <Grid 
-              sources={this.state.sources} 
-              mainSourceId={this.state.mainSourceId} 
-              indicator={this.state.currentIndicator}/>
-          </Col>
-        </Row>
-      </Container >
+  const selectionRef = React.useRef(0)
+
+  React.useEffect(() => {
+    //Read all the sources from the config file and create sources for the videoplayers
+    fetch(process.env.PUBLIC_URL + '/config.json').then((text) =>
+      text.json().then((json) => {
+        var nexId = 0
+        setSources(
+          json.map((stream) => ({
+            id: nexId++,
+            name: stream.Name,
+            srcObject: {
+              src: stream.Forwarder,
+              type: stream.Type
+            }
+          }))
+        )
+      })
     )
-  }
+  }, [])
 
-  indicatorAll() {
-    this.setState({ currentIndicator: 'All' })
-  }
+  return (
+    <Layout.Content
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 4fr',
+        gridAutoRows: '100%',
+        overflow: 'hidden'
+      }}
+    >
+      <div
+        style={{
+          padding: '5px',
+          overflowY: 'auto',
+          display: 'grid',
+          gap: '5px'
+        }}
+      >
+        <Card
+          //This card contains the buttons to change which boundingboxes are drawn
+          bodyStyle={{ padding: '4px', display: 'flex' }}
+          headStyle={{ padding: 0 }}
+          size="small"
+          title={
+            <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Indicators</h2>
+          }
+        >
+          <Button
+            style={{ marginLeft: '4px' }}
+            type={currentIndicator === 'All' ? 'primary' : 'default'}
+            onClick={() => setCurrentIndicator('All')}
+          >
+            All
+          </Button>
+          <Button
+            style={{ marginLeft: '4px' }}
+            type={currentIndicator === 'Selection' ? 'primary' : 'default'}
+            onClick={() => setCurrentIndicator('Selection')}
+          >
+            Selection
+          </Button>
+          <Button
+            style={{ marginLeft: '4px' }}
+            type={currentIndicator === 'None' ? 'primary' : 'default'}
+            onClick={() => setCurrentIndicator('None')}
+          >
+            None
+          </Button>
+        </Card>
 
-  indicatorSelection() {
-    this.setState({ currentIndicator: 'Selection' })
-  }
+        <Card
+          //This card contains the objects that are being tracked, TODO: implement tracking
+          bodyStyle={{ padding: '4px' }}
+          headStyle={{ padding: 0 }}
+          size="small"
+          title={
+            <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Selection</h2>
+          }
+        >
+          <div>
+            <Button onClick={async () => await addSelection()}>+</Button>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+              gridAutoRows: '100px'
+            }}
+          >
+            {tracking &&
+              tracking.map((tracked) => {
+                var iterator = 0
+                return (
+                  <img
+                    key={`image-${iterator++}`}
+                    alt="tracked person"
+                    onClick={() => removeSelection(tracked.id)}
+                    style={{ width: '100%', height: '100%', margin: '5px' }}
+                    src={tracked.image}
+                  />
+                )
+              })}
+          </div>
+        </Card>
 
-  indicatorNone() {
-    this.setState({ currentIndicator: 'None' })
-  }
+        <Card
+          //This card contains the list of cameras that are connected
+          bodyStyle={{ padding: '4px' }}
+          headStyle={{ padding: 0 }}
+          size="small"
+          title={
+            <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Cameras</h2>
+          }
+          extra={<PlusOutlined style={{ marginRight: 10 }} />}
+        >
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))'
+            }}
+          >
+            {sources &&
+              sources.map((source) => {
+                var iterator = 0
+                return (
+                  //Create a cameracard for each stream
+                  <CameraCard
+                    key={`cameraCard-${iterator++}`}
+                    id={source.id}
+                    title={source.name}
+                    setSize={setPrimary}
+                  />
+                )
+              })}
+          </div>
+        </Card>
+      </div>
 
-  private number = 0
-  async addSelection() {
-    const pictures = ["car", "guy", "garden"]
+      <div style={{ overflowY: 'auto' }}>
+        {sources && (
+          //The grid contains all the videoplayers
+          <Grid
+            sources={sources}
+            primary={primary ?? sources[0]?.id}
+            setPrimary={(sourceId: string) => setPrimary(sourceId)}
+            indicator={currentIndicator}
+          />
+        )}
+      </div>
+    </Layout.Content>
+  )
+
+  /** Placeholder to start tracking something. TODO: implement tracking */
+  async function addSelection() {
+    const pictures = ['car', 'guy', 'garden']
     const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
     var result = await fetch(process.env.PUBLIC_URL + `/${picture}.png`)
@@ -113,14 +201,21 @@ export class Home extends Component<{}, homeState> {
     var reader = new FileReader()
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        console.log(reader.result)
-        this.setState({ tracking: this.state.tracking.concat({ id: this.number++, name: "abc", image: reader.result, data: "" }) })
+        setTracking(
+          tracking.concat({
+            id: selectionRef.current++,
+            name: 'abc',
+            image: reader.result,
+            data: ''
+          })
+        )
       }
     }
     reader.readAsDataURL(blob)
   }
 
-  removeSelection(id: number) {
-    this.setState({ tracking: this.state.tracking.filter(tracked => tracked.id !== id) })
+  /** Placeholder to stop tracking an object, TODO: implement tracking */
+  function removeSelection(id: number) {
+    setTracking(tracking.filter((tracked) => tracked.id !== id))
   }
 }
