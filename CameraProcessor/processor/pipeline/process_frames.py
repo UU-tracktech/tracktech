@@ -1,15 +1,22 @@
+"""Contains main video processing pipeline function
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import logging
 import asyncio
 import cv2
-# pylint: disable=unused-import
-import processor.websocket_client as client
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.pipeline.detection.idetector import IDetector as Detector
-from processor.input.hls_capture import HlsCapture
-# pylint: enable=unused-import
+
+from processor.pipeline.framebuffer import FrameBuffer
+import processor.utils.draw as draw
+import processor.utils.convert as convert
+import processor.utils.text as text
 
 
-async def process_stream(capture, det_obj, detector, ws_client=None):
+async def process_stream(capture, detector, tracker, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -17,41 +24,45 @@ async def process_stream(capture, det_obj, detector, ws_client=None):
 
     Args:
         capture (ICapture): capture object to process a stream of frames.
-        det_obj (DetectionObj): detection object containing all information about detections
-        in the current frame.
         detector (Detector): Yolov5 detector performing the detection using det_obj.
+        tracker (SortTracker): tracker performing SORT tracking.
+        ws_client (WebsocketClient): processor orchestrator to pass through detections.
     """
+    framebuffer = FrameBuffer()
+
     frame_nr = 0
 
     while capture.opened():
-        # Set the detected bounding box list to empty
-        det_obj.bounding_boxes = []
-        ret, frame, timestamp = capture.get_next_frame()
+        ret, frame_obj = capture.get_next_frame()
 
         if not ret:
-            if frame_nr == capture.get_capture_length():
-                logging.info("End of file reached")
-                break
             continue
 
-        # update frame, frame number, and time
-        det_obj.frame = frame
-        det_obj.frame_nr = frame_nr
-        det_obj.timestamp = timestamp
+        # Get detections from running detection stage.
+        bounding_boxes = detector.detect(frame_obj)
 
-        detector.detect(det_obj)
+        # Get objects tracked in current frame from tracking stage.
+        tracked_boxes = tracker.track(frame_obj, bounding_boxes)
+
+        # Buffer the tracked object
+        framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
+        framebuffer.clean_up()
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
         if ws_client:
-            ws_client.write_message(det_obj.to_json())
-            logging.info(det_obj.to_json())
+            client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
+            ws_client.write_message(client_message)
+            logging.info(client_message)
         else:
-            # Draw the frame with bounding boxes
-            det_obj.draw_rectangles()
+            # Copy frame to draw over.
+            frame_copy = frame_obj.get_frame().copy()
+
+            # Draw bounding boxes with ID
+            draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
 
             # Play the video in a window called "Output Video"
             try:
-                cv2.imshow("Output Video", det_obj.frame)
+                cv2.imshow("Output Video", frame_copy)
             except OSError as err:
                 # Figure out how to get Docker to use GUI
                 raise OSError("Error displaying video. Are you running this in Docker perhaps?")\

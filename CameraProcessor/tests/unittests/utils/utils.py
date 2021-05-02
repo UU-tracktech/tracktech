@@ -1,5 +1,12 @@
-import os
+"""Util methods that are available to other unit tests as well
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import cv2
+from tests.conftest import root_path
 
 
 def is_same_frame_image(original, second):
@@ -14,12 +21,10 @@ def is_same_frame_image(original, second):
     """
     # Calculate difference
     difference = cv2.subtract(original, second)
-    b, g, r = cv2.split(difference)
+    blue, green, red = cv2.split(difference)
 
     # Return true if it is the same image
-    if cv2.countNonZero(b) == 0 and cv2.countNonZero(g) == 0 and cv2.countNonZero(r) == 0:
-        return True
-    return False
+    return cv2.countNonZero(blue) == 0 and cv2.countNonZero(green) == 0 and cv2.countNonZero(red) == 0
 
 
 def get_sample_frame():
@@ -28,6 +33,5 @@ def get_sample_frame():
     Returns (frame):
         Opencv frame from test data
     """
-    __root_dir = os.path.abspath(os.path.join(__file__, '../../../../'))
-    __images_name = f'{__root_dir}/data/annotated/test/img1/000001.jpg'
+    __images_name = f'{root_path}/data/annotated/test/img1/000001.jpg'
     return cv2.imread(__images_name)

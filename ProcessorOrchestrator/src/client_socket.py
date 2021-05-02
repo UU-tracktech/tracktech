@@ -2,19 +2,21 @@
 
 This file contains a websocket class to handle websocket connections coming from clients (using the interface).
 It defines multiple functions that can be called using specified json messages.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
 """
 
 import json
 from time import sleep
-from typing import Optional, Awaitable, Dict, Callable, Any
 
-import tornado.web
-from tornado import httputil
 from tornado.websocket import WebSocketHandler
 
-from object_manager import TrackingObject, objects
-from connections import processors, clients
-import logger
+from src.object_manager import TrackingObject, objects
+from src.connections import processors, clients
+import src.logger as logger
 
 
 class ClientSocket(WebSocketHandler):
@@ -22,45 +24,56 @@ class ClientSocket(WebSocketHandler):
 
     Attributes:
         identifier: An int that serves as the unique identifier to this object.
+        authorized: A bool that shows whether the websocket connection is authorized.
     """
 
-    def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest):
+    def __init__(self, application, request):
         """Creates unique id and appends it to the dict of clients.
 
         Args:
-            application: The tornado web application
-            request: The HTTP server request
+            application (tornado.web.Application): The tornado web application
+            request (httputil.HTTPServerRequest): The HTTP server request
         """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
+        self.authorized = False
 
-    def check_origin(self, origin: str) -> bool:
+        # Load the auth object from appsettings
+        self.auth = self.application.settings.get('client_auth')
+
+    def check_origin(self, origin):
         """Override to enable support for allowing alternate origins.
 
         Args:
-            origin:
+            origin (string):
                 Origin of the HTTP request, is ignored as all origins are allowed.
+        Returns:
+            bool
         """
         return True
 
-    def open(self) -> None:
+    def open(self, *args, **kwargs):
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket. After connecting, it appends this component
         to a dict of other websockets.
+
+        Returns:
+            None
         """
         logger.log_connect("/client", self.request.remote_ip)
-        print(f"New client connected with id: {self.identifier}")
+        logger.log(f"New client connected with id: {self.identifier}")
         clients[self.identifier] = self
 
-    def on_message(self, message) -> None:
+    # pylint: disable=broad-except
+    def on_message(self, message):
         """Handles a message from a client that is received on the websocket.
 
         Method which handles messages coming in from a client. The messages are expected in json
         format.
 
         Args:
-            message:
+            message (string):
                 JSON with at least a "type" property. This property can have the following values:
                     - "start" | This command is used to start the tracking of an object in the specified frame,
                                 see start_tracking, for the other expected properties.
@@ -68,14 +81,16 @@ class ClientSocket(WebSocketHandler):
                                 see stop_tracking, for the other expected properties.
                     - "test"  | This values will be answered with a series of messages mocking the messages
                                 a client might expect, see send_mock_data for the other expected properties.
+        Returns:
+            None
         """
         logger.log_message_receive(message, "/client", self.request.remote_ip)
 
         try:
-            message_object: json = json.loads(message)
+            message_object = json.loads(message)
 
             # Switch on message type
-            actions: Dict[str, Callable[[], None]] = {
+            actions = {
                 "start":
                     lambda: self.start_tracking(message_object),
                 "stop":
@@ -84,62 +99,93 @@ class ClientSocket(WebSocketHandler):
                     lambda: self.send_mock_data(message_object)
             }
 
-            # Execute correct function
-            function: Optional[Callable[[], None]] = actions.get(message_object["type"])
-            if function is None:
-                print("Someone gave an unknown command")
+            action_type = message_object["type"]
+
+            if self.authorized or self.auth is None:
+                # Execute correct function
+                function = actions.get(action_type)
+                if function is None:
+                    logger.log("Someone gave an unknown command")
+                else:
+                    function()
+            elif action_type == "authenticate":
+                self.authenticate(message_object)
             else:
-                function()
+                logger.log("A client was not authenticated first")
 
-        except ValueError:
+        except ValueError as exc:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
-            print("Someone wrote bad json")
-        except KeyError:
+            print("Someone wrote bad json", exc)
+        except KeyError as exc:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
-            print("Someone missed a property in their json")
+            print("Someone missed a property in their json", exc)
+        except Exception as exc:
+            print(exc)
+            logger.log("Someone wrote bad json")
 
-    def send_message(self, message) -> None:
+    def send_message(self, message):
         """Sends a message over the websocket and logs it.
 
         Args:
-            message: string which should be send over this websocket
+            message (string): string which should be send over this websocket
+        Returns:
+            None
         """
         logger.log_message_send(message, "/client", self.request.remote_ip)
         self.write_message(message)
 
-    def data_received(self, chunk: bytes) -> Optional[Awaitable[None]]:
+    def data_received(self, chunk):
         """Unused method that could handle streamed request data"""
 
-    def on_close(self) -> None:
-        """Called when the websocket is closed, deletes itself from the dict of clients."""
+    def on_close(self):
+        """Called when the websocket is closed, deletes itself from the dict of clients.
+
+        Returns:
+            None
+        """
         logger.log_disconnect("/client", self.request.remote_ip)
         del clients[self.identifier]
-        print(f"Client with id {self.identifier} disconnected")
+        logger.log(f"Client with id {self.identifier} disconnected")
+
+    def authenticate(self, message):
+        """Authenticates a client
+
+        Args:
+            message(json):
+                JSON message that was received. It should contain the following property:
+                    - "jwt" | The jwt token containing information about a user
+        """
+
+        if self.auth is not None:
+            self.auth.validate(message["jwt"])
+            self.authorized = True
 
     @staticmethod
-    def start_tracking(message) -> None:
+    def start_tracking(message):
         """Creates tracking object and sends start tracking command to specified processor
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following properties:
                     - "cameraId" | The identifier of the processor on which the bounding box of the object to be tracked
                                    was computed.
                     - "frameId"  | The identifier of the frame on which the bounding box of the object to be tracked
                                    was computed.
                     - "boxId"    | The identifier of the bounding box computed for the object to be tracked.
+        Returns:
+            None
         """
-        camera_id: Any = message["cameraId"]
-        frame_id: Any = message["frameId"]
-        box_id: int = message["boxId"]
+        camera_id = message["cameraId"]
+        frame_id = message["frameId"]
+        box_id = message["boxId"]
 
         if camera_id not in processors.keys():
-            print("Unknown processor")
+            logger.log("Unknown processor")
             return
 
-        tracking_object: TrackingObject = TrackingObject()
+        tracking_object = TrackingObject()
 
-        print(
+        logger.log(
             f"New tracking object created with id {tracking_object.identifier}, "
             f"found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}")
 
@@ -151,17 +197,17 @@ class ClientSocket(WebSocketHandler):
         }))
 
     @staticmethod
-    def stop_tracking(message) -> None:
+    def stop_tracking(message):
         """Removes tracking object and sends stop tracking command to all processors
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following properties:
                     - "objectId" | The identifier of the object which should no longer be tracked.
         """
-        object_id: int = message["objectId"]
+        object_id = message["objectId"]
         if object_id not in objects.keys():
-            print("unknown object")
+            logger.log("unknown object")
             return
 
         objects[object_id].remove_self()
@@ -173,17 +219,17 @@ class ClientSocket(WebSocketHandler):
                     "objectId": object_id
                 }))
 
-        print(f"stopped tracking of object with id {object_id}")
+        logger.log(f"stopped tracking of object with id {object_id}")
 
-    def send_mock_data(self, message) -> None:
+    def send_mock_data(self, message):
         """Sends a few mock messages to the client for testing purposes
 
         Args:
-            message:
+            message (json):
                 JSON message that was received. It should contain the following properties:
                     - "cameraId"  | The identifier of a processor that should be used in the mock "start" command.
         """
-        camera_id: Any = message["cameraId"]
+        camera_id = message["cameraId"]
 
         frame_id = 0
 
