@@ -1,15 +1,23 @@
-from processor.pipeline.detection.detection_obj import DetectionObj
+"""Detection abstract class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 
 
 class IDetector:
-    """Superclass for detectors
-
+    """Superclass for detectors.
     """
 
-    def detect(self, det_obj: DetectionObj):
-        """Function that runs detection on a Detection Object
+    def detect(self, frame_obj):
+        """Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.
 
         Args:
-            det_obj: Detection object that gets modified during this function run
+            frame_obj (FrameObj): object containing frame and timestamp.
+
+        Returns:
+            BoundingBoxes: return bounding boxes in frame wrapped in DetectionObj.
         """
         raise NotImplementedError("Detect function not implemented")

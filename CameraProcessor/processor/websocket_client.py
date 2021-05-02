@@ -1,35 +1,37 @@
+""" Websocket client class that can connect to a websocket client url and write/read messages asynchronously.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import asyncio
 import json
-import os
 import sys
 import logging
-import configparser
-from datetime import datetime
-import cv2
 from tornado import websocket
-from processor.pipeline.detection.detection_obj import DetectionObj
-from processor.input.hls_capture import HlsCapture
 
 
-async def create_client(url, id=None):
+async def create_client(url, identifier=None):
     """
-    Method used to create a websocket client object
+    Method used to create a websocket client object.
+
     Args:
         url: Websocket url to connect to
         id: Identifier of the websocket. If the websocket is not used as a processor socket,
         set id to None. Otherwise, set to an identifier.
 
-    Returns: Websocket client object
+    Returns: Websocket client object.
     """
-    client = WebsocketClient(url, id)
+    client = WebsocketClient(url, identifier)
     await client.connect()
     return client
 
 
 class WebsocketClient:
-    """
-    Async websocket client that connects to a specified url and read/write messages
-    Should not be instantiated directly. Rather, use the create_client function
+    """Async websocket client that connects to a specified url and read/write messages.
+    Should not be instantiated directly. Rather, use the create_client function.
     """
 
     def __init__(self, url, identifier=None):
@@ -49,9 +51,7 @@ class WebsocketClient:
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     async def connect(self):
-        """
-        Connect to the websocket url asynchronously
-        """
+        """.Connect to the websocket url asynchronously."""
         timeout_left = 60
         sleep = 1
         connected = False
@@ -85,11 +85,10 @@ class WebsocketClient:
             raise TimeoutError("Never connected with orchestrator")
 
     def write_message(self, message):
-        """
-        Write a message on the websocket asynchronously
+        """Write a message on the websocket asynchronously.
 
         Args:
-            message: the message to write
+            message: the message to write.
         """
         try:
             asyncio.get_running_loop().create_task(self._write_message(message))
@@ -97,8 +96,7 @@ class WebsocketClient:
             return
 
     async def _write_message(self, message):
-        """
-        Internal write message that also writes all messages on the write queue if possible
+        """Internal write message that also writes all messages on the write queue if possible.
 
         Args:
             message: the message to write
@@ -130,11 +128,10 @@ class WebsocketClient:
             self.write_queue.append(message)
 
     def _on_message(self, message):
-        """
-        On message callback function
+        """On message callback function.
 
         Args:
-            message: the raw message posted on the websocket
+            message: the raw message posted on the websocket.
         """
         # Websocket closed, reconnect is handled by write_message
         if not message:
@@ -169,22 +166,20 @@ class WebsocketClient:
     # Mock methods on received commands
     # pylint: disable=R0201
     def update_feature_map(self, message):
-        """
-        Handler for received feature maps
+        """Handler for received feature maps.
 
         Args:
-            message: JSON parse of the sent message
+            message: JSON parse of the sent message.
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
         logging.info(f'Updating object {object_id} with feature map {feature_map}')
 
     def start_tracking(self, message):
-        """
-        Handler for the "start tracking" command
+        """Handler for the "start tracking" command.
 
         Args:
-            message: JSON parse of the sent message
+            message: JSON parse of the sent message.
         """
         object_id = message["objectId"]
         frame_id = message["frameId"]
@@ -192,11 +187,10 @@ class WebsocketClient:
         logging.info(f'Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}')
 
     def stop_tracking(self, message):
-        """
-        Handler for the "stop tracking" command
+        """Handler for the "stop tracking" command.
 
         Args:
-            message: JSON parse of the sent message
+            message: JSON parse of the sent message.
         """
         object_id = message["objectId"]
         logging.info(f'Stop tracking object {object_id}')

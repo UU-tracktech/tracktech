@@ -1,3 +1,10 @@
+"""Mock exception handler for testing.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 from __future__ import print_function
 import multiprocessing
 from multiprocessing import Process, Pipe
@@ -23,10 +30,10 @@ class EProcess(multiprocessing.Process):
         try:
             Process.run(self)
             self._ccon.send(None)
-        except Exception as e:
+        except Exception as exc:
             traceback.print_exc()
-            self._ccon.send(e)
-            raise e
+            self._ccon.send(exc)
+            raise exc
 
     @property
     def exception(self):

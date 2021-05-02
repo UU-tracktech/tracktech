@@ -1,3 +1,10 @@
+"""Defines the scheduler class, is for executing tasks concurrently by creating node structure
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 from queue import Queue
 from processor.scheduling.node.schedule_node import INode
 

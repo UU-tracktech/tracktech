@@ -1,2 +1,3 @@
 streams
 src/__pycache__
+*.log

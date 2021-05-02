@@ -25,6 +25,7 @@ COPY processor processor
 COPY data/annotated/test data/annotated/test
 COPY data/videos/test.mp4 data/videos/test.mp4
 COPY tests tests
+COPY data data
 COPY .coveragerc .coveragerc
 
 # Entrypoint instead of docker run cmd does not seem to work well 
@@ -33,7 +34,7 @@ COPY .coveragerc .coveragerc
 
 FROM test AS lint
 
-RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint==2.6.0"]
 RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
@@ -111,6 +112,7 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=10.1"
 
 COPY requirements-gpu.txt requirements-gpu.txt
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
+COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
 
 COPY configs.ini .
@@ -149,6 +151,7 @@ ENV PYTHONPATH=/app
 COPY configs.ini .
 COPY coco.names .
 COPY processor processor
+COPY data data
 
 WORKDIR /processor
 
