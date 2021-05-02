@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+import sys
 import os
 import json
 import ssl
@@ -12,6 +13,7 @@ import tornado.httpserver
 import tornado.web
 import tornado.ioloop
 
+from src.logging_filter import LoggingFilter
 from src.camera import Camera
 from src.camera_handler import CameraHandler
 
@@ -29,7 +31,17 @@ def convert_json_to_camera(json_file):
 
 
 if __name__ == "__main__":
-    print('starting server')
+    # Setup for logging
+    tornado.log.logging.basicConfig(filename='/src/main.log', filemode='w',
+                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                        level=tornado.log.logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+    tornado.log.gen_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
+    tornado.log.access_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
+    tornado.log.access_log.addFilter(LoggingFilter())
+
+    tornado.log.gen_log.info('starting server')
 
     # Get the config path, read it and parse the json and close it.
     configFile = open(os.environ.get('CONFIG_PATH'), "r")
@@ -46,7 +58,7 @@ if __name__ == "__main__":
 
     # Get the public key path used for authentication
     public_key_path = os.environ.get('PUBLIC_KEY_PATH')
-    print('using auth' if public_key_path is not None else 'not using auth')
+    tornado.log.gen_log.info('using auth' if public_key_path is not None else 'not using auth')
 
     # If the public key path was supplied, read the file and store it
     PUBLIC_KEY = None
@@ -69,14 +81,14 @@ if __name__ == "__main__":
         # Start the secure webserver on port 443
         http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
         http_server.listen(443)
-        print('listening on port 443 over https')
+        tornado.log.gen_log.info('listening on port 443 over https')
 
     # Else start the insecure webserver on port 80
     else:
         # Start the insecure webserver on port 80
         http_server = tornado.httpserver.HTTPServer(app)
         http_server.listen(80)
-        print('listening on port 80 over http')
+        tornado.log.gen_log.info('listening on port 80 over http')
 
     # Start the IO loop (used by tornado itself)
     tornado.ioloop.IOLoop.current().start()
