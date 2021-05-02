@@ -8,8 +8,8 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { App } from '../src/app'
 import fetchMock from 'jest-fetch-mock'
+import { App } from '../../src/app'
 
 jest.mock('@react-keycloak/web', () => {
   const originalModule = jest.requireActual('@react-keycloak/web')
