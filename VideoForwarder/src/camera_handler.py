@@ -68,7 +68,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
         # If there is no current conversion, start one
         if entry.conversion is None:
-            print(f'starting {camera}')
+            tornado.log.access_log.info(f'starting {camera}')
 
             # Configure entry conversion
             entry.conversion = get_conversion_process(
@@ -110,7 +110,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         """
 
         # Print stopping for logging purposes
-        print(f'stopping {camera}')
+        tornado.log.access_log.info(f'stopping {camera}')
 
         # Get the camera object that should be stopped
         entry = CameraHandler.cameras[camera]
