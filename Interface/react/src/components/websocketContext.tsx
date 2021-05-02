@@ -1,96 +1,160 @@
-import React, { Component } from 'react'
-import { Queue } from 'queue-typescript'
+/*
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+ */
+
+import React, { ReactNode } from 'react'
 
 import { OrchestratorMessage } from '../classes/orchestratorMessage'
-import { ClientMessage, Box, BoxesClientMessage } from '../classes/clientMessage'
+import { Box, BoxesClientMessage } from '../classes/clientMessage'
 
-export type connectionState = 'NONE' | 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED' | 'ERROR'
+/** The various states the websocket can be in */
+export type connectionState =
+  | 'NONE'
+  | 'CONNECTING'
+  | 'OPEN'
+  | 'CLOSING'
+  | 'CLOSED'
+  | 'ERROR'
 
+/** Type containing all the arguments needed to create a context with a websocket */
 export type websocketArgs = {
   setSocket: (url: string) => void
   send: (message: OrchestratorMessage) => void
-  addListener: (id: string, callback: (boxes: Box[], frameId: number) => void) => void
+  addListener: (
+    id: string,
+    callback: (boxes: Box[], frameId: number) => void
+  ) => number
+  removeListener: (listener: number) => void
   connectionState: connectionState
   socketUrl: string
 }
 
+/** The context which can be used by other components to send/receive messages */
 export const websocketContext = React.createContext<websocketArgs>({
   setSocket: (url: string) => alert(JSON.stringify(url)),
   send: (message: OrchestratorMessage) => alert(JSON.stringify(message)),
-  addListener: (_: string, _2: (boxes: Box[], frameId: number) => void) => { },
+  addListener: (_: string, _2: (boxes: Box[], frameId: number) => void) => 0,
+  removeListener: (listener: number) => alert(`removing ${listener}`),
   connectionState: 'NONE',
   socketUrl: 'NO URL'
 })
 
-type WebsocketProviderState = { socketUrl: string, connectionState: connectionState }
-export class WebsocketProvider extends Component<{}, WebsocketProviderState> {
+/** Listeners can listen for incoming messages and handle contents using the callback */
+type Listener = {
+  id: string
+  listener: number
+  callback: (boxes: Box[], frameId: number) => void
+}
 
-  socket?: WebSocket
-  listeners: { id: string, callback: (boxes: Box[], frameId: number) => void }[] = []
-  queue = new Queue<ClientMessage>()
+type WebsocketProviderProps = {
+  children: ReactNode
+}
 
-  constructor(props: any) {
-    super(props)
+export function WebsocketProvider(props: WebsocketProviderProps) {
+  /** State keeping track of what state the websocket is in */
+  const [connectionState, setConnectionState] = React.useState<connectionState>(
+    'NONE'
+  )
 
-    this.state = { connectionState: 'NONE', socketUrl: 'wss://tracktech.ml:50010/client' }
+  /** State keeping track of where the socket is connected to */
+  const [socketUrl, setSocketUrl] = React.useState(
+    'wss://tracktech.ml:50011/client'
+  )
+
+  const socketRef = React.useRef<WebSocket>()
+  const listenersRef = React.useRef<Listener[]>([])
+  const listenerRef = React.useRef<number>(0)
+
+  React.useEffect(() => setSocket(socketUrl), [])
+
+  /** Creates a socket which tries to connect to the given url */
+  function setSocket(url: string) {
+    var socket = new WebSocket(url)
+    setConnectionState('CONNECTING')
+    socket.onopen = (ev: Event) => onOpen(ev)
+    socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev)
+    socket.onclose = (ev: CloseEvent) => onClose(ev)
+    socket.onerror = (ev: Event) => onError(ev)
+    setSocketUrl(url)
+
+    socketRef.current = socket
   }
 
-  componentDidMount(){
-    this.setSocket(this.state.socketUrl)
-  }
-
-  setSocket(url: string) {
-    this.socket = new WebSocket(url)
-    this.setState({ connectionState: 'CONNECTING' })
-    this.socket.onopen = (ev: Event) => this.onOpen(ev)
-    this.socket.onmessage = (ev: MessageEvent<any>) => this.onMessage(ev)
-    this.socket.onclose = (ev: CloseEvent) => this.onClose(ev)
-    this.socket.onerror = (ev: Event) => this.onError(ev)
-    this.setState({ socketUrl: url })
-  }
-
-  onOpen(ev: Event) {
+  /** Callback function for when the socket has connected sucessfully */
+  function onOpen(_ev: Event) {
     console.log('connected socket')
-    this.setState({ connectionState: 'OPEN' })
+    setConnectionState('OPEN')
   }
 
-  onMessage(ev: MessageEvent<any>) {
-    console.log('socket message', ev.data)
+  /** Callback for when a message has been received by the websocket
+   *  This will pass on the message to all relevant listeners
+   */
+  function onMessage(ev: MessageEvent<any>) {
+    //console.log('socket message', ev.data)
     var message: BoxesClientMessage = JSON.parse(ev.data)
-    this.listeners.filter((listener) => listener.id === message.cameraId).forEach((listener) => listener.callback(message.boxes, message.frameId))
+    listenersRef.current
+      ?.filter((listener) => listener.id === message.cameraId)
+      .forEach((listener) => listener.callback(message.boxes, message.frameId))
   }
 
-  onClose(ev: CloseEvent) {
+  /** Callback for when the connection is closed */
+  function onClose(_ev: CloseEvent) {
     console.log('closed socket')
-    this.setState({ connectionState: 'CLOSED' })
+    setConnectionState('CLOSED')
   }
 
-  onError(ev: Event) {
+  /** Callback for when an error occurs with the socket */
+  function onError(_ev: Event) {
     console.log('socket error')
-    this.setState({ connectionState: 'ERROR' })
+    setConnectionState('ERROR')
   }
 
-  addListener(id: string, callback: (boxes: Box[], frameId: number) => void) {
-    this.listeners.push({ id: id, callback: callback })
+  /** Adds a listener to this socket */
+  function addListener(
+    id: string,
+    callback: (boxes: Box[], frameId: number) => void
+  ) {
+    var listener = ++listenerRef.current
+    listenersRef.current?.push({ id: id, listener, callback: callback })
+    return listener
   }
 
-  send(message: OrchestratorMessage) {
-    if (!this.socket) throw new Error('socket is undefined')
-    this.socket.send(JSON.stringify(message))
+  /**
+   * Remove a listener from this socket
+   * @param listener The ID of the listener to remove
+   */
+  function removeListener(listener: number) {
+    listenersRef.current?.filter((x) => x.listener === listener)
   }
 
-  render() {
-    return (
-      <websocketContext.Provider value={
-        {
-          setSocket: (url: string) => this.setSocket(url),
-          send: (message: OrchestratorMessage) => this.send(message),
-          addListener: (id: string, callback: (boxes: Box[], frameId: number) => void) => this.addListener(id, callback),
-          connectionState: this.state.connectionState,
-          socketUrl: this.state.socketUrl
-        }}>
-        {this.props.children}
-      </websocketContext.Provider>
-    )
+  /**
+   * Sends a message over the websocket
+   * @param message The message to send over the socket
+   */
+  function send(message: OrchestratorMessage) {
+    if (!socketRef.current) throw new Error('socket is undefined')
+    socketRef.current.send(JSON.stringify(message))
   }
+
+  return (
+    <websocketContext.Provider
+      value={{
+        setSocket: (url: string) => setSocket(url),
+        send: (message: OrchestratorMessage) => send(message),
+        addListener: (
+          id: string,
+          callback: (boxes: Box[], frameId: number) => void
+        ) => addListener(id, callback),
+        removeListener: (listener: number) => removeListener(listener),
+        connectionState: connectionState,
+        socketUrl: socketUrl
+      }}
+    >
+      {props.children}
+    </websocketContext.Provider>
+  )
 }
