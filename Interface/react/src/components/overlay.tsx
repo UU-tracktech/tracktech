@@ -18,7 +18,10 @@ import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
 import { Box, QueueItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
-import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
+import {
+  StartOrchestratorMessage,
+  StopOrchestratorMessage
+} from '../classes/orchestratorMessage'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
 export type overlayProps = { cameraId: string; showBoxes: indicator }
@@ -119,15 +122,25 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   )
 
   /**
-   * Function called when clicking on a bounding box (TODO: implement start tracking on click)
-   * @param boxId The ID of the box that was clicked on
+   * Function called when clicking on a bounding box
+   * @param boxId The ID of the box that was clicked on when the object id is not set
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
-  function onBoxClick(boxId: number, frameId: number) {
+  function onTrackingStart(boxId: number, frameId: number) {
     if (window.confirm('Start tracking this object?')) {
       socketContext.send(
         new StartOrchestratorMessage(props.cameraId, frameId, boxId)
       )
+    }
+  }
+
+  /**
+   * Function called when clicking on a bounding box when the object id is set
+   * @param objectId The ID of the object that is being tracked and now will be untracked
+   */
+  function onTrackingStop(objectId: number) {
+    if (window.confirm('Stop tracking this object?')) {
+      socketContext.send(new StopOrchestratorMessage(objectId))
     }
   }
 
@@ -194,7 +207,9 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
                 cursor: box.objectId === undefined ? 'pointer' : 'default'
               }}
               onClick={() => {
-                if (box.objectId === undefined) onBoxClick(box.boxId, frameId)
+                if (box.objectId === undefined)
+                  onTrackingStart(box.boxId, frameId)
+                else onTrackingStop(box.objectId)
               }}
             />
           )
