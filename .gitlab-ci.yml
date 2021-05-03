@@ -23,8 +23,6 @@ pages:
     paths:
       - public
     expire_in: 14 days
-  rules:
-    when: always
 
 camera_processor_documentation:
   stage: documentation
