@@ -19,7 +19,8 @@ class TestAccuracyObject:
     """Test the accuracy object
 
     """
-    def init_correct(self, accuracy_object):
+    @staticmethod
+    def init_correct(accuracy_object):
         """Tests if the object is initialized correctly
 
         Args:
@@ -42,7 +43,7 @@ class TestAccuracyObject:
         # Making the accuracy object
         accuracy_object = accuracy.AccuracyObject()
 
-        self.update_paths()
+        self.update_paths(accuracy_object)
 
         # Reading the detection file and making the dictionary with results
         accuracy_object.detect()
@@ -66,7 +67,7 @@ class TestAccuracyObject:
         # Making the accuracy object
         accuracy_object = accuracy.AccuracyObject()
 
-        self.update_paths()
+        self.update_paths(accuracy_object)
 
         # Making 3 bounding boxes
         rectangle1 = processor.data_object.rectangle.Rectangle(10, 10, 20, 20)
@@ -114,8 +115,9 @@ class TestAccuracyObject:
         assert parsed_box.score == 0.9
         assert parsed_box.image_name == "1"
 
-    def update_paths(self):
+    @staticmethod
+    def update_paths(accuracy_object):
         """Make the accuracy runner read the files from unittests folder for consistency
         """
-        self.det_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest.txt')
-        self.det_info_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest-info.txt')
+        accuracy_object.det_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest.txt')
+        accuracy_object.det_info_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest-info.txt')
