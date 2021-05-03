@@ -118,6 +118,9 @@ class TestAccuracyObject:
     @staticmethod
     def update_paths(accuracy_object):
         """Make the accuracy runner read the files from unittests folder for consistency
+
+        Args:
+            accuracy_object (AccuracyObject): Object containing the accuracy information
         """
         accuracy_object.det_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest.txt')
         accuracy_object.det_info_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest-info.txt')
