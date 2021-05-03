@@ -122,8 +122,8 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   )
 
   /**
-   * Function called when clicking on a bounding box
-   * @param boxId The ID of the box that was clicked on when the object id is not set
+   * Function called when clicking on a bounding box when the object id is not set
+   * @param boxId The ID of the box that was clicked on
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
   function onTrackingStart(boxId: number, frameId: number) {
@@ -136,7 +136,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
 
   /**
    * Function called when clicking on a bounding box when the object id is set
-   * @param objectId The ID of the object that is being tracked and now will be untracked
+   * @param objectId The ID of the object that is being tracked and will be untracked
    */
   function onTrackingStop(objectId: number) {
     if (window.confirm('Stop tracking this object?')) {
