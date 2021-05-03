@@ -33,20 +33,17 @@ class AccuracyObject:
         # Assign class variables from config
         self.read_config()
 
-        # Get the image width, height and nr of frames
-        self.parse_info_file()
-
-        # Getting the bounding boxes from the gt file
-        self.bounding_boxes_gt = self.read_boxes(self.gt_path)
+        self.bounding_boxes_gt = []
 
     def read_config(self):
         """Assign class variables using the Accuracy config."""
         # Load the config file, take the relevant Accuracy section
-        path_to_root = '../../..'
+        path_to_root = os.path.join(os.path.dirname(__file__), '../../..')
+        path_to_config = os.path.realpath(os.path.join(path_to_root, "configs.ini"))
         configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(path_to_root + '/configs.ini')
-        accuracy_config = configs['Accuracy']
+        configs.read(path_to_config)
         yolo_config = configs['Yolov5']
+        accuracy_config = configs['Accuracy']
 
         self.gt_path = os.path.join(path_to_root, accuracy_config['gt-path'])
         self.det_path = os.path.join(path_to_root, accuracy_config['det-path'])
@@ -70,7 +67,7 @@ class AccuracyObject:
             return
 
         # Extract information from line
-        (self.frame_amount, self.image_height, self.image_width) = [int(i) for i in line.split(delimiter)[:3]]
+        (self.frame_amount, self.image_width, self.image_height) = [int(i) for i in line.split(delimiter)[:3]]
 
     def parse_boxes(self, boxes_to_parse):
         """Parses boxes to podm format.
@@ -93,15 +90,13 @@ class AccuracyObject:
 
             for box in boxes:
                 # Parse a single box and append it to the list of already parsed boxes
-
-                width = box.get_rectangle().get_x2()
-                height = box.get_rectangle().get_y2()
+                # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(
                     label="undefined",
                     xtl=box.get_rectangle().get_x1() / self.image_width,
                     ytl=box.get_rectangle().get_y1() / self.image_height,
-                    xbr=width / self.image_width,
-                    ybr=height / self.image_height,
+                    xbr=box.get_rectangle().get_x2() / self.image_width,
+                    ybr=box.get_rectangle().get_y2() / self.image_height,
                     image_name=str(i[0]),
                     score=box.get_certainty()
                 )
@@ -118,7 +113,7 @@ class AccuracyObject:
             A list of bounding boxes.
         """
         # Using the PreAnnotations class to get the bounding boxes from a file
-        bounding_boxes_annotations = PreAnnotations(path_to_boxes, 836)
+        bounding_boxes_annotations = PreAnnotations(path_to_boxes, self.frame_amount)
         bounding_boxes_annotations.parse_file()
         bounding_boxes = bounding_boxes_annotations.boxes
         return self.parse_boxes(bounding_boxes)
@@ -132,14 +127,20 @@ class AccuracyObject:
             This method currently has no returns.
         """
 
+        # Get the image width, height and nr of frames
+        self.parse_info_file()
+
+        # Getting the bounding boxes from the gt file
+        self.bounding_boxes_gt = self.read_boxes(self.gt_path)
+
         # Getting and parsing the bounding boxes from the detection file
         bounding_boxes_det = self.read_boxes(self.det_path)
 
         # Using the podm.podm library to get the accuracy metrics
         self.results = get_pascal_voc_metrics(self.bounding_boxes_gt, bounding_boxes_det, self.iou_threshold)
 
-        # Printing a few metrics related to accuracy on the terminal
-
+        # Printing a few metrics related to accuracy on the terminal, labels are undefined because the det and
+        # gt files currently don't save the classes of detected objects
         print("tp (only undefined): " + str(self.results['undefined'].tp))
         print("fp: " + str(self.results['undefined'].fp))
         print("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp))
@@ -169,6 +170,7 @@ class AccuracyObject:
             self.draw_pr_plot(result[1])
 
 
-test_object = AccuracyObject()
-test_object.detect()
-test_object.draw_all_pr_plots()
+if __name__ == "__main__":
+    test_object = AccuracyObject()
+    test_object.detect()
+    test_object.draw_all_pr_plots()
