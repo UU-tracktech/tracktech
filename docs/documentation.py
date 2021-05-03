@@ -69,6 +69,8 @@ def generate_documentation(root_folder):
 
     installed_packages = [p.project_name for p in pkg_resources.working_set]
 
+    mocked_modules = []
+
     # Add mock if sys.modules doesn't include an import statement or if the package is already installed.
     for mod_name in mock_modules:
         # Don't mock object if it has already been installed.
@@ -85,8 +87,15 @@ def generate_documentation(root_folder):
             mod_mock = mock.Mock(name=mod_name)
             sys.modules[mod_name] = mod_mock
 
+            # Mocked module.
+            mocked_modules.append(mod_name)
+
     # Generate documentation for all found modules in the /docs.
     pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
+
+    # Remove mocked modules.
+    for module in mocked_modules:
+        del sys.modules[module]
 
 
 def generate_index():
@@ -105,14 +114,14 @@ def generate_index():
 
     for path, sub_dirs, files in os.walk(html_root):
         if 'index.html' in files:
-            index_paths.append(os.path.join('./', path, 'index.html').replace(html_root, '', 1).replace('\\', '/'))
+            index_paths.append(os.path.join(path, 'index.html').replace(html_root, '', 1).replace('\\', '/'))
 
             # Stop walking into sub_dirs, index has already been found in current branch.
             sub_dirs[:] = []
 
     with open(index_loc, 'w') as index_file:
         for index_path in index_paths:
-            index_file.write(f'<a href="{index_path}">{index_path}</a>\n<hr>\n')
+            index_file.write(f'<a href=".{index_path}">{index_path}</a>\n<hr>\n')
 
 
 def get_imports(file_path):

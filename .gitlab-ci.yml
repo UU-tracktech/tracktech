@@ -9,6 +9,23 @@ stages:
   - documentation
   - deploy
 
+pages:
+  stage: documentation
+  before_script:
+    - docker build -t tracktech-documentation .
+  script:
+    - docker run -t -d --name tracktech-documentation-container tracktech-documentation python3.8 docs/documentation.py -ci -rs utility docs ProcessorOrchestrator/src ProcessorOrchestrator/testing CameraProcessor/tests VideoForwarder/src VideoForwarder/test Interface/testingSelenium
+    - docker cp tracktech-documentation-container:/app/docs/html/ public/
+  after_script:
+    - docker stop tracktech-documentation-container
+  artifacts:
+    when: always
+    paths:
+      - public
+    expire_in: 14 days
+  rules:
+    when: always
+
 camera_processor_documentation:
   stage: documentation
   trigger:
