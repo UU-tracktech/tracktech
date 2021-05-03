@@ -13,6 +13,7 @@ pages:
   stage: documentation
   before_script:
     - docker build -t tracktech-documentation .
+    - docker rm -f tracktech-documentation-container || true
   script:
     - docker run --name tracktech-documentation-container tracktech-documentation python3.8 docs/documentation.py -ci -rs utility docs ProcessorOrchestrator/src ProcessorOrchestrator/testing CameraProcessor/tests VideoForwarder/src VideoForwarder/test Interface/testingSelenium
     - docker cp tracktech-documentation-container:/app/docs/html/ public/
@@ -23,15 +24,6 @@ pages:
     paths:
       - public
     expire_in: 14 days
-
-camera_processor_documentation:
-  stage: documentation
-  trigger:
-    include: CameraProcessor/.gitlab-ci-docs.yml
-  rules:
-    - when: never
-      changes:
-        - CameraProcessor/**/*
 
 camera-processor_docker_build:
   stage: build
