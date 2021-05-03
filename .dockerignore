@@ -1,0 +1,20 @@
+# Ignore everything
+*
+
+# Whitelist component folders
+!docs
+!utility
+
+!CameraProcessor/processor
+!CameraProcessor/tests
+
+!Interface/testingSelenium
+
+!ProcessorOrchestrator/src
+!ProcessorOrchestrator/testing
+
+!VideoForwarder/src
+!VideoForwarder/test
+
+# Exclude existing html
+**/docs/html/

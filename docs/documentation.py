@@ -139,7 +139,7 @@ def get_imports(file_path):
     elif Path.exists(Path(f'{file_path}/__init__.py')):
         py_file_path = f'{file_path}/__init__.py'
     else:
-        raise FileNotFoundError('Python module not found')
+        raise FileNotFoundError(f'Python module not found in file: {file_path}')
 
     # Open Python file as if it is a normal file.
     file = open(Path(py_file_path), encoding='UTF-8')
