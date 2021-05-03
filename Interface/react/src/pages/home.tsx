@@ -18,6 +18,7 @@ import { PlusOutlined } from '@ant-design/icons'
 
 import { Grid, source } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
+import { ObjectTypeFilter } from '../components/objectTypeFilter'
 
 /** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
@@ -43,7 +44,7 @@ export function Home() {
 
   React.useEffect(() => {
     //Read all the sources from the config file and create sources for the videoplayers
-    fetch(process.env.PUBLIC_URL + '/config.json').then((text) =>
+    fetch(process.env.PUBLIC_URL + '/cameras.json').then((text) =>
       text.json().then((json) => {
         var nexId = 0
         setSources(
@@ -56,6 +57,23 @@ export function Home() {
             }
           }))
         )
+      })
+    )
+  }, [])
+
+  /**Place to keep track of the possible types */
+  const [allObjectTypes, setAllObjectTypes] = React.useState<string[]>([])
+
+  /**State to keep track of the current selected objectType */
+  const [filteredObjectTypes, setFilteredObjectTypes] = React.useState<
+    string[]
+  >([])
+
+  React.useEffect(() => {
+    //Read all the object types from file and save them
+    fetch(process.env.PUBLIC_URL + '/objectTypes.json').then((text) =>
+      text.json().then((json) => {
+        setAllObjectTypes(json)
       })
     )
   }, [])
@@ -108,6 +126,17 @@ export function Home() {
             None
           </Button>
         </Card>
+
+        <ObjectTypeFilter
+          addHidden={(a) => addHidden(a)}
+          removeHidden={(a) => removeHidden(a)}
+          objectTypes={allObjectTypes.map((objectType) => [
+            objectType,
+            filteredObjectTypes.some(
+              (filteredObjectType) => filteredObjectType === objectType
+            )
+          ])}
+        />
 
         <Card
           //This card contains the objects that are being tracked, TODO: implement tracking
@@ -185,6 +214,7 @@ export function Home() {
             primary={primary ?? sources[0]?.id}
             setPrimary={(sourceId: string) => setPrimary(sourceId)}
             indicator={currentIndicator}
+            hiddenObjectTypes={filteredObjectTypes}
           />
         )}
       </div>
@@ -217,5 +247,25 @@ export function Home() {
   /** Placeholder to stop tracking an object, TODO: implement tracking */
   function removeSelection(id: number) {
     setTracking(tracking.filter((tracked) => tracked.id !== id))
+  }
+
+  /**
+   * adds a filtered object type to the list of filtered types
+   * @param objectType the object type to add
+   */
+  function addHidden(objectType: string) {
+    setFilteredObjectTypes(
+      filteredObjectTypes.filter(
+        (filteredObjectType) => filteredObjectType !== objectType
+      )
+    )
+  }
+
+  /**
+   * removes a filtered object type to the list of filtered types
+   * @param objectType The object type to remove
+   */
+  function removeHidden(objectType: string) {
+    setFilteredObjectTypes([...filteredObjectTypes, objectType])
   }
 }
