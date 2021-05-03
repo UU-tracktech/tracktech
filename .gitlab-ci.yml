@@ -6,11 +6,10 @@ stages:
   - unittest
   - integrationtest
   - linting
-  - documentation
   - deploy
 
 pages:
-  stage: documentation
+  stage: deploy
   before_script:
     - docker build -t tracktech-documentation .
     - docker rm -f tracktech-documentation-container || true
