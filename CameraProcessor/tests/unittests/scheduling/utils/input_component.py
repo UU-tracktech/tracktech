@@ -8,10 +8,9 @@ Utrecht University within the Software Project course.
 
 
 from typing import Callable
-from processor.scheduling.component.component_interface import IComponent
 
 
-class InputComponent(IComponent):
+class InputComponent:
     """Test input component.
 
     Work function must contain one argument,

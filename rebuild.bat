@@ -14,8 +14,12 @@ docker image prune -f
 :: docker run -t -d --name %containerName% %imageName%
 docker run -t -d --name %containerName% %imageName% python3.8 docs/documentation.py -ci -rs^
  utility^
- CameraProcessor/tests^
- ProcessorOrchestrator/src
+ ProcessorOrchestrator/src^
+ Processor/src^
+ VideoForwarder/src
+ 
+:: Interface/testingSelenium
+:: CameraProcessor/tests^
 :: CameraProcessor Interface ProcessorOrchestrator VideoForwarder
 :: CameraProcessor/tests ProcessorOrchestrator/src VideoForwarder/src
 REM

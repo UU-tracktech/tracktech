@@ -169,6 +169,7 @@ class AccuracyObject:
             self.draw_pr_plot(result[1])
 
 
-test_object = AccuracyObject()
-test_object.detect()
-test_object.draw_all_pr_plots()
+if __name__ == '__main__':
+    test_object = AccuracyObject()
+    test_object.detect()
+    test_object.draw_all_pr_plots()

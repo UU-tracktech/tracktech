@@ -47,6 +47,11 @@ def generate_documentation(root_folder):
     # Create module imports from included paths.
     included_modules = [path_to_module(component_root, included_path) for included_path in included_paths]
 
+    # Remove modules for which pdoc is going to generate documentation.
+    for module in included_modules:
+        if module in sys.modules:
+            del sys.modules[module]
+
     mock_modules = set()
 
     # Create mock for all import statements not included in included_modules.
@@ -80,20 +85,8 @@ def generate_documentation(root_folder):
             mod_mock = mock.Mock(name=mod_name)
             sys.modules[mod_name] = mod_mock
 
-    # Modules loaded before executing pdoc.
-    # Convert keys to list to copy current content (otherwise object changes during pdoc run).
-    preloaded_modules = list(sys.modules.keys())
-
     # Generate documentation for all found modules in the /docs.
     pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
-
-    # All modules loaded after executing pdoc (in a list like before).
-    loaded_modules = list(sys.modules.keys())
-
-    # Remove modules loaded in for documentation generation.
-    for module in loaded_modules:
-        if module not in preloaded_modules:
-            del sys.modules[module]
 
 
 def generate_index():
@@ -112,7 +105,7 @@ def generate_index():
 
     for path, sub_dirs, files in os.walk(html_root):
         if 'index.html' in files:
-            index_paths.append(os.path.join(path, 'index.html').replace(html_root, '', 1).replace('\\', '/'))
+            index_paths.append(os.path.join('./', path, 'index.html').replace(html_root, '', 1).replace('\\', '/'))
 
             # Stop walking into sub_dirs, index has already been found in current branch.
             sub_dirs[:] = []
@@ -147,8 +140,8 @@ def get_imports(file_path):
     # Get all instructions in Python file.
     instructions = dis.get_instructions(file.read())
 
-    # Filter on IMPORT_NAME and IMPORT_FROM.
-    instruction_names = ['IMPORT_NAME', 'IMPORT_FROM']
+    # Filter on IMPORT_NAME.
+    instruction_names = ['IMPORT_NAME']
 
     # argval of allowed instruction arguments
     imports = [instruction.argval for instruction in instructions if instruction.opname in instruction_names]
@@ -195,42 +188,44 @@ def get_modules(root_folder):
 
     includes = dict()
 
-    # Import all packages to retrieve the __all__ attribute (if there is one).
-    for module in pkgutil.iter_modules(folders):
-        if not module.ispkg:
-            continue
+    for iter_folder in folders:
+        # Import all packages to retrieve the __all__ attribute (if there is one).
+        for module in pkgutil.iter_modules([iter_folder]):
+            if not module.ispkg:
+                continue
 
-        module_path = os.path.join(module.module_finder.path, module.name)
+            module_path = os.path.join(module.module_finder.path, module.name)
 
-        import_path = path_to_module(component_root, module_path)
+            import_path = path_to_module(component_root, module_path)
 
-        # Package module shouldn't contain code with side effects.
-        imported_module = importlib.import_module(import_path)
+            # Package module shouldn't contain code with side effects.
+            imported_module = importlib.import_module(import_path)
 
-        # Get included modules from the __all__ attribute,
-        # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
-        if hasattr(imported_module, '__all__'):
-            all_included = getattr(imported_module, '__all__')
-            includes[module_path] = all_included
+            # Get included modules from the __all__ attribute,
+            # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
+            if hasattr(imported_module, '__all__'):
+                all_included = getattr(imported_module, '__all__')
+                includes[module_path] = all_included
 
     # Find all modules in found folders and append the full path.
     modules = [root_folder]
-    for module in pkgutil.iter_modules(folders):
-        if module.name.startswith('_'):
-            continue
+    for iter_folder in folders:
+        for module in pkgutil.iter_modules([iter_folder]):
+            if module.name.startswith('_'):
+                continue
 
-        module_path = os.path.join(module.module_finder.path, module.name)
+            module_path = os.path.join(module.module_finder.path, module.name)
 
-        # Check if module is included.
-        include = True
-        for key in includes.keys():
-            # Module isn't included if a valid key exists for any package it is in that doesn't include it via __all__.
-            if key != module_path and key in module_path and module.name not in includes[key]:
-                include = False
-                break
+            # Check if module is included.
+            include = True
+            for key in includes.keys():
+                # Module excluded if present in __all__ attribute within __init__.py file.
+                if key != module_path and key in module_path and module.name not in includes[key]:
+                    include = False
+                    break
 
-        if include:
-            modules.append(module_path)
+            if include:
+                modules.append(module_path)
 
     sys.path.remove(component_root)
 
