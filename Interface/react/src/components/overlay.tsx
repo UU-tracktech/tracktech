@@ -24,7 +24,11 @@ import {
 } from '../classes/orchestratorMessage'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
-export type overlayProps = { cameraId: string; showBoxes: indicator }
+export type overlayProps = {
+  cameraId: string
+  showBoxes: indicator
+  hiddenObjectTypes: string[]
+}
 
 /** The size of the overlay, used to scale the drawing of the bounding boxes */
 type size = { width: number; height: number; left: number; top: number }
@@ -181,39 +185,47 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       'Aqua',
       'Navy'
     ]
+
     return (
       <div>
-        {boxes.map((box) => {
-          var x1 = box.rect[0],
-            x2 = box.rect[2],
-            y1 = box.rect[1],
-            y2 = box.rect[3]
-          if (x1 > x2) [x1, x2] = [x2, x1]
-          if (y1 > y2) [y1, y2] = [y2, y1]
-
-          return (
-            <div
-              key={box.boxId}
-              style={{
-                position: 'absolute',
-                left: `${x1 * size.width + size.left}px`,
-                top: `${y1 * size.height + size.top}px`,
-                width: `${(x2 - x1) * size.width}px`,
-                height: `${(y2 - y1) * size.height}px`,
-                borderColor: colordict[box.objectId ?? 0],
-                borderStyle: 'solid',
-                /* transitionProperty: 'all', transitionDuration: '1s', */
-                zIndex: 1000,
-                cursor: box.objectId === undefined ? 'pointer' : 'default'
-              }}
-              onClick={() => {
-                if (box.objectId === undefined)
-                  onTrackingStart(box.boxId, frameId)
-                else onTrackingStop(box.objectId)
-              }}
-            />
+        {boxes
+          .filter((box) =>
+            /* eslint-disable react/prop-types */
+            props.hiddenObjectTypes.some(
+              (hiddenObjectType) => hiddenObjectType !== box.objectType
+            )
           )
-        })}
+          .map((box) => {
+            var x1 = box.rect[0],
+              x2 = box.rect[2],
+              y1 = box.rect[1],
+              y2 = box.rect[3]
+            if (x1 > x2) [x1, x2] = [x2, x1]
+            if (y1 > y2) [y1, y2] = [y2, y1]
+
+            return (
+              <div
+                key={box.boxId}
+                style={{
+                  position: 'absolute',
+                  left: `${x1 * size.width + size.left}px`,
+                  top: `${y1 * size.height + size.top}px`,
+                  width: `${(x2 - x1) * size.width}px`,
+                  height: `${(y2 - y1) * size.height}px`,
+                  borderColor: colordict[box.objectId ?? 0],
+                  borderStyle: 'solid',
+                  /* transitionProperty: 'all', transitionDuration: '1s', */
+                  zIndex: 1000,
+                  cursor: box.objectId === undefined ? 'pointer' : 'default'
+                }}
+                onClick={() => {
+                  if (box.objectId === undefined)
+                    onTrackingStart(box.boxId, frameId)
+                  else onTrackingStop(box.objectId)
+                }}
+              />
+            )
+          })}
       </div>
     )
   }
