@@ -15,10 +15,13 @@ import mock
 import dis
 import importlib
 import importlib.util
+import shutil
 
 
 def generate_documentation(root_folder):
     """Generates pdoc documentation for all Python modules in CameraProcessor project.
+
+    Removes previously created documentation if it exists.
 
     Args:
         root_folder (Path): path to root folder of Python code.
@@ -38,6 +41,9 @@ def generate_documentation(root_folder):
     # Output directory
     output_dir = Path(os.path.join(doc_folder, 'html', root_folder))
 
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+
     # Create docs html dir if it doesn't exist.
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -52,43 +58,11 @@ def generate_documentation(root_folder):
         if module in sys.modules:
             del sys.modules[module]
 
-    mock_modules = set()
+    # Get modules that might need to get mocked.
+    mock_modules = get_mock_modules(included_paths, included_modules)
 
-    # Create mock for all import statements not included in included_modules.
-    for included_module in included_paths:
-        # Get imports of module from included module.
-        module_imports = get_imports(included_module)
-
-        # Loop over all found imports.
-        for module_import in module_imports:
-            # Get all possible module parts.
-            for module_import_part in get_module_import_parts(module_import):
-                # Create mock if module part hasn't been included yet.
-                if module_import_part not in included_modules:
-                    mock_modules.add(module_import_part)
-
-    installed_packages = [p.project_name for p in pkg_resources.working_set]
-
-    mocked_modules = []
-
-    # Add mock if sys.modules doesn't include an import statement or if the package is already installed.
-    for mod_name in mock_modules:
-        # Don't mock object if it has already been installed.
-        skip = False
-        for package in installed_packages:
-            if mod_name == package or mod_name.startswith(f'{package}.'):
-                skip = True
-
-        if skip:
-            continue
-
-        # Add mock object with associated module name if it hasn't been loaded in yet.
-        if mod_name not in sys.modules:
-            mod_mock = mock.Mock(name=mod_name)
-            sys.modules[mod_name] = mod_mock
-
-            # Mocked module.
-            mocked_modules.append(mod_name)
+    # Get modules that have been mocked.
+    mocked_modules = get_mocked(mock_modules)
 
     # Generate documentation for all found modules in the /docs.
     pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
@@ -99,7 +73,7 @@ def generate_documentation(root_folder):
 
 
 def generate_index():
-    """Generate index.html file that links to all generated HTML in subfolders.
+    """Generate index.html file that links to all generated HTML in sub-folders.
     """
     html_root = os.path.join(os.path.dirname(__file__), 'html')
 
@@ -296,6 +270,69 @@ def get_module_import_parts(module_import):
         index -= 1
 
     return module_imports
+
+
+def get_mock_modules(included_paths, included_modules):
+    """Get all modules that need to be loaded in the environment when code is run by pdoc.
+
+    Args:
+        included_paths ([str]): all paths to Python modules that get documentation generated.
+        included_modules ([str]): all package and module level imports.
+
+    Returns:
+        set(str): all modules that might need to get mocked if no alternative has been loaded.
+    """
+    mocks = set()
+
+    # Create mock for all import statements not included in included_modules.
+    for included_module in included_paths:
+        # Get imports of module from included module.
+        module_imports = get_imports(included_module)
+
+        # Loop over all found imports.
+        for module_import in module_imports:
+            # Get all possible module parts.
+            for module_import_part in get_module_import_parts(module_import):
+                # Create mock if module part hasn't been included yet.
+                if module_import_part not in included_modules:
+                    mocks.add(module_import_part)
+
+    return mocks
+
+
+def get_mocked(mock_modules):
+    """Get all modules that get mocked, because they were not loaded into the environment.
+
+    Args:
+        mock_modules (set(str)): modules that need to get mocked if they are not loaded in.
+
+    Returns:
+        [str]: modules that are mocked.
+    """
+    installed_packages = [p.project_name for p in pkg_resources.working_set]
+
+    mocked = []
+
+    # Add mock if sys.modules doesn't include an import statement or if the package is already installed.
+    for mod_name in mock_modules:
+        # Don't mock object if it has already been installed.
+        skip = False
+        for package in installed_packages:
+            if mod_name == package or mod_name.startswith(f'{package}.'):
+                skip = True
+
+        if skip:
+            continue
+
+        # Add mock object with associated module name if it hasn't been loaded in yet.
+        if mod_name not in sys.modules:
+            mod_mock = mock.Mock(name=mod_name)
+            sys.modules[mod_name] = mod_mock
+
+            # Mocked module.
+            mocked.append(mod_name)
+
+    return mocked
 
 
 def to_tree(modules):
