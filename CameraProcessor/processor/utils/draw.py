@@ -7,6 +7,7 @@ Utrecht University within the Software Project course.
 """
 
 import cv2
+import random
 
 
 def draw_bounding_boxes(frame, bounding_boxes):
@@ -31,18 +32,16 @@ def draw_detection_boxes(frame, bounding_boxes):
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
         bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
     """
-    # Color and shape
-    red = (0, 0, 255)
-
     # Draw each box on the frame with tag
     for bounding_box in bounding_boxes:
-        __draw_box(frame, bounding_box, red)
+        color = __generate_random_color(bounding_box.get_classification())
+        __draw_box(frame, bounding_box, color)
 
         __draw_text(
             frame,
             bounding_box,
             f'{bounding_box.get_classification()} {round(float(bounding_box.get_certainty()), 2)}',
-            red
+            color
         )
 
 
@@ -53,14 +52,14 @@ def draw_tracking_boxes(frame, bounding_boxes):
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
         bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
     """
-    # Color and shape
-    white = (255, 255, 255)
-
     # Draw each box on frame with identifier tag
     for bounding_box in bounding_boxes:
-        __draw_box(frame, bounding_box, white)
+        # Generate random color based on identifier
+        color = __generate_random_color(bounding_box.get_identifier())
 
-        __draw_text(frame, bounding_box, f'{bounding_box.get_identifier()}', white)
+        __draw_box(frame, bounding_box, color)
+
+        __draw_text(frame, bounding_box, f'{bounding_box.get_identifier()}', color)
 
 
 def __draw_box(frame, bounding_box, color):
@@ -102,7 +101,7 @@ def __draw_text(frame, bounding_box, text, color):
     # Draw filled rectangle to place text on.
     cv2.rectangle(
         frame,
-        (int(scaled_x1), int(scaled_y1) - 40),
+        (int(scaled_x1) - 1, int(scaled_y1) - 38),
         (int(scaled_x1 + len(text) * 15), int(scaled_y1)),
         color,
         -1
@@ -118,3 +117,16 @@ def __draw_text(frame, bounding_box, text, color):
         (0, 0, 0),
         2
     )
+
+
+def __generate_random_color(identifier):
+    """Generate the color using the identifier as unique hash
+
+    Args:
+        identifier (int): Unique identifier on which color is generated
+
+    Returns (int, int, int):
+        BGR color value
+    """
+    random.seed(identifier)
+    return random.sample(range(10, 255), 3)
