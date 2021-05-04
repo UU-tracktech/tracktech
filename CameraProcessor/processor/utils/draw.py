@@ -6,8 +6,8 @@ Utrecht University within the Software Project course.
 
 """
 
-import cv2
 import random
+import cv2
 
 
 def draw_bounding_boxes(frame, bounding_boxes):
@@ -125,8 +125,8 @@ def __generate_random_color(identifier):
     Args:
         identifier (int): Unique identifier on which color is generated
 
-    Returns (int, int, int):
-        BGR color value
+    Returns:
+        (int, int, int): BGR color value
     """
     random.seed(identifier)
     return random.sample(range(10, 255), 3)
