@@ -8,18 +8,11 @@ Utrecht University within the Software Project course.
 
 import time
 import logging
-import sys
 import tornado.web
 import tornado.gen
 import cv2
 
 from processor.input.hls_capture import HlsCapture
-
-logging.basicConfig(filename='localhost.log', filemode='w',
-                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-                    level=logging.INFO,
-                    datefmt='%Y-%m-%d %H:%M:%S')
-logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7

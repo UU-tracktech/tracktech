@@ -50,29 +50,55 @@ async def process_stream(capture, detector, tracker, ws_client=None):
 
         # Write to client if client is used (should only be done when vid_stream is HlsCapture)
         if ws_client:
-            client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
-            ws_client.write_message(client_message)
-            logging.info(client_message)
+            await __send_orchestrator(ws_client, frame_obj, tracked_boxes)
         else:
-            # Copy frame to draw over.
-            frame_copy = frame_obj.get_frame().copy()
-
-            # Draw bounding boxes with ID
-            draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
-
-            # Play the video in a window called "Output Video"
-            try:
-                cv2.imshow("Output Video", frame_copy)
-            except OSError as err:
-                # Figure out how to get Docker to use GUI
-                raise OSError("Error displaying video. Are you running this in Docker perhaps?")\
-                    from err
-
-            # This next line is **ESSENTIAL** for the video to actually play
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                return
+            # __host_tornado(frame_obj, tracked_boxes)
+            __opencv_display(frame_obj, tracked_boxes)
 
         frame_nr += 1
-        await asyncio.sleep(0)
 
     logging.info(f'capture object stopped after {frame_nr} frames')
+
+
+async def __send_orchestrator(ws_client, frame_obj, tracked_boxes):
+    """Sends the bounding boxes to the orchestrator
+
+    Args:
+        frame_obj (FrameObj): Frame object on which drawing takes place
+        tracked_boxes (BoundingBoxes):
+    """
+    client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
+    ws_client.write_message(client_message)
+    logging.info(client_message)
+    await asyncio.sleep(0)
+
+
+def __host_tornado(frame_obj, tracked_boxes):
+    # Give frame to streamhandler
+    pass
+
+
+def __opencv_display(frame_obj, tracked_boxes):
+    """Displays frame using the imshow of opencv
+
+    Args:
+        frame_obj (FrameObj): Frame object on which drawing takes place
+        tracked_boxes (BoundingBoxes):
+    """
+    # Copy frame to draw over.
+    frame_copy = frame_obj.get_frame().copy()
+
+    # Draw bounding boxes with ID
+    draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
+
+    # Play the video in a window called "Output Video"
+    try:
+        cv2.imshow("Output Video", frame_copy)
+    except OSError as err:
+        # Figure out how to get Docker to use GUI
+        raise OSError("Error displaying video. Are you running this in Docker perhaps?") \
+            from err
+
+    # This next line is **ESSENTIAL** for the video to actually play
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        exit()
