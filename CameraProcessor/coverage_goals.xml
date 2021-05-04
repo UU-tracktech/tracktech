@@ -1,0 +1,35 @@
+<code_coverage_goals>
+    <CameraProcessor>
+        <data_object>
+            <goal unit="%">95-100</goal>
+            <info>"Data objects appear to be quite testable, with no complicated functionality, and therefore we should be able to fully test them"</info>
+        </data_object>
+        <input>
+            <goal unit="%">85</goal>
+            <info>"With the exception of webcam, the captures are almost completely testable.</info>
+        </input>
+        <pipeline>
+            <goal unit="%">85</goal>"
+            <detection>
+                <goal unit="%">80</goal>
+                <info>The IDetector class files should be quite testable, but contains redundant, additional functionality which is obnoxious to fully test.</info>
+            </detection>
+            <tracking>
+                <goal unit="%">90</goal>
+                <info>Similarly, the ITracking class files are also quite testable, and contain less reduntant functionality.</info>
+            </tracking>
+        </pipeline>
+        <scheduling>
+            <goal unit="%">90</goal>
+            <info>Scheduling is mostly unused as of yet, so this is subject to change. Try to maintain current goal.</info>
+        </scheduling>
+        <training>
+            <goal unit="%">75</goal>
+            <info>Hard to test in pipeline since one file uses OpenCV.</info>
+        </training>
+        <utils>
+            <goal unit="%">95-100</goal>
+            <info>Utility files are loosely coupled by definition, and should be easily testable. We use strict code coverage goals as a result.</info>
+        </utils>
+    </CameraProcessor>
+</code_coverage_goals>
