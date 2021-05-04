@@ -13,6 +13,12 @@ import asyncio
 import configparser
 from absl import app
 
+import tornado.ioloop
+import tornado.web
+
+from processor.webhosting.html_page_handler import HtmlPageHandler
+from processor.webhosting.stream_handler import StreamHandler
+
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
@@ -97,3 +103,23 @@ if __name__ == '__main__':
         app.run(main)
     except SystemExit:
         pass
+
+
+def make_app():
+    """Creates the tornado web app.
+
+    Returns:
+        tornado.web.Application: Tornado web app with the main page and video handler.
+    """
+    return tornado.web.Application([
+        (r'/', HtmlPageHandler),
+        (r'/video_feed', StreamHandler)
+    ])
+
+
+def main():
+    """Creates the tornado app and starts event loop."""
+    port = 9090
+    app = make_app()
+    app.listen(port)
+    tornado.ioloop.IOLoop.current().start()
