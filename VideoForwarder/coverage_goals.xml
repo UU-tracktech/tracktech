@@ -1,0 +1,8 @@
+<code_coverage_goals>
+    <VideoForwarder>
+        <src>
+            <goal unit="%">80</goal>
+            <info>Seems testable, but the tornado server probably needs a teardown method.</info>
+        </src>
+    </VideoForwarder>
+</code_coverage_goals>

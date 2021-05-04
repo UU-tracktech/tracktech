@@ -1,0 +1,8 @@
+<code_coverage_goals>
+    <ProcessorOrchestrator>
+        <src>
+            <goal unit="%">80</goal>
+            <info>Many files in here are only tested during integration testing. Figure out how to combine those test results with unit tests.</info>
+        </src>
+    </ProcessorOrchestrator>
+</code_coverage_goals>
