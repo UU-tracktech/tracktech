@@ -24,7 +24,7 @@
             <info>Scheduling is mostly unused as of yet, so this is subject to change. Try to maintain current goal.</info>
         </scheduling>
         <training>
-            <goal unit="%">75</goal>
+            <goal unit="%">60</goal>
             <info>Hard to test in pipeline since one file uses OpenCV.</info>
         </training>
         <utils>
