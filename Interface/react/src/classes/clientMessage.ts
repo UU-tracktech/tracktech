@@ -32,14 +32,21 @@ export class BoxesClientMessage extends ClientMessage {
 
 /** Structure that represents a bounding box */
 export class Box {
-  constructor(boxId: number, rect: number[], objectId?: number) {
+  constructor(
+    boxId: number,
+    rect: number[],
+    objectType: string,
+    objectId?: number
+  ) {
     this.boxId = boxId
     this.rect = rect
+    this.objectType = objectType
     this.objectId = objectId
   }
 
   boxId: number
   rect: number[]
+  objectType: string
   objectId?: number
 }
 
