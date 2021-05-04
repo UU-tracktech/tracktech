@@ -11,30 +11,14 @@ docker build -t %imageName% .
 docker image prune -f
 
 :: Run new container...
-:: docker run -t -d --name %containerName% %imageName%
-docker run -t -d --name %containerName% %imageName% python3.8 docs/documentation.py -ci -rs^
- utility^
- ProcessorOrchestrator/src^
- Processor/src^
- VideoForwarder/src
- 
-:: Interface/testingSelenium
-:: CameraProcessor/tests^
-:: CameraProcessor Interface ProcessorOrchestrator VideoForwarder
-:: CameraProcessor/tests ProcessorOrchestrator/src VideoForwarder/src
-REM
-REM !docs
-REM !utility
-REM
-REM !CameraProcessor/processor
-REM !CameraProcessor/tests
-REM
-REM !Interface/testingSelenium
-REM
-REM !ProcessorOrchestrator/src
-REM !ProcessorOrchestrator/testing
-REM
-REM !VideoForwarder/src
-REM !VideoForwarder/test
+docker run -t -d --name %containerName% %imageName% python3.8 docs/documentation.py -ci -rs CameraProcessor/processor
+REM docker run -t -d --name %containerName% %imageName% python3.8 docs/documentation.py -ci -rs^
+REM  utility docs^
+REM  ProcessorOrchestrator/src ProcessorOrchestrator/testing^
+REM  CameraProcessor/tests^
+REM  VideoForwarder/src VideoForwarder/test^
+REM  Interface/testingSelenium
+
+REM CameraProcessor/processor
 
 Pause
