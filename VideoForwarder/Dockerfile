@@ -41,9 +41,6 @@ RUN ["mkdir","streams"]
 
 WORKDIR /
 
-# Copy a test config
-COPY NetworkConfig.json /NetworkConfig.json
-
 # Copy the source code
 COPY src src
 

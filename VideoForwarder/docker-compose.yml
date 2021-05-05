@@ -5,11 +5,12 @@ services:
     image: tracktech.ml:50007/tt-forwarder-image
     build: .
     environment:
+      CAMERA_AUDIO: "true"
+      CAMERA_URL: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
+      STREAM_FOLDER: /streams
+      STREAM_ENCODING: libx264
       SEGMENT_SIZE: 2
       SEGMENT_AMOUNT: 5
-      CONFIG_PATH: /NetworkConfig.json
-      STREAM_FOLDER: /streams
-      ENCODING: libx264
     ports:
       - 80:80
   forwarder-docs:
