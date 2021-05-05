@@ -18,10 +18,18 @@ import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
 import { Box, QueueItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
-import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
+import {
+  StartOrchestratorMessage,
+  StopOrchestratorMessage
+} from '../classes/orchestratorMessage'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
-export type overlayProps = { cameraId: string; showBoxes: indicator, autoplay?: boolean }
+export type overlayProps = {
+  cameraId: string
+  showBoxes: indicator
+  hiddenObjectTypes: string[]
+  autoplay?: boolean
+}
 
 /** The size of the overlay, used to scale the drawing of the bounding boxes */
 type size = { width: number; height: number; left: number; top: number }
@@ -119,15 +127,25 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   )
 
   /**
-   * Function called when clicking on a bounding box (TODO: implement start tracking on click)
+   * Function called when clicking on a bounding box when the object id is not set
    * @param boxId The ID of the box that was clicked on
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
-  function onBoxClick(boxId: number, frameId: number) {
+  function onTrackingStart(boxId: number, frameId: number) {
     if (window.confirm('Start tracking this object?')) {
       socketContext.send(
         new StartOrchestratorMessage(props.cameraId, frameId, boxId)
       )
+    }
+  }
+
+  /**
+   * Function called when clicking on a bounding box when the object id is set
+   * @param objectId The ID of the object that is being tracked and will be untracked
+   */
+  function onTrackingStop(objectId: number) {
+    if (window.confirm('Stop tracking this object?')) {
+      socketContext.send(new StopOrchestratorMessage(objectId))
     }
   }
 
@@ -168,37 +186,48 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       'Aqua',
       'Navy'
     ]
+
     return (
       <div>
-        {boxes.map((box) => {
-          var x1 = box.rect[0],
-            x2 = box.rect[2],
-            y1 = box.rect[1],
-            y2 = box.rect[3]
-          if (x1 > x2) [x1, x2] = [x2, x1]
-          if (y1 > y2) [y1, y2] = [y2, y1]
-          return (
-            <div
-              key={box.boxId}
-              data-testid={`box-${box.boxId}`}
-              style={{
-                position: 'absolute',
-                left: `${x1 * size.width + size.left}px`,
-                top: `${y1 * size.height + size.top}px`,
-                width: `${(x2 - x1) * size.width}px`,
-                height: `${(y2 - y1) * size.height}px`,
-                borderColor: colordict[box.objectId ?? 0],
-                borderStyle: 'solid',
-                /* transitionProperty: 'all', transitionDuration: '1s', */
-                zIndex: 1000,
-                cursor: box.objectId === undefined ? 'pointer' : 'default'
-              }}
-              onClick={() => {
-                if (box.objectId === undefined) onBoxClick(box.boxId, frameId)
-              }}
-            />
+        {boxes
+          .filter((box) =>
+            /* eslint-disable react/prop-types */
+            props.hiddenObjectTypes.some(
+              (hiddenObjectType) => hiddenObjectType !== box.objectType
+            )
           )
-        })}
+          .map((box) => {
+            var x1 = box.rect[0],
+              x2 = box.rect[2],
+              y1 = box.rect[1],
+              y2 = box.rect[3]
+            if (x1 > x2) [x1, x2] = [x2, x1]
+            if (y1 > y2) [y1, y2] = [y2, y1]
+
+            return (
+              <div
+                key={box.boxId}
+                data-testid={`box-${box.boxId}`}
+                style={{
+                  position: 'absolute',
+                  left: `${x1 * size.width + size.left}px`,
+                  top: `${y1 * size.height + size.top}px`,
+                  width: `${(x2 - x1) * size.width}px`,
+                  height: `${(y2 - y1) * size.height}px`,
+                  borderColor: colordict[box.objectId ?? 0],
+                  borderStyle: 'solid',
+                  /* transitionProperty: 'all', transitionDuration: '1s', */
+                  zIndex: 1000,
+                  cursor: box.objectId === undefined ? 'pointer' : 'default'
+                }}
+                onClick={() => {
+                  if (box.objectId === undefined)
+                    onTrackingStart(box.boxId, frameId)
+                  else onTrackingStop(box.objectId)
+                }}
+              />
+            )
+          })}
       </div>
     )
   }
