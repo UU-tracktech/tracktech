@@ -4,6 +4,8 @@ COPY react/package.json ./package.json
 COPY react/package-lock.json ./package-lock.json
 RUN ["npm","install"]
 COPY react/tsconfig.json ./tsconfig.json
+COPY react/craco.config.js ./craco.config.js
+COPY react/.prettierrc.json ./.prettierrc.json
 COPY react/public ./public
 COPY react/src ./src
 RUN ["npm","run","build"]

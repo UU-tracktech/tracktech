@@ -35,6 +35,7 @@ export type gridProps = {
   setPrimary: (sourceId: string) => void
   sources: source[]
   indicator: indicator
+  hiddenObjectTypes: string[]
 }
 
 export function Grid(props: gridProps) {
@@ -70,6 +71,7 @@ export function Grid(props: gridProps) {
               onTimestamp={() => {}}
               sources={[source.srcObject]}
               showBoxes={props.indicator}
+              hiddenObjectTypes={props.hiddenObjectTypes}
             />
           </div>
         )
