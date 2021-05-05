@@ -25,3 +25,7 @@ jest.mock('@react-keycloak/web', () => {
 test('App renders', async () => {
   render(<App />)
 })
+
+test.todo('shows login notification if not authenticated')
+
+test.todo('shows home if authenticated')
