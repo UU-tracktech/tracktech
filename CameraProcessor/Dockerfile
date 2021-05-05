@@ -18,10 +18,15 @@ RUN apt install -y ffmpeg
 COPY requirements.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
 
+COPY requirements-gpu.txt .
+
 FROM base AS test
 
 COPY pytest.ini pytest.ini
+COPY configs.ini configs.ini
 COPY processor processor
+COPY filter.names filter.names
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
 COPY data/annotated/test data/annotated/test
 COPY data/videos/test.mp4 data/videos/test.mp4
 COPY tests tests
