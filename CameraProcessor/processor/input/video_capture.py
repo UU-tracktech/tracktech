@@ -22,7 +22,7 @@ class VideoCapture(ICapture):
         __current_frame_nr (int): Index number of current frame.
     """
     # Default path is the path to venice.mp4
-    def __init__(self, path='/data/videos/test.mp4'):
+    def __init__(self, path):
         """Create a VideoCapture given a path.
 
         Args:

@@ -8,11 +8,10 @@ Utrecht University within the Software Project course.
 
 import sys
 import logging
-import os
 import asyncio
-import configparser
 from absl import app
 
+from processor.utils.config_parser import ConfigParser
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
@@ -39,10 +38,8 @@ def main(_):
 
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
-    # Load the config file, take the relevant Yolov5 section
-    configs = configparser.ConfigParser(allow_no_value=True)
-    __root_dir = os.path.join(os.path.dirname(__file__), '../')
-    configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
+    config_parser = ConfigParser('configs.ini')
+    configs = config_parser.configs
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
@@ -66,7 +63,7 @@ def main(_):
     if hls_enabled:
         vid_stream = HlsCapture(hls_config['url'])
     else:
-        vid_stream = VideoCapture(os.path.join('..', yolo_config['source']))
+        vid_stream = VideoCapture(yolo_config['source'])
 
     # Get orchestrator configuration
     orchestrator_config = configs['Orchestrator']
