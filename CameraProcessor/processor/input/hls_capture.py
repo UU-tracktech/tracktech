@@ -136,6 +136,10 @@ class HlsCapture(ICapture):
             Boolean whether a new frame has been returned compared to the previous one.
             Frame Object containing the next frame.
         """
+        # Return False if the capture was flagged to close
+        if not self.__thread_running:
+            return False, None
+
         # Frame is not different from the last one
         if self.__frame_time_stamp == self.__last_frame_time_stamp:
             return False, None
