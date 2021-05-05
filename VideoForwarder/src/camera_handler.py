@@ -13,10 +13,10 @@ import threading
 import time
 from subprocess import TimeoutExpired
 import tornado.web
-import jwt
 
+from auth.auth import Auth, AuthenticationError, AuthorizationError
 from src.conversion_process import get_conversion_process
-from src.utils import get_stream_variables, get_token_variables
+from src.utils import get_stream_variables
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -47,7 +47,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         self.root = path
 
         # Load the public key from application settings
-        self.public_key = self.application.settings.get('publicKey')
+        self.auth : Auth = self.application.settings.get('client_auth')
 
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching
@@ -154,28 +154,31 @@ class CameraHandler(tornado.web.StaticFileHandler):
                 self.remove_delay, self.stop_stream, [root, camera])
             entry.callback.start()
 
+    # pylint: disable=broad-except
     def prepare(self):
         """Validate and check the header token if a public key is specified
         """
 
-        # Get variables of tokens
-        _, audience, scope = get_token_variables()
-
-        # If a key is specified
-        if self.public_key:
-            # Decode the token using the given key and the header token
+        # Validate the token and act accordingly if it is not good.
+        if self.auth is not None:
             try:
-                decoded = jwt.decode(self.request.headers.get('Authorization').split()[
-                                     1], self.public_key, algorithms=['RS256'], audience=audience)
-            # If decoding fails, return a 401 not authorized status
-            except ValueError as exc:
+                self.auth.validate(self.request.headers.get('Authorization').split()[1])
+            except AuthenticationError as exc:
+                # Authentication (validating token) failed
+                tornado.log.access_log.info(exc)
+                self.set_status(403)
+                raise tornado.web.Finish() from exc
+            except AuthorizationError as exc:
+                # Authorization failed (authentication succeeded, but the action is not allowed)
+                tornado.log.access_log.info(exc)
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
+            except Exception as exc:
+                # Any other error, no token added e.g.
+                tornado.log.access_log.info(exc)
+                self.set_status(400)
+                raise tornado.web.Finish() from exc
 
-            # If decoding succeeds, but the scope is invalid, return 403
-            if scope in decoded['resource_access'][audience]:
-                self.set_status(403)
-                raise tornado.web.Finish()
 
     def get_absolute_path(self, root, path):
         """Gets the path of the camera stream, when the camera is not yet started it does so automatically

@@ -34,7 +34,7 @@ export type overlayProps = {
 type size = { width: number; height: number; left: number; top: number }
 
 export function Overlay(props: overlayProps & VideoPlayerProps) {
-  /** Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn */
+  /** Queue which keeps the incoming bounding boxes and  the frameID at which they should be drawn */
   const queueRef = React.useRef(new Queue<QueueItem>())
 
   /** The frameID the video player is currently displaying */
