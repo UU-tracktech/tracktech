@@ -31,6 +31,7 @@ def convert_json_to_camera(json_file):
     return {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in json_file}
 
 
+# pylint: disable=invalid-name
 if __name__ == "__main__":
     # Setup for logging
     tornado.log.logging.basicConfig(filename='/src/main.log', filemode='w',
