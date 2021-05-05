@@ -58,7 +58,5 @@ ENV PYTHONPATH=/
 
 FROM testing AS production
 
-COPY public_key.txt public_key.txt
-
 # Run server
 ENTRYPOINT ["python","-u","/src/main.py"]
