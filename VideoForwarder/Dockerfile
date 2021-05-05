@@ -5,6 +5,9 @@ FROM python:3.8-slim-buster as install
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","Auth-1.0.tar.gz"]
+
 
 # Documentation container
 FROM install as pdoc

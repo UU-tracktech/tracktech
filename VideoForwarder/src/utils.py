@@ -35,24 +35,3 @@ def get_stream_variables():
     timeout_delay = int(os.environ.get('TIMEOUT_DELAY') or '30')
 
     return segment_size, segment_amount, encoding, remove_delay, timeout_delay
-
-
-def get_token_variables():
-    """Gets token variables from the environment with default values
-
-    Returns (str, str, str):
-        Public secret for identity provider
-        Audience of the token
-        Scope of the token
-    """
-
-    # The public secret of the identity provider to validate the tokens with
-    secret = os.environ.get('JWT_PUBLIC_SECRET')
-
-    # The audience the token should be for
-    audience = os.environ.get('TOKEN_AUDIENCE')
-
-    # The scope the token should be for
-    scope = os.environ.get('TOKEN_SCOPE')
-
-    return secret, audience, scope

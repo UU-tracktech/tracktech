@@ -13,6 +13,7 @@ import tornado.httpserver
 import tornado.web
 import tornado.ioloop
 
+from auth.auth import Auth
 from src.logging_filter import LoggingFilter
 from src.camera import Camera
 from src.camera_handler import CameraHandler
@@ -30,12 +31,13 @@ def convert_json_to_camera(json_file):
     return {camera["Name"]: Camera(camera["Ip"], camera["Audio"]) for camera in json_file}
 
 
+# pylint: disable=invalid-name
 if __name__ == "__main__":
     # Setup for logging
     tornado.log.logging.basicConfig(filename='/src/main.log', filemode='w',
-                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-                        level=tornado.log.logging.INFO,
-                        datefmt='%Y-%m-%d %H:%M:%S')
+                                    format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                                    level=tornado.log.logging.INFO,
+                                    datefmt='%Y-%m-%d %H:%M:%S')
 
     tornado.log.gen_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
     tornado.log.access_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
@@ -56,22 +58,21 @@ if __name__ == "__main__":
     key = os.environ.get('SSL_KEY')
     use_tls = cert and key
 
-    # Get the public key path used for authentication
-    public_key_path = os.environ.get('PUBLIC_KEY_PATH')
-    tornado.log.gen_log.info('using auth' if public_key_path is not None else 'not using auth')
-
-    # If the public key path was supplied, read the file and store it
-    PUBLIC_KEY = None
-    if public_key_path:
-        public_key_file = open(public_key_path, "r")
-        PUBLIC_KEY = public_key_file.read()
-        public_key_file.close()
+    # Get auth ready by reading the environment variables
+    public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
+    authenticator = None
+    if public_key is not None and audience is not None:
+        client_role = os.environ.get('CLIENT_ROLE')
+        if client_role is not None:
+            tornado.log.gen_log.info("using client token validation")
+            authenticator = Auth(public_key_path=public_key, algorithms=['RS256'],
+                                 audience=audience, role=client_role)
 
     # Create the web application with the camera handler and the public key
     app = tornado.web.Application(
         [
             (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
-        ], publicKey=PUBLIC_KEY)
+        ], authenticator=authenticator)
 
     # If using tls, create a context and load the certificate and key in it
     if use_tls:
