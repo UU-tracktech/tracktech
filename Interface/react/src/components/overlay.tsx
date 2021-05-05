@@ -180,7 +180,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
           return (
             <div
               key={box.boxId}
-              data-testid={"box-"+box.boxId}
+              data-testid={`box-${box.boxId}`}
               style={{
                 position: 'absolute',
                 left: `${x1 * size.width + size.left}px`,
