@@ -1,7 +1,5 @@
 tornado
-pyjwt
 asyncio
-cryptography
 pytest-tornado
 pytest-timeout
 pytest-asyncio
