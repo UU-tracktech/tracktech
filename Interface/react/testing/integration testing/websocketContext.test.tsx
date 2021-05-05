@@ -34,6 +34,7 @@ beforeEach(() => {
                 onPrimary={() => {}}
                 onResize={() => {}}
                 data-testId="overlay"
+                hiddenObjectTypes={[]}
                 sources={[
                   {
                     src:
