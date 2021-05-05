@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 import asyncio
-import os
 import pytest
 
 from processor.utils.config_parser import ConfigParser
@@ -14,7 +13,6 @@ from processor.pipeline.process_frames import process_stream
 from processor.input.video_capture import VideoCapture
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
-from tests.conftest import root_path
 
 
 class TestProcessFrames:
@@ -56,7 +54,7 @@ class TestProcessFrames:
 
         """
         captor = self.__get_video()
-        detector = self.__get_yolov5runner()
+        # detector = self.__get_yolov5runner()
         tracker = self.__get_sort_tracker()
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
