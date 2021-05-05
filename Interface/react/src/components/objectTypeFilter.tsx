@@ -37,6 +37,7 @@ export function ObjectTypeFilter(props: ObjectTypeFilterProps) {
           return (
             <Button
               key={objectType}
+              data-testid={`filterbutton-${objectType}`}
               type={hidden ? 'default' : 'primary'}
               onClick={
                 hidden
