@@ -287,8 +287,7 @@ interface_integration-testing:
     - docker rm -f processor-orchestrator-service || true
     - docker rm -f interface-integration-test-container || true
   script:
-    - cd Interface
-    - docker-compose -f docker-compose.testing.yml up --exit-code-from interface-test-service
+    - docker-compose -f Interface/docker-compose.testing.yml up --exit-code-from interface-test-service
     - docker cp interface-integration-test-container:/react/coverage i-coverage
   after_script:
     - docker-compose -f Interface/docker-compose.testing.yml down
