@@ -6,10 +6,10 @@ Utrecht University within the Software Project course.
 
 """
 import asyncio
-import configparser
 import os
 import pytest
 
+from processor.utils.config_parser import ConfigParser
 from processor.pipeline.process_frames import process_stream
 from processor.input.video_capture import VideoCapture
 from tests.unittests.utils.fake_detector import FakeDetector
@@ -28,20 +28,16 @@ class TestProcessFrames:
         Returns: a VideoCapture object streaming test.mp4.
 
         """
-        __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
+        config_parser = ConfigParser('configs.ini')
+        configs = config_parser.configs
+        __videos_dir = configs['Yolov5']['test_path']
         return VideoCapture(__videos_dir)
 
     # pylint: disable=useless-return
-    @pytest.mark.skip()
     def __get_yolov5runner(self):
         """Get the Yolov5 runner.
 
         """
-        configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(os.path.realpath(os.path.join(root_path, 'configs.ini')))
-        # config = configs['Yolov5']
-        # filters = configs['Filter']
-        # return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
         return None
 
     # pylint: disable=useless-return
@@ -61,7 +57,6 @@ class TestProcessFrames:
         """
         captor = self.__get_video()
         detector = self.__get_yolov5runner()
-
         tracker = self.__get_sort_tracker()
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))

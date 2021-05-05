@@ -20,8 +20,8 @@ def __get_images_dir():
     Returns: a string containing the file path to the image folder.
 
     """
-    __images_dir = os.path.realpath(os.path.join(root_path, 'data/annotated/test/img1/'))
-    return __images_dir
+    config_parser = ConfigParser('configs.ini')
+    return config_parser.configs['Accuracy']['source_path']
 
 
 def __get_video():
@@ -30,8 +30,8 @@ def __get_video():
     Returns: a string containing the file path to a video
 
     """
-    __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
-    return __videos_dir
+    config_parser = ConfigParser('configs.ini')
+    return config_parser.configs['Yolov5']['test_path']
 
 
 @pytest.fixture(params=[  # ImageCapture(__get_images_dir()),
