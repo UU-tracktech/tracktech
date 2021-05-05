@@ -30,7 +30,7 @@ class ConfigParser:
 
         # Make sure path does indeed exist
         if not os.path.exists(self.config_path):
-            raise FileNotFoundError(f'Config file does not exist in {root_path} + {config_name}')
+            raise FileNotFoundError(f'Config file does not exist in {self.root_path} + {config_name}')
 
         # Read config file
         self.configs = configparser.ConfigParser(allow_no_value=True)
