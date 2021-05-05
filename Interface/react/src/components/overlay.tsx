@@ -21,7 +21,7 @@ import { websocketContext } from './websocketContext'
 import { StartOrchestratorMessage } from '../classes/orchestratorMessage'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
-export type overlayProps = { cameraId: string; showBoxes: indicator }
+export type overlayProps = { cameraId: string; showBoxes: indicator, autoplay?: boolean }
 
 /** The size of the overlay, used to scale the drawing of the bounding boxes */
 type size = { width: number; height: number; left: number; top: number }
@@ -37,7 +37,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   const frameIdRef = React.useRef(0)
 
   /** If the video player is paused or not */
-  const playerPlayingRef = React.useRef(false)
+  const playerPlayingRef = React.useRef(props.autoplay ?? false)
 
   /** State containing the boxes to be drawn this frame */
   const [boxes, setBoxes] = React.useState<Box[]>([])
@@ -105,11 +105,11 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <VideoPlayer
           onTimestamp={(t) => (playerFrameIdRef.current = t)}
-          onPlayPause={(p) => (playerPlayingRef.current = p)}
+          onPlayPause={(p) =>{playerPlayingRef.current = p}}
           onResize={(w, h, l, t) =>
             setSize({ width: w, height: h, left: l, top: t })
           }
-          autoplay={false}
+          autoplay={props.autoplay ?? false}
           controls={true}
           onPrimary={props.onPrimary}
           sources={props.sources}
@@ -177,10 +177,10 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
             y2 = box.rect[3]
           if (x1 > x2) [x1, x2] = [x2, x1]
           if (y1 > y2) [y1, y2] = [y2, y1]
-
           return (
             <div
               key={box.boxId}
+              data-testid={"box-"+box.boxId}
               style={{
                 position: 'absolute',
                 left: `${x1 * size.width + size.left}px`,

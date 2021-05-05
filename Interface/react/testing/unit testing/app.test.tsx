@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { App } from '../src/app'
+import { App } from '../../src/app'
 import fetchMock from 'jest-fetch-mock'
 
 jest.mock('@react-keycloak/web', () => {
@@ -23,6 +23,5 @@ jest.mock('@react-keycloak/web', () => {
 })
 
 test('App renders', async () => {
-  fetch('www.google.com')
   render(<App />)
 })
