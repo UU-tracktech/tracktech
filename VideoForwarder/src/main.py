@@ -59,19 +59,19 @@ if __name__ == "__main__":
 
     # Get auth ready by reading the environment variables
     public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
-    client_auth = None
+    authenticator = None
     if public_key is not None and audience is not None:
         client_role = os.environ.get('CLIENT_ROLE')
         if client_role is not None:
             tornado.log.gen_log.info("using client token validation")
-            client_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
-                               audience=audience, role=client_role)
+            authenticator = Auth(public_key_path=public_key, algorithms=['RS256'],
+                                 audience=audience, role=client_role)
 
     # Create the web application with the camera handler and the public key
     app = tornado.web.Application(
         [
             (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
-        ], client_auth=client_auth)
+        ], authenticator=authenticator)
 
     # If using tls, create a context and load the certificate and key in it
     if use_tls:

@@ -47,7 +47,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         self.root = path
 
         # Load the public key from application settings
-        self.auth : Auth = self.application.settings.get('client_auth')
+        self.authenticator : Auth = self.application.settings.get('authenticator')
 
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching
@@ -160,9 +160,9 @@ class CameraHandler(tornado.web.StaticFileHandler):
         """
 
         # Validate the token and act accordingly if it is not good.
-        if self.auth is not None:
+        if self.authenticator is not None:
             try:
-                self.auth.validate(self.request.headers.get('Authorization').split()[1])
+                self.authenticator.validate(self.request.headers.get('Authorization').split()[1])
             except AuthenticationError as exc:
                 # Authentication (validating token) failed
                 tornado.log.access_log.info(exc)
