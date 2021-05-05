@@ -11,6 +11,13 @@ import configparser
 
 
 class ConfigParser:
+    """Config parser class that reads the config file, replaces all paths with the absolute one
+
+    Attributes:
+        root_path (str): path to root
+        config_path (str): path to config file
+        configs (configparser.ConfigParser): config parser containing keys and values
+    """
     def __init__(self, config_name):
         """Creates the config and reads the values, converts paths to absolute
 
