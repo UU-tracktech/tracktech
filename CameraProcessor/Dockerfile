@@ -13,7 +13,7 @@ ENV PYTHONPATH=/app
 RUN apt update
 
 RUN apt install -y ffmpeg
-RUN apt install g++
+RUN apt install -y g++
 
 # Install pip requirements
 COPY requirements.txt .
