@@ -289,9 +289,9 @@ interface_integration-testing:
   script:
     - cd Interface
     - docker-compose -f docker-compose.testing.yml up --exit-code-from interface-test-service
-    - docker cp interface-test-service:/react/coverage i-coverage
+    - docker cp interface-integration-test-container:/react/coverage i-coverage
   after_script:
-    - docker-compose -f docker-compose.testing.yml down
+    - docker-compose -f Interface/docker-compose.testing.yml down
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     when: always
