@@ -28,6 +28,10 @@ class ConfigParser:
         self.root_path = os.path.join(__file__, '../../../')
         self.config_path = os.path.join(self.root_path, config_name)
 
+        # Make sure path does indeed exist
+        if not os.path.exists(self.config_path):
+            raise FileNotFoundError(f'Config file does not exist in {config_name}')
+
         # Read config file
         self.configs = configparser.ConfigParser(allow_no_value=True)
         self.configs.read(self.config_path)

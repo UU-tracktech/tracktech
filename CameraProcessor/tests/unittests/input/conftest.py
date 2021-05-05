@@ -5,13 +5,11 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import os
 import pytest
 
+from processor.utils.config_parser import ConfigParser
 from processor.input.hls_capture import HlsCapture
-#  from processor.input.image_capture import ImageCapture
 from processor.input.video_capture import VideoCapture
-from tests.conftest import root_path
 
 
 def __get_images_dir():

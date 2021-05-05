@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import os
 from absl import app
 
 import processor.accuracy_runner as runner
