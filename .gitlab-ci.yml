@@ -283,6 +283,9 @@ interface_unit-testing:
 interface_integration-testing:
   stage: integrationtest
   needs: [interface_docker_build]
+  before_script:
+    - docker rm -f processor-orchestrator-service || true
+    - docker rm -f interface-integration-test-container || true
   script:
     - cd Interface
     - docker-compose -f docker-compose.testing.yml up --exit-code-from interface-test-service
