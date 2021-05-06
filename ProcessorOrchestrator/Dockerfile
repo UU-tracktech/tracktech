@@ -54,8 +54,8 @@ ENTRYPOINT ["pytest", "testing/unit_testing", "--cov-config=.coveragerc", "--cov
 
 FROM testing as integration_testing_server
 
-COPY po_coverage_html po_coverage_html
-COPY po-coverage.xml po-coverage.xml
+COPY ../po_coverage_html po_coverage_html
+COPY ../po-coverage.xml po-coverage.xml
 
 # Run server
 ENTRYPOINT ["pytest","testing/testing_server.py","-s","--cov-config=.coveragerc", "--cov=src", "--cov-report=html", "--cov-report=xml", "--cov-report=term", "--cov-append", "--junitxml=integration-report.xml"]
