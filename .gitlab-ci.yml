@@ -197,7 +197,7 @@ orchestrator_integration-testing:
     - docker cp processor-orchestrator-service:/po_coverage_html po_coverage_html
     - docker cp processor-orchestrator-service:/coverage.xml po-coverage.xml
   after_script:
-    - docker-compose -f ./ProcessorORchestrator/docker-compose.testing.yml down
+    - docker-compose -f ./ProcessorOrchestrator/docker-compose.testing.yml down
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
@@ -277,6 +277,34 @@ interface_unit-testing:
     - if: '$PIPELINE == "interface"'
       when: always
     - if: '$PIPELINE == "unit_testing"'
+      when: always
+
+interface_integration-testing:
+  stage: integrationtest
+  needs: [interface_docker_build]
+  before_script:
+    - docker rm -f processor-orchestrator-service || true
+    - docker rm -f interface-integration-test-container || true
+  script:
+    - docker-compose -f Interface/docker-compose.testing.yml up --exit-code-from interface-test-service
+    - docker cp interface-integration-test-container:/react/coverage i-coverage
+  after_script:
+    - docker-compose -f Interface/docker-compose.testing.yml down
+  coverage: /^TOTAL.*\s+(\d+\%)$/
+  artifacts:
+    when: always
+    paths:
+      - i-coverage
+    expire_in: 5 days
+  coverage: /All\sfiles.*?\s+(\d+.\d+)/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - Interface/**/*
+      when: always
+    - if: '$PIPELINE == "interface"'
+      when: always
+    - if: '$PIPELINE == "integration_testing"'
       when: always
 
 interface-linting-selenium:
