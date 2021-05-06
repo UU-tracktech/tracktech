@@ -38,6 +38,8 @@ RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements-
 COPY src src
 COPY testing testing
 COPY .coveragerc .coveragerc
+COPY po_coverage_html po_coverage_html
+COPY coverage.xml po-coverage.xml
 
 RUN ["mkdir", "utility"]
 
@@ -51,3 +53,11 @@ FROM testing as runtest
 
 # Run server
 ENTRYPOINT ["pytest", "testing/unit_testing", "--cov-config=.coveragerc", "--cov=src", "--cov-report=html", "--cov-report=xml", "--cov-report=term", "--junitxml=po-unit-report.xml"]
+
+FROM testing as integration_testing_server
+
+COPY po_coverage_html po_coverage_html
+COPY coverage.xml po-coverage.xml
+
+# Run server
+ENTRYPOINT ["pytest","testing/testing_server.py","-s","--cov-config=.coveragerc", "--cov=src", "--cov-report=html", "--cov-report=xml", "--cov-report=term", "--cov-append"]

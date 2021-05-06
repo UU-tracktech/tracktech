@@ -190,10 +190,9 @@ orchestrator_unit-testing:
 
 orchestrator_integration-testing:
   stage: integrationtest
-  needs: [orchestrator_docker_build]
+  needs: [orchestrator_unit-testing]
   script:
-    - cd ProcessorOrchestrator
-    - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
+    - docker-compose -f ProcessorOrchestrator/docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
     - docker cp processor-orchestrator-integration-tests:integration-report.xml integration-report.xml
     - docker cp processor-orchestrator-service:/po_coverage_html po_coverage_html
     - docker cp processor-orchestrator-service:/coverage.xml po-coverage.xml
@@ -202,10 +201,10 @@ orchestrator_integration-testing:
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
-      junit: ProcessorOrchestrator/integration-report.xml
-      cobertura: ProcessorOrchestrator/po-coverage.xml
+      junit: integration-report.xml
+      cobertura: po-coverage.xml
     paths:
-      - ProcessorOrchestrator/po_coverage_html
+      - po_coverage_html
     when: always
     expire_in: 10 days
   rules:
