@@ -38,8 +38,6 @@ RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements-
 COPY src src
 COPY testing testing
 COPY .coveragerc .coveragerc
-COPY po_coverage_html po_coverage_html
-COPY coverage.xml po-coverage.xml
 
 RUN ["mkdir", "utility"]
 
