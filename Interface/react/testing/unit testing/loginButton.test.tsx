@@ -10,11 +10,8 @@ let mockLogout = jest.fn()
 //mock the keycloak implementation
 //https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
 jest.mock('@react-keycloak/web', () => {
-  const originalModule = jest.requireActual('@react-keycloak/web')
   return {
-    ...originalModule,
     useKeycloak: () => ({
-      initialized: true,
       keycloak: {
         authenticated: mockAuthenticated,
         login: mockLogin,
