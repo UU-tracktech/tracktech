@@ -212,6 +212,10 @@ orchestrator_integration-testing:
       changes:
         - ProcessorOrchestrator/**/*
       when: always
+    - if: '$PIPELINE == "processor_orchestrator"'
+      when: always
+    - if: '$PIPELINE == "integration_testing"'
+      when: always
 
 orchestrator_linting:
   stage: linting
