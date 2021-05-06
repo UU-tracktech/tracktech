@@ -54,6 +54,8 @@ ENTRYPOINT ["pytest", "testing/unit_testing", "--cov-config=.coveragerc", "--cov
 
 FROM testing as integration_testing_server
 
+WORKDIR ../
+
 COPY po_coverage_html po_coverage_html
 COPY po-coverage.xml po-coverage.xml
 

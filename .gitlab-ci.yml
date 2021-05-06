@@ -171,7 +171,6 @@ orchestrator_unit-testing:
     - docker stop po-unit-testing processor-orchestrator
   coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
-    untracked: true
     reports:
       junit: po-unit-report.xml
       cobertura: po-coverage.xml
