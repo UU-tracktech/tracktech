@@ -3,7 +3,8 @@ version: "3.8"
 services:
   processor-orchestrator-service:
     # Use the existing testing image, but actually run the application
-    build: .
+    build:
+      context: .
       target: integration_testing_server
     container_name: processor-orchestrator-service
   processor-orchestrator-integration-tests:
