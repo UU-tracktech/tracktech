@@ -7,32 +7,36 @@ Utrecht University within the Software Project course.
 """
 import asyncio
 import pytest
+
 from utils.utils import PC_URL
 from processor.websocket_client import create_client
 
 
 class TestConnection:
     """Tests connection."""
-
     @pytest.mark.asyncio
-    @pytest.mark.timeout(10)
+    # @pytest.mark.timeout(10)
     async def test_websocket_construction(self):
         """Test connecting to websocket
 
         """
-        ws_client = await create_client(PC_URL, "mock_id")
-        assert ws_client.url == PC_URL
-        assert ws_client.write_queue == []
-        assert not ws_client.reconnecting
-        assert ws_client.connection is not None
+        self.ws_client = await create_client(PC_URL, "mock_id")
+        assert self.ws_client.url == PC_URL
+        assert self.ws_client.write_queue == []
+        assert not self.ws_client.reconnecting
+        assert self.ws_client.connection is not None
+        await self.ws_client.disconnect()
 
-    @pytest.mark.skip(reason='Possibly unnecessary test; No build in disconnect implemented.')
     @pytest.mark.asyncio
     @pytest.mark.timeout(5)
     async def test_websocket_disconnecting(self):
         """Test disconnection from websocket
 
         """
+        self.ws_client = await create_client(PC_URL, "mock_id")
+        assert self.ws_client.connection.protocol is not None
+        await self.ws_client.disconnect()
+        assert self.ws_client.connection.protocol is None
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(10)
@@ -41,11 +45,12 @@ class TestConnection:
 
         """
         # global websocket
-        ws_client = await create_client(PC_URL, "mock_id")
-        assert ws_client.connection is not None
-        ws_client.connection.close()
-        await asyncio.sleep(1)
-        assert ws_client.connection is not None
+        self.ws_client = await create_client(PC_URL, "mock_id")
+        assert self.ws_client.connection is not None
+        self.ws_client.connection.close()
+        await asyncio.sleep(0)
+        assert self.ws_client.connection is not None
+        await self.ws_client.disconnect()
 
 
 if __name__ == '__main__':
