@@ -30,6 +30,7 @@ COPY filter.names filter.names
 COPY data data
 COPY tests tests
 COPY processor processor
+COPY requirements-gpu.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
 
 FROM test AS lint
