@@ -10,6 +10,8 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app 
 ENV PYTHONPATH=/app
 
+RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", "https://download.pytorch.org/whl/torch_stable.html"]
+
 RUN apt update
 
 RUN apt install -y ffmpeg
@@ -19,24 +21,17 @@ RUN apt install -y g++
 COPY requirements.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
 
-COPY requirements-gpu.txt .
-
 FROM base AS test
 
 COPY pytest.ini pytest.ini
 COPY configs.ini configs.ini
-COPY processor processor
-COPY filter.names filter.names
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
-COPY data/annotated/test data/annotated/test
-COPY data/videos/test.mp4 data/videos/test.mp4
-COPY tests tests
-COPY data data
 COPY .coveragerc .coveragerc
-
-# Entrypoint instead of docker run cmd does not seem to work well 
-# Run python3.8 -m pytest --cov-config=.coveragerc --cov=processor --cov-report html --cov-report term --junitxml=cp-unit-report.xml tests/unittests
-
+COPY filter.names filter.names
+COPY data data
+COPY tests tests
+COPY processor processor
+COPY requirements-gpu.txt .
+RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
 
 FROM test AS lint
 
