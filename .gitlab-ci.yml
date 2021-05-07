@@ -173,7 +173,6 @@ orchestrator_unit-testing:
   artifacts:
     reports:
       junit: po-unit-report.xml
-      cobertura: po-coverage.xml
     paths:
       - po_coverage_html
       - po-coverage.xml
