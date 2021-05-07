@@ -11,6 +11,7 @@ import os
 import pytest
 
 from processor.pipeline.process_frames import process_stream
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
@@ -39,20 +40,18 @@ class TestProcessFrames:
         """
         configs = configparser.ConfigParser(allow_no_value=True)
         configs.read(os.path.realpath(os.path.join(root_path, 'configs.ini')))
-        # config = configs['Yolov5']
-        # filters = configs['Filter']
-        # return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
-        return None
+        config = configs['Yolov5']
+        filters = {"targets": os.path.join(root_path, 'filter.names')}
+        return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
 
     # pylint: disable=useless-return
-    @pytest.mark.skip()
     def __get_sort_tracker(self):
         """Get the SORT tracker.
         """
-        return None
+        # TODO Actually return SORT maybe # pylint: disable=fixme
+        return FakeTracker()
 
     @pytest.mark.timeout(90)
-    @pytest.mark.skip("YOLOv5 GPU acceleration does not work in Docker yet")
     def test_process_stream_with_yolov5(self, clients):
         """Tests process_stream function using Yolov5.
 
