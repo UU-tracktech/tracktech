@@ -113,7 +113,9 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <VideoPlayer
           onTimestamp={(t) => (playerFrameIdRef.current = t)}
-          onPlayPause={(p) =>{playerPlayingRef.current = p}}
+          onPlayPause={(p) => {
+            playerPlayingRef.current = p
+          }}
           onResize={(w, h, l, t) =>
             setSize({ width: w, height: h, left: l, top: t })
           }
