@@ -9,7 +9,7 @@ import asyncio
 import pytest
 
 from utils.utils import PC_URL
-from processor.websocket_client import create_client
+from processor.webhosting.websocket_client import create_client
 
 
 class TestConnection:

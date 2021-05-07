@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 """
 import json
 import pytest
-from processor.websocket_client import WebsocketClient
+from processor.webhosting.websocket_client import WebsocketClient
 
 
 # pylint: disable=attribute-defined-outside-init, no-member
