@@ -202,7 +202,6 @@ orchestrator_integration-testing:
     - docker cp processor-orchestrator-service:/coverage.xml po-coverage.xml
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/docker-compose.testing.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: integration-report.xml
