@@ -49,7 +49,6 @@ camera-processor_unit-testing:
     - docker cp camera-processor-test-container:/app/coverage.xml cp-coverage.xml
     - docker cp camera-processor-test-container:/app/coverage_html cp-coverage_html
     - docker stop camera-processor-test-container
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: cp-unit-report.xml
@@ -298,7 +297,6 @@ interface_integration-testing:
     - docker cp interface-integration-test-container:/react/coverage i-coverage
   after_script:
     - docker-compose -f Interface/docker-compose.testing.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     when: always
     paths:
@@ -387,7 +385,6 @@ video-forwarder_unit-testing:
     - docker cp video-forwarder-test-container:/vf-unit-report.xml vf-unit-report.xml
     - docker cp video-forwarder-test-container:/htmlcov vf-coverage_html
     - docker stop video-forwarder-test-container
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: vf-unit-report.xml
