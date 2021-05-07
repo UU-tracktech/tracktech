@@ -8,7 +8,6 @@ Utrecht University within the Software Project course.
 
 import asyncio
 import json
-import sys
 import logging
 from tornado import websocket
 
@@ -40,15 +39,6 @@ class WebsocketClient:
         self.url = url  # The url of the websocket
         self.write_queue = []  # Stores messages that could not be sent due to a closed socket
         self.identifier = identifier  # Identify to identify itself with orchestrator
-
-        for handler in logging.root.handlers[:]:
-            logging.root.removeHandler(handler)
-
-        logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
-                            level=logging.INFO,
-                            handlers=[logging.FileHandler(filename="client.log", encoding='utf-8', mode='w')])
-
-        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     async def connect(self):
         """.Connect to the websocket url asynchronously."""
@@ -83,6 +73,25 @@ class WebsocketClient:
         if not connected:
             logging.error("Could never connect with orchestrator")
             raise TimeoutError("Never connected with orchestrator")
+
+    async def disconnect(self):
+        """Disconnects the websocket
+
+        """
+        loop = asyncio.get_event_loop()
+
+        # If event loop was already not closed
+        if not loop.is_closed():
+            # Wait until all tasks are complete
+            for task in asyncio.all_tasks():
+                if not task.done():
+                    await asyncio.sleep(0)
+
+            # Cancels any new tasks in the asyncio loop
+            loop.stop()
+
+        # Close connection
+        self.connection.close()
 
     def write_message(self, message):
         """Write a message on the websocket asynchronously.
