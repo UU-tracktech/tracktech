@@ -80,13 +80,14 @@ class WebsocketClient:
         """
         loop = asyncio.get_event_loop()
 
-        # If loop was already not closed
+        # If event loop was already not closed
         if not loop.is_closed():
             # Wait until all tasks are complete
             for task in asyncio.all_tasks():
                 if not task.done():
                     await asyncio.sleep(0)
 
+            # Cancels any new tasks in the asyncio loop
             loop.stop()
 
         # Close connection
