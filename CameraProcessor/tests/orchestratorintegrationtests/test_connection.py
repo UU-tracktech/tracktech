@@ -12,6 +12,7 @@ from utils.utils import PC_URL
 from processor.webhosting.websocket_client import create_client
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestConnection:
     """Tests connection."""
     @pytest.mark.asyncio
