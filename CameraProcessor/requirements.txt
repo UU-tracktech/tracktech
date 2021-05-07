@@ -4,6 +4,10 @@
 # General imports
 tornado==6.1
 
+# Threading / Async
+threaded==4.1.0
+asyncio==3.4.3
+
 # Testing
 pytest==6.2.3
 pytest-asyncio==0.15.0
