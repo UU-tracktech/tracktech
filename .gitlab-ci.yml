@@ -169,7 +169,6 @@ orchestrator_unit-testing:
     - docker cp po-unit-testing:/po_coverage_html po_coverage_html
     - docker cp po-unit-testing:/coverage.xml po-coverage.xml
     - docker stop po-unit-testing processor-orchestrator
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: po-unit-report.xml
