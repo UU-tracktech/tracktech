@@ -10,6 +10,8 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app 
 ENV PYTHONPATH=/app
 
+RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", "https://download.pytorch.org/whl/torch_stable.html"]
+
 RUN apt update
 
 RUN apt install -y ffmpeg
@@ -18,7 +20,6 @@ RUN apt install -y g++
 # Install pip requirements
 COPY requirements.txt .
 RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
-RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", -f "https://download.pytorch.org/whl/torch_stable.html"]
 
 FROM base AS test
 
