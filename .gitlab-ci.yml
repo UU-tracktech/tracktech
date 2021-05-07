@@ -161,6 +161,7 @@ orchestrator_unit-testing:
   needs: [orchestrator_docker_build]
   before_script:
     - docker rm -f po-unit-testing || true
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   script:
     - docker run --name po-unit-testing processor-orchestrator pytest testing/unit_testing --cov-config=.coveragerc --cov=src --cov-report=html --cov-report=xml --cov-report=term --junitxml=po-unit-report.xml
   after_script:
@@ -191,6 +192,8 @@ orchestrator_integration-testing:
   dependencies: 
     - orchestrator_unit-testing
   needs: [orchestrator_unit-testing]
+  before_script:
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   script:
     - docker-compose -f ProcessorOrchestrator/docker-compose.testing.yml up --build --no-start
     - docker cp po_coverage_html processor-orchestrator-service:/
@@ -225,6 +228,7 @@ orchestrator_linting:
   needs: [orchestrator_docker_build]
   before_script:
     - docker rm -f orchestrator-lint-container || true
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   script:
     - docker run -d -t --name orchestrator-lint-container processor-orchestrator
     - docker cp .pylintrc orchestrator-lint-container:/
