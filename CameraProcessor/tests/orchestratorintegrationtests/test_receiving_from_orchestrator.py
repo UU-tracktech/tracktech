@@ -23,8 +23,7 @@ class TestReceivingFromOrchestrator:
 
         """
         ws_client = await create_dummy_client(PC_URL, "mock_id")
-        assert ws_client.connection is not None
-        ws_client.connection.close()
+        assert ws_client.connection.protocol is not None
 
     @pytest.fixture(params=['featureMap'])
     def message_type(self, request):
