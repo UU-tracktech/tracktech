@@ -94,7 +94,7 @@ class Yolov5Detector(IDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            DetectionObj: a Detection Object with filled bounding box list.
+            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects
         """
         # Padded resize
         bounding_boxes = []
