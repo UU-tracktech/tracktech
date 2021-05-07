@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import asyncio
 import pytest
 from super_websocket_client import create_dummy_client
 from utils.utils import PC_URL
