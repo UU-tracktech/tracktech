@@ -48,10 +48,11 @@ class Yolov5Detector(IDetector):
 
         # Initialize
         set_logging()
+        if self.config['device'] != 'cpu':
+            if not torch.cuda.is_available():
+                logging.info("CUDA unavailable")
+                self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
-        if not torch.cuda.is_available():
-            logging.info("CUDA unavailable")
-            self.device = 'cpu'
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
         if self.device.type == 'cpu':
             logging.info("I am using the CPU. Check CUDA version,"
