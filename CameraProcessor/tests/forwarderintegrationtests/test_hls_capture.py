@@ -8,7 +8,6 @@ Utrecht University within the Software Project course.
 
 import ffmpeg
 import pytest
-import cv2
 
 from processor.input.hls_capture import HlsCapture
 
@@ -95,7 +94,7 @@ class TestVideoForwarder:
 
         # Frame rate corresponds to opencv framerate
         meta_data_fps = int(streams_data[0]['avg_frame_rate'][:2])
-        assert meta_data_fps == hls_capture.cap.get(cv2.CAP_PROP_FPS)
+        assert meta_data_fps == hls_capture.fps
 
         # Close the Hls capture
         hls_capture.close()
