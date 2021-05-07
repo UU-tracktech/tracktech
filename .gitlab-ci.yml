@@ -176,6 +176,7 @@ orchestrator_unit-testing:
       cobertura: po-coverage.xml
     paths:
       - po_coverage_html
+      - po-coverage.xml
     expire_in: 10 days
     when: always
   rules:
@@ -196,10 +197,11 @@ orchestrator_integration-testing:
   script:
     - docker-compose -f ProcessorOrchestrator/docker-compose.testing.yml up --no-start
     - docker cp po_coverage_html processor-orchestrator-service:/po_coverage_html
+    - docker cp po-coverage.xml processor-orchestrator-service:/coverage.xml
     - docker-compose -f ProcessorOrchestrator/docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
     - docker cp processor-orchestrator-service:integration-report.xml integration-report.xml
     - docker cp processor-orchestrator-service:/po_coverage_html po_coverage_html
-    - docker cp processor-orchestrator-service:/po-coverage.xml po-coverage.xml
+    - docker cp processor-orchestrator-service:/coverage.xml po-coverage.xml
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/docker-compose.testing.yml down
   coverage: /^TOTAL.*\s+(\d+\%)$/
