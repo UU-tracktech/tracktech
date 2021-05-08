@@ -49,7 +49,6 @@ camera-processor_unit-testing:
     - docker cp camera-processor-test-container:/app/coverage.xml cp-coverage.xml
     - docker cp camera-processor-test-container:/app/coverage_html cp-coverage_html
     - docker stop camera-processor-test-container
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: cp-unit-report.xml
@@ -162,6 +161,7 @@ orchestrator_unit-testing:
   needs: [orchestrator_docker_build]
   before_script:
     - docker rm -f po-unit-testing || true
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   script:
     - docker run --name po-unit-testing processor-orchestrator pytest testing/unit_testing --cov-config=.coveragerc --cov=src --cov-report=html --cov-report=xml --cov-report=term --junitxml=po-unit-report.xml
   after_script:
@@ -169,13 +169,12 @@ orchestrator_unit-testing:
     - docker cp po-unit-testing:/po_coverage_html po_coverage_html
     - docker cp po-unit-testing:/coverage.xml po-coverage.xml
     - docker stop po-unit-testing processor-orchestrator
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: po-unit-report.xml
-      cobertura: po-coverage.xml
     paths:
       - po_coverage_html
+      - po-coverage.xml
     expire_in: 10 days
     when: always
   rules:
@@ -190,22 +189,28 @@ orchestrator_unit-testing:
 
 orchestrator_integration-testing:
   stage: integrationtest
-  needs: [orchestrator_docker_build]
+  dependencies: 
+    - orchestrator_unit-testing
+  needs: [orchestrator_unit-testing]
+  before_script:
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   script:
-    - cd ProcessorOrchestrator
-    - docker-compose -f docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
-    - docker cp processor-orchestrator-integration-tests:integration-report.xml integration-report.xml
-    - docker cp processor-orchestrator-service:/po_coverage_html po_coverage_html
+    - docker-compose -f ProcessorOrchestrator/docker-compose.testing.yml up --build --no-start
+    - docker cp po_coverage_html processor-orchestrator-service:/
+    - docker cp po-coverage.xml processor-orchestrator-service:/coverage.xml
+    - docker-compose -f ProcessorOrchestrator/docker-compose.testing.yml up --exit-code-from processor-orchestrator-integration-tests
+    - docker cp processor-orchestrator-service:integration-report.xml integration-report.xml
+    - docker cp processor-orchestrator-service:/po_coverage_html /
     - docker cp processor-orchestrator-service:/coverage.xml po-coverage.xml
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/docker-compose.testing.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
-      junit: ProcessorOrchestrator/integration-report.xml
-      cobertura: ProcessorOrchestrator/po-coverage.xml
+      junit: integration-report.xml
+      cobertura: po-coverage.xml
     paths:
-      - ProcessorOrchestrator/po_coverage_html
+      - po_coverage_html
+      - po-coverage.xml
     when: always
     expire_in: 10 days
   rules:
@@ -213,12 +218,17 @@ orchestrator_integration-testing:
       changes:
         - ProcessorOrchestrator/**/*
       when: always
+    - if: '$PIPELINE == "processor_orchestrator"'
+      when: always
+    - if: '$PIPELINE == "integration_testing"'
+      when: always
 
 orchestrator_linting:
   stage: linting
   needs: [orchestrator_docker_build]
   before_script:
     - docker rm -f orchestrator-lint-container || true
+    - docker build -t processor-orchestrator --target=testing ./ProcessorOrchestrator
   script:
     - docker run -d -t --name orchestrator-lint-container processor-orchestrator
     - docker cp .pylintrc orchestrator-lint-container:/
@@ -291,7 +301,6 @@ interface_integration-testing:
     - docker cp interface-integration-test-container:/react/coverage i-coverage
   after_script:
     - docker-compose -f Interface/docker-compose.testing.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     when: always
     paths:
@@ -380,7 +389,6 @@ video-forwarder_unit-testing:
     - docker cp video-forwarder-test-container:/vf-unit-report.xml vf-unit-report.xml
     - docker cp video-forwarder-test-container:/htmlcov vf-coverage_html
     - docker stop video-forwarder-test-container
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: vf-unit-report.xml
