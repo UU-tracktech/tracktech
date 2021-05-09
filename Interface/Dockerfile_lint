@@ -14,7 +14,7 @@ ENV PYTHONPATH=/app
 RUN ["python3.8", "-m", "pip", "install", "-U", "selenium"]
 RUN ["python3.8", "-m", "pip", "install", "unittest2"]
 RUN ["python3.8", "-m", "pip", "install", "subprocess.run"]
-RUN ["python3.8", "-m", "pip", "install", "pylint"]
+RUN ["python3.8", "-m", "pip", "install", "pylint==2.0.6"]
 
 # Copy the source code
 COPY testingSelenium testingSelenium
