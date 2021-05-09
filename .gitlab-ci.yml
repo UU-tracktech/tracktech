@@ -296,7 +296,6 @@ interface_integration-testing:
   stage: integrationtest
   needs: [interface_docker_build]
   before_script:
-    - cd Interface
     - docker rm -f processor-orchestrator-service || true
     - docker rm -f interface-integration-test-container || true
   script:
