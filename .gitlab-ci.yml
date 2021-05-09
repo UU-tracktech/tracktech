@@ -269,6 +269,7 @@ interface_unit-testing:
   needs: [interface_docker_build]
   before_script:
     - docker rm -f interface-unit-test-container || true
+    - docker build -t interface -f Dockerfile.test .
   script:
     - docker run --name interface-unit-test-container interface
   after_script:
