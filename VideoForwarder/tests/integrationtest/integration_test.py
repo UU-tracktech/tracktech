@@ -19,7 +19,7 @@ class TestVideoForwarder:
         """Setup method for testing
 
         """
-        self.base_url = 'http://video-forwarder-service:80/testvid'
+        self.base_url = 'http://video-forwarder:80/testvid'
         # self.base_url = 'http://localhost:80/testvid'
         self.extension = '.m3u8'
 

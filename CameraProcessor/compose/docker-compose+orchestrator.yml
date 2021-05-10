@@ -4,16 +4,15 @@ services:
   # Take the already built test container from the camera processor
   camera-processor-test-service:
     build:
-      context: .
-      target: test
+      context: ..
+      target: test_integration_orchestrator
     container_name: processor-integration-test-container
     depends_on:
       - "processor-orchestrator-service"
     # Overwrite entrypoint to run integration tests instead
-    entrypoint: ["pytest", "/app/tests/orchestratorintegrationtests" ,"--junitxml=cp-integration-report.xml"]
   # Build the build stage from the processor orchestrator manually (since it is not guaranteed the last develop version on the runner)
   processor-orchestrator-service:
     build:
-      context: ../ProcessorOrchestrator
+      context: ../../ProcessorOrchestrator
       target: build
     container_name: ext-orchestrator-integration-test-container
