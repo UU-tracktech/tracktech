@@ -1,0 +1,82 @@
+forwarder_build:
+  stage: build
+  script:
+    - docker-compose -f ./VideoForwarder/docker-compose.yml build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/**/*
+      when: always
+    - if: '$project =~ /forwarder/'
+      when: always
+    - if: '$stage =~ /build/'
+      when: always
+      
+forwarder_test_unit:
+  stage: test
+  script:
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build
+    - docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
+    - docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
+  after_script:
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+  coverage: /^TOTAL.*\s+(\d+\%)$/
+  artifacts:
+    reports:
+      junit: vf-unit-report.xml
+    paths:
+      - vf-coverage_html
+    when: always 
+    expire_in: 10 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/**/*
+      when: always
+    - if: '$project =~ /forwarder/'
+      when: always
+    - if: '$stage =~ /test/'
+      when: always
+      
+forwarder_test_integration:
+  stage: test
+  script:
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml up --build --exit-code-from video-forwarder_test
+    - docker cp video-forwarder_container:/app/vf-integration-report.xml vf-integration-report.xml
+  after_script:
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml down
+  artifacts:
+    reports:
+      junit: vf-integration-report.xml
+    when: always 
+    expire_in: 10 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/**/*
+      when: always
+    - if: '$project =~ /forwarder/'
+      when: always
+    - if: '$stage =~ /test/'
+      when: always
+
+forwarder_lint:
+  stage: lint
+  before_script:
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --build --no-start
+  script:
+    - docker cp .pylintrc video-forwarder_container:/app
+    - docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility
+    - docker cp utility/__init__.py video-forwarder_container:/app/utility
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up
+  after_script:
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml down
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - VideoForwarder/**/*
+      when: always
+    - if: '$project =~ /forwarder/'
+      when: always
+    - if: '$stage =~ /lint/'
+      when: always

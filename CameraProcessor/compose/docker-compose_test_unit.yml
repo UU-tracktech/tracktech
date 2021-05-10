@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  cameraprocessor:
+    build:
+      context: ..
+      target: test_unit
+    container_name: camera-processor_container
