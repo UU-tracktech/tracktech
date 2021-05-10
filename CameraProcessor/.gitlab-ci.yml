@@ -20,7 +20,6 @@ processor_test_unit:
     - docker cp camera-processor_container:/app/coverage_html cp-coverage_html
   after_script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: cp-unit-report.xml
