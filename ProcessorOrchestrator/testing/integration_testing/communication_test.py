@@ -8,12 +8,87 @@ from tornado import websocket
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(20)
-async def test_start_tracking():
-    """Test if interface can send a start tracking command that is then send to the correct processor."""
+@pytest.mark.timeout(10)
+async def test_bad_message_interface():
+    """Test if the interface can send a bad message without crashing the server."""
 
     # Wait a little bit so the test server can start
     time.sleep(5)
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    interface.write_message("This message is unusable for the orchestrator")
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
+async def test_incomplete_message_interface():
+    """Test if the interface can send an incomplete message without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    interface.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "processor_1"
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
+async def test_unknown_processor_message_interface():
+    """Test if the interface can send an incomplete message without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    interface.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "unknown",
+        "frameId": 1,
+        "boxId": 1
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
+async def test_unknown_object_message_interface():
+    """Test if the interface can send an incomplete message without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    interface.write_message(json.dumps({
+        "type": "stop",
+        "objectId": "999"
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
+async def test_bad_message_processor():
+    """Test if the processor can send a bad message without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    interface.write_message("bad message")
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
+async def test_incomplete_message_processor():
+    """Test if the processor can send an incomplete message without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    interface.write_message(json.dumps({
+        "type": "identifier"
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(40)
+async def test_start_tracking_and_timeout():
+    """Test if interface can send a start tracking command that is then send to the correct processor.
+    Also test if after a few seconds the object is automatically no longer tracked."""
+
     processor = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     processor.write_message(json.dumps({
@@ -32,6 +107,9 @@ async def test_start_tracking():
 
     message = await processor.read_message()
     assert assert_start_tracking(message)
+
+    message_2 = await processor.read_message()
+    assert assert_stop_tracking(message_2, 1)
 
 
 def assert_start_tracking(message):
@@ -140,20 +218,29 @@ async def test_stop_tracking():
     interface = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/client")
     await interface.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "processor_5",
+        "frameId": 1,
+        "boxId": 1,
+    }))
+    await interface.write_message(json.dumps({
         "type": "stop",
         "objectId": 1
     }))
 
+    # read start message first
+    _ = await processor.read_message()
     message = await processor.read_message()
-    assert assert_stop_tracking(message)
+    assert assert_stop_tracking(message, 1)
 
 
-def assert_stop_tracking(message):
+def assert_stop_tracking(message, object_id):
     """Help method to assert if the stop tracking message is as expected"""
     message_json = json.loads(message)
     assert message_json["type"] == "stop"
-    assert message_json["objectId"] == 1
+    assert message_json["objectId"] == object_id
     return True
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
