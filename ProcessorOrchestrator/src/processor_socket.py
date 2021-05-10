@@ -10,11 +10,10 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from time import sleep
 
 from tornado.websocket import WebSocketHandler
 
-from src.object_manager import objects, TrackingObject
+from src.object_manager import objects
 from src.connections import processors
 import src.client_socket as client_socket
 import src.logger as logger
