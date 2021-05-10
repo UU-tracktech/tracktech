@@ -17,6 +17,7 @@ import processor.utils.draw as draw
 import processor.utils.convert as convert
 import processor.utils.text as text
 
+
 async def process_stream(capture, detector, tracker, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
@@ -56,7 +57,8 @@ async def process_stream(capture, detector, tracker, ws_client=None):
                 logging.info(ws_client.message_queue)
                 track_elem = ws_client.message_queue.popleft()
                 if isinstance(track_elem, StartCommand):
-                    logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} with new object id {track_elem.object_id}')
+                    logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} '
+                                 f'with new object id {track_elem.object_id}')
                 elif isinstance(track_elem, StopCommand):
                     logging.info(f'Stop tracking object {track_elem.object_id}')
 
