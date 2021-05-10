@@ -1,7 +1,7 @@
 processor_build:
   stage: build
   script:
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml up --build --no-start --exit-code-from cameraprocessor
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
