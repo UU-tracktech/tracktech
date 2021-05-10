@@ -4,25 +4,21 @@ services:
   # Take the already built test container from the camera processor
   camera-processor-test-service:
     build:
-      context: .
-      target: test
+      context: ..
+      target: test_integration_forwarder
     container_name: processor-forwarder-integration-test-container
     depends_on:
       - "forwarder-test-service"
-#      forwarder-test-service:
-#        condition: service_healthy
-    # Overwrite entrypoint to run integration tests instead
-    entrypoint: ["python3.8", "-m", "pytest", "/app/tests/forwarderintegrationtests" ,"--junitxml=cp-f-integration-report.xml"]
   # Build the build stage from the forwarder manually (since it is not yet done in pipeline)
   forwarder-test-service:
     build:
-      context: ../VideoForwarder
-      target: production
+      context: ../../VideoForwarder
+      target: testing
     environment:
       SEGMENT_SIZE: 2
       SEGMENT_AMOUNT: 5
-      CONFIG_PATH: /NetworkConfig.json
-      STREAM_FOLDER: /streams
+      CONFIG_PATH: /app/NetworkConfig.json
+      STREAM_FOLDER: /app/streams
       ENCODING: libx264
     container_name: ext-forwarder-integration-test-container
     # Healthcheck so test doesn't start too soon and no timeout is required

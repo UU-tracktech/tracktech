@@ -1,0 +1,15 @@
+# Compose file for integration testing. Builds processor orchestrator build image from source.
+version: "3.4"
+services:
+  # Take the already built test container from the camera processor
+  interface:
+    build:
+      context: ..
+      target: integration-testing
+    container_name: interface_container
+    depends_on:
+      - "processor-orchestrator"
+  # Build the build stage from the processor orchestrator manually (since it is not guaranteed the last develop version on the runner)
+  processor-orchestrator:
+    build:
+      context: ../../ProcessorOrchestrator
