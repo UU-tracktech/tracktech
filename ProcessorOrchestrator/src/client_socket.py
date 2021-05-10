@@ -10,7 +10,6 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from time import sleep
 
 from tornado.websocket import WebSocketHandler
 
