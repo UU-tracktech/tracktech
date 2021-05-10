@@ -2,8 +2,6 @@ interface_build:
   stage: build
   script:
     - docker-compose -f Interface/docker-compose.yml build
-  after_script:
-    - docker-compose -f Interface/docker-compose.yml down
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
