@@ -35,6 +35,9 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements-test.txt"]
 
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","Auth-1.0.tar.gz"]
+
 COPY src src
 COPY testing testing
 COPY .coveragerc .coveragerc
