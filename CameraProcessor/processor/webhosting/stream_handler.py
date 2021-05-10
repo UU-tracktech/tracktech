@@ -7,17 +7,14 @@ Utrecht University within the Software Project course.
 """
 
 import time
-import os
-import configparser
 import logging
 import tornado.web
 import tornado.gen
 import cv2
 
 import processor.utils.draw as draw
-from processor.input.hls_capture import HlsCapture
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.pipeline.tracking.sort_tracker import SortTracker
+from processor.main import main
+from processor.pipeline.process_frames import process_stream
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
@@ -38,61 +35,29 @@ class StreamHandler(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'multipart/x-mixed-replace;boundary=--jpgboundary')
         self.set_header('Connection', 'close')
 
-        served_image_timestamp = time.time()
-        my_boundary = '--jpgboundary'
+        self.served_image_timestamp = time.time()
 
-        # Load the config file, take the relevant Yolov5 section
-        configs = configparser.ConfigParser(allow_no_value=True)
-        __root_dir = os.path.join(os.path.dirname(__file__), '../../')
-        configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
+        vid_stream, detector, tracker, _ = main()
+        yield process_stream(vid_stream, detector, tracker, self.when_done)
 
-        # Instantiate the detector
-        logging.info("Instantiating detector...")
-        yolo_config = configs['Yolov5']
-        config_filter = configs['Filter']
-        detector = Yolov5Detector(yolo_config, config_filter)
+    async def when_done(self, frame_obj, tracked_boxes):
+        draw.draw_tracking_boxes(frame_obj.get_frame(), tracked_boxes.get_bounding_boxes())
 
-        # Instantiate the tracker
-        logging.info("Instantiating tracker...")
-        sort_config = configs['SORT']
-        tracker = SortTracker(sort_config)
+        # If it does get the image the frame gets encoded
+        ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
+        img = jpeg.tobytes()
 
-        frame_nr = 0
+        # Every .1 seconds the frame gets sent to the browser
+        self.interval = .1
 
-        capture = HlsCapture()
-        while capture.opened():
-            ret, frame_obj = capture.get_next_frame()
+        try:
+            self.write('--jpgboundary')
+            self.write('Content-type: image/jpeg\r\n')
+            self.write('Content-length: %s\r\n\r\n' % len(img))
+            self.write(img)
+        except RuntimeError as err:
+            logging.error(f'Client disconnected, throwing the following error: {err}')
 
-            if not ret:
-                continue
-
-            # Get detections from running detection stage.
-            bounding_boxes = detector.detect(frame_obj)
-
-            # Get objects tracked in current frame from tracking stage.
-            tracked_boxes = tracker.track(frame_obj, bounding_boxes)
-
-            draw.draw_tracking_boxes(frame_obj.get_frame(), tracked_boxes.get_bounding_boxes())
-
-            # If it does get the image the frame gets encoded
-            ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
-            img = jpeg.tobytes()
-
-            # Every .1 seconds the frame gets sent to the browser
-            interval = .1
-
-            try:
-                self.write(my_boundary)
-                self.write('Content-type: image/jpeg\r\n')
-                self.write('Content-length: %s\r\n\r\n' % len(img))
-                self.write(img)
-            except RuntimeError as err:
-                logging.error(f'Client disconnected, throwing the following error: {err}')
-
-            if served_image_timestamp + interval < time.time():
-                self.flush()
-                served_image_timestamp = time.time()
-
-            frame_nr += 1
-
-        logging.info(f'capture object stopped after {frame_nr} frames')
+        if self.served_image_timestamp + self.interval < time.time():
+            self.flush()
+            self.served_image_timestamp = time.time()
