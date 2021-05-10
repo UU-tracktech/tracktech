@@ -10,13 +10,12 @@ from tornado.websocket import WebSocketHandler
 from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
 from src.object_manager import start_tracking_timeout_monitoring
-from src.main import main
 
 
 @pytest.mark.asyncio
 def test_start_testing_server():
     """Starts the server as a test, so that the coverage may be measured."""
-    main()
+    _start_server()
 
 
 def _start_server():
