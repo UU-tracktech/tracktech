@@ -199,7 +199,6 @@ class WebsocketClient:
         box_id = message["boxId"]
         object_id = message["objectId"]
 
-        logging.info(f'Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}')
         self.message_queue.append(StartCommand(frame_id, box_id, object_id))
 
     def stop_tracking(self, message):
@@ -209,6 +208,6 @@ class WebsocketClient:
             message: JSON parse of the sent message.
         """
         object_id = message["objectId"]
-        logging.info(f'Stop tracking object {object_id}')
+
         self.message_queue.append(StopCommand(object_id))
     # pylint: enable=R0201
