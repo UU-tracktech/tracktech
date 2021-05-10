@@ -6,14 +6,58 @@ Utrecht University within the Software Project course.
 
 """
 
+import os
 import logging
-import asyncio
-import cv2
+import configparser
 
-from processor.pipeline.framebuffer import FrameBuffer
 import processor.utils.draw as draw
 import processor.utils.convert as convert
-import processor.utils.text as text
+
+from processor.pipeline.framebuffer import FrameBuffer
+
+from processor.input.video_capture import VideoCapture
+from processor.input.hls_capture import HlsCapture
+
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.tracking.sort_tracker import SortTracker
+
+
+def prepare_stream():
+    """Read the configuration information and prepare the objects for the frame stream
+    """
+    # Load the config file
+    configs = configparser.ConfigParser(allow_no_value=True)
+    __root_dir = os.path.join(os.path.dirname(__file__), '../../')
+    configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
+
+    # Instantiate the detector
+    logging.info("Instantiating detector...")
+    yolo_config = configs['Yolov5']
+    config_filter = configs['Filter']
+    detector = Yolov5Detector(yolo_config, config_filter)
+
+    # Instantiate the tracker
+    logging.info("Instantiating tracker...")
+    sort_config = configs['SORT']
+    tracker = SortTracker(sort_config)
+
+    # Frame counter starts at 0. Will probably work differently for streams
+    logging.info("Starting stream...")
+
+    hls_config = configs['HLS']
+
+    hls_enabled = hls_config.getboolean('enabled')
+
+    # Capture the video stream
+    if hls_enabled:
+        capture = HlsCapture(hls_config['url'])
+    else:
+        capture = VideoCapture(os.path.join('..', yolo_config['source']))
+
+    # Get orchestrator configuration
+    orchestrator_config = configs['Orchestrator']
+
+    return capture, detector, tracker, orchestrator_config['url']
 
 
 async def process_stream(capture, detector, tracker, func):
