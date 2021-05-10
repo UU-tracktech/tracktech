@@ -34,18 +34,6 @@ def main(_):
     Args:
         _ (list): list of arguments passed to main, contains file path per default.
     """
-    # Logging doesn't work in main function without this,
-    # but it must be in main as it gets removed by documentation.py otherwise.
-    for handler in logging.root.handlers[:]:
-        logging.root.removeHandler(handler)
-
-    logging.basicConfig(filename='main.log', filemode='w',
-                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-                        level=logging.INFO,
-                        datefmt='%Y-%m-%d %H:%M:%S')
-
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-
     # Load the config file, take the relevant Yolov5 section
     configs = configparser.ConfigParser(allow_no_value=True)
     __root_dir = os.path.join(os.path.dirname(__file__), '../')
@@ -100,27 +88,14 @@ async def initialize(vid_stream, detector, tracker, url):
 
 
 if __name__ == '__main__':
+    # Configure the logging
+    logging.basicConfig(filename='main.log', filemode='w',
+                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                        level=logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     try:
         app.run(main)
     except SystemExit:
         pass
-
-
-def make_app():
-    """Creates the tornado web app.
-
-    Returns:
-        tornado.web.Application: Tornado web app with the main page and video handler.
-    """
-    return tornado.web.Application([
-        (r'/', HtmlPageHandler),
-        (r'/video_feed', StreamHandler)
-    ])
-
-
-def main():
-    """Creates the tornado app and starts event loop."""
-    port = 9090
-    app = make_app()
-    app.listen(port)
-    tornado.ioloop.IOLoop.current().start()

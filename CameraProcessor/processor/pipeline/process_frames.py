@@ -75,11 +75,6 @@ async def __send_orchestrator(ws_client, frame_obj, tracked_boxes):
     await asyncio.sleep(0)
 
 
-def __host_tornado(frame_obj, tracked_boxes):
-    # Give frame to streamhandler
-    pass
-
-
 def __opencv_display(frame_obj, tracked_boxes):
     """Displays frame using the imshow of opencv
 
