@@ -31,21 +31,33 @@ async def create_client(url, identifier=None):
 class WebsocketClient:
     """Async websocket client that connects to a specified url and read/write messages.
     Should not be instantiated directly. Rather, use the create_client function.
+
+    Attributes:
+        connection (WebsocketClient.Connection): Connection object of the websocket
+        reconnecting (bool): Whether or not we have to reconnect
+        url (str): Url of the websocket
+        write_queue (List[]): Stores messages that could not be sent due to a closed socket
+        identifier (str): Identifier of the camera processor for the orchestrator
     """
 
     def __init__(self, url, identifier=None):
-        self.connection = None  # Holds the connection object
-        self.reconnecting = False  # Whether we are currently trying to reconnect
-        self.url = url  # The url of the websocket
-        self.write_queue = []  # Stores messages that could not be sent due to a closed socket
-        self.identifier = identifier  # Identify to identify itself with orchestrator
+        # Holds the connection object
+        self.connection = None
+        self.reconnecting = False
+        self.url = url
+        # List of messages that could not get sent
+        self.write_queue = []
+        self.identifier = identifier
 
     async def connect(self):
-        """.Connect to the websocket url asynchronously."""
+        """Connect to the websocket url asynchronously."""
         timeout_left = 60
         sleep = 1
         connected = False
+
+        # Whilst there is no connection
         while not connected and timeout_left > 0:
+            # Reconnect
             try:
                 self.connection =\
                     await websocket.websocket_connect(self.url,
@@ -63,7 +75,7 @@ class WebsocketClient:
                     await self.connection.write_message(id_message)
 
                 connected = True
-
+            # Reconnect failed
             except ConnectionRefusedError:
                 logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
                 await asyncio.sleep(sleep)
@@ -97,7 +109,7 @@ class WebsocketClient:
         """Write a message on the websocket asynchronously.
 
         Args:
-            message: the message to write.
+            message (str): the message to write.
         """
         try:
             asyncio.get_running_loop().create_task(self._write_message(message))

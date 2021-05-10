@@ -13,21 +13,24 @@ import tornado.gen
 import cv2
 
 import processor.utils.draw as draw
-from processor.main import main
-from processor.pipeline.process_frames import process_stream
+from processor.pipeline.process_frames import prepare_stream, process_stream
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
 
 
+# pylint: disable=attribute-defined-outside-init
 class StreamHandler(tornado.web.RequestHandler):
-    """Handler for the frame stream."""
-    server_image_timestamp = 0
+    """Streamhandler is for the tornado localhost page. It serves JPG images to the client
 
+    Attributes:
+        __previous_flush_timestamp (float): Timestamp of the previous flush
+        __flush_interval (float): Time inbetween flushes
+    """
     @tornado.gen.coroutine
     def get(self):
         """Get request handler for the webpage to show video stream."""
-        # Sets headers of the handler
+        # Sets headers of the stream handler
         logging.info('set headers')
         self.set_header('Cache-Control',
                         'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0')
@@ -35,20 +38,28 @@ class StreamHandler(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'multipart/x-mixed-replace;boundary=--jpgboundary')
         self.set_header('Connection', 'close')
 
-        self.served_image_timestamp = time.time()
+        # Timing of last flush
+        self.__previous_flush_timestamp = time.time()
 
-        vid_stream, detector, tracker, _ = main()
-        yield process_stream(vid_stream, detector, tracker, self.when_done)
+        # Every .1 seconds the buffer gets flushed
+        self.__flush_interval = .1
 
-    async def when_done(self, frame_obj, tracked_boxes):
+        # Get the objects needed for process_stream and starts the function
+        vid_stream, detector, tracker, _ = prepare_stream()
+        yield process_stream(vid_stream, detector, tracker, self.frame_processed)
+
+    async def frame_processed(self, frame_obj, tracked_boxes):
+        """When the frame got processed, this function gets called to put it in the buffer
+
+        Args:
+            frame_obj (FrameObj): Frame object containing the d
+            tracked_boxes (Boundingboxes): The tracked boxes from the frame processing loop
+        """
         draw.draw_tracking_boxes(frame_obj.get_frame(), tracked_boxes.get_bounding_boxes())
 
-        # If it does get the image the frame gets encoded
+        # Encode the frame to jpg format
         ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
         img = jpeg.tobytes()
-
-        # Every .1 seconds the frame gets sent to the browser
-        self.interval = .1
 
         try:
             self.write('--jpgboundary')
@@ -58,6 +69,6 @@ class StreamHandler(tornado.web.RequestHandler):
         except RuntimeError as err:
             logging.error(f'Client disconnected, throwing the following error: {err}')
 
-        if self.served_image_timestamp + self.interval < time.time():
+        if self.__previous_flush_timestamp + self.__flush_interval < time.time():
             self.flush()
-            self.served_image_timestamp = time.time()
+            self.__previous_flush_timestamp = time.time()
