@@ -41,11 +41,6 @@ class StreamHandler(tornado.web.RequestHandler):
         served_image_timestamp = time.time()
         my_boundary = '--jpgboundary'
 
-        """Setup for logging and starts pipeline by reading in config information.
-
-        Args:
-            _ (list): list of arguments passed to main, contains file path per default.
-        """
         # Load the config file, take the relevant Yolov5 section
         configs = configparser.ConfigParser(allow_no_value=True)
         __root_dir = os.path.join(os.path.dirname(__file__), '../../')
@@ -85,31 +80,19 @@ class StreamHandler(tornado.web.RequestHandler):
 
             # Every .1 seconds the frame gets sent to the browser
             interval = .1
-            if served_image_timestamp + interval > time.time():
-                logging.info("write")
+
+            try:
                 self.write(my_boundary)
                 self.write('Content-type: image/jpeg\r\n')
                 self.write('Content-length: %s\r\n\r\n' % len(img))
                 self.write(img)
-            else:
-                logging.info("flush")
+            except RuntimeError as err:
+                logging.error(f'Client disconnected, throwing the following error: {err}')
+
+            if served_image_timestamp + interval < time.time():
                 self.flush()
                 served_image_timestamp = time.time()
 
             frame_nr += 1
 
         logging.info(f'capture object stopped after {frame_nr} frames')
-
-        #     # Every .1 seconds the frame gets sent to the browser
-        #     interval = 0.1
-        #     if served_image_timestamp + interval < time.time():
-        #         self.write(my_boundary)
-        #         self.write('Content-type: image/jpeg\r\n')
-        #         self.write('Content-length: %s\r\n\r\n' % len(img))
-        #         self.write(img)
-        #         served_image_timestamp = time.time()
-        #
-        #     try:
-        #         self.flush()
-        #     except Exception as err:
-        #         raise Exception('connection lost with client') from err
