@@ -7,6 +7,7 @@ tornado==6.1
 # Threading / Async
 threaded==4.1.0
 asyncio==3.4.3
+kthread
 
 # Testing
 pytest==6.2.3
@@ -21,6 +22,3 @@ opencv-python-headless==4.5.1.48
 opencv-python==4.5.1.48
 ffmpeg-python==0.2.0
 matplotlib
-
-# Threading
-kthread
