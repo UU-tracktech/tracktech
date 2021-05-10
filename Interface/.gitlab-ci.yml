@@ -1,7 +1,7 @@
 interface_build:
   stage: build
   script:
-    - docker-compose -f Interface/docker-compose.yml up --build --no-start --exit-code-from interface
+    - docker-compose -f Interface/docker-compose.yml build
   after_script:
     - docker-compose -f Interface/docker-compose.yml down
   rules:

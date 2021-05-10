@@ -1,7 +1,7 @@
 orchestrator_build:
   stage: build
   script:
-    - docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build --exit-code-from orchestrator
+    - docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
