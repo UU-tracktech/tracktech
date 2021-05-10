@@ -47,7 +47,7 @@ beforeEach(() => {
               <button
                 data-testid="button"
                 onClick={() =>
-                  setSocket('ws://processor-orchestrator-service:80/client')
+                  setSocket('ws://processor-orchestrator-service/client')
                 }
               />
               <span data-testid="state">{connectionState}</span>
@@ -81,7 +81,7 @@ test('Bounding box send to queue', async () => {
 
   // Create a new websocket that will act as if it was a processor
   var processorSocket = new WebSocket(
-    'ws://processor-orchestrator-service:80/processor'
+    'ws://processor-orchestrator-service/processor'
   )
   while (processorSocket.readyState != 1) {
     await new Promise((r) => setTimeout(r, 500))
@@ -120,7 +120,7 @@ test('Bounding boxes start tracking', async () => {
 
   // Create a new websocket that will act as if it was a processor
   var processorSocket = new WebSocket(
-    'ws://processor-orchestrator-service:80/processor'
+    'ws://processor-orchestrator-service/processor'
   )
   while (processorSocket.readyState != 1) {
     await new Promise((r) => setTimeout(r, 500))
