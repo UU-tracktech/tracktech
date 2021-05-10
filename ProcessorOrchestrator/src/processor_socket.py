@@ -10,11 +10,10 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from time import sleep
 
 from tornado.websocket import WebSocketHandler
 
-from src.object_manager import objects, TrackingObject
+from src.object_manager import objects
 from src.connections import processors
 import src.client_socket as client_socket
 import src.logger as logger
@@ -95,9 +94,7 @@ class ProcessorSocket(WebSocketHandler):
                 "boundingBoxes":
                     lambda: self.send_bounding_boxes(message_object),
                 "featureMap":
-                    lambda: self.update_feature_map(message_object),
-                "test":
-                    lambda: self.send_mock_commands(message_object)
+                    lambda: self.update_feature_map(message_object)
             }
 
             action_type = message_object["type"]
@@ -144,8 +141,8 @@ class ProcessorSocket(WebSocketHandler):
         Returns:
             None
         """
-        logger.log_message_send(message, "/processor", self.request.remote_ip)
         self.write_message(message)
+        logger.log_message_send(message, "/processor", self.request.remote_ip)
 
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors.
@@ -215,7 +212,7 @@ class ProcessorSocket(WebSocketHandler):
         feature_map = message["featureMap"]
 
         try:
-            objects[object_id].update_feature_map(feature_map)
+            objects[object_id][0].update_feature_map(feature_map)
         except KeyError:
             logger.log("Unknown object id")
 
@@ -225,42 +222,3 @@ class ProcessorSocket(WebSocketHandler):
                 "objectId": object_id,
                 "featureMap": feature_map
             }))
-
-    def send_mock_commands(self, message):
-        """Sends a few mock messages to the processor for testing purposes
-
-        Args:
-            message (json):
-                JSON message that was received. It should contain the following properties:
-                    - "frameId"  | The identifier of a frame that should be used in the mock "start" command.
-                    - "objectId" | The identifier of an object that should be used in the mock "start" command.
-        Returns:
-            None
-        """
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
-        tracking_object1 = TrackingObject()
-
-        tracking_object2 = TrackingObject()
-
-        self.send_message(json.dumps({
-            "type": "start",
-            "objectId": tracking_object1.identifier,
-            "frameId": frame_id,
-            "boxId": box_id
-        }))
-
-        sleep(2)
-
-        self.send_message(json.dumps({
-            "type": "featureMap",
-            "objectId": tracking_object2.identifier,
-            "featureMap": {}
-        }))
-
-        sleep(2)
-
-        self.send_message(json.dumps({
-            "type": "stop",
-            "objectId": tracking_object1.identifier
-        }))
