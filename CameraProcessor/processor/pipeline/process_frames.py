@@ -44,6 +44,8 @@ async def process_stream(capture, detector, tracker, ws_client=None):
         # Get objects tracked in current frame from tracking stage.
         tracked_boxes = tracker.track(frame_obj, bounding_boxes)
 
+        draw.draw_tracking_boxes(frame_obj.get_frame(), tracked_boxes.get_bounding_boxes())
+
         # Buffer the tracked object
         framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
         framebuffer.clean_up()
