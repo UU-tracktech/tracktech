@@ -47,7 +47,7 @@ beforeEach(() => {
               <button
                 data-testid="button"
                 onClick={() =>
-                  setSocket('ws://processor-orchestrator-service:80/client')
+                  setSocket('ws://processor-orchestrator:80/client')
                 }
               />
               <span data-testid="state">{connectionState}</span>
@@ -81,7 +81,7 @@ test('Bounding box send to queue', async () => {
 
   // Create a new websocket that will act as if it was a processor
   var processorSocket = new WebSocket(
-    'ws://processor-orchestrator-service:80/processor'
+    'ws://processor-orchestrator:80/processor'
   )
   while (processorSocket.readyState != 1) {
     await new Promise((r) => setTimeout(r, 500))
@@ -92,15 +92,15 @@ test('Bounding box send to queue', async () => {
   }
   processorSocket.send(JSON.stringify(identifyMessage))
 
-  var boxesMessage = {
-    type: 'boundingBoxes',
-    frameId: 0,
-    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8] }]
-  }
-
   screen.getByTestId('button').click()
   while (screen.getByTestId('state').textContent != 'OPEN') {
     await new Promise((r) => setTimeout(r, 500))
+  }
+
+  var boxesMessage = {
+    type: 'boundingBoxes',
+    frameId: 0,
+    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8], objectType: 'testObject' }]
   }
 
   // Send the bounding boxes
@@ -115,12 +115,12 @@ test('Bounding box send to queue', async () => {
 /**
  * Test whether clicking on the box will result in a start command going to the processor
  */
-test('Bounding box send to queue', async () => {
+test('Bounding boxes start tracking', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
   var processorSocket = new WebSocket(
-    'ws://processor-orchestrator-service:80/processor'
+    'ws://processor-orchestrator:80/processor'
   )
   while (processorSocket.readyState != 1) {
     await new Promise((r) => setTimeout(r, 500))
@@ -134,7 +134,7 @@ test('Bounding box send to queue', async () => {
   var boxesMessage = {
     type: 'boundingBoxes',
     frameId: 0,
-    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8] }]
+    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8], objectType: 'testObject' }]
   }
 
   screen.getByTestId('button').click()

@@ -1,0 +1,8 @@
+# Compose file for integration testing. Builds processor orchestrator and runs tests.
+version: "3.8"
+services:
+  processor-orchestrator:
+    build:
+      context: ..
+      target: test_unit
+    container_name: processor-orchestrator_container
