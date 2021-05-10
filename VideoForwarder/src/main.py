@@ -34,7 +34,7 @@ def convert_json_to_camera(json_file):
 # pylint: disable=invalid-name
 if __name__ == "__main__":
     # Setup for logging
-    tornado.log.logging.basicConfig(filename='/src/main.log', filemode='w',
+    tornado.log.logging.basicConfig(filename='/app/src/main.log', filemode='w',
                                     format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                                     level=tornado.log.logging.INFO,
                                     datefmt='%Y-%m-%d %H:%M:%S')
