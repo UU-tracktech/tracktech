@@ -54,9 +54,6 @@ async def __opencv_display(frame_obj, tracked_boxes):
     # Copy frame to draw over.
     frame_copy = frame_obj.get_frame().copy()
 
-    # Draw bounding boxes with ID
-    draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
-
     # Play the video in a window called "Output Video"
     try:
         cv2.imshow("Output Video", frame_copy)
