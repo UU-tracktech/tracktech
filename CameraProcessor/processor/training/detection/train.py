@@ -16,10 +16,10 @@ Utrecht University within the Software Project course.
 import os
 import logging
 import sys
-import configparser
 import cv2
 
 import processor.utils.draw as draw
+from processor.utils.config_parser import ConfigParser
 from processor.input.image_capture import ImageCapture
 from processor.training.pre_annotations import PreAnnotations
 from processor.data_object.bounding_box import BoundingBox
@@ -38,18 +38,16 @@ def main():
                         datefmt='%Y-%m-%d %H:%M:%S')
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
-    folder_name = 'test'
-    images_dir = f'{root_dir}/data/annotated/{folder_name}/img1'
-    bounding_boxes_path = f'{root_dir}/data/annotated/{folder_name}/gt/gt.txt'
+    configs_parser = ConfigParser('configs.ini')
+    configs = configs_parser.configs
+
+    images_dir = configs['Accuracy']['source_path']
+    bounding_boxes_path = configs['Accuracy']['gt_path']
 
     capture = ImageCapture(images_dir)
     pre_annotations = PreAnnotations(bounding_boxes_path, capture.nr_images)
     pre_annotations.parse_file()
     all_frame_bounding_boxes = pre_annotations.boxes
-
-    configs = configparser.ConfigParser(allow_no_value=True)
-    __root_dir = os.path.join(os.path.dirname(__file__), '../../')
-    configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
 
     logging.info('start training')
 

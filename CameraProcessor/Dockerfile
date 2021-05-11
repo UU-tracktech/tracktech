@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app 
 ENV PYTHONPATH=/app
 
-RUN ["python3.8", "-m", "pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", "https://download.pytorch.org/whl/torch_stable.html"]
+RUN ["pip", "install", "torch==1.8.0+cu101", "torchvision==0.9.0+cu101", "-f", "https://download.pytorch.org/whl/torch_stable.html"]
 
 RUN apt update
 
@@ -19,28 +19,51 @@ RUN apt install -y g++
 
 # Install pip requirements
 COPY requirements.txt .
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
+RUN ["pip", "install", "-r", "requirements.txt"]
+
 
 FROM base AS test
 
+COPY data/annotated/test data/annotated/test
+COPY data/videos data/videos
 COPY pytest.ini pytest.ini
 COPY configs.ini configs.ini
 COPY .coveragerc .coveragerc
-COPY filter.names filter.names
-COPY data data
-COPY tests tests
 COPY processor processor
+COPY tests/conftest.py tests/conftest.py
+
+
+FROM test AS test_unit
 COPY requirements-gpu.txt .
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
+RUN ["pip", "install", "-r", "requirements-gpu.txt"]
+COPY filter.names filter.names
+COPY data/tests/unittests data/tests/unittests
+COPY tests/unittests tests/unittests
+ENTRYPOINT  ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","html","--cov=processor/","--junitxml=cp-unit-report.xml","tests/unittests"]
+
+
+FROM test as test_integration_forwarder
+COPY tests/forwarderintegrationtests tests/forwarderintegrationtests
+ENTRYPOINT  ["pytest","tests/forwarderintegrationtests" ,"--junitxml=cp-vf-integration-report.xml"]
+
+
+FROM test as test_integration_orchestrator
+COPY data/tests/integrationtests data/tests/integrationtests
+COPY tests/orchestratorintegrationtests tests/orchestratorintegrationtests
+ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests" ,"--junitxml=cp-po-integration-report.xml"]
+
 
 FROM test AS lint
-
-RUN ["python3.8", "-m", "pip", "install", "pylint==2.6.0"]
-RUN ["python3.8", "-m", "pip", "install", "pylint-exit"]
+RUN ["pip", "install", "pylint==2.6.0", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
 
 WORKDIR /
+COPY data data
+COPY tests tests
+
+ENTRYPOINT ["pylint","app","--rcfile=app/.pylintrc","--output-format=colorized"]
+
 
 FROM base as deploy 
 
@@ -114,7 +137,7 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=10.1"
 COPY requirements-gpu.txt requirements-gpu.txt
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
+RUN ["pip", "install", "-r", "requirements-gpu.txt"]
 
 COPY configs.ini .
 COPY coco.names .
@@ -128,8 +151,7 @@ FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS wslbuild
 
 RUN apt update
 RUN apt install -y ffmpeg
-RUN ["apt", "install", "-y", "python3.8"]
-RUN ["apt", "install", "-y", "python3-pip"]
+RUN ["apt", "install", "-y", "python3.8", "python3-pip"]
 
 WORKDIR /app
 
@@ -137,8 +159,7 @@ WORKDIR /app
 COPY requirements.txt .
 COPY requirements-gpu.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements.txt"]
-RUN ["python3.8", "-m", "pip", "install", "-r", "requirements-gpu.txt"]
+RUN ["pip", "install", "-r", "requirements.txt", "requirements-gpu.txt"]
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1

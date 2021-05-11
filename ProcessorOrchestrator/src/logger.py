@@ -29,22 +29,6 @@ def log(message):
     print(message)
 
 
-def log_get_request(location, ip_address):
-    """Writes a get request to the log.
-
-    Args:
-        location (string):
-            Url path where this request was made.
-        ip_address (string):
-            Ip address of the request origin.
-    Returns:
-        None
-    """
-    message = f"GET Request made for {location} from {ip_address}"
-    logging.info(message)
-    print(message)
-
-
 def log_message_receive(message, location, ip_address):
     """Logs a message that was received.
 
