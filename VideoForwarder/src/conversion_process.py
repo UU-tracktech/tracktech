@@ -35,7 +35,7 @@ def get_conversion_process(url, audio, root, stream_options):
         ])  # 360p - Low bit-rate Stream
         stream_map.append(f'v:{index},a:{index}' if audio else f'v:{index}')
         index += 1
-        
+
     if stream_options.medium:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
@@ -44,7 +44,7 @@ def get_conversion_process(url, audio, root, stream_options):
         ])  # 420p - Medium bit-rate Stream
         stream_map.append(f'v:{index},a:{index}' if audio else f'v:{index}')
         index += 1
-        
+
     if stream_options.high:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
