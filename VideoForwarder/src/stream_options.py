@@ -15,7 +15,7 @@ class StreamOptions:
         segment_amount (str): Amount of video segments for the stream
         encoding (str): The encoding to use for the stream
     """
-    def __init__(self, segment_size, segment_amount, encoding):
+    def __init__(self, segment_size, segment_amount, encoding, low, medium, high):
         """Initializes a camara object that holds values
 
         Args:
@@ -32,3 +32,8 @@ class StreamOptions:
 
         # The The encoding to use for the stream
         self.encoding = encoding
+
+        # Wether to use various encoding qualities
+        self.low = low
+        self.medium = medium
+        self.high = high
