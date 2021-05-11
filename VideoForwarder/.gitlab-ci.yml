@@ -2,7 +2,6 @@ forwarder_build:
   stage: build
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./VideoForwarder/docker-compose.yml build
   rules:
@@ -19,7 +18,6 @@ forwarder_test_unit:
   stage: test
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build --exit-code-from video-forwarder
     - docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
@@ -47,7 +45,6 @@ forwarder_test_integration:
   stage: test
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml up --build --exit-code-from video-forwarder_test
     - docker cp video-forwarder_container:/app/vf-integration-report.xml vf-integration-report.xml
@@ -72,7 +69,6 @@ forwarder_lint:
   stage: lint
   tags:
     - low_end
-    - high_end
   before_script:
     - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --build --no-start
   script:
