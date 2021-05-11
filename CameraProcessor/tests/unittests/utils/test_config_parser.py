@@ -11,6 +11,7 @@ import configparser
 
 from processor.utils.config_parser import ConfigParser
 
+
 class TestConfigParser:
     """Tests whether the ConfigParsers runs correctly.
 
