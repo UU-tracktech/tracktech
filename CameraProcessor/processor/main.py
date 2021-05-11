@@ -15,9 +15,10 @@ from processor.utils.config_parser import ConfigParser
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
-import processor.websocket_client as client
 from processor.pipeline.process_frames import process_stream
 from processor.pipeline.tracking.sort_tracker import SortTracker
+
+import processor.webhosting.websocket_client as client
 
 
 def main(_):

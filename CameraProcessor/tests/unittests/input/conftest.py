@@ -32,10 +32,11 @@ def __get_video():
     return config_parser.configs['Yolov5']['test_path']
 
 
-@pytest.fixture(params=[  # ImageCapture(__get_images_dir()),
+@pytest.fixture(scope="class",
+                params=[ImageCapture(__get_images_dir()),
                         VideoCapture(__get_video()),
                         HlsCapture()],
-                ids=[  # "Image",
+                ids=["Image",
                      "video",
                      "HLS Stream"])
 def capture_implementation(request):
