@@ -26,7 +26,7 @@ class ConfigParser:
         """
         # Config path
         self.root_path = os.path.join(__file__, '../../../')
-        self.config_path = os.path.join(self.root_path, config_name)
+        self.config_path = os.path.realpath(os.path.join(self.root_path, config_name))
 
         # Make sure path does indeed exist
         if not os.path.exists(self.config_path):
