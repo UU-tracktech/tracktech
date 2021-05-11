@@ -9,6 +9,7 @@ from tornado.websocket import WebSocketHandler
 
 from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
+from src.timeline_handler import TimeLineHandler
 from src.object_manager import start_tracking_timeout_monitoring
 
 
@@ -27,6 +28,7 @@ def _start_server():
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
+        ('/timelines', TimeLineHandler),
         ('/stop', StopSocket, {'server': server_container})
     ]
 
