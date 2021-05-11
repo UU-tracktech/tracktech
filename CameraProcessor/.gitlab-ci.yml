@@ -1,7 +1,7 @@
 processor_build:
   stage: build
   script:
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml up --build --no-start
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -15,7 +15,7 @@ processor_build:
 processor_test_unit:
   stage: test
   script:
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
     - docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
     - docker cp camera-processor_container:/app/coverage_html cp-coverage_html
   after_script:
@@ -88,7 +88,7 @@ processor_lint:
     - docker cp .pylintrc camera-processor_lint_container:/app
     - docker cp utility/pylint_ignore.py camera-processor_lint_container:/app/utility
     - docker cp utility/__init__.py camera-processor_lint_container:/app/utility
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --exit-code-from cameraprocessor
   after_script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml down
   rules:

@@ -23,6 +23,9 @@ RUN ["pip", "install", "-r", "requirements.txt"]
 
 
 FROM base AS test
+
+COPY data/annotated/test data/annotated/test
+COPY data/videos data/videos
 COPY pytest.ini pytest.ini
 COPY configs.ini configs.ini
 COPY .coveragerc .coveragerc
