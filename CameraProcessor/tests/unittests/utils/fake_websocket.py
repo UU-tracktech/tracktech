@@ -6,12 +6,14 @@ Utrecht University within the Software Project course.
 
 """
 import json
-
+from collections import deque
 
 class FakeWebsocket:
-    """A fake websocket that implements the same methods but just asserts the
+    """A fake websocket that implements the same methods but just mocks some functionality
 
     """
+    def __init__(self):
+        self.message_queue = deque()
 
     def write_message(self, message):
         """Takes a message and asserts if it has the correct type property
