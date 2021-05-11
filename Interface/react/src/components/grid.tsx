@@ -35,6 +35,7 @@ export type gridProps = {
   setPrimary: (sourceId: string) => void
   sources: source[]
   indicator: indicator
+  hiddenObjectTypes: string[]
 }
 
 export function Grid(props: gridProps) {
@@ -56,6 +57,7 @@ export function Grid(props: gridProps) {
         //which includes the video player
         return (
           <div
+            data-testid="gridElement"
             key={source.id}
             style={
               props.primary === source.id
@@ -70,6 +72,7 @@ export function Grid(props: gridProps) {
               onTimestamp={() => {}}
               sources={[source.srcObject]}
               showBoxes={props.indicator}
+              hiddenObjectTypes={props.hiddenObjectTypes}
             />
           </div>
         )

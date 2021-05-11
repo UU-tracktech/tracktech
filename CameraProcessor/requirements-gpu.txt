@@ -1,9 +1,5 @@
 # Install these dependencies using
-# pip install -r requirements.txt
-
-# Threading / Async
-threaded==4.1.0
-asyncio==3.4.3
+# pip install -r requirements-gpu.txt
 
 # Loading bar
 tqdm==4.59.0

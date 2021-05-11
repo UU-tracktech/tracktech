@@ -1,51 +1,67 @@
 # Installation
-FROM python:3.8-slim-buster as install
+FROM python:3.8-slim-buster as installer
+WORKDIR /app
+ENV PYTHONPATH=/app
 
-# Install python dependencies
-COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-
-# Documentation container
-FROM install as pdoc
-
-# Install pdoc
-RUN pip install pdoc
-
-# Copy the source code
-COPY src src
-
-# Set src as the working directory
-WORKDIR /src
-
-# Make sure port is available
-EXPOSE 8080
-
-# Run pdoc
-ENTRYPOINT ["pdoc","-h","0.0.0.0","main.py","camera.py","cameraHandler.py"]
-
-
-# Production container
-FROM install as testing
-
-# Install ffmpeg and curl
+# Install ffmpeg
 RUN apt update
 RUN apt install -y ffmpeg
-RUN apt install -y curl
 
 # Create a streams folder
 RUN ["mkdir","streams"]
 
-WORKDIR /
+# Install python dependencies
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","--no-cache-dir","Auth-1.0.tar.gz"]
 
-# Copy a test config
-COPY NetworkConfig.json /NetworkConfig.json
+COPY requirements.txt requirements.txt
+RUN ["pip","install","--no-cache-dir","-r","requirements.txt"]
 
-# Copy the source code
+# Copy the actual source code
 COPY src src
 
-# Copy integration and unit test code
-COPY test test
+
+# testing container
+FROM installer as test
+WORKDIR /app
+
+# Install python dependencies
+COPY requirements-test.txt requirements-test.txt
+RUN ["pip","install","--no-cache-dir","-r","requirements-test.txt"]
+
+
+FROM test as test_unit
+COPY tests/unittest tests
+ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","html","--cov=src/","--junitxml=vf-unit-report.xml","tests"]
+
+FROM test as test_integration
+COPY tests/integrationtest tests
+ENTRYPOINT ["pytest", "--junitxml=vf-integration-report.xml", "tests"]
+
+
+# Installation
+FROM python:3.8-slim-buster as lint
+WORKDIR /app
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+# Install pylint
+RUN ["pip", "install", "pylint==2.6.0"]
+
+RUN ["mkdir", "utility"]
+
+# Copy the actual source code
+COPY src src
+
+ENTRYPOINT ["pylint","src","--rcfile=.pylintrc","--output-format=colorized"]
+
+
+FROM installer AS production
+WORKDIR /app
 
 # Make sure port is available
 EXPOSE 80
@@ -56,4 +72,4 @@ ENV PYTHONPATH=/
 FROM testing AS production
 
 # Run server
-ENTRYPOINT ["python","-u","/src/main.py"]
+ENTRYPOINT ["python","-u","src/main.py"]
