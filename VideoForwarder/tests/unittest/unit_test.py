@@ -9,7 +9,6 @@ import os
 import json
 
 from src.camera import Camera
-from src.main import convert_json_to_camera
 
 
 def create_camera(ip_address, audio):
