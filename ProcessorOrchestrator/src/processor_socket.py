@@ -196,6 +196,16 @@ class ProcessorSocket(WebSocketHandler):
                     "boxes": boxes
                 }))
 
+        try:
+            for box in filter(lambda x: x.keys().__contains__("objectId"), boxes):
+                if not objects.keys().__contains__(box["objectId"]):
+                    logger.log(f"Got an object with id {box['objectId']} that is no longer tracked")
+                else:
+                    objects[box["objectId"]][0].log_spotting(self.identifier)
+        except AttributeError:
+            logger.log_error("/processor", "AttributeError", self.request.remote_ip)
+            logger.log("Boxes array was not of the correct format")
+
     @staticmethod
     def update_feature_map(message):
         """Sends an updated feature map to all processors
