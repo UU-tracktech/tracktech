@@ -37,11 +37,11 @@ def __get_video_path():
 
 @pytest.fixture(scope="class",
                 params=[lambda: ImageCapture(__get_images_dir()),
-                        lambda: VideoCapture(__get_video_path()),
-                        lambda: HlsCapture()],
+                        lambda: VideoCapture(__get_video_path())
+                        ],
                 ids=["Image",
                      "video",
-                     "HLS Stream"])
+                     ])
 def capture_implementation(request):
     """ Defines capture_implementation as multiple implementations of iCapture,
     to be use in generic capture tests.
