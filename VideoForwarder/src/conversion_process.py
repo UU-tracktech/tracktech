@@ -76,6 +76,4 @@ def get_conversion_process(url, audio, root, stream_options):
         f'{root}/stream_V%v.m3u8'
     ]
 
-    print(command)
-
     return Popen(command)
