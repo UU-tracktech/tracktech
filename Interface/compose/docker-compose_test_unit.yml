@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  interface:
+    build:
+      context: ..
+      target: unit-testing
+    container_name: interface_container

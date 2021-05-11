@@ -48,6 +48,10 @@ class Yolov5Detector(IDetector):
 
         # Initialize
         set_logging()
+        if self.config['device'] != 'cpu':
+            if not torch.cuda.is_available():
+                logging.info("CUDA unavailable")
+                self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
         if self.device.type == 'cpu':
@@ -90,7 +94,7 @@ class Yolov5Detector(IDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            DetectionObj: a Detection Object with filled bounding box list.
+            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects
         """
         # Padded resize
         bounding_boxes = []

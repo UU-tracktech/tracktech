@@ -192,11 +192,12 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     return (
       <div>
         {boxes
-          .filter((box) =>
-            /* eslint-disable react/prop-types */
-            props.hiddenObjectTypes.some(
-              (hiddenObjectType) => hiddenObjectType !== box.objectType
-            )
+          .filter(
+            (box) =>
+              /* eslint-disable react/prop-types */
+              !props.hiddenObjectTypes.some(
+                (hiddenObjectType) => hiddenObjectType === box.objectType
+              )
           )
           .map((box) => {
             var x1 = box.rect[0],

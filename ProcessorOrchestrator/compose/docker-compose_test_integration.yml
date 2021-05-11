@@ -1,0 +1,18 @@
+# Compose file for integration testing. Builds processor orchestrator and runs tests.
+version: "3.8"
+services:
+  processor-orchestrator-service:
+    build:
+      context: ..
+      target: test_integration
+    container_name: processor-orchestrator_container
+    entrypoint: ["python","-m","pytest","/app/tests/testing_server.py","-s","--cov-config=.coveragerc","--cov=src", "--cov-report=html", "--cov-report=term", "--cov-append"]
+  processor-orchestrator-integration-tests-service:
+    # Use the existing testing image again, but run integration tests
+    depends_on:
+      - processor-orchestrator-service
+    build:
+      context: ..
+      target: test_integration
+    container_name: processor-orchestrator-integration-tests_container
+    entrypoint: ["python","-m","pytest","/app/tests/integration_testing","--junitxml=integration-report.xml"]
