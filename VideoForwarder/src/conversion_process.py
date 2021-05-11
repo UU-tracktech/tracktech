@@ -24,18 +24,38 @@ def get_conversion_process(url, audio, root, stream_options):
 
     map_count = sum([stream_options.low, stream_options.medium, stream_options.high])
 
-    # Default value when audio is not included
-    maps = ['-map', '0:0', '-map', '0:0', '-map', '0:0']
-    caarg = []
-    copy = []
-    stream_map = 'v:0 v:1 v:2'
-
     # Audio enabled
     if audio:
-        maps = ['-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1']
+        maps = [
+            [],
+            ['-map', '0:0', '-map', '0:1'],
+            ['-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1'],
+            ['-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1', '-map', '0:0', '-map', '0:1']
+        ]
         caarg = ['-c:a', 'aac', '-ar', '48000']
         copy = ['-c:a', 'copy']
-        stream_map = 'v:0,a:0 v:1,a:1 v:2,a:2'
+        stream_map = [
+            '',
+            'v:0,a:0',
+            'v:0,a:0 v:1,a:1',
+            'v:0,a:0 v:1,a:1 v:2,a:2'
+        ]
+    # No Audio enabled
+    else:
+        maps = [
+            [],
+            ['-map', '0:0'],
+            ['-map', '0:0', '-map', '0:0'],
+            ['-map', '0:0', '-map', '0:0', '-map', '0:0']
+        ]
+        caarg = []
+        copy = []
+        stream_map = [
+            '',
+            'v:0',
+            'v:0 v:1',
+            'v:0 v:1 v:2'
+        ]
 
     # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
     # Returns the opened path
@@ -43,7 +63,7 @@ def get_conversion_process(url, audio, root, stream_options):
         # ffmpeg configurations
         'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', url,
         # Create 3 variances of video + audio stream
-        *maps,
+        *maps[map_count],
         '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
         '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
         *caarg,
@@ -55,7 +75,7 @@ def get_conversion_process(url, audio, root, stream_options):
         '-s:v:2', '1280x720', '-c:v:2', stream_options.encoding, '-b:v:2', '2850k', '-maxrate',
         '3200k', '-bufsize', '4275k',  # 720p - High bit-rate Stream
         *copy,  # Copy original audio to the video variances
-        '-var_stream_map', stream_map,
+        '-var_stream_map', stream_map[map_count],
         # Create the master playlist
         '-master_pl_name', 'stream.m3u8',
         # HLS flags and segment properties
