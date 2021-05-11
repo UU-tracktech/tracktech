@@ -36,9 +36,9 @@ def __get_video_path():
 
 
 @pytest.fixture(scope="class",
-                params=[ImageCapture(__get_images_dir()),
-                        VideoCapture(__get_video_path()),
-                        HlsCapture()],
+                params=[lambda: ImageCapture(__get_images_dir()),
+                        lambda: VideoCapture(__get_video_path()),
+                        lambda: HlsCapture()],
                 ids=["Image",
                      "video",
                      "HLS Stream"])
