@@ -21,7 +21,6 @@ orchestrator_test_unit:
     - docker cp processor-orchestrator_container:/app/coverage.xml po-coverage.xml
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: po-unit-report.xml
@@ -49,7 +48,6 @@ orchestrator_test_integration:
     - docker cp processor-orchestrator-service:/app/coverage.xml po-coverage.xml
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: ProcessorOrchestrator/integration-report.xml
