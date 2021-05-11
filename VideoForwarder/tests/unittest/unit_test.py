@@ -48,21 +48,4 @@ def test_camera_properties():
     # Asserts properties
     assert camera.ip_address == ip_address
     assert camera.audio
-
-
-def test_json_conversion():
-    """Tests json conversion from testConfig.json
-
-    """
-    # Gets json content from file
-    json_content = open(os.path.join(os.path.dirname(__file__), 'testConfig.json'))
-    json_data = json.load(json_content)
-    json_content.close()
-
-    # Create camera from json
-    cameras = convert_json_to_camera(json_data)
-    camera = cameras["testvid"]
-
-    # Assert properties are set correctly
-    assert camera.ip_address == "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
-    assert camera.audio
+    
