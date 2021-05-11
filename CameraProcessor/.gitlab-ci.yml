@@ -1,7 +1,7 @@
 processor_build:
   stage: build
   script:
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml up --build --no-start
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -15,12 +15,11 @@ processor_build:
 processor_test_unit:
   stage: test
   script:
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build
-    - docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
     - docker cp camera-processor_container:/app/coverage_html cp-coverage_html
   after_script:
+    - docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
     - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: cp-unit-report.xml
@@ -42,8 +41,8 @@ processor_test_integration_video-forwarder:
   stage: test
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml up --build --exit-code-from camera-processor-test-service
-    - docker cp processor-forwarder-integration-test-container:/app/cp-vf-integration-report.xml cp-vf-integration-report.xml
   after_script:
+    - docker cp processor-forwarder-integration-test-container:/app/cp-vf-integration-report.xml cp-vf-integration-report.xml
     - docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml down
   artifacts:
     reports:
@@ -54,6 +53,7 @@ processor_test_integration_video-forwarder:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/**/*
+        - VideoForwarder/**/*
       when: always
     - if: '$project =~ /processor/'
       when: always
@@ -64,8 +64,8 @@ processor_test_integration_orchestrator:
   stage: test
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
-    - docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
   after_script:
+    - docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
     - docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
   artifacts:
     reports:
@@ -76,6 +76,7 @@ processor_test_integration_orchestrator:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/**/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$project =~ /processor/'
       when: always
@@ -89,7 +90,7 @@ processor_lint:
     - docker cp .pylintrc camera-processor_lint_container:/app
     - docker cp utility/pylint_ignore.py camera-processor_lint_container:/app/utility
     - docker cp utility/__init__.py camera-processor_lint_container:/app/utility
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up
+    - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --exit-code-from cameraprocessor
   after_script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml down
   rules:

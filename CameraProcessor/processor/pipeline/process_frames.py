@@ -8,16 +8,14 @@ Utrecht University within the Software Project course.
 
 import os
 import logging
-import configparser
 
-import processor.utils.draw as draw
 import processor.utils.convert as convert
-
-from processor.pipeline.framebuffer import FrameBuffer
+from processor.utils.config_parser import ConfigParser
 
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
 
+from processor.pipeline.framebuffer import FrameBuffer
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.tracking.sort_tracker import SortTracker
 
@@ -26,9 +24,8 @@ def prepare_stream():
     """Read the configuration information and prepare the objects for the frame stream
     """
     # Load the config file
-    configs = configparser.ConfigParser(allow_no_value=True)
-    __root_dir = os.path.join(os.path.dirname(__file__), '../../')
-    configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
+    config_parser = ConfigParser('configs.ini')
+    configs = config_parser.configs
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
@@ -52,7 +49,7 @@ def prepare_stream():
     if hls_enabled:
         capture = HlsCapture(hls_config['url'])
     else:
-        capture = VideoCapture(os.path.join('..', yolo_config['source']))
+        capture = VideoCapture(yolo_config['source_path'])
 
     # Get orchestrator configuration
     orchestrator_config = configs['Orchestrator']
@@ -60,7 +57,7 @@ def prepare_stream():
     return capture, detector, tracker, orchestrator_config['url']
 
 
-async def process_stream(capture, detector, tracker, func):
+async def process_stream(capture, detector, tracker, on_processed_frame):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -70,7 +67,7 @@ async def process_stream(capture, detector, tracker, func):
         capture (ICapture): capture object to process a stream of frames.
         detector (Detector): Yolov5 detector performing the detection using det_obj.
         tracker (SortTracker): tracker performing SORT tracking.
-        ws_client (WebsocketClient): processor orchestrator to pass through detections.
+        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
     """
     framebuffer = FrameBuffer()
 
@@ -88,13 +85,11 @@ async def process_stream(capture, detector, tracker, func):
         # Get objects tracked in current frame from tracking stage.
         tracked_boxes = tracker.track(frame_obj, bounding_boxes)
 
-        draw.draw_tracking_boxes(frame_obj.get_frame(), tracked_boxes.get_bounding_boxes())
-
         # Buffer the tracked object
         framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
         framebuffer.clean_up()
 
-        await func(frame_obj, tracked_boxes)
+        await on_processed_frame(frame_obj, tracked_boxes)
 
         frame_nr += 1
 

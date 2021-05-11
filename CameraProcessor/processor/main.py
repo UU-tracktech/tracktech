@@ -8,13 +8,13 @@ Utrecht University within the Software Project course.
 
 import sys
 import logging
-import os
 import asyncio
-import configparser
 import cv2
 
 import tornado.ioloop
 import tornado.web
+
+from processor.utils.config_parser import ConfigParser
 
 import processor.utils.text as text
 import processor.utils.draw as draw
@@ -24,6 +24,8 @@ import processor.webhosting.websocket_client as client
 
 from processor.webhosting.html_page_handler import HtmlPageHandler
 from processor.webhosting.stream_handler import StreamHandler
+from processor.webhosting.start_command import StartCommand
+from processor.webhosting.stop_command import StopCommand
 
 
 async def __send_orchestrator(ws_client, frame_obj, tracked_boxes):
@@ -33,6 +35,16 @@ async def __send_orchestrator(ws_client, frame_obj, tracked_boxes):
         frame_obj (FrameObj): Frame object on which drawing takes place
         tracked_boxes (BoundingBoxes):
     """
+    # Empty queue if there are messages left that were not sent
+    while len(ws_client.message_queue) > 0:
+        logging.info(ws_client.message_queue)
+        track_elem = ws_client.message_queue.popleft()
+        if isinstance(track_elem, StartCommand):
+            logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} '
+                         f'with new object id {track_elem.object_id}')
+        elif isinstance(track_elem, StopCommand):
+            logging.info(f'Stop tracking object {track_elem.object_id}')
+
     # Get message and send it through the websocket
     client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
     ws_client.write_message(client_message)
@@ -53,6 +65,7 @@ async def __opencv_display(frame_obj, tracked_boxes):
     """
     # Copy frame to draw over.
     frame_copy = frame_obj.get_frame().copy()
+    draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
 
     # Play the video in a window called "Output Video"
     try:
@@ -93,9 +106,8 @@ def main():
     Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
     """
     # Load the config file
-    configs = configparser.ConfigParser(allow_no_value=True)
-    __root_dir = os.path.join(os.path.dirname(__file__), '../')
-    configs.read(os.path.realpath(os.path.join(__root_dir, 'configs.ini')))
+    config_parser = ConfigParser('configs.ini')
+    configs = config_parser.configs
 
     # If mode is tornado
     if configs['Main']['mode'].lower() == 'tornado':

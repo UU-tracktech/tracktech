@@ -5,11 +5,12 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import configparser
 import os
 from typing import List
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
+
+from processor.utils.config_parser import ConfigParser
 from processor.training.pre_annotations import PreAnnotations
 
 
@@ -19,11 +20,6 @@ class AccuracyObject:
     def __init__(self):
         """Initialise AccuracyObject by reading the config and the ground truth file."""
         # Initializing class variables
-        self.gt_path = ''
-        self.det_path = ''
-        self.det_info_path = ''
-        self.plots_path = ''
-        self.plots_prefix = ''
         self.results = {}
         self.image_width = 0
         self.image_height = 0
@@ -38,24 +34,14 @@ class AccuracyObject:
     def read_config(self):
         """Assign class variables using the Accuracy config."""
         # Load the config file, take the relevant Accuracy section
-        path_to_root = os.path.join(os.path.dirname(__file__), '../../..')
-        path_to_config = os.path.realpath(os.path.join(path_to_root, "configs.ini"))
-        configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(path_to_config)
-        yolo_config = configs['Yolov5']
-        accuracy_config = configs['Accuracy']
-
-        self.gt_path = os.path.join(path_to_root, accuracy_config['gt-path'])
-        self.det_path = os.path.join(path_to_root, accuracy_config['det-path'])
-        self.det_info_path = os.path.join(path_to_root, accuracy_config['det-info-path'])
-        self.plots_path = os.path.join(path_to_root, accuracy_config['plots-path'])
-        self.plots_prefix = str(accuracy_config['plots-prefix'])
-
-        self.iou_threshold = float(yolo_config['iou-thres'])
+        config_parser = ConfigParser('configs.ini')
+        configs = config_parser.configs
+        self.yolo_config = configs['Yolov5']
+        self.accuracy_config = configs['Accuracy']
 
     def parse_info_file(self) -> None:
         """Reads frame height, width and the amount of frames from the info file."""
-        with open(self.det_info_path) as file:
+        with open(self.accuracy_config['det-info_path'], 'r') as file:
             lines = [line.rstrip('\n') for line in file]
 
         line = lines[0]
@@ -131,13 +117,17 @@ class AccuracyObject:
         self.parse_info_file()
 
         # Getting the bounding boxes from the gt file
-        self.bounding_boxes_gt = self.read_boxes(self.gt_path)
+        self.bounding_boxes_gt = self.read_boxes(self.accuracy_config['gt_path'])
 
         # Getting and parsing the bounding boxes from the detection file
-        bounding_boxes_det = self.read_boxes(self.det_path)
+        bounding_boxes_det = self.read_boxes(self.accuracy_config['det_path'])
 
         # Using the podm.podm library to get the accuracy metrics
-        self.results = get_pascal_voc_metrics(self.bounding_boxes_gt, bounding_boxes_det, self.iou_threshold)
+        self.results = get_pascal_voc_metrics(
+            self.bounding_boxes_gt,
+            bounding_boxes_det,
+            float(self.yolo_config['iou-thres'])
+        )
 
         # Printing a few metrics related to accuracy on the terminal, labels are undefined because the det and
         # gt files currently don't save the classes of detected objects
@@ -155,11 +145,13 @@ class AccuracyObject:
         Returns: An image file in the plots folder called file_prefix-result.class.
         """
         try:
+            os.mkdir(self.accuracy_config['plots_path'])
             plot_precision_recall_curve(result,
-                                        os.path.join(self.plots_path, f'./{self.plots_prefix}-{result.label}')
+                                        os.path.join(self.accuracy_config['plots_path'],
+                                                     f'{self.accuracy_config["plots_prefix"]}-{result.label}')
                                         )
         except RuntimeError:
-            print(f'{self.plots_prefix}-{result.label}: Cannot plot')
+            print(f'{self.accuracy_config["plots_prefix"]}-{result.label}: Cannot plot')
 
     def draw_all_pr_plots(self):
         """Draws the pr plots for all classes in the (podm) result.
