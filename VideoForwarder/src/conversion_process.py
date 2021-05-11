@@ -8,8 +8,6 @@ Utrecht University within the Software Project course.
 
 from subprocess import Popen
 
-from src.stream_options import StreamOptions
-
 
 def get_conversion_process(url, audio, root, stream_options):
     """Gets the ffmpeg conversion command for the camera stream that can be started later on

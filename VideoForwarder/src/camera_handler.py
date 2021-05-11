@@ -68,7 +68,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
         # If there is no current conversion, start one
         if self.camera.conversion is None:
-            tornado.log.access_log.info(f'starting stream')
+            tornado.log.access_log.info('starting stream')
 
             # Configure entry conversion
             self.camera.conversion = get_conversion_process(
@@ -89,9 +89,13 @@ class CameraHandler(tornado.web.StaticFileHandler):
         Args:
              root (path): path of the folder that contains the stream segments and index files
         """
+        
+        index_file_path = os.path.join(root, 'stream.m3u8')
+
         for _ in range(0, self.timeout_delay):
+
             # See whether file exists
-            if len(os.listdir(root)) != 0:
+            if os.path.exists(index_file_path):
                 return True
 
             # Sleep and check again
@@ -127,7 +131,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         """
 
         # Print stopping for logging purposes
-        tornado.log.access_log.info(f'stopping stream')
+        tornado.log.access_log.info('stopping stream')
 
         # Stopping the conversion
         self.camera.conversion.terminate()
@@ -200,6 +204,6 @@ class CameraHandler(tornado.web.StaticFileHandler):
         # If it requests a stream file
         if extension in ('m3u8', 'ts'):
             self.restart_stop_callback(root)
-
+        
         # Return path to files
         return abspath

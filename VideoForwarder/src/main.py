@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 """
 import sys
 import os
-import json
 import ssl
 import tornado.httpserver
 import tornado.web
