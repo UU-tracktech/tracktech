@@ -22,6 +22,8 @@ def get_conversion_process(url, audio, root, stream_options):
         SubProcess: ffmpeg subprocess with the correct parameters
     """
 
+    map_count = sum([stream_options.low, stream_options.medium, stream_options.high])
+
     # Default value when audio is not included
     maps = ['-map', '0:0', '-map', '0:0', '-map', '0:0']
     caarg = []
