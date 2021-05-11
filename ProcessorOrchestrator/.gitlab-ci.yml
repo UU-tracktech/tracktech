@@ -15,7 +15,7 @@ orchestrator_build:
 orchestrator_test_unit:
   stage: test
   script:
-    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml up --build
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml up --build --exit-code-from processor-orchestrator
     - docker cp processor-orchestrator_container:/app/po-unit-report.xml po-unit-report.xml
     - docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
     - docker cp processor-orchestrator_container:/app/coverage.xml po-coverage.xml
@@ -42,18 +42,16 @@ orchestrator_test_unit:
 orchestrator_test_integration:
   stage: test
   script:
-    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests
-    - docker cp processor-orchestrator-integration-tests:/app/integration-report.xml integration-report.xml
-    - docker cp processor-orchestrator-service:/app/po_coverage_html po_coverage_html
-    - docker cp processor-orchestrator-service:/app/coverage.xml po-coverage.xml
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests-service
+    - docker cp processor-orchestrator-integration-tests_container:/app/integration-report.xml integration-report.xml
+    - docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
   artifacts:
     reports:
-      junit: ProcessorOrchestrator/integration-report.xml
-      cobertura: ProcessorOrchestrator/po-coverage.xml
+      junit: integration-report.xml
     paths:
-      - ProcessorOrchestrator/po_coverage_html
+      - po_coverage_html
     when: always
     expire_in: 10 days
   rules:
@@ -73,7 +71,7 @@ orchestrator_lint:
     - docker cp .pylintrc processor-orchestrator_container:/app
     - docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
     - docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
-    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --exit-code-from processor-orchestrator
   after_script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml down
   rules:
