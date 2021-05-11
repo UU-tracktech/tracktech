@@ -1,0 +1,87 @@
+orchestrator_build:
+  stage: build
+  script:
+    - docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/**/*
+      when: always
+    - if: '$project =~ /orchestrator/'
+      when: always
+    - if: '$stage =~ /build/'
+      when: always
+
+orchestrator_test_unit:
+  stage: test
+  script:
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml up --build
+    - docker cp processor-orchestrator_container:/app/po-unit-report.xml po-unit-report.xml
+    - docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
+    - docker cp processor-orchestrator_container:/app/coverage.xml po-coverage.xml
+  after_script:
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml down
+  artifacts:
+    reports:
+      junit: po-unit-report.xml
+      cobertura: po-coverage.xml
+    paths:
+      - po_coverage_html
+    expire_in: 10 days
+    when: always
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/**/*
+      when: always
+    - if: '$project =~ /orchestrator/'
+      when: always
+    - if: '$stage =~ /test/'
+      when: always
+
+orchestrator_test_integration:
+  stage: test
+  script:
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests
+    - docker cp processor-orchestrator-integration-tests:/app/integration-report.xml integration-report.xml
+    - docker cp processor-orchestrator-service:/app/po_coverage_html po_coverage_html
+    - docker cp processor-orchestrator-service:/app/coverage.xml po-coverage.xml
+  after_script:
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
+  artifacts:
+    reports:
+      junit: ProcessorOrchestrator/integration-report.xml
+      cobertura: ProcessorOrchestrator/po-coverage.xml
+    paths:
+      - ProcessorOrchestrator/po_coverage_html
+    when: always
+    expire_in: 10 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/**/*
+      when: always
+    - if: '$project =~ /orchestrator/'
+      when: always
+    - if: '$stage =~ /test/'
+      when: always
+
+orchestrator_lint:
+  stage: lint
+  script:
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --build --no-start
+    - docker cp .pylintrc processor-orchestrator_container:/app
+    - docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
+    - docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up
+  after_script:
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml down
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ProcessorOrchestrator/**/*
+      when: always
+    - if: '$project =~ /orchestrator/'
+      when: always
+    - if: '$stage =~ /lint/'
+      when: always

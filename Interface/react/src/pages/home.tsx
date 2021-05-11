@@ -97,6 +97,7 @@ export function Home() {
       >
         <Card
           //This card contains the buttons to change which boundingboxes are drawn
+          data-testid="SelectionCard"
           bodyStyle={{ padding: '4px', display: 'flex' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -105,6 +106,7 @@ export function Home() {
           }
         >
           <Button
+            data-testid="AllButton"
             style={{ marginLeft: '4px' }}
             type={currentIndicator === 'All' ? 'primary' : 'default'}
             onClick={() => setCurrentIndicator('All')}
@@ -112,6 +114,7 @@ export function Home() {
             All
           </Button>
           <Button
+            data-testid="SelectionButton"
             style={{ marginLeft: '4px' }}
             type={currentIndicator === 'Selection' ? 'primary' : 'default'}
             onClick={() => setCurrentIndicator('Selection')}
@@ -119,6 +122,7 @@ export function Home() {
             Selection
           </Button>
           <Button
+            data-testid="NoneButton"
             style={{ marginLeft: '4px' }}
             type={currentIndicator === 'None' ? 'primary' : 'default'}
             onClick={() => setCurrentIndicator('None')}

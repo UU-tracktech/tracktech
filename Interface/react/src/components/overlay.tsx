@@ -28,6 +28,7 @@ export type overlayProps = {
   cameraId: string
   showBoxes: indicator
   hiddenObjectTypes: string[]
+  autoplay?: boolean
 }
 
 /** The size of the overlay, used to scale the drawing of the bounding boxes */
@@ -44,7 +45,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   const frameIdRef = React.useRef(0)
 
   /** If the video player is paused or not */
-  const playerPlayingRef = React.useRef(false)
+  const playerPlayingRef = React.useRef(props.autoplay ?? false)
 
   /** State containing the boxes to be drawn this frame */
   const [boxes, setBoxes] = React.useState<Box[]>([])
@@ -112,11 +113,13 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <VideoPlayer
           onTimestamp={(t) => (playerFrameIdRef.current = t)}
-          onPlayPause={(p) => (playerPlayingRef.current = p)}
+          onPlayPause={(p) => {
+            playerPlayingRef.current = p
+          }}
           onResize={(w, h, l, t) =>
             setSize({ width: w, height: h, left: l, top: t })
           }
-          autoplay={false}
+          autoplay={props.autoplay ?? false}
           controls={true}
           onPrimary={props.onPrimary}
           sources={props.sources}
@@ -189,11 +192,12 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     return (
       <div>
         {boxes
-          .filter((box) =>
-            /* eslint-disable react/prop-types */
-            props.hiddenObjectTypes.some(
-              (hiddenObjectType) => hiddenObjectType !== box.objectType
-            )
+          .filter(
+            (box) =>
+              /* eslint-disable react/prop-types */
+              !props.hiddenObjectTypes.some(
+                (hiddenObjectType) => hiddenObjectType === box.objectType
+              )
           )
           .map((box) => {
             var x1 = box.rect[0],
@@ -206,6 +210,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
             return (
               <div
                 key={box.boxId}
+                data-testid={`box-${box.boxId}`}
                 style={{
                   position: 'absolute',
                   left: `${x1 * size.width + size.left}px`,
