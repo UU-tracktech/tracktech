@@ -4,13 +4,13 @@ services:
   video-forwarder:
     build:
       context: ..
-      target: testing
     environment:
+      CAMERA_AUDIO: "true"
+      CAMERA_URL: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
+      STREAM_FOLDER: /app/streams
+      STREAM_ENCODING: libx264
       SEGMENT_SIZE: 2
       SEGMENT_AMOUNT: 5
-      CONFIG_PATH: /app/NetworkConfig.json
-      STREAM_FOLDER: /app/streams
-      ENCODING: libx264
   video-forwarder_test:
     build:
       context: ..
