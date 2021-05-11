@@ -1,5 +1,8 @@
 interface_build:
   stage: build
+  tags:
+    - low_end
+    - high_end
   script:
     - docker-compose -f Interface/docker-compose.yml build
   rules:
@@ -14,6 +17,9 @@ interface_build:
 
 interface_test_unit:
   stage: test
+  tags:
+    - low_end
+    - high_end
   script:
     - docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build --exit-code-from interface
     - docker cp interface_container:/react/coverage i-coverage
@@ -37,6 +43,9 @@ interface_test_unit:
 
 interface_test_integration:
   stage: test
+  tags:
+    - low_end
+    - high_end
   script:
     - docker-compose -f Interface/compose/docker-compose_test_integration.yml up --build --exit-code-from interface
     - docker cp interface_container:/react/coverage i-coverage
@@ -61,6 +70,9 @@ interface_test_integration:
 
 interface_lint:
   stage: lint
+  tags:
+    - low_end
+    - high_end
   script:
     - docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
   after_script:
