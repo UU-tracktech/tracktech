@@ -19,7 +19,7 @@ class TestCaptures:
         """
         self.capture.close()
 
-    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(60)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -32,7 +32,7 @@ class TestCaptures:
         while not self.capture.opened():
             pass
 
-    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(60)
     def test_next_frame(self, capture_implementation):
         """Asserts that you can get the next frame of the capture implementation
 
@@ -45,7 +45,7 @@ class TestCaptures:
         while not self.capture.get_next_frame()[0]:
             pass
 
-    @pytest.mark.timeout(30)
+    @pytest.mark.timeout(60)
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
