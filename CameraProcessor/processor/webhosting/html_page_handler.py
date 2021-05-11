@@ -34,7 +34,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
         config_parser = ConfigParser('configs.ini')
         html_dir_path = config_parser.configs['Main']['html_dir_path']
         index_page = os.path.join(html_dir_path, file_name)
-        
+
         if os.path.exists(index_page):
             # Render it
             self.render(index_page)
