@@ -148,12 +148,11 @@ WORKDIR /app/processor
 
 # WSL docker build that works for windows
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS wslbuild
+WORKDIR /app
+ENV PYTHONPATH=/app
 
 RUN apt update
-RUN apt install -y ffmpeg
-RUN ["apt", "install", "-y", "python3.8", "python3-pip"]
-
-WORKDIR /app
+RUN ["apt","install","-y","ffmpeg","python3.8", "python3-pip"]
 
 # Install pip requirements
 COPY requirements.txt .
