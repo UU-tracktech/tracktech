@@ -35,7 +35,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const changeIntervalRef = React.useRef<number>() //how often to check for a new segemnt after the inital has been obtained
   const updateIntervalRef = React.useRef<number>() //How often to update the timestamp once it's known
 
-  const delayRef = React.useRef<number>(-20) //Value to finely tweak the timestamp to fix desync between video and boundingboxes
+  const delayRef = React.useRef<number>(-40) //Value to finely tweak the timestamp to fix desync between video and boundingboxes
 
   var startUri //The name of the first segment received by the videoplayer
   var startTime //The timestamp of the stream where the player was started
