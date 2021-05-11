@@ -20,7 +20,6 @@ forwarder_test_unit:
     - docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
   after_script:
     - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: vf-unit-report.xml
