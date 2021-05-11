@@ -53,6 +53,7 @@ processor_test_integration_video-forwarder:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/**/*
+        - VideoForwarder/**/*
       when: always
     - if: '$project =~ /processor/'
       when: always
@@ -75,6 +76,7 @@ processor_test_integration_orchestrator:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - CameraProcessor/**/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$project =~ /processor/'
       when: always
