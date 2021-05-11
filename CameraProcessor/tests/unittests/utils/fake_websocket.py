@@ -8,6 +8,7 @@ Utrecht University within the Software Project course.
 import json
 from collections import deque
 
+
 class FakeWebsocket:
     """A fake websocket that implements the same methods but just mocks some functionality
 
@@ -20,7 +21,6 @@ class FakeWebsocket:
 
         Args:
             message: a JSON object
-
         """
         msg = json.loads(message)
         assert msg["type"] == 'boundingBoxes'

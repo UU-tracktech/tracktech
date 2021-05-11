@@ -25,8 +25,7 @@ def main(_argv):
     # Load the config file, take the relevant Yolov5 section
     config_parser = ConfigParser('configs.ini')
     configs = config_parser.configs
-    trueconfig = configs['Yolov5']
-    filterconfig = configs['Filter']
+    yolov5_config = configs['Yolov5']
     accuracy_config = configs['Accuracy']
 
     # Opening files where the information is stored that is used to determine the accuracy
@@ -37,13 +36,13 @@ def main(_argv):
 
     print('I will write the detection objects to a txt file')
 
-    # Capture the video stream
-    vidstream = ImageCapture(accuracy_config['source_path'])
+    # Capture the image stream
+    capture = ImageCapture(accuracy_config['source_path'])
 
     # Instantiate the detector
     print("Instantiating detector...")
-    trueconfig['device'] = "cpu"
-    detector = Yolov5Detector(trueconfig, filterconfig)
+    yolov5_config['device'] = "cpu"
+    detector = Yolov5Detector(yolov5_config, configs['Filter'])
 
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
@@ -51,9 +50,9 @@ def main(_argv):
 
     # Using default values
     shape = [10000, 10000]
-    while vidstream.opened():
+    while capture.opened():
         # Set the detected bounding box list to empty
-        ret, frame_obj = vidstream.get_next_frame()
+        ret, frame_obj = capture.get_next_frame()
 
         if not ret:
             continue
