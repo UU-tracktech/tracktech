@@ -15,18 +15,17 @@ from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 
 
-async def create_client(url, identifier=None):
+async def create_client(websocket_url, identifier=None):
     """
     Method used to create a websocket client object.
 
     Args:
-        url: Websocket url to connect to
-        id: Identifier of the websocket. If the websocket is not used as a processor socket,
-        set id to None. Otherwise, set to an identifier.
+        websocket_url (str): Websocket url to connect to
+        identifier (str): Identifier of the websocket. If the websocket is not used as a processor socket set id to None
 
     Returns: Websocket client object.
     """
-    client = WebsocketClient(url, identifier)
+    client = WebsocketClient(websocket_url, identifier)
     await client.connect()
     return client
 
@@ -38,17 +37,22 @@ class WebsocketClient:
     Attributes:
         connection (WebsocketClient.Connection): Connection object of the websocket
         reconnecting (bool): Whether or not we have to reconnect
-        url (str): Url of the websocket
+        websocket_url (str): Url of the websocket
         write_queue (List[]): Stores messages that could not be sent due to a closed socket
         message_queue (Queue): Stores commands sent from orchestrator
         identifier (str): Identifier of the camera processor for the orchestrator
     """
 
-    def __init__(self, url, identifier=None):
-        # Holds the connection object
+    def __init__(self, websocket_url, identifier=None):
+        """Initialize the websocket client class with relevant parameters
+
+        Args:
+            websocket_url (str): url of the websocket
+            identifier (str): Identifier of the camera-processor
+        """
         self.connection = None
         self.reconnecting = False
-        self.url = url
+        self.websocket_url = websocket_url
         # List of messages that could not get sent
         self.write_queue = []
         self.message_queue = deque()
@@ -65,9 +69,9 @@ class WebsocketClient:
             # Reconnect
             try:
                 self.connection =\
-                    await websocket.websocket_connect(self.url,
+                    await websocket.websocket_connect(self.websocket_url,
                                                       on_message_callback=self._on_message)
-                logging.info(f'Connected to {self.url} successfully')
+                logging.info(f'Connected to {self.websocket_url} successfully')
 
                 # Send an identification message to the orchestrator on connect
                 # Only do this when the websocket is a processor socket
@@ -82,7 +86,7 @@ class WebsocketClient:
                 connected = True
             # Reconnect failed
             except ConnectionRefusedError:
-                logging.warning(f"Could not connect to {self.url}, trying again in 1 second...")
+                logging.warning(f"Could not connect to {self.websocket_url}, trying again in 1 second...")
                 await asyncio.sleep(sleep)
                 timeout_left -= sleep
 

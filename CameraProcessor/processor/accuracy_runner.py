@@ -36,8 +36,8 @@ def main(_argv):
 
     print('I will write the detection objects to a txt file')
 
-    # Capture the video stream
-    vidstream = ImageCapture(accuracy_config['source_path'])
+    # Capture the image stream
+    capture = ImageCapture(accuracy_config['source_path'])
 
     # Instantiate the detector
     print("Instantiating detector...")
@@ -50,9 +50,9 @@ def main(_argv):
 
     # Using default values
     shape = [10000, 10000]
-    while vidstream.opened():
+    while capture.opened():
         # Set the detected bounding box list to empty
-        ret, frame_obj = vidstream.get_next_frame()
+        ret, frame_obj = capture.get_next_frame()
 
         if not ret:
             continue

@@ -28,10 +28,11 @@ from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 
 
-async def __send_orchestrator(ws_client, frame_obj, tracked_boxes):
+async def send_orchestrator(ws_client, frame_obj, tracked_boxes):
     """Sends the bounding boxes to the orchestrator using a websocket client
 
     Args:
+        ws_client (WebsocketClient): Websocket object that contains the connection
         frame_obj (FrameObj): Frame object on which drawing takes place
         tracked_boxes (BoundingBoxes):
     """
@@ -55,7 +56,7 @@ async def __send_orchestrator(ws_client, frame_obj, tracked_boxes):
 
 
 async def __opencv_display(frame_obj, tracked_boxes):
-    """Displays frame using the cv2.imshow
+    """Displays frame using the cv2.imshow function
 
     Is async because the process_frames.py loop expects to get a async function it can await
 
@@ -95,7 +96,7 @@ async def deploy(ws_id):
         detector,
         tracker,
         # Function to call when frame is processed
-        lambda frame_obj, bounding_boxes: __send_orchestrator(ws_client, frame_obj, bounding_boxes)
+        lambda frame_obj, bounding_boxes: send_orchestrator(ws_client, frame_obj, bounding_boxes)
     )
 
 

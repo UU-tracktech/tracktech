@@ -1,4 +1,4 @@
-"""File that displays the video stream on a localhost for testing.
+"""File that displays the video stream on a localhost for testing with docker.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -61,14 +61,17 @@ class StreamHandler(tornado.web.RequestHandler):
         ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
         img = jpeg.tobytes()
 
+        # Write to the buffer
         try:
             self.write('--jpgboundary')
             self.write('Content-type: image/jpeg\r\n')
             self.write('Content-length: %s\r\n\r\n' % len(img))
             self.write(img)
+        # Connection lost
         except RuntimeError as err:
             logging.error(f'Client disconnected, throwing the following error: {err}')
 
+        # If it is time to flush the buffer again
         if self.__previous_flush_timestamp + self.__flush_interval < time.time():
             self.flush()
             self.__previous_flush_timestamp = time.time()
