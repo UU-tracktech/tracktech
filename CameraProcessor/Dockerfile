@@ -21,8 +21,6 @@ RUN apt install -y g++
 COPY requirements.txt .
 RUN ["pip", "install", "-r", "requirements.txt"]
 
-COPY dlfkjasdlkfjasd/dfjalsdjkfalsdkf dlfkjasdlkfjasd/dfjalsdjkfalsdkf
-
 
 FROM base AS test
 

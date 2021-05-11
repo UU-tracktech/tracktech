@@ -62,7 +62,7 @@ forwarder_test_integration:
 forwarder_lint:
   stage: lint
   before_script:
-    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml build
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --build --no-start
   script:
     - docker cp .pylintrc video-forwarder_container:/app
     - docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility

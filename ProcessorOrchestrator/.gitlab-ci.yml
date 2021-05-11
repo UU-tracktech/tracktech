@@ -67,7 +67,7 @@ orchestrator_test_integration:
 orchestrator_lint:
   stage: lint
   script:
-    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml build
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --build --no-start
     - docker cp .pylintrc processor-orchestrator_container:/app
     - docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
     - docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
