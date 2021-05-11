@@ -5,13 +5,12 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import os
 import pytest
 
+from processor.utils.config_parser import ConfigParser
 from processor.input.hls_capture import HlsCapture
-from processor.input.image_capture import ImageCapture
 from processor.input.video_capture import VideoCapture
-from tests.conftest import root_path
+from processor.input.image_capture import ImageCapture
 
 
 def __get_images_dir():
@@ -20,27 +19,31 @@ def __get_images_dir():
     Returns: a string containing the file path to the image folder.
 
     """
-    __images_dir = os.path.realpath(os.path.join(root_path, 'data/annotated/test/img1/'))
-    return __images_dir
+    config_parser = ConfigParser('configs.ini')
+    return config_parser.configs['Accuracy']['source_path']
 
 
-def __get_video():
+def __get_video_path():
     """Get the path to a video
 
     Returns: a string containing the file path to a video
 
     """
-    __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
-    return __videos_dir
+    config_parser = ConfigParser('configs.ini')
+    print(f"video path: {config_parser.configs['Yolov5']['test_path']}")
+
+    return config_parser.configs['Yolov5']['test_path']
 
 
 @pytest.fixture(scope="class",
-                params=[ImageCapture(__get_images_dir()),
-                        VideoCapture(__get_video()),
-                        HlsCapture()],
+                params=[lambda: ImageCapture(__get_images_dir()),
+                        lambda: VideoCapture(__get_video_path()),
+                        lambda: HlsCapture()
+                        ],
                 ids=["Image",
                      "video",
-                     "HLS Stream"])
+                     "HLS Stream"
+                     ])
 def capture_implementation(request):
     """ Defines capture_implementation as multiple implementations of iCapture,
     to be use in generic capture tests.
