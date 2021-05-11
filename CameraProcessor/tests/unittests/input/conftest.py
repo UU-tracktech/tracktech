@@ -23,19 +23,21 @@ def __get_images_dir():
     return config_parser.configs['Accuracy']['source_path']
 
 
-def __get_video():
+def __get_video_path():
     """Get the path to a video
 
     Returns: a string containing the file path to a video
 
     """
     config_parser = ConfigParser('configs.ini')
+    print(f"video path: {config_parser.configs['Yolov5']['test_path']}")
+
     return config_parser.configs['Yolov5']['test_path']
 
 
 @pytest.fixture(scope="class",
                 params=[ImageCapture(__get_images_dir()),
-                        VideoCapture(__get_video()),
+                        VideoCapture(__get_video_path()),
                         HlsCapture()],
                 ids=["Image",
                      "video",
