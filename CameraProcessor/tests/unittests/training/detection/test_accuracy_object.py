@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import os
 
-import processor.training.detection.accuracy as accuracy
+from processor.training.detection.accuracy_object import AccuracyObject
 import processor.data_object.bounding_box
 import processor.data_object.rectangle
 
@@ -41,7 +41,7 @@ class TestAccuracyObject:
     def test_detection(self):
         """Tests if the detection done by the library produces possible results"""
         # Making the accuracy object
-        accuracy_object = accuracy.AccuracyObject()
+        accuracy_object = AccuracyObject()
 
         self.update_paths(accuracy_object)
 
@@ -65,7 +65,7 @@ class TestAccuracyObject:
     def test_parse_boxes(self):
         """Tests if the boxes are parsed correctly"""
         # Making the accuracy object
-        accuracy_object = accuracy.AccuracyObject()
+        accuracy_object = AccuracyObject()
 
         self.update_paths(accuracy_object)
 

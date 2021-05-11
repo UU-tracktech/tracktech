@@ -11,13 +11,15 @@ import os
 import tornado.template
 import tornado.web
 
+from processor.utils.config_parser import ConfigParser
+
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
 
 
 class HtmlPageHandler(tornado.web.RequestHandler):
     """Handler for the html page of the site that is for the main page."""
-    def get(self, file_name='index.html') -> None:
+    def get(self, file_name='index.html'):
         """Gets the html page and renders it.
 
         When the index.html page cannot be found it will send an error template to the webclient.
@@ -27,7 +29,10 @@ class HtmlPageHandler(tornado.web.RequestHandler):
         """
         # Check if page exists
         logging.info('getting html page of browser')
-        html_dir_path = os.path.dirname(os.path.realpath(__file__)) + '/../../webpage'
+
+        # Gets path of the html page
+        config_parser = ConfigParser('configs.ini')
+        html_dir_path = config_parser.configs['Main']['html_dir_path']
         index_page = os.path.join(html_dir_path, file_name)
         
         if os.path.exists(index_page):
