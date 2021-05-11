@@ -29,7 +29,7 @@ class TestProcessFrames:
         Returns: a VideoCapture object streaming test.mp4.
 
         """
-        __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
+        __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test_accuracy.mp4'))
         return VideoCapture(__videos_dir)
 
     # pylint: disable=useless-return
