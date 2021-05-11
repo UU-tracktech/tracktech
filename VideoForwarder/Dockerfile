@@ -29,8 +29,6 @@ WORKDIR /app
 COPY requirements-test.txt requirements-test.txt
 RUN ["pip","install","--no-cache-dir","-r","requirements-test.txt"]
 
-# Copy a test config
-COPY NetworkConfig.json NetworkConfig.json
 
 FROM test as test_unit
 COPY tests/unittest tests
