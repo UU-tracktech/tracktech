@@ -29,8 +29,6 @@ WORKDIR /app
 COPY requirements-test.txt requirements-test.txt
 RUN ["pip","install","--no-cache-dir","-r","requirements-test.txt"]
 
-# Copy a test config
-COPY NetworkConfig.json NetworkConfig.json
 
 FROM test as test_unit
 COPY tests/unittest tests
@@ -60,20 +58,6 @@ RUN ["mkdir", "utility"]
 COPY src src
 
 ENTRYPOINT ["pylint","src","--rcfile=.pylintrc","--output-format=colorized"]
-
-
-FROM installer AS testing
-WORKDIR /app
-
-# Copy a test config
-COPY NetworkConfig.json NetworkConfig.json
-
-# Make sure port is available
-EXPOSE 80
-EXPOSE 443
-
-# Run server
-ENTRYPOINT ["python","-u","src/main.py"]
 
 
 FROM installer AS production
