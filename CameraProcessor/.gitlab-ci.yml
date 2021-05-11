@@ -2,7 +2,6 @@ processor_build:
   stage: build
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
   rules:
@@ -46,7 +45,6 @@ processor_test_integration_video-forwarder:
   stage: test
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml up --build --exit-code-from camera-processor-test-service
   after_script:
@@ -72,7 +70,6 @@ processor_test_integration_orchestrator:
   stage: test
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
   after_script:
@@ -98,7 +95,6 @@ processor_lint:
   stage: lint
   tags:
     - low_end
-    - high_end
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --build --no-start
     - docker cp .pylintrc camera-processor_lint_container:/app
