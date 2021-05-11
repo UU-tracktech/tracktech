@@ -10,6 +10,7 @@ import pytest
 from processor.utils.config_parser import ConfigParser
 from processor.input.hls_capture import HlsCapture
 from processor.input.video_capture import VideoCapture
+from processor.input.image_capture import ImageCapture
 
 
 def __get_images_dir():

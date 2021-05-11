@@ -37,11 +37,9 @@ class TestProcessFrames:
         """Get the Yolov5 runner.
 
         """
-        configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(os.path.realpath(os.path.join(root_path, 'configs.ini')))
-        config = configs['Yolov5']
-        filters = {"targets": os.path.join(root_path, 'filter.names')}
-        return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
+        config_parser = ConfigParser('configs.ini')
+        configs = config_parser.configs
+        return Yolov5Detector(configs['Yolov5'], configs['Filter'])
 
     # pylint: disable=useless-return
     def __get_sort_tracker(self):
@@ -58,7 +56,7 @@ class TestProcessFrames:
 
         """
         captor = self.__get_video()
-        # detector = self.__get_yolov5runner()
+        detector = self.__get_yolov5runner()
         tracker = self.__get_sort_tracker()
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
