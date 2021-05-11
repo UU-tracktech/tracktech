@@ -18,7 +18,7 @@ processor_build:
 processor_test_unit:
   stage: test
   tags:
-    - low_end
+    - high_end
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
     - docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
