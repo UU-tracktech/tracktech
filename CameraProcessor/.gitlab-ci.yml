@@ -16,9 +16,9 @@ processor_test_unit:
   stage: test
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
-    - docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
     - docker cp camera-processor_container:/app/coverage_html cp-coverage_html
   after_script:
+    - docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
     - docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
   artifacts:
     reports:
@@ -41,8 +41,8 @@ processor_test_integration_video-forwarder:
   stage: test
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml up --build --exit-code-from camera-processor-test-service
-    - docker cp processor-forwarder-integration-test-container:/app/cp-vf-integration-report.xml cp-vf-integration-report.xml
   after_script:
+    - docker cp processor-forwarder-integration-test-container:/app/cp-vf-integration-report.xml cp-vf-integration-report.xml
     - docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml down
   artifacts:
     reports:
@@ -64,8 +64,8 @@ processor_test_integration_orchestrator:
   stage: test
   script:
     - docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
-    - docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
   after_script:
+    - docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
     - docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
   artifacts:
     reports:
