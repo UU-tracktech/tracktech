@@ -24,12 +24,12 @@ def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
     return json.dumps({
         "type": "boundingBoxes",
         "frameId": timestamp,
-        "boxes": [__bounding_box_to_json(bounding_box) for bounding_box in boxes_list],
+        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
     })
 
 
-def __bounding_box_to_json(bounding_box):
-    """Converts the bounding_box to JSON format according to API format.
+def __bounding_box_to_dict(bounding_box):
+    """Converts the bounding_box to dict format according to API format.
 
     Args:
         bounding_box (BoundingBox): box that gets converted to json.
@@ -37,18 +37,15 @@ def __bounding_box_to_json(bounding_box):
     Returns:
         str: JSON representation of the BoundingBox object.
     """
-    return json.dumps(
-        {
+    return {
             "boxId": bounding_box.get_identifier(),
             "rect": [
                 bounding_box.get_rectangle().get_x1(),
                 bounding_box.get_rectangle().get_y1(),
                 bounding_box.get_rectangle().get_x2(),
                 bounding_box.get_rectangle().get_y2()
-            ]
-        }
-    )
-
+            ]}
+    
 
 def boxes_to_txt(bounding_boxes, shape, frame_nr):
     """Write the detection object to a txt file, so that accuracy testing can read it.
