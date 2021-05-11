@@ -158,7 +158,9 @@ RUN ["apt","install","-y","ffmpeg","python3.8", "python3-pip"]
 COPY requirements.txt .
 COPY requirements-gpu.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
-RUN ["python3.8","-m","pip", "install", "skbuild"]
+COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
+
+RUN ["python3.8","-m","pip", "install", "--upgrade", "pip"]
 RUN ["python3.8","-m","pip", "install", "-r", "requirements.txt"]
 RUN ["python3.8","-m","pip", "install", "-r", "requirements-gpu.txt"]
 
