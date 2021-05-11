@@ -79,7 +79,7 @@ async def __opencv_display(frame_obj, tracked_boxes):
     # This next line is **ESSENTIAL** for the video to actually play
     # A timeout of 0 will not display the image
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        exit()
+        sys.exit()
 
 
 async def deploy(ws_id):
@@ -115,7 +115,7 @@ def main():
         # Create the app
         port = int(configs['Main']['port'])
         print('*' * 30)
-        print(f'*   open TORNADO stream on   *')
+        print('*   open TORNADO stream on   *')
         print(f'*   http://localhost:{port}    *')
         print('*' * 30)
         app = tornado.web.Application([
@@ -128,7 +128,7 @@ def main():
         tornado.ioloop.IOLoop.current().start()
     # If we want to run it with opencv gui
     elif configs['Main']['mode'].lower() == 'opencv':
-        capture, detector, tracker, url = prepare_stream()
+        capture, detector, tracker, _ = prepare_stream()
         asyncio.get_event_loop().run_until_complete(
             process_stream(capture, detector, tracker, __opencv_display)
         )

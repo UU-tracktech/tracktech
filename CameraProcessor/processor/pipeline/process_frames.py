@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import os
 import logging
 
 import processor.utils.convert as convert

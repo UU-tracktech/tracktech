@@ -59,6 +59,11 @@ class StreamHandler(tornado.web.RequestHandler):
 
         # Encode the frame to jpg format
         ret, jpeg = cv2.imencode('.jpg', frame_obj.get_frame())
+
+        # Frame was not retrieved
+        if not ret:
+            return
+
         img = jpeg.tobytes()
 
         # Write to the buffer
