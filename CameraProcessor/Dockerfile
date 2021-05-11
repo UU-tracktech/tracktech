@@ -152,8 +152,7 @@ WORKDIR /app
 ENV PYTHONPATH=/app
 
 RUN apt update
-RUN ["apt","install","-y","ffmpeg","python3.8", "python3-pip", "gcc", "g++"]
-run ["python3.8", "-m", "pip", "install", "cython"]
+RUN ["apt","install","-y","ffmpeg","python3.8", "python3.8-dev", "python3-pip", "g++"]
 RUN ["g++","--version"]
 
 # Install pip requirements
