@@ -15,12 +15,11 @@ forwarder_build:
 forwarder_test_unit:
   stage: test
   script:
-    - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build --exit-code-from video-forwarder
     - docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
     - docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
   after_script:
     - docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
-  coverage: /^TOTAL.*\s+(\d+\%)$/
   artifacts:
     reports:
       junit: vf-unit-report.xml
@@ -68,7 +67,7 @@ forwarder_lint:
     - docker cp .pylintrc video-forwarder_container:/app
     - docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility
     - docker cp utility/__init__.py video-forwarder_container:/app/utility
-    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up
+    - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --exit-code-from video-forwarder
   after_script:
     - docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml down
   rules:

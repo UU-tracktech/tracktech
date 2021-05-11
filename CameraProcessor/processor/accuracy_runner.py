@@ -7,9 +7,9 @@ Utrecht University within the Software Project course.
 """
 import os
 import sys
-import configparser
 from absl import app
 
+from processor.utils.config_parser import ConfigParser
 from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.utils.text import boxes_to_txt
@@ -23,32 +23,26 @@ sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 def main(_argv):
     """Runs YOLOv5 detection on a video file specified in configs.ini."""
     # Load the config file, take the relevant Yolov5 section
-    configs = configparser.ConfigParser(allow_no_value=True)
-    print("\n" + root_dir)
-    config_dir = os.path.realpath(os.path.join(root_dir, "configs.ini"))
-    print(config_dir)
-    configs.read(config_dir)
-    trueconfig = configs['Yolov5']
-    filterconfig = configs['Filter']
+    config_parser = ConfigParser('configs.ini')
+    configs = config_parser.configs
+    yolov5_config = configs['Yolov5']
     accuracy_config = configs['Accuracy']
 
     # Opening files where the information is stored that is used to determine the accuracy
-    accuracy_dest = os.path.realpath(os.path.join(root_dir, accuracy_config['det-path']))
-    accuracy_info_dest = os.path.realpath(os.path.join(root_dir, accuracy_config['det-info-path']))
-    detection_file = open(accuracy_dest, 'a')
+    accuracy_dest = accuracy_config['det_path']
+    accuracy_info_dest = accuracy_config['det-info_path']
+    detection_file = open(accuracy_dest, 'w')
     detection_file_info = open(accuracy_info_dest, 'w')
 
-    detection_file.truncate(0)
     print('I will write the detection objects to a txt file')
 
     # Capture the video stream
-    vidstream = ImageCapture(os.path.join(root_dir, accuracy_config['source']))
+    vidstream = ImageCapture(accuracy_config['source_path'])
 
     # Instantiate the detector
     print("Instantiating detector...")
-    filterconfig['targets'] = os.path.join(root_dir, 'processor', filterconfig['targets'])
-    trueconfig['device'] = "cpu"
-    detector = Yolov5Detector(trueconfig, filterconfig)
+    yolov5_config['device'] = "cpu"
+    detector = Yolov5Detector(yolov5_config, configs['Filter'])
 
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
