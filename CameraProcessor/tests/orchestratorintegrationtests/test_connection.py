@@ -22,7 +22,7 @@ class TestConnection:
 
         """
         self.ws_client = await create_client(PC_URL, "mock_id")
-        assert self.ws_client.url == PC_URL
+        assert self.ws_client.websocket_url == PC_URL
         assert self.ws_client.write_queue == []
         assert not self.ws_client.reconnecting
         assert self.ws_client.connection is not None
