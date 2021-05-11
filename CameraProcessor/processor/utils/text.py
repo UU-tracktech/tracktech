@@ -45,7 +45,7 @@ def __bounding_box_to_dict(bounding_box):
                 bounding_box.get_rectangle().get_x2(),
                 bounding_box.get_rectangle().get_y2()
             ]}
-    
+
 
 def boxes_to_txt(bounding_boxes, shape, frame_nr):
     """Write the detection object to a txt file, so that accuracy testing can read it.
