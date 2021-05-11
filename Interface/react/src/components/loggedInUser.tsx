@@ -21,8 +21,10 @@ export function LoggedInUser() {
 
   //If the user is logged in, obtain the username from the token and display it
   return keycloak.authenticated && keycloak.tokenParsed ? (
-    <div>Logged in as: {keycloak.tokenParsed['name']}</div>
+    <div data-testid="loggedInAsDiv">
+      Logged in as: {keycloak.tokenParsed['name']}
+    </div>
   ) : (
-    <div>You are currently not logged in</div>
+    <div data-testid="notLoggedInDiv">You are currently not logged in</div>
   )
 }

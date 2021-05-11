@@ -1,4 +1,7 @@
-/*
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { App } from '../src/App';
+import fetchMock from 'jest-fetch-mock';
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
