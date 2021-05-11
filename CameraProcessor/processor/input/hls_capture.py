@@ -198,7 +198,6 @@ class HlsCapture(ICapture):
             Bool: indicating a success or failure of setting up the capture and syncing the meta data
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
-        self.cap = None
 
         # Creating meta thread for meta data collection
         self.__found_stream = False

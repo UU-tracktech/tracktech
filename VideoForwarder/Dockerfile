@@ -67,9 +67,5 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENV PYTHONPATH=/
-
-FROM testing AS production
-
 # Run server
 ENTRYPOINT ["python","-u","src/main.py"]
