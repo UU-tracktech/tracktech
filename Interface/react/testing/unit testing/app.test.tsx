@@ -7,21 +7,41 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import fetchMock from 'jest-fetch-mock'
+import { act, render, screen } from '@testing-library/react'
 import { App } from '../../src/app'
 
+let mockAuthenticated = false
+
 jest.mock('@react-keycloak/web', () => {
-  const originalModule = jest.requireActual('@react-keycloak/web')
   return {
-    ...originalModule,
     useKeycloak: () => ({
-      keycloak: { authenticated: false, login: () => {}, logout: () => {} },
-      initialized: false
+      keycloak: {
+        authenticated: mockAuthenticated
+      }
     })
   }
 })
 
-test('App renders', async () => {
-  render(<App />)
+test('App renders without errors', async () => {
+  await act(async () => {
+    render(<App />)
+  })
+})
+
+test('shows login notification if not authenticated', async () => {
+  await act(async () => {
+    render(<App />)
+  })
+
+  expect(screen.queryByTestId('loginAlert')).not.toBe(null)
+})
+
+test('shows home if authenticated', async () => {
+  mockAuthenticated = true
+
+  await act(async () => {
+    render(<App />)
+  })
+
+  expect(screen.queryByTestId('loginAlert')).toBe(null)
 })

@@ -2,7 +2,6 @@ version: "3.8"
 
 services:
   orchestrator:
-    image: tracktech.ml:50007/tt-orchestrator-image
     build: .
     ports:
       - published: 80

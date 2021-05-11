@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import asyncio
 import pytest
 from super_websocket_client import create_dummy_client
 from utils.utils import PC_URL
@@ -25,7 +24,6 @@ class TestSendToOrchestrator:
         """
         ws_client = await create_dummy_client(PC_URL, "mock_id")
         assert ws_client.connection is not None
-        ws_client.connection.close()
 
     @pytest.mark.asyncio
     async def test_send_message(self, message_type, amount):
@@ -40,21 +38,8 @@ class TestSendToOrchestrator:
         ws_client = await create_dummy_client(PC_URL, "mock_id")
         for msg in messages:
             ws_client.write_message(msg)
-        task = asyncio.create_task((self._is_queue_empty(ws_client)))
-        await task
-        ws_client.connection.close()
-        await asyncio.sleep(1)
-
-    @staticmethod
-    async def _is_queue_empty(ws_client):
-        """A coroutine used for waiting until the message queue is empty.
-
-        Args:
-            ws_client: the given WebSocketClient
-        """
-        while True:
-            if not ws_client.write_queue:
-                return
+        await ws_client.disconnect()
+        assert len(ws_client.write_queue) == 0
 
 
 if __name__ == '__main__':

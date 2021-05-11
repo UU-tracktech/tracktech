@@ -62,6 +62,10 @@ class VideoCapture(ICapture):
             Boolean indicating if next frame was returned.
             FrameObj containing frame and an empty datetime.
         """
+        # Return False if the capture was closed
+        if not self.opened():
+            return False, None
+
         self.__current_frame_nr += 1
         ret, frame = self.cap.read()
         return ret, FrameObj(frame, time.time())

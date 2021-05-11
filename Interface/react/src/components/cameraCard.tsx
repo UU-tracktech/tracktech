@@ -68,6 +68,7 @@ export function CameraCard(props: cameraCardProps) {
     >
       <Button
         //Resize button
+        data-testid="resizeButton"
         type="primary"
         onClick={() => props.setSize(props.id)}
         style={buttonStyle}
@@ -77,6 +78,7 @@ export function CameraCard(props: cameraCardProps) {
       <Button
         //Delete button (TODO: implement removing a camera feed)
         type="primary"
+        data-testid="deleteButton"
         danger
         onClick={() => alert('clicked on delete')}
         style={buttonStyle}

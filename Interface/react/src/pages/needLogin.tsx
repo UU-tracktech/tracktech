@@ -20,6 +20,7 @@ export function NeedLogin() {
 
   return (
     <div
+      data-testid="loginAlert"
       style={{
         display: 'grid',
         justifyContent: 'center',
