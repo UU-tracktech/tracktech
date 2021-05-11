@@ -11,6 +11,9 @@ services:
       STREAM_ENCODING: libx264
       SEGMENT_SIZE: 2
       SEGMENT_AMOUNT: 5
+      STREAM_LOW: "true"
+      STREAM_MEDIUM: "true"
+      STREAM_HIGH: "true"
   video-forwarder_test:
     build:
       context: ..
