@@ -6,10 +6,10 @@ Utrecht University within the Software Project course.
 
 """
 
-import os
-import configparser
 from absl import app
+
 import processor.accuracy_runner as runner
+from processor.utils.config_parser import ConfigParser
 
 
 class TestAccuracyRunner:
@@ -27,18 +27,9 @@ class TestAccuracyRunner:
         except SystemExit:
             pass
 
-        # Get the path to the root and the path to the config file
-        path_to_root = os.path.join(os.path.dirname(__file__), '../../..')
-        path_to_config = os.path.realpath(os.path.join(path_to_root, "configs.ini"))
-
         # Getting the config file for the accuracy
-        configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(path_to_config)
-        config = configs['Accuracy']
-
-        # Getting the path where the detection and detection info files
-        self.det_path = os.path.realpath(os.path.join(path_to_root, config['det-path']))
-        self.det_info_path = os.path.realpath(os.path.join(path_to_root, config['det-info-path']))
+        config_parser = ConfigParser('configs.ini')
+        self.config_accuracy = config_parser.configs['Accuracy']
 
         # Test the files created by the accuracy runner
         self.detection_info_file()
@@ -49,9 +40,10 @@ class TestAccuracyRunner:
 
         """
         # Opening and reading file
-        file = open(self.det_info_path, 'r')
+        file = open(self.config_accuracy['det-info_path'], 'r')
         lines = file.readlines()
         line = lines[0]
+        file.close()
 
         # Making sure the file only contains one line
         assert len(lines) == 1
@@ -75,12 +67,14 @@ class TestAccuracyRunner:
 
         """
         # Opening and reading file
-        file = open(self.det_path, 'r')
+        file = open(self.config_accuracy['det_path'], 'r')
         lines = file.readlines()
+        file.close()
 
         # Getting picture information from the detection info
-        file_info = open(self.det_info_path, 'r')
+        file_info = open(self.config_accuracy['det-info_path'], 'r')
         line_info = file_info.readline()
+        file_info.close()
         image_width = int(line_info.split(",")[1])
         image_height = int(line_info.split(",")[2])
 

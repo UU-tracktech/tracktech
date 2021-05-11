@@ -41,7 +41,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
         """
         # Check if page exists
         logging.info('getting html page of browser')
-        html_dir_path = os.path.dirname(os.path.realpath(__file__)) + '\\..\\webpage'
+        html_dir_path = os.path.dirname(os.path.realpath(__file__)) + '/../webpage'
         index_page = os.path.join(html_dir_path, file_name)
         if os.path.exists(index_page):
             # Render it

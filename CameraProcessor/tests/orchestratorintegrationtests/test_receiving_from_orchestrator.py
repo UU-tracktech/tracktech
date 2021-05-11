@@ -52,27 +52,27 @@ class TestReceivingFromOrchestrator:
 
         """
         # Get a connected processor client
-        # processor_client = await create_dummy_client(PC_URL, "mock_id")
+        processor_client = await create_dummy_client(PC_URL, "mock_id")
 
         # Get a connected interface client
-        # interface_client = await create_dummy_client(IF_URL)
+        interface_client = await create_dummy_client(IF_URL)
 
-        # msg = load_data(message_type, amount[0], amount[1])
-        # ws_client = await self.get_connected_websocket()
-        # ws_client2 = await self.get_connected_websocket()
-        # for j in msg:
-        #     ws_client.write_message(j)
-        # await ws_client2.await_message(len(msg))
-        # assert len(ws_client2.message_list) == len(msg)
-        # for i in msg:
-        #     assert ws_client2.message_list[i.index(i)].__eq__(i)
-        # ws_client.connection.close()
-        # ws_client2.connection.close()
-        # await asyncio.sleep(1)
-        # task1 = asyncio.create_task(self._check_closed(ws_client))
-        # task2 = asyncio.create_task(self._check_closed(ws_client2))
-        # await task1
-        # await task2
+        msg = load_data(message_type, amount[0], amount[1])
+        ws_client = await self.get_connected_websocket()
+        ws_client2 = await self.get_connected_websocket()
+        for j in msg:
+            ws_client.write_message(j)
+        await ws_client2.await_message(len(msg))
+        assert len(ws_client2.message_list) == len(msg)
+        for i in msg:
+            assert ws_client2.message_list[i.index(i)].__eq__(i)
+        ws_client.connection.close()
+        ws_client2.connection.close()
+        await asyncio.sleep(1)
+        task1 = asyncio.create_task(self._check_closed(ws_client))
+        task2 = asyncio.create_task(self._check_closed(ws_client2))
+        await task1
+        await task2
 
     @staticmethod
     async def _is_queue_empty(ws_client):
