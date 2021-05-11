@@ -52,6 +52,7 @@ interface_test_integration:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/**/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$project =~ /interface/'
       when: always
