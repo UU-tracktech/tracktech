@@ -40,11 +40,11 @@ def test_camera_properties():
 
     """
     # Init camera
-    ip_address = "test"
+    url = "test"
     audio = True
-    camera = create_camera(ip_address, audio)
+    camera = create_camera(url, audio)
 
     # Asserts properties
-    assert camera.ip_address == ip_address
+    assert camera.url == url
     assert camera.audio
     
