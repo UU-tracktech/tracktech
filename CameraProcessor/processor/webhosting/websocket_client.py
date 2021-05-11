@@ -9,7 +9,10 @@ Utrecht University within the Software Project course.
 import asyncio
 import json
 import logging
+from collections import deque
 from tornado import websocket
+from processor.webhosting.start_command import StartCommand
+from processor.webhosting.stop_command import StopCommand
 
 
 async def create_client(url, identifier=None):
@@ -38,7 +41,9 @@ class WebsocketClient:
         self.reconnecting = False  # Whether we are currently trying to reconnect
         self.url = url  # The url of the websocket
         self.write_queue = []  # Stores messages that could not be sent due to a closed socket
-        self.identifier = identifier  # Identify to identify itself with orchestrator
+        self.message_queue = deque() # Queue object that stores commands sent from orchestrator
+        self.identifier = identifier  # Identifier to identify itself with orchestrator
+
 
     async def connect(self):
         """.Connect to the websocket url asynchronously."""
@@ -190,10 +195,11 @@ class WebsocketClient:
         Args:
             message: JSON parse of the sent message.
         """
-        object_id = message["objectId"]
         frame_id = message["frameId"]
         box_id = message["boxId"]
-        logging.info(f'Start tracking box {box_id} in frame_id {frame_id} with new object id {object_id}')
+        object_id = message["objectId"]
+
+        self.message_queue.append(StartCommand(frame_id, box_id, object_id))
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.
@@ -202,5 +208,6 @@ class WebsocketClient:
             message: JSON parse of the sent message.
         """
         object_id = message["objectId"]
-        logging.info(f'Stop tracking object {object_id}')
+
+        self.message_queue.append(StopCommand(object_id))
     # pylint: enable=R0201
