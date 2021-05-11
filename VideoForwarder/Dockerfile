@@ -62,20 +62,6 @@ COPY src src
 ENTRYPOINT ["pylint","app","--rcfile=app/.pylintrc","--output-format=colorized"]
 
 
-FROM installer AS testing
-WORKDIR /app
-
-# Copy a test config
-COPY NetworkConfig.json NetworkConfig.json
-
-# Make sure port is available
-EXPOSE 80
-EXPOSE 443
-
-# Run server
-ENTRYPOINT ["python","-u","src/main.py"]
-
-
 FROM installer AS production
 WORKDIR /app
 
