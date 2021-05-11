@@ -13,9 +13,9 @@ import threading
 import time
 from subprocess import TimeoutExpired
 import tornado.web
+from auth.auth import Auth, AuthenticationError, AuthorizationError
 
 from src.camera import Camera
-from auth.auth import Auth, AuthenticationError, AuthorizationError
 from src.conversion_process import get_conversion_process
 from src.stream_options import StreamOptions
 
@@ -89,7 +89,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         Args:
              root (path): path of the folder that contains the stream segments and index files
         """
-        
+
         index_file_path = os.path.join(root, 'stream.m3u8')
 
         for _ in range(0, self.timeout_delay):
@@ -204,6 +204,6 @@ class CameraHandler(tornado.web.StaticFileHandler):
         # If it requests a stream file
         if extension in ('m3u8', 'ts'):
             self.restart_stop_callback(root)
-        
+
         # Return path to files
         return abspath
