@@ -22,7 +22,7 @@ class TestVideoForwarder:
     def setup_method(self):
         """Setup method that has url of the
         """
-        self.hls_url = "http://forwarder-test-service/testvid.m3u8"
+        self.hls_url = "http://forwarder-test-service:80/stream.m3u8"
 
     @pytest.fixture
     def hls_capture(self):
