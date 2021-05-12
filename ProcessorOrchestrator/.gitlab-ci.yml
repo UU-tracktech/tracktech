@@ -53,9 +53,9 @@ orchestrator_test_integration:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
   artifacts:
     reports:
-      junit: ProcessorOrchestrator/integration-report.xml
+      junit: integration-report.xml
     paths:
-      - ProcessorOrchestrator/po_coverage_html
+      - po_coverage_html
     when: always
     expire_in: 10 days
   rules:
