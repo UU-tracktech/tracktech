@@ -28,7 +28,6 @@ orchestrator_test_unit:
   artifacts:
     reports:
       junit: po-unit-report.xml
-      cobertura: po-coverage.xml
     paths:
       - po_coverage_html
     expire_in: 10 days
@@ -44,7 +43,11 @@ orchestrator_test_unit:
       when: always
 
 orchestrator_test_integration:
-  stage: test
+  stage: test-2
+  needs:
+    - orchestrator_test_unit
+  dependencies:
+    - orchestrator_test_unit
   tags:
     - low_end
   script:

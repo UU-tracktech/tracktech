@@ -29,7 +29,7 @@ ENTRYPOINT ["pytest","tests/unit_testing","--cov-config=.coveragerc","--cov=src"
 
 
 FROM test as test_integration
-
+RUN ["mkdir", "tracking_timelines"]
 
 FROM test as lint
 WORKDIR /app

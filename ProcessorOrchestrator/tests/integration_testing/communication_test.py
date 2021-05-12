@@ -1,8 +1,14 @@
-"""Integration testing module that tests the communication functionality of the orchestrator."""
+"""Integration testing module that tests the communication functionality of the orchestrator.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+"""
 
 import json
 import time
 import pytest
+import requests
 
 from tornado import websocket
 
@@ -164,8 +170,11 @@ def assert_feature_map(message):
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
-async def test_bounding_boxes_distribution():
-    """Test if a processor can send a bounding box message and if it is correctly received by the interface"""
+async def test_bounding_boxes_distribution_and_timeline_logging():
+    """Test if a processor can send a bounding box message and if it is correctly received by the interface
+
+    Also test if the timeline is logged properly and the serving handler is available
+    """
 
     processor = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
@@ -177,17 +186,31 @@ async def test_bounding_boxes_distribution():
     interface = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/client")
 
+    interface.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "processor_4",
+        "frameId": 1,
+        "boxId": 1
+    }))
+
     processor.write_message(json.dumps({
         "type": "boundingBoxes",
         "frameId": 1,
-        "boxes": {
-            "box1": {},
-            "box2": {}
-        }
+        "boxes": [
+            {"objectId": 1},
+            # This next one isn't tracked so should cause a message at the processor
+            {"objectId": 2},
+            {"rect": []}
+        ]
     }))
 
     message = await interface.read_message()
     assert assert_boxes_message(message)
+
+    response = json.loads(requests.get('http://processor-orchestrator-service/timelines?objectId=1').text)
+    assert len(list(filter(lambda x: x["processorId"] == "processor_4", response["data"]))) > 0
+
+    processor.close()
 
 
 def assert_boxes_message(message):
@@ -196,11 +219,40 @@ def assert_boxes_message(message):
     assert message_json["type"] == "boundingBoxes"
     assert message_json["cameraId"] == "processor_4"
     assert message_json["frameId"] == 1
-    assert message_json["boxes"] == {
-            "box1": {},
-            "box2": {}
-        }
+    assert message_json["boxes"] == [
+            {"objectId": 1},
+            {"objectId": 2},
+            {"rect": []}
+        ]
     return True
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(10)
+async def test_bad_bounding_boxes_message():
+    """Test if sending a bad bounding boxes message does not crash the server"""
+
+    processor = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    processor.write_message(json.dumps({
+        "type": "identifier",
+        "id": "processor_4"
+    }))
+
+    processor.write_message(json.dumps({
+        "type": "boundingBoxes",
+        "frameId": 1,
+        "boxes": "invalid"
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(10)
+async def test_incomplete_timeline_data_request():
+    """Test if requesting timeline data without objectId parameter gives the correct response"""
+
+    response = requests.get('http://processor-orchestrator-service/timelines').text
+    assert response == "Missing 'objectId' query parameter"
 
 
 @pytest.mark.asyncio

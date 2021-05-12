@@ -47,6 +47,16 @@ class TrackingObject:
         """Removes self from objects dict."""
         del objects[self.identifier]
 
+    def log_spotting(self, processor_id):
+        """Writes a spotting of this object to a log file"""
+        file = open(f"tracking_timelines/tracking_logs_{self.identifier}.txt", "a")
+        file.write(json.dumps({
+            "timeStamp": datetime.now().strftime("%Y/%m/%d | %H:%M:%S"),
+            "processorId": processor_id
+        }))
+        file.write(",\n")
+        file.close()
+
 
 def start_tracking_timeout_monitoring(timeout, event_loop):
     """Starts a thread which monitors all objects currently being tracked and
