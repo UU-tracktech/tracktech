@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  cameraprocessor:
+    build:
+      context: .
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]

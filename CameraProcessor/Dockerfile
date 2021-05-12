@@ -148,18 +148,22 @@ WORKDIR /app/processor
 
 # WSL docker build that works for windows
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS wslbuild
+WORKDIR /app
+ENV PYTHONPATH=/app
 
 RUN apt update
-RUN apt install -y ffmpeg
-RUN ["apt", "install", "-y", "python3.8", "python3-pip"]
-
-WORKDIR /app
+RUN ["apt","install","-y","ffmpeg","python3.8", "python3.8-dev", "python3-pip", "g++"]
+RUN ["g++","--version"]
 
 # Install pip requirements
 COPY requirements.txt .
 COPY requirements-gpu.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
-RUN ["pip", "install", "-r", "requirements.txt", "requirements-gpu.txt"]
+COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
+
+RUN ["python3.8","-m","pip", "install", "--upgrade", "pip"]
+RUN ["python3.8","-m","pip", "install", "-r", "requirements.txt"]
+RUN ["python3.8","-m","pip", "install", "-r", "requirements-gpu.txt"]
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
