@@ -1,9 +1,9 @@
 interface_build:
   stage: build
+  tags:
+    - low_end
   script:
-    - docker-compose -f Interface/docker-compose.yml up --build --no-start
-  after_script:
-    - docker-compose -f Interface/docker-composet.yml down
+    - docker-compose -f Interface/docker-compose.yml build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
@@ -16,8 +16,10 @@ interface_build:
 
 interface_test_unit:
   stage: test
+  tags:
+    - low_end
   script:
-    - docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build
+    - docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build --exit-code-from interface
     - docker cp interface_container:/react/coverage i-coverage
   after_script:
     - docker-compose -f Interface/compose/docker-compose_test_unit.yml down
@@ -39,6 +41,8 @@ interface_test_unit:
 
 interface_test_integration:
   stage: test
+  tags:
+    - low_end
   script:
     - docker-compose -f Interface/compose/docker-compose_test_integration.yml up --build --exit-code-from interface
     - docker cp interface_container:/react/coverage i-coverage
@@ -54,6 +58,7 @@ interface_test_integration:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - Interface/**/*
+        - ProcessorOrchestrator/**/*
       when: always
     - if: '$project =~ /interface/'
       when: always
@@ -62,8 +67,10 @@ interface_test_integration:
 
 interface_lint:
   stage: lint
+  tags:
+    - low_end
   script:
-    - docker-compose -f Interface/compose/docker-compose_lint.yml up --build
+    - docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
   after_script:
     - docker-compose -f Interface/compose/docker-compose_lint.yml down
   rules:
