@@ -40,6 +40,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var startUri //The name of the first segment received by the videoplayer
   var startTime //The timestamp of the stream where the player was started
   var timeStamp //The current timestamp of the stream
+  var playerSwitchTime
+  var playerStartTime
 
   React.useEffect(() => {
     // instantiate video.js
@@ -86,6 +88,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
       /* On the first time a stream is started, attempt getting the
          segment name, keep going until a name is obtained */
       player?.on('firstplay', () => {
+        playerStartTime = playerRef.current?.currentTime()
+        console.log('start time: ', playerStartTime)
         initialUriIntervalRef.current = player?.setInterval(() => {
           getInitialUri()
         }, 200)
@@ -122,8 +126,12 @@ export function VideoPlayer(props: VideoPlayerProps) {
       let tech = playerRef.current?.tech({ randomArg: true })
       if (tech) {
         //ensure media is loaded before trying to access
-        let med = tech['vhs'].playlists.media()
-        if (med) return med.segments[0].uri
+        // console.log(tech.textTracks()[0].activeCues[0]['value'].uri)
+        //let med = tech['vhs'].playlists.media()
+        if (tech.textTracks()[0].activeCues[0]['value'].uri) {
+          console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
+          return tech.textTracks()[0].activeCues[0]['value'].uri
+        }
       }
     } catch (e) {
       console.warn(e)
@@ -163,9 +171,14 @@ export function VideoPlayer(props: VideoPlayerProps) {
     if (currentUri !== startUri) {
       //ensure it is a string because typescript
       if (typeof currentUri === 'string') {
+        playerSwitchTime = playerRef.current?.currentTime()
+        console.log('switch time 1: ', playerSwitchTime)
+        //playerSwitchTime -= playerStartTime
+        console.log('switch time 2: ', playerSwitchTime)
         console.log('URI changed: ', currentUri)
         startTime = GetSegmentStarttime(currentUri)
         console.log('Starttime: ', PrintTimestamp(startTime))
+
         if (changeIntervalRef.current)
           playerRef.current?.clearInterval(changeIntervalRef.current)
       }
@@ -183,7 +196,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
 
     let currentPlayer = playerRef.current?.currentTime()
-    timeStamp = startTime + currentPlayer + delayRef.current / 10
+    timeStamp = startTime + currentPlayer - playerSwitchTime + 0.2
 
     //Update timestamp for overlay
     props.onTimestamp(timeStamp)
@@ -330,5 +343,5 @@ function GetSegmentStarttime(segName: string): number {
   let number = end.slice(1, end.length - 3) //remove the X and the .ts
   //The segments have a certain length, so multiply the number with the length for the time
   //TODO: make this not hardcoded
-  return parseInt(number) * 2
+  return (parseInt(number) - 1) * 2
 }
