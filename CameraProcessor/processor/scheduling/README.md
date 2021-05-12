@@ -8,13 +8,14 @@ anything from each other.
 This parallelism can be hardcoded in the component itself, 
 but this is unfavourable since there are many methods to try.
 
-A scheduling process which takes in a plan (graph) is better when trying multiple methods.
+A scheduling process which takes in a plan (graph) 
+is better when trying multiple methods.
 The scheduler is responsible for execution of the nodes, 
 and can have extensions for parallelism, and more, built-in.
 This prevents recoding previously made components when a new component 
 is added or an existing component is updated.
 
-## Scheduler
+## scheduling.scheduler
 
 The scheduler [scheduler.py](scheduler.py) is a sequential scheduler 
 which takes in a starting node (seen as the plan) and runs this starting node.
@@ -31,7 +32,7 @@ The scheduler makes the following assumptions:
 - Output handling to objects outside the plan or to the caller of the 
 scheduler is done inside the output components
 
-## Plan
+## scheduling.plan
 
 The plan is a graph with uni-directional connections between nodes.
 It contains no cycles.
@@ -84,7 +85,7 @@ example_schedule_node = ScheduleNode(number_of_inputs, [], OutputComponent())
 An example plan composed using the [example_components](component/example_components) 
 can be found in [example_plan.py](plan/example_plan.py).
 
-## Schedule Node
+## scheduling.node
 
 The scheduler node [schedule_node.py](node/schedule_node.py) is responsible for running 
 the component once it is called by the scheduler 
@@ -100,9 +101,9 @@ The ScheduleNode is initialized using the following parameters:
 (nodes that have the current node as input)
 - `component`: the component to run once all necessary arguments have been collected
 
-### Interface Node
+### scheduling.node.inode
 
-The interface node [INode](node/schedule_node.py) is a super class used as an interface.
+The interface node [INode](node/inode.py) is a super class used as an interface.
 It contains four functions which must be implemented by any subclass.
 The implementation of a function is ensured by having the default implementation 
 raise a not implemented error.
@@ -123,7 +124,7 @@ give the output of the component to all `out_nodes`
 and notify the scheduler of all nodes that are now ready to run.
 - `assign(arg: object, arg_nr: int)`: store argument object at given index (`arg_nr`)
 
-## Components
+## scheduling.component
 
 A component is the class being executed in a [ScheduleNode](node/schedule_node.py).
 The component was designed to impose as little restrictions as possible 
@@ -145,7 +146,7 @@ The base component [BaseComponent](component/base_component.py) contains the bas
 any component should have.
 Example components can be found in [component/example_components](component/example_components).
 
-### Component Interface
+### scheduling.component.component_interface
 
 The component interface [component_interface.py](component/component_interface.py) 
 replicates an interface in Python.
@@ -154,7 +155,7 @@ It defines the function `execute_component()` with a body only containing a
 `IComponent` to override this function.
 Any implementation of this function should return a non-applied function.
 
-### Base component
+### scheduling.component.base_component
 
 The base component [base_component.py](component/base_component.py) contains 
 the minimum each component class should contain.
@@ -174,6 +175,7 @@ containing all necessary information otherwise.
 ### Output component
 
 The output component [output_component.py](component/example_components/output_component.py) 
+or [intermediary_output_component.py](component/example_components/intermedairy_output_component.py)
 has no extra restrictions.
 The only thing that needs to be mentioned is that any output component is responsible for
 sending output to objects outside of the scheduler flow.
