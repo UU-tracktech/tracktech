@@ -4,6 +4,7 @@ image:
 stages:
   - build
   - test
+  - test-2
   - lint
   - document
   - deploy

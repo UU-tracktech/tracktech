@@ -39,7 +39,7 @@ orchestrator_test_unit:
       when: always
 
 orchestrator_test_integration:
-  stage: test
+  stage: test-2
   needs:
     - orchestrator_test_unit
   dependencies:
