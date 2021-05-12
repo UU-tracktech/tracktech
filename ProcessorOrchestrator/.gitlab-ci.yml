@@ -40,6 +40,8 @@ orchestrator_test_unit:
 
 orchestrator_test_integration:
   stage: test
+  dependencies:
+    - orchestrator_test_unit
   script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests
     - docker cp processor-orchestrator-integration-tests:/app/integration-report.xml integration-report.xml
