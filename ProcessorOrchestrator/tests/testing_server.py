@@ -1,4 +1,9 @@
-"""Server used for testing purposes. It is run as a test so that coverage may be measured."""
+"""Server used for testing purposes. It is run as a test so that coverage may be measured.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+"""
 import asyncio
 
 import pytest
