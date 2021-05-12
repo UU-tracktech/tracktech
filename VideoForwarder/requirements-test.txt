@@ -1,0 +1,6 @@
+pytest-tornado
+pytest-timeout
+pytest-asyncio
+pytest
+pytest-cov==2.11.1
+coverage==5.5

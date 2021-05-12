@@ -7,6 +7,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+import asyncio
 import os
 import ssl
 
@@ -16,8 +17,9 @@ from tornado.web import Application
 
 from auth.auth import Auth
 from src.client_socket import ClientSocket
+from src.object_manager import start_tracking_timeout_monitoring
 from src.processor_socket import ProcessorSocket
-from src.log_handler import LogHandler
+from src.timeline_handler import TimeLineHandler
 import src.logger as logger
 
 
@@ -64,6 +66,11 @@ def main():
     http_server.listen(80)
     logger.log('listening over http')
 
+    # Start a tracking timeout process if it is given
+    timeout = os.environ.get('TRACKING_TIMEOUT')
+    if timeout is not None:
+        start_tracking_timeout_monitoring(int(timeout), asyncio.get_event_loop())
+
     IOLoop.current().start()
 
 
@@ -83,7 +90,7 @@ def create_app(client_auth, processor_auth):
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
-        ('/logs', LogHandler)
+        ('/timelines', TimeLineHandler)
     ]
 
     # Construct and serve the tornado application.

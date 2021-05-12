@@ -15,7 +15,7 @@ class ITracker:
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            det_obj (DetectionObj): detection object containing detections from detection stage.
+            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.
 
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
