@@ -40,6 +40,8 @@ orchestrator_test_unit:
 
 orchestrator_test_integration:
   stage: test
+  needs:
+    - orchestrator_test_unit
   dependencies:
     - orchestrator_test_unit
   script:
