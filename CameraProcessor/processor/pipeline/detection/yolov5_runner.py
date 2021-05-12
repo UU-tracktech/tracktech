@@ -34,7 +34,7 @@ class Yolov5Detector(IDetector):
         """Initialize Yolov5Detector.
 
         Args:
-            config (): Yolov5 config file.
+            config (ConfigParser): Yolov5 config file.
             filters (): Filtering for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -42,12 +42,16 @@ class Yolov5Detector(IDetector):
 
         self.config = config
         self.filter = []
-        with open(filters['targets']) as filter_names:
+        with open(filters['targets_path']) as filter_names:
             self.filter = filter_names.read().splitlines()
         print('I am filtering on the following objects: ' + str(self.filter))
 
         # Initialize
         set_logging()
+        if self.config['device'] != 'cpu':
+            if not torch.cuda.is_available():
+                logging.info("CUDA unavailable")
+                self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
         if self.device.type == 'cpu':
@@ -57,7 +61,7 @@ class Yolov5Detector(IDetector):
             logging.info("I am using GPU")
 
         # load FP32 model
-        self.model = attempt_load(self.config['weights'],
+        self.model = attempt_load(self.config['weights_path'],
                                   map_location=self.device)  # load FP32 model
         self.stride = int(self.model.stride.max())  # model stride
         imgsz = check_img_size(self.config.getint('img-size'), s=self.stride)  # check img_size
@@ -90,7 +94,7 @@ class Yolov5Detector(IDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            DetectionObj: a Detection Object with filled bounding box list.
+            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects
         """
         # Padded resize
         bounding_boxes = []

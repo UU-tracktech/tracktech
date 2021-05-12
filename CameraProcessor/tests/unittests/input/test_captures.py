@@ -13,8 +13,13 @@ class TestCaptures:
     """Tests the captures opening and closing
 
     """
+    def teardown_method(self):
+        """Close down the capture
 
-    @pytest.mark.timeout(10)
+        """
+        self.capture.close()
+
+    @pytest.mark.timeout(60)
     def test_initial_opened(self, capture_implementation):
         """Asserts capture to be opened after initialisation.
 
@@ -22,10 +27,12 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
-        while not capture_implementation.opened():
+        self.capture = capture_implementation()
+
+        while not self.capture.opened():
             pass
 
-    @pytest.mark.timeout(10)
+    @pytest.mark.timeout(60)
     def test_next_frame(self, capture_implementation):
         """Asserts that you can get the next frame of the capture implementation
 
@@ -33,9 +40,12 @@ class TestCaptures:
                 capture_implementation: see capture_implementation.
 
         """
-        assert capture_implementation.get_next_frame()[0]
+        self.capture = capture_implementation()
 
-    @pytest.mark.timeout(10)
+        while not self.capture.get_next_frame()[0]:
+            pass
+
+    @pytest.mark.timeout(60)
     def test_closed(self, capture_implementation):
         """Asserts capture to not be opened after calling closed.
 
@@ -43,6 +53,11 @@ class TestCaptures:
             capture_implementation: see capture_implementation.
 
         """
-        capture_implementation.close()
-        while capture_implementation.opened():
+        self.capture = capture_implementation()
+
+        while not self.capture.opened():
+            pass
+
+        self.capture.close()
+        while self.capture.opened():
             pass

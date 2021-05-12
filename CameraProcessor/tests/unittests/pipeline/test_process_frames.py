@@ -6,15 +6,18 @@ Utrecht University within the Software Project course.
 
 """
 import asyncio
-import configparser
-import os
 import pytest
 
+from processor.main import send_orchestrator
+
+from processor.utils.config_parser import ConfigParser
 from processor.pipeline.process_frames import process_stream
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
+
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
-from tests.conftest import root_path
+from tests.unittests.utils.fake_websocket import FakeWebsocket
 
 
 class TestProcessFrames:
@@ -28,32 +31,29 @@ class TestProcessFrames:
         Returns: a VideoCapture object streaming test.mp4.
 
         """
-        __videos_dir = os.path.realpath(os.path.join(root_path, 'data/videos/test.mp4'))
+        config_parser = ConfigParser('configs.ini')
+        configs = config_parser.configs
+        __videos_dir = configs['Yolov5']['test_path']
         return VideoCapture(__videos_dir)
 
     # pylint: disable=useless-return
-    @pytest.mark.skip()
     def __get_yolov5runner(self):
         """Get the Yolov5 runner.
 
         """
-        configs = configparser.ConfigParser(allow_no_value=True)
-        configs.read(os.path.realpath(os.path.join(root_path, 'configs.ini')))
-        # config = configs['Yolov5']
-        # filters = configs['Filter']
-        # return Yolov5Detector(config, filters)  # ugly commenting to limit the import time in docker
-        return None
+        config_parser = ConfigParser('configs.ini')
+        configs = config_parser.configs
+        return Yolov5Detector(configs['Yolov5'], configs['Filter'])
 
     # pylint: disable=useless-return
-    @pytest.mark.skip()
     def __get_sort_tracker(self):
         """Get the SORT tracker.
         """
-        return None
+        # TODO Actually return SORT maybe # pylint: disable=fixme
+        return FakeTracker()
 
     @pytest.mark.timeout(90)
-    @pytest.mark.skip("YOLOv5 GPU acceleration does not work in Docker yet")
-    def test_process_stream_with_yolov5(self, clients):
+    def test_process_stream_with_yolov5(self):
         """Tests process_stream function using Yolov5.
 
         Note: I tried parametrizing Yolov5 via a fixture, but that does not work for some reason.
@@ -61,13 +61,12 @@ class TestProcessFrames:
         """
         captor = self.__get_video()
         detector = self.__get_yolov5runner()
-
         tracker = self.__get_sort_tracker()
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
+        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker))
 
     @pytest.mark.timeout(90)
-    def test_process_stream_with_fake(self, clients):
+    def test_process_stream_with_fake(self):
         """Tests process_stream with a fake detector.
 
         """
@@ -76,13 +75,22 @@ class TestProcessFrames:
 
         tracker = FakeTracker()
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker, clients))
+        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker))
 
-    async def await_detection(self, captor, detector, tracker, ws_client):
+    async def await_detection(self, captor, detector, tracker):
         """Async function that runs process_stream.
 
         """
-        await process_stream(captor, detector, tracker, ws_client)
+        await process_stream(
+            captor,
+            detector,
+            tracker,
+            lambda frame_obj, tracked_boxes: send_orchestrator(
+                FakeWebsocket(),
+                frame_obj,
+                tracked_boxes
+            )
+        )
 
 
 if __name__ == '__main__':

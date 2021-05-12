@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  video-forwarder:
+    build:
+      context: ..
+      target: lint
+    container_name: video-forwarder_container
