@@ -13,13 +13,13 @@ class Rectangle:
         """Inits rectangle with bottom right and top left coords.
 
         Args:
-            x1 (float): normalized right most X.
+            x1 (float): normalized left most X.
             y1 (float): normalized bottom most Y.
-            x2 (float): normalized left most X.
+            x2 (float): normalized right most X.
             y2 (float): normalized top most Y.
         """
         if x1 > x2:
-            raise ValueError(f'x1 {x1} should be bigger than or equal to x2 {x2}')
+            raise ValueError(f'x1 {x1} should be smaller than or equal to x2 {x2}')
         if y1 > y2:
             raise ValueError(f'y1 {y1} should be smaller than or equal to y2 {y2}')
 

@@ -11,7 +11,7 @@ import pytest
 from processor.main import send_orchestrator
 
 from processor.utils.config_parser import ConfigParser
-from processor.pipeline.process_frames import process_stream
+from processor.pipeline.process_frames import process_stream, prepare_stream
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 
@@ -59,9 +59,7 @@ class TestProcessFrames:
         Note: I tried parametrizing Yolov5 via a fixture, but that does not work for some reason.
 
         """
-        captor = self.__get_video()
-        detector = self.__get_yolov5runner()
-        tracker = self.__get_sort_tracker()
+        captor, detector, tracker, _ = prepare_stream()
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker))
 
