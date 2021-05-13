@@ -158,7 +158,11 @@ test('Bounding boxes start tracking', async () => {
   }
 
   screen.getByTestId('box-1').click()
-  screen.debug()
+
+  //test
+  const buttons = screen.queryAllByRole('button')
+  console.log('all buttons: ', buttons)
+
   //find the OK button from the antd confirm popup
   screen.getByTitle('startTrackButton').click()
 
