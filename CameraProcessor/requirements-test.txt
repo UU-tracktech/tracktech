@@ -33,6 +33,7 @@ ffmpeg-python
 
 # Threading / Async
 threaded
+kthread
 asyncio
 
 # XML

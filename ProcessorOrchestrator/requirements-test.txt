@@ -6,3 +6,4 @@ pytest-asyncio
 pytest-timeout
 pytest-cov
 coverage
+requests
