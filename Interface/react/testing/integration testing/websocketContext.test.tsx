@@ -159,12 +159,11 @@ test('Bounding boxes start tracking', async () => {
 
   screen.getByTestId('box-1').click()
 
-  //test
-  const buttons = screen.queryAllByRole('button')
-  console.log('all buttons: ', buttons)
+  while (screen.queryByTitle('startTrackButton') == null) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
 
-  //find the OK button from the antd confirm popup
-  screen.getByTitle('startTrackButton').click()
+  expect(screen.getByTestId('startTrackButton')).toBeDefined()
 
   // Wait for message on processor
   while (!gotMessage) {
