@@ -13,8 +13,10 @@ from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 class TestITracker(ITracker):
+    """Tests the ITracker component."""
 
     def test_itracker_error(self):
+        """Test if track raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             ITracker.track(self, BoundingBoxes, FrameObj)
 
