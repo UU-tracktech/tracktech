@@ -119,7 +119,7 @@ def main():
         print(f'*   http://localhost:{port}    *')
         print('*' * 30)
         app = tornado.web.Application([
-            (r'/', HtmlPageHandler),
+            (r'/(.*\.html)?', HtmlPageHandler),
             (r'/video_feed', StreamHandler)
         ])
         # Listen to port
