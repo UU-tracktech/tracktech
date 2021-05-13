@@ -12,4 +12,5 @@ services:
       STREAM_ENCODING: libx264
       SEGMENT_SIZE: 2
       SEGMENT_AMOUNT: 5
+      STREAM_LOW: "true"
     container_name: video-forwarder_container

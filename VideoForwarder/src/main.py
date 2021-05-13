@@ -48,7 +48,10 @@ if __name__ == "__main__":
     stream_options = StreamOptions(
         os.environ.get('SEGMENT_SIZE') or '2',
         os.environ.get('SEGMENT_AMOUNT') or '5',
-        os.environ.get('STREAM_ENCODING') or 'libx264'
+        os.environ.get('STREAM_ENCODING') or 'libx264',
+        os.environ.get('STREAM_LOW') == 'true',
+        os.environ.get('STREAM_MEDIUM') == 'true',
+        os.environ.get('STREAM_HIGH') == 'true'
     )
 
     # Get the ssl certificate and key if supplied
