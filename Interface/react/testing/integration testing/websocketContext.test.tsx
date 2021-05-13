@@ -163,7 +163,7 @@ test('Bounding boxes start tracking', async () => {
     await new Promise((r) => setTimeout(r, 500))
   }
 
-  expect(screen.getByTestId('startTrackButton')).toBeDefined()
+  expect(screen.getByTitle('startTrackButton')).toBeDefined()
 
   // Wait for message on processor
   while (!gotMessage) {
