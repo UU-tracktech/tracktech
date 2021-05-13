@@ -45,8 +45,9 @@ class StreamHandler(tornado.web.RequestHandler):
         self.__flush_interval = .1
 
         # Get the objects needed for process_stream and starts the function
-        vid_stream, detector, tracker, _ = prepare_stream()
-        yield process_stream(vid_stream, detector, tracker, self.frame_processed)
+        self.capture, detector, tracker, _ = prepare_stream()
+        yield process_stream(self.capture, detector, tracker, self.frame_processed)
+        self.finish()
 
     async def frame_processed(self, frame_obj, tracked_boxes):
         """When the frame got processed, this function gets called to put it in the buffer
