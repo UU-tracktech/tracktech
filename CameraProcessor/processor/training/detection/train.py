@@ -8,8 +8,19 @@ Utrecht University within the Software Project course.
 import os
 
 from tests.conftest import root_path
+from processor.utils.config_parser import ConfigParser
+
+config_parser = ConfigParser('configs.ini')
+config = config_parser.configs['Training']
+file = config['file']
+data = config['data']
+cfg = config['cfg']
+weights = config['weights']
+batch_size = config['batch-size']
+hyp = config['hyp']
+
 
 if __name__ == '__main__':
     path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolov5')
-    os.system(f'python "{path}/train.py" --data "{path}/data/coco128.yaml" --cfg "{path}/models/yolov5s.yaml" '
-              f'--weights \'\' --hyp "{path}/data/hyp.scratch.yaml" --batch-size 4')
+    os.system(f'python "{path}{file}" --data "{path}{data}" --cfg "{path}{cfg}" '
+              f'--weights {weights} --hyp "{path}{hyp}" --batch-size {batch_size}')
