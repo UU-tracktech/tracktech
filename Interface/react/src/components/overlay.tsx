@@ -139,6 +139,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   function onTrackingStart(boxId: number, frameId: number) {
     confirm({
       title: 'Start tracking this object?',
+      okButtonProps: { title: 'startTrackButton' },
       onOk() {
         console.log('Start tracking', {
           cam: props.cameraId,
