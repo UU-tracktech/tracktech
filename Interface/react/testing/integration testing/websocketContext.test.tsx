@@ -60,7 +60,7 @@ beforeEach(() => {
 /**
  * Test whether or not the interface is able to connect to the orchestrator using the websocket context provider.
  */
-test('Websocket connects', async () => {
+test.skip('Websocket connects', async () => {
   jest.setTimeout(30000)
 
   // Click the custom button to set the correct websocket
@@ -74,7 +74,7 @@ test('Websocket connects', async () => {
 /**
  * Test whether or not an incoming bounding box is send to the queue and drawn.
  */
-test('Bounding box send to queue', async () => {
+test.skip('Bounding box send to queue', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
@@ -158,7 +158,7 @@ test('Bounding boxes start tracking', async () => {
   }
 
   screen.getByTestId('box-1').click()
-
+  screen.debug()
   //find the OK button from the antd confirm popup
   screen.getByTitle('startTrackButton').click()
 
