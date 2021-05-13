@@ -78,8 +78,6 @@ class ClientSocket(WebSocketHandler):
                                 see start_tracking, for the other expected properties.
                     - "stop"  | This command is used to stop the tracking of an object,
                                 see stop_tracking, for the other expected properties.
-                    - "test"  | This values will be answered with a series of messages mocking the messages
-                                a client might expect, see send_mock_data for the other expected properties.
         Returns:
             None
         """
