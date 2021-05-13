@@ -59,9 +59,18 @@ class TestProcessFrames:
         Note: I tried parametrizing Yolov5 via a fixture, but that does not work for some reason.
 
         """
-        captor, detector, tracker, _ = prepare_stream()
+        captor = self.__get_video()
+        detector = self.__get_yolov5runner()
+        tracker = self.__get_sort_tracker()
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker))
+
+    @pytest.mark.timeout(90)
+    def test_prepare_stream(self):
+        """Tests the prepare_stream method. By running it, and doing nothing.
+
+        This is as dumb as it sounds"""
+        prepare_stream()
 
     @pytest.mark.timeout(90)
     def test_process_stream_with_fake(self):
