@@ -160,7 +160,7 @@ test('Bounding boxes start tracking', async () => {
   screen.getByTestId('box-1').click()
 
   //find the OK button from the antd confirm popup
-  screen.getByTitle('.startTrackButton').click()
+  screen.getByTitle('startTrackButton').click()
 
   // Wait for message on processor
   while (!gotMessage) {
