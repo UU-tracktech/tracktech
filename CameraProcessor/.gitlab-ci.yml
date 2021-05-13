@@ -3,7 +3,7 @@ processor_build:
   tags:
     - low_end
   script:
-    - docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
+    - docker-compose -f ./CameraProcessor/docker-compose.yml build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
