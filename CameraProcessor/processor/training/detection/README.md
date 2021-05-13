@@ -1,4 +1,7 @@
-# training/detection
+# Training of Detection
+
+This component trains the object detection component of the program. It uses object detection datasets such as the 
+[COCO dataset](https://cocodataset.org/#home) to train for object detection.
 
 ## Training a model
 
@@ -49,10 +52,6 @@ The result is an image displaying the graph.
 `draw_all_pr_plots(self)` runs the `draw_pr_plot` function for every class.
 
 ## train.py
-
-```python
-import processor.training.detection.train
-```
 
 [train.py](train.py) runs the training of the detection model as explained in the
 [first section](#training-a-model).
