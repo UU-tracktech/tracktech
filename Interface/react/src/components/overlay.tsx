@@ -22,6 +22,7 @@ import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
 } from '../classes/orchestratorMessage'
+import { Modal } from 'antd'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
 export type overlayProps = {
@@ -61,6 +62,8 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
 
   //Access the websocket in order to create a listener for receiving boundingbox updates
   const socketContext = React.useContext(websocketContext)
+
+  const { confirm } = Modal
 
   React.useEffect(() => {
     //Create a listener for the websocket which receives boundingbox messages
@@ -134,11 +137,20 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
   function onTrackingStart(boxId: number, frameId: number) {
-    if (window.confirm('Start tracking this object?')) {
-      socketContext.send(
-        new StartOrchestratorMessage(props.cameraId, frameId, boxId)
-      )
-    }
+    confirm({
+      title: 'Start tracking this object?',
+      onOk() {
+        console.log('Start tracking', {
+          cam: props.cameraId,
+          frame: frameId,
+          box: boxId
+        })
+        socketContext.send(
+          new StartOrchestratorMessage(props.cameraId, frameId, boxId)
+        )
+      },
+      onCancel() {}
+    })
   }
 
   /**
@@ -146,9 +158,14 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param objectId The ID of the object that is being tracked and will be untracked
    */
   function onTrackingStop(objectId: number) {
-    if (window.confirm('Stop tracking this object?')) {
-      socketContext.send(new StopOrchestratorMessage(objectId))
-    }
+    confirm({
+      title: 'Stop tracking this object?',
+      onOk() {
+        console.log('Stop tracking ', objectId)
+        socketContext.send(new StopOrchestratorMessage(objectId))
+      },
+      onCancel() {}
+    })
   }
 
   /**
