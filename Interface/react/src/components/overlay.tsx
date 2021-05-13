@@ -146,6 +146,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
           frame: frameId,
           box: boxId
         })
+
         socketContext.send(
           new StartOrchestratorMessage(props.cameraId, frameId, boxId)
         )

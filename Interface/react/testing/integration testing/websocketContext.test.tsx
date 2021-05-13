@@ -14,6 +14,7 @@ import {
   WebsocketProvider
 } from '../../src/components/websocketContext'
 import { Overlay } from '../../src/components/overlay'
+import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
 
 /**
  * Render a testing overlay which is used in all websocket tests
@@ -60,7 +61,7 @@ beforeEach(() => {
 /**
  * Test whether or not the interface is able to connect to the orchestrator using the websocket context provider.
  */
-test.skip('Websocket connects', async () => {
+test('Websocket connects', async () => {
   jest.setTimeout(30000)
 
   // Click the custom button to set the correct websocket
@@ -74,7 +75,7 @@ test.skip('Websocket connects', async () => {
 /**
  * Test whether or not an incoming bounding box is send to the queue and drawn.
  */
-test.skip('Bounding box send to queue', async () => {
+test('Bounding box send to queue', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
@@ -157,13 +158,14 @@ test('Bounding boxes start tracking', async () => {
     gotMessage = true
   }
 
-  screen.getByTestId('box-1').click()
-
-  while (screen.queryByTitle('startTrackButton') == null) {
-    await new Promise((r) => setTimeout(r, 500))
-  }
-
-  expect(screen.getByTitle('startTrackButton')).toBeDefined()
+  //Get the drawn bounding box
+  const box = screen.getByTestId('box-1')
+  //Mock the click fuction to directly send the message
+  box.click = jest.fn(() => {
+    const context = React.useContext(websocketContext)
+    context.send(new StartOrchestratorMessage('1', 0, 1))
+  })
+  box.click()
 
   // Wait for message on processor
   while (!gotMessage) {
