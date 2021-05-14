@@ -17,3 +17,19 @@ jobs:
       - run: docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
       - run: docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
       - run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+  test_integration:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml up --build --exit-code-from video-forwarder_test
+      - run: docker cp video-forwarder_container:/app/vf-integration-report.xml vf-integration-report.xml
+      - run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml down
+  lint:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker cp .pylintrc video-forwarder_container:/app
+      - run: docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility
+      - run: docker cp utility/__init__.py video-forwarder_container:/app/utility
+      - run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --exit-code-from video-forwarder
+      - run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml down
