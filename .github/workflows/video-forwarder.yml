@@ -6,4 +6,4 @@ jobs:
     steps:
       - run: pwd
       - run: ls
-      - run: docker-compose -f ./VideoForwarder/docker-compose.yml build
+      - run: docker-compose -f VideoForwarder/docker-compose.yml build
