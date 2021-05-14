@@ -1,5 +1,7 @@
 orchestrator_build:
   stage: build
+  tags:
+    - low_end
   script:
     - docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
   rules:
@@ -14,6 +16,8 @@ orchestrator_build:
 
 orchestrator_test_unit:
   stage: test
+  tags:
+    - low_end
   script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml up --build --exit-code-from processor-orchestrator
     - docker cp processor-orchestrator_container:/app/po-unit-report.xml po-unit-report.xml
@@ -24,7 +28,6 @@ orchestrator_test_unit:
   artifacts:
     reports:
       junit: po-unit-report.xml
-      cobertura: po-coverage.xml
     paths:
       - po_coverage_html
     expire_in: 10 days
@@ -40,7 +43,13 @@ orchestrator_test_unit:
       when: always
 
 orchestrator_test_integration:
-  stage: test
+  stage: test-2
+  needs:
+    - orchestrator_test_unit
+  dependencies:
+    - orchestrator_test_unit
+  tags:
+    - low_end
   script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests-service
     - docker cp processor-orchestrator-integration-tests_container:/app/integration-report.xml integration-report.xml
@@ -66,6 +75,8 @@ orchestrator_test_integration:
 
 orchestrator_lint:
   stage: lint
+  tags:
+    - low_end
   script:
     - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --build --no-start
     - docker cp .pylintrc processor-orchestrator_container:/app
