@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+
 import json
 import pytest
 from processor.webhosting.websocket_client import WebsocketClient
