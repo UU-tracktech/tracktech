@@ -18,6 +18,87 @@ from src.camera import Camera
 from src.stream_options import StreamOptions
 from src.camera_handler import CameraHandler
 
+
+def create_camera():
+    """
+    Returns:
+        A camera object containing the camera url and if it has any audio
+    """
+    return Camera(os.environ['CAMERA_URL'], os.environ['CAMERA_AUDIO'] == 'true')
+
+
+def create_stream_options():
+    """
+
+    Returns:
+        StreamOptions: Load the stream options used for the conversion
+
+    """
+    return StreamOptions(
+        os.environ.get('SEGMENT_SIZE') or '2',
+        os.environ.get('SEGMENT_AMOUNT') or '5',
+        os.environ.get('STREAM_ENCODING') or 'libx264',
+        os.environ.get('STREAM_LOW') == 'true',
+        os.environ.get('STREAM_MEDIUM') == 'true',
+        os.environ.get('STREAM_HIGH') == 'true'
+    )
+
+
+def get_remove_delay():
+    """
+    Returns:
+        float: How long the stream has no requests before stopping the conversion in seconds
+    """
+    return float(os.environ.get('REMOVE_DELAY') or '60.0')
+
+
+def get_timeout_delay():
+    """
+    Returns:
+        int: The maximum amount of seconds we will wait with removing stream files after stopping the conversion
+    """
+    return int(os.environ.get('TIMEOUT_DELAY') or '30')
+
+
+def create_ssl_options():
+    """
+    Returns:
+        ssl.SSLContext: an ssl_context to be used by the application
+    """
+
+    # Load environment variable path of certificate and its key
+    cert = os.environ.get('SSL_CERT')
+    key = os.environ.get('SSL_KEY')
+
+    # If one if missing, return None and do not use ssl
+    if cert is None or key is None:
+        return None
+
+    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_ctx.load_cert_chain(cert, key)
+
+    return ssl_ctx
+
+
+def create_authenticator():
+    """
+    Returns:
+        Auth: Auth object containing used to validate tokens
+    """
+    #
+    public_key, audience, client_role =\
+        os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE'), os.environ.get('CLIENT_ROLE')
+    if public_key is None or audience is None or client_role is None:
+        return None
+    tornado.log.gen_log.info("using client token validation")
+    return Auth(
+        public_key_path=public_key,
+        algorithms=['RS256'],
+        audience=audience,
+        role=client_role
+    )
+
+
 # pylint: disable=invalid-name
 if __name__ == "__main__":
     # Setup for logging
@@ -35,71 +116,28 @@ if __name__ == "__main__":
 
     tornado.log.gen_log.info('starting server')
 
-    # Create the camera object from the environment variables
-    camera = Camera(os.environ['CAMERA_URL'], os.environ['CAMERA_AUDIO'] == 'true')
-
-    # How long the stream has no requests before stopping the conversion in seconds
-    remove_delay = float(os.environ.get('REMOVE_DELAY') or '60.0')
-
-    # The maximum amount of seconds we will wait with removing stream files after stopping the conversion
-    timeout_delay = int(os.environ.get('TIMEOUT_DELAY') or '30')
-
-    # Load the stream options used for the conversion
-    stream_options = StreamOptions(
-        os.environ.get('SEGMENT_SIZE') or '2',
-        os.environ.get('SEGMENT_AMOUNT') or '5',
-        os.environ.get('STREAM_ENCODING') or 'libx264',
-        os.environ.get('STREAM_LOW') == 'true',
-        os.environ.get('STREAM_MEDIUM') == 'true',
-        os.environ.get('STREAM_HIGH') == 'true'
-    )
-
-    # Get the ssl certificate and key if supplied
-    cert = os.environ.get('SSL_CERT')
-    key = os.environ.get('SSL_KEY')
-
-    # Get auth ready by reading the environment variables
-    public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
-    authenticator = None
-    if public_key is not None and audience is not None:
-        client_role = os.environ.get('CLIENT_ROLE')
-        if client_role is not None:
-            tornado.log.gen_log.info("using client token validation")
-            authenticator = Auth(
-                public_key_path=public_key,
-                algorithms=['RS256'],
-                audience=audience,
-                role=client_role
-            )
-
     # Create the web application with the camera handler and the public key
     app = tornado.web.Application(
         [
             (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
         ],
-        authenticator=authenticator,
-        camera=camera,
-        remove_delay=remove_delay,
-        timeout_delay=timeout_delay,
-        stream_options=stream_options
+        authenticator=create_authenticator(),
+        camera=create_camera(),
+        remove_delay=get_remove_delay(),
+        timeout_delay=get_timeout_delay(),
+        stream_options=create_stream_options()
     )
 
-    # If using tls, create a context and load the certificate and key in it
-    if cert is not None and key is not None:
-        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ssl_ctx.load_cert_chain(cert, key)
+    # Load the ssl and port options
+    ssl_options = create_ssl_options()
+    port = 80 if ssl_options is None else 443
+    ssl = 'without' if ssl_options is None else 'with'
 
-        # Start the secure webserver on port 443
-        http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-        http_server.listen(443)
-        tornado.log.gen_log.info('listening on port 443 over https')
-
-    # Else start the insecure webserver on port 80
-    else:
-        # Start the insecure webserver on port 80
-        http_server = tornado.httpserver.HTTPServer(app)
-        http_server.listen(80)
-        tornado.log.gen_log.info('listening on port 80 over http')
+    # Start the webserver
+    http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_options)
+    http_server.listen(port)
+    tornado.log.gen_log.info(f'listening on port {port}, {ssl} ssl')
 
     # Start the IO loop (used by tornado itself)
     tornado.ioloop.IOLoop.current().start()
+
