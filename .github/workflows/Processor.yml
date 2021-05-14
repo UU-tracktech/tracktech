@@ -9,7 +9,7 @@ on:
       - CameraProcessor/**
 
 jobs:
-  build:
+  processor_build:
     name: Processor build compose test
     runs-on: self-hosted
     steps:
@@ -18,7 +18,7 @@ jobs:
       - name: Build camera processor test service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
 
-  unit_test:
+  processor_unit_test:
     name: Processor unit test
     runs-on: self-hosted
     steps:
@@ -44,7 +44,7 @@ jobs:
           name: cp-unit-report.xml
           path: output/cp-unit-report.xml
 
-  linting:
+  processor_linting:
     name: Processor linting
     runs-on: self-hosted
     steps:

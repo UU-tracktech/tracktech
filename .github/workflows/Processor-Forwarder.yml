@@ -10,7 +10,7 @@ on:
       - VideoForwarder/**
 
 jobs:
-  integration_test:
+  processor_forwarder_integration_test:
     name: Camera Processor - Video Forwarder integration test
     runs-on: self-hosted
     steps:

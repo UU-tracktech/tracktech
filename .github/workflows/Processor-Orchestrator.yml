@@ -10,7 +10,7 @@ on:
       - ProcessorOrchestrator/**
 
 jobs:
-  integration_test:
+  processor_orchestrator_integration_test:
     name: Camera Processor - Processor Orchestrator integration test
     runs-on: self-hosted
     steps:
