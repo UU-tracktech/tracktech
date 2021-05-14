@@ -3,6 +3,8 @@
 [![Forwarder](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml)
 [![Camera Processor](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml)
 
+[![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech)
+
 ## Running the pipeline:
 
 - Navigate to the Run Pipeline page or <a href="https://git.science.uu.nl/e.w.j.bangma/tracktech/-/pipelines/new" target="_blank">Click Here</a>.
