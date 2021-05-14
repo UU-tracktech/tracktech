@@ -1,0 +1,10 @@
+on: [ pull_request]
+  push:
+    paths:
+      - 'CameraProcessor/**/*'
+  jobs:
+    build_processor:
+      name: Processor build compose test
+      runs-on: ubuntu-latest
+      steps:
+        - run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
