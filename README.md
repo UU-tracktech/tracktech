@@ -3,7 +3,10 @@
 [![Forwarder](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml)
 [![Camera Processor](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml)
 
-[![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech)
+[![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?Interface)
+[![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?Orchestrator)
+[![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?Forwarder)
+[![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?Processor)
 
 ## Running the pipeline:
 
