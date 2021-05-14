@@ -30,6 +30,7 @@ orchestrator_test_unit:
       junit: po-unit-report.xml
     paths:
       - po_coverage_html
+      - po-coverage.xml
     expire_in: 10 days
     when: always
   rules:
@@ -51,7 +52,9 @@ orchestrator_test_integration:
   tags:
     - low_end
   script:
-    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests-service
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --no-start --build --exit-code-from processor-orchestrator-integration-tests-service
+    - docker cp po-coverage.xml processor-orchestrator_container:/app/po-coverage.xml
+    - docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml start
     - docker cp processor-orchestrator-integration-tests_container:/app/integration-report.xml integration-report.xml
     - docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
   after_script:
