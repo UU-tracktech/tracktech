@@ -13,27 +13,38 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose -f Interface/docker-compose.yml build
+      - name: Build
+        run: docker-compose -f Interface/docker-compose.yml build
+      - name: Remove
+        run: docker-compose -f Interface/docker-compose.yml rm
 
   test_unit:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build --exit-code-from interface
-      - run: docker cp interface_container:/react/coverage i-coverage
-      - run: docker-compose -f Interface/compose/docker-compose_test_unit.yml down
+      - name: Build and run
+        run: docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build --exit-code-from interface
+      - name: Copy out coverage
+        run: docker cp interface_container:/react/coverage i-coverage
+      - name: Remove
+        run: docker-compose -f Interface/compose/docker-compose_test_unit.yml down
 
   test_integration:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose -f Interface/compose/docker-compose_test_integration.yml up --build --exit-code-from interface
-      - run: docker cp interface_container:/react/coverage i-coverage
-      - run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down
+      - name: Build and run
+        run: docker-compose -f Interface/compose/docker-compose_test_integration.yml up --build --exit-code-from interface
+      - name: Copy out coverage
+        run: docker cp interface_container:/react/coverage i-coverage
+      - name: Remove
+        run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down
 
   lint:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
-      - run: docker-compose -f Interface/compose/docker-compose_lint.yml down
+      - name: Build and start
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
+      - name: Remove
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml down
