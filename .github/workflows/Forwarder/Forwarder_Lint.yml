@@ -1,0 +1,27 @@
+name: Forwarder
+
+on:
+  push:
+    paths:
+      - .github/workflows/Forwarder/Forwarder_Lint.yml
+  pull_request:
+    paths:
+      - VideoForwarder/**
+
+jobs:
+  forwarder_lint:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --build --no-start
+      - name: Copy in pylintrc
+        run: docker cp .pylintrc video-forwarder_container:/app
+      - name: Copy in utility
+        run: docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility
+      - name: Copy in utility
+        run: docker cp utility/__init__.py video-forwarder_container:/app/utility
+      - name: Run
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --exit-code-from video-forwarder
+      - name: Remove
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml down

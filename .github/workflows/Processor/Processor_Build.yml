@@ -1,0 +1,19 @@
+name: Processor Build
+
+on:
+  push:
+    paths:
+      - .github/workflows/Processor/Processor_Build.yml
+  pull_request:
+    paths:
+      - CameraProcessor/**
+
+jobs:
+  processor_build:
+    name: Processor build compose test
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build camera processor test service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build

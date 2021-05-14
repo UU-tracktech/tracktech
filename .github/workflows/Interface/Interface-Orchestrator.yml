@@ -1,0 +1,27 @@
+name: Interface-Orchestrator Integration Test
+
+on:
+  push:
+    paths:
+      - .github/workflows/Interface/Interface-Orchestrator.yml
+  pull_request:
+    paths:
+      - Interface/**
+      - ProcessorOrchestrator/**
+
+jobs:
+  interface-orchestrator:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and run
+        run: docker-compose -f Interface/compose/docker-compose_test_integration.yml up --build --exit-code-from interface
+      - name: Copy out coverage
+        run: docker cp interface_container:/react/coverage i-coverage
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          files: i-coverage
+          flags: Interface
+      - name: Remove
+        run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down

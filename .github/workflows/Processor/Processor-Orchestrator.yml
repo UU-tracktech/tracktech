@@ -3,7 +3,7 @@ name: Processor-Orchestrator integration
 on:
   push:
     paths:
-      - .github/workflows/Processor-Orchestrator.yml
+      - .github/workflows/Processor/Processor-Orchestrator.yml
   pull_request:
     paths:
       - CameraProcessor/**
