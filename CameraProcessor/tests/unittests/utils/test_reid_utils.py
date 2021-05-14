@@ -23,6 +23,8 @@ class TestReidUtils:
     def test_slice_bounding_box(self):
         """Tests the slice_bounding_box method
 
+        TODO refactor this so that it uses the utils.utils from branch SPC-503 branch # pylint: disable=fixme
+
         """
         # Empty white image
         image = np.zeros((200, 200, 3), np.uint8)
