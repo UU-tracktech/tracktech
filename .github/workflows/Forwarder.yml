@@ -23,8 +23,8 @@ jobs:
       - run: docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
-          with:
-            files: vf-unit-report.xml
+        with:
+          files: vf-unit-report.xml
       - run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
   test_integration:
     runs-on: self-hosted
@@ -34,8 +34,8 @@ jobs:
       - run: docker cp video-forwarder_container:/app/vf-integration-report.xml vf-integration-report.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
-          with:
-            files: vf-integration-report.xml
+        with:
+          files: vf-integration-report.xml
       - run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml down
   lint:
     runs-on: self-hosted
