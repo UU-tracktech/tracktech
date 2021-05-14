@@ -1,0 +1,9 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    steps:
+      - name: Build
+        uses: Forwarder/Forwarder_Build
