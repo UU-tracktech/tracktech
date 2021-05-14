@@ -3,7 +3,7 @@ name: Processor
 on:
   push:
     paths:
-      - .github/workflows/Processor.yml
+      - .github/workflows/Processor-Orchestrator.yml
   pull_request:
     paths:
       - CameraProcessor/**
