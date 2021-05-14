@@ -3,35 +3,36 @@ on:
   pull_request:
     paths:
       - 'CameraProcessor/**/*'
-  jobs:
-    build:
-      name: Processor build compose test
-      runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+jobs:
+  build:
+    name: Processor build compose test
+    runs-on: ubuntu-latest
 
-        - name: Build camera processor test service
-          run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    unit_test:
-      name: Processor unit test
-      runs-on: ubuntu-latest
+      - name: Build camera processor test service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
 
-      steps:
-       - name: Checkout code
-         uses: actions/checkout@v2
+  unit_test:
+    name: Processor unit test
+    runs-on: ubuntu-latest
 
-       - name: Start unit test camera processor service
-         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
+    steps:
+     - name: Checkout code
+       uses: actions/checkout@v2
 
-       - name: Copy coverage report from docker process
-         run: docker cp camera-processor_container:/app/coverage_html cp-coverage_html
+     - name: Start unit test camera processor service
+       run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
 
-       - name: Copy unit test report from docker process
-         run: docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
+     - name: Copy coverage report from docker process
+       run: docker cp camera-processor_container:/app/coverage_html cp-coverage_html
 
-       - name: Stop service
-         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
-         if: ${{ always() }}
+     - name: Copy unit test report from docker process
+       run: docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
+
+     - name: Stop service
+       run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
+       if: ${{ always() }}
