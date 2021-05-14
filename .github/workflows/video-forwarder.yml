@@ -4,4 +4,6 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - run: pwd
+      - run: ls
       - run: docker-compose -f ./VideoForwarder/docker-compose.yml build
