@@ -31,7 +31,7 @@ jobs:
           name: unit-report
           path: po-unit-report.xml
       - name: Copy out coverage
-        run: docker cp processor-orchestrator_container:/app/po_coverage_html
+        run: docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
       - uses: actions/upload-artifact@v2
         with:
           name: coverage
