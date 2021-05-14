@@ -1,8 +1,9 @@
 name: forwarder
 on:
   push:
-#    paths:
-#      - VideoForwarder/**
+    paths:
+      - .github/**
+      - VideoForwarder/**
 jobs:
   build:
     runs-on: self-hosted
