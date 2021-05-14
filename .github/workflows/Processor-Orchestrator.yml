@@ -1,0 +1,28 @@
+name: Processor
+
+on:
+  push:
+    paths:
+      - .github/workflows/Processor.yml
+  pull_request:
+    paths:
+      - CameraProcessor/**
+      - ProcessorOrchestrator/**
+
+jobs:
+  integration_test:
+    name: Camera Processor - Processor Orchestrator integration test
+    runs-on: self-hosted
+    steps:
+      - name: Start service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
+      - name: Copy integration test report
+        run: docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
+      - name: Stop service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
+        if: ${{ always() }}
+      - name: Upload integration test report artifact
+      uses: actions/upload-artifacts@v2
+      with:
+        name: cp-po-integration-report.xml
+        path: cp-po-integration-report.xml

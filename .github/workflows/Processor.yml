@@ -11,44 +11,52 @@ on:
 jobs:
   build:
     name: Processor build compose test
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Build camera processor test service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
 
   unit_test:
     name: Processor unit test
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
-
-      - name: Copy coverage report from docker process
+      - name: Copy coverage report
         run: docker cp camera-processor_container:/app/coverage_html cp-coverage_html
-
-      - name: Copy unit test report from docker process
+      - name: Copy unit test report
         run: docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
-
       - name: Stop service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}
-
       - name: Upload coverage artifact
         uses: actions/upload-artifacts@v2
         with:
           name: cp-coverage_html
           path: output/cp-coverage.html
-
       - name: Upload unit test report artifact
         uses: actions/upload-artifacts@v2
         with:
           name: cp-unit-report.xml
           path: output/cp-unit-report.xml
+
+  linting:
+    name: Processor linting
+    runs-on: self-hosted
+    steps:
+      - name: Build service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --build --no-start
+      - name: Copy linting file into service
+        run: docker cp .pylintrc camera-processor_lint_container:/app
+      - name: Copy pylint_ignore.py into service
+        run: docker cp utility/pylint_ignore.py camera-processor_lint_container:/app/utility
+      - name: copy __init__.py into service
+        run: docker cp utility/__init__.py camera-processor_lint_container:/app/utility
+      - name: Start service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --exit-code-from cameraprocessor
+      - name: Stop service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml down
