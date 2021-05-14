@@ -3,7 +3,7 @@ name: Forwarder Integration Test
 on:
   push:
     paths:
-      - .github/workflows/Forwarder/Forwarder_Test_Integration.yml
+      - .github/workflows/Forwarder_Test_Integration.yml
   pull_request:
     paths:
       - VideoForwarder/**

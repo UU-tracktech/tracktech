@@ -3,7 +3,7 @@ name: Interface Lint
 on:
   push:
     paths:
-      - .github/workflows/Interface/Interface_Lint.yml
+      - .github/workflows/Interface_Lint.yml
   pull_request:
     paths:
       - Interface/**

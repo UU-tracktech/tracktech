@@ -3,7 +3,7 @@ name: Interface Build
 on:
   push:
     paths:
-      - .github/workflows/Interface/Interface_Build.yml
+      - .github/workflows/Interface_Build.yml
   pull_request:
     paths:
       - Interface/**

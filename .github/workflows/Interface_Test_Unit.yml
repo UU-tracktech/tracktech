@@ -3,7 +3,7 @@ name: Interface Unit Test
 on:
   push:
     paths:
-      - .github/workflows/Interface/Interface_Test_Unit.yml
+      - .github/workflows/Interface_Test_Unit.yml
   pull_request:
     paths:
       - Interface/**

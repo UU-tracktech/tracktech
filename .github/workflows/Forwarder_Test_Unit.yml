@@ -3,7 +3,7 @@ name: Forwarder Unit Test
 on:
   push:
     paths:
-      - .github/workflows/Forwarder/Forwarder_Test_Unit.yml
+      - .github/workflows/Forwarder_Test_Unit.yml
   pull_request:
     paths:
       - VideoForwarder/**

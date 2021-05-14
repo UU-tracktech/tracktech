@@ -3,7 +3,7 @@ name: Orchestrator Integration Test
 on:
   push:
     paths:
-      - .github/workflows/Orchestrator.yml
+      - .github/workflows/Orchestrator_Test_Integration.yml
   pull_request:
     paths:
       - ProcessorOrchestrator/**

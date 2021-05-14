@@ -3,7 +3,7 @@ name: Forwarder Build
 on:
   push:
     paths:
-      - .github/workflows/Forwarder/Forwarder_Build.yml
+      - .github/workflows/Forwarder_Build.yml
   pull_request:
     paths:
       - VideoForwarder/**

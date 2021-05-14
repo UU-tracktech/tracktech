@@ -3,7 +3,7 @@ name: Processor Lint
 on:
   push:
     paths:
-      - .github/workflows/Processor/Processor_Lint.yml
+      - .github/workflows/Processor_Lint.yml
   pull_request:
     paths:
       - CameraProcessor/**

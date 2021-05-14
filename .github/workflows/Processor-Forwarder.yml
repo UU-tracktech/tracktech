@@ -3,7 +3,7 @@ name: Processor-Forwarder integration
 on:
   push:
     paths:
-      - .github/workflows/Processor/Processor-Forwarder.yml
+      - .github/workflows/Processor-Forwarder.yml
   pull_request:
     paths:
       - CameraProcessor/**

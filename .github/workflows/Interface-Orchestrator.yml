@@ -3,7 +3,7 @@ name: Interface-Orchestrator Integration Test
 on:
   push:
     paths:
-      - .github/workflows/Interface/Interface-Orchestrator.yml
+      - .github/workflows/Interface-Orchestrator.yml
   pull_request:
     paths:
       - Interface/**
