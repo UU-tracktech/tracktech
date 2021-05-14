@@ -1,9 +1,13 @@
 name: Interface
+
 on:
   push:
     paths:
       - .github/**
+  pull_request:
+    paths:
       - Interface/**
+
 jobs:
   build:
     runs-on: self-hosted
