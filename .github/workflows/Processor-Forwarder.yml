@@ -22,7 +22,7 @@ jobs:
         run: docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml down
         if: ${{ always() }}
       - name: Upload integration test report artifact
-        uses: actions/upload-artifacts@v2
+        uses: actions/upload-artifact@v2
         with:
           name: cp-vf-integration-report.xml
           path: cp-vf-integration-report.xml

@@ -34,12 +34,12 @@ jobs:
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}
       - name: Upload coverage artifact
-        uses: actions/upload-artifacts@v2
+        uses: actions/upload-artifact@v2
         with:
           name: cp-coverage_html
           path: output/cp-coverage.html
       - name: Upload unit test report artifact
-        uses: actions/upload-artifacts@v2
+        uses: actions/upload-artifact@v2
         with:
           name: cp-unit-report.xml
           path: output/cp-unit-report.xml
