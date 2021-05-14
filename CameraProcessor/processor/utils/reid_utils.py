@@ -21,6 +21,16 @@ def slice_bounding_box(bbox, img):
 
     IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely
     need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.
+
+    ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues
+    to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or
+    use `del`.
+
+    Example:
+        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice
+        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!
+        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up
+                   the memory
     """
     width, height, _ = img.shape
     return img[
