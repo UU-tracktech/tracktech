@@ -1,0 +1,7 @@
+name: forwarder
+on: [pull_request]
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - run: docker-compose -f ./VideoForwarder/docker-compose.yml build
