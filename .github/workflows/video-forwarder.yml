@@ -1,8 +1,8 @@
 name: forwarder
 on:
   push:
-    paths:
-      - VideoForwarder/**
+#    paths:
+#      - VideoForwarder/**
 jobs:
   build:
     runs-on: self-hosted
