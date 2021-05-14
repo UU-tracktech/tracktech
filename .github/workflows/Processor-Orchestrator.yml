@@ -1,4 +1,4 @@
-name: Processor
+name: Processor-Orchestrator integration
 
 on:
   push:
