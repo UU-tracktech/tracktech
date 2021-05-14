@@ -1,4 +1,4 @@
-name: Camera Processor
+name: Processor
 
 on:
   push:

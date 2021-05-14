@@ -1,11 +1,16 @@
+[![Interface](https://github.com/UU-tracktech/tracktech/actions/workflows/Interface.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Interface.yml)
+[![Orchestrator](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator.yml)
+[![Forwarder](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml)
+[![Camera Processor](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml)
+
 ## Running the pipeline:
 
-* Navigate to the Run Pipeline page or <a href="https://git.science.uu.nl/e.w.j.bangma/tracktech/-/pipelines/new" target="_blank">Click Here</a>.
-* Select desired branch.
-* Input the variables of the desired 
+- Navigate to the Run Pipeline page or <a href="https://git.science.uu.nl/e.w.j.bangma/tracktech/-/pipelines/new" target="_blank">Click Here</a>.
+- Select desired branch.
+- Input the variables of the desired
 
-| Input variable key   | Input variable value     | Description									                                            |
-|:---------------------|:-------------------------|:----------------------------------------------------------------------------------------|
+| Input variable key   | Input variable value     | Description                                                                             |
+| :------------------- | :----------------------- | :-------------------------------------------------------------------------------------- |
 | `CI_PIPELINE_SOURCE` | `merge_request_event`    | Runs the entire pipeline and gets automatically called when making a merge request.     |
 | `PIPELINE`           | `camera_processor`       | Runs the build, unit test, integration test and linting stages of the camera processor. |
 | `PIPELINE`           | `processor_orchestrator` | Runs the build, unit test and linting stages of the processor orchestrator.             |
