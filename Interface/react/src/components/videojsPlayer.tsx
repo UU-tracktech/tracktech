@@ -38,8 +38,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var startUri //The name of the first segment received by the videoplayer
   var startTime //The timestamp of the stream where the player was started
   var timeStamp //The current timestamp of the stream
-  var playerSwitchTime
-  var playerStartTime
+  var playerSwitchTime //The timestamp of when the video player switch to the second segment
+  var playerStartTime //The current time of the video player when it's first being played
 
   React.useEffect(() => {
     // instantiate video.js
@@ -65,7 +65,6 @@ export function VideoPlayer(props: VideoPlayerProps) {
          segment name, keep going until a name is obtained */
       player?.on('firstplay', () => {
         playerStartTime = playerRef.current?.currentTime()
-        console.log('start time: ', playerStartTime)
         initialUriIntervalRef.current = player?.setInterval(() => {
           getInitialUri()
         }, 200)
@@ -101,9 +100,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       //passing any argument suppresses a warning about accessing the tech
       let tech = playerRef.current?.tech({ randomArg: true })
       if (tech) {
-        //ensure media is loaded before trying to access
-        // console.log(tech.textTracks()[0].activeCues[0]['value'].uri)
-        //let med = tech['vhs'].playlists.media()
+        //ensure that the current playing segment has a uri
         if (tech.textTracks()[0].activeCues[0]['value'].uri) {
           console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
           return tech.textTracks()[0].activeCues[0]['value'].uri
@@ -148,13 +145,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
       //ensure it is a string because typescript
       if (typeof currentUri === 'string') {
         playerSwitchTime = playerRef.current?.currentTime()
-        console.log('switch time 1: ', playerSwitchTime)
-        //playerSwitchTime -= playerStartTime
-        console.log('switch time 2: ', playerSwitchTime)
         console.log('URI changed: ', currentUri)
         startTime = GetSegmentStarttime(currentUri)
         console.log('Starttime: ', PrintTimestamp(startTime))
-
+        playerRef.current?.currentTime(playerStartTime)
         if (changeIntervalRef.current)
           playerRef.current?.clearInterval(changeIntervalRef.current)
       }
