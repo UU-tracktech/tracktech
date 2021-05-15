@@ -158,7 +158,7 @@ test('Bounding boxes start tracking', async () => {
     gotMessage = true
   }
 
-  //Get the drawn bounding box
+  //Get the drawn bounding box and click to start tracking
   const box = screen.getByTestId('box-1')
   box.click()
 
