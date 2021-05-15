@@ -11,6 +11,10 @@ import tornado.web
 from tornado.testing import AsyncHTTPTestCase
 
 from processor.webhosting.stream_handler import StreamHandler
+import processor.utils.config_parser
+
+# Set test config to true
+processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestStreamHandler(AsyncHTTPTestCase):

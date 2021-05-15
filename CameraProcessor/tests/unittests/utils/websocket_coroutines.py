@@ -31,16 +31,9 @@ class WebsocketCoroutines(AsyncHTTPTestCase):
         """
         ws_url = "ws://127.0.0.1:%d%s" % (self.get_http_port(), path)
         dummy_websocket = DummyWebsocketClient(ws_url, identifier)
+        # Connect websocket
         await dummy_websocket.connect()
         return dummy_websocket
-
-    # @tornado.gen.coroutine
-    # def ws_gen_connect(self, path, identifier=None):
-    #     ws_url = "ws://127.0.0.1:%d%s" % (self.get_http_port(), path)
-    #     dummy_websocket = DummyWebsocketClient(ws_url, identifier)
-    #     print('start connection')
-    #     yield dummy_websocket.connect()
-    #     raise gen.Return(dummy_websocket.connection)
 
     @tornado.gen.coroutine
     def ws_connect(self, path, **kwargs):

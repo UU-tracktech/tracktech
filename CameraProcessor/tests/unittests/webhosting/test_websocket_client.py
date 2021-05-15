@@ -150,58 +150,24 @@ class TestWebsocketClient(WebsocketCoroutines):
         assert dummy_websocket.last_message_type == 'stop'
         assert messages_are_equal(self.stop_message, dummy_websocket.last_message)
 
-    # @tornado.testing.gen_test(timeout=15)
-    # def test_featuremap_now(self):
-    #     dummy_websocket = yield self.dummy_ws_connect("/echo")
-    #     dummy_websocket.write_queue = [self.feature_map_message]
-    #     assert len(dummy_websocket.write_queue) == 1
-    #     yield dummy_websocket.write_message(self.feature_map_message)
-    #
-    #     while not len(dummy_websocket.write_queue) == 0:
-    #         yield asyncio.sleep(0)
-    #
-    # @tornado.testing.gen_test(timeout=15)
-    # def test_start_tracking(self):
-    #     dummy_websocket = yield self.dummy_ws_connect("/echo")
-    #     dummy_websocket.write_queue = [self.start_message]
-    #     assert len(dummy_websocket.write_queue) == 1
-    #     yield dummy_websocket.write_message(self.start_message)
-    #
-    #     while not len(dummy_websocket.write_queue) == 0:
-    #         yield asyncio.sleep(0)
-    #
-    # @tornado.testing.gen_test(timeout=15)
-    # def test_stop_tracking(self):
-    #     dummy_websocket = yield self.dummy_ws_connect("/echo")
-    #     dummy_websocket.write_queue = [self.stop_message]
-    #     assert len(dummy_websocket.write_queue) == 1
-    #     yield dummy_websocket.write_message(self.stop_message)
-    #
-    #     # Check write is done
-    #     while not len(dummy_websocket.write_queue) == 0:
-    #         yield asyncio.sleep(0)
-
     def test_empty_message(self):
         """Tests whether empty message is handled correctly
         """
         dummy_websocket = DummyWebsocketClient('')
         dummy_websocket._on_message('')
 
-    @tornado.testing.gen_test(timeout=15)
     def test_receive_featuremap(self):
         """Tests receiving a featuremap
         """
         websocket = WebsocketClient('')
         websocket._on_message(self.feature_map_message)
 
-    @tornado.testing.gen_test(timeout=15)
     def test_start_tracking(self):
         """Tests start tracking command
         """
         websocket = WebsocketClient('')
         websocket._on_message(self.start_message)
 
-    @tornado.testing.gen_test(timeout=15)
     def test_stop_tracking(self):
         """Tests stop tracking command
         """

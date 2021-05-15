@@ -9,7 +9,6 @@ Utrecht University within the Software Project course.
 import asyncio
 import tornado.gen
 from tornado.websocket import WebSocketHandler, WebSocketClosedError
-# from tests.unittests.utils.websocket_handler import GenericWebsocketHandler
 
 
 class EchoWebsocketHandler(WebSocketHandler):
