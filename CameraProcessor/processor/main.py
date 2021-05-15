@@ -149,8 +149,4 @@ if __name__ == '__main__':
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     # Run the main function
-    try:
-        main()
-    # Yolov5 throws a general SystemExit
-    except SystemExit:
-        pass
+    main()

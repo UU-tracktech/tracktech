@@ -13,15 +13,31 @@ from processor.webhosting.html_page_handler import HtmlPageHandler
 
 
 class TestHtmlPageHandler(AsyncHTTPTestCase):
+    """Test the html page handler whether the pages gets retrieved correctly
+
+    """
     def get_app(self):
+        """Creates the tornado the app
+
+        Returns:
+            (tornado.web.Application): Html page handler that gets started by the AsyncHTTPTestCase
+        """
         return tornado.web.Application([
+            # .html regex pattern
             (r"/(.*\.html)?", HtmlPageHandler),
         ])
 
     def test_existing_html_file(self):
+        """Test rendering of an existing html file
+        """
+        # Fetches index.html
         response = self.fetch('/')
         self.assertEqual(response.code, 200)
 
     def test_invalid_html_file(self):
+        """Tests whether an invalid file gives back the error template
+        """
         response = self.fetch('/test.html')
+        # Error page gets rendered
+        self.assertEqual(response.code, 200)
         self.assertIn("404", str(response.body))
