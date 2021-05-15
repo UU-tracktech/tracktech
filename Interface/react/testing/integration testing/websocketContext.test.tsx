@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import { render, screen } from '@testing-library/react'
+import { prettyDOM, render, screen } from '@testing-library/react'
 import React from 'react'
 import {
   websocketArgs,
@@ -160,12 +160,17 @@ test('Bounding boxes start tracking', async () => {
 
   //Get the drawn bounding box
   const box = screen.getByTestId('box-1')
-  //Mock the click fuction to directly send the message
-  box.click = jest.fn(() => {
-    const context = React.useContext(websocketContext)
-    context.send(new StartOrchestratorMessage('1', 0, 1))
-  })
   box.click()
+
+  //wait for the confirmation popup
+  while (screen.queryAllByText('OK').length == 0) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  //get the confirm button, make sure it exists, then press the button
+  const confirmButton = screen.getByText('OK')
+  expect(confirmButton).toBeDefined()
+  confirmButton.click()
 
   // Wait for message on processor
   while (!gotMessage) {
