@@ -1,6 +1,7 @@
 name: Forwarder Unit Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Test_Unit.yml

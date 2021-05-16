@@ -1,6 +1,7 @@
 name: Forwarder Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Lint.yml

@@ -1,6 +1,7 @@
 name: Interface Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Interface_Lint.yml

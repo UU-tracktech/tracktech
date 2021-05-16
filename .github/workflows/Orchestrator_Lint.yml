@@ -1,6 +1,7 @@
 name: Orchestrator Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Orchestrator_Lint.yml

@@ -1,6 +1,7 @@
 name: Processor Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Processor_Lint.yml

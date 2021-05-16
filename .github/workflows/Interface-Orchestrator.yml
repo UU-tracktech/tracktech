@@ -1,6 +1,7 @@
 name: Interface-Orchestrator Integration Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Interface-Orchestrator.yml

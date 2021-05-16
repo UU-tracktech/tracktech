@@ -1,6 +1,7 @@
 name: Forwarder Integration Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Test_Integration.yml

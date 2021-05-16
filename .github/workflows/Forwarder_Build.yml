@@ -1,6 +1,7 @@
 name: Forwarder Build
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Build.yml

@@ -1,6 +1,7 @@
 name: Orchestrator Integration Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Orchestrator_Test_Integration.yml
