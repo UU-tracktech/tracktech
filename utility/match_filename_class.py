@@ -16,7 +16,7 @@ paths_to_ignore = ['.git', 'CameraProcessor/processor/pipeline/detection/yolov5'
                    'venv', 'CameraProcessor/processor/pipeline/tracking/sort/']
 
 
-def match_filenames_classes(_):
+def match_filename_class(_):
     """Print the absolute paths of files with too many classes to the console."""
     skip = False
     for path in pathlib.Path(os.path.join(os.getcwd()), '..').rglob('*.py'):
@@ -42,6 +42,6 @@ def match_filenames_classes(_):
 
 if __name__ == '__main__':
     try:
-        app.run(match_filenames_classes)
+        app.run(match_filename_class)
     except SystemExit:
         pass
