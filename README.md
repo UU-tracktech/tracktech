@@ -1,7 +1,7 @@
-[![Interface](https://github.com/UU-tracktech/tracktech/actions/workflows/Interface.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Interface.yml)
-[![Orchestrator](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator.yml)
-[![Forwarder](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder.yml)
-[![Camera Processor](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor.yml)
+[![Forwarder Build](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder_Build.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Forwarder_Build.yml)
+[![Interface Build](https://github.com/UU-tracktech/tracktech/actions/workflows/Interface_Build.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Interface_Build.yml)
+[![Orchestrator Build](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator_Build.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator_Build.yml)
+[![Processor Build](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor_Build.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor_Build.yml)
 
 [![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?Interface)
 [![codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?Orchestrator)
