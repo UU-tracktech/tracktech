@@ -9,7 +9,8 @@ on:
       - ProcessorOrchestrator/**
 
 jobs:
-  interface_lint:
+  orchestrator_lint:
+    name: Orchestrator Lint
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2

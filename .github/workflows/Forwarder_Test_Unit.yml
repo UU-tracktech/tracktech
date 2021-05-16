@@ -9,7 +9,8 @@ on:
       - VideoForwarder/**
 
 jobs:
-  test_unit:
+  forwarder_test_unit:
+    name: Forwarder Unit Test
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2

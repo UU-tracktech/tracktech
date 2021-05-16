@@ -9,7 +9,8 @@ on:
       - ProcessorOrchestrator/**
 
 jobs:
-  interface_test_unit:
+  orchestrator_test_unit:
+    name: Orchestrator Unit Test
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
