@@ -1,0 +1,20 @@
+name: Interface Build
+
+on:
+  push:
+    paths:
+      - .github/workflows/Interface_Build.yml
+  pull_request:
+    paths:
+      - Interface/**
+
+jobs:
+  interface_build:
+    name: Interface Build
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose -f Interface/docker-compose.yml build
+      - name: Remove
+        run: docker-compose -f Interface/docker-compose.yml rm

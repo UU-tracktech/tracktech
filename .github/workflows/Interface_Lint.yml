@@ -1,0 +1,20 @@
+name: Interface Lint
+
+on:
+  push:
+    paths:
+      - .github/workflows/Interface_Lint.yml
+  pull_request:
+    paths:
+      - Interface/**
+
+jobs:
+  interface_lint:
+    name: Interface Lint
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and start
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
+      - name: Remove
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml down
