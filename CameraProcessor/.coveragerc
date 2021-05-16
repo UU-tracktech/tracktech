@@ -8,9 +8,9 @@ omit =
     # Don't test the detection repositories
     */pipeline/detection/yolov5/*
     */pipeline/detection/yolov4deepsort/*
+    # Cannot be tested in docker
+    */processor/input/cam_capture.py
     # Don't test any documentation or testing files
-    */documentation.py
-    */processor/localhost.py
     */processor/scheduling/component/*
     */processor/yolov4deepsort.py
     */processor/yolov5_test.py
