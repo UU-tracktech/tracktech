@@ -8,7 +8,6 @@ Utrecht University within the Software Project course.
 import os
 import pathlib
 import re
-from absl import app
 
 paths_to_ignore = ['.git', 'CameraProcessor/processor/pipeline/detection/yolov5',
                    'CameraProcessor/processor/pipeline/detection/yolov4deepsort', '/app/.git',
@@ -16,7 +15,7 @@ paths_to_ignore = ['.git', 'CameraProcessor/processor/pipeline/detection/yolov5'
                    'venv', 'CameraProcessor/processor/pipeline/tracking/sort/']
 
 
-def match_filename_class(_):
+def match_filename_class():
     """Print the absolute paths of files with too many classes to the console."""
     skip = False
     for path in pathlib.Path(os.path.join(os.getcwd()), '..').rglob('*.py'):
@@ -41,7 +40,4 @@ def match_filename_class(_):
 
 
 if __name__ == '__main__':
-    try:
-        app.run(match_filename_class)
-    except SystemExit:
-        pass
+    match_filename_class()
