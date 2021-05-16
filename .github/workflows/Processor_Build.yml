@@ -11,7 +11,7 @@ on:
 jobs:
   processor_build:
     name: Processor build
-    runs-on: self-hosted
+    runs-on: [self-hosted, GPU]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
