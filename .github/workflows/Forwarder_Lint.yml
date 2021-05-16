@@ -1,4 +1,4 @@
-name: Forwarder
+name: Forwarder Lint
 
 on:
   push:
