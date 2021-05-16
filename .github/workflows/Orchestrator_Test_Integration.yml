@@ -31,3 +31,4 @@ jobs:
           path: po_coverage_html
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
+        if: ${{ always() }}

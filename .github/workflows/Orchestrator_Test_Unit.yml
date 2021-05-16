@@ -37,3 +37,4 @@ jobs:
           flags: Orchestrator
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml down
+        if: ${{ always() }}

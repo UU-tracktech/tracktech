@@ -17,3 +17,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Build camera processor test service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml build
+      - name: Remove
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test.yml rm
+        if: ${{ always() }}

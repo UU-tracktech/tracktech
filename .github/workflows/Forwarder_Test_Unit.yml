@@ -27,3 +27,4 @@ jobs:
           flags: Forwarder
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+        if: ${{ always() }}

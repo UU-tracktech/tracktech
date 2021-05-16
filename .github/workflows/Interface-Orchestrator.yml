@@ -26,3 +26,4 @@ jobs:
           flags: Interface
       - name: Remove
         run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down
+        if: ${{ always() }}
