@@ -23,16 +23,18 @@ def match_filenames_classes(_):
         for ignore_path in paths_to_ignore:
             if ignore_path in str(path.absolute()).replace('\\\\', '/').replace('\\', '/'):
                 skip = True
+        # Checks the if the file should be skipped.
         if skip:
             skip = False
             continue
         with open(path, 'r') as file:
             lines = file.readlines()
             for line in lines:
+                # Retrieves and parses the class names with the file names.
                 x = re.findall('^class.+:', line)
                 class_string = str(x)[8:].split('(')[0].split(':')[0].lower()
                 file_name = str(path)[:-3].split('\\')[-1].split('/')[-1].replace('_', '')
-                # print(class_string + ' ' + file_name)
+                # Prints the files with multiple classes.
                 if class_string != file_name and len(class_string) > 0:
                     print('File with non-matching class names: ' + str(path.absolute()) + '\n' + file_name +
                           ' does not string match ' + class_string)
