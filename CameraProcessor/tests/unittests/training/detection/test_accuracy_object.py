@@ -11,8 +11,12 @@ import os
 from processor.training.detection.accuracy_object import AccuracyObject
 import processor.data_object.bounding_box
 import processor.data_object.rectangle
+import processor.utils.config_parser
 
 from tests.conftest import root_path
+
+# Set test config to true, so it processes a shorter video
+processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestAccuracyObject:
