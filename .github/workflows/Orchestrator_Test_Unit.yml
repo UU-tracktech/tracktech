@@ -1,6 +1,7 @@
 name: Orchestrator Unit Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Orchestrator_Test_Unit.yml
@@ -37,3 +38,4 @@ jobs:
           flags: Orchestrator
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml down
+        if: ${{ always() }}

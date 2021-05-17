@@ -1,6 +1,7 @@
 name: Forwarder Build
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Build.yml
@@ -18,3 +19,4 @@ jobs:
         run: docker-compose -f VideoForwarder/docker-compose.yml build
       - name: Remove
         run: docker-compose -f VideoForwarder/docker-compose.yml rm
+        if: ${{ always() }}

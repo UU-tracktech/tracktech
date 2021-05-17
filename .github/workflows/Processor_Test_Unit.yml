@@ -1,6 +1,7 @@
 name: Processor Unit Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Processor_Test_Unit.yml

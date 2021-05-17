@@ -1,6 +1,7 @@
 name: Processor-Forwarder integration
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Processor-Forwarder.yml
