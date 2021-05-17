@@ -1,6 +1,7 @@
 name: Interface-Orchestrator Integration Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Interface-Orchestrator.yml
@@ -26,3 +27,4 @@ jobs:
           flags: Interface
       - name: Remove
         run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down
+        if: ${{ always() }}

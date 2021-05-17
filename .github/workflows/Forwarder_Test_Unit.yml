@@ -1,6 +1,7 @@
 name: Forwarder Unit Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Test_Unit.yml
@@ -27,3 +28,4 @@ jobs:
           flags: Forwarder
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+        if: ${{ always() }}

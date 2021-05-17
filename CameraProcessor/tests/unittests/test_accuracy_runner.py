@@ -6,10 +6,13 @@ Utrecht University within the Software Project course.
 
 """
 
-from absl import app
+from processor.accuracy_runner import main
+from processor.utils.config_parser import ConfigParser, USE_TEST_CONFIG
 
-import processor.accuracy_runner as runner
-from processor.utils.config_parser import ConfigParser
+import processor.utils.config_parser
+
+# Set test config to true, so it processes a shorter video
+processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestAccuracyRunner:
@@ -22,10 +25,7 @@ class TestAccuracyRunner:
 
         """
         # run the accuracy runner
-        try:
-            app.run(runner.main)
-        except SystemExit:
-            pass
+        main()
 
         # Getting the config file for the accuracy
         config_parser = ConfigParser('configs.ini')

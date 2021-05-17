@@ -1,6 +1,7 @@
 name: Interface Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Interface_Lint.yml
@@ -18,3 +19,4 @@ jobs:
         run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
       - name: Remove
         run: docker-compose -f Interface/compose/docker-compose_lint.yml down
+        if: ${{ always() }}

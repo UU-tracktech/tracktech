@@ -40,6 +40,7 @@ class HlsCapture(ICapture):
         __previous_time (float): a time float to determine the time diff between frame readings.
         __timeout (int): an integer for timeout in seconds (used as float).
         __grace_period (int): an integer denoting a grace period at the start before we check for timeout.
+        __retries (int): the number of retries before connecting is given up
 
         __thread_running (bool): bool denoting whether reading thread is active or activating.
 
@@ -51,13 +52,14 @@ class HlsCapture(ICapture):
         __found_stream (bool): Boolean indicating whether stream was found.
 
     """
-    def __init__(self, hls_url='http://81.83.10.9:8001/mjpg/video.mjpg'):
+    def __init__(self, hls_url='http://81.83.10.9:8001/mjpg/video.mjpg', retries=10):
         """Initiates the capture object with a hls url and starts reading frames.
 
         Default hls_url is of a public stream that is available 24/7.
 
         Args:
-            hls_url: Url the videocapture has to connect to.
+            hls_url (str): Url the videocapture has to connect to.
+            retries (int): Number of retries before it is concluded connection cannot be made
         """
 
         # Stream related properties
@@ -84,6 +86,7 @@ class HlsCapture(ICapture):
         self.__previous_time = time.time()
         self.__timeout = 5
         self.__grace_period = 10
+        self.__retries = retries
 
         # Thread
         self.__reading_thread = None
@@ -293,7 +296,7 @@ class HlsCapture(ICapture):
         """Method to connect to the stream
 
         """
-        tries_left = 10
+        tries_left = self.__retries
 
         # Sleep is essential so processor has a prepared self.cap
         while tries_left > 0:

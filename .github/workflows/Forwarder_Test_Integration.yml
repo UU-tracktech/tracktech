@@ -1,6 +1,7 @@
 name: Forwarder Integration Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Test_Integration.yml
@@ -25,3 +26,4 @@ jobs:
           flags: Forwarder
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml down
+        if: ${{ always() }}

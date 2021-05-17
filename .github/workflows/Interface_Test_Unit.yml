@@ -1,6 +1,7 @@
 name: Interface Unit Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Interface_Test_Unit.yml
@@ -25,3 +26,4 @@ jobs:
           flags: Interface
       - name: Remove
         run: docker-compose -f Interface/compose/docker-compose_test_unit.yml down
+        if: ${{ always() }}
