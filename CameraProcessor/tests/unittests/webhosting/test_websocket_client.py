@@ -14,9 +14,10 @@ from tornado.websocket import WebSocketHandler
 
 from processor.webhosting.websocket_client import WebsocketClient
 
-from tests.unittests.webhosting.conftest import *
+from tests.unittests.webhosting.conftest import messages_are_equal
 from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
-from tests.unittests.utils.websocket_coroutines import *
+from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
+from tests.unittests.utils.dummy_websocket_client import DummyWebsocketClient
 
 
 # pylint: disable=protected-access
@@ -105,8 +106,8 @@ class TestWebsocketClient(WebsocketCoroutines):
         """
         # Connect and write
         dummy_websocket = DummyWebsocketClient('')
-        ws = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
-        yield ws.write_message(self.feature_map_message)
+        dummy_websocket_connection = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
+        yield dummy_websocket_connection.write_message(self.feature_map_message)
 
         # Wait for the message to be received
         while dummy_websocket.last_message is None:
@@ -122,8 +123,8 @@ class TestWebsocketClient(WebsocketCoroutines):
         """
         # Connect and write
         dummy_websocket = DummyWebsocketClient('')
-        ws = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
-        yield ws.write_message(self.start_message)
+        dummy_websocket_connection = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
+        yield dummy_websocket_connection.write_message(self.start_message)
 
         # Wait for the message to be received
         while dummy_websocket.last_message is None:
@@ -139,8 +140,8 @@ class TestWebsocketClient(WebsocketCoroutines):
         """
         # Connect and write
         dummy_websocket = DummyWebsocketClient('')
-        ws = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
-        yield ws.write_message(self.stop_message)
+        dummy_websocket_connection = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
+        yield dummy_websocket_connection.write_message(self.stop_message)
 
         # Wait for the message to be received
         while dummy_websocket.last_message is None:
