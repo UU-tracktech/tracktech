@@ -74,6 +74,17 @@ class TestScheduler:
         assert schedule_wrapper.schedule_output_node.component.out == \
                "big,start,start,first_arg,big,start,start,second_arg,merged"
 
+    def test_non_executable_graph(self):
+        """Test whether an unexecutable graph indeed raises an exception
+
+        """
+        # Creates invalid schedule
+        schedule_wrapper = ScheduleWrapper()
+        schedule_wrapper.prepare_invalid_schedule()
+        scheduler = schedule_wrapper.scheduler
+
+        assert pytest.raises(Exception, scheduler.schedule_graph, "invalid")
+
     def test_notify(self):
         """Tests the functionality of notify().
 
