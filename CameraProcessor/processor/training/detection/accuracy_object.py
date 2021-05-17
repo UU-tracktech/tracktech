@@ -149,7 +149,9 @@ class AccuracyObject:
             os.makedirs(self.accuracy_config['plots_path'], exist_ok=True)
             plot_precision_recall_curve(result,
                                         os.path.join(self.accuracy_config['plots_path'],
-                                                     f'{time.strftime("%Y-%m-%d_%H-%M-%S")}-{self.accuracy_config["plots_prefix"]}-{result.label}')
+                                                     f'{time.strftime("%Y-%m-%d_%H-%M-%S")}-'
+                                                     f'{self.accuracy_config["plots_prefix"]}-'
+                                                     f'{result.label}')
                                         )
         except RuntimeError:
             print(f'{self.accuracy_config["plots_prefix"]}-{result.label}: Cannot plot')
