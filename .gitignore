@@ -29,3 +29,4 @@ CameraProcessor/processor/training/detection/plots/
 CameraProcessor/utility/__init__.py
 CameraProcessor/utility/pylint_ignore.py
 CameraProcessor/data/annotated/test/img1-complete/
+CameraProcessor/data/COCO/
