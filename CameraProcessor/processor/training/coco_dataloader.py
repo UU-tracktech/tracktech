@@ -1,8 +1,16 @@
 import requests
 from pycocotools.coco import COCO
+import numpy
+from PIL import Image
+from os import path
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
+from processor.data_object.rectangle import Rectangle
+from processor.training.idataloader import IDataloader
 
 
-class COCODataloader:
+class COCODataloader(IDataloader):
+
     def parse_file(self):
         coco = COCO(self.file_path)
 
@@ -22,10 +30,13 @@ class COCODataloader:
         previous_name = ''
 
         for ann in anns:
-            box = BoundingBox(classification =coco.loadCats(ann['category_id'])[0]['name'], xtl=ann['bbox'][0] / self.image_width,
-                              ytl=ann['bbox'][1] / self.image_height,
-                              xbr=(ann['bbox'][0] + ann['bbox'][2]) / self.image_width,
-                              ybr=(ann['bbox'][1] + ann['bbox'][3]) / self.image_height, identifier=str(counter),
+            width, height = self.get_image_size(ann['id'])
+            box = BoundingBox(classification=coco.loadCats(ann['category_id'])[0]['name'],
+                              rectangle=Rectangle(x1=ann['bbox'][0] / width,
+                                                  y1=ann['bbox'][1] / height,
+                                                  x2=(ann['bbox'][0] + ann['bbox'][2]) / width,
+                                                  y2=(ann['bbox'][1] + ann['bbox'][3]) / height),
+                              identifier=str(counter),
                               score=1)
             if box.label in filters:
                 boxes.append(box)
@@ -33,7 +44,8 @@ class COCODataloader:
             if current_name != previous_name:
                 counter += 1
             previous_name = current_name
-        return boxes
+        return BoundingBoxes(boxes)
+
     def download_coco_images(self, amount):
         """Download images from the COCO dataset containing the category person.
 
@@ -56,3 +68,16 @@ class COCODataloader:
             image_data = requests.get(image['coco_url']).content
             with open(self.accuracy_config['image_upload_path'] + '/' + image['file_name'], 'wb') as handler:
                 handler.write(image_data)
+
+    def get_image_size(self, image_id):
+        """Gets the size of an image based on its COCO name.
+
+          Args:
+              image_id: String with the name of the image.
+
+          Returns: width, height (integers).
+
+          """
+        file_path = path.abspath(self.image_path + numpy.zeros(12 - len(image_id)) + image_id + '.jpg')
+        image = Image.open(file_path)
+        return image.size
