@@ -38,7 +38,7 @@ class TestProcessFrames:
         """
         config_parser = ConfigParser('configs.ini')
         configs = config_parser.configs
-        __videos_dir = configs['Yolov5']['test_path']
+        __videos_dir = configs['Yolov5']['source_path']
         return VideoCapture(__videos_dir)
 
     # pylint: disable=useless-return
