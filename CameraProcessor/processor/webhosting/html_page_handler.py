@@ -28,7 +28,10 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             file_name (str): html page it is getting.
         """
         # Check if page exists
-        logging.info('getting html page of browser')
+        logging.info(f'Get html file: {file_name}')
+
+        if file_name is None:
+            file_name = 'index.html'
 
         # Gets path of the html page
         config_parser = ConfigParser('configs.ini')

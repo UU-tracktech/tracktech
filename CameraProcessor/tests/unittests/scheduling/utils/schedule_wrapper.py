@@ -31,6 +31,13 @@ class ScheduleWrapper:
         self.schedule_output_node = None
         self.schedule_input_node = None
 
+    def prepare_invalid_schedule(self):
+        """Prepare an invalid schedule
+
+        """
+        self.schedule_output_node = self.schedule_input_node = ScheduleNode(3, [(), ()], OutputComponent(func))
+        self.scheduler = Scheduler(self.schedule_output_node)
+
     def prepare_empty_schedule(self):
         """Prepares a very small schedule
 
