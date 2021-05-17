@@ -6,4 +6,3 @@ services:
       context: ..
       target: lint
     container_name: camera-processor_lint_container
-    entrypoint: sleep infinity
