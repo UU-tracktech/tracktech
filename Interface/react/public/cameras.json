@@ -8,7 +8,7 @@
   {
     "Name": "TestVid2",
     "Ip": "192.168.178.30",
-    "Forwarder": "http://84.105.55.34/cam1.m3u8",
+    "Forwarder": "http://localhost:80/stream.m3u8",
     "Type": "application/x-mpegURL"
   },
   {
