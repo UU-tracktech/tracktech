@@ -1,8 +1,15 @@
+"""Datalaoder for COCO dataset.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+from os import path
 import requests
 from pycocotools.coco import COCO
 import numpy
 from PIL import Image
-from os import path
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
@@ -10,6 +17,7 @@ from processor.training.idataloader import IDataloader
 
 
 class COCODataloader(IDataloader):
+    """Dataloader for COCO dataser."""
 
     def __init__(self, categories, file_path, nr_frames, image_path=''):
         super().__init__(categories, file_path, nr_frames, image_path='')
@@ -48,13 +56,13 @@ class COCODataloader(IDataloader):
 
         for ann in annotations:
             width, height = self.get_image_size(ann['id'])
-            box = BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
-                              rectangle=Rectangle(x1=ann['bbox'][0] / width,
-                                                  y1=ann['bbox'][1] / height,
-                                                  x2=(ann['bbox'][0] + ann['bbox'][2]) / width,
-                                                  y2=(ann['bbox'][1] + ann['bbox'][3]) / height),
-                              identifier=counter,
-                              certainty=1)
+            boxes = BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
+                                rectangle=Rectangle(x1=ann['bbox'][0] / width,
+                                                    y1=ann['bbox'][1] / height,
+                                                    x2=(ann['bbox'][0] + ann['bbox'][2]) / width,
+                                                    y2=(ann['bbox'][1] + ann['bbox'][3]) / height),
+                                identifier=counter,
+                                certainty=1)
             current_name = ann['image_id']
             if current_name != previous_name:
                 counter += 1

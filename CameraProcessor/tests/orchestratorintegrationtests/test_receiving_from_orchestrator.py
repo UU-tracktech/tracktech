@@ -5,8 +5,9 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-# pylint: disable=unused-import, unused-variable, unused-argument
+# pylint: disable=unused-import, unused-variable, unused-argument, no-member
 import pytest
+import asyncio
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
 from utils.utils import __eq__, PC_URL, IF_URL
