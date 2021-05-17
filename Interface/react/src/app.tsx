@@ -20,7 +20,6 @@ import './app.less'
 import { NavMenu } from './components/navbar'
 import { NeedLogin } from './pages/needLogin'
 import { Home } from './pages/home'
-import { WebsocketUser } from './pages/websocket'
 import { OverlayVideo } from './pages/overlayVideo'
 import { WebsocketProvider } from './components/websocketContext'
 
@@ -44,9 +43,6 @@ export function App() {
             <>
               <Route exact path="/">
                 <Home />
-              </Route>
-              <Route path="/Websockets">
-                <WebsocketUser />
               </Route>
               <Route path="/Overlay">
                 <OverlayVideo />
