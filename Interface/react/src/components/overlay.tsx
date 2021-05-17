@@ -88,16 +88,22 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * Once the correct set of boxes has been reached it will set these to be drawn
    */
   function handleQueue() {
+    let new_item
+    let current_time = frameIdRef.current
     //Keep dequeueing until a set of boxes with matching frameID is reached
-    while (playerFrameIdRef.current >= frameIdRef.current) {
+    while (playerFrameIdRef.current >= current_time) {
       if (queueRef.current.length > 0) {
-        let new_item = queueRef.current.dequeue()
-        //set the boxes to be drawn
-        setBoxes(new_item.boxes)
-        frameIdRef.current = new_item.frameId
+        new_item = queueRef.current.dequeue()
+        current_time = new_item.frameId
       } else {
         break
       }
+    }
+
+    if (new_item) {
+      //set the boxes to be drawn
+      setBoxes(new_item.boxes)
+      frameIdRef.current = current_time
     }
   }
 
@@ -238,7 +244,9 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
                   height: `${(y2 - y1) * size.height}px`,
                   borderColor: colordict[box.objectId ?? 0],
                   borderStyle: 'solid',
-                  /* transitionProperty: 'all', transitionDuration: '1s', */
+                  transitionProperty: 'all',
+                  transitionDuration: '100ms',
+                  transitionTimingFunction: 'linear',
                   zIndex: 1000,
                   cursor: box.objectId === undefined ? 'pointer' : 'default'
                 }}
