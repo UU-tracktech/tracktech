@@ -38,7 +38,7 @@ class TestStreamHandler(AsyncHTTPTestCase):
         """Fetch the video feed and see whether the response contains images
         """
         # Gets the stream from the httpserver
-        response = yield self.http_client.fetch(self.get_url('/video_feed'), self.stop, request_timeout=30)
+        response = yield self.http_client.fetch(self.get_url('/video_feed'), self.stop, request_timeout=0)
         self.assertEqual(response.code, 200)
 
         # Images in the response.body
