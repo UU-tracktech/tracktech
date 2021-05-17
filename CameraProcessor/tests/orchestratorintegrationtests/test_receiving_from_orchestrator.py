@@ -5,7 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-# pylint: unused-variable, unused-argument
+# pylint: disable=unused-variable
 import asyncio
 import pytest
 
