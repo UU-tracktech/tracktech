@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import { render, screen } from '@testing-library/react'
+import { prettyDOM, render, screen } from '@testing-library/react'
 import React from 'react'
 import {
   websocketArgs,
@@ -14,6 +14,7 @@ import {
   WebsocketProvider
 } from '../../src/components/websocketContext'
 import { Overlay } from '../../src/components/overlay'
+import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
 
 /**
  * Render a testing overlay which is used in all websocket tests
@@ -46,9 +47,7 @@ beforeEach(() => {
               ></Overlay>
               <button
                 data-testid="button"
-                onClick={() =>
-                  setSocket('ws://processor-orchestrator/client')
-                }
+                onClick={() => setSocket('ws://processor-orchestrator/client')}
               />
               <span data-testid="state">{connectionState}</span>
             </>
@@ -80,9 +79,7 @@ test('Bounding box send to queue', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
-  var processorSocket = new WebSocket(
-    'ws://processor-orchestrator/processor'
-  )
+  var processorSocket = new WebSocket('ws://processor-orchestrator/processor')
   while (processorSocket.readyState != 1) {
     await new Promise((r) => setTimeout(r, 500))
   }
@@ -119,9 +116,7 @@ test('Bounding boxes start tracking', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
-  var processorSocket = new WebSocket(
-    'ws://processor-orchestrator/processor'
-  )
+  var processorSocket = new WebSocket('ws://processor-orchestrator/processor')
   while (processorSocket.readyState != 1) {
     await new Promise((r) => setTimeout(r, 500))
   }
@@ -163,9 +158,19 @@ test('Bounding boxes start tracking', async () => {
     gotMessage = true
   }
 
-  // Mock confirm method to instantly click ok
-  window.confirm = jest.fn(() => true)
-  screen.getByTestId('box-1').click()
+  //Get the drawn bounding box and click to start tracking
+  const box = screen.getByTestId('box-1')
+  box.click()
+
+  //wait for the confirmation popup
+  while (screen.queryAllByText('OK').length == 0) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  //get the confirm button, make sure it exists, then press the button
+  const confirmButton = screen.getByText('OK')
+  expect(confirmButton).toBeDefined()
+  confirmButton.click()
 
   // Wait for message on processor
   while (!gotMessage) {
