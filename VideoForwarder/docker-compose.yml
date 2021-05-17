@@ -8,6 +8,7 @@ services:
       CAMERA_URL: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
       STREAM_FOLDER: /app/streams
       STREAM_ENCODING: libx264
+      STREAM_LOW: "true"
       SEGMENT_SIZE: 2
       SEGMENT_AMOUNT: 5
     ports:

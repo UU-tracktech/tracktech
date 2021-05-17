@@ -72,13 +72,12 @@ class ProcessorSocket(WebSocketHandler):
         Args:
             message (string):
                 JSON with at least a "type" property. This property can have the following values:
+                    - "identifier"    | This signifies a message containing the identifier by which this processor
+                                        should be identified.
                     - "boundingBoxes" | This signifies a message that contains bounding boxes, see send_bounding_boxes
                                         for the other expected properties.
                     - "featureMap"    | This signifies a message that contains a feature map of an object,
                                         see update_feature_map, for the other expected properties.
-                    - "test"          | This values will be answered with a series of messages mocking the messages
-                                        a processor might expect, see send_mock_commands for the other expected
-                                        properties.
         Returns:
             None
         """
@@ -195,6 +194,16 @@ class ProcessorSocket(WebSocketHandler):
                     "frameId": frame_id,
                     "boxes": boxes
                 }))
+
+        try:
+            for box in filter(lambda x: x.keys().__contains__("objectId"), boxes):
+                if not objects.keys().__contains__(box["objectId"]):
+                    logger.log(f"Got an object with id {box['objectId']} that is no longer tracked")
+                else:
+                    objects[box["objectId"]][0].log_spotting(self.identifier)
+        except AttributeError:
+            logger.log_error("/processor", "AttributeError", self.request.remote_ip)
+            logger.log("Boxes array was not of the correct format")
 
     @staticmethod
     def update_feature_map(message):

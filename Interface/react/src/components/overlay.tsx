@@ -22,6 +22,7 @@ import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
 } from '../classes/orchestratorMessage'
+import { Modal } from 'antd'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
 export type overlayProps = {
@@ -62,6 +63,8 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   //Access the websocket in order to create a listener for receiving boundingbox updates
   const socketContext = React.useContext(websocketContext)
 
+  const { confirm } = Modal
+
   React.useEffect(() => {
     //Create a listener for the websocket which receives boundingbox messages
     //Put the messages in a Queue so the boxes are kept until it's time to draw them
@@ -85,16 +88,22 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * Once the correct set of boxes has been reached it will set these to be drawn
    */
   function handleQueue() {
+    let new_item
+    let current_time = frameIdRef.current
     //Keep dequeueing until a set of boxes with matching frameID is reached
-    while (playerFrameIdRef.current >= frameIdRef.current) {
+    while (playerFrameIdRef.current >= current_time) {
       if (queueRef.current.length > 0) {
-        let new_item = queueRef.current.dequeue()
-        //set the boxes to be drawn
-        setBoxes(new_item.boxes)
-        frameIdRef.current = new_item.frameId
+        new_item = queueRef.current.dequeue()
+        current_time = new_item.frameId
       } else {
         break
       }
+    }
+
+    if (new_item) {
+      //set the boxes to be drawn
+      setBoxes(new_item.boxes)
+      frameIdRef.current = current_time
     }
   }
 
@@ -134,11 +143,22 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
   function onTrackingStart(boxId: number, frameId: number) {
-    if (window.confirm('Start tracking this object?')) {
-      socketContext.send(
-        new StartOrchestratorMessage(props.cameraId, frameId, boxId)
-      )
-    }
+    confirm({
+      title: 'Start tracking this object?',
+      okButtonProps: { title: 'startTrackButton' },
+      onOk() {
+        console.log('Start tracking', {
+          cam: props.cameraId,
+          frame: frameId,
+          box: boxId
+        })
+
+        socketContext.send(
+          new StartOrchestratorMessage(props.cameraId, frameId, boxId)
+        )
+      },
+      onCancel() {}
+    })
   }
 
   /**
@@ -146,9 +166,14 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param objectId The ID of the object that is being tracked and will be untracked
    */
   function onTrackingStop(objectId: number) {
-    if (window.confirm('Stop tracking this object?')) {
-      socketContext.send(new StopOrchestratorMessage(objectId))
-    }
+    confirm({
+      title: 'Stop tracking this object?',
+      onOk() {
+        console.log('Stop tracking ', objectId)
+        socketContext.send(new StopOrchestratorMessage(objectId))
+      },
+      onCancel() {}
+    })
   }
 
   /**
@@ -219,7 +244,9 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
                   height: `${(y2 - y1) * size.height}px`,
                   borderColor: colordict[box.objectId ?? 0],
                   borderStyle: 'solid',
-                  /* transitionProperty: 'all', transitionDuration: '1s', */
+                  transitionProperty: 'all',
+                  transitionDuration: '100ms',
+                  transitionTimingFunction: 'linear',
                   zIndex: 1000,
                   cursor: box.objectId === undefined ? 'pointer' : 'default'
                 }}
