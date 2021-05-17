@@ -31,6 +31,7 @@ COPY configs.ini configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
 COPY tests/conftest.py tests/conftest.py
+COPY tests tests
 
 
 FROM test AS test_unit
