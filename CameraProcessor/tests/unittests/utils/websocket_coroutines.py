@@ -46,7 +46,7 @@ class WebsocketCoroutines(AsyncHTTPTestCase):
         Returns:
             websocket.Connection: Websocket connection that is created by the coroutine
         """
-        ws = yield websocket_connect(
+        websocket_connection = yield websocket_connect(
             "ws://127.0.0.1:%d%s" % (self.get_http_port(), path), **kwargs
         )
-        raise tornado.gen.Return(ws)
+        raise tornado.gen.Return(websocket_connection)

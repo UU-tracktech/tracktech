@@ -7,6 +7,8 @@ Utrecht University within the Software Project course.
 """
 # pylint: disable=unused-import, unused-variable, unused-argument
 import pytest
+import asyncio
+
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
 from utils.utils import __eq__, PC_URL, IF_URL
@@ -58,8 +60,8 @@ class TestReceivingFromOrchestrator:
         interface_client = await create_dummy_client(IF_URL)
 
         msg = load_data(message_type, amount[0], amount[1])
-        ws_client = await self.get_connected_websocket()
-        ws_client2 = await self.get_connected_websocket()
+        ws_client = await create_dummy_client(PC_URL, "mock_id1")
+        ws_client2 = await create_dummy_client(PC_URL, "mock_id2")
         for j in msg:
             ws_client.write_message(j)
         await ws_client2.await_message(len(msg))

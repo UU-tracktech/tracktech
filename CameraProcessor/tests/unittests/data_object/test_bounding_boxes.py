@@ -5,14 +5,13 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import json
 import pytest
 import cv2
+
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
-from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
 from processor.data_object.rectangle import Rectangle
-from processor.utils.draw import draw_bounding_boxes
+from tests.unittests.utils.utils import get_sample_frame
 
 
 # pylint: disable=attribute-defined-outside-init,no-member

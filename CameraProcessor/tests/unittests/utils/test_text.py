@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 """
 
 import json
-import pytest
 from processor.utils.text import bounding_boxes_to_json, boxes_to_txt
 from processor.data_object.bounding_boxes import BoundingBoxes
 
