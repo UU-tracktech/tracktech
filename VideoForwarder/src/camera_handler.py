@@ -30,7 +30,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
     # pylint: disable=arguments-differ
     def initialize(self, path, default_filename=None):
-        """Set the root path and load the public key from application settings, run at the start of every request
+        """Set the root path and load the public key from application settings, run at the start of every request.
 
         Args:
             path (str): path to root where files are stored
