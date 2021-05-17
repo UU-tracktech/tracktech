@@ -1,0 +1,27 @@
+name: Processor Lint
+
+on:
+  push:
+    paths:
+      - .github/workflows/Processor_Lint.yml
+  pull_request:
+    paths:
+      - CameraProcessor/**
+
+jobs:
+  processor_linting:
+    name: Processor linting
+    runs-on: self-hosted
+    steps:
+      - name: Build service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --build --no-start
+      - name: Copy linting file into service
+        run: docker cp .pylintrc camera-processor_lint_container:/app
+      - name: Copy pylint_ignore.py into service
+        run: docker cp utility/pylint_ignore.py camera-processor_lint_container:/app/utility
+      - name: copy __init__.py into service
+        run: docker cp utility/__init__.py camera-processor_lint_container:/app/utility
+      - name: Start service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --exit-code-from cameraprocessor
+      - name: Stop service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml down
