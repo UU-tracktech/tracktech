@@ -1,6 +1,6 @@
 # Interface
 
-This component contains the web interface for the project. The interface is created with typescript react and uses the Ant Design UI package for most of its ui components.
+This component contains the web interface for the project. The interface is created with Typescript React and uses the Ant Design UI package for most of its UI components.
 
 ## Architecture
 
@@ -24,7 +24,7 @@ There are two ways to run the interface:
 
 ### Dependencies
 
-All dependencies are included in the /react/package.json and /react/package-lock.json files and can be installed with `npm install`
+All dependencies are included in the (react/package.json) and (react/package-lock.json) files and can be installed with `npm install`
 
 ## Running tests
 
