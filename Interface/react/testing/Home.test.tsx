@@ -4,4 +4,4 @@ import { Home } from '../src/pages/home';
 
 test('Home renders', () => {
     render(<Home />);
-})
+  })
