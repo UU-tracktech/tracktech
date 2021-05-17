@@ -5,13 +5,13 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-# pylint: disable=unused-import, unused-variable, unused-argument
-import pytest
+# pylint: unused-variable, unused-argument
 import asyncio
+import pytest
 
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
-from utils.utils import __eq__, PC_URL, IF_URL
+from utils.utils import PC_URL, IF_URL
 
 
 class TestReceivingFromOrchestrator:
