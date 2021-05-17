@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 """
 
 from processor.accuracy_runner import main
-from processor.utils.config_parser import ConfigParser, USE_TEST_CONFIG
+from processor.utils.config_parser import ConfigParser
 
 import processor.utils.config_parser
 

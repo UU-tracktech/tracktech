@@ -10,6 +10,7 @@ import pytest
 from processor.webhosting.start_command import StartCommand
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestStartCommand:
     """Tests the start command."""
 
