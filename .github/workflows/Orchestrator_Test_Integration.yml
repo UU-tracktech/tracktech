@@ -1,6 +1,7 @@
 name: Orchestrator Integration Test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Orchestrator_Test_Integration.yml
@@ -31,3 +32,4 @@ jobs:
           path: po_coverage_html
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
+        if: ${{ always() }}

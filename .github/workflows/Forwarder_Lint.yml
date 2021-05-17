@@ -1,6 +1,7 @@
 name: Forwarder Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Forwarder_Lint.yml
@@ -26,3 +27,4 @@ jobs:
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --exit-code-from video-forwarder
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml down
+        if: ${{ always() }}
