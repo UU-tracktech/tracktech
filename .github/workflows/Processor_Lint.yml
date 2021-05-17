@@ -1,6 +1,7 @@
 name: Processor Lint
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Processor_Lint.yml
@@ -25,3 +26,4 @@ jobs:
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --exit-code-from cameraprocessor
       - name: Stop service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml down
+        if: ${{ always() }}

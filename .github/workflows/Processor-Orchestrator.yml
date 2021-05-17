@@ -1,6 +1,7 @@
 name: Processor-Orchestrator integration
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Processor-Orchestrator.yml
