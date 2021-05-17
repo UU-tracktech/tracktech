@@ -19,6 +19,11 @@ from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
 from tests.unittests.utils.fake_websocket import FakeWebsocket
 
+import processor.utils.config_parser
+
+# Set test config to true, so it processes a shorter video
+processor.utils.config_parser.USE_TEST_CONFIG = True
+
 
 class TestProcessFrames:
     """Tests process_frames.py.

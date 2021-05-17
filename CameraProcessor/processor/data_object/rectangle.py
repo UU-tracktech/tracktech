@@ -14,9 +14,9 @@ class Rectangle:
 
         Args:
             x1 (float): normalized left most X.
-            y1 (float): normalized bottom most Y.
+            y1 (float): normalized top most Y.
             x2 (float): normalized right most X.
-            y2 (float): normalized top most Y.
+            y2 (float): normalized bottom most Y.
         """
         if x1 > x2:
             raise ValueError(f'x1 {x1} should be smaller than or equal to x2 {x2}')
