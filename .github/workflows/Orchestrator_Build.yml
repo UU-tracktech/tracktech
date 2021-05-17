@@ -1,6 +1,7 @@
 name: Orchestrator Build
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - .github/workflows/Orchestrator_Build.yml
@@ -18,3 +19,4 @@ jobs:
         run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml rm
+        if: ${{ always() }}
