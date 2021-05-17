@@ -36,4 +36,4 @@ The stages can be run as follows:
 - Integration testing: run `docker-compose -f compose/docker-compose_test_integration.yml`
 
 ## Linting
-The project is linted using eslint in combination with prettier. The config files `react/.eslintrc.json` and `react/prettierrc.json` contain the set preferences.
+The project is linted using ESLint in combination with Prettier. The config files `react/.eslintrc.json` and `react/prettierrc.json` contain the set preferences.
