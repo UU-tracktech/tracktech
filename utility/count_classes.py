@@ -8,7 +8,6 @@ This file contains functionality to detect files that contain more than one clas
 import os
 import pathlib
 import re
-from absl import app
 
 paths_to_ignore = ['.git', 'CameraProcessor/processor/pipeline/detection/yolov5',
                    'CameraProcessor/processor/pipeline/detection/yolov4deepsort', '/app/.git',
@@ -16,7 +15,7 @@ paths_to_ignore = ['.git', 'CameraProcessor/processor/pipeline/detection/yolov5'
                    'venv', 'CameraProcessor/processor/pipeline/tracking/sort/']
 
 
-def get_files_too_many_classes(_):
+def get_files_too_many_classes():
     """Print the absolute paths of files with too many classes to the console."""
     skip = False
     for path in pathlib.Path(os.path.join(os.getcwd()), '..').rglob('*.py'):
@@ -37,7 +36,4 @@ def get_files_too_many_classes(_):
 
 
 if __name__ == '__main__':
-    try:
-        app.run(get_files_too_many_classes)
-    except SystemExit:
-        pass
+    get_files_too_many_classes()

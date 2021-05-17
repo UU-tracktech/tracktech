@@ -11,13 +11,18 @@ import pytest
 from processor.main import send_orchestrator
 
 from processor.utils.config_parser import ConfigParser
-from processor.pipeline.process_frames import process_stream
+from processor.pipeline.process_frames import process_stream, prepare_stream
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.input.video_capture import VideoCapture
 
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
 from tests.unittests.utils.fake_websocket import FakeWebsocket
+
+import processor.utils.config_parser
+
+# Set test config to true, so it processes a shorter video
+processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestProcessFrames:
@@ -59,11 +64,13 @@ class TestProcessFrames:
         Note: I tried parametrizing Yolov5 via a fixture, but that does not work for some reason.
 
         """
-        captor = self.__get_video()
-        detector = self.__get_yolov5runner()
-        tracker = self.__get_sort_tracker()
+        # Open video
+        capture = self.__get_video()
+        unused_capture, detector, tracker, _ = prepare_stream()
+        unused_capture.close()
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(captor, detector, tracker))
+        asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker))
+        capture.close()
 
     @pytest.mark.timeout(90)
     def test_process_stream_with_fake(self):
