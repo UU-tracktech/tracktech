@@ -35,11 +35,11 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const changeIntervalRef = React.useRef<number>() //how often to check for a new segemnt after the inital has been obtained
   const updateIntervalRef = React.useRef<number>() //How often to update the timestamp once it's known
 
-  const delayRef = React.useRef<number>(-20) //Value to finely tweak the timestamp to fix desync between video and boundingboxes
-
   var startUri //The name of the first segment received by the videoplayer
   var startTime //The timestamp of the stream where the player was started
   var timeStamp //The current timestamp of the stream
+  var playerSwitchTime //The timestamp of when the video player switch to the second segment
+  var playerStartTime //The current time of the video player when it's first being played
 
   React.useEffect(() => {
     // instantiate video.js
@@ -57,28 +57,6 @@ export function VideoPlayer(props: VideoPlayerProps) {
         0
       )
 
-      //Add button to reduce the delay used to sync the video and boundingboxes
-      player?.controlBar.addChild(
-        new extraButton(player, {
-          onPress: () => delayRef.current--,
-          icon: 'bi-skip-backward',
-          text: 'Sync'
-        }),
-        {},
-        1
-      )
-
-      //Add button to increase the delay used to sync the video and boundingboxes
-      player?.controlBar.addChild(
-        new extraButton(player, {
-          onPress: () => delayRef.current++,
-          icon: 'bi-skip-forward',
-          text: 'Sync'
-        }),
-        {},
-        2
-      )
-
       player?.on('playerresize', () => onResize())
       player?.on('play', () => onResize())
 
@@ -86,6 +64,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       /* On the first time a stream is started, attempt getting the
          segment name, keep going until a name is obtained */
       player?.on('firstplay', () => {
+        playerStartTime = playerRef.current?.currentTime()
         initialUriIntervalRef.current = player?.setInterval(() => {
           getInitialUri()
         }, 200)
@@ -121,9 +100,11 @@ export function VideoPlayer(props: VideoPlayerProps) {
       //passing any argument suppresses a warning about accessing the tech
       let tech = playerRef.current?.tech({ randomArg: true })
       if (tech) {
-        //ensure media is loaded before trying to access
-        let med = tech['vhs'].playlists.media()
-        if (med) return med.segments[0].uri
+        //ensure that the current playing segment has a uri
+        if (tech.textTracks()[0].activeCues[0]['value'].uri) {
+          console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
+          return tech.textTracks()[0].activeCues[0]['value'].uri
+        }
       }
     } catch (e) {
       console.warn(e)
@@ -163,9 +144,11 @@ export function VideoPlayer(props: VideoPlayerProps) {
     if (currentUri !== startUri) {
       //ensure it is a string because typescript
       if (typeof currentUri === 'string') {
+        playerSwitchTime = playerRef.current?.currentTime()
         console.log('URI changed: ', currentUri)
         startTime = GetSegmentStarttime(currentUri)
         console.log('Starttime: ', PrintTimestamp(startTime))
+        playerRef.current?.currentTime(playerStartTime)
         if (changeIntervalRef.current)
           playerRef.current?.clearInterval(changeIntervalRef.current)
       }
@@ -183,7 +166,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
 
     let currentPlayer = playerRef.current?.currentTime()
-    timeStamp = startTime + currentPlayer + delayRef.current / 10
+    timeStamp = startTime + currentPlayer - playerSwitchTime + 0.2
 
     //Update timestamp for overlay
     props.onTimestamp(timeStamp)
@@ -330,5 +313,5 @@ function GetSegmentStarttime(segName: string): number {
   let number = end.slice(1, end.length - 3) //remove the X and the .ts
   //The segments have a certain length, so multiply the number with the length for the time
   //TODO: make this not hardcoded
-  return parseInt(number) * 2
+  return (parseInt(number) - 1) * 2
 }

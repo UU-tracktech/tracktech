@@ -30,8 +30,8 @@ class ClientSocket(WebSocketHandler):
         """Creates unique id and appends it to the dict of clients.
 
         Args:
-            application (tornado.web.Application): The tornado web application
-            request (httputil.HTTPServerRequest): The HTTP server request
+            application (tornado.web.Application): The tornado web application.
+            request (httputil.HTTPServerRequest): The HTTP server request.
         """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
