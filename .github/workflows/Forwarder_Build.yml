@@ -1,0 +1,20 @@
+name: Forwarder Build
+
+on:
+  push:
+    paths:
+      - .github/workflows/Forwarder_Build.yml
+  pull_request:
+    paths:
+      - VideoForwarder/**
+
+jobs:
+  forwarder_build:
+    name: Forwarder Build
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose -f VideoForwarder/docker-compose.yml build
+      - name: Remove
+        run: docker-compose -f VideoForwarder/docker-compose.yml rm
