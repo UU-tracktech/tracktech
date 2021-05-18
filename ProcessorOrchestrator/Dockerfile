@@ -17,6 +17,9 @@ COPY src src
 COPY tests tests
 COPY .coveragerc .coveragerc
 
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","Auth-1.0.tar.gz"]
+
 RUN ["mkdir", "utility"]
 
 # Make sure port is available
@@ -25,8 +28,6 @@ EXPOSE 443
 
 
 FROM test as test_unit
-COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
-RUN ["pip","install","Auth-1.0.tar.gz"]
 ENTRYPOINT ["pytest","tests/unit_testing","--cov-config=.coveragerc","--cov=src","--cov-report=html","--cov-report=xml","--cov-report=term","--junitxml=po-unit-report.xml"]
 
 
