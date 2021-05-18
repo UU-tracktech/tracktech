@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
 """
 import os
+import time
 from typing import List
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
@@ -145,10 +146,12 @@ class AccuracyObject:
         Returns: An image file in the plots folder called file_prefix-result.class.
         """
         try:
-            os.mkdir(self.accuracy_config['plots_path'])
+            os.makedirs(self.accuracy_config['plots_path'], exist_ok=True)
             plot_precision_recall_curve(result,
                                         os.path.join(self.accuracy_config['plots_path'],
-                                                     f'{self.accuracy_config["plots_prefix"]}-{result.label}')
+                                                     f'{time.strftime("%Y-%m-%d_%H-%M-%S")}-'
+                                                     f'{self.accuracy_config["plots_prefix"]}-'
+                                                     f'{result.label}')
                                         )
         except RuntimeError:
             print(f'{self.accuracy_config["plots_prefix"]}-{result.label}: Cannot plot')

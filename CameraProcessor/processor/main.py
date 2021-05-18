@@ -119,7 +119,7 @@ def main():
         print(f'*   http://localhost:{port}    *')
         print('*' * 30)
         app = tornado.web.Application([
-            (r'/', HtmlPageHandler),
+            (r'/(.*\.html)?', HtmlPageHandler),
             (r'/video_feed', StreamHandler)
         ])
         # Listen to port
@@ -149,8 +149,4 @@ if __name__ == '__main__':
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     # Run the main function
-    try:
-        main()
-    # Yolov5 throws a general SystemExit
-    except SystemExit:
-        pass
+    main()

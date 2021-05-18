@@ -72,9 +72,8 @@ export function CameraCard(props: cameraCardProps) {
         type="primary"
         onClick={() => props.setSize(props.id)}
         style={buttonStyle}
-      >
-        <ExpandOutlined style={iconStyle} />
-      </Button>
+        icon={<ExpandOutlined />}
+      ></Button>
       <Button
         //Delete button (TODO: implement removing a camera feed)
         type="primary"
@@ -82,9 +81,8 @@ export function CameraCard(props: cameraCardProps) {
         danger
         onClick={() => alert('clicked on delete')}
         style={buttonStyle}
-      >
-        {<CloseOutlined style={iconStyle} />}
-      </Button>
+        icon={<CloseOutlined />}
+      ></Button>
     </Card>
   )
 }

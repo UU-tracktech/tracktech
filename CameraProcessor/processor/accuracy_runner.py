@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 """
 import os
 import sys
-from absl import app
 
 from processor.utils.config_parser import ConfigParser
 from processor.input.image_capture import ImageCapture
@@ -20,7 +19,7 @@ sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
-def main(_argv):
+def main():
     """Runs YOLOv5 detection on a video file specified in configs.ini."""
     # Load the config file, take the relevant Yolov5 section
     config_parser = ConfigParser('configs.ini')
@@ -79,7 +78,4 @@ def main(_argv):
 
 
 if __name__ == '__main__':
-    try:
-        app.run(main)
-    except SystemExit:
-        pass
+    main()
