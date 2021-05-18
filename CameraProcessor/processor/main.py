@@ -100,7 +100,10 @@ async def deploy(ws_id):
         detector,
         tracker,
         # Function to call when frame is processed
-        lambda frame_obj, detected_boxes, tracked_boxes: send_orchestrator(ws_client, frame_obj, detected_boxes, bounding_boxes)
+        lambda frame_obj, detected_boxes, tracked_boxes: send_orchestrator(ws_client,
+                                                                           frame_obj,
+                                                                           detected_boxes,
+                                                                           tracked_boxes)
     )
 
 
