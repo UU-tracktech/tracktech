@@ -30,6 +30,13 @@ jobs:
         with:
           name: coverage
           path: po_coverage_html
+      - name: Copy out coverage
+        run: docker cp processor-orchestrator_container:/app/coverage.xml po-coverage.xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          files: po-coverage.xml
+          flags: Orchestrator
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
         if: ${{ always() }}
