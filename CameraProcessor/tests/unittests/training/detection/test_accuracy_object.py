@@ -11,8 +11,12 @@ import os
 from processor.training.detection.accuracy_object import AccuracyObject
 import processor.data_object.bounding_box
 import processor.data_object.rectangle
+import processor.utils.config_parser
 
 from tests.conftest import root_path
+
+# Set test config to true, so it processes a shorter video
+processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestAccuracyObject:
@@ -49,6 +53,7 @@ class TestAccuracyObject:
         accuracy_object.detect()
 
         self.init_correct(accuracy_object)
+        self.draw_plots(accuracy_object)
 
         # Checking for some values in the dictionary if they are possible
         for key in accuracy_object.results.keys():
@@ -114,6 +119,23 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.6 and parsed_box.ybr == 0.6
         assert parsed_box.score == 0.9
         assert parsed_box.image_name == "1"
+
+    def draw_plots(self, accuracy_object):
+        """Draws the plots and checks whether files are indeed created
+
+        Args:
+            accuracy_object (AccuracyObject): Accuracy object containing all the data
+        """
+        plots_path = accuracy_object.accuracy_config['plots_path']
+        if os.path.exists(plots_path):
+            number_files = len(os.listdir(plots_path))
+        else:
+            number_files = 0
+
+        # Create the plots and verify the folder contains more
+        accuracy_object.draw_all_pr_plots()
+
+        assert len(os.listdir(plots_path)) > number_files
 
     @staticmethod
     def update_paths(accuracy_object):

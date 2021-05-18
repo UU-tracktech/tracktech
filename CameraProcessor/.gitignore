@@ -61,5 +61,4 @@ venv/
 ENV/
 
 processor/**/*.pt
-processor/**/*.md
 tests/**/*.pt

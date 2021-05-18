@@ -10,6 +10,10 @@ import os
 import configparser
 
 
+# Whether or not to use the test configuration
+USE_TEST_CONFIG = False
+
+
 class ConfigParser:
     """Config parser class that reads the config file, replaces all paths with the absolute one
 
@@ -35,6 +39,9 @@ class ConfigParser:
         # Read config file
         self.configs = configparser.ConfigParser(allow_no_value=True)
         self.configs.read(self.config_path)
+
+        if USE_TEST_CONFIG:
+            self.configs['Yolov5']['source_path'] = './data/videos/short_venice.mp4'
 
         # Converts paths
         self.__convert_paths_to_absolute()
