@@ -5,11 +5,13 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-# pylint: disable=unused-import, unused-variable, unused-argument
+# pylint: disable=unused-variable
+import asyncio
 import pytest
+
 from super_websocket_client import create_dummy_client
 from utils.jsonloader import load_data
-from utils.utils import __eq__, PC_URL, IF_URL
+from utils.utils import PC_URL, IF_URL
 
 
 class TestReceivingFromOrchestrator:
@@ -23,8 +25,7 @@ class TestReceivingFromOrchestrator:
 
         """
         ws_client = await create_dummy_client(PC_URL, "mock_id")
-        assert ws_client.connection is not None
-        ws_client.connection.close()
+        assert ws_client.connection.protocol is not None
 
     @pytest.fixture(params=['featureMap'])
     def message_type(self, request):
@@ -53,27 +54,27 @@ class TestReceivingFromOrchestrator:
 
         """
         # Get a connected processor client
-        # processor_client = await create_dummy_client(PC_URL, "mock_id")
+        processor_client = await create_dummy_client(PC_URL, "mock_id")
 
         # Get a connected interface client
-        # interface_client = await create_dummy_client(IF_URL)
+        interface_client = await create_dummy_client(IF_URL)
 
-        # msg = load_data(message_type, amount[0], amount[1])
-        # ws_client = await self.get_connected_websocket()
-        # ws_client2 = await self.get_connected_websocket()
-        # for j in msg:
-        #     ws_client.write_message(j)
-        # await ws_client2.await_message(len(msg))
-        # assert len(ws_client2.message_list) == len(msg)
-        # for i in msg:
-        #     assert ws_client2.message_list[i.index(i)].__eq__(i)
-        # ws_client.connection.close()
-        # ws_client2.connection.close()
-        # await asyncio.sleep(1)
-        # task1 = asyncio.create_task(self._check_closed(ws_client))
-        # task2 = asyncio.create_task(self._check_closed(ws_client2))
-        # await task1
-        # await task2
+        msg = load_data(message_type, amount[0], amount[1])
+        ws_client = await create_dummy_client(PC_URL, "mock_id1")
+        ws_client2 = await create_dummy_client(PC_URL, "mock_id2")
+        for j in msg:
+            ws_client.write_message(j)
+        await ws_client2.await_message(len(msg))
+        assert len(ws_client2.message_list) == len(msg)
+        for i in msg:
+            assert ws_client2.message_list[i.index(i)].__eq__(i)
+        ws_client.connection.close()
+        ws_client2.connection.close()
+        await asyncio.sleep(1)
+        task1 = asyncio.create_task(self._check_closed(ws_client))
+        task2 = asyncio.create_task(self._check_closed(ws_client2))
+        await task1
+        await task2
 
     @staticmethod
     async def _is_queue_empty(ws_client):

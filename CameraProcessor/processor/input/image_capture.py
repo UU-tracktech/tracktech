@@ -58,14 +58,13 @@ class ImageCapture(ICapture):
             Boolean whether a next image was found.
             FrameObject containing frame and missing timestamp.
         """
-        # Get path of next frame
-        self.__image_index += 1
-        image_path = self.images_paths[self.__image_index]
-
-        # Skips when it is not a file but a directory
-        if not os.path.isfile(image_path):
-            logging.warning(f'File {image_path} is not a file!')
+        # Returns False if we are at the end of the directory
+        if not self.opened():
             return False, None
+
+        self.__image_index += 1
+        # Get path of next frame
+        image_path = self.images_paths[self.__image_index]
 
         # Reads the image file and returns it
         frame = cv2.imread(image_path)

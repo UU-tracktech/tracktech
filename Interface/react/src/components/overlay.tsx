@@ -22,9 +22,15 @@ import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
 } from '../classes/orchestratorMessage'
+import { Modal } from 'antd'
 
 /** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
-export type overlayProps = { cameraId: string; showBoxes: indicator }
+export type overlayProps = {
+  cameraId: string
+  showBoxes: indicator
+  hiddenObjectTypes: string[]
+  autoplay?: boolean
+}
 
 /** The size of the overlay, used to scale the drawing of the bounding boxes */
 type size = { width: number; height: number; left: number; top: number }
@@ -40,7 +46,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   const frameIdRef = React.useRef(0)
 
   /** If the video player is paused or not */
-  const playerPlayingRef = React.useRef(false)
+  const playerPlayingRef = React.useRef(props.autoplay ?? false)
 
   /** State containing the boxes to be drawn this frame */
   const [boxes, setBoxes] = React.useState<Box[]>([])
@@ -56,6 +62,8 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
 
   //Access the websocket in order to create a listener for receiving boundingbox updates
   const socketContext = React.useContext(websocketContext)
+
+  const { confirm } = Modal
 
   React.useEffect(() => {
     //Create a listener for the websocket which receives boundingbox messages
@@ -80,16 +88,22 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * Once the correct set of boxes has been reached it will set these to be drawn
    */
   function handleQueue() {
+    let new_item
+    let current_time = frameIdRef.current
     //Keep dequeueing until a set of boxes with matching frameID is reached
-    while (playerFrameIdRef.current >= frameIdRef.current) {
+    while (playerFrameIdRef.current >= current_time) {
       if (queueRef.current.length > 0) {
-        let new_item = queueRef.current.dequeue()
-        //set the boxes to be drawn
-        setBoxes(new_item.boxes)
-        frameIdRef.current = new_item.frameId
+        new_item = queueRef.current.dequeue()
+        current_time = new_item.frameId
       } else {
         break
       }
+    }
+
+    if (new_item) {
+      //set the boxes to be drawn
+      setBoxes(new_item.boxes)
+      frameIdRef.current = current_time
     }
   }
 
@@ -108,11 +122,13 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <VideoPlayer
           onTimestamp={(t) => (playerFrameIdRef.current = t)}
-          onPlayPause={(p) => (playerPlayingRef.current = p)}
+          onPlayPause={(p) => {
+            playerPlayingRef.current = p
+          }}
           onResize={(w, h, l, t) =>
             setSize({ width: w, height: h, left: l, top: t })
           }
-          autoplay={false}
+          autoplay={props.autoplay ?? false}
           controls={true}
           onPrimary={props.onPrimary}
           sources={props.sources}
@@ -127,11 +143,22 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
   function onTrackingStart(boxId: number, frameId: number) {
-    if (window.confirm('Start tracking this object?')) {
-      socketContext.send(
-        new StartOrchestratorMessage(props.cameraId, frameId, boxId)
-      )
-    }
+    confirm({
+      title: 'Start tracking this object?',
+      okButtonProps: { title: 'startTrackButton' },
+      onOk() {
+        console.log('Start tracking', {
+          cam: props.cameraId,
+          frame: frameId,
+          box: boxId
+        })
+
+        socketContext.send(
+          new StartOrchestratorMessage(props.cameraId, frameId, boxId)
+        )
+      },
+      onCancel() {}
+    })
   }
 
   /**
@@ -139,9 +166,14 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param objectId The ID of the object that is being tracked and will be untracked
    */
   function onTrackingStop(objectId: number) {
-    if (window.confirm('Stop tracking this object?')) {
-      socketContext.send(new StopOrchestratorMessage(objectId))
-    }
+    confirm({
+      title: 'Stop tracking this object?',
+      onOk() {
+        console.log('Stop tracking ', objectId)
+        socketContext.send(new StopOrchestratorMessage(objectId))
+      },
+      onCancel() {}
+    })
   }
 
   /**
@@ -181,39 +213,51 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       'Aqua',
       'Navy'
     ]
+
     return (
       <div>
-        {boxes.map((box) => {
-          var x1 = box.rect[0],
-            x2 = box.rect[2],
-            y1 = box.rect[1],
-            y2 = box.rect[3]
-          if (x1 > x2) [x1, x2] = [x2, x1]
-          if (y1 > y2) [y1, y2] = [y2, y1]
-
-          return (
-            <div
-              key={box.boxId}
-              style={{
-                position: 'absolute',
-                left: `${x1 * size.width + size.left}px`,
-                top: `${y1 * size.height + size.top}px`,
-                width: `${(x2 - x1) * size.width}px`,
-                height: `${(y2 - y1) * size.height}px`,
-                borderColor: colordict[box.objectId ?? 0],
-                borderStyle: 'solid',
-                /* transitionProperty: 'all', transitionDuration: '1s', */
-                zIndex: 1000,
-                cursor: box.objectId === undefined ? 'pointer' : 'default'
-              }}
-              onClick={() => {
-                if (box.objectId === undefined)
-                  onTrackingStart(box.boxId, frameId)
-                else onTrackingStop(box.objectId)
-              }}
-            />
+        {boxes
+          .filter(
+            (box) =>
+              /* eslint-disable react/prop-types */
+              !props.hiddenObjectTypes.some(
+                (hiddenObjectType) => hiddenObjectType === box.objectType
+              )
           )
-        })}
+          .map((box) => {
+            var x1 = box.rect[0],
+              x2 = box.rect[2],
+              y1 = box.rect[1],
+              y2 = box.rect[3]
+            if (x1 > x2) [x1, x2] = [x2, x1]
+            if (y1 > y2) [y1, y2] = [y2, y1]
+
+            return (
+              <div
+                key={box.boxId}
+                data-testid={`box-${box.boxId}`}
+                style={{
+                  position: 'absolute',
+                  left: `${x1 * size.width + size.left}px`,
+                  top: `${y1 * size.height + size.top}px`,
+                  width: `${(x2 - x1) * size.width}px`,
+                  height: `${(y2 - y1) * size.height}px`,
+                  borderColor: colordict[box.objectId ?? 0],
+                  borderStyle: 'solid',
+                  transitionProperty: 'all',
+                  transitionDuration: '100ms',
+                  transitionTimingFunction: 'linear',
+                  zIndex: 1000,
+                  cursor: box.objectId === undefined ? 'pointer' : 'default'
+                }}
+                onClick={() => {
+                  if (box.objectId === undefined)
+                    onTrackingStart(box.boxId, frameId)
+                  else onTrackingStop(box.objectId)
+                }}
+              />
+            )
+          })}
       </div>
     )
   }

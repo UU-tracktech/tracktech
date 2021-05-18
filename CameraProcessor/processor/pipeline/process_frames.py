@@ -7,16 +7,56 @@ Utrecht University within the Software Project course.
 """
 
 import logging
-import asyncio
-import cv2
+
+import processor.utils.convert as convert
+from processor.utils.config_parser import ConfigParser
+
+from processor.input.video_capture import VideoCapture
+from processor.input.hls_capture import HlsCapture
 
 from processor.pipeline.framebuffer import FrameBuffer
-import processor.utils.draw as draw
-import processor.utils.convert as convert
-import processor.utils.text as text
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.tracking.sort_tracker import SortTracker
 
 
-async def process_stream(capture, detector, tracker, ws_client=None):
+def prepare_stream():
+    """Read the configuration information and prepare the objects for the frame stream
+    """
+    # Load the config file
+    config_parser = ConfigParser('configs.ini')
+    configs = config_parser.configs
+
+    # Instantiate the detector
+    logging.info("Instantiating detector...")
+    yolo_config = configs['Yolov5']
+    config_filter = configs['Filter']
+    detector = Yolov5Detector(yolo_config, config_filter)
+
+    # Instantiate the tracker
+    logging.info("Instantiating tracker...")
+    sort_config = configs['SORT']
+    tracker = SortTracker(sort_config)
+
+    # Frame counter starts at 0. Will probably work differently for streams
+    logging.info("Starting stream...")
+
+    hls_config = configs['HLS']
+
+    hls_enabled = hls_config.getboolean('enabled')
+
+    # Capture the video stream
+    if hls_enabled:
+        capture = HlsCapture(hls_config['url'])
+    else:
+        capture = VideoCapture(yolo_config['source_path'])
+
+    # Get orchestrator configuration
+    orchestrator_config = configs['Orchestrator']
+
+    return capture, detector, tracker, orchestrator_config['url']
+
+
+async def process_stream(capture, detector, tracker, on_processed_frame):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -26,7 +66,7 @@ async def process_stream(capture, detector, tracker, ws_client=None):
         capture (ICapture): capture object to process a stream of frames.
         detector (Detector): Yolov5 detector performing the detection using det_obj.
         tracker (SortTracker): tracker performing SORT tracking.
-        ws_client (WebsocketClient): processor orchestrator to pass through detections.
+        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
     """
     framebuffer = FrameBuffer()
 
@@ -39,40 +79,17 @@ async def process_stream(capture, detector, tracker, ws_client=None):
             continue
 
         # Get detections from running detection stage.
-        bounding_boxes = detector.detect(frame_obj)
+        detected_boxes = detector.detect(frame_obj)
 
         # Get objects tracked in current frame from tracking stage.
-        tracked_boxes = tracker.track(frame_obj, bounding_boxes)
+        tracked_boxes = tracker.track(frame_obj, detected_boxes)
 
         # Buffer the tracked object
         framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
         framebuffer.clean_up()
 
-        # Write to client if client is used (should only be done when vid_stream is HlsCapture)
-        if ws_client:
-            client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
-            ws_client.write_message(client_message)
-            logging.info(client_message)
-        else:
-            # Copy frame to draw over.
-            frame_copy = frame_obj.get_frame().copy()
-
-            # Draw bounding boxes with ID
-            draw.draw_tracking_boxes(frame_copy, tracked_boxes.get_bounding_boxes())
-
-            # Play the video in a window called "Output Video"
-            try:
-                cv2.imshow("Output Video", frame_copy)
-            except OSError as err:
-                # Figure out how to get Docker to use GUI
-                raise OSError("Error displaying video. Are you running this in Docker perhaps?")\
-                    from err
-
-            # This next line is **ESSENTIAL** for the video to actually play
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                return
+        await on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         frame_nr += 1
-        await asyncio.sleep(0)
 
     logging.info(f'capture object stopped after {frame_nr} frames')

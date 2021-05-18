@@ -13,10 +13,11 @@ import threading
 import time
 from subprocess import TimeoutExpired
 import tornado.web
-import jwt
+from auth.auth import Auth, AuthenticationError, AuthorizationError
 
+from src.camera import Camera
 from src.conversion_process import get_conversion_process
-from src.utils import get_stream_variables, get_token_variables
+from src.stream_options import StreamOptions
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -27,27 +28,30 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
     """
 
-    # A dictionary to store all camera objects with their name as key
-    cameras = {}
-
     # pylint: disable=arguments-differ
     def initialize(self, path, default_filename=None):
-        """Set the root path and load the public key from application settings, run at the start of every request
+        """Set the root path and load the public key from application settings, run at the start of every request.
 
         Args:
             path (str): path to root where files are stored
             default_filename (Optional[str] = None): Optional file name
         """
-        # Set properties of the handler
-        self.remove_delay, self.timeout_delay = get_stream_variables()[3:]
 
         # noinspection PyAttributeOutsideInit
         # Needed for the library
         super().initialize(path, default_filename)
-        self.root = path
+
+        # Set properties of the handler
+        self.remove_delay : float = self.application.settings.get('remove_delay')
+        self.timeout_delay : int = self.application.settings.get('timeout_delay')
+
+        self.stream_options : StreamOptions = self.application.settings.get('stream_options')
 
         # Load the public key from application settings
-        self.public_key = self.application.settings.get('publicKey')
+        self.authenticator : Auth = self.application.settings.get('authenticator')
+
+        # Load the public key from application settings
+        self.camera : Camera = self.application.settings.get('camera')
 
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching
@@ -55,43 +59,43 @@ class CameraHandler(tornado.web.StaticFileHandler):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Cache-control", "no-store")
 
-    def create_stream_conversion(self, camera, abspath, root):
+    def start_stream(self, root):
         """Creates stream conversion and starts the stream
 
         Args:
-            camera (str): Name of camera handler that needs to get started
-            abspath (str): Path of stream
-            root (str): Path to put the
+            root (str): Path to the streams folder
         """
-        # Gets camera object
-        entry = CameraHandler.cameras[camera]
 
         # If there is no current conversion, start one
-        if entry.conversion is None:
-            tornado.log.access_log.info(f'starting {camera}')
+        if self.camera.conversion is None:
+            tornado.log.access_log.info('starting stream')
 
             # Configure entry conversion
-            entry.conversion = get_conversion_process(
-                entry.ip_address,
-                entry.audio,
-                camera,
-                root
+            self.camera.conversion = get_conversion_process(
+                self.camera.url,
+                self.camera.audio,
+                root,
+                self.stream_options
             )
 
             # Wait and if not created, stop the conversion
-            started = self.stream_started(abspath)
+            started = self.stream_active(root)
             if not started:
-                self.stop_stream(root, camera)
+                self.stop_stream(root)
 
-    def stream_started(self, abspath):
+    def stream_active(self, root):
         """Wait a maximum of x seconds for the file to be created, otherwise
 
         Args:
-             abspath (path): Path of the file that would be created when stream started
+             root (path): path of the folder that contains the stream segments and index files
         """
+
+        index_file_path = os.path.join(root, 'stream.m3u8')
+
         for _ in range(0, self.timeout_delay):
+
             # See whether file exists
-            if os.path.exists(abspath):
+            if os.path.exists(index_file_path):
                 return True
 
             # Sleep and check again
@@ -99,83 +103,77 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
         return False
 
-    @staticmethod
-    def stop_stream(root, camera):
+    def restart_stop_callback(self, root):
+        """Starts the HLS stream by using the conversion process that was created
+
+        Args:
+            root (str): Path to the where the stream files are located
+        """
+
+        # Cancel any current callbacks
+        if self.camera.callback is not None:
+            self.camera.callback.cancel()
+            self.camera.callback = None
+
+        # If there is an conversion
+        if self.camera.conversion is not None:
+            # Reschedule a new callback to stop the stream
+            self.camera.callback = threading.Timer(
+                self.remove_delay, self.stop_stream, [root])
+            self.camera.callback.start()
+
+    def stop_stream(self, root):
         """Function to stop a given camera stream, will be called once a stream is no longer used for a specific
         amount of time
 
         Args:
             root (str): Root directory of the stream
-            camera (Camera): Camera that has to get stopped
         """
 
         # Print stopping for logging purposes
-        tornado.log.access_log.info(f'stopping {camera}')
-
-        # Get the camera object that should be stopped
-        entry = CameraHandler.cameras[camera]
+        tornado.log.access_log.info('stopping stream')
 
         # Stopping the conversion
-        entry.conversion.terminate()
+        self.camera.conversion.terminate()
 
         try:
             # Wait a few seconds for it stop, so it does not lock any files
-            entry.conversion.wait(60)
+            self.camera.conversion.wait(60)
         except TimeoutExpired:
             # Handle a timeout exception if the process does not stop
             pass
         finally:
             # Remove the conversion
-            entry.conversion = None
+            self.camera.conversion = None
 
             # Remove the old segment and index files
             for file in os.listdir(root):
-                if file.startswith(camera):
-                    os.remove(os.path.join(root, file))
+                os.remove(os.path.join(root, file))
 
-    def start_stream(self, camera, root):
-        """Starts the HLS stream by using the conversion process that was created
-
-        Args:
-            camera (Camera): Camera to start the stream on
-            root (str): Path to the where the stream files are located
-        """
-        entry = CameraHandler.cameras[camera]
-
-        # Cancel any current callbacks
-        if entry.callback is not None:
-            entry.callback.cancel()
-            entry.callback = None
-
-        # If there is an conversion
-        if entry.conversion is not None:
-            # Reschedule a new callback to stop the stream
-            entry.callback = threading.Timer(
-                self.remove_delay, self.stop_stream, [root, camera])
-            entry.callback.start()
-
+    # pylint: disable=broad-except
     def prepare(self):
         """Validate and check the header token if a public key is specified
         """
 
-        # Get variables of tokens
-        _, audience, scope = get_token_variables()
-
-        # If a key is specified
-        if self.public_key:
-            # Decode the token using the given key and the header token
+        # Validate the token and act accordingly if it is not good.
+        if self.authenticator is not None:
             try:
-                decoded = jwt.decode(self.request.headers.get('Authorization').split()[
-                                     1], self.public_key, algorithms=['RS256'], audience=audience)
-            # If decoding fails, return a 401 not authorized status
-            except ValueError as exc:
+                self.authenticator.validate(self.request.headers.get('Authorization').split()[1])
+            except AuthenticationError as exc:
+                # Authentication (validating token) failed
+                tornado.log.access_log.info(exc)
+                self.set_status(403)
+                raise tornado.web.Finish() from exc
+            except AuthorizationError as exc:
+                # Authorization failed (authentication succeeded, but the action is not allowed)
+                tornado.log.access_log.info(exc)
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
-
-            # If decoding succeeds, but the scope is invalid, return 403
-            if scope in decoded['resource_access'][audience]:
-                self.set_status(403)
-                raise tornado.web.Finish()
+            except Exception as exc:
+                # Any other error, no token added e.g.
+                tornado.log.access_log.info(exc)
+                self.set_status(400)
+                raise tornado.web.Finish() from exc
 
     def get_absolute_path(self, root, path):
         """Gets the path of the camera stream, when the camera is not yet started it does so automatically
@@ -190,23 +188,22 @@ class CameraHandler(tornado.web.StaticFileHandler):
         abspath = os.path.abspath(os.path.join(root, path))
 
         # Regex the file path
-        match = re.search(r'(.*?)(?:_V.*)?\.(m3u8|ts)', path)
+        match = re.search(r'stream(?:_V.*)?\.(m3u8|ts)', path)
 
         # If there is no match, return the path as usual
         if match is None:
             return abspath
 
         # Otherwise, grab the camera and extension information
-        camera = match.group(1)
-        extension = match.group(2)
+        extension = match.group(1)
 
         # If the request is for an index file of an existing camera
-        if extension == 'm3u8' and camera in CameraHandler.cameras:
-            self.create_stream_conversion(camera, abspath, root)
+        if extension == 'm3u8':
+            self.start_stream(root)
 
         # If it requests a stream file
-        if extension in ('m3u8', 'ts') and camera in CameraHandler.cameras:
-            self.start_stream(camera, root)
+        if extension in ('m3u8', 'ts'):
+            self.restart_stop_callback(root)
 
         # Return path to files
         return abspath

@@ -5,11 +5,12 @@ omit =
     # Never test __file__ files
     */__pycache__/
     */__init__.py
-    # Don't test the detection repositories
+    # Don't test the detection or tracking repositories
     */pipeline/detection/yolov5/*
-    */pipeline/detection/yolov4deepsort/*
+    */pipeline/tracking/sort/*
+    # Cannot be tested in docker
+    */processor/input/cam_capture.py
     # Don't test any documentation or testing files
-    */processor/localhost.py
     */processor/scheduling/component/*
     */processor/yolov5_test.py
     # Don't cover main.py files

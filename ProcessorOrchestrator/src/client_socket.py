@@ -10,7 +10,6 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from time import sleep
 
 from tornado.websocket import WebSocketHandler
 
@@ -31,8 +30,8 @@ class ClientSocket(WebSocketHandler):
         """Creates unique id and appends it to the dict of clients.
 
         Args:
-            application (tornado.web.Application): The tornado web application
-            request (httputil.HTTPServerRequest): The HTTP server request
+            application (tornado.web.Application): The tornado web application.
+            request (httputil.HTTPServerRequest): The HTTP server request.
         """
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
@@ -79,8 +78,6 @@ class ClientSocket(WebSocketHandler):
                                 see start_tracking, for the other expected properties.
                     - "stop"  | This command is used to stop the tracking of an object,
                                 see stop_tracking, for the other expected properties.
-                    - "test"  | This values will be answered with a series of messages mocking the messages
-                                a client might expect, see send_mock_data for the other expected properties.
         Returns:
             None
         """
@@ -94,9 +91,7 @@ class ClientSocket(WebSocketHandler):
                 "start":
                     lambda: self.start_tracking(message_object),
                 "stop":
-                    lambda: self.stop_tracking(message_object),
-                "test":
-                    lambda: self.send_mock_data(message_object)
+                    lambda: self.stop_tracking(message_object)
             }
 
             action_type = message_object["type"]
@@ -210,7 +205,7 @@ class ClientSocket(WebSocketHandler):
             logger.log("unknown object")
             return
 
-        objects[object_id].remove_self()
+        objects[object_id][0].remove_self()
 
         if len(processors) > 0:
             for processor in processors.values():
@@ -220,26 +215,3 @@ class ClientSocket(WebSocketHandler):
                 }))
 
         logger.log(f"stopped tracking of object with id {object_id}")
-
-    def send_mock_data(self, message):
-        """Sends a few mock messages to the client for testing purposes
-
-        Args:
-            message (json):
-                JSON message that was received. It should contain the following properties:
-                    - "cameraId"  | The identifier of a processor that should be used in the mock "start" command.
-        """
-        camera_id = message["cameraId"]
-
-        frame_id = 0
-
-        for _ in range(50):
-            self.send_message(json.dumps({
-                "type": "boundingBoxes",
-                "cameraId": camera_id,
-                "frameId": frame_id,
-                "boxes": {}
-            }))
-
-            frame_id += 1
-            sleep(0.2)
