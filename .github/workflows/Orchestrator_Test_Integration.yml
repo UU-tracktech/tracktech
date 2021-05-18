@@ -25,13 +25,13 @@ jobs:
           files: integration-report.xml
           flags: Orchestrator
       - name: Copy out coverage
-        run: docker cp processor-orchestrator-service:/app/po_coverage_html po_coverage_html
+        run: docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
       - uses: actions/upload-artifact@v2
         with:
           name: coverage
           path: po_coverage_html
       - name: Copy out coverage
-        run: docker cp processor-orchestrator-service:/app/coverage.xml po-coverage.xml
+        run: docker cp processor-orchestrator_container:/app/coverage.xml po-coverage.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
         with:
