@@ -9,8 +9,8 @@ Utrecht University within the Software Project course.
 import cv2
 import numpy as np
 from processor.utils.reid_utils import slice_bounding_box, resize_cutout
-from tests.unittests.utils.conftest import X0, X1, Y0, Y1
 from processor.utils.config_parser import ConfigParser
+from tests.unittests.utils.conftest import X0, X1, Y0, Y1
 
 
 class TestReidUtils:
