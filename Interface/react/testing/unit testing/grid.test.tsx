@@ -67,10 +67,36 @@ it('number of elements match number of sources', () => {
 })
 
 /** Test to check the setPrimary function changes which video becomes primary */
-it.todo('Calls the setPrimary function')
-//Not sure how to test this.
-//The function gets called either from the video control bar or the cameracard
-//cameracard is not rendered so cant use that
-//the controlbar does not load until the player is playing
-//players wont play/load bar because sources are not valid videos
-//maybe it needs some async logic with an actual video link in the sources?
+it('Calls the setPrimary function', async () => {
+  jest.setTimeout(30000)
+
+  const mockFunc = jest.fn()
+
+  render(
+    <Grid
+      primary="0"
+      setPrimary={mockFunc}
+      sources={mockSources}
+      indicator={'All'}
+      hiddenObjectTypes={[]}
+    />
+  )
+
+  //wait fore the grid to load the video players
+  while (screen.queryAllByText('Set primary').length == 0) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  //get the list of zoom buttons, length should equal number of sources
+  const primaryButtonList = screen.getAllByText('Set primary')
+  expect(primaryButtonList.length).toBe(mockSources.length)
+
+  //simulate a click on zoom buttons and check if it called the function with correct args
+  primaryButtonList[1].click()
+  expect(mockFunc).toBeCalledTimes(1)
+  expect(mockFunc).toBeCalledWith('1')
+
+  primaryButtonList[2].click()
+  expect(mockFunc).toBeCalledTimes(2)
+  expect(mockFunc).toBeCalledWith('2')
+})
