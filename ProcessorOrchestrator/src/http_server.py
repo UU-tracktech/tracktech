@@ -49,6 +49,3 @@ def create_http_servers(app):
     logger.log('listening over http')
 
     return http_server, https_server
-
-
-

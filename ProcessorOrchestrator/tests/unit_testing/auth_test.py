@@ -50,5 +50,3 @@ def test_auth_creation_with_environment_creates_valid_auth():
     del os.environ["AUDIENCE"]
     del os.environ["CLIENT_ROLE"]
     del os.environ["PROCESSOR_ROLE"]
-
-
