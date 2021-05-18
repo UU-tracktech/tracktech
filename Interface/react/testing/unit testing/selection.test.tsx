@@ -62,6 +62,7 @@ test('Clicking buttons changes selection', async () => {
   //'ant-btn-primary' means that button is selected, while 'ant-btn-default' is not
 
   //by default, the 'all' button is primary, and the others are default
+  allBut.click()
   expect(allBut).toHaveClass('ant-btn-primary')
   expect(allBut).not.toHaveClass('ant-btn-default')
   expect(selBut).not.toHaveClass('ant-btn-primary')
@@ -70,7 +71,7 @@ test('Clicking buttons changes selection', async () => {
   expect(noneBut).toHaveClass('ant-btn-default')
 
   //Simulate a click on the selection button
-  fireEvent.click(selBut)
+  selBut.click()
   //Now the All button should be back to default and selection should be primary
   expect(allBut).not.toHaveClass('ant-btn-primary')
   expect(allBut).toHaveClass('ant-btn-default')
@@ -80,7 +81,7 @@ test('Clicking buttons changes selection', async () => {
   expect(noneBut).toHaveClass('ant-btn-default')
 
   //again but now for the none button
-  fireEvent.click(noneBut)
+  noneBut.click()
   expect(allBut).not.toHaveClass('ant-btn-primary')
   expect(allBut).toHaveClass('ant-btn-default')
   expect(selBut).not.toHaveClass('ant-btn-primary')
