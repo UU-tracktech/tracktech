@@ -7,7 +7,9 @@ Utrecht University within the Software Project course.
 """
 
 import numpy as np
+import cv2
 from processor.data_object.bounding_box import BoundingBox
+from processor.utils.config_parser import ConfigParser
 
 
 def slice_bounding_box(bbox, img):
@@ -37,3 +39,24 @@ def slice_bounding_box(bbox, img):
            int(bbox.get_rectangle().get_y1() * height):int(bbox.get_rectangle().get_y2() * height),
            int(bbox.get_rectangle().get_x1() * width):int(bbox.get_rectangle().get_x2() * width)
            ]
+
+
+def resize_cutout(cutout):
+    """Function that resizes the cutout to specified size in the configs
+
+    Args:
+        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a
+        reference to the original image.
+
+    Returns:
+         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original
+         image reflect on this resized slice of the image too. But maybe not the other way around, since I am not sure
+         if this constitutes a "shallow copy"!
+
+    """
+    # Read size from the config
+    config = ConfigParser('configs.ini')
+    size = config.configs['Reid'].gettuple('size')
+
+    # Return the cutout, which is another reference to the original image
+    return cv2.resize(cutout, size, interpolation=cv2.INTER_AREA)
