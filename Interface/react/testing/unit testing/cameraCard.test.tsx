@@ -45,4 +45,24 @@ test('size button calls function correctly', () => {
 })
 
 //TODO: once deleting is implemented, check if delete button removes card
-test.todo('Clicking delete removes the card')
+/** Check if clicking the delete button calls the deletion function */
+test('Clicking delete calls delete function', () => {
+  //Right now the delete function only shows an alert saying the delete button was pressed
+  //So mock the alert so we can check if it was called
+  const defaultAlert = window.alert //store the original alert
+  const mockAlert = jest.fn()
+  window.alert = mockAlert
+
+  render(<CameraCard id={'0'} title={'title'} setSize={() => jest.fn()} />)
+
+  //Check if the delete button exists
+  const delButton = screen.queryByTestId('deleteButton')
+  expect(delButton).toBeDefined
+
+  //Simulate a click on the delete button and check if the function was called
+  delButton?.click()
+  expect(mockAlert).toBeCalled()
+
+  //restore the normal alert
+  window.alert = defaultAlert
+})
