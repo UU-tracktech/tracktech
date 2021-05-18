@@ -6,6 +6,13 @@ Utrecht University within the Software Project course.
 
  */
 
+/*
+
+This test checks if app renders the needLogin page depending on 
+user authentication
+
+*/
+
 import React from 'react'
 import { act, getByRole, render, screen } from '@testing-library/react'
 import { App } from '../../src/app'
