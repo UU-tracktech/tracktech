@@ -10,6 +10,7 @@ import pytest
 from processor.webhosting.stop_command import StopCommand
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestStopCommand:
     """Tests the stop command."""
 

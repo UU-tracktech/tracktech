@@ -58,11 +58,12 @@ RUN ["pip", "install", "pylint==2.6.0", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
 
-WORKDIR /
-COPY data data
+COPY processor processor
 COPY tests tests
 
-ENTRYPOINT ["pylint","app","--rcfile=app/.pylintrc","--output-format=colorized"]
+WORKDIR /
+
+ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc","--output-format=colorized"]
 
 
 FROM base as deploy 
