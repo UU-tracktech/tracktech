@@ -13,7 +13,7 @@ import os
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 
-from src.auth import get_auth_params
+from src.get_auth import get_auth_params
 from src.http_server import create_http_servers
 from src.client_socket import ClientSocket
 from src.object_manager import start_tracking_timeout_monitoring
