@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import numpy as np
 import cv2
 from processor.utils.config_parser import ConfigParser
 
