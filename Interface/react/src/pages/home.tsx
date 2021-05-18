@@ -97,7 +97,7 @@ export function Home() {
       >
         <Card
           //This card contains the buttons to change which boundingboxes are drawn
-          data-testid="SelectionCard"
+          data-testid="indicatorsCard"
           bodyStyle={{ padding: '4px', display: 'flex' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -144,6 +144,7 @@ export function Home() {
 
         <Card
           //This card contains the objects that are being tracked, TODO: implement tracking
+          data-testid={'selectionCard'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -179,6 +180,7 @@ export function Home() {
 
         <Card
           //This card contains the list of cameras that are connected
+          data-testid={'cameraList'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
           size="small"
@@ -210,7 +212,7 @@ export function Home() {
         </Card>
       </div>
 
-      <div style={{ overflowY: 'auto' }}>
+      <div style={{ overflowY: 'auto' }} data-testid={'gridDiv'}>
         {sources && (
           //The grid contains all the videoplayers
           <Grid

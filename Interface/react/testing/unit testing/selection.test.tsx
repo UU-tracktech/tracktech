@@ -19,7 +19,7 @@ test('The card containing the buttons is there', async () => {
     render(<Home />)
   })
 
-  expect(screen.queryByTestId('SelectionCard')).not.toBe(null)
+  expect(screen.queryByTestId('indicatorsCard')).not.toBe(null)
 })
 
 /** Check that the buttons exist and the card contains the buttons */
@@ -29,7 +29,7 @@ test('The buttons are there', async () => {
     render(<Home />)
   })
 
-  const card = screen.queryByTestId('SelectionCard')
+  const card = screen.queryByTestId('indicatorsCard')
   expect(card).not.toBe(null)
 
   const allBut = screen.queryByTestId('AllButton')
