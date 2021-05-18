@@ -12,7 +12,8 @@ import re
 import threading
 import time
 from subprocess import TimeoutExpired
-import tornado.web
+from tornado.web import StaticFileHandler
+import tornado
 from auth.auth import Auth, AuthenticationError, AuthorizationError
 
 from src.camera import Camera
@@ -21,11 +22,8 @@ from src.stream_options import StreamOptions
 
 
 # pylint: disable=attribute-defined-outside-init
-class CameraHandler(tornado.web.StaticFileHandler):
+class CameraHandler(StaticFileHandler):
     """The camera file request handler
-
-    cameras (dict): Dictionary containing all the cameras registered to this VideoForwarder
-
     """
 
     # pylint: disable=arguments-differ
@@ -42,16 +40,16 @@ class CameraHandler(tornado.web.StaticFileHandler):
         super().initialize(path, default_filename)
 
         # Set properties of the handler
-        self.remove_delay : float = self.application.settings.get('remove_delay')
-        self.timeout_delay : int = self.application.settings.get('timeout_delay')
+        self.remove_delay : float = self.application.settings.get("remove_delay")
+        self.timeout_delay : int = self.application.settings.get("timeout_delay")
 
-        self.stream_options : StreamOptions = self.application.settings.get('stream_options')
-
-        # Load the public key from application settings
-        self.authenticator : Auth = self.application.settings.get('authenticator')
+        self.stream_options : StreamOptions = self.application.settings.get("stream_options")
 
         # Load the public key from application settings
-        self.camera : Camera = self.application.settings.get('camera')
+        self.authenticator : Auth = self.application.settings.get("authenticator")
+
+        # Load the public key from application settings
+        self.camera : Camera = self.application.settings.get("camera")
 
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching
@@ -68,7 +66,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
 
         # If there is no current conversion, start one
         if self.camera.conversion is None:
-            tornado.log.access_log.info('starting stream')
+            tornado.log.access_log.info("starting stream")
 
             # Configure entry conversion
             self.camera.conversion = get_conversion_process(
@@ -90,7 +88,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
              root (path): path of the folder that contains the stream segments and index files
         """
 
-        index_file_path = os.path.join(root, 'stream.m3u8')
+        index_file_path = os.path.join(root, "stream.m3u8")
 
         for _ in range(0, self.timeout_delay):
 
@@ -131,7 +129,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         """
 
         # Print stopping for logging purposes
-        tornado.log.access_log.info('stopping stream')
+        tornado.log.access_log.info("stopping stream")
 
         # Stopping the conversion
         self.camera.conversion.terminate()
@@ -158,7 +156,7 @@ class CameraHandler(tornado.web.StaticFileHandler):
         # Validate the token and act accordingly if it is not good.
         if self.authenticator is not None:
             try:
-                self.authenticator.validate(self.request.headers.get('Authorization').split()[1])
+                self.authenticator.validate(self.request.headers.get("Authorization").split()[1])
             except AuthenticationError as exc:
                 # Authentication (validating token) failed
                 tornado.log.access_log.info(exc)

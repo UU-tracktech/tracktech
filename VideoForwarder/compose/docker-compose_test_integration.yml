@@ -1,23 +1,8 @@
 version: "3.8"
 
 services:
-  video-forwarder:
-    build:
-      context: ..
-    environment:
-      CAMERA_AUDIO: "true"
-      CAMERA_URL: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
-      STREAM_FOLDER: /app/streams
-      STREAM_ENCODING: libx264
-      SEGMENT_SIZE: 2
-      SEGMENT_AMOUNT: 5
-      STREAM_LOW: "true"
-      STREAM_MEDIUM: "true"
-      STREAM_HIGH: "true"
   video-forwarder_test:
     build:
       context: ..
       target: test_integration
     container_name: video-forwarder_container
-    depends_on:
-      - "video-forwarder"

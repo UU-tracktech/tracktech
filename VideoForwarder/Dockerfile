@@ -36,7 +36,7 @@ ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-rep
 
 FROM test as test_integration
 COPY tests/integrationtest tests
-ENTRYPOINT ["pytest", "--junitxml=vf-integration-report.xml", "tests"]
+ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov=src/", "--junitxml=vf-integration-report.xml", "tests"]
 
 
 # Installation

@@ -8,10 +8,15 @@ Utrecht University within the Software Project course.
 import os
 import pytest
 import ssl
+from tornado.web import Application
+from tornado.httputil import HTTPServerRequest, HTTPConnection
+from logging import LogRecord
 
 from src.camera import Camera
 from src.main import create_camera, create_stream_options, create_ssl_options,\
     get_remove_delay, get_timeout_delay, create_authenticator
+from src.logging_filter import LoggingFilter
+from src.camera_handler import CameraHandler
 
 
 def test_default_properties(empty_camera):
@@ -51,8 +56,8 @@ def test_camera_environment_1():
     assert camera.url == "camera url"
     assert camera.audio 
 
-    del os.environ['CAMERA_URL']
-    del os.environ['CAMERA_AUDIO']
+    del os.environ["CAMERA_URL"]
+    del os.environ["CAMERA_AUDIO"]
 
 
 def test_camera_environment_2():
@@ -67,10 +72,10 @@ def test_camera_environment_2():
 def test_stream_options_1():
     """ Check if the stream properties gets read properly
     """
-    os.environ['SEGMENT_SIZE'] = '12'
-    os.environ['SEGMENT_AMOUNT'] = '34'
-    os.environ['STREAM_ENCODING'] = '56'
-    os.environ['STREAM_LOW'] = 'true'
+    os.environ["SEGMENT_SIZE"] = "12"
+    os.environ["SEGMENT_AMOUNT"] = "34"
+    os.environ["STREAM_ENCODING"] = "56"
+    os.environ["STREAM_LOW"] = 'true'
     os.environ['STREAM_MEDIUM'] = 'true'
     os.environ['STREAM_HIGH'] = 'true'
 
@@ -208,3 +213,15 @@ def test_authenticator_2():
     """ Check if the authenticator is None if not all properties are specified
     """
     assert create_authenticator() is None
+
+
+def test_filter_1():
+    """ Check if normal requests are logged
+    """
+    assert LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '%s %s', ('key', 'value'), None))
+
+
+def test_filter_2():
+    """ Check if 200 get requests are not logged
+    """
+    assert not LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '200 GET %s %s', ('key', 'value'), None))

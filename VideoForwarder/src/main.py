@@ -24,7 +24,7 @@ def create_camera():
     Returns:
         A camera object containing the camera url and if it has any audio
     """
-    return Camera(os.environ['CAMERA_URL'], os.environ['CAMERA_AUDIO'] == 'true')
+    return Camera(os.environ["CAMERA_URL"], os.environ["CAMERA_AUDIO"] == "true")
 
 
 def create_stream_options():
@@ -35,12 +35,12 @@ def create_stream_options():
 
     """
     return StreamOptions(
-        os.environ.get('SEGMENT_SIZE') or '2',
-        os.environ.get('SEGMENT_AMOUNT') or '5',
-        os.environ.get('STREAM_ENCODING') or 'libx264',
-        os.environ.get('STREAM_LOW') == 'true',
-        os.environ.get('STREAM_MEDIUM') == 'true',
-        os.environ.get('STREAM_HIGH') == 'true'
+        os.environ.get("SEGMENT_SIZE") or "2",
+        os.environ.get("SEGMENT_AMOUNT") or "5",
+        os.environ.get("STREAM_ENCODING") or "libx264",
+        os.environ.get("STREAM_LOW") == "true",
+        os.environ.get("STREAM_MEDIUM") == "true",
+        os.environ.get("STREAM_HIGH") == "true"
     )
 
 

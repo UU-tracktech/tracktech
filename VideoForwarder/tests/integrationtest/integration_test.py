@@ -19,28 +19,13 @@ class TestVideoForwarder:
         """Setup method for testing
 
         """
-        self.base_url = 'http://video-forwarder:80/stream'
+        self.base_url = "http://video-forwarder:80/stream"
         # self.base_url = 'http://localhost:80/testvid'
-        self.extension = '.m3u8'
+        self.extension = ".m3u8"
 
         # Complete url of camera
         self.camera_url = self.base_url + self.extension
-        self.stream_dir = '/streams'
-
-    @pytest.mark.gen_test(timeout=30)
-    @pytest.mark.asyncio
-    async def test_valid_http_request(self, http_client):
-        """Checks connection between forwarder and mock client with valid url
-
-        Args:
-            http_client: Httpclient that connects
-
-        """
-        # Wait until main.py is up and running
-        response = await http_client.fetch(self.camera_url)
-
-        # OK
-        assert response.code == 200
+        self.stream_dir = "/streams"
 
     @pytest.mark.gen_test(timeout=15)
     @pytest.mark.asyncio
@@ -56,24 +41,12 @@ class TestVideoForwarder:
 
         # Create connection with invalid url
         try:
-            await http_client.fetch(f'{self.base_url}jibberish{self.extension}')
+            await http_client.fetch(f"{self.base_url}jibberish{self.extension}")
             assert False
         # Asserts exception is raised
         except HTTPClientError:
             assert True
 
-    @pytest.mark.gen_test(timeout=15)
-    @pytest.mark.asyncio
-    async def test_headers(self, http_client):
-        """Tests hls stream header on certain properties
-
-        Args:
-            http_client: Httpclient that connects
-
-        """
-        response = await http_client.fetch(self.camera_url)
-        assert response.headers['Cache-control'] == 'no-store'
-        assert response.headers['Access-Control-Allow-Origin'] == '*'
 
     @pytest.mark.gen_test(timeout=15)
     @pytest.mark.asyncio
@@ -85,9 +58,9 @@ class TestVideoForwarder:
 
         """
         # Create a connection
-        response_low_res = await http_client.fetch(f'{self.base_url}_V0{self.extension}')
-        response_med_res = await http_client.fetch(f'{self.base_url}_V1{self.extension}')
-        response_high_res = await http_client.fetch(f'{self.base_url}_V2{self.extension}')
+        response_low_res = await http_client.fetch(f"{self.base_url}_V0{self.extension}")
+        response_med_res = await http_client.fetch(f"{self.base_url}_V1{self.extension}")
+        response_high_res = await http_client.fetch(f"{self.base_url}_V2{self.extension}")
 
         # Assert response is OK
         assert response_low_res.code == 200

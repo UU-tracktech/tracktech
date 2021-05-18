@@ -6,14 +6,14 @@ Utrecht University within the Software Project course.
 
 """
 
-import logging
+from logging import Filter, LogRecord
 
 
-class LoggingFilter(logging.Filter):
+class LoggingFilter(Filter):
     """The log filter object
     """
 
-    def __init__(self, name='LoggingFilter'):
+    def __init__(self, name="LoggingFilter"):
         """Create a new filter instance
 
         Args:
@@ -21,7 +21,7 @@ class LoggingFilter(logging.Filter):
         """
 
         # Instantiate a new filter with a given name
-        logging.Filter.__init__(self, name)
+        Filter.__init__(self, name)
 
     def filter(self, record):
         """Filter the log records
@@ -34,4 +34,4 @@ class LoggingFilter(logging.Filter):
         """
 
         # Removes logs messages that contains '200 GET'
-        return not record.getMessage().startswith('200 GET')
+        return not record.getMessage().startswith("200 GET")
