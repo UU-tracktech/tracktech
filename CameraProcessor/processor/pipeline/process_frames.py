@@ -79,16 +79,16 @@ async def process_stream(capture, detector, tracker, on_processed_frame):
             continue
 
         # Get detections from running detection stage.
-        bounding_boxes = detector.detect(frame_obj)
+        detected_boxes = detector.detect(frame_obj)
 
         # Get objects tracked in current frame from tracking stage.
-        tracked_boxes = tracker.track(frame_obj, bounding_boxes)
+        tracked_boxes = tracker.track(frame_obj, detected_boxes)
 
         # Buffer the tracked object
         framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
         framebuffer.clean_up()
 
-        await on_processed_frame(frame_obj, tracked_boxes)
+        await on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         frame_nr += 1
 
