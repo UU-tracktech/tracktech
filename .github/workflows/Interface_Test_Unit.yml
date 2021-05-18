@@ -18,11 +18,11 @@ jobs:
       - name: Build and run
         run: docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build --exit-code-from interface
       - name: Copy out coverage
-        run: docker cp interface_container:/react/coverage i-coverage
+        run: docker cp interface_container:/react/coverage/clover.xml coverage.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
         with:
-          files: i-coverage
+          files: coverage.xml
           flags: Interface
       - name: Remove
         run: docker-compose -f Interface/compose/docker-compose_test_unit.yml down
