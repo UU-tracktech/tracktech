@@ -12,6 +12,11 @@ from processor.input.hls_capture import HlsCapture
 from processor.input.video_capture import VideoCapture
 from processor.input.image_capture import ImageCapture
 
+import processor.utils.config_parser
+
+# Set test config to true, so it processes a shorter video
+processor.utils.config_parser.USE_TEST_CONFIG = True
+
 
 def __get_images_dir():
     """Get the path to the images directory.
@@ -30,11 +35,10 @@ def __get_video_path():
 
     """
     config_parser = ConfigParser('configs.ini')
-    print(f"video path: {config_parser.configs['Yolov5']['test_path']}")
-
-    return config_parser.configs['Yolov5']['test_path']
+    return config_parser.configs['Yolov5']['source_path']
 
 
+# pylint: disable=unnecessary-lambda
 @pytest.fixture(scope="class",
                 params=[lambda: ImageCapture(__get_images_dir()),
                         lambda: VideoCapture(__get_video_path()),
