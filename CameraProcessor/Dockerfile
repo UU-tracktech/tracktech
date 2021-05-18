@@ -58,6 +58,7 @@ RUN ["pip", "install", "pylint==2.6.0", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
 
+COPY processor processor
 COPY tests tests
 
 WORKDIR /

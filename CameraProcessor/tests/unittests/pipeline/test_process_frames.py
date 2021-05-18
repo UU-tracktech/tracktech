@@ -92,9 +92,10 @@ class TestProcessFrames:
             captor,
             detector,
             tracker,
-            lambda frame_obj, tracked_boxes: send_orchestrator(
+            lambda frame_obj, detected_boxes, tracked_boxes: send_orchestrator(
                 FakeWebsocket(),
                 frame_obj,
+                detected_boxes,
                 tracked_boxes
             )
         )
