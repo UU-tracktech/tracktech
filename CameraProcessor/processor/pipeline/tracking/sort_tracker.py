@@ -53,42 +53,36 @@ class SortTracker(ITracker):
 
         # Get bounding boxes into format expected by SORT tracker.
         det_bounding_boxes = det_obj.get_bounding_boxes()
-
-        if len(det_bounding_boxes) == 0:
-            detections = np.empty((0, 5))
-        else:
-            sort_detections = []
-
+        sort_detections = []
+        if len(det_bounding_boxes) > 0:
             for bounding_box in det_bounding_boxes:
-                sort_detections.append([
+                sort_detections.append((np.asarray([
                     bounding_box.get_rectangle().get_x1() * width,
                     bounding_box.get_rectangle().get_y1() * height,
                     bounding_box.get_rectangle().get_x2() * width,
                     bounding_box.get_rectangle().get_y2() * height,
-                    bounding_box.get_certainty().item()
-                ])
-
-            detections = np.asarray(sort_detections)
+                    bounding_box.get_certainty().item()]),
+                    bounding_box.get_classification(),
+                    bounding_box.get_certainty()))
 
         # Get all tracked objects found in current frame.
-        trackers = self.sort.update(detections)
+        trackers = self.sort.update(sort_detections)
 
         # Turn tracked objects into BoundingBox objects.
         bounding_boxes = []
 
         for tracker in trackers:
             bounding_box = BoundingBox(
-                identifier=int(tracker[4]),
+                identifier=int(tracker[0][4]),
                 rectangle=Rectangle(
-                    int(tracker[0]) / width,
-                    int(tracker[1]) / height,
-                    int(tracker[2]) / width,
-                    int(tracker[3]) / height
+                    int(tracker[0][0]) / width,
+                    int(tracker[0][1]) / height,
+                    int(tracker[0][2]) / width,
+                    int(tracker[0][3]) / height
                 ),
-                classification='',
-                certainty=1
+                classification=tracker[1],
+                certainty=tracker[2]
             )
-
             bounding_boxes.append(bounding_box)
 
         return BoundingBoxes(bounding_boxes)
