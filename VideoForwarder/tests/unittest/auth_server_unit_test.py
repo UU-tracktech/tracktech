@@ -73,7 +73,7 @@ class TestHandler(AsyncHTTPTestCase):
 
         assert response.code == 403
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_auth(self):
         """Test if a 200 is returned with a completely valid token
         """
