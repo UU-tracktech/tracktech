@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-# pylint: disable=<thing>
 import numpy as np
 
 from processor.pipeline.tracking.sort.sort import Sort
@@ -66,8 +65,6 @@ class SortTracker(ITracker):
                     bounding_box.get_classification(),
                     bounding_box.get_certainty()))
 
-            # detections = np.asarray(sort_detections)
-
         # Get all tracked objects found in current frame.
         trackers = self.sort.update(sort_detections)
 
@@ -75,7 +72,6 @@ class SortTracker(ITracker):
         bounding_boxes = []
 
         for tracker in trackers:
-            print(tracker[0])
             bounding_box = BoundingBox(
                 identifier=int(tracker[0][4]),
                 rectangle=Rectangle(
@@ -87,9 +83,6 @@ class SortTracker(ITracker):
                 classification=tracker[1],
                 certainty=tracker[2]
             )
-            print(f'Classification: {tracker[1]}')
-            print(f'Certainty: {tracker[2]}')
-
             bounding_boxes.append(bounding_box)
 
         return BoundingBoxes(bounding_boxes)
