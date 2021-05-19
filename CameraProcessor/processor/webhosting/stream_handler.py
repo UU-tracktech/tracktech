@@ -12,7 +12,7 @@ import tornado.web
 import tornado.gen
 import cv2
 
-import processor.utils.draw as draw
+import processor.utils.display as display
 from processor.pipeline.process_frames import prepare_stream, process_stream
 
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
@@ -26,7 +26,6 @@ class StreamHandler(tornado.web.RequestHandler):
     Attributes:
         __previous_flush_timestamp (float): Timestamp of the previous flush
         __flush_interval (float): Time inbetween flushes
-        __scaled_size (int, int): height, width target size of the image
     """
     @tornado.gen.coroutine
     def get(self):
@@ -45,11 +44,9 @@ class StreamHandler(tornado.web.RequestHandler):
         # Every .1 seconds the buffer gets flushed
         self.__flush_interval = .1
 
-        self.__scaled_size = None
-
         # Get the objects needed for process_stream and starts the function
         capture, detector, tracker, _ = prepare_stream()
-        yield process_stream(capture, detector, tracker, self.__frame_processed)
+        yield process_stream(capture, detector, tracker, self.__frame_processed, None)
 
         # Close capture and send response
         capture.close()
@@ -64,24 +61,7 @@ class StreamHandler(tornado.web.RequestHandler):
             tracked_boxes (Boundingboxes): The tracked boxes from the frame processing loop
         """
 
-        if self.__scaled_size is None:
-            self.__calculate_scaled_size(frame_obj.get_frame().shape)
-
-        scaled_frame = cv2.resize(frame_obj.get_frame(), self.__scaled_size)
-
-        # Draw detections boxes
-        detection_frame = frame_obj.get_frame().copy()
-        draw.draw_detection_boxes(detection_frame, detected_boxes.get_bounding_boxes())
-        detection_frame = cv2.resize(detection_frame, self.__scaled_size)
-
-        # Draw tracking boxes
-        tracking_frame = frame_obj.get_frame().copy()
-        draw.draw_tracking_boxes(tracking_frame, tracked_boxes.get_bounding_boxes())
-        tracking_frame = cv2.resize(tracking_frame, self.__scaled_size)
-
-        # Tiled image
-        img_tile = self.__concat_vh([[scaled_frame, detection_frame],
-                                     [tracking_frame, scaled_frame]])
+        img_tile = display.generate_tiled_image(frame_obj, detected_boxes, tracked_boxes)
 
         # Encode the frame to jpg format
         ret, jpeg = cv2.imencode('.jpg', img_tile)
@@ -106,39 +86,3 @@ class StreamHandler(tornado.web.RequestHandler):
         if self.__previous_flush_timestamp + self.__flush_interval < time.time():
             self.flush()
             self.__previous_flush_timestamp = time.time()
-
-    def __calculate_scaled_size(self, shape):
-        """Calculates the new shape of the image, downscaling dimentions that are too big
-
-        Args:
-            shape (int, int, int): height, width, depth of the frame
-        """
-        height, width, _ = shape
-
-        # Downscale width at least to 900
-        if width > 900:
-            width_scaling = 900 / width
-            width = width * width_scaling
-            height = height * width_scaling
-
-        # Downscale height to a maximum of 650
-        if height > 430:
-            height_scaling = 430 / height
-            width = width * height_scaling
-            height = height * height_scaling
-
-        # Set scaled size
-        self.__scaled_size = (int(width), int(height))
-
-    def __concat_vh(self, list_2d):
-        """Concatinates the frames using opencv
-
-        Args:
-            list_2d ([[numpy.ndarray]]): A 2d list of frames
-
-        Returns:
-            numpy.ndarray: Concatinated arrays
-        """
-        # return final image
-        return cv2.vconcat([cv2.hconcat(list_h)
-                            for list_h in list_2d])

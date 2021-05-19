@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 import asyncio
 import pytest
 
-from processor.main import send_orchestrator
+from processor.pipeline.process_frames import send_to_orchestrator
 
 from processor.utils.config_parser import ConfigParser
 from processor.pipeline.process_frames import process_stream, prepare_stream
@@ -88,16 +88,18 @@ class TestProcessFrames:
         """Async function that runs process_stream.
 
         """
+        websocket_client = FakeWebsocket()
         await process_stream(
             captor,
             detector,
             tracker,
-            lambda frame_obj, detected_boxes, tracked_boxes: send_orchestrator(
-                FakeWebsocket(),
+            lambda frame_obj, detected_boxes, tracked_boxes: send_to_orchestrator(
+                websocket_client,
                 frame_obj,
                 detected_boxes,
                 tracked_boxes
-            )
+            ),
+            websocket_client
         )
 
 
