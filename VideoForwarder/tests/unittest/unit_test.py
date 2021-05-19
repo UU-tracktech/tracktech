@@ -8,12 +8,22 @@ Utrecht University within the Software Project course.
 import os
 import pytest
 import ssl
-from logging import LogRecord
 
 from src.camera import Camera
-from src.loading import create_camera, create_stream_options, create_ssl_options,\
+from src.main import create_camera, create_stream_options, create_ssl_options,\
     get_remove_delay, get_timeout_delay, create_authenticator
 from src.logging_filter import LoggingFilter
+
+
+def test_default_properties(empty_camera):
+    """Tests default properties of an empty camera object
+
+    Args:
+        empty_camera (Camera): Empty camera
+
+    """
+    assert not empty_camera.conversion
+    assert not empty_camera.callback
 
 
 def test_camera_properties():
@@ -42,8 +52,8 @@ def test_camera_environment_1():
     assert camera.url == "camera url"
     assert camera.audio 
 
-    del os.environ["CAMERA_URL"]
-    del os.environ["CAMERA_AUDIO"]
+    del os.environ['CAMERA_URL']
+    del os.environ['CAMERA_AUDIO']
 
 
 def test_camera_environment_2():
@@ -58,10 +68,10 @@ def test_camera_environment_2():
 def test_stream_options_1():
     """ Check if the stream properties gets read properly
     """
-    os.environ["SEGMENT_SIZE"] = "12"
-    os.environ["SEGMENT_AMOUNT"] = "34"
-    os.environ["STREAM_ENCODING"] = "56"
-    os.environ["STREAM_LOW"] = 'true'
+    os.environ['SEGMENT_SIZE'] = '12'
+    os.environ['SEGMENT_AMOUNT'] = '34'
+    os.environ['STREAM_ENCODING'] = '56'
+    os.environ['STREAM_LOW'] = 'true'
     os.environ['STREAM_MEDIUM'] = 'true'
     os.environ['STREAM_HIGH'] = 'true'
 
@@ -167,8 +177,8 @@ def test_ssl_3():
 def test_ssl_4():
     """ Check if the ssl context fails if wrong files are supplied
     """
-    os.environ['SSL_CERT'] = '/app/tests/files/cert.pem'
-    os.environ['SSL_KEY'] = '/app/tests/files/cert.pem'
+    os.environ['SSL_CERT'] = '/app/tests/files/key.pem'
+    os.environ['SSL_KEY'] = '/app/tests/files/key.pem'
 
     with pytest.raises(ssl.SSLError):
         _ = create_ssl_options()
@@ -180,7 +190,7 @@ def test_ssl_4():
 def test_authenticator_1():
     """ Check if the authenticator is not None if all properties are specified
     """
-    os.environ["PUBLIC_KEY"] = "/app/tests/files/cert.pem"
+    os.environ["PUBLIC_KEY"] = "/app/tests/files/key.pem"
     os.environ["AUDIENCE"] = "aud"
     os.environ["CLIENT_ROLE"] = "role"
 
@@ -201,13 +211,6 @@ def test_authenticator_2():
     assert create_authenticator() is None
 
 
-def test_filter_1():
-    """ Check if normal requests are logged
-    """
-    assert LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '%s %s', ('key', 'value'), None))
-
-
-def test_filter_2():
-    """ Check if 200 get requests are not logged
-    """
-    assert not LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '200 GET %s %s', ('key', 'value'), None))
+def test_filter():
+    a = LoggingFilter()
+    a.filter("a")
