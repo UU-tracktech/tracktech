@@ -6,6 +6,7 @@ omit =
     */__pycache__/
     */__init__.py
     # Don't test the detection or tracking repositories
+    */pipeline/detection/yolor/*
     */pipeline/detection/yolov5/*
     */pipeline/tracking/sort/*
     # Cannot be tested in docker
