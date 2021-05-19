@@ -21,7 +21,7 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, curr_dir)
 
 import yolor
-from yolor.utils.datasets import letterbox
+from yolor import utils.datasets.letterbox as letterbox
 from yolor.utils.general import non_max_suppression, apply_classifier, scale_coords
 from yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
 from yolor.models.models import Darknet
