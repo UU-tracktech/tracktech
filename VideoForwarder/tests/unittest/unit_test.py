@@ -15,17 +15,6 @@ from src.main import create_camera, create_stream_options, create_ssl_options,\
 from src.logging_filter import LoggingFilter
 
 
-def test_default_properties(empty_camera):
-    """Tests default properties of an empty camera object
-
-    Args:
-        empty_camera (Camera): Empty camera
-
-    """
-    assert not empty_camera.conversion
-    assert not empty_camera.callback
-
-
 def test_camera_properties():
     """Test whether ip_address property has been set correctly
 
