@@ -76,7 +76,7 @@ This will run the YOLOv5 detection algorithm.
 
 Dependencies install
 ```
-pip install -r requirements.txt
+pip install -r requirements-gpu.txt
 ```
 
 ### Running in Docker
