@@ -7,69 +7,70 @@ Utrecht University within the Software Project course.
 """
 
 # pylint: disable=unused-import
-import pytest
+import pytest  # For use of fixtures an import is needed
 
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.frame_obj import FrameObj
 import processor.utils.display as display
 
 
-class TestDisplay:
-    def test_display_concatinates(self, small_frame):
-        """Tests whether the display
+def test_display_concatinates(small_frame):
+    """Tests whether the display
 
-        Args:
-            small_frame (numpy.ndarray): Frame that gets manipulated
-        """
-        height, width, _ = small_frame.shape
-        frame_obj = FrameObj(small_frame, 0)
+    Args:
+        small_frame (numpy.ndarray): Frame that gets manipulated
+    """
+    height, width, _ = small_frame.shape
+    frame_obj = FrameObj(small_frame, 0)
 
-        tiled_images = display.generate_tiled_image(frame_obj,
-                                                    BoundingBoxes([]),
-                                                    BoundingBoxes([])
-                                                    )
+    tiled_images = display.generate_tiled_image(frame_obj,
+                                                BoundingBoxes([]),
+                                                BoundingBoxes([])
+                                                )
 
-        # Assert dimensions
-        tiled_height, tiled_width, _ = tiled_images.shape
-        assert tiled_height == 2 * height
-        assert tiled_width == 2 * width
+    # Assert dimensions
+    tiled_height, tiled_width, _ = tiled_images.shape
+    assert tiled_height == 2 * height
+    assert tiled_width == 2 * width
 
-    def test_display_takes_dimensions(self, small_frame):
-        """When dimensions are given
 
-        Args:
-            small_frame (numpy.ndarray): Frame that gets manipulated
-        """
-        target_dimensions = (100, 150)
-        frame_obj = FrameObj(small_frame, 0)
+def test_display_takes_dimensions(small_frame):
+    """When dimensions are given
 
-        # Tile image
-        tiled_images = display.generate_tiled_image(frame_obj,
-                                                    BoundingBoxes([]),
-                                                    BoundingBoxes([]),
-                                                    target_dimensions
-                                                    )
+    Args:
+        small_frame (numpy.ndarray): Frame that gets manipulated
+    """
+    target_dimensions = (100, 150)
+    frame_obj = FrameObj(small_frame, 0)
 
-        # Asserts dimensions
-        tiled_height, tiled_width, _ = tiled_images.shape
-        assert tiled_height == target_dimensions[1] * 2
-        assert tiled_width == target_dimensions[0] * 2
+    # Tile image
+    tiled_images = display.generate_tiled_image(frame_obj,
+                                                BoundingBoxes([]),
+                                                BoundingBoxes([]),
+                                                target_dimensions
+                                                )
 
-    def test_display_automatically_downscales(self, large_frame):
-        """When dimensions are not given but frame is too big it should downscale
+    # Asserts dimensions
+    tiled_height, tiled_width, _ = tiled_images.shape
+    assert tiled_height == target_dimensions[1] * 2
+    assert tiled_width == target_dimensions[0] * 2
 
-        Args:
-            small_frame (numpy.ndarray): Frame that gets downsized
-        """
-        height, width, _ = large_frame.shape
-        frame_obj = FrameObj(large_frame, 0)
 
-        tiled_images = display.generate_tiled_image(frame_obj,
-                                                    BoundingBoxes([]),
-                                                    BoundingBoxes([])
-                                                    )
+def test_display_automatically_downscales(large_frame):
+    """When dimensions are not given but frame is too big it should downscale
 
-        # Assert dimensions
-        tiled_height, tiled_width, _ = tiled_images.shape
-        assert tiled_height <= 2 * height
-        assert tiled_width <= 2 * width
+    Args:
+        small_frame (numpy.ndarray): Frame that gets downsized
+    """
+    height, width, _ = large_frame.shape
+    frame_obj = FrameObj(large_frame, 0)
+
+    tiled_images = display.generate_tiled_image(frame_obj,
+                                                BoundingBoxes([]),
+                                                BoundingBoxes([])
+                                                )
+
+    # Assert dimensions
+    tiled_height, tiled_width, _ = tiled_images.shape
+    assert tiled_height <= 2 * height
+    assert tiled_width <= 2 * width
