@@ -7,6 +7,8 @@ Utrecht University within the Software Project course.
 
 import os
 import sys
+import argparse
+import logging
 from pathlib import Path
 import pkgutil
 import pkg_resources
@@ -52,20 +54,25 @@ def generate_documentation(root_folder):
 
     # Create module imports from included paths.
     included_modules = [path_to_module(component_root, included_path) for included_path in included_paths]
+    logging.info(f'Included modules: {included_modules}')
 
     # Remove modules for which pdoc is going to generate documentation.
     for module in included_modules:
         if module in sys.modules:
+            logging.info(f'Removed the following module so it can generate documentation: {module}')
             del sys.modules[module]
 
     # Get modules that might need to get mocked.
     mock_modules = get_mock_modules(included_paths, included_modules)
+    logging.info(f'Mocked modules: {mock_modules}')
 
     # Get modules that have been mocked.
     mocked_modules = get_mocked(mock_modules)
 
     # Generate documentation for all found modules in the /docs.
     pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
+
+    logging.info('Cleaning up the mocked modules')
 
     # Remove mocked modules.
     for module in mocked_modules:
@@ -362,7 +369,12 @@ def to_tree(modules):
 
 
 if __name__ == '__main__':
-    import argparse
+    # Configure the logger
+    logging.basicConfig(filename='documentation.log', filemode='w',
+                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                        level=logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     # Argument parser for configuration.
     parser = argparse.ArgumentParser(description='Generate documentation.')
@@ -398,10 +410,11 @@ if __name__ == '__main__':
     # Generate documentation for all provided roots.
     for root in args.roots:
         code_root_folder = Path(root)
-
+        logging.info(f'generating documentation for: {code_root_folder}')
         # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
         generate_documentation(code_root_folder)
 
     # Create index if flag was provided.
     if args.create_index:
+        logging.info('generating index')
         generate_index()

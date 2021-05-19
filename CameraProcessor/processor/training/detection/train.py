@@ -9,8 +9,7 @@ import os
 
 from tests.conftest import root_path
 
-path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolov5')
-
 if __name__ == '__main__':
+    path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolov5')
     os.system(f'python "{path}/train.py" --data "{path}/data/coco128.yaml" --cfg "{path}/models/yolov5s.yaml" '
               f'--weights \'\' --hyp "{path}/data/hyp.scratch.yaml" --batch-size 4')
