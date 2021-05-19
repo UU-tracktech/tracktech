@@ -17,7 +17,7 @@ def slice_bounding_box(bbox, img):
         img (np.ndarray): the numpy array representing the frame/image
 
     Returns:
-         np.ndarray: a REFERENCE to a lisce of the original image
+         np.ndarray: a REFERENCE to a slice of the original image
 
     IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely
     need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.
