@@ -1,15 +1,15 @@
 # Camera Processor
 
-The job of the camera processor is to detect all potential subjects 
+The job of the camera processor is to detect all potential subjects
 and track the subjects that have been selected by the camera operators using the Interface.
-The camera operators only see the detections within a frame, and the subjects they themselves started tracking.
-The tracking of subjects is performed over multiple camera's, 
+The camera operators only see the detections within a frame, and the subjects they started tracking.
+The tracking of subjects is performed over multiple cameras, 
 notifying the camera operator when a subject is re-identified.
 
 ## Architecture
 
 The inner workings of the camera processor consist of three parts. 
-The input that is processed by the pipeline and sent to either other camera processors or the interface.
+The input processed by the pipeline and sent to either other camera processors or the interface.
 
 ### Input
 
@@ -19,16 +19,16 @@ the unaltered video stream and commands/feature maps sent by the orchestrator.
 #### Video stream
 
 The video stream is sent by the video forwarder. This video forwarder previously encoded the camera stream to HLS which is used by the camera processor.
-Other input methods also exists, mainly the image capture and video capture, although both are only used for benchmarking/testing purposes.
+Other input methods also exist, mainly image capture and video capture, although both are only used for benchmarking/testing purposes.
 The HLS stream is wrapped together with the timestamp of the HLS segment so that time can be consistently tracked by both the camera processor and the interface, 
 since both components utilize the same stream.
 [processor/input README](processor/input/README.md)
 
 #### Orchestrator
 
-The orchestrator is the point of communication between both the camera processors themselves and the interface.
+The orchestrator is the point of communication between both the camera processors and the interface.
 The orchestrator is responsible for correctly distributing the data it gets.
-The camera processors are responsible for sending the data required to re-identify a subject to all camera processor via the orchestrator.
+The camera processors are responsible for sending the data required to re-identify a subject to all camera processors via the orchestrator.
 The interface is responsible for choosing an object to track, which is done based on a previous output stage.
 
 ### Pipeline
@@ -67,7 +67,8 @@ and install the dependencies in [requirements.txt](requirements.txt).
 pip install -r requirements.txt
 ```
 
-Then, if you have [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive) (for which you have to join membership) 
+Then, if you have [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive) (for which you have to join the
+membership) 
 for [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-update2) installed on your computer 
 (once again, NVIDIA only), you should be able to locally run main.py in the src directory.
 This will run the YOLOv5 detection algorithm.
@@ -80,9 +81,9 @@ pip install -r requirements.txt
 
 ### Running in Docker
 
-If you really want to be able to run it with GPU, it is a lot of hassle for Windows users and not recommended.
+If you want to be able to run it with GPU, it is a lot of hassle for Windows users and not recommended.
 You need to get the Windows Insider program to use CUDA in WSL2.
-Windows insider program slows down speed of pc a lot. 
+Windows insider program slows down the speed of pc a lot. 
 
 1. GPU-enabled (Not recommended):
    1. You need an NVIDIA GPU that supports CUDA
@@ -122,9 +123,9 @@ Install Pylint plugin.
 
 Navigate to `Settings>Other Settings>Pylint`.
 
-Set up link to Pylint and test settings.
+Set up a link to Pylint and test settings.
 
-Select the path to pylintrc (should be at root of project).
+Select the path to pylintrc (should be at the root of the project).
 
 Click apply.
 
