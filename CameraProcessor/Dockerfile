@@ -39,18 +39,18 @@ RUN ["pip", "install", "-r", "requirements-gpu.txt"]
 COPY filter.names filter.names
 COPY data/tests/unittests data/tests/unittests
 COPY tests/unittests tests/unittests
-ENTRYPOINT  ["pytest","--cov-config=.coveragerc","--cov-report","term-missing","--cov-report","term","--cov-report","html","--cov=processor/","--junitxml=cp-unit-report.xml","tests/unittests"]
+ENTRYPOINT  ["pytest","--cov-config=.coveragerc","--cov-report","term-missing","--cov-report=term", "--cov-report=html","--cov-report=xml","--cov=processor/","--junitxml=cp-unit-report.xml","tests/unittests"]
 
 
 FROM test as test_integration_forwarder
 COPY tests/forwarderintegrationtests tests/forwarderintegrationtests
-ENTRYPOINT  ["pytest", "tests/forwarderintegrationtests", "--junitxml=cp-vf-integration-report.xml"]
+ENTRYPOINT  ["pytest", "tests/forwarderintegrationtests", "--cov=processor/", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-vf-integration-report.xml"]
 
 
 FROM test as test_integration_orchestrator
 COPY data/tests/integrationtests data/tests/integrationtests
 COPY tests/orchestratorintegrationtests tests/orchestratorintegrationtests
-ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests", "--junitxml=cp-po-integration-report.xml"]
+ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests", "--cov=processor/", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-po-integration-report.xml"]
 
 
 FROM test AS lint
@@ -58,11 +58,12 @@ RUN ["pip", "install", "pylint==2.6.0", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
 
-WORKDIR /
-COPY data data
+COPY processor processor
 COPY tests tests
 
-ENTRYPOINT ["pylint","app","--rcfile=app/.pylintrc","--output-format=colorized"]
+WORKDIR /
+
+ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc","--output-format=colorized"]
 
 
 FROM base as deploy 

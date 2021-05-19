@@ -78,6 +78,9 @@ export function Home() {
     )
   }, [])
 
+  // Used for camera card key generation
+  var iterator = 0
+
   return (
     <Layout.Content
       style={{
@@ -197,7 +200,6 @@ export function Home() {
           >
             {sources &&
               sources.map((source) => {
-                var iterator = 0
                 return (
                   //Create a cameracard for each stream
                   <CameraCard
