@@ -1,3 +1,11 @@
+"""Capable of displaying the separate stages in a single image
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import cv2
 
 import processor.utils.draw as draw
@@ -5,6 +13,7 @@ import processor.utils.draw as draw
 
 def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, dimensions=None):
     """Generates tiled image with the following order left to right, top to bottom: raw, detection, tracking, Re-ID
+    Automatically downscales when the image is too big and there are now dimensions given
 
     Args:
         frame_obj (FrameObj): Object containing the frame to draw in

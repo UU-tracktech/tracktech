@@ -17,7 +17,6 @@ from processor.utils.config_parser import ConfigParser
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
 import processor.utils.text as text
-import processor.utils.draw as draw
 import processor.utils.display as display
 
 from processor.pipeline.framebuffer import FrameBuffer
