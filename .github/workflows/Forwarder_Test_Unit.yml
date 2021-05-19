@@ -1,0 +1,33 @@
+name: Forwarder Unit Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/Forwarder_Test_Unit.yml
+  pull_request:
+    paths:
+      - VideoForwarder/**
+
+jobs:
+  forwarder_test_unit:
+    name: Forwarder Unit Test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and run
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build --exit-code-from video-forwarder
+      - name: Copy unit test report
+        run: docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
+      - name: Copy html coverage report
+        run: docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
+      - name: Copy xml coverage report
+        run: docker cp video-forwarder_container:/app/coverage.xml coverage.xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          files: coverage.xml
+          flags: Forwarder
+      - name: Remove
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+        if: ${{ always() }}

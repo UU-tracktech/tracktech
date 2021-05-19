@@ -17,6 +17,9 @@ COPY src src
 COPY tests tests
 COPY .coveragerc .coveragerc
 
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","Auth-1.0.tar.gz"]
+
 RUN ["mkdir", "utility"]
 
 # Make sure port is available
@@ -29,7 +32,7 @@ ENTRYPOINT ["pytest","tests/unit_testing","--cov-config=.coveragerc","--cov=src"
 
 
 FROM test as test_integration
-
+RUN ["mkdir", "tracking_timelines"]
 
 FROM test as lint
 WORKDIR /app

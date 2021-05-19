@@ -26,7 +26,7 @@ COPY react/.eslintrc.json ./.eslintrc.json
 COPY react/.prettierrc.json ./.prettierrc.json
 COPY react/testing ./testing
 
-ENTRYPOINT ["./node_modules/.bin/eslint", "src/*.tsx", "src/*.ts"]
+ENTRYPOINT ["./node_modules/.bin/eslint", "src/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"]
 
 
 FROM source AS testing
@@ -43,9 +43,6 @@ WORKDIR /react
 
 COPY ["react/testing/unit testing","./testing/unit testing"]
 
-# copy static files
-COPY testconfig.json /build/config.json
-
 ENTRYPOINT ["npm", "test", "--", "--coverage", "testing/unit testing"]
 
 
@@ -53,9 +50,6 @@ FROM testing AS integration-testing
 WORKDIR /react
 
 COPY ["react/testing/integration testing","./testing/integration testing"]
-
-# copy static files
-COPY testconfig.json /build/config.json
 
 ENTRYPOINT ["npm", "test", "--", "--coverage", "testing/integration testing"]
 
@@ -67,9 +61,6 @@ RUN npm install -g serve
 
 # Open the port
 EXPOSE 5000
-
-# copy static files
-COPY testconfig.json /build/config.json
 
 # Copy the build program
 COPY --from=builder /react/build /build

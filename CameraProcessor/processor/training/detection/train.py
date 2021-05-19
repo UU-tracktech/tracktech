@@ -19,6 +19,7 @@ weights = config['weights']
 batch_size = config['batch-size']
 hyp = config['hyp']
 
+path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolov5')
 
 if __name__ == '__main__':
     path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolov5')

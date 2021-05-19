@@ -1,0 +1,37 @@
+name: Processor Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/Processor_Build.yml
+  pull_request:
+    paths:
+      - CameraProcessor/**
+
+# Not working because of the wrong compose version
+#jobs:
+#  processor_build:
+#    name: Processor build
+#    runs-on: [self-hosted, GPU]
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#      - name: Build camera processor test service
+#        run: docker-compose -f CameraProcessor/docker-compose.yml build
+#      - name: Remove
+#        run: docker-compose -f CameraProcessor/docker-compose.yml rm
+#        if: ${{ always() }}
+
+jobs:
+  processor_build:
+    name: Processor build compose test
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build camera processor test service
+        run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml build
+      - name: Remove
+        run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml rm
+        if: ${{ always() }}
