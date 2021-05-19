@@ -231,7 +231,11 @@ export function VideoPlayer(props: VideoPlayerProps) {
   // so videojs won't create additional wrapper in the DOM
   // see https://github.com/videojs/video.js/pull/3856
   return (
-    <div className="c-player" style={{ width: '100%', height: '100%' }}>
+    <div
+      data-testid="videojsplayer"
+      className="c-player"
+      style={{ width: '100%', height: '100%' }}
+    >
       <div
         className="c-player__screen vjs-fill"
         data-vjs-player="true"
