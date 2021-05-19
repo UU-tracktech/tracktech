@@ -39,18 +39,18 @@ RUN ["pip", "install", "-r", "requirements-gpu.txt"]
 COPY filter.names filter.names
 COPY data/tests/unittests data/tests/unittests
 COPY tests/unittests tests/unittests
-ENTRYPOINT  ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","html","--cov=processor/","--junitxml=cp-unit-report.xml","tests/unittests"]
+ENTRYPOINT  ["pytest","--cov-config=.coveragerc","--cov-report","term-missing","--cov-report=term", "--cov-report=html","--cov-report=xml","--cov=processor/","--junitxml=cp-unit-report.xml","tests/unittests"]
 
 
 FROM test as test_integration_forwarder
 COPY tests/forwarderintegrationtests tests/forwarderintegrationtests
-ENTRYPOINT  ["pytest","tests/forwarderintegrationtests" ,"--junitxml=cp-vf-integration-report.xml"]
+ENTRYPOINT  ["pytest", "tests/forwarderintegrationtests", "--cov=processor/", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-vf-integration-report.xml"]
 
 
 FROM test as test_integration_orchestrator
 COPY data/tests/integrationtests data/tests/integrationtests
 COPY tests/orchestratorintegrationtests tests/orchestratorintegrationtests
-ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests" ,"--junitxml=cp-po-integration-report.xml"]
+ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests", "--cov=processor/", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-po-integration-report.xml"]
 
 
 FROM test AS lint
@@ -58,11 +58,12 @@ RUN ["pip", "install", "pylint==2.6.0", "pylint-exit"]
 
 RUN ["mkdir", "utility"]
 
-WORKDIR /
-COPY data data
+COPY processor processor
 COPY tests tests
 
-ENTRYPOINT ["pylint","app","--rcfile=app/.pylintrc","--output-format=colorized"]
+WORKDIR /
+
+ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc","--output-format=colorized"]
 
 
 FROM base as deploy 
@@ -148,18 +149,22 @@ WORKDIR /app/processor
 
 # WSL docker build that works for windows
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS wslbuild
+WORKDIR /app
+ENV PYTHONPATH=/app
 
 RUN apt update
-RUN apt install -y ffmpeg
-RUN ["apt", "install", "-y", "python3.8", "python3-pip"]
-
-WORKDIR /app
+RUN ["apt","install","-y","ffmpeg","python3.8", "python3.8-dev", "python3-pip", "g++"]
+RUN ["g++","--version"]
 
 # Install pip requirements
 COPY requirements.txt .
 COPY requirements-gpu.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
-RUN ["pip", "install", "-r", "requirements.txt", "requirements-gpu.txt"]
+COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
+
+RUN ["python3.8","-m","pip", "install", "--upgrade", "pip"]
+RUN ["python3.8","-m","pip", "install", "-r", "requirements.txt"]
+RUN ["python3.8","-m","pip", "install", "-r", "requirements-gpu.txt"]
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1

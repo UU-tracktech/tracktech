@@ -1,0 +1,22 @@
+name: Orchestrator Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/Orchestrator_Build.yml
+  pull_request:
+    paths:
+      - ProcessorOrchestrator/**
+
+jobs:
+  orchestrator_build:
+    name: Orchestrator Build
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
+      - name: Remove
+        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml rm
+        if: ${{ always() }}

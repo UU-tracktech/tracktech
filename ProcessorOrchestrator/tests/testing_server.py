@@ -1,14 +1,20 @@
-"""Server used for testing purposes. It is run as a test so that coverage may be measured."""
+"""Server used for testing purposes. It is run as a test so that coverage may be measured.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+"""
 import asyncio
 
 import pytest
-from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 from tornado.websocket import WebSocketHandler
 
+from src.http_server import create_http_servers
 from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
+from src.timeline_handler import TimeLineHandler
 from src.object_manager import start_tracking_timeout_monitoring
 
 
@@ -27,14 +33,13 @@ def _start_server():
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
+        ('/timelines', TimeLineHandler),
         ('/stop', StopSocket, {'server': server_container})
     ]
 
     app = Application(handlers)
-    server = HTTPServer(app)
+    server, _ = create_http_servers(app)
     server_container.append(server)
-    server.listen(80)
-    print("Test server is listening")
 
     start_tracking_timeout_monitoring(10, asyncio.get_event_loop())
 

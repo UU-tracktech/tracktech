@@ -1,0 +1,36 @@
+name: Processor-Orchestrator integration
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/Processor-Orchestrator.yml
+  pull_request:
+    paths:
+      - CameraProcessor/**
+      - ProcessorOrchestrator/**
+
+jobs:
+  processor_orchestrator_integration_test:
+    name: Camera Processor - Processor Orchestrator integration test
+    runs-on: self-hosted
+    steps:
+      - name: Start service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
+      - name: Copy integration test report
+        run: docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
+      - name: Copy xml coverage report
+        run: docker cp processor-integration-test-container:/app/coverage.xml coverage.xml
+      - name: Stop service
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
+        if: ${{ always() }}
+      - name: Upload integration test report artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: cp-po-integration-report.xml
+          path: cp-po-integration-report.xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          files: coverage.xml
+          flags: Processor

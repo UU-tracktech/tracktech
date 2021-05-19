@@ -64,6 +64,13 @@ class TestScheduleNode:
         executable = example_schedule_node.input_count <= 0
         assert executable == example_schedule_node.executable()
 
+    def test_non_executable_node(self):
+        """Not executable node should raise an exception
+
+        """
+        schedule_node = ScheduleNode(3, [(), ()], InputComponent())
+        assert pytest.raises(Exception, schedule_node.execute, print)
+
     def test_fill_node_arguments(self):
         """Fill arguments of nodes and see if it becomes executable
 

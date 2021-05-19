@@ -5,13 +5,14 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-import pytest
 import os
 import configparser
+import pytest
 
 from processor.utils.config_parser import ConfigParser
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestConfigParser:
     """Tests whether the ConfigParsers runs correctly.
 
