@@ -6,18 +6,22 @@ Utrecht University within the Software Project course.
 
 """
 
+from os import environ
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 from tornado import testing
-from os import environ
 
 from src.camera_handler import CameraHandler
 from src.main import create_camera, create_stream_options, get_wait_delay, get_timeout_delay
 
 
 class TestHandler(AsyncHTTPTestCase):
+    """Test the server without authentication
+    """
 
     def get_app(self):
+        """Creates the application to test
+        """
         environ["CAMERA_URL"] = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
         environ["CAMERA_AUDIO"] = "true"
 

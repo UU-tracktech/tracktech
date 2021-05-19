@@ -6,10 +6,10 @@ Utrecht University within the Software Project course.
 
 """
 
+from os import environ
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 from tornado import testing
-from os import environ
 import jwt
 
 from src.camera_handler import CameraHandler
@@ -21,8 +21,12 @@ from src.loading import create_camera,\
 
 
 class TestHandler(AsyncHTTPTestCase):
+    """Test the server when using auth
+    """
 
     def get_app(self):
+        """Creates the application to test
+        """
         environ["CAMERA_URL"] = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
         environ["CAMERA_AUDIO"] = "true"
 
@@ -77,8 +81,8 @@ class TestHandler(AsyncHTTPTestCase):
     def test_auth(self):
         """Test if a 200 is returned with a completely valid token
         """
-        with open('/app/tests/files/private_key.pem', 'r') as f:
-            key = f.read()
+        with open('/app/tests/files/private_key.pem', 'r') as file:
+            key = file.read()
 
         token = jwt.encode(
             {
@@ -105,8 +109,8 @@ class TestHandler(AsyncHTTPTestCase):
     def test_no_permission(self):
         """Test if a 401 is returned with a valid token but not the right role
         """
-        with open('/app/tests/files/private_key.pem', 'r') as f:
-            key = f.read()
+        with open('/app/tests/files/private_key.pem', 'r') as file:
+            key = file.read()
 
         token = jwt.encode(
             {

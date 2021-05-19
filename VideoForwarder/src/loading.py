@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 """
 
 import ssl
-import os
+from os import environ
 import tornado.web
 
 from auth.auth import Auth
@@ -20,7 +20,7 @@ def create_camera():
     Returns:
         A camera object containing the camera url and if it has any audio
     """
-    return Camera(os.environ["CAMERA_URL"], os.environ["CAMERA_AUDIO"] == "true")
+    return Camera(environ["CAMERA_URL"], environ["CAMERA_AUDIO"] == "true")
 
 
 def create_stream_options():
@@ -31,12 +31,12 @@ def create_stream_options():
 
     """
     return StreamOptions(
-        os.environ.get("SEGMENT_SIZE") or "2",
-        os.environ.get("SEGMENT_AMOUNT") or "5",
-        os.environ.get("STREAM_ENCODING") or "libx264",
-        os.environ.get("STREAM_LOW") == "true",
-        os.environ.get("STREAM_MEDIUM") == "true",
-        os.environ.get("STREAM_HIGH") == "true"
+        environ.get("SEGMENT_SIZE") or "2",
+        environ.get("SEGMENT_AMOUNT") or "5",
+        environ.get("STREAM_ENCODING") or "libx264",
+        environ.get("STREAM_LOW") == "true",
+        environ.get("STREAM_MEDIUM") == "true",
+        environ.get("STREAM_HIGH") == "true"
     )
 
 
@@ -45,7 +45,7 @@ def get_remove_delay():
     Returns:
         float: How long the stream has no requests before stopping the conversion in seconds
     """
-    return float(os.environ.get('REMOVE_DELAY') or '60.0')
+    return float(environ.get('REMOVE_DELAY') or '60.0')
 
 
 def get_timeout_delay():
@@ -53,7 +53,7 @@ def get_timeout_delay():
     Returns:
         int: The maximum amount of seconds we will wait with removing stream files after stopping the conversion
     """
-    return int(os.environ.get('TIMEOUT_DELAY') or '30')
+    return int(environ.get('TIMEOUT_DELAY') or '30')
 
 
 def get_wait_delay():
@@ -61,7 +61,7 @@ def get_wait_delay():
     Returns:
         int: How long we will wait for the conversion process to stop before deleting the files
     """
-    return int(os.environ.get('REMOVE_DELAY') or '60')
+    return int(environ.get('REMOVE_DELAY') or '60')
 
 
 def create_ssl_options():
@@ -71,8 +71,8 @@ def create_ssl_options():
     """
 
     # Load environment variable path of certificate and its key
-    cert = os.environ.get('SSL_CERT')
-    key = os.environ.get('SSL_KEY')
+    cert = environ.get('SSL_CERT')
+    key = environ.get('SSL_KEY')
 
     # If one if missing, return None and do not use ssl
     if cert is None or key is None:
@@ -91,7 +91,7 @@ def create_authenticator():
     """
     #
     public_key, audience, client_role =\
-        os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE'), os.environ.get('CLIENT_ROLE')
+        environ.get('PUBLIC_KEY'), environ.get('AUDIENCE'), environ.get('CLIENT_ROLE')
     if public_key is None or audience is None or client_role is None:
         return None
     tornado.log.gen_log.info("using client token validation")

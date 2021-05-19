@@ -6,9 +6,9 @@ Utrecht University within the Software Project course.
 
 """
 import os
-import pytest
 import ssl
 from logging import LogRecord
+import pytest
 
 from src.camera import Camera
 from src.main import create_camera, create_stream_options, create_ssl_options,\
@@ -40,7 +40,7 @@ def test_camera_environment_1():
 
     camera = create_camera()
     assert camera.url == "camera url"
-    assert camera.audio 
+    assert camera.audio
 
     del os.environ['CAMERA_URL']
     del os.environ['CAMERA_AUDIO']
@@ -210,4 +210,4 @@ def test_filter_1():
 def test_filter_2():
     """ Check if 200 get requests are not logged
     """
-    assert not LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '200 GET %s %s', ('key', 'value'), None)) 
+    assert not LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '200 GET %s %s', ('key', 'value'), None))
