@@ -44,13 +44,13 @@ ENTRYPOINT  ["pytest","--cov-config=.coveragerc","--cov-report","term-missing","
 
 FROM test as test_integration_forwarder
 COPY tests/forwarderintegrationtests tests/forwarderintegrationtests
-ENTRYPOINT  ["pytest", "tests/forwarderintegrationtests", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-vf-integration-report.xml"]
+ENTRYPOINT  ["pytest", "tests/forwarderintegrationtests", "--cov=processor/", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-vf-integration-report.xml"]
 
 
 FROM test as test_integration_orchestrator
 COPY data/tests/integrationtests data/tests/integrationtests
 COPY tests/orchestratorintegrationtests tests/orchestratorintegrationtests
-ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-po-integration-report.xml"]
+ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests", "--cov=processor/", "--cov-config=.coveragerc", "--cov-report=xml", "--junitxml=cp-po-integration-report.xml"]
 
 
 FROM test AS lint
