@@ -7,11 +7,11 @@ Utrecht University within the Software Project course.
 import asyncio
 
 import pytest
-from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 from tornado.websocket import WebSocketHandler
 
+from src.http_server import create_http_servers
 from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
 from src.timeline_handler import TimeLineHandler
@@ -38,10 +38,8 @@ def _start_server():
     ]
 
     app = Application(handlers)
-    server = HTTPServer(app)
+    server, _ = create_http_servers(app)
     server_container.append(server)
-    server.listen(80)
-    print("Test server is listening")
 
     start_tracking_timeout_monitoring(10, asyncio.get_event_loop())
 

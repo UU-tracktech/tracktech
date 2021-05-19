@@ -37,7 +37,7 @@ class ConfigParser:
             raise FileNotFoundError(f'Config file does not exist in {self.root_path} + {config_name}')
 
         # Read config file
-        self.configs = configparser.ConfigParser(allow_no_value=True)
+        self.configs = configparser.ConfigParser(allow_no_value=True, converters={'tuple': parse_int_tuple})
         self.configs.read(self.config_path)
 
         if USE_TEST_CONFIG:
@@ -54,3 +54,9 @@ class ConfigParser:
                 if section_key.endswith('path'):
                     self.configs[section][section_key] = \
                         os.path.realpath(os.path.join(self.root_path, self.configs[section][section_key]))
+
+
+def parse_int_tuple(item):
+    """Converter for parsing a tuple
+    """
+    return tuple(int(k.strip()) for k in item[1:-1].split(','))
