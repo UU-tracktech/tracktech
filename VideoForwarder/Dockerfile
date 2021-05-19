@@ -32,7 +32,7 @@ RUN ["pip","install","--no-cache-dir","-r","requirements-test.txt"]
 
 FROM test as test_unit
 COPY tests/unittest tests
-ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","html","--cov=src/","--junitxml=vf-unit-report.xml","tests"]
+ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report=html","--cov-report=xml","--cov=src/","--junitxml=vf-unit-report.xml","tests"]
 
 FROM test as test_integration
 COPY tests/integrationtest tests
