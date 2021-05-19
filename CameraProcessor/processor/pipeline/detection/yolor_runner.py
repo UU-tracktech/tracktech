@@ -15,10 +15,16 @@ from processor.data_object.rectangle import Rectangle
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.idetector import IDetector
-from processor.pipeline.detection.yolor.utils.datasets import letterbox
-from processor.pipeline.detection.yolor.utils.general import non_max_suppression, apply_classifier, scale_coords
-from processor.pipeline.detection.yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
-from processor.pipeline.detection.yolor.models.models import Darknet
+
+# Path append needed for symlinked repositories
+curr_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, curr_dir)
+
+import yolor
+from yolor.utils.datasets import letterbox
+from yolor.utils.general import non_max_suppression, apply_classifier, scale_coords
+from yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
+from yolor.models.models import Darknet
 
 
 class YolorDetector(IDetector):
@@ -32,9 +38,6 @@ class YolorDetector(IDetector):
             config (ConfigParser): YOLOR config file.
             filters (): Filtering for boundingBoxes.
         """
-        curr_dir = os.path.dirname(os.path.abspath(__file__))
-        sys.path.insert(0, os.path.join(curr_dir, './yolor'))
-
         self.config = config
         self.filter = []
         with open(filters['targets_path']) as filter_names:
