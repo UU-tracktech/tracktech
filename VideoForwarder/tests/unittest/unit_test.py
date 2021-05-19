@@ -200,6 +200,13 @@ def test_authenticator_2():
     assert create_authenticator() is None
 
 
-def test_filter():
-    a = LoggingFilter()
-    a.filter("a")
+def test_filter_1():
+    """ Check if normal requests are logged
+    """
+    assert LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '%s %s', ('key', 'value'), None))
+
+
+def test_filter_2():
+    """ Check if 200 get requests are not logged
+    """
+    assert not LoggingFilter().filter(LogRecord('name', 0, 'path', 0, '200 GET %s %s', ('key', 'value'), None)) 

@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
 """
 
-from logging import Filter, LogRecord
+from logging import Filter
 
 
 class LoggingFilter(Filter):

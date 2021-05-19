@@ -1,3 +1,11 @@
+"""Helper methods to load settings
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
+
 import ssl
 import os
 import tornado.web
@@ -93,4 +101,3 @@ def create_authenticator():
         audience=audience,
         role=client_role
     )
-
