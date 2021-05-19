@@ -34,7 +34,7 @@ COPY tests/unittest tests
 # Create multiple streams folders
 RUN ["mkdir","streams1","streams2","streams3"]
 
-ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","html","--cov-report","term-missing","--cov=src/","--junitxml=vf-unit-report.xml","tests"]
+ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","xml","--cov-report","term-missing","--cov=src/","tests"]
 
 
 # Installation
