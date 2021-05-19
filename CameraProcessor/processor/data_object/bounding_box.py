@@ -10,7 +10,7 @@ Utrecht University within the Software Project course.
 class BoundingBox:
     """Contains information about a single bounding box.
     """
-    def __init__(self, identifier, rectangle, classification, certainty):
+    def __init__(self, identifier, rectangle, classification, certainty, object_id=None):
         """Inits the bounding box.
 
         Args:
@@ -18,11 +18,13 @@ class BoundingBox:
             rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
             classification (str): classification of the bounding box.
             certainty (float): certainty/confidence of the bounding box detection.
+            object_id (int): id assigned to object depicted by the bounding box
         """
         self.__identifier = identifier
         self.__rectangle = rectangle
         self.__classification = classification
         self.__certainty = certainty
+        self.__object_id = object_id
 
     def get_identifier(self):
         """Gets bounding box identifier.
@@ -55,3 +57,11 @@ class BoundingBox:
             float: certainty/confidence of bounding box detection.
         """
         return self.__certainty
+
+    def get_object_id(self):
+        """Gets object id of tracked object depicted by the bounding box (can be None)
+
+        Returns:
+            int: certainty/confidence of bounding box detection.
+        """
+        return self.__object_id

@@ -36,7 +36,7 @@ class SortTracker(ITracker):
                          iou_threshold=config.getfloat('iou_threshold')
                          )
 
-    def track(self, frame_obj, det_obj):
+    def track(self, frame_obj, det_obj, tracking_dict):
         """Performing tracking using SORT tracking to get a tracking ID for all tracked detections.
 
         Converts detections to correct format, gets trackers from SORT tracking and converts trackers to bounding boxes.
@@ -45,6 +45,7 @@ class SortTracker(ITracker):
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
             det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
+            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID
 
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
@@ -81,7 +82,8 @@ class SortTracker(ITracker):
                     int(tracker[0][3]) / height
                 ),
                 classification=tracker[1],
-                certainty=tracker[2]
+                certainty=tracker[2],
+                object_id=tracking_dict.get(int(tracker[0][4]), None)
             )
             bounding_boxes.append(bounding_box)
 

@@ -81,7 +81,18 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
 
     frame_nr = 0
 
+    # This dictionary maps bounding box id's to the object ID to be assigned
+    # to the tracked object belonging to the bounding box.
+    tracking_dict = {}
+    print(tracking_dict)
+
     while capture.opened():
+        # Process the message queue if there is a websocket connection
+        if ws_client is not None:
+            # Get the updated tracking dictionary
+            process_message_queue(ws_client, tracking_dict)
+            print(tracking_dict)
+
         ret, frame_obj = capture.get_next_frame()
 
         if not ret:
@@ -91,7 +102,7 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         detected_boxes = detector.detect(frame_obj)
 
         # Get objects tracked in current frame from tracking stage.
-        tracked_boxes = tracker.track(frame_obj, detected_boxes)
+        tracked_boxes = tracker.track(frame_obj, detected_boxes, tracking_dict)
 
         # Buffer the tracked object
         framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
@@ -100,20 +111,17 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         # Handle side effects of frame processing
         await on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
-        # Process the message queue if there is a websocket connection
-        if ws_client is not None:
-            process_message_queue(ws_client)
-
         frame_nr += 1
 
     logging.info(f'capture object stopped after {frame_nr} frames')
 
 
-def process_message_queue(ws_client):
+def process_message_queue(ws_client, tracking_dict):
     """Processes the message queue processing each start and stop command
 
     Args:
         ws_client (WebsocketClient): Websocket client to get the message queue from
+        tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID
     """
     # Empty queue if there are messages left that were not sent
     while len(ws_client.message_queue) > 0:
@@ -123,9 +131,14 @@ def process_message_queue(ws_client):
         if isinstance(track_elem, StartCommand):
             logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} '
                          f'with new object id {track_elem.object_id}')
+            tracking_dict[track_elem.box_id] = track_elem.object_id
+
         # Stop command
         elif isinstance(track_elem, StopCommand):
             logging.info(f'Stop tracking object {track_elem.object_id}')
+            for box_id, object_id in tracking_dict.items():
+                if object_id == track_elem.object_id:
+                    del tracking_dict[box_id]
 
 
 # pylint: disable=unused-argument
