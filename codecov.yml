@@ -1,0 +1,40 @@
+codecov:
+  branch: SPC-618-Fix-readme-coverage-badges
+  max_report_age: off
+
+coverage:
+  status:
+    project:
+      default: off
+      Forwarder:
+        target: 100%
+        flags:
+          - Forwarder
+      Interface:
+        target: 100%
+        flags:
+          - Interface
+      Orchestrator:
+        target: 100%
+        flags:
+          - Orchestrator
+      Processor:
+        target: 100%
+        flags:
+          - Processor
+
+flags:
+  # filter the folder(s) you wish to measure by that flag
+  Forwarder:
+    # only include files in the backend folder
+    paths:
+      - Forwarder/
+  Interface:
+    paths:
+      - Interface/
+  Orchestrator:
+    paths:
+      - Orchestrator/
+  Processor:
+    paths:
+      - Processor/
