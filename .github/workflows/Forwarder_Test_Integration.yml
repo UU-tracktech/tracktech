@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build and run
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml up --build --exit-code-from video-forwarder_test
-      - name: Copy out report
+      - name: Copy xml coverage report
         run: docker cp video-forwarder_container:/app/vf-integration-report.xml vf-integration-report.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0

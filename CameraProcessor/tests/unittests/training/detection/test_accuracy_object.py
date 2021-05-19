@@ -121,7 +121,7 @@ class TestAccuracyObject:
         assert parsed_box.image_name == "1"
 
     def draw_plots(self, accuracy_object):
-        """Draws the plots and checks whether files are indeed created.
+        """Draws the plots and checks whether files are indeed created
 
         Args:
             accuracy_object (AccuracyObject): Accuracy object containing all the data
