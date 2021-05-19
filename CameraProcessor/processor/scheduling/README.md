@@ -1,18 +1,18 @@
 # Scheduling
 
 There are many methods to achieve the tracking of subjects and/or objects 
-over multiple camera's.
+over multiple cameras.
 The method can be divided into several components.
-Some of these components can be run in parallel since they don't need 
+Some of these components can be run in parallel since they don't need
 anything from each other.
 This parallelism can be hardcoded in the component itself, 
 but this is unfavourable since there are many methods to try.
 
-A scheduling process which takes in a plan (graph) 
+A scheduling process that takes in a plan (graph) 
 is better when trying multiple methods.
-The scheduler is responsible for execution of the nodes, 
+The scheduler is responsible for the execution of the nodes, 
 and can have extensions for parallelism, and more, built-in.
-This prevents recoding previously made components when a new component 
+This prevents recoding previously made components when a new component
 is added or an existing component is updated.
 
 ## scheduling.scheduler
@@ -20,8 +20,8 @@ is added or an existing component is updated.
 The scheduler [scheduler.py](scheduler.py) is a sequential scheduler 
 which takes in a starting node (seen as the plan) and runs this starting node.
 The schedule node is responsible for queueing other nodes which are ready to run. 
-The schedule node checks which nodes can be run after it executed it's internal component,
-all nodes to queue are given to the scheduler via the notify function 
+The schedule node checks which nodes can be run after it executed its internal component,
+all nodes to the queue are given to the scheduler via the notify function 
 given to the schedule node on execution.
 
 The scheduler makes the following assumptions:
@@ -29,7 +29,7 @@ The scheduler makes the following assumptions:
 - There is a single input node (named starting node)
 - The input node has exactly one input
 - All nodes to run are accessible via the starting node
-- Output handling to objects outside the plan or to the caller of the 
+- Output handling to objects outside the plan or to the caller of the
 scheduler is done inside the output components
 
 ## scheduling.plan
@@ -37,7 +37,7 @@ scheduler is done inside the output components
 The plan is a graph with uni-directional connections between nodes.
 It contains no cycles.
 The plan can currently only be written in python via schedule node definitions.
-Future plan creation might be extended using a parser to allow for a more 
+Plan creation might be extended using a parser to allow for a more
 readable and adaptable format.
 
 The plan is written using a bottom-up approach.
@@ -72,7 +72,7 @@ example_schedule_node = ScheduleNode(1, [(out_node, arg_nr)], InputComponent())
 ```
 
 The first defined node in the Python plan is the last output node.
-The `out_nodes` list (contains nodes to output it's results to) can be left empty, 
+The `out_nodes` list (contains nodes to output its results to) can be left empty, 
 like any other output nodes without `out_nodes`.
 ```python
 from scheduling.node.schedule_node import ScheduleNode
@@ -90,22 +90,22 @@ can be found in [example_plan.py](plan/example_plan.py).
 The scheduler node [schedule_node.py](node/schedule_node.py) is responsible for running 
 the component once it is called by the scheduler 
 (can only be called by the scheduler once all needed arguments have been collected) 
-and returning the output of the component to all out_nodes which need said output.
+and returning the output of the component to all out_nodes which need that output.
 
 The schedule node overrides all functions of the interface node [INode](node/schedule_node.py).
 Why the interface is necessary is explained in the Interface Node section.
 
 The ScheduleNode is initialized using the following parameters:
-- `input_count`: amount of arguments needed to execute component
+- `input_count`: number of arguments needed to execute component
 - `out_nodes`: list of nodes to which the current node assigns the output of the component 
 (nodes that have the current node as input)
 - `component`: the component to run once all necessary arguments have been collected
 
 ### scheduling.node.inode
 
-The interface node [INode](node/inode.py) is a super class used as an interface.
-It contains four functions which must be implemented by any subclass.
-The implementation of a function is ensured by having the default implementation 
+The interface node [INode](node/inode.py) is a superclass used as an interface.
+It contains four functions that must be implemented by any subclass.
+The implementation of a function is ensured by having the default implementation
 raise a not implemented error.
 The interface is used by the scheduler to assign the initial input object, 
 check if a node is executable, 
@@ -126,8 +126,8 @@ and notify the scheduler of all nodes that are now ready to run.
 
 ## scheduling.component
 
-A component is the class being executed in a [ScheduleNode](node/schedule_node.py).
-The component was designed to impose as little restrictions as possible 
+A component is a class being executed in a [ScheduleNode](node/schedule_node.py).
+The component was designed to impose as few restrictions as possible
 while simultaneously giving the scheduler the freedom it needs to properly operate.
 
 Each component has three requirements:
@@ -136,7 +136,7 @@ Each component has three requirements:
 returning the function used to run the component with any input defined in the function
 
 Any given component is used for every given iteration.
-It thus must be in a ready state after performing it's work.
+It thus must be in a ready state after performing its work.
 The class itself is responsible for possible resets to be performed,
 storing data for the next iteration,
 outputting to objects outside of the scheduler 
@@ -169,7 +169,7 @@ corresponds to the number of inputs given to [ScheduleNode](node/schedule_node.p
 The input component [input_component.py](component/example_components/input_component.py) 
 is slightly different.
 It has the added restriction of containing exactly 1 input in the work function.
-This 1 input can be `None` if no input is required, but must be an object 
+This one input can be `None` if no input is required but must be an object
 containing all necessary information otherwise.
 
 ### Output component
@@ -181,11 +181,11 @@ The only thing that needs to be mentioned is that any output component is respon
 sending output to objects outside of the scheduler flow.
 
 How this is done can depend on the use case, below a few examples:
-- A listener on the component watching it's state
+- A listener on the component watching its state
 - A function to which output must be passed after completion of an iteration
 - A direct call to the API used to pass data between 
 the camera processor and processor orchestrator
 
 It is expected that a node without `out_nodes` contains an output component.
-Also any component can be an output component, it already counts as 
+Furthermore, any component can be an output component, it already counts as
 one if it emits output outside of the scheduler flow.
