@@ -5,7 +5,7 @@ This component trains the object detection component of the program. It uses obj
 
 ## Training a model
 
-Executing [train.py](train.py) start the training of the detection model. It runs the following command:
+Executing [train.py](train.py) starts the training of the detection model. It runs the following command:
 ```
 python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --hyp hyp.scratch.yaml --batch-size 4
 ```
@@ -44,9 +44,9 @@ by the `PODM` library.
 and parses the bounding boxes through the `parse_boxes` function, before returning the result.
 
 `detect(self)` retrieves the accuracy of detections from a folder prespecified in the `__init__`.
-It prints the true positives `tp`, false positives `fp`, false negatives `fns` and mean average precision `mAP`.
+It prints the true positives `tp`, false positives `fp`, false negatives `fns`, and mean average precision `mAP`.
 
-`draw_pr_plot(self, result)` draws a precision recall graph from a single `result` using the `PODM` library.
+`draw_pr_plot(self, result)` draws a precision-recall graph from a single `result` using the `PODM` library.
 The result is an image displaying the graph.
 
 `draw_all_pr_plots(self)` runs the `draw_pr_plot` function for every class.
