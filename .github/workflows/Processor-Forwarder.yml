@@ -1,29 +1,3 @@
-name: Processor-Forwarder integration
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Processor-Forwarder.yml
-  pull_request:
-    paths:
-      - CameraProcessor/**
-      - VideoForwarder/**
-
-jobs:
-  processor_forwarder_integration_test:
-    name: Camera Processor - Video Forwarder integration test
-    runs-on: self-hosted
-    steps:
-      - name: Start service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml up --build --exit-code-from camera-processor-test-service
-      - name: Copy integration test report
-        run: docker cp processor-forwarder-integration-test-container:/app/cp-vf-integration-report.xml cp-vf-integration-report.xml
-      - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml down
-        if: ${{ always() }}
-      - name: Upload integration test report artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: cp-vf-integration-report.xml
-          path: cp-vf-integration-report.xml
+version https://git-lfs.github.com/spec/v1
+oid sha256:bb38ac6adf8f6bfbfaa27081fdadbd12ba2774b9a3781039b8179b1f8d66b4d1
+size 1051

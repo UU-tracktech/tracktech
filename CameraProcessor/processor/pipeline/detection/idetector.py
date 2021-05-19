@@ -1,23 +1,3 @@
-"""Detection abstract class
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-
-
-class IDetector:
-    """Superclass for detectors.
-    """
-
-    def detect(self, frame_obj):
-        """Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.
-
-        Args:
-            frame_obj (FrameObj): object containing frame and timestamp.
-
-        Returns:
-            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects
-        """
-        raise NotImplementedError("Detect function not implemented")
+version https://git-lfs.github.com/spec/v1
+oid sha256:38f81ee2236d1c20604b0bd65112e4c71eebae45b31c752399df97409201cabc
+size 741

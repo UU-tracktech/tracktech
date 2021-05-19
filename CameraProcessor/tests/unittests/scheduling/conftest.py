@@ -1,28 +1,3 @@
-"""Fixtures for scheduling tester
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-
-import pytest
-from processor.scheduling.node.schedule_node import ScheduleNode
-from tests.unittests.scheduling.utils.input_component import InputComponent
-
-
-@pytest.fixture(params=[
-    ScheduleNode(0, [], InputComponent()),
-    ScheduleNode(1, [()], InputComponent()),
-    ScheduleNode(2, [(), ()], InputComponent())
-])
-def example_schedule_node(request):
-    """ Several examples of schedule nodes
-
-    Args:
-        request: different implementations of capture.
-
-    Returns: A node.
-
-    """
-    return request.param
+version https://git-lfs.github.com/spec/v1
+oid sha256:9012656bcb667b60cd1508ffca197abff27ad4361012e4cf640f0cb1a010f837
+size 783

@@ -1,8 +1,3 @@
-version: '3.4'
-
-services:
-  opencv:
-    image: opencv
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+version https://git-lfs.github.com/spec/v1
+oid sha256:d79893e2a2076d8f921eef098519fc55d59c015b0bd417826f8a6afa80604f63
+size 113

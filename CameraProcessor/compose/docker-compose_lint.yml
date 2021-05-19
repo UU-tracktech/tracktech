@@ -1,8 +1,3 @@
-version: '3.4'
-
-services:
-  cameraprocessor:
-    build:
-      context: ..
-      target: lint
-    container_name: camera-processor_lint_container
+version https://git-lfs.github.com/spec/v1
+oid sha256:8021f5d1772be95cd1c9b1de189930304acee303843cf7738e28a5a42223e593
+size 144

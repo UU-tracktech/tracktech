@@ -1,3 +1,3 @@
-pdoc==6.4.2
-argparse
-tornado
+version https://git-lfs.github.com/spec/v1
+oid sha256:b33dd686cff6b74d158aea3df3a134bf54f99ec9ac2441b7ee1fe61812388283
+size 28

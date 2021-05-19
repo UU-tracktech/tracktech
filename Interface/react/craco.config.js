@@ -1,20 +1,3 @@
-const CracoLessPlugin = require('craco-less')
-
-module.exports = {
-  plugins: [
-    {
-      plugin: CracoLessPlugin,
-      options: {
-        lessLoaderOptions: {
-          lessOptions: {
-            modifyVars: {
-              '@primary-color': '#096dd9',
-              '@error-color': '#cf1322'
-            },
-            javascriptEnabled: true
-          }
-        }
-      }
-    }
-  ]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:f745c995932ea44554a931d93dd789a5d4a322893a04d855092e35d8fa9f5230
+size 389

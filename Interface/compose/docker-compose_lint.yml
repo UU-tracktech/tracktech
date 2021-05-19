@@ -1,6 +1,3 @@
-version: "3.8"
-services:
-  interface:
-    build:
-      context: ..
-      target: linter
+version https://git-lfs.github.com/spec/v1
+oid sha256:0884306bfbb95f5857eb803131ae3d4872759941530ff02170f9b39eeb057991
+size 87

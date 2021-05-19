@@ -1,9 +1,3 @@
-"""Excludes yolov5 folder from documentation generation.__all__
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-
-__all__ = ['idetector', 'yolov5_runner']
+version https://git-lfs.github.com/spec/v1
+oid sha256:3674797e0d373f74104ed6eb5f7b08325e64b61ab73d5dab87301f3fe8e40dd2
+size 332

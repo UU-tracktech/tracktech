@@ -1,29 +1,3 @@
-"""Mock detector for testing.
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-import random
-
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.pipeline.detection.idetector import IDetector
-from processor.data_object.rectangle import Rectangle
-
-
-class FakeDetector(IDetector):
-    """A fake detector which does nonsense detections
-
-    """
-
-    def detect(self, frame_obj):
-        """Appends a couple random bounding boxes
-
-        """
-        bounding_boxes = []
-        for i in range(random.randrange(5)):
-            bounding_boxes.append(BoundingBox(i, Rectangle(0, 0, 1, 1), "fake class", 0.5))
-
-        return BoundingBoxes(bounding_boxes)
+version https://git-lfs.github.com/spec/v1
+oid sha256:5e69a832174be6e447ee60fa348b0b67528743438db14a5b9d7136269f3c3667
+size 912

@@ -1,22 +1,3 @@
-name: Interface Lint
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Interface_Lint.yml
-  pull_request:
-    paths:
-      - Interface/**
-
-jobs:
-  interface_lint:
-    name: Interface Lint
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build and start
-        run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
-      - name: Remove
-        run: docker-compose -f Interface/compose/docker-compose_lint.yml down
-        if: ${{ always() }}
+version https://git-lfs.github.com/spec/v1
+oid sha256:3c56b8054ba35793c88d0f6f5ac17be9c729750e9eee5e572785e7c0fef31c4d
+size 547

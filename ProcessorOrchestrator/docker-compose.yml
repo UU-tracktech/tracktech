@@ -1,10 +1,3 @@
-version: "3.8"
-
-services:
-  orchestrator:
-    build: .
-    ports:
-      - published: 80
-        target: 80
-      - published: 443
-        target: 443
+version https://git-lfs.github.com/spec/v1
+oid sha256:33c6a9ecaf880a981a7928fd3f3cfb027c80820201d6f6006f7e7fa91a5244fe
+size 149

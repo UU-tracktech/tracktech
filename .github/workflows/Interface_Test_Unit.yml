@@ -1,29 +1,3 @@
-name: Interface Unit Test
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Interface_Test_Unit.yml
-  pull_request:
-    paths:
-      - Interface/**
-
-jobs:
-  interface_test_unit:
-    name: Interface Unit Test
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build and run
-        run: docker-compose -f Interface/compose/docker-compose_test_unit.yml up --build --exit-code-from interface
-      - name: Copy out coverage
-        run: docker cp interface_container:/react/coverage i-coverage
-      - name: Codecov
-        uses: codecov/codecov-action@v1.5.0
-        with:
-          files: i-coverage
-          flags: Interface
-      - name: Remove
-        run: docker-compose -f Interface/compose/docker-compose_test_unit.yml down
-        if: ${{ always() }}
+version https://git-lfs.github.com/spec/v1
+oid sha256:02f68caac90d8e39c9f7e5a3e4216ad0076b87404ac514b91b1cee50c8a28346
+size 812

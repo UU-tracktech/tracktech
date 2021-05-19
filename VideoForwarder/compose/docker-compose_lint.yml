@@ -1,8 +1,3 @@
-version: "3.8"
-
-services:
-  video-forwarder:
-    build:
-      context: ..
-      target: lint
-    container_name: video-forwarder_container
+version https://git-lfs.github.com/spec/v1
+oid sha256:aa61b7a1165b93b51672287e5b738fc09850752af008b135a28d3566d7598390
+size 138

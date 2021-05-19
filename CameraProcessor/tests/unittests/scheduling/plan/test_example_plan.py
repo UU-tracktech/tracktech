@@ -1,23 +1,3 @@
-"""Import pytest and example_plan.py for testing.
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-import os
-import runpy
-import pytest
-from tests.conftest import root_path
-
-
-def test_example_plan():
-    """Test example plan by running the file
-
-    """
-    plan_path = os.path.join(root_path, 'processor', 'scheduling', 'plan', 'example_plan.py')
-    runpy.run_path(plan_path)
-
-
-if __name__ == '__main__':
-    pytest.main(test_example_plan)
+version https://git-lfs.github.com/spec/v1
+oid sha256:8365c3210257887d0a2ec3d084c34abe7efb31def02ca1cf42e079366fcef0dd
+size 619

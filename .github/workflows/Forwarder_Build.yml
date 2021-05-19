@@ -1,22 +1,3 @@
-name: Forwarder Build
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Forwarder_Build.yml
-  pull_request:
-    paths:
-      - VideoForwarder/**
-
-jobs:
-  forwarder_build:
-    name: Forwarder Build
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose -f VideoForwarder/docker-compose.yml build
-      - name: Remove
-        run: docker-compose -f VideoForwarder/docker-compose.yml rm
-        if: ${{ always() }}
+version https://git-lfs.github.com/spec/v1
+oid sha256:e01c47d911af9e40f6c417de2a3ad29c731a2f835346c4b7e75242cc95f2b4c3
+size 496

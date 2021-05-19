@@ -1,22 +1,3 @@
-name: Orchestrator Build
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Orchestrator_Build.yml
-  pull_request:
-    paths:
-      - ProcessorOrchestrator/**
-
-jobs:
-  orchestrator_build:
-    name: Orchestrator Build
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
-      - name: Remove
-        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml rm
-        if: ${{ always() }}
+version https://git-lfs.github.com/spec/v1
+oid sha256:a36041afa342e7aa0dcd0e2ed40eb2f8c501fa51bdac97bdc16b03a2bd0aaa09
+size 533

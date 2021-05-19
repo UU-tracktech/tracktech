@@ -1,10 +1,3 @@
-"""Gets the root path of the CameraProcessor component
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-import os
-
-root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+version https://git-lfs.github.com/spec/v1
+oid sha256:6ea666e198b2cb5148c24ef2efb273e629a40a97d38ebfea610d48bf92a13bd7
+size 364

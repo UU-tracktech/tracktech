@@ -1,19 +1,3 @@
-"""File which contains dicts with the currently open websocket connections
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-
-processors = dict()
-"""Dictionary which matches processor id to the corresponding websocket
-
-type: Dict[str, ProcessorSocket]
-"""
-
-clients = dict()
-"""Dictionary which matches client id to the corresponding websocket
-
-type: Dict[str, ClientSocket]
-"""
+version https://git-lfs.github.com/spec/v1
+oid sha256:fc049073f86df798a0a504f9f90d0661ceda14542fa5ecdf3e3dccfdbc3de25b
+size 554

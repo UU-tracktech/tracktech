@@ -1,11 +1,3 @@
-<code_coverage_goals>
-    <VideoForwarder>
-        <src>
-            <goal unit="%">80</goal>
-            <info>Seems testable, but the tornado server probably needs a teardown method. Needs integration testing coverage. </info>
-            <to_do>
-                "Write unit tests for utils.py, logging_filter.py, conversion_process.py, and main.py"
-            </to_do>
-        </src>
-    </VideoForwarder>
-</code_coverage_goals>
+version https://git-lfs.github.com/spec/v1
+oid sha256:3f46fc26c203f73a82f59c1bc1961cea821999095433a0c7fbf292092e62f9c3
+size 432

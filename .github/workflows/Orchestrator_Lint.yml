@@ -1,30 +1,3 @@
-name: Orchestrator Lint
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Orchestrator_Lint.yml
-  pull_request:
-    paths:
-      - ProcessorOrchestrator/**
-
-jobs:
-  orchestrator_lint:
-    name: Orchestrator Lint
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --build --no-start
-      - name: Copy in pylintrc
-        run: docker cp .pylintrc processor-orchestrator_container:/app
-      - name: Copy in utility
-        run: docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
-      - name: Start
-        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --exit-code-from processor-orchestrator
-      - name: Remove
-        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml down
-        if: ${{ always() }}
+version https://git-lfs.github.com/spec/v1
+oid sha256:a4b119c0aa5b5c296a6aed8e501c3378efdc5d7a0c99550044faf50fc7c38e3b
+size 1070

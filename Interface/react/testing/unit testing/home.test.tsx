@@ -1,17 +1,3 @@
-/*
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
- */
-
-import React from 'react'
-import { act, render } from '@testing-library/react'
-import { Home } from '../../src/pages/home'
-
-test('Home renders', async () => {
-  await act(async () => {
-    render(<Home />)
-  })
-})
+version https://git-lfs.github.com/spec/v1
+oid sha256:6a7730efdc9b9ac04513ae47a5d03f2a05e8ef592fcd24d5640c6c2a0c731a45
+size 444

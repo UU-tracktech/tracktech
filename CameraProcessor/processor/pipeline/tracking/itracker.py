@@ -1,23 +1,3 @@
-"""Contains main video processing pipeline function
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-
-
-class ITracker:
-    """Tracker interface.
-    """
-    def track(self, frame_obj, det_obj):
-        """Performs tracking stage using the tracking object.
-
-        Args:
-            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.
-
-        Returns:
-            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
-        """
-        raise NotImplementedError('Tracking stage not implemented')
+version https://git-lfs.github.com/spec/v1
+oid sha256:fcd17f31294313fc072a5b898d1477edc0319315e2d533ea3dc31b774fed5a06
+size 826

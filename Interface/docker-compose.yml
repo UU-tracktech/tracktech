@@ -1,5 +1,3 @@
-version: "3.8"
-services:
-  interface:
-    build:
-      context: .
+version https://git-lfs.github.com/spec/v1
+oid sha256:97d3e32fff21b4645c6590fb8e05b011ea75989308ca542edf9ab26c4cf37d43
+size 66

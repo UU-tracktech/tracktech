@@ -1,16 +1,3 @@
-""" File that runs training using a custom dataset.
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-import os
-
-from tests.conftest import root_path
-
-path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolov5')
-
-if __name__ == '__main__':
-    os.system(f'python "{path}/train.py" --data "{path}/data/coco128.yaml" --cfg "{path}/models/yolov5s.yaml" '
-              f'--weights \'\' --hyp "{path}/data/hyp.scratch.yaml" --batch-size 4')
+version https://git-lfs.github.com/spec/v1
+oid sha256:56372472fc303dae2e3d3ffec125b8f8cb894aedfe2ac3ec3cfe7ee51c0bd09b
+size 631

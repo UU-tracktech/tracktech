@@ -1,7 +1,3 @@
-"""
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
+version https://git-lfs.github.com/spec/v1
+oid sha256:611d3c4b2c80fd20f5a9dcbdd36ba66144dcf5e059eced04de41d1399088fa58
+size 230

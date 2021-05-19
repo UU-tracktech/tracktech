@@ -1,9 +1,3 @@
-<code_coverage_goals>
-    <ProcessorOrchestrator>
-        <src>
-            <goal unit="%">80</goal>
-            <info>Many files in here are only tested during integration testing. Figure out how to combine those test results with unit tests.</info>
-            <to_do>"Test exceptions in socket handlers, exclude main.py, remove log_get_request (in logger.py) and log_handler.py"</to_do>
-        </src>
-    </ProcessorOrchestrator>
-</code_coverage_goals>
+version https://git-lfs.github.com/spec/v1
+oid sha256:13e8356d99e92078bf7275b6daf6fcbcfa6fd3a4c257cae4af06c59f130387f2
+size 456

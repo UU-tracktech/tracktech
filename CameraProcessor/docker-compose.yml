@@ -1,11 +1,3 @@
-version: '3.8'
-
-services:
-  cameraprocessor:
-    build:
-      context: .
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+version https://git-lfs.github.com/spec/v1
+oid sha256:e2f381f3eab7acab3c80e8b9fa85b64d515083d5258c8d8ae39049b90075c012
+size 176

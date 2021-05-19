@@ -1,35 +1,3 @@
-"""Component that gets input from previous stage
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-from typing import Callable
-
-
-from processor.scheduling.component.component_interface import IComponent
-
-
-class InputComponent(IComponent):
-    """Example input component.
-
-    Work function must contain one argument,
-    because the current scheduler can only pass one argument to the initial node.
-    """
-
-    @staticmethod
-    def work(obj) -> object:
-        """Example function with single argument that can be returned by execute_component().
-
-        Args:
-            obj: input object passed through by scheduler.
-
-        Returns:
-            Modified object used by the next layer.
-        """
-        return obj
-
-    def execute_component(self) -> Callable:
-        """See base class."""
-        return self.work
+version https://git-lfs.github.com/spec/v1
+oid sha256:15dd6f68a54d4afc5977b7600c6c23116ca598a7f971eeaf35a77b408ab86ded
+size 1001

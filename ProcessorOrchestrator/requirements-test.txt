@@ -1,9 +1,3 @@
-tornado
-pylint==2.6.0
-pylint-exit
-pytest
-pytest-asyncio
-pytest-timeout
-pytest-cov
-coverage
-requests
+version https://git-lfs.github.com/spec/v1
+oid sha256:788fa9b10e0d4ce2c506a88e19054994d89537481c1749738522c6a955d10cf1
+size 99

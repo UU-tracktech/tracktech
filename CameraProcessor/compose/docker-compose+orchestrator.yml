@@ -1,18 +1,3 @@
-# Compose file for integration testing. Builds processor orchestrator build image from source, takes camera-processor image from
-version: "3.4"
-services:
-  # Take the already built test container from the camera processor
-  camera-processor-test-service:
-    build:
-      context: ..
-      target: test_integration_orchestrator
-    container_name: processor-integration-test-container
-    depends_on:
-      - "processor-orchestrator-service"
-    # Overwrite entrypoint to run integration tests instead
-  # Build the build stage from the processor orchestrator manually (since it is not guaranteed the last develop version on the runner)
-  processor-orchestrator-service:
-    build:
-      context: ../../ProcessorOrchestrator
-      target: build
-    container_name: ext-orchestrator-integration-test-container
+version https://git-lfs.github.com/spec/v1
+oid sha256:d4a43f313c72f987861cb619782e81d20707b91d2162e565990bc3fb1c1ee0ed
+size 809

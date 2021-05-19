@@ -1,22 +1,3 @@
-# .coveragerc to control coverage.py
-[run]
-branch = True
-omit =
-    # Never test __file__ files
-    */__pycache__/
-    */__init__.py
-
-[report]
-ignore_errors = True
-# Regexes for lines to exclude from consideration
-exclude_lines =
-    # Don't complain if tests don't hit defensive assertion code:
-    raise AssertionError
-    raise NotImplementedError
-
-    # Don't complain if non-runnable code isn't run:
-    if 0:
-    if __name__ == .__main__.:
-
-[html]
-directory = po_coverage_html
+version https://git-lfs.github.com/spec/v1
+oid sha256:b27cb0c6c73232c9736166a51e18bf8f85637730c1424a2f278488e21a435647
+size 482

@@ -1,22 +1,3 @@
-"""Simplest definition of a component
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-from typing import Callable
-
-
-from processor.scheduling.component.component_interface import IComponent
-
-
-class BaseComponent(IComponent):
-    """Base of every component containing only the minimal required functionality."""
-
-    def work(self) -> object:
-        """Example function that can be returned by execute_component()."""
-
-    def execute_component(self) -> Callable:
-        """See base class."""
-        return self.work
+version https://git-lfs.github.com/spec/v1
+oid sha256:8dd1fcb848c05f98d2afb14bfd572f47bc2e4dd842571f6c4f8478479cad1016
+size 697

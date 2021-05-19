@@ -1,24 +1,3 @@
-version: 0.1
-log:
-  accesslog:
-    disabled: true
-  level: debug
-storage:
-  cache:
-    blobdescriptor: inmemory
-  filesystem:
-    rootdirectory: /var/lib/registry
-auth:
-  htpasswd:
-    realm: Registry Realm
-    path: /auth/htpasswd
-http:
-  addr: localhost:5000
-  tls:
-    certificate: /run/secrets/tracktech.ml-cert.pem
-    key: /run/secrets/tracktech.ml-privkey.pem
-  headers:
-    X-Content-Type-Options: [nosniff]
-health:
-  storagedriver:
-    enabled: true
+version https://git-lfs.github.com/spec/v1
+oid sha256:1add94696240a400d8e1dc01070812e1b85add263e69f13fc0e3bbd7a3ef7de2
+size 458

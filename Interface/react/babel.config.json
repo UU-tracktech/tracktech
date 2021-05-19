@@ -1,9 +1,3 @@
-{
-  "presets": ["@babel/preset-react","@babel/preset-env","@babel/preset-typescript"],
-  "plugins": ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-react-jsx",
-    ["@babel/plugin-transform-runtime",
-    {
-      "regenerator": true
-    }
-  ]]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:468d76de42d5e607607b94a81be0808f27745074a2b2b31f994bad2404b9d039
+size 265

@@ -1,30 +1,3 @@
-/*
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
- */
-
-/**
- This component displays the login status
- If the user is logged in, it shows "Loggin in as: {username}"
- Otherwise, it shows "you are currently not logged in" 
-*/
-
-import React from 'react'
-import { useKeycloak } from '@react-keycloak/web'
-
-export function LoggedInUser() {
-  //Obtain keycloak so we can check for login info
-  const { keycloak } = useKeycloak()
-
-  //If the user is logged in, obtain the username from the token and display it
-  return keycloak.authenticated && keycloak.tokenParsed ? (
-    <div data-testid="loggedInAsDiv">
-      Logged in as: {keycloak.tokenParsed['name']}
-    </div>
-  ) : (
-    <div data-testid="notLoggedInDiv">You are currently not logged in</div>
-  )
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1682220e4f58890277f363b649c52244be03c709d4f04f1a21ca274fc3d1472c
+size 928

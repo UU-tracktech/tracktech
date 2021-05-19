@@ -1,22 +1,3 @@
-name: Interface Build
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Interface_Build.yml
-  pull_request:
-    paths:
-      - Interface/**
-
-jobs:
-  interface_build:
-    name: Interface Build
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose -f Interface/docker-compose.yml build
-      - name: Remove
-        run: docker-compose -f Interface/docker-compose.yml rm
-        if: ${{ always() }}
+version https://git-lfs.github.com/spec/v1
+oid sha256:07d8b6f09101853684afd79622e94a073dd5f6eba46e7db7b17c6a807234c4cc
+size 481

@@ -1,31 +1,3 @@
-# Ignore all generated HTML for documentation
-/docs/html/*
-
-# Python related ignores
-# Dependent on personal environment and settings
-**/.idea
-
-# virtualenv
-.venv
-**/venv
-
-# Ignore linter config file outside of root to prevent duplicates
-**/.pylintrc
-!.pylintrc
-
-*.pyc
-
-# VS code
-**/.vscode
-/.project
-
-# Directory
-ForwarderOrchestrator
-
-CameraProcessor/src/yolov5s.pt
-
-CameraProcessor/.pylintrc
-CameraProcessor/processor/training/detection/plots/
-CameraProcessor/utility/__init__.py
-CameraProcessor/utility/pylint_ignore.py
-CameraProcessor/data/annotated/test/img1-complete/
+version https://git-lfs.github.com/spec/v1
+oid sha256:fc4397beb0752ebe9d5bfbc590482e8ec6a3685269ae32f2e69fb8dc5036efe6
+size 575

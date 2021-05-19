@@ -1,9 +1,3 @@
-"""Excludes sort package (adjustment of the original SORT tracker https://github.com/abewley/sort).
-
-This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)
-
-"""
-
-__all__ = ['sort_tracker', 'itracker']
+version https://git-lfs.github.com/spec/v1
+oid sha256:75f2d808034b7cadb7a15f8e4a5c39dacfe42caf83f666950029159a1419c18e
+size 366

@@ -1,7 +1,3 @@
-{
-    "trailingComma": "none",
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true,
-    "endOfLine": "auto"
-  }
+version https://git-lfs.github.com/spec/v1
+oid sha256:5020a5356024db984a979fc4897c26c90cdde7d99647029974a47a11dd595061
+size 121

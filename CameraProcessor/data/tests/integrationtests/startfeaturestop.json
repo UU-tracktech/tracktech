@@ -1,3 +1,3 @@
-[{"type":"start","cameraId":"mock_id","frameId":1,"boxId":1},
-  {"type":"featureMap","objectId":1,"featureMap":[0.91528,0.8487,0.25821,0.05038]},
-  {"type":"stop","objectId":1}]
+version https://git-lfs.github.com/spec/v1
+oid sha256:ec6ef025e94c3a03f26051593207d5a32025e9ab91ac1a79a37c0f72ed31dd6d
+size 178

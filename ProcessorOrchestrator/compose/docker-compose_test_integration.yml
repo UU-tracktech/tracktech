@@ -1,18 +1,3 @@
-# Compose file for integration testing. Builds processor orchestrator and runs tests.
-version: "3.8"
-services:
-  processor-orchestrator-service:
-    build:
-      context: ..
-      target: test_integration
-    container_name: processor-orchestrator_container
-    entrypoint: ["python","-m","pytest","/app/tests/testing_server.py","-s","--cov-config=.coveragerc","--cov=src", "--cov-report=html", "--cov-report=term", "--cov-append"]
-  processor-orchestrator-integration-tests-service:
-    # Use the existing testing image again, but run integration tests
-    depends_on:
-      - processor-orchestrator-service
-    build:
-      context: ..
-      target: test_integration
-    container_name: processor-orchestrator-integration-tests_container
-    entrypoint: ["python","-m","pytest","/app/tests/integration_testing","--junitxml=integration-report.xml"]
+version https://git-lfs.github.com/spec/v1
+oid sha256:cfde1110c265b09bdf1c703d024b9b0547fe9da6ac31c70cc838e7ef069b5377
+size 849

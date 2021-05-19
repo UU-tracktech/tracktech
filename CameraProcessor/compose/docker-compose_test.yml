@@ -1,8 +1,3 @@
-version: '3.4'
-
-services:
-  cameraprocessor:
-    build:
-      context: ..
-      target: test
-    
+version https://git-lfs.github.com/spec/v1
+oid sha256:0455b45a9fd82ea2dd0099f963f78b811e38ab0f0e7f484a4c334c5788a1942b
+size 97

@@ -1,29 +1,3 @@
-name: Processor-Orchestrator integration
-
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/Processor-Orchestrator.yml
-  pull_request:
-    paths:
-      - CameraProcessor/**
-      - ProcessorOrchestrator/**
-
-jobs:
-  processor_orchestrator_integration_test:
-    name: Camera Processor - Processor Orchestrator integration test
-    runs-on: self-hosted
-    steps:
-      - name: Start service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
-      - name: Copy integration test report
-        run: docker cp processor-integration-test-container:/app/cp-po-integration-report.xml cp-po-integration-report.xml
-      - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
-        if: ${{ always() }}
-      - name: Upload integration test report artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: cp-po-integration-report.xml
-          path: cp-po-integration-report.xml
+version https://git-lfs.github.com/spec/v1
+oid sha256:cee632b92dbb7efda0e6f1e7e43d24a3766062da9b0e7de37c9734528a3e7680
+size 1070

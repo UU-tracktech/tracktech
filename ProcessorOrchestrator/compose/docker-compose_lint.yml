@@ -1,8 +1,3 @@
-# Compose file for integration testing. Builds processor orchestrator and runs tests.
-version: "3.8"
-services:
-  processor-orchestrator:
-    build:
-      context: ..
-      target: lint
-    container_name: processor-orchestrator_container
+version https://git-lfs.github.com/spec/v1
+oid sha256:122bb963d4b069ea64006c62a964e0dd19430b65489b91208f9ab74b309b2512
+size 237

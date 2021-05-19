@@ -1,16 +1,3 @@
-# Install these dependencies using
-# pip install -r requirements-gpu.txt
-
-# Loading bar
-tqdm==4.59.0
-
-torch==1.8.0+cu101
-torchvision==0.9.0+cu101
--f https://download.pytorch.org/whl/torch_stable.html
-
-# YOLOv5
--r processor/pipeline/detection/yolov5/requirements.txt
-
-
-# SORT tracking
--r processor/pipeline/tracking/sort/requirements.txt
+version https://git-lfs.github.com/spec/v1
+oid sha256:209b2d04565fb1375c066eed788b473698f90142f66872291d17d949f8cb1c25
+size 337
