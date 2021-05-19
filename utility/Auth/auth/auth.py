@@ -44,13 +44,15 @@ class Auth:
             raise AuthenticationError("Failed to authenticate", e)
         
         try:
-            if self.role not in decoded["resource_access"][self.audience]["roles"]:
+            authorized = self.role in decoded["resource_access"][self.audience]["roles"]
                 # If decoding succeeds but the role is invalid throw a AuthorizationError
-                raise AuthorizationError("Role not found")
-
+                
         except Exception as e:
             # If decoding fails throw a AuthenticationError
             raise AuthenticationError("Failed to authorize", e)
+        
+        if not authorized:
+                raise AuthorizationError("Role not found")
         
         print("Authed")
 
