@@ -1,0 +1,29 @@
+name: Documentation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/Documentation.yml
+  pull_request:
+    paths:
+      - VideoForwarder/**
+    branches:
+      - master
+    # Also trigger on page_build, as well as release created events
+  page_build:
+    release:
+      types: # This configuration does not affect the page_build event above
+        - created
+
+jobs:
+  documentation:
+    name: Documentation
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose -f VideoForwarder/docker-compose.yml build
+      - name: Remove
+        run: docker-compose -f VideoForwarder/docker-compose.yml rm
+        if: ${{ always() }}
