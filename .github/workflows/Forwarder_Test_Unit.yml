@@ -19,8 +19,6 @@ jobs:
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build --exit-code-from video-forwarder
       - name: Copy unit test report
         run: docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
-      - name: Copy html coverage report
-        run: docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
       - name: Copy xml coverage report
         run: docker cp video-forwarder_container:/app/coverage.xml coverage.xml
       - name: Codecov
