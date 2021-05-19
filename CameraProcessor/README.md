@@ -9,12 +9,12 @@ notifying the camera operator when a subject is re-identified.
 ## Architecture
 
 The inner workings of the camera processor consist of three parts. 
-The input that is processed by the pipeline and send to either other camera processors or the interface.
+The input that is processed by the pipeline and sent to either other camera processors or the interface.
 
 ### Input
 
 There are two inputs available to the camera processor, 
-the unaltered video stream and commands/feature maps send by the orchestrator.
+the unaltered video stream and commands/feature maps sent by the orchestrator.
 
 #### Video stream
 
