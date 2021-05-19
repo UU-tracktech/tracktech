@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 import asyncio
 
 import pytest
-from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 from tornado.websocket import WebSocketHandler
