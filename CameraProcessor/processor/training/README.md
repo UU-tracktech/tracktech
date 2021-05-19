@@ -1,6 +1,6 @@
 # Training
 
-Every training component is run standalone. The training of detection, tracking and re-identification
+Every training component is run standalone. The training of detection, tracking and, re-identification
 is performed separately.
 
 ## Detection
