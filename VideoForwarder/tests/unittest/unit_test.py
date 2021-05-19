@@ -8,6 +8,7 @@ Utrecht University within the Software Project course.
 import os
 import pytest
 import ssl
+from logging import LogRecord
 
 from src.camera import Camera
 from src.main import create_camera, create_stream_options, create_ssl_options,\
