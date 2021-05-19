@@ -26,7 +26,7 @@ COPY react/.eslintrc.json ./.eslintrc.json
 COPY react/.prettierrc.json ./.prettierrc.json
 COPY react/testing ./testing
 
-ENTRYPOINT ["./node_modules/.bin/eslint", "src/*.tsx", "src/*.ts"]
+ENTRYPOINT ["./node_modules/.bin/eslint", "src/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"]
 
 
 FROM source AS testing
