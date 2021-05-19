@@ -19,7 +19,7 @@ and gets all trackers (old and new) in the current frame returning these tracker
 
 The detections are all [BoundingBoxes](../../data_object/bounding_boxes.py) in the current frame.
 Each [BoundingBox](../../data_object/bounding_box.py) gets converted to a list `[x1, y1, x2, y2, confidence]`.
-All these list get put into a single numpy array.
+All these lists get put into a single NumPy array.
 
 ### Retrieval of trackers
 
@@ -30,7 +30,7 @@ A new tracker is a tracker which has just been added after the minimal amount of
 
 ### SORT tracking
 
-[SORT](https://github.com/abewley/sort) stands for Simple Online and Realtime Tracking, and is an algorithm for 2D multiple object tracking in video sequences.
+[SORT](https://github.com/abewley/sort) stands for Simple Online and Realtime Tracking and is an algorithm for 2D multiple objects tracking in video sequences.
 It only uses past and present frames for tracking and forgets about objects that haven't been detected for too long.
 It uses the Kalman filter to determine if a tracker from a previous frame is the same object as a detection from the current frame.
-This uses the distance, velocity, time and color composition to determine the tracker associated with an object. 
+This uses the distance, velocity, time and, color composition to determine the tracker associated with an object. 
