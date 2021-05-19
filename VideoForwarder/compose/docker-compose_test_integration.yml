@@ -1,8 +1,0 @@
-version: "3.8"
-
-services:
-  video-forwarder_test:
-    build:
-      context: ..
-      target: test_integration
-    container_name: video-forwarder_container

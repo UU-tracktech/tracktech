@@ -42,6 +42,7 @@ class CameraHandler(StaticFileHandler):
         # Set properties of the handler
         self.remove_delay : float = self.application.settings.get("remove_delay")
         self.timeout_delay : int = self.application.settings.get("timeout_delay")
+        self.wait_delay : int = self.application.settings.get("wait_delay")
 
         self.stream_options : StreamOptions = self.application.settings.get("stream_options")
 
@@ -136,7 +137,7 @@ class CameraHandler(StaticFileHandler):
 
         try:
             # Wait a few seconds for it stop, so it does not lock any files
-            self.camera.conversion.wait(60)
+            self.camera.conversion.wait(self.wait_delay)
         except TimeoutExpired:
             # Handle a timeout exception if the process does not stop
             pass
@@ -199,9 +200,7 @@ class CameraHandler(StaticFileHandler):
         if extension == 'm3u8':
             self.start_stream(root)
 
-        # If it requests a stream file
-        if extension in ('m3u8', 'ts'):
-            self.restart_stop_callback(root)
+        self.restart_stop_callback(root)
 
         # Return path to files
         return abspath

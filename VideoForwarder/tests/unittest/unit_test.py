@@ -8,26 +8,12 @@ Utrecht University within the Software Project course.
 import os
 import pytest
 import ssl
-from tornado.web import Application
-from tornado.httputil import HTTPServerRequest, HTTPConnection
 from logging import LogRecord
 
 from src.camera import Camera
-from src.main import create_camera, create_stream_options, create_ssl_options,\
+from src.loading import create_camera, create_stream_options, create_ssl_options,\
     get_remove_delay, get_timeout_delay, create_authenticator
 from src.logging_filter import LoggingFilter
-from src.camera_handler import CameraHandler
-
-
-def test_default_properties(empty_camera):
-    """Tests default properties of an empty camera object
-
-    Args:
-        empty_camera (Camera): Empty camera
-
-    """
-    assert not empty_camera.conversion
-    assert not empty_camera.callback
 
 
 def test_camera_properties():
@@ -181,8 +167,8 @@ def test_ssl_3():
 def test_ssl_4():
     """ Check if the ssl context fails if wrong files are supplied
     """
-    os.environ['SSL_CERT'] = '/app/tests/files/key.pem'
-    os.environ['SSL_KEY'] = '/app/tests/files/key.pem'
+    os.environ['SSL_CERT'] = '/app/tests/files/cert.pem'
+    os.environ['SSL_KEY'] = '/app/tests/files/cert.pem'
 
     with pytest.raises(ssl.SSLError):
         _ = create_ssl_options()
@@ -194,7 +180,7 @@ def test_ssl_4():
 def test_authenticator_1():
     """ Check if the authenticator is not None if all properties are specified
     """
-    os.environ["PUBLIC_KEY"] = "/app/tests/files/key.pem"
+    os.environ["PUBLIC_KEY"] = "/app/tests/files/cert.pem"
     os.environ["AUDIENCE"] = "aud"
     os.environ["CLIENT_ROLE"] = "role"
 
