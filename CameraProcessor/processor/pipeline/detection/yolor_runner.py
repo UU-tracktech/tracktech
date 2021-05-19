@@ -18,10 +18,10 @@ from processor.pipeline.detection.idetector import IDetector
 
 # Path append needed for symlinked repositories
 curr_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, curr_dir)
+sys.path.insert(0, os.path.join(curr_dir, './yolor'))
 
 import yolor
-from yolor import utils.datasets.letterbox as letterbox
+from yolor.utils.datasets import letterbox
 from yolor.utils.general import non_max_suppression, apply_classifier, scale_coords
 from yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
 from yolor.models.models import Darknet
