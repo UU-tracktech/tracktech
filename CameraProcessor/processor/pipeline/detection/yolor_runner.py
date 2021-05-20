@@ -20,10 +20,10 @@ from processor.pipeline.detection.idetector import IDetector
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(curr_dir, './yolor'))
 
-from utils.datasets import letterbox
-from utils.general import non_max_suppression, apply_classifier, scale_coords
-from utils.torch_utils import select_device, load_classifier, time_synchronized
-from models.models import Darknet
+from yolor.utils.datasets import letterbox
+from yolor.utils.general import non_max_suppression, apply_classifier, scale_coords
+from yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
+from yolor.models.models import Darknet
 
 
 class YolorDetector(IDetector):
