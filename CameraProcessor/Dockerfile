@@ -19,7 +19,7 @@ RUN apt install -y g++
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git
-RUN git clone https://github.com/UU-tracktech/yolor processor/pipeline/detection/
+RUN git clone https://github.com/UU-tracktech/yolor processor/pipeline/detection/yolor
 
 # Install pip requirements
 COPY requirements.txt .
@@ -36,8 +36,6 @@ COPY test-configs.ini test-configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
 COPY tests/conftest.py tests/conftest.py
-RUN apt-get install tree
-RUN tree
 
 
 FROM test AS test_unit
