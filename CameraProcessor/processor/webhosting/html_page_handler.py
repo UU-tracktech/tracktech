@@ -11,14 +11,25 @@ import os
 import tornado.template
 import tornado.web
 
-from processor.utils.config_parser import ConfigParser
-
 # Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python
 # Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7
 
 
+# pylint: disable=attribute-defined-outside-init
 class HtmlPageHandler(tornado.web.RequestHandler):
-    """Handler for the html page of the site that is for the main page."""
+    """Handler for the html page of the site that is for the main page.
+
+    Attributes:
+        configs (ConfigParser): configurations of the stream
+    """
+    def initialize(self, configs):
+        """Give the configurations when initializing the stream handler
+
+        Args:
+            configs (ConfigParser): configurations
+        """
+        self.configs = configs
+
     def get(self, file_name='index.html'):
         """Gets the html page and renders it.
 
@@ -34,8 +45,7 @@ class HtmlPageHandler(tornado.web.RequestHandler):
             file_name = 'index.html'
 
         # Gets path of the html page
-        config_parser = ConfigParser('configs.ini')
-        html_dir_path = config_parser.configs['Main']['html_dir_path']
+        html_dir_path = self.configs['Main']['html_dir_path']
         index_page = os.path.join(html_dir_path, file_name)
 
         if os.path.exists(index_page):
