@@ -8,7 +8,6 @@ Utrecht University within the Software Project course.
 from os import path
 
 import requests
-from PIL import Image
 from pycocotools.coco import COCO
 
 from processor.data_object.bounding_box import BoundingBox
@@ -56,7 +55,11 @@ class COCODataloader(IDataloader):
         previous_name = ''
 
         for ann in annotations:
-            width, height = self.get_image_dimensions(ann['image_id'])
+            image_id = ann['image_id']
+            path = self.__get_image_path(image_id)
+            width, height = self.get_image_dimensions(image_id, path)
+            print(width)
+            print(height)
             boxes.append(BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
                                      rectangle=Rectangle(x1=ann['bbox'][0] / width,
                                                          y1=ann['bbox'][1] / height,
@@ -97,21 +100,9 @@ class COCODataloader(IDataloader):
                 filtered_annotations.append(ann)
         return filtered_annotations
 
-    def get_image_dimensions(self, image_id):
-        """Gets the size of an image based on its COCO name.
-
-          Args:
-              image_id: String with the name of the image.
-
-          Returns: width, height (integers).
-
-          """
-        if image_id in self.image_dimensions:
-            return self.image_dimensions[image_id]
+    def __get_image_path(self, image_id):
         zeros = ''
         for i in range(12 - len(str(image_id))):
             zeros += '0'
-        file_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
-        image = Image.open(file_path)
-        self.image_dimensions[image_id] = image.size
-        return image.size
+        this_image_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
+        return this_image_path

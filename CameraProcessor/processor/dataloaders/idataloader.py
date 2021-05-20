@@ -5,6 +5,8 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+from PIL import Image
+
 from processor.utils.config_parser import ConfigParser
 
 
@@ -26,16 +28,21 @@ class IDataloader:
         self.filter_config = configs['Filter']
         self.image_dimensions = {}
 
-    def get_image_dimensions(self, image_id):
+    def get_image_dimensions(self, image_id, this_image_path):
         """Gets the size of an image based on its name.
 
         Args:
+            this_image_path: Path to image file.
             image_id: String with the name of the image.
 
         Returns: width, height (integers).
 
         """
-        raise NotImplementedError('get image size method not implemented')
+        if image_id in self.image_dimensions:
+            return self.image_dimensions[image_id]
+        image = Image.open(this_image_path)
+        self.image_dimensions[image_id] = image.size
+        return image.size
 
     def parse_file(self):
         """Parses a file into a BoundingBoxes object.
