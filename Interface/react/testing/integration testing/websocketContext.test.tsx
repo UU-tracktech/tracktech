@@ -178,3 +178,11 @@ test('Bounding boxes start tracking', async () => {
   }
   expect(gotMessage).toBeTruthy()
 })
+
+test.todo('Clicking tracked object indicator stops tracking')
+
+test.todo('Overlay only draws indicators specified by filters')
+
+test.todo('Closes websocket')
+
+test.todo('Websocket Error')

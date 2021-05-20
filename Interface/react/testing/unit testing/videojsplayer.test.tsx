@@ -28,3 +28,20 @@ afterEach(() => {
 test('It renders without error', () => {
   expect(screen.getByTestId('videojsplayer')).toBeDefined()
 })
+
+describe('videojs callbacks', () => {
+  it.todo('onFirstplay')
+  it.todo('onPlay')
+  it.todo('onPause')
+})
+
+describe('timestamp', () => {
+  it.todo('gets the segment name') //GetUri
+  it.todo('Stores the first segment and looks for the next') //getInitialUri
+  it.todo('calculates a timestamp from the 2nd segment') //LookForUriUpdate
+
+  it.todo('correctly calculates a time from a filename') //getsegmentStartTime
+  it.todo('Converts the timestamp in correct format') //PrintTimestamp
+})
+
+test.todo('Resizing')
