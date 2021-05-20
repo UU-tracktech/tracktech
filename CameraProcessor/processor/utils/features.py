@@ -32,7 +32,7 @@ def slice_bounding_box(bbox, img):
         a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up
                    the memory
     """
-    width, height, _ = img.shape
+    height, width, _ = img.shape
     return img[
            int(bbox.get_rectangle().get_y1() * height):int(bbox.get_rectangle().get_y2() * height),
            int(bbox.get_rectangle().get_x1() * width):int(bbox.get_rectangle().get_x2() * width)
