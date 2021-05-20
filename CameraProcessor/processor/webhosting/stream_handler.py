@@ -24,9 +24,18 @@ class StreamHandler(tornado.web.RequestHandler):
     """Streamhandler is for the tornado localhost page. It serves JPG images to the client
 
     Attributes:
+        configs (ConfigParser): configurations of the stream
         __previous_flush_timestamp (float): Timestamp of the previous flush
         __flush_interval (float): Time inbetween flushes
     """
+    def initialize(self, configs):
+        """Give the configurations when initializing the stream handler
+
+        Args:
+            configs (ConfigParser): configurations
+        """
+        self.configs = configs
+
     @tornado.gen.coroutine
     def get(self):
         """Get request handler for the webpage to show video stream."""
@@ -45,7 +54,7 @@ class StreamHandler(tornado.web.RequestHandler):
         self.__flush_interval = .1
 
         # Get the objects needed for process_stream and starts the function
-        capture, detector, tracker, _ = prepare_stream()
+        capture, detector, tracker, _ = prepare_stream(self.configs)
         yield process_stream(capture, detector, tracker, self.__frame_processed, None)
 
         # Close capture and send response

@@ -1,20 +1,26 @@
-# training/detection
+# Training of Detection
+
+This component trains the object detection component of the program. It uses object detection datasets such as the 
+[COCO dataset](https://cocodataset.org/#home) to train for object detection.
 
 ## Training a model
 
-Change working directory to ```~/CameraProcessor/processor/pipeline/detection/yolov5``` and run the follwing command
-
+Executing [train.py](train.py) starts the training of the detection model. It runs the following command:
 ```
-python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --batch-size 4
+python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --hyp hyp.scratch.yaml --batch-size 4
 ```
 
-- ```--data``` defines the location of the dataset
+- ```--data``` defines the location of the dataset.
 
-- ```--cfg``` defines the config file for reading the weights from the dataset
+- ```--cfg``` defines the config file for reading the weights from the dataset.
 
-- ```--weights``` defines the weights to use for training
+- ```--weights``` defines the weights to use for training.
+
+- ```--hyp``` defines the hyp configuration for use for training.
 
 - ```--batch-size``` defines the batch size to use. This can be set to 2-4 times your GPU memory.
+
+The values of these parameters can be configured in the [configs.ini](../../../configs.ini) file.
 
 ## accuracy_object.py
 
@@ -38,18 +44,15 @@ by the `PODM` library.
 and parses the bounding boxes through the `parse_boxes` function, before returning the result.
 
 `detect(self)` retrieves the accuracy of detections from a folder prespecified in the `__init__`.
-It prints the true positives `tp`, false positives `fp`, false negatives `fns` and mean average precision `mAP`.
+It prints the true positives `tp`, false positives `fp`, false negatives `fns`, and mean average precision `mAP`.
 
-`draw_pr_plot(self, result)` draws a precision recall graph from a single `result` using the `PODM` library.
+`draw_pr_plot(self, result)` draws a precision-recall graph from a single `result` using the `PODM` library.
 The result is an image displaying the graph.
 
 `draw_all_pr_plots(self)` runs the `draw_pr_plot` function for every class.
 
 ## train.py
 
-```python
-import processor.training.detection.train
-```
-
-[train.py](train.py)
+[train.py](train.py) runs the training of the detection model as explained in the
+[first section](#training-a-model).
 
