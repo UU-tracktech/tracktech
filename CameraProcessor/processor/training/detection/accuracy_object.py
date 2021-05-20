@@ -11,14 +11,13 @@ from typing import List
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
-from processor.utils.config_parser import ConfigParser
 from processor.training.pre_annotations import PreAnnotations
-
+from processor.utils.config_parser import ConfigParser
 
 class AccuracyObject:
     """This class is used to test the accuracy of predictions."""
 
-    def __init__(self):
+    def __init__(self, configs):
         """Initialise AccuracyObject by reading the config and the ground truth file."""
         # Initializing class variables
         self.results = {}
@@ -28,15 +27,13 @@ class AccuracyObject:
         self.frame_amount = 0
 
         # Assign class variables from config
-        self.read_config()
+        self.read_config(configs)
 
         self.bounding_boxes_gt = []
 
-    def read_config(self):
+    def read_config(self, configs):
         """Assign class variables using the Accuracy config."""
         # Load the config file, take the relevant Accuracy section
-        config_parser = ConfigParser('configs.ini')
-        configs = config_parser.configs
         self.yolo_config = configs['Yolov5']
         self.accuracy_config = configs['Accuracy']
 
@@ -166,6 +163,7 @@ class AccuracyObject:
 
 
 if __name__ == "__main__":
-    test_object = AccuracyObject()
+    config_parser = ConfigParser('configs.ini')
+    test_object = AccuracyObject(config_parser.configs)
     test_object.detect()
     test_object.draw_all_pr_plots()

@@ -28,6 +28,7 @@ COPY data/annotated/test data/annotated/test
 COPY data/videos data/videos
 COPY pytest.ini pytest.ini
 COPY configs.ini configs.ini
+COPY test-configs.ini test-configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
 COPY tests/conftest.py tests/conftest.py
