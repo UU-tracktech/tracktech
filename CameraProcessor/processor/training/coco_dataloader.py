@@ -6,10 +6,11 @@ Utrecht University within the Software Project course.
 
 """
 from os import path
+
 import requests
-from pycocotools.coco import COCO
-import numpy
 from PIL import Image
+from pycocotools.coco import COCO
+
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
@@ -20,7 +21,7 @@ class COCODataloader(IDataloader):
     """Dataloader for COCO dataser."""
 
     def __init__(self, categories, file_path, nr_frames, image_path=''):
-        super().__init__(categories, file_path, nr_frames, image_path='')
+        super().__init__(categories, file_path, nr_frames, image_path)
         self.coco = COCO(file_path)
 
     def parse_file(self):
@@ -55,7 +56,7 @@ class COCODataloader(IDataloader):
         previous_name = ''
 
         for ann in annotations:
-            width, height = self.get_image_size(ann['id'])
+            width, height = self.get_image_dimensions(ann['id'])
             boxes = BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
                                 rectangle=Rectangle(x1=ann['bbox'][0] / width,
                                                     y1=ann['bbox'][1] / height,
@@ -96,7 +97,7 @@ class COCODataloader(IDataloader):
                 filtered_annotations.append(ann)
         return filtered_annotations
 
-    def get_image_size(self, image_id):
+    def get_image_dimensions(self, image_id):
         """Gets the size of an image based on its COCO name.
 
           Args:
@@ -105,6 +106,12 @@ class COCODataloader(IDataloader):
           Returns: width, height (integers).
 
           """
-        file_path = path.abspath(self.image_path + numpy.zeros(12 - len(image_id)) + image_id + '.jpg')
+        if image_id in self.image_dimensions:
+            return self.image_dimensions[image_id]
+        zeros = ''
+        for i in range(12 - len(str(image_id))):
+            zeros += '0'
+        file_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
         image = Image.open(file_path)
+        self.image_dimensions[image_id] = image.size
         return image.size

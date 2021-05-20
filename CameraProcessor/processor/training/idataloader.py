@@ -24,8 +24,9 @@ class IDataloader:
         config_parser = ConfigParser('configs.ini')
         configs = config_parser.configs
         self.filter_config = configs['Filter']
+        self.image_dimensions = {}
 
-    def get_image_size(self, image_id):
+    def get_image_dimensions(self, image_id):
         """Gets the size of an image based on its name.
 
         Args:
