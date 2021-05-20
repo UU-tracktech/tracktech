@@ -14,7 +14,7 @@ from pycocotools.coco import COCO
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from processor.training.idataloader import IDataloader
+from processor.dataloaders.idataloader import IDataloader
 
 
 class COCODataloader(IDataloader):
