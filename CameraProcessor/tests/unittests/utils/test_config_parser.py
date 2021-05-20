@@ -54,8 +54,6 @@ class TestConfigParser:
         test_configs_old.read(test_config_path)
 
         # Loop over every section key pair in the config and check if the keys match
-
-        root_path = os.path.realpath(self.config_parser.root_path)
         for section in self.test_configs:
             if not test_configs_old.has_section(section):
                 continue
