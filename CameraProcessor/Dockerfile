@@ -20,6 +20,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git
 RUN git submodule init && git submodule update
+RUN git clone https://github.com/UU-tracktech/yolor processor/pipeline/detection/
 
 # Install pip requirements
 COPY requirements.txt .
