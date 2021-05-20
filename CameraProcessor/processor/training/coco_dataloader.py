@@ -56,14 +56,14 @@ class COCODataloader(IDataloader):
         previous_name = ''
 
         for ann in annotations:
-            width, height = self.get_image_dimensions(ann['id'])
-            boxes = BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
-                                rectangle=Rectangle(x1=ann['bbox'][0] / width,
-                                                    y1=ann['bbox'][1] / height,
-                                                    x2=(ann['bbox'][0] + ann['bbox'][2]) / width,
-                                                    y2=(ann['bbox'][1] + ann['bbox'][3]) / height),
-                                identifier=counter,
-                                certainty=1)
+            width, height = self.get_image_dimensions(ann['image_id'])
+            boxes.append(BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
+                                     rectangle=Rectangle(x1=ann['bbox'][0] / width,
+                                                         y1=ann['bbox'][1] / height,
+                                                         x2=(ann['bbox'][0] + ann['bbox'][2]) / width,
+                                                         y2=(ann['bbox'][1] + ann['bbox'][3]) / height),
+                                     identifier=counter,
+                                     certainty=1))
             current_name = ann['image_id']
             if current_name != previous_name:
                 counter += 1
