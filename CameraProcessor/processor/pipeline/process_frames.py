@@ -12,7 +12,6 @@ import asyncio
 import cv2
 
 import processor.utils.convert as convert
-from processor.utils.config_parser import ConfigParser
 
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
@@ -27,13 +26,15 @@ from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 
 
-def prepare_stream():
+def prepare_stream(configs):
     """Read the configuration information and prepare the objects for the frame stream
-    """
-    # Load the config file
-    config_parser = ConfigParser('configs.ini')
-    configs = config_parser.configs
 
+    Args:
+        configs (ConfigParser): Configuration of the application when preparing the stream
+
+    Returns:
+        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id
+    """
     # Instantiate the detector
     logging.info("Instantiating detector...")
     yolo_config = configs['Yolov5']

@@ -8,9 +8,9 @@ Utrecht University within the Software Project course.
 import os
 import sys
 
-from processor.utils.config_parser import ConfigParser
 from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.utils.config_parser import ConfigParser
 from processor.utils.text import boxes_to_txt
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,11 +19,9 @@ sys.path.insert(0, os.path.join(curr_dir, 'pipeline/detection/yolov5'))
 sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
-def main():
+def main(configs):
     """Runs YOLOv5 detection on a video file specified in configs.ini."""
     # Load the config file, take the relevant Yolov5 section
-    config_parser = ConfigParser('configs.ini')
-    configs = config_parser.configs
     yolov5_config = configs['Yolov5']
     accuracy_config = configs['Accuracy']
 
@@ -78,4 +76,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    config_parser = ConfigParser('configs.ini')
+    main(config_parser.configs)
