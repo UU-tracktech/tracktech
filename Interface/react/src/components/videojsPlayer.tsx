@@ -278,9 +278,9 @@ class extraButton extends videojs.getComponent('Button') {
  * Takes a timestamp in seconds and converts it to a string
  * with the format mm:ss:ms
  * @param {number} time The time in seconds
- * @returns {string} The time formatted as mm:ss:ms
+ * @returns {string} The time formatted as mm:ss
  */
-function PrintTimestamp(time: number): string {
+export function PrintTimestamp(time: number): string {
   let min = Math.floor(time / 60)
   //toFixed(1) makes it so it is rounded to 1 decimal
   let sec = (time % 60).toFixed(1)
@@ -295,12 +295,12 @@ function PrintTimestamp(time: number): string {
  * @param {string} segName The filename of the segment
  * @returns {number} The time in seconds
  */
-function GetSegmentStarttime(segName: string): number {
+export function GetSegmentStarttime(segName: string): number {
   //Assuming the forwarder will always send a stream using
   //HLS, which gives .ts files afaik
   if (!segName.endsWith('.ts')) {
     console.warn(
-      'GetSegmentStarttime: ' + 'expected .ts file but got something else'
+      'GetSegmentStarttime: expected .ts file but got something else'
     )
     return NaN
   }

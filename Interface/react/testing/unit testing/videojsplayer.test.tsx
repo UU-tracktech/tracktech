@@ -8,7 +8,11 @@ Utrecht University within the Software Project course.
 
 import * as React from 'react'
 import { screen, render, cleanup } from '@testing-library/react'
-import { VideoPlayer } from '../../src/components/videojsPlayer'
+import {
+  GetSegmentStarttime,
+  PrintTimestamp,
+  VideoPlayer
+} from '../../src/components/videojsPlayer'
 
 beforeEach(() => {
   render(
@@ -29,10 +33,12 @@ test('It renders without error', () => {
   expect(screen.getByTestId('videojsplayer')).toBeDefined()
 })
 
-describe('videojs callbacks', () => {
+describe('callbacks', () => {
   it.todo('onFirstplay')
   it.todo('onPlay')
   it.todo('onPause')
+
+  test.todo('Resizing')
 })
 
 describe('timestamp', () => {
@@ -40,8 +46,35 @@ describe('timestamp', () => {
   it.todo('Stores the first segment and looks for the next') //getInitialUri
   it.todo('calculates a timestamp from the 2nd segment') //LookForUriUpdate
 
-  it.todo('correctly calculates a time from a filename') //getsegmentStartTime
-  it.todo('Converts the timestamp in correct format') //PrintTimestamp
-})
+  it('correctly calculates a time from a filename', () => {
+    //Mock the console warning messages
+    const warnSpy = jest
+      .spyOn(global.console, 'warn')
+      .mockImplementation(() => {})
 
-test.todo('Resizing')
+    //Invalid format
+    expect(GetSegmentStarttime('somenamewithoutextension')).toBe(NaN)
+    expect(warnSpy).toBeCalledWith(
+      'GetSegmentStarttime: expected .ts file but got something else'
+    )
+
+    warnSpy.mockClear() //clear data used for previous expect
+
+    //Invalid naming
+    expect(GetSegmentStarttime('nameWithoutunderscore.ts')).toBe(NaN)
+    expect(warnSpy).toBeCalledWith('Video file not from forwarder')
+
+    //Correct naming
+    //V123 would mean segment 23, which is (23 - 1) * 2 = 44
+    expect(GetSegmentStarttime('correct_V123.ts')).toBe(44)
+
+    warnSpy.mockRestore()
+  })
+
+  it('Converts the timestamp in correct format', () => {
+    expect(PrintTimestamp(54.6)).toBe('0:54.6') //test millisecond
+    expect(PrintTimestamp(32)).toBe('0:32.0') //Test seconds
+    expect(PrintTimestamp(65)).toBe('1:05.0') //Test minutes with seconds < 10
+    expect(PrintTimestamp(876)).toBe('14:36.0') //Test minutes
+  })
+})
