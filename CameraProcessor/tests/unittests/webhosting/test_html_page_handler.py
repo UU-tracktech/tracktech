@@ -11,6 +11,8 @@ from tornado.testing import AsyncHTTPTestCase
 
 from processor.webhosting.html_page_handler import HtmlPageHandler
 
+from tests.conftest import get_test_configs
+
 
 class TestHtmlPageHandler(AsyncHTTPTestCase):
     """Test the html page handler whether the pages gets retrieved correctly
@@ -22,16 +24,25 @@ class TestHtmlPageHandler(AsyncHTTPTestCase):
         Returns:
             (tornado.web.Application): Html page handler that gets started by the AsyncHTTPTestCase
         """
+        configs = get_test_configs()
+
         return tornado.web.Application([
             # .html regex pattern
-            (r"/(.*\.html)?", HtmlPageHandler),
+            (r"/(.*\.html)?", HtmlPageHandler, dict(configs=configs)),
         ])
+
+    def test_default_html_file(self):
+        """Test rendering of an existing html file
+        """
+        # Fetches index.html
+        response = self.fetch('/')
+        self.assertEqual(response.code, 200)
 
     def test_existing_html_file(self):
         """Test rendering of an existing html file
         """
         # Fetches index.html
-        response = self.fetch('/')
+        response = self.fetch('/index.html')
         self.assertEqual(response.code, 200)
 
     def test_invalid_html_file(self):

@@ -9,7 +9,6 @@ Utrecht University within the Software Project course.
 import cv2
 import numpy as np
 from processor.utils.features import slice_bounding_box, resize_cutout
-from processor.utils.config_parser import ConfigParser
 from tests.unittests.utils.conftest import X0, X1, Y0, Y1
 
 
@@ -40,10 +39,9 @@ class TestReidUtils:
             for j in range(0, height):
                 assert (sliced[i, j] == color).all()
 
-    def test_resize(self, img):
+    def test_resize(self, img, configs):
         """Tests the resize function
 
         """
-        config = ConfigParser('configs.ini')
-        size = config.configs['Reid'].gettuple('size')
-        assert size[0], size[1] == resize_cutout(img).shape
+        size = configs['Reid'].gettuple('size')
+        assert size[0], size[1] == resize_cutout(img, configs).shape
