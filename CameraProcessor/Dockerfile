@@ -16,6 +16,7 @@ RUN apt update
 
 RUN apt install -y ffmpeg
 RUN apt install -y g++
+RUN git submodule init && git submodule update
 
 # Install pip requirements
 COPY requirements.txt .
