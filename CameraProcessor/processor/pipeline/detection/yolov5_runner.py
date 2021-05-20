@@ -35,7 +35,7 @@ class Yolov5Detector(IDetector):
 
         Args:
             config (ConfigParser): Yolov5 config file.
-            filters (): Filtering for boundingBoxes.
+            filters (ConfigParser): Filter for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolov5'))

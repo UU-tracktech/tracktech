@@ -22,21 +22,19 @@ COPY src src
 
 
 # testing container
-FROM installer as test
+FROM installer as test_unit
 WORKDIR /app
-
+COPY .coveragerc .
 # Install python dependencies
 COPY requirements-test.txt requirements-test.txt
 RUN ["pip","install","--no-cache-dir","-r","requirements-test.txt"]
 
-
-FROM test as test_unit
 COPY tests/unittest tests
-ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report=html","--cov-report=xml","--cov=src/","--junitxml=vf-unit-report.xml","tests"]
 
-FROM test as test_integration
-COPY tests/integrationtest tests
-ENTRYPOINT ["pytest", "--junitxml=vf-integration-report.xml", "tests"]
+# Create multiple streams folders
+RUN ["mkdir","streams1","streams2","streams3"]
+
+ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","xml","--cov-report","term-missing","--cov=src/","tests"]
 
 
 # Installation
@@ -56,8 +54,9 @@ RUN ["mkdir", "utility"]
 
 # Copy the actual source code
 COPY src src
+COPY tests tests
 
-ENTRYPOINT ["pylint","src","--rcfile=.pylintrc","--output-format=colorized"]
+ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc","--output-format=colorized"]
 
 
 FROM installer AS production
