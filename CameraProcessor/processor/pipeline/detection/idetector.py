@@ -5,11 +5,16 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+from processor.scheduling.component.component_interface import IComponent
 
 
-class IDetector:
-    """Superclass for detectors.
+class IDetector(IComponent):
+    """Detection runner interface that can be run as Scheduler component.
     """
+
+    def execute_component(self):
+        """See base class."""
+        super().execute_component()
 
     def detect(self, frame_obj):
         """Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.

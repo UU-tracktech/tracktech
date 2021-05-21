@@ -36,7 +36,7 @@ scheduler is done inside the output components
 
 The plan is a graph with uni-directional connections between nodes.
 It contains no cycles.
-The plan can currently only be written in python via schedule node definitions.
+The plan can currently only be written in Python via schedule node definitions.
 Plan creation might be extended using a parser to allow for a more
 readable and adaptable format.
 
