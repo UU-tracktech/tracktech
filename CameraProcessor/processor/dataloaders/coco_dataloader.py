@@ -19,9 +19,9 @@ from processor.dataloaders.idataloader import IDataloader
 class COCODataloader(IDataloader):
     """Dataloader for COCO dataser."""
 
-    def __init__(self, categories, file_path, nr_frames, image_path=''):
-        super().__init__(categories, file_path, nr_frames, image_path)
-        self.coco = COCO(file_path)
+    def __init__(self, configs):
+        super().__init__(configs)
+        self.coco = COCO(self.file_path)
 
     def parse_file(self):
         annotations = self.__get_annotations()
