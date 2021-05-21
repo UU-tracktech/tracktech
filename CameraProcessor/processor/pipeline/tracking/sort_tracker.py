@@ -76,10 +76,10 @@ class SortTracker(ITracker):
             bounding_box = BoundingBox(
                 identifier=int(tracker[0][4]),
                 rectangle=Rectangle(
-                    int(tracker[0][0]) / width,
-                    int(tracker[0][1]) / height,
-                    int(tracker[0][2]) / width,
-                    int(tracker[0][3]) / height
+                    max(int(tracker[0][0]) / width, 0),
+                    max(int(tracker[0][1]) / height, 0),
+                    min(int(tracker[0][2]) / width, 1),
+                    min(int(tracker[0][3]) / height, 1)
                 ),
                 classification=tracker[1],
                 certainty=tracker[2],

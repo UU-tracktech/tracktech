@@ -15,6 +15,9 @@ jobs:
     name: Camera Processor - Video Forwarder integration test
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Start service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml up --build --exit-code-from camera-processor-test-service
       - name: Copy integration test report
@@ -34,3 +37,4 @@ jobs:
         with:
           files: coverage.xml
           flags: Processor
+          token: ${{ secrets.CODECOV_TOKEN }}
