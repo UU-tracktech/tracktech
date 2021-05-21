@@ -1,5 +1,6 @@
 [MASTER]
-init-hook="import os, sys; sys.path.append(os.getcwd()); from utility.pylint_ignore import PylintIgnorePaths; PylintIgnorePaths('.git', 'CameraProcessor/processor/pipeline/detection/yolov5', 'CameraProcessor/processor/training/detection/yolov5', 'CameraProcessor/processor/pipeline/detection/yolov4deepsort', '/app/.git', '/app/processor/pipeline/detection/yolov5', '/app/processor/training/detection/yolov5', '/app/processor/pipeline/detection/yolov4deepsort')"
+init-hook="import os, sys; sys.path.append(os.getcwd()); from utility.pylint_ignore import PylintIgnorePaths; PylintIgnorePaths('.git', 'CameraProcessor/processor/pipeline/detection/yolor', 'CameraProcessor/processor/pipeline/detection/yolov5', 'CameraProcessor/processor/training/detection/yolov5', '/app/.git', '/app/processor/pipeline/detection/yolor', '/app/processor/pipeline/detection/yolov5', '/app/processor/training/detection/yolov5')"
+
 
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
@@ -22,7 +23,7 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,yolov4deepsort,__init__,sort,yolor
+ignore=CVS,venv,yolov5,__init__,sort,yolor
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
