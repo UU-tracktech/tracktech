@@ -204,17 +204,27 @@ class HlsCapture(ICapture):
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
-        # Creating meta thread for meta data collection
-        self.__found_stream = False
-        meta_thread = kthread.KThread(target=self.__get_meta_data)
-        meta_thread.daemon = True
-        meta_thread.start()
+        # Whether or not to find prob the meta data
+        probe_for_meta_data = self.hls_url.endswith('.m3u8')
+
+        meta_thread = None
+
+        # Only retrieve meta data for a .m3u8 stream
+        if probe_for_meta_data:
+            response = requests.get(self.hls_url)
+            match = re.findall(r'(.*.m3u8)', response.text)
+
+            # Creating meta thread for meta data collection
+            meta_thread = kthread.KThread(target=self.__get_meta_data, args=(match[0]))
+            meta_thread.daemon = True
+            meta_thread.start()
 
         # Instantiates the connection with the hls stream
         cap = cv2.VideoCapture(self.hls_url)
 
         # Make sure thread has finished before starting main loop
-        meta_thread.join()
+        if probe_for_meta_data and meta_thread is not None:
+            meta_thread.join()
 
         # Exit thread if stream was not found
         if not self.__found_stream:
@@ -272,30 +282,26 @@ class HlsCapture(ICapture):
             self.__connect_to_stream()
 
     # pylint: disable=protected-access
-    def __get_meta_data(self):
+    def __get_meta_data(self, url):
         """Make a http request with ffmpeg to get the meta-data of the HLS stream."""
         # extract the start_time from the meta-data to get the absolute segment time
         logging.info('Retrieving meta data from HLS stream')
+
+        self.__found_stream = False
         # Probe HLS stream link
         try:
-            response = requests.get(self.hls_url)
+            response = requests.get(url)
             match = re.findall(r'.*:(\d+)', response.text)
-            segment_length, segment_index = match[1], match[2]
+            print(response.text)
+            nr_streams = re.findall(r'(.*.ts)', response.text)
+            middle_stream_index = int(match[2]) + (len(nr_streams) + 1) / 2
+            segment_length, segment_index = int(match[1]), middle_stream_index
             self.__hls_start_time_stamp = float(segment_length * (segment_index - 1))
-            # pylint: disable=no-member
-            # meta_data = ffmpeg.probe(self.hls_url)
-            # pylint: enable=no-member
-            # self.__hls_start_time_stamp = float(meta_data['format']['start_time'])
-            print(f'starttime: {self.__hls_start_time_stamp}')
-
-        # Ffmpeg probe error
-        except ffmpeg._run.Error as error:
-            logging.error(f'ffmpeg could not find stream, giving the following error: {error}')
+            print(f'HLS start time: {self.__hls_start_time_stamp}')
+        # Regex match does not work
+        except IndexError as error:
+            logging.error(f'Cannot get the index: {error}')
             return
-
-        # Json did not contain key
-        except KeyError as key_error:
-            logging.warning(f'Json does not contain keys for {key_error}')
 
         self.__found_stream = True
 
