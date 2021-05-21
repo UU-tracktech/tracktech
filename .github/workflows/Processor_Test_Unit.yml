@@ -26,9 +26,9 @@ jobs:
       - name: git remove modules
         run: rm -rf .git/modules/* || true
       - name: add yolor
-        run: git submodule add --name yolor https://github.com/UU-tracktech/yolor.git ./CameraProcessor/processor/pipeline/detection/yolor
+        run: git submodule add --name yolor https://github.com/UU-tracktech/yolor.git CameraProcessor/processor/pipeline/detection/yolor
       - name: add yolov5
-        run: git submodule add --name yolov5 https://github.com/UU-tracktech/yolov5.git ./CameraProcessor/processor/pipeline/detection/yolov5
+        run: git submodule add --name yolov5 https://github.com/UU-tracktech/yolov5.git CameraProcessor/processor/pipeline/detection/yolov5
       - name: initialize
         run: git submodule update --init --recursive
       - name: check status final time
