@@ -15,8 +15,6 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
       - name: Build and start
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml up --build --exit-code-from processor-orchestrator-integration-tests-service
       - name: Copy test report

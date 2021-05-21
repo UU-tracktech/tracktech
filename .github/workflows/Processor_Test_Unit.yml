@@ -13,11 +13,9 @@ jobs:
   processor_unit_test:
     name: Processor unit test
     runs-on: self-hosted
-    steps:
+    steps:  
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          submodules: recursive
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
       - name: Copy html coverage report
