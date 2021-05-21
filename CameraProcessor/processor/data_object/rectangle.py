@@ -23,6 +23,11 @@ class Rectangle:
         if y1 > y2:
             raise ValueError(f'y1 {y1} should be smaller than or equal to y2 {y2}')
 
+        if x1 < 0 or y1 < 0:
+            raise ValueError(f'x1 {x1} and y1 {y1} should be bigger than or equal to 0')
+        if x2 > 1 or y2 > 1:
+            raise ValueError(f'x2 {x2} and y2 {y2} should be smaller than or equal to 1')
+
         self.__x1 = x1
         self.__y1 = y1
         self.__x2 = x2

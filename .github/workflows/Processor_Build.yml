@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Build camera processor test service
         run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml build
       - name: Remove
