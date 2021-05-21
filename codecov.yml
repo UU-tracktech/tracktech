@@ -1,5 +1,5 @@
 codecov:
-  branch: SPC-618-Fix-readme-coverage-badges
+  branch: develop
   max_report_age: off
 
 coverage:
