@@ -16,12 +16,12 @@ jobs:
     steps:
       - name: Get git-lfs
         run: apt install -y git-lfs
+      - name: step 1
+        run: git submodule update --init --recursive
       - name: Setup sshCommands
-        run: git submodule foreach --recursive git config --global core.sshCommand "ssh -i /root/.ssh/id_rsa"
+        run: git submodule foreach --recursive git config --local core.sshCommand "ssh -i /root/.ssh/id_rsa"
       - name: Checkout code
-        uses: actions/checkout@v1
-        with:
-          ssh-key: ddfadsf
+        uses: actions/checkout@v2
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
       - name: Copy html coverage report
