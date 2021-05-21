@@ -16,10 +16,6 @@ RUN apt update
 
 RUN apt install -y ffmpeg
 RUN apt install -y g++
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git
-RUN git clone https://github.com/UU-tracktech/yolor processor/pipeline/detection/yolor
 
 # Install pip requirements
 COPY requirements.txt .
