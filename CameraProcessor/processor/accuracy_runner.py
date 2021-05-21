@@ -27,9 +27,7 @@ def main(configs):
 
     # Opening files where the information is stored that is used to determine the accuracy
     accuracy_dest = accuracy_config['det_path']
-    accuracy_info_dest = accuracy_config['det-info_path']
     detection_file = open(accuracy_dest, 'w')
-    detection_file_info = open(accuracy_info_dest, 'w')
 
     print('I will write the detection objects to a txt file')
 
@@ -56,7 +54,8 @@ def main(configs):
         bounding_boxes = detector.detect(frame_obj)
 
         # Convert boxes to string
-        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(), capture.image_names[capture.image_index])
+        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(),
+                                    capture.image_names[capture.image_index])
 
         # Write boxes found by detection to
         try:
@@ -69,8 +68,6 @@ def main(configs):
 
     # Close files
     detection_file.close()
-    #detection_file_info.write(f'{counter-1},{shape[0]},{shape[1]}')
-    detection_file_info.close()
 
 
 if __name__ == '__main__':
