@@ -1,0 +1,3 @@
+[submodule "CameraProcessor/processor/pipeline/detection/yolov5"]
+	path = CameraProcessor/processor/pipeline/detection/yolov5
+	url = https://github.com/UU-tracktech/yolov5
