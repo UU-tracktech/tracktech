@@ -14,13 +14,20 @@ import {
   VideoPlayer
 } from '../../src/components/videojsPlayer'
 
+const mockOnTimestamp = jest.fn()
+const mockOnResize = jest.fn((w, h, l, t) => {
+  console.log(`w: ${w}, h: ${h}, l: ${l}, t: ${t}`)
+})
+const mockOnPrimary = jest.fn()
+const mockOnPlayPause = jest.fn()
+
 beforeEach(() => {
   render(
     <VideoPlayer
-      onTimestamp={jest.fn()}
-      onResize={jest.fn()}
-      onPrimary={jest.fn()}
-      onPlayPause={jest.fn()}
+      onTimestamp={mockOnTimestamp}
+      onResize={mockOnResize}
+      onPrimary={mockOnPrimary}
+      onPlayPause={mockOnPlayPause}
     />
   )
 })
@@ -34,11 +41,9 @@ test('It renders without error', () => {
 })
 
 describe('callbacks', () => {
-  it.todo('onFirstplay')
-  it.todo('onPlay')
-  it.todo('onPause')
-
-  test.todo('Resizing')
+  it.todo('onFirstplay') //would cover 67-69
+  it.todo('onPlay') //would cover 75-78
+  it.todo('onPause') //would cover 85-87
 })
 
 describe('timestamp', () => {
