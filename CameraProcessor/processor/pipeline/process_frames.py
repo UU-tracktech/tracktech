@@ -84,14 +84,12 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
     # This dictionary maps bounding box id's to the object ID to be assigned
     # to the tracked object belonging to the bounding box.
     tracking_dict = {}
-    print(tracking_dict)
 
     while capture.opened():
         # Process the message queue if there is a websocket connection
         if ws_client is not None:
-            # Get the updated tracking dictionary
+            # Update the tracking directory
             process_message_queue(ws_client, tracking_dict)
-            print(tracking_dict)
 
         ret, frame_obj = capture.get_next_frame()
 
