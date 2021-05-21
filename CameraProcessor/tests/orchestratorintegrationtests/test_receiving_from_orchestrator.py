@@ -7,12 +7,9 @@ Utrecht University within the Software Project course.
 """
 # pylint: disable=unused-variable
 import asyncio
-import pytest
 import json
-
-
+import pytest
 from super_websocket_client import create_dummy_client
-from utils.jsonloader import load_data
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 from utils.utils import PC_URL, IF_URL
@@ -61,12 +58,12 @@ class TestReceivingFromOrchestrator:
         await asyncio.sleep(2)
 
         received_start = processor_client.message_queue.popleft()
-        assert(isinstance(received_start, StartCommand))
-        assert(received_start.box_id == 5)
-        assert(received_start.frame_id == 1)
+        assert isinstance(received_start, StartCommand)
+        assert received_start.box_id == 5
+        assert received_start.frame_id == 1
 
         # Processor orchestrator determines object ID. Should be 1 if this is the first start command.
-        assert(received_start.object_id == 1)
+        assert received_start.object_id == 1
 
         stop_command = json.dumps({"type": "stop", "objectId": 1})
         interface_client.write_message(stop_command)
@@ -74,8 +71,8 @@ class TestReceivingFromOrchestrator:
         await asyncio.sleep(2)
 
         received_stop = processor_client.message_queue.popleft()
-        assert(isinstance(received_stop, StopCommand))
-        assert(received_stop.object_id == 1)
+        assert isinstance(received_stop, StopCommand)
+        assert received_stop.object_id == 1
 
         processor_client.disconnect()
         interface_client.disconnect()
