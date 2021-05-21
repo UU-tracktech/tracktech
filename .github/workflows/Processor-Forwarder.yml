@@ -15,6 +15,18 @@ jobs:
     name: Camera Processor - Video Forwarder integration test
     runs-on: self-hosted
     steps:
+      - name: git remove yolor
+        run: git rm -r --force CameraProcessor/processor/pipeline/detection/yolor || true
+      - name: git remove yolov5 submodule
+        run: git rm -r --force CameraProcessor/processor/pipeline/detection/yolov5 || true
+      - name: git remove modules
+        run: rm -rf .git/modules/* || true
+      - name: add yolor
+        run: git submodule add --name yolor https://github.com/UU-tracktech/yolor.git CameraProcessor/processor/pipeline/detection/yolor
+      - name: add yolov5
+        run: git submodule add --name yolov5 https://github.com/UU-tracktech/yolov5.git CameraProcessor/processor/pipeline/detection/yolov5
+      - name: initialize
+        run: git submodule update --init --recursive
       - uses: actions/checkout@v2
         with:
           submodules: recursive
