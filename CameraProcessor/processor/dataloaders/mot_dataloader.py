@@ -43,17 +43,19 @@ class MOTDataloader(IDataloader):
         # Extract information from lines
         for annotation in annotations:
             (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
+            this_image_path = self.__get_image_path(image_id)
+            width, height = self.get_image_dimensions(image_id, this_image_path)
             if not current_image_id == image_id:
                 bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
                 current_boxes = []
                 current_image_id = image_id
             current_boxes.append(BoundingBox(classification='person',
-                                     rectangle=Rectangle(x1=pos_x,
-                                                         y1=pos_y,
-                                                         x2=(pos_x + pos_w),
-                                                         y2=(pos_y + pos_h)),
-                                     identifier=person_id,
-                                     certainty=1))
+                                             rectangle=Rectangle(x1=pos_x / width,
+                                                                 y1=pos_y / height,
+                                                                 x2=(pos_x + pos_w) / width,
+                                                                 y2=(pos_y + pos_h) / height),
+                                             identifier=person_id,
+                                             certainty=1))
         return bounding_boxes_list
 
     def __log_skipped(self):
