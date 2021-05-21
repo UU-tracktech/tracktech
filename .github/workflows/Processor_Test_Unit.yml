@@ -16,8 +16,10 @@ jobs:
     steps:
       - name: Get git-lfs
         run: apt install -y git-lfs
-      - name: git remove old submodules
+      - name: git remove yolor submodule
         run: git rm --force CameraProcessor/processor/pipeline/detection/yolor
+      - name: git remove yolov5 submodule
+        run: git rm --force CameraProcessor/processor/pipeline/detection/yolov5
       - name: check status again
         run: git submodule status
       - name: step 1
