@@ -60,7 +60,7 @@ class COCODataloader(IDataloader):
             this_image_path = self.__get_image_path(image_id)
             width, height = self.get_image_dimensions(image_id, this_image_path)
             if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
+                bounding_boxes_list.append(BoundingBoxes(current_boxes, self.__get_image_name(current_image_id)))
                 current_boxes = []
                 current_image_id = image_id
             current_boxes.append(BoundingBox(classification=self.coco.loadCats(annotation['category_id'])[0]['name'],
@@ -101,9 +101,14 @@ class COCODataloader(IDataloader):
                 filtered_annotations.append(ann)
         return filtered_annotations
 
-    def __get_image_path(self, image_id):
+    def __get_image_name(self, image_id):
         zeros = ''
         for i in range(12 - len(str(image_id))):
             zeros += '0'
-        this_image_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
+        image_name = zeros + image_id
+        return image_name
+
+    def __get_image_path(self, image_id):
+        image_name = self.__get_image_name(image_id)
+        this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path
