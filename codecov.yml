@@ -28,13 +28,13 @@ flags:
   Forwarder:
     # only include files in the backend folder
     paths:
-      - Forwarder/
+      -  VideoForwarder/src
   Interface:
     paths:
-      - Interface/
+      - Interface/react
   Orchestrator:
     paths:
-      - Orchestrator/
+      - ProcessorOrchestrator/src
   Processor:
     paths:
-      - Processor/
+      - CameraProcessor/processor

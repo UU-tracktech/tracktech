@@ -8,7 +8,7 @@
 | Interface | [![Interface Coverage](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?flag=Interface&token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?flag=Interface) |
 | Orchestrator | [![Orchestrator Coverage](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?flag=Orchestrator&token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?flag=Orchestrator) |
 | Forwarder | [![Forwarder Coverage](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?flag=Forwarder&token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?flag=Forwarder) |
-| Processor | [![Processor Coverage](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?flag=Processo&token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?flag=Processor) |
+| Processor | [![Processor Coverage](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?flag=Processor&token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech?flag=Processor) |
 
 ## Running the pipeline:
 
