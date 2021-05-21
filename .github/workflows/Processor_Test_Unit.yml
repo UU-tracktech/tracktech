@@ -42,3 +42,4 @@ jobs:
         with:
           files: coverage.xml
           flags: Processor
+          token: ${{ secrets.CODECOV_TOKEN }}

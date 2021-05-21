@@ -28,6 +28,7 @@ jobs:
         with:
           files: coverage.xml
           flags: Forwarder
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}

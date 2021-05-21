@@ -24,6 +24,7 @@ jobs:
         with:
           files: coverage.xml
           flags: Interface
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
         run: docker-compose -f Interface/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}

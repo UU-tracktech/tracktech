@@ -37,6 +37,7 @@ jobs:
         with:
           files: po-coverage.xml
           flags: Orchestrator
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
         if: ${{ always() }}

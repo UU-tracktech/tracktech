@@ -24,6 +24,7 @@ jobs:
         with:
           files: vf-integration-report.xml
           flags: Forwarder
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_integration.yml down
         if: ${{ always() }}
