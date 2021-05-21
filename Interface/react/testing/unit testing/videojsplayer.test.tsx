@@ -42,7 +42,7 @@ test('It renders without error', () => {
 
 describe('callbacks', () => {
   it.todo('onFirstplay') //would cover 67-69
-  it.todo('onPlay') //would cover 75-78
+  it.todo('onPlay') //would cover 75-78, and I assume onResize as well since it's called from onPlay
   it.todo('onPause') //would cover 85-87
 })
 
