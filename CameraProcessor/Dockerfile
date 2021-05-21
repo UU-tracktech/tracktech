@@ -35,6 +35,7 @@ COPY tests/conftest.py tests/conftest.py
 
 FROM test AS test_unit
 COPY requirements-gpu.txt .
+COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 RUN ["pip", "install", "-r", "requirements-gpu.txt"]
 COPY filter.names filter.names
 COPY data/tests/unittests data/tests/unittests
