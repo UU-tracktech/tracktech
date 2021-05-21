@@ -33,7 +33,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build camera processor test service
-        run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml build
+        run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml build --no-cache
       - name: Remove
         run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml rm
         if: ${{ always() }}
