@@ -7,26 +7,24 @@ Utrecht University within the Software Project course.
 """
 from PIL import Image
 
-from processor.utils.config_parser import ConfigParser
-
 
 class IDataloader:
     """
     Dataloader super class.
     """
-    def __init__(self, categories, file_path, nr_frames, image_path=''):
-        self.file_path = file_path
-        self.image_path = image_path
-        self.categories = categories
+
+    def __init__(self, configs):
+        accuracy_config = configs['Accuracy']
+        self.file_path = accuracy_config['file_path']
+        self.image_path = accuracy_config['image_path']
+        self.categories = accuracy_config['categories']
+        self.filter_config = configs['Filter']
+        self.image_dimensions = {}
+        nr_frames = accuracy_config['nr_frames']
         # Cannot contain negative amount of frames.
         if nr_frames < 0:
             raise AttributeError('Cannot have negative number of frames')
         self.nr_frames = nr_frames
-
-        config_parser = ConfigParser('configs.ini')
-        configs = config_parser.configs
-        self.filter_config = configs['Filter']
-        self.image_dimensions = {}
 
     def get_image_dimensions(self, image_id, this_image_path):
         """Gets the size of an image based on its name.
