@@ -16,6 +16,9 @@ jobs:
     steps:  
       - name: Checkout code
         uses: actions/checkout@v2
+        lfs: true
+      - name: Checkout LFS objects
+        run: git lfs checkout
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
       - name: Copy html coverage report
