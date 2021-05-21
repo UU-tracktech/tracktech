@@ -28,12 +28,9 @@ jobs:
     name: Processor build compose test
     runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          lfs: true
-      - name: Checkout LFS objects
-        run: git lfs checkout
+          submodules: recursive
       - name: Build camera processor test service
         run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml build --no-cache
       - name: Remove
