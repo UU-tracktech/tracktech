@@ -11,6 +11,8 @@ import logging
 import kthread
 import ffmpeg
 import cv2
+import requests
+import re
 
 from processor.input.icapture import ICapture
 from processor.data_object.frame_obj import FrameObj
@@ -276,10 +278,15 @@ class HlsCapture(ICapture):
         logging.info('Retrieving meta data from HLS stream')
         # Probe HLS stream link
         try:
+            response = requests.get(self.hls_url)
+            match = re.findall(r'.*:(\d+)', response.text)
+            segment_length, segment_index = match[1], match[2]
+            self.__hls_start_time_stamp = float(segment_length * (segment_index - 1))
             # pylint: disable=no-member
-            meta_data = ffmpeg.probe(self.hls_url)
+            # meta_data = ffmpeg.probe(self.hls_url)
             # pylint: enable=no-member
-            self.__hls_start_time_stamp = float(meta_data['format']['start_time'])
+            # self.__hls_start_time_stamp = float(meta_data['format']['start_time'])
+            print(f'starttime: {self.__hls_start_time_stamp}')
 
         # Ffmpeg probe error
         except ffmpeg._run.Error as error:
