@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
 """
 import logging
-
+from os import path
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.utils.config_parser import ConfigParser
@@ -14,16 +14,7 @@ from processor.utils.config_parser import ConfigParser
 
 class IDataloader:
 
-    def get_image_dimensions(self, image_id):
-        """Gets the size of an image based on its name.
 
-        Args:
-            image_id: String with the name of the image.
-
-        Returns: width, height (integers).
-
-        """
-        raise NotImplementedError('get image size method not implemented')
 
     def __get_annotations(self):
         # Read file
@@ -38,18 +29,18 @@ class IDataloader:
         annotations = []
         # Extract information from lines
         for line in lines:
-            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = self.__parse_line(line, delimiter)
-            if frame_nr - 1 >= self.nr_frames:
+            (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = self.__parse_line(line, delimiter)
+            if image_id - 1 >= self.nr_frames:
                 self.skipped_lines = self.skipped_lines + 1
                 continue
-            annotations.append((frame_nr,person_id,pos_x,pos_y,pos_w,pos_h))
+            annotations.append((image_id,person_id,pos_x,pos_y,pos_w,pos_h))
         return annotations
 
     def __parse_boxes(self, annotations):
         boxes = []
         # Extract information from lines
         for annotation in annotations:
-            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
+            (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
             boxes.append(BoundingBox(classification='person',
                                      rectangle=Rectangle(x1=pos_x,
                                                          y1=pos_y,
@@ -69,6 +60,13 @@ class IDataloader:
         self.__log_skipped()
         boxes = self.__parse_boxes(annotations)
         return BoundingBox(boxes)
+
+    def __get_image_path(self, image_id):
+        zeros = ''
+        for i in range(6 - len(str(image_id))):
+            zeros += '0'
+        this_image_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
+        return this_image_path
 
 
     @staticmethod
