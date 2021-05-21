@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build
+        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build --no-cache
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml rm
         if: ${{ always() }}
