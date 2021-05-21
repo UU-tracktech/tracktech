@@ -1,0 +1,3 @@
+[submodule "CameraProcessor/processor/pipeline/detection/yolor"]
+	path = CameraProcessor/processor/pipeline/detection/yolor
+	url = https://github.com/UU-tracktech/yolor
