@@ -10,13 +10,14 @@ Utrecht University within the Software Project course.
 class BoundingBoxes:
     """Object that holds all the bounding boxes for a specific frame."""
 
-    def __init__(self, bounding_boxes):
+    def __init__(self, bounding_boxes, image_id=''):
         """Inits information object used as wrapper for bounding boxes list.
 
         Args:
             bounding_boxes ([BoundingBox]): list of bounding boxes.
         """
         self.__bounding_boxes = bounding_boxes
+        self.__image_id = image_id
 
     def get_bounding_boxes(self):
         """Gets bounding boxes.
@@ -25,3 +26,6 @@ class BoundingBoxes:
             [BoundingBox]: list of bounding boxes.
         """
         return self.__bounding_boxes
+
+    def get_image_id(self):
+        return self.__image_id
