@@ -30,7 +30,6 @@ def generate_documentation(root_folder):
     """
     doc_folder = os.path.dirname(__file__)
     absolute_root_folder = os.path.join(os.path.dirname(doc_folder), root_folder)
-
     component_root = os.path.dirname(absolute_root_folder)
 
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.

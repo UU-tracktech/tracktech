@@ -12,7 +12,9 @@ ENV PYTHONPATH=/app
 # Copy docs and install pip documentation requirements
 COPY . .
 RUN ["python3.8", "-m", "pip", "install", "-r", "docs/requirements.txt"]
-ENTRYPOINT ["python3.8", "docs/documentation.py", "-ci", "-rs", "utility", "docs", "ProcessorOrchestrator/src", "CameraProcessor/processor", "VideoForwarder/src"]
+ENTRYPOINT ["python3.8", "docs/documentation.py", "-ci", "-rs", "CameraProcessor/processor", "VideoForwarder/src"]
+
+# "docs", "ProcessorOrchestrator/src", "CameraProcessor/processor", "VideoForwarder/src"
 
 #    - docker cp tracktech-documentation-container:/app/docs/html/ public/
 #  after_script:
