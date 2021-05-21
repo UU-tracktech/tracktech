@@ -1,3 +1,9 @@
 [submodule "CameraProcessor/processor/pipeline/detection/yolov5"]
 	path = CameraProcessor/processor/pipeline/detection/yolov5
 	url = https://github.com/UU-tracktech/yolov5
+[submodule "CameraProcessor/processor/pipeline/detection/--force"]
+	path = CameraProcessor/processor/pipeline/detection/--force
+	url = https://github.com/UU-tracktech/yolor
+[submodule "CameraProcessor/processor/pipeline/detection/yolor"]
+	path = CameraProcessor/processor/pipeline/detection/yolor
+	url = https://github.com/UU-tracktech/yolor
