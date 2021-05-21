@@ -41,12 +41,15 @@ test('It renders without error', () => {
 })
 
 describe('callbacks', () => {
+  //I highly doubt this can be tested since this is videojs stuff
   it.todo('onFirstplay') //would cover 67-69
   it.todo('onPlay') //would cover 75-78, and I assume onResize as well since it's called from onPlay
   it.todo('onPause') //would cover 85-87
 })
 
 describe('timestamp', () => {
+  //not sure if this can ever be tested without taking these functions
+  //outside of the videoplayer class and exporting them to make them public
   it.todo('gets the segment name') //GetUri
   it.todo('Stores the first segment and looks for the next') //getInitialUri
   it.todo('calculates a timestamp from the 2nd segment') //LookForUriUpdate
