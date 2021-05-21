@@ -58,8 +58,6 @@ class COCODataloader(IDataloader):
             image_id = ann['image_id']
             path = self.__get_image_path(image_id)
             width, height = self.get_image_dimensions(image_id, path)
-            print(width)
-            print(height)
             boxes.append(BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
                                      rectangle=Rectangle(x1=ann['bbox'][0] / width,
                                                          y1=ann['bbox'][1] / height,

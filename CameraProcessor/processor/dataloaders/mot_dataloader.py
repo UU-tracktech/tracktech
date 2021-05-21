@@ -25,7 +25,7 @@ class IDataloader:
         """
         raise NotImplementedError('get image size method not implemented')
 
-    def parse_file(self):
+    def __get_annotations(self):
         # Read file
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
@@ -35,29 +35,44 @@ class IDataloader:
         if lines[0].__contains__(','):
             delimiter = ','
 
-        boxes = []
+        annotations = []
         # Extract information from lines
         for line in lines:
-            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = self.parse_line(line, delimiter)
+            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = self.__parse_line(line, delimiter)
             if frame_nr - 1 >= self.nr_frames:
                 self.skipped_lines = self.skipped_lines + 1
                 continue
+            annotations.append((frame_nr,person_id,pos_x,pos_y,pos_w,pos_h))
+        return annotations
 
-            # Create bounding box
-            rectangle = Rectangle(
-                pos_x, pos_y,
-                (pos_x + pos_w), (pos_y + pos_h)
-            )
-            # Append box to list of boxes
-            box = BoundingBox(person_id, rectangle, "UFO", 1)
-            self.boxes[frame_nr - 1].append(box)
+    def __parse_boxes(self, annotations):
+        boxes = []
+        # Extract information from lines
+        for annotation in annotations:
+            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
+            boxes.append(BoundingBox(classification='person',
+                                     rectangle=Rectangle(x1=pos_x,
+                                                         y1=pos_y,
+                                                         x2=(pos_x + pos_w),
+                                                         y2=(pos_y + pos_h),
+                                                         identifier=person_id,
+                                                         certainty=1)))
+        return boxes
 
+    def __log_skipped(self):
         # Logs when lines skipped
         if self.skipped_lines > 0:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
+    def parse_file(self):
+        annotations = self.__get_annotations()
+        self.__log_skipped()
+        boxes = self.__parse_boxes(annotations)
+        return BoundingBox(boxes)
+
+
     @staticmethod
-    def parse_line(line, delimiter):
+    def __parse_line(line, delimiter):
         """Parse line from file given a delimiter.
 
         First 6 values are
