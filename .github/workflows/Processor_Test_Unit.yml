@@ -16,16 +16,16 @@ jobs:
     steps:
       - name: Get git-lfs
         run: apt install -y git-lfs
-      - name: git deinit submodules
-        run: git submodule deinit -f --all
-      - name: git remove submodules
-        run: rm -rf .git/modules/*
-      # #   run: git rm --force CameraProcessor/processor/pipeline/detection/yolor
-      # - name: git remove yolov5 submodule
-      #   run: git rm --force CameraProcessor/processor/pipeline/detection/yolov5
-      - name: check status again
-        run: git submodule status
-      - name: step 1
+      # - name: git deinit submodules
+      # run: git submodule deinit -f --all
+      - name: git remove yolor
+      # run: rm -rf .git/modules/*
+        run: git rm --force CameraProcessor/processor/pipeline/detection/yolor || true
+      - name: git remove yolov5 submodule
+        run: git rm --force CameraProcessor/processor/pipeline/detection/yolov5 || true
+      - name: git remove modules
+        run: rm -rf .git/modules/* || true
+      - name: initialize
         run: git submodule update --init --recursive
       - name: check status final time
         run: git submodule status
