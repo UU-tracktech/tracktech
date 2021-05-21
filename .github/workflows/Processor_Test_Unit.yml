@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Start unit test camera processor service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --no-cache --build --exit-code-from cameraprocessor
       - name: Copy html coverage report
         run: docker cp camera-processor_container:/app/coverage_html cp-coverage_html
       - name: Copy xml coverage report
