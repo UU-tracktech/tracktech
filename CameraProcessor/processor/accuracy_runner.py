@@ -52,10 +52,11 @@ def main(configs):
             continue
 
         bounding_boxes = detector.detect(frame_obj)
+        image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string
         boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(),
-                                    capture.image_names[capture.image_index])
+                                    image_id)
 
         # Write boxes found by detection to
         try:

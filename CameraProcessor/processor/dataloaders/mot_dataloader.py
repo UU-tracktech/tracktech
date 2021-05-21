@@ -46,7 +46,7 @@ class MOTDataloader(IDataloader):
             this_image_path = self.__get_image_path(image_id)
             width, height = self.get_image_dimensions(image_id, this_image_path)
             if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
+                bounding_boxes_list.append(BoundingBoxes(current_boxes, self.__get_image_name(current_image_id)))
                 current_boxes = []
                 current_image_id = image_id
             current_boxes.append(BoundingBox(classification='person',
@@ -74,11 +74,11 @@ class MOTDataloader(IDataloader):
         zeros = ''
         for i in range(6 - len(str(image_id))):
             zeros += '0'
-        return f'{zeros}{image_id}.jpg'
+        return f'{zeros}{image_id}'
 
     def __get_image_path(self, image_id):
         image_name = self.__get_image_name(image_id)
-        this_image_path = path.abspath(f'{self.image_path}/{image_name}')
+        this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path
 
     @staticmethod

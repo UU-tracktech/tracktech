@@ -64,12 +64,14 @@ class COCODataloader(IDataloader):
                 current_boxes = []
                 current_image_id = image_id
             current_boxes.append(BoundingBox(classification=self.coco.loadCats(annotation['category_id'])[0]['name'],
-                                     rectangle=Rectangle(x1=annotation['bbox'][0] / width,
-                                                         y1=annotation['bbox'][1] / height,
-                                                         x2=(annotation['bbox'][0] + annotation['bbox'][2]) / width,
-                                                         y2=(annotation['bbox'][1] + annotation['bbox'][3]) / height),
-                                     identifier=counter,
-                                     certainty=1))
+                                             rectangle=Rectangle(x1=annotation['bbox'][0] / width,
+                                                                 y1=annotation['bbox'][1] / height,
+                                                                 x2=(annotation['bbox'][0] + annotation['bbox'][
+                                                                     2]) / width,
+                                                                 y2=(annotation['bbox'][1] + annotation['bbox'][
+                                                                     3]) / height),
+                                             identifier=counter,
+                                             certainty=1))
         return bounding_boxes_list
 
     def __get_annotations(self):
