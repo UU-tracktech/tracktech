@@ -7,14 +7,14 @@ Utrecht University within the Software Project course.
 """
 import logging
 from os import path
+
 from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from processor.utils.config_parser import ConfigParser
+from processor.dataloaders.idataloader import IDataloader
 
 
-class IDataloader:
-
-
+class MOTDataloader(IDataloader):
 
     def __get_annotations(self):
         # Read file
@@ -33,9 +33,9 @@ class IDataloader:
             if image_id - 1 >= self.nr_frames:
                 self.skipped_lines = self.skipped_lines + 1
                 continue
-            annotations.append((image_id,person_id,pos_x,pos_y,pos_w,pos_h))
+            annotations.append((image_id, person_id, pos_x, pos_y, pos_w, pos_h))
         return annotations
-
+    
     def __parse_boxes(self, annotations):
         boxes = []
         # Extract information from lines
@@ -45,9 +45,9 @@ class IDataloader:
                                      rectangle=Rectangle(x1=pos_x,
                                                          y1=pos_y,
                                                          x2=(pos_x + pos_w),
-                                                         y2=(pos_y + pos_h),
-                                                         identifier=person_id,
-                                                         certainty=1)))
+                                                         y2=(pos_y + pos_h)),
+                                     identifier=person_id,
+                                     certainty=1))
         return boxes
 
     def __log_skipped(self):
@@ -59,7 +59,7 @@ class IDataloader:
         annotations = self.__get_annotations()
         self.__log_skipped()
         boxes = self.__parse_boxes(annotations)
-        return BoundingBox(boxes)
+        return BoundingBoxes(boxes)
 
     def __get_image_path(self, image_id):
         zeros = ''
@@ -67,7 +67,6 @@ class IDataloader:
             zeros += '0'
         this_image_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
         return this_image_path
-
 
     @staticmethod
     def __parse_line(line, delimiter):
