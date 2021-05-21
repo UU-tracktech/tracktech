@@ -36,7 +36,9 @@ jobs:
       - name: Setup sshCommands
         run: git submodule foreach --recursive git config --local core.sshCommand "ssh -i /root/.ssh/id_rsa"
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
+        with:
+          submodules: true
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
       - name: Copy html coverage report
