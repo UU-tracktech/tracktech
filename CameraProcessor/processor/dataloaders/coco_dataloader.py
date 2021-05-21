@@ -25,8 +25,8 @@ class COCODataloader(IDataloader):
 
     def parse_file(self):
         annotations = self.__get_annotations()
-        boxes = self.__parse_boxes(annotations)
-        return BoundingBoxes(boxes)
+        bounding_boxes_list = self.__parse_boxes(annotations)
+        return bounding_boxes_list
 
     def download_coco_images(self, amount):
         """Download images from the COCO dataset containing the category person.
@@ -51,25 +51,26 @@ class COCODataloader(IDataloader):
 
     def __parse_boxes(self, annotations):
         counter = 0
-        boxes = []
-        previous_name = ''
+        bounding_boxes_list = []
+        current_boxes = []
+        current_image_id = annotations[0]['image_id']
 
-        for ann in annotations:
-            image_id = ann['image_id']
+        for annotation in annotations:
+            image_id = annotation['image_id']
             path = self.__get_image_path(image_id)
             width, height = self.get_image_dimensions(image_id, path)
-            boxes.append(BoundingBox(classification=self.coco.loadCats(ann['category_id'])[0]['name'],
-                                     rectangle=Rectangle(x1=ann['bbox'][0] / width,
-                                                         y1=ann['bbox'][1] / height,
-                                                         x2=(ann['bbox'][0] + ann['bbox'][2]) / width,
-                                                         y2=(ann['bbox'][1] + ann['bbox'][3]) / height),
+            if not current_image_id == image_id:
+                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
+                current_boxes = []
+                current_image_id = image_id
+            current_boxes.append(BoundingBox(classification=self.coco.loadCats(annotation['category_id'])[0]['name'],
+                                     rectangle=Rectangle(x1=annotation['bbox'][0] / width,
+                                                         y1=annotation['bbox'][1] / height,
+                                                         x2=(annotation['bbox'][0] + annotation['bbox'][2]) / width,
+                                                         y2=(annotation['bbox'][1] + annotation['bbox'][3]) / height),
                                      identifier=counter,
                                      certainty=1))
-            current_name = ann['image_id']
-            if current_name != previous_name:
-                counter += 1
-            previous_name = current_name
-        return boxes
+        return bounding_boxes_list
 
     def __get_annotations(self):
         annotations = self.__get_all_annotations()

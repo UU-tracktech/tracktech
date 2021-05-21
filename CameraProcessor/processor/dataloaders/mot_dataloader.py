@@ -37,18 +37,24 @@ class MOTDataloader(IDataloader):
         return annotations
 
     def __parse_boxes(self, annotations):
-        boxes = []
+        bounding_boxes_list = []
+        current_boxes = []
+        current_image_id = annotations[0][0]
         # Extract information from lines
         for annotation in annotations:
             (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
-            boxes.append(BoundingBox(classification='person',
+            if not current_image_id == image_id:
+                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
+                current_boxes = []
+                current_image_id = image_id
+            current_boxes.append(BoundingBox(classification='person',
                                      rectangle=Rectangle(x1=pos_x,
                                                          y1=pos_y,
                                                          x2=(pos_x + pos_w),
                                                          y2=(pos_y + pos_h)),
                                      identifier=person_id,
                                      certainty=1))
-        return boxes
+        return bounding_boxes_list
 
     def __log_skipped(self):
         # Logs when lines skipped
@@ -58,8 +64,8 @@ class MOTDataloader(IDataloader):
     def parse_file(self):
         annotations = self.__get_annotations()
         self.__log_skipped()
-        boxes = self.__parse_boxes(annotations)
-        return BoundingBoxes(boxes)
+        bounding_boxes_list = self.__parse_boxes(annotations)
+        return bounding_boxes_list
 
     @staticmethod
     def __get_image_name(image_id):
