@@ -35,7 +35,7 @@ class MOTDataloader(IDataloader):
                 continue
             annotations.append((image_id, person_id, pos_x, pos_y, pos_w, pos_h))
         return annotations
-    
+
     def __parse_boxes(self, annotations):
         boxes = []
         # Extract information from lines
@@ -61,11 +61,16 @@ class MOTDataloader(IDataloader):
         boxes = self.__parse_boxes(annotations)
         return BoundingBoxes(boxes)
 
-    def __get_image_path(self, image_id):
+    @staticmethod
+    def __get_image_name(image_id):
         zeros = ''
         for i in range(6 - len(str(image_id))):
             zeros += '0'
-        this_image_path = path.abspath(f'{self.image_path}/{zeros}{image_id}.jpg')
+        return f'{zeros}{image_id}.jpg'
+
+    def __get_image_path(self, image_id):
+        image_name = self.__get_image_name(image_id)
+        this_image_path = path.abspath(f'{self.image_path}/{image_name}')
         return this_image_path
 
     @staticmethod
