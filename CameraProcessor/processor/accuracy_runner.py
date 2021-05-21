@@ -43,7 +43,6 @@ def main(configs):
 
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
-    counter = 0
 
     # Using default values
     shape = [10000, 10000]
@@ -57,7 +56,7 @@ def main(configs):
         bounding_boxes = detector.detect(frame_obj)
 
         # Convert boxes to string
-        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(), counter)
+        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(), capture.image_names[capture.image_index])
 
         # Write boxes found by detection to
         try:
@@ -67,11 +66,10 @@ def main(configs):
 
         # Save the shape so it can be saved in the detection-info file
         shape = frame_obj.get_shape()
-        counter += 1
 
     # Close files
     detection_file.close()
-    detection_file_info.write(f'{counter-1},{shape[0]},{shape[1]}')
+    #detection_file_info.write(f'{counter-1},{shape[0]},{shape[1]}')
     detection_file_info.close()
 
 
