@@ -9,14 +9,12 @@ Utrecht University within the Software Project course.
 import os
 import sys
 import logging
-import numpy as np
 import torch
-from processor.data_object.rectangle import Rectangle
-from processor.data_object.bounding_box import BoundingBox
+
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.idetector import IDetector
 from processor.pipeline.detection.yolor.utils.datasets import letterbox
-from processor.pipeline.detection.yolor.utils.general import non_max_suppression, apply_classifier, scale_coords
+from processor.pipeline.detection.yolor.utils.general import apply_classifier
 from processor.pipeline.detection.yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
 from processor.pipeline.detection.yolor.models.models import Darknet
 
@@ -68,12 +66,14 @@ class YolorDetector(IDetector):
         self.classify = False
         if self.classify:
             self.modelc = load_classifier(name='resnet101', n=2)  # initialize
-            self.modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=self.device)['model'])  # load weights
+            # load weights
+            self.modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=self.device)['model'])
             self.modelc.to(self.device).eval()
 
         # Get names
         self.names = self.load_classes(config['names_path'])
 
+    # pylint: disable=duplicate-code
     def detect(self, frame_obj):
         """Run detection on a Detection Object.
 
@@ -87,59 +87,38 @@ class YolorDetector(IDetector):
 
         # Resize
         img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'))[0]
-
-        # Convert image
-        img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-        img = np.ascontiguousarray(img)
-        img = torch.from_numpy(img).to(self.device)
-        img = img.half() if self.half else img.float()  # uint8 to fp16/32
-        img /= 255.0  # 0 - 255 to 0.0 - 1.0
-        if img.ndimension() == 3:
-            img = img.unsqueeze(0)
+        img = self.convert_image(img, self.device, self.half)
 
         # Inference
-        time_zero = time_synchronized()
-        pred = self.model(img, augment=self.config.getboolean('augment'))[0]
+        start_time = time_synchronized()
+        pred = self.generate_predictions(img, self.model, self.config)
 
-        # Apply NMS
-        pred = non_max_suppression(pred, self.config.getfloat('conf-thres'),
-                                   self.config.getfloat('iou-thres'),
-                                   classes=self.config['classes'],
-                                   agnostic=self.config.getboolean('agnostic_nms'))
-
+        print('converted image')
         # Apply secondary Classifier
         if self.classify:
             pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
 
-        for i, det in enumerate(pred):  # detections per image
-            if det is not None and len(det):
-                # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], frame_obj.get_frame().shape).round()
-
-                bb_id = 0
-                # Get the xyxy, confidence, and class, attach them to det_obj
-                for *xyxy, conf, cls in reversed(det):
-                    width, height = frame_obj.get_shape()
-                    bbox = BoundingBox(
-                        bb_id,
-                        Rectangle(int(xyxy[0]) / width, int(xyxy[1]) / height, int(xyxy[2]) / width,
-                                  int(xyxy[3]) / height),
-                        self.names[int(cls)],
-                        conf
-                    )
-                    if any(x == bbox.get_classification() for x in self.filter):
-                        bounding_boxes.append(bbox)
-                        bb_id += 1
+        # Create bounding boxes based on the predictions
+        self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
+        boxes = BoundingBoxes(bounding_boxes)
 
         # Print time (inference + NMS)
-        time_one = time_synchronized()
-        print(f'Finished processing of frame {frame_obj.get_timestamp()} in ({time_one - time_zero:.3f}s)')
+        print(f'Finished processing of frame {frame_obj.get_timestamp()} in ({time_synchronized() - start_time:.3f}s)')
 
-        return BoundingBoxes(bounding_boxes)
+        return boxes
 
     @staticmethod
     def load_classes(path):
+        """Loads the classes to detect
+
+        Args:
+            path (str): path to the file the classes need to get loaded of
+
+        Returns:
+            [str]: List of empty strings
+        """
         # Loads *.names file at 'path'
-        with open(path, 'r') as f:
-            names = f.read().split('\n')
-        return list(filter(None, names))  # filter removes empty strings (such as last line)
+        with open(path, 'r') as file:
+            names = file.read().split('\n')
+        # filter removes empty strings (such as last line)
+        return list(filter(None, names))
