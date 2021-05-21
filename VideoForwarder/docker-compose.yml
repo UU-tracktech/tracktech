@@ -4,8 +4,8 @@ services:
   forwarder:
     build: .
     environment:
-      CAMERA_AUDIO: "true"
-      CAMERA_URL: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
+      CAMERA_AUDIO: "false"
+      CAMERA_URL: rtsp://root:root@192.168.178.30/axis-media/media.amp
       STREAM_FOLDER: /app/streams
       STREAM_ENCODING: libx264
       STREAM_LOW: "true"

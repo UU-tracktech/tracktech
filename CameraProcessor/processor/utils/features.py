@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 """
 
 import cv2
-from processor.utils.config_parser import ConfigParser
 
 
 def slice_bounding_box(bbox, img):
@@ -32,14 +31,14 @@ def slice_bounding_box(bbox, img):
         a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up
                    the memory
     """
-    width, height, _ = img.shape
+    height, width, _ = img.shape
     return img[
            int(bbox.get_rectangle().get_y1() * height):int(bbox.get_rectangle().get_y2() * height),
            int(bbox.get_rectangle().get_x1() * width):int(bbox.get_rectangle().get_x2() * width)
            ]
 
 
-def resize_cutout(cutout):
+def resize_cutout(cutout, configs):
     """Function that resizes the cutout to specified size in the configs
 
     Args:
@@ -53,8 +52,7 @@ def resize_cutout(cutout):
 
     """
     # Read size from the config
-    config = ConfigParser('configs.ini')
-    size = config.configs['Reid'].gettuple('size')
+    size = configs['Reid'].gettuple('size')
 
     # Return the cutout, which is another reference to the original image
     return cv2.resize(cutout, size, interpolation=cv2.INTER_AREA)

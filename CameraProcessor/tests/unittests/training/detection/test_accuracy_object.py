@@ -11,12 +11,6 @@ import os
 from processor.training.detection.accuracy_object import AccuracyObject
 import processor.data_object.bounding_box
 import processor.data_object.rectangle
-import processor.utils.config_parser
-
-from tests.conftest import root_path
-
-# Set test config to true, so it processes a shorter video
-processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestAccuracyObject:
@@ -42,12 +36,14 @@ class TestAccuracyObject:
         assert accuracy_object.image_width < 10000 and accuracy_object.image_height < 10000
 
     # pylint: disable=consider-iterating-dictionary
-    def test_detection(self):
-        """Tests if the detection done by the library produces possible results"""
-        # Making the accuracy object
-        accuracy_object = AccuracyObject()
+    def test_detection(self, configs):
+        """Tests if the detection done by the library produces possible results
 
-        self.update_paths(accuracy_object)
+        Args:
+            The configuration of the tests
+        """
+        # Making the accuracy object
+        accuracy_object = AccuracyObject(configs)
 
         # Reading the detection file and making the dictionary with results
         accuracy_object.detect()
@@ -67,12 +63,14 @@ class TestAccuracyObject:
             assert metrics_for_detection_class.get_mAP(accuracy_object.results) <= 1
             assert metrics_for_detection_class.get_mAP(accuracy_object.results) >= 0
 
-    def test_parse_boxes(self):
-        """Tests if the boxes are parsed correctly"""
-        # Making the accuracy object
-        accuracy_object = AccuracyObject()
+    def test_parse_boxes(self, configs):
+        """Tests if the boxes are parsed correctly
 
-        self.update_paths(accuracy_object)
+        Args:
+            configs (ConfigParser): The configurations of the test
+        """
+        # Making the accuracy object
+        accuracy_object = AccuracyObject(configs)
 
         # Making 3 bounding boxes
         rectangle1 = processor.data_object.rectangle.Rectangle(10, 10, 20, 20)
@@ -136,13 +134,3 @@ class TestAccuracyObject:
         accuracy_object.draw_all_pr_plots()
 
         assert len(os.listdir(plots_path)) > number_files
-
-    @staticmethod
-    def update_paths(accuracy_object):
-        """Make the accuracy runner read the files from unittests folder for consistency
-
-        Args:
-            accuracy_object (AccuracyObject): Object containing the accuracy information
-        """
-        accuracy_object.det_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest.txt')
-        accuracy_object.det_info_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest-info.txt')
