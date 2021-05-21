@@ -57,6 +57,26 @@ class TestRectangle:
         assert self.data.__eq__(Rectangle(0, 0, 1, 1))
         assert Rectangle(self.tlx1, self.tly1, self.brx2, self.bry2).__eq__(Rectangle(0, 0, 1, 1))
 
+    def test_invalid_x1(self):
+        """Tests whether an error is raised when the x1 is smaller than 0"""
+        with pytest.raises(ValueError):
+            assert Rectangle(-0.1, 0, 0, 0)
+
+    def test_invalid_y1(self):
+        """Tests whether an error is raised when the y1 is smaller than 0"""
+        with pytest.raises(ValueError):
+            assert Rectangle(0, -0.1, 0, 0)
+
+    def test_invalid_x2(self):
+        """Tests whether an error is raised when the x2 is bigger than 1"""
+        with pytest.raises(ValueError):
+            assert Rectangle(0, 0, 1.1, 0)
+
+    def test_invalid_y2(self):
+        """Tests whether an error is raised when the y2 is bigger than 1"""
+        with pytest.raises(ValueError):
+            assert Rectangle(0, 0, 0, 1.1)
+
 
 if __name__ == '__main__':
     pytest.main(TestRectangle)
