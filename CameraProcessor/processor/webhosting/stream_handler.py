@@ -61,7 +61,7 @@ class StreamHandler(tornado.web.RequestHandler):
         capture.close()
         self.finish()
 
-    async def __frame_processed(self, frame_obj, detected_boxes, tracked_boxes):
+    def __frame_processed(self, frame_obj, detected_boxes, tracked_boxes):
         """When the frame got processed, this function gets called to put it in the buffer
 
         Args:
