@@ -7,6 +7,7 @@ omit =
     */__init__.py
     # Don't test the detection or tracking repositories
     */pipeline/detection/yolov5/*
+    */pipeline/detection/yolor/*
     */pipeline/tracking/sort/*
     # Cannot be tested in docker
     */processor/input/cam_capture.py

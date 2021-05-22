@@ -170,7 +170,13 @@ class ProcessorSocket(WebSocketHandler):
         processors[self.identifier] = self
 
         logger.log(f"Processor registered with id {self.identifier} from {self.request.remote_ip}")
-        logger.log(f"Processor registered with id {self.identifier}")
+
+        for tracking_object in objects.values():
+            self.write_message(json.dumps({
+                "type": "featureMap",
+                "objectId": tracking_object[0].identifier,
+                "featureMap": tracking_object[0].feature_map
+            }))
 
     def send_bounding_boxes(self, message):
         """Sends bounding boxes to all clients.

@@ -1,5 +1,8 @@
 """Just an example of a plan that can be executed by scheduler
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 from processor.scheduling.node.schedule_node import ScheduleNode
 from processor.scheduling.component.example_components.input_component import InputComponent

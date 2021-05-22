@@ -28,9 +28,9 @@ def get_conversion_process(url, audio, root, stream_options):
     stream_map = []
 
     if stream_options.low:
-        maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
+        maps.extend(["-map", "0:0", "-map", "0:1"] if audio else ["-map", "0:0"])
         conversions.extend([
-            f'-s:v:{index}', '640x360', f'-c:v:{index}', stream_options.encoding,
+            f"-s:v:{index}", "640x360", f"-c:v:{index}", stream_options.encoding,
             f'-b:v:{index}', '800k', '-maxrate', '900k', '-bufsize', '1200k'
         ])  # 360p - Low bit-rate Stream
         stream_map.append(f'v:{index},a:{index}' if audio else f'v:{index}')

@@ -5,13 +5,13 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-from typing import Callable
 
 
 class IComponent:
-    """Component interface enforcing the implementation of execute_component()."""
+    """Component interface enforcing the implementation of execute_component().
+    """
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """Function used by INode to execute the component.
 
         Specifies the function that used to perform an iteration using the component.
@@ -19,11 +19,10 @@ class IComponent:
         (1 argument per input node).
 
         Returns:
-            A function that hasn't been applied containing all inputs as separate arguments.
+           func: A function that hasn't been applied containing all inputs as separate arguments.
 
         Raises:
-            NotImplementedError: occurs when this method is not overridden
-            to ensure this function is defined.
+            NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
         """
         raise NotImplementedError("Execute has to return a function which"
                                   "the scheduler can run. \n "

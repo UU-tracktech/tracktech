@@ -11,23 +11,9 @@ import json
 import logging
 from collections import deque
 from tornado import websocket
+
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
-
-
-async def create_client(websocket_url, identifier=None):
-    """
-    Method used to create a websocket client object.
-
-    Args:
-        websocket_url (str): Websocket url to connect to
-        identifier (str): Identifier of the websocket. If the websocket is not used as a processor socket set id to None
-
-    Returns: Websocket client object.
-    """
-    client = WebsocketClient(websocket_url, identifier)
-    await client.connect()
-    return client
 
 
 class WebsocketClient:
