@@ -103,7 +103,8 @@ class YolorDetector(IDetector):
         boxes = BoundingBoxes(bounding_boxes)
 
         # Print time (inference + NMS)
-        print(f'Finished processing of frame {frame_obj.get_timestamp()} in ({time_synchronized() - start_time:.3f}s)')
+        print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
+              f'({time_synchronized() - start_time:.3f}s)')
 
         return boxes
 

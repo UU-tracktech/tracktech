@@ -9,7 +9,6 @@ Utrecht University within the Software Project course.
 import time
 import logging
 import kthread
-import ffmpeg
 import cv2
 import requests
 import re
@@ -157,7 +156,7 @@ class HlsCapture(ICapture):
         self.__last_frame_time_stamp = self.__frame_time_stamp
         return True, FrameObj(self.__current_frame, self.__frame_time_stamp)
 
-    def __read(self, cap, thread_start_time, hls_start_time_stamp, wait_ms):
+    def __read(self, cap, hls_start_time_stamp, wait_ms):
         """Method that runs in separate thread that goes through the frames of the stream at a consistent pace.
 
         Reads frames at frame rate of the stream and puts them in self.current_frame.
@@ -165,6 +164,8 @@ class HlsCapture(ICapture):
         """
         # Set a timeout, in seconds
         current_frame_nr = 0
+        thread_start_time = time.time()
+
         while self.__thread_running and not self.__reconnecting:
             # Reads next frame
             try:
@@ -177,15 +178,15 @@ class HlsCapture(ICapture):
             if not ret:
                 continue
 
-            current_frame_nr += 1
+            # Saves timestamp of the current frame
+            current_frame_time = current_frame_nr * wait_ms
+            self.__frame_time_stamp = hls_start_time_stamp + (current_frame_time / 1000)
 
-            # What is the wait time until next frame has to be prepared
-            expected_next_frame_time = wait_ms * current_frame_nr
+            # Calculate the wait time for the next frame
             time_into_stream = time.time() - thread_start_time
-            wait_time = int(expected_next_frame_time - time_into_stream * 1000)
+            wait_time = int(current_frame_time + wait_ms - time_into_stream * 1000)
 
-            # Saves timestamp and waits calculated amount
-            self.__frame_time_stamp = hls_start_time_stamp + time_into_stream
+            current_frame_nr += 1
 
             # Next frame should already have been read
             if wait_time <= 0:
@@ -215,7 +216,7 @@ class HlsCapture(ICapture):
             match = re.findall(r'(.*.m3u8)', response.text)
 
             # Creating meta thread for meta data collection
-            meta_thread = kthread.KThread(target=self.__get_meta_data, args=(match[0]))
+            meta_thread = kthread.KThread(target=self.__get_meta_data, args=[match[0]])
             meta_thread.daemon = True
             meta_thread.start()
 
@@ -232,9 +233,6 @@ class HlsCapture(ICapture):
             logging.warning('Stream was not found. Retrying...')
             return False
 
-        # Saves the current time of a successful established connection
-        self.__thread_start_time = time.time()
-
         # Exit because capture did not start correctly
         self.fps = cap.get(cv2.CAP_PROP_FPS)
         if self.fps == 0:
@@ -249,8 +247,8 @@ class HlsCapture(ICapture):
         self.__reconnecting = False
 
         # Done with probing, starting the reading thread
-        self.__reading_thread = kthread.KThread(target=self.__read, args=(cap, self.__thread_start_time,
-                                                                          self.__hls_start_time_stamp, wait_ms,))
+        self.__reading_thread = kthread.KThread(target=self.__read,
+                                                args=(cap, self.__hls_start_time_stamp, wait_ms,))
         self.__reading_thread.daemon = True
         self.__thread_running = True
         self.__previous_time = time.time()
@@ -292,10 +290,13 @@ class HlsCapture(ICapture):
         try:
             response = requests.get(url)
             match = re.findall(r'.*:(\d+)', response.text)
-            print(response.text)
-            nr_streams = re.findall(r'(.*.ts)', response.text)
-            middle_stream_index = int(match[2]) + (len(nr_streams) + 1) / 2
-            segment_length, segment_index = int(match[1]), middle_stream_index
+            segment_length = int(re.search(r'#EXT-X-TARGETDURATION:(\d+)', response.text).group(1))
+            segment_index = int(re.search(r'#EXT-X-MEDIA-SEQUENCE:(\d+)', response.text).group(1))
+
+            if segment_index != 1:
+                nr_streams = len(re.findall(r'(.*.ts)', response.text))
+                segment_index = int(match[2]) + (nr_streams + 1) / 2
+
             self.__hls_start_time_stamp = float(segment_length * (segment_index - 1))
             print(f'HLS start time: {self.__hls_start_time_stamp}')
         # Regex match does not work
