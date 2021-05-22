@@ -24,7 +24,7 @@ jobs:
         with:
           submodules: recursive
       - name: Run
-        run: docker-compose up
+        run: docker-compose up --exit-code-from documentation-service
       - name: Copy documentation artifacts
         run: docker cp documentation_container:/app/docs/html html
       - name: Stop service
@@ -34,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: documentation
-          path: output/html
+          path: html
