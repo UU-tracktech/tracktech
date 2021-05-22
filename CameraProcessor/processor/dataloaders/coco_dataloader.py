@@ -103,7 +103,7 @@ class COCODataloader(IDataloader):
 
     def __get_image_name(self, image_id):
         zeros = ''
-        for i in range(12 - len(str(image_id))):
+        for _ in range(12 - len(str(image_id))):
             zeros += '0'
         image_name = zeros + image_id
         return image_name

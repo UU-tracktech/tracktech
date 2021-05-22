@@ -42,8 +42,6 @@ def main(configs):
     # Frame counter starts at 0. Will probably work differently for streams
     print("Starting video stream...")
 
-    # Using default values
-    shape = [10000, 10000]
     while capture.opened():
         # Set the detected bounding box list to empty
         ret, frame_obj = capture.get_next_frame()
@@ -55,7 +53,7 @@ def main(configs):
         image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string
-        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(),
+        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(),
                                     image_id)
 
         # Write boxes found by detection to

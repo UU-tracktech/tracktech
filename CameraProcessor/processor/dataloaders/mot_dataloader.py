@@ -18,6 +18,9 @@ class MOTDataloader(IDataloader):
     """
 
     """
+    def __init__(self, configs):
+        super().__init__(configs)
+        self.skipped_lines = []
 
     def __get_annotations(self):
         """
@@ -105,7 +108,7 @@ class MOTDataloader(IDataloader):
             (string) Properly formatted image id.
         """
         zeros = ''
-        for i in range(6 - len(str(image_id))):
+        for _ in range(6 - len(str(image_id))):
             zeros += '0'
         return f'{zeros}{image_id}'
 

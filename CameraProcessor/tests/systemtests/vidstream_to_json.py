@@ -65,7 +65,7 @@ Utrecht University within the Software Project course.
 #
 #         # update frame, frame number, and time
 #         det_obj.frame = frame
-#         det_obj.frame_nr = counter
+#         det_obj.image_id = counter
 #         det_obj.timestamp = time.localtime()
 #
 #         # run detection

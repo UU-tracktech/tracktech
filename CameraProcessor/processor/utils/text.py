@@ -48,12 +48,12 @@ def __bounding_box_to_dict(bounding_box):
         }
 
 
-def boxes_to_txt(bounding_boxes, frame_nr):
+def boxes_to_txt(bounding_boxes, image_id):
     """Write the detection object to a txt file, so that accuracy testing can read it.
 
     Args:
         bounding_boxes (List[BoundingBox]): list of bounding boxes.
-        frame_nr (int): number of frame.
+        image_id (int): number of frame.
 
     Returns:
         str: Boxes in string format with comma separation
@@ -62,7 +62,7 @@ def boxes_to_txt(bounding_boxes, frame_nr):
 
     for bounding_box in bounding_boxes:
         boxes_text_string += \
-            f'{frame_nr},{bounding_box.get_identifier()},' \
+            f'{image_id},{bounding_box.get_identifier()},' \
             f'{int(bounding_box.get_rectangle().get_x1())},' \
             f'{int(bounding_box.get_rectangle().get_y1())},' \
             f'{int((bounding_box.get_rectangle().get_x2() - bounding_box.get_rectangle().get_x1()))},' \

@@ -33,7 +33,7 @@ class ImageCapture(ICapture):
         # Gets the number of images from the folder
         self.images_paths = sorted([os.path.join(images_dir, image_name)
                                     for image_name in os.listdir(images_dir)])
-        self.image_names = sorted([image_name for image_name in os.listdir(images_dir)])
+        self.image_names = sorted(os.listdir(images_dir))
         self.nr_images = len(self.images_paths)
 
         # Start index is -1 because we want to know the index of current after it has been incremented
