@@ -44,29 +44,25 @@ def __bounding_box_to_dict(bounding_box):
                 bounding_box.get_rectangle().get_y1(),
                 bounding_box.get_rectangle().get_x2(),
                 bounding_box.get_rectangle().get_y2()
-            ]
+            ],
+            "certainty": bounding_box.get_certainty()
         }
 
 
-def boxes_to_txt(bounding_boxes, image_id):
-    """Write the detection object to a txt file, so that accuracy testing can read it.
+def boxes_to_accuracy_json(bounding_boxes, image_id):
+    """Converts the bounding boxes to JSON format of Accuracy.
 
-    Args:
-        bounding_boxes (List[BoundingBox]): list of bounding boxes.
-        image_id (int): number of frame.
+      Args:
+          bounding_boxes (BoundingBoxes): boxes that get converted to json.
+          image_id (int): image_id of box used for accuracy calculations.
 
-    Returns:
-        str: Boxes in string format with comma separation
-    """
-    boxes_text_string = ""
+      Returns:
+          JSON representation of the object.
+      """
+    boxes_list = bounding_boxes.get_bounding_boxes()
 
-    for bounding_box in bounding_boxes:
-        boxes_text_string += \
-            f'{image_id},{bounding_box.get_identifier()},' \
-            f'{int(bounding_box.get_rectangle().get_x1())},' \
-            f'{int(bounding_box.get_rectangle().get_y1())},' \
-            f'{int((bounding_box.get_rectangle().get_x2() - bounding_box.get_rectangle().get_x1()))},' \
-            f'{int((bounding_box.get_rectangle().get_y2() - bounding_box.get_rectangle().get_y1()))},' \
-            f'\n'
+    return json.dumps({
+        "imageId": image_id,
+        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
+    })
 
-    return boxes_text_string

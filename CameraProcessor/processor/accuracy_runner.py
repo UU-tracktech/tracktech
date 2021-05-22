@@ -11,7 +11,7 @@ import sys
 from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.utils.config_parser import ConfigParser
-from processor.utils.text import boxes_to_txt
+from processor.utils.text import boxes_to_accuracy_json
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -53,17 +53,14 @@ def main(configs):
         image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string
-        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(),
-                                    image_id)
+        boxes_string = boxes_to_accuracy_json(bounding_boxes.get_bounding_boxes(),
+                                              image_id)
 
         # Write boxes found by detection to
         try:
-            detection_file.write(boxes_string)
+            detection_file.write(f'{boxes_string}\n')
         except RuntimeError as run_error:
             print(f'Cannot write to the file with following exception: {run_error}')
-
-        # Save the shape so it can be saved in the detection-info file
-        shape = frame_obj.get_shape()
 
     # Close files
     detection_file.close()
