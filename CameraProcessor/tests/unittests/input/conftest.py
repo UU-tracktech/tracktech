@@ -43,7 +43,8 @@ def __get_video_path():
                 ids=["Image",
                      "video",
                      "HLS Stream"
-                     ])
+                     ],
+                )
 def capture_implementation(request):
     """ Defines capture_implementation as multiple implementations of iCapture,
     to be use in generic capture tests.

@@ -13,7 +13,6 @@ omit =
     */processor/input/cam_capture.py
     # Don't test any documentation or testing files
     */processor/scheduling/component/*
-    */processor/yolov4deepsort.py
     */processor/yolov5_test.py
     # Don't cover main.py files
     */main.py
