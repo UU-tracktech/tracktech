@@ -14,6 +14,9 @@ jobs:
     name: Processor linting
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Build service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --build --no-start
       - name: Copy linting file into service

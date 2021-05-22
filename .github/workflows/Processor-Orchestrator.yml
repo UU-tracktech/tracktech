@@ -15,6 +15,9 @@ jobs:
     name: Camera Processor - Processor Orchestrator integration test
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Start service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
       - name: Copy integration test report
