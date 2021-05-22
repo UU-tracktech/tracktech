@@ -74,7 +74,7 @@ def prepare_stream(configs):
 
 
 def prepare_scheduler(detector, tracker, on_processed_frame):
-    """
+    """Prepare the Scheduler with a valid plan configuration.
 
     Args:
         detector (IDetector): detector performing the detections on a given frame.
