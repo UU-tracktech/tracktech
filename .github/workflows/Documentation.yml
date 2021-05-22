@@ -6,11 +6,10 @@ on:
     paths:
       - .github/workflows/Documentation.yml
   pull_request:
-    paths:
-      - VideoForwarder/**
     branches:
       - master
-    # Also trigger on page_build, as well as release created events
+      - develop
+  # Also trigger on page_build, as well as release created events
   page_build:
     release:
       types: # This configuration does not affect the page_build event above
@@ -22,8 +21,17 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose -f VideoForwarder/docker-compose.yml build
-      - name: Remove
-        run: docker-compose -f VideoForwarder/docker-compose.yml rm
+        with:
+          submodules: recursive
+      - name: Run
+        run: docker-compose up
+      - name: Copy documentation artifacts
+        run: docker cp documentation_container:/app/docs/html html
+      - name: Stop service
+        run: docker-compose down
         if: ${{ always() }}
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: output/html
