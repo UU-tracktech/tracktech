@@ -12,10 +12,6 @@ class ITracker(IComponent):
     """Tracker runner interface that can be run as Scheduler component.
     """
 
-    def execute_component(self):
-        """See base class."""
-        super().execute_component()
-
     def track(self, frame_obj, det_obj):
         """Performs tracking stage using the tracking object.
 

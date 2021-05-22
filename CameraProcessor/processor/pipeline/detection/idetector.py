@@ -5,10 +5,10 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-from processor.scheduling.component.component_interface import IComponent
 import numpy as np
 import torch
 
+from processor.scheduling.component.component_interface import IComponent
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.pipeline.detection.yolor.utils.general import non_max_suppression, scale_coords
@@ -17,10 +17,6 @@ from processor.pipeline.detection.yolor.utils.general import non_max_suppression
 class IDetector(IComponent):
     """Detection runner interface that can be run as Scheduler component.
     """
-
-    def execute_component(self):
-        """See base class."""
-        super().execute_component()
 
     def detect(self, frame_obj):
         """Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.

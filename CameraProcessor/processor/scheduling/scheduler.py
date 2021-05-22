@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 from queue import Queue
-from processor.scheduling.node.schedule_node import INode
 
 
 class Scheduler:

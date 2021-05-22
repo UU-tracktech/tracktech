@@ -22,6 +22,6 @@ class BaseComponent(IComponent):
         """
         return object
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """See base class."""
         return self.work

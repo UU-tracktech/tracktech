@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 import numpy as np
-from processor.scheduling.component.component_interface import IComponent
 from processor.scheduling.node.inode import INode
 
 
