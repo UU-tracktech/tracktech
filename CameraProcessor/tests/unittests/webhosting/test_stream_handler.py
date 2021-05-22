@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import asyncio
 import tornado.testing
 import tornado.web
 from tornado.testing import AsyncHTTPTestCase
