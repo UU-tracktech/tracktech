@@ -5,7 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-from typing import Callable
 
 
 from processor.scheduling.component.component_interface import IComponent
@@ -19,17 +18,17 @@ class InputComponent(IComponent):
     """
 
     @staticmethod
-    def work(obj) -> object:
+    def work(obj):
         """Example function with single argument that can be returned by execute_component().
 
         Args:
             obj: input object passed through by scheduler.
 
         Returns:
-            Modified object used by the next layer.
+            object: Modified object used by the next layer.
         """
         return obj
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """See base class."""
         return self.work

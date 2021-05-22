@@ -14,14 +14,17 @@ jobs:
     name: Processor unit test
     runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
-      - name: Copy coverage report
+      - name: Copy html coverage report
+        run: docker cp camera-processor_container:/app/coverage_html cp-coverage_html
+      - name: Copy xml coverage report
         run: docker cp camera-processor_container:/app/coverage_html cp-coverage_html
       - name: Copy unit test report
-        run: docker cp camera-processor_container:/app/cp-unit-report.xml cp-unit-report.xml
+        run: docker cp camera-processor_container:/app/coverage.xml coverage.xml
       - name: Stop service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}
@@ -35,3 +38,9 @@ jobs:
         with:
           name: cp-unit-report.xml
           path: output/cp-unit-report.xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          files: coverage.xml
+          flags: Processor
+          token: ${{ secrets.CODECOV_TOKEN }}

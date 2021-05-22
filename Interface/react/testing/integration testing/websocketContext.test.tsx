@@ -16,10 +16,15 @@ import {
 import { Overlay } from '../../src/components/overlay'
 import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
 
+var websocketAddress
+
 /**
  * Render a testing overlay which is used in all websocket tests
  */
 beforeEach(() => {
+  //reset the correct link just in case a test which changes it crashes
+  websocketAddress = 'ws://processor-orchestrator/client'
+
   // Render a websocketprovider with an overlay to draw the bounding box.
   render(
     <WebsocketProvider>
@@ -47,7 +52,7 @@ beforeEach(() => {
               ></Overlay>
               <button
                 data-testid="button"
-                onClick={() => setSocket('ws://processor-orchestrator/client')}
+                onClick={() => setSocket(websocketAddress)}
               />
               <span data-testid="state">{connectionState}</span>
             </>
@@ -70,6 +75,33 @@ test('Websocket connects', async () => {
     await new Promise((r) => setTimeout(r, 500))
   }
   expect(screen.getByTestId('state').textContent).toBe('OPEN')
+})
+
+/** Test whether the websocket correctly handles a wrong url */
+test('Websocket handles error and closes', async () => {
+  jest.setTimeout(30000)
+  const msgSpy = jest.spyOn(global.console, 'log')
+
+  //set up a wrong socket url
+  const originalAddress = websocketAddress
+  websocketAddress = 'ws://wrong-address/test'
+
+  //attempt connection
+  screen.getByTestId('button').click()
+  while (screen.getByTestId('state').textContent != 'CLOSED') {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  //since the state changes quickly I rely on a message in the console to confirm
+  //the websocket went through the error function
+  expect(msgSpy).toBeCalledWith('socket error')
+
+  //Confirm the socket is closed
+  expect(msgSpy).toBeCalledWith('closed socket')
+  expect(screen.getByTestId('state').textContent).toBe('CLOSED')
+
+  //restore the original address for future tests
+  websocketAddress = originalAddress
 })
 
 /**
@@ -178,3 +210,7 @@ test('Bounding boxes start tracking', async () => {
   }
   expect(gotMessage).toBeTruthy()
 })
+
+test.todo('Clicking tracked object indicator stops tracking')
+
+test.todo('Overlay only draws indicators specified by filters')

@@ -46,17 +46,3 @@ export class StopOrchestratorMessage extends OrchestratorMessage {
 
   objectId: number
 }
-
-/**
- * The testOrchestratorMessage starts a short series of test messages to verify
- * everything works as expected
- */
-export class TestOrchestratorMessage extends OrchestratorMessage {
-  constructor(cameraId: string) {
-    super('test')
-
-    this.cameraId = cameraId
-  }
-
-  cameraId: string
-}

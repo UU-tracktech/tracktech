@@ -9,7 +9,7 @@ import asyncio
 import pytest
 
 from utils.utils import PC_URL
-from processor.webhosting.websocket_client import create_client
+from processor.webhosting.websocket_client import WebsocketClient
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -21,11 +21,16 @@ class TestConnection:
         """Test connecting to websocket
 
         """
-        self.ws_client = await create_client(PC_URL, "mock_id")
+        self.ws_client = WebsocketClient(PC_URL, "mock_id")
+
+        # Connect and test properties
+        await self.ws_client.connect()
         assert self.ws_client.websocket_url == PC_URL
         assert self.ws_client.write_queue == []
         assert not self.ws_client.reconnecting
         assert self.ws_client.connection is not None
+
+        # Disconnect
         await self.ws_client.disconnect()
 
     @pytest.mark.asyncio
@@ -34,8 +39,13 @@ class TestConnection:
         """Test disconnection from websocket
 
         """
-        self.ws_client = await create_client(PC_URL, "mock_id")
+        self.ws_client = WebsocketClient(PC_URL, "mock_id")
+
+        # Assert connection
+        await self.ws_client.connect()
         assert self.ws_client.connection.protocol is not None
+
+        # Assert disconnect
         await self.ws_client.disconnect()
         assert self.ws_client.connection.protocol is None
 
@@ -46,9 +56,14 @@ class TestConnection:
 
         """
         # global websocket
-        self.ws_client = await create_client(PC_URL, "mock_id")
+        self.ws_client = WebsocketClient(PC_URL, "mock_id")
+
+        # Assert connection
+        await self.ws_client.connect()
         assert self.ws_client.connection is not None
         self.ws_client.connection.close()
+
+        # Give control back to tornado ioloop
         await asyncio.sleep(0)
         assert self.ws_client.connection is not None
         await self.ws_client.disconnect()
