@@ -139,7 +139,7 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         framebuffer.clean_up()
 
         # Handle side effects of frame processing
-        await on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
+        on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         # Process the message queue if there is a websocket connection
         if ws_client is not None:
