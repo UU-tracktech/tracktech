@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Build image from scratch
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml build --no-cache
       - name: Build and start
         run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
       - name: Remove

@@ -18,6 +18,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Build image from scratch
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml build --no-cache
       - name: Start service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml up --build --exit-code-from camera-processor-test-service
       - name: Copy integration test report

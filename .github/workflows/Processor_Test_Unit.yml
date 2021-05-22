@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Build image from scratch
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml build --no-cache
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
       - name: Copy html coverage report

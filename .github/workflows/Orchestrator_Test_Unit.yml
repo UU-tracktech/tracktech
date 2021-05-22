@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Build image from scratch
+        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml build --no-cache
       - name: Build and run
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml up --build --exit-code-from processor-orchestrator
       - name: Copy unit test report

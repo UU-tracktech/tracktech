@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Build image from scratch
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml build --no-cache
       - name: Build service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --build --no-start
       - name: Copy linting file into service
