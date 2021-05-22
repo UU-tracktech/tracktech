@@ -20,27 +20,27 @@ import importlib.util
 import shutil
 
 
-def generate_documentation(root_folder):
+def generate_documentation(component_source_path):
     """Generates pdoc documentation for all Python modules in CameraProcessor project.
 
     Removes previously created documentation if it exists.
 
     Args:
-        root_folder (Path): path to root folder of Python code.
+        component_source_path (Path): path to root folder of Python code.
     """
     doc_folder = os.path.dirname(__file__)
-    absolute_root_folder = os.path.join(os.path.dirname(doc_folder), root_folder)
-    component_root = os.path.dirname(absolute_root_folder)
+    abs_component_source_path = os.path.realpath(os.path.join(os.path.dirname(doc_folder), component_source_path))
+    component_root = os.path.dirname(abs_component_source_path)
 
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
-    pdoc.render.configure(template_directory=Path(os.path.join(doc_folder, 'template')),
+    pdoc.render.configure(template_directory=Path(os.path.realpath(os.path.join(doc_folder, 'template'))),
                           docformat='google')
 
     # Add to_tree to Jinja2 environment filters to generate tree from modules list.
     pdoc.render.env.filters['to_tree'] = to_tree
 
     # Output directory
-    output_dir = Path(os.path.join(doc_folder, 'html', root_folder))
+    output_dir = Path(os.path.realpath(os.path.join(doc_folder, 'html', component_source_path)))
 
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
@@ -49,7 +49,7 @@ def generate_documentation(root_folder):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Get all modules included by pdoc, respecting the __all__ attribute in __init__.py.
-    included_paths = get_modules(absolute_root_folder)
+    included_paths = get_modules(abs_component_source_path)
 
     # Create module imports from included paths.
     included_modules = [path_to_module(component_root, included_path) for included_path in included_paths]
@@ -69,7 +69,7 @@ def generate_documentation(root_folder):
     mocked_modules = get_mocked(mock_modules)
 
     # Generate documentation for all found modules in the /docs.
-    pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
+    pdoc.pdoc(abs_component_source_path, output_directory=output_dir)
 
     logging.info('Cleaning up the mocked modules')
 
@@ -408,10 +408,10 @@ if __name__ == '__main__':
 
     # Generate documentation for all provided roots.
     for root in args.roots:
-        code_root_folder = Path(root)
-        logging.info(f'generating documentation for: {code_root_folder}')
+        component_source_path = Path(root)
+        logging.info(f'generating documentation for: {component_source_path}')
         # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
-        generate_documentation(code_root_folder)
+        generate_documentation(component_source_path)
 
     # Create index if flag was provided.
     if args.create_index:
