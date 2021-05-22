@@ -5,10 +5,9 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-from processor.scheduling.component.component_interface import IComponent
 
 
-class InputComponent(IComponent):
+class InputComponent:
     """Test input component.
 
     Work function must contain one argument,
