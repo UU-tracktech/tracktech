@@ -15,8 +15,16 @@ from processor.dataloaders.idataloader import IDataloader
 
 
 class MOTDataloader(IDataloader):
+    """
+
+    """
 
     def __get_annotations(self):
+        """
+
+        Returns:
+
+        """
         # Read file
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
@@ -37,6 +45,14 @@ class MOTDataloader(IDataloader):
         return annotations
 
     def __parse_boxes(self, annotations):
+        """
+
+        Args:
+            annotations:
+
+        Returns:
+
+        """
         bounding_boxes_list = []
         current_boxes = []
         current_image_id = annotations[0][0]
@@ -59,11 +75,20 @@ class MOTDataloader(IDataloader):
         return bounding_boxes_list
 
     def __log_skipped(self):
-        # Logs when lines skipped
+        """Logs when lines skipped.
+
+        Returns:
+            Null
+        """
         if self.skipped_lines > 0:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
     def parse_file(self):
+        """Parses an annotations file.
+
+        Returns:
+            List of bounding boxes.
+        """
         annotations = self.__get_annotations()
         self.__log_skipped()
         bounding_boxes_list = self.__parse_boxes(annotations)
@@ -71,12 +96,28 @@ class MOTDataloader(IDataloader):
 
     @staticmethod
     def __get_image_name(image_id):
+        """Get the name of an image.
+
+        Args:
+            image_id (int): Id of the image.
+
+        Returns:
+            (string) Properly formatted image id.
+        """
         zeros = ''
         for i in range(6 - len(str(image_id))):
             zeros += '0'
         return f'{zeros}{image_id}'
 
     def __get_image_path(self, image_id):
+        """Converts the image id to a proper filepath.
+
+        Args:
+            image_id (int): The id of an image.
+
+        Returns:
+            (string): Filepath to the image.
+        """
         image_name = self.__get_image_name(image_id)
         this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path

@@ -28,4 +28,9 @@ class BoundingBoxes:
         return self.__bounding_boxes
 
     def get_image_id(self):
+        """Gets image id.
+
+        Returns:
+            __image_io (int): Id of image.
+        """
         return self.__image_id
