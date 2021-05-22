@@ -60,5 +60,4 @@ venv/
 .idea/
 ENV/
 
-processor/**/*.pt
-tests/**/*.pt
+**/*.pt

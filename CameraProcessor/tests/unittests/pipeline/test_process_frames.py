@@ -12,6 +12,7 @@ from processor.pipeline.process_frames import send_to_orchestrator
 
 from processor.pipeline.process_frames import process_stream, prepare_stream
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.input.video_capture import VideoCapture
 
 from tests.unittests.utils.fake_detector import FakeDetector
@@ -44,6 +45,13 @@ class TestProcessFrames:
         return Yolov5Detector(configs['Yolov5'], configs['Filter'])
 
     # pylint: disable=useless-return
+    def __get_yolorrunner(self, configs):
+        """Get the YOLOR runner
+
+        """
+        return YolorDetector(configs['Yolor'], configs['Filter'])
+
+    # pylint: disable=useless-return
     def __get_sort_tracker(self):
         """Get the SORT tracker.
         """
@@ -64,6 +72,24 @@ class TestProcessFrames:
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(video_capture, detector, tracker))
         video_capture.close()
+
+    @pytest.mark.timeout(90)
+    @pytest.mark.skip("Yolor does not work with cpu")
+    def test_process_stream_with_yolor(self, configs):
+        """Tests process_stream function with YOLOR
+
+        Note: Not parametrizing Yolor for the same reason as previous function, but this is a bunch of duplicate
+        code now so that sucks.
+
+        """
+        # Open video
+        capture = self.__get_video(configs)
+        unused_capture, _, tracker, _ = prepare_stream(configs)
+        unused_capture.close()
+        detector = self.__get_yolorrunner(configs)
+
+        asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker))
+        capture.close()
 
     @pytest.mark.timeout(90)
     def test_process_stream_with_fake(self, configs):
