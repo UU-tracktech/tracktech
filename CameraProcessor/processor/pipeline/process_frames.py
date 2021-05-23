@@ -22,6 +22,7 @@ import processor.utils.display as display
 from processor.pipeline.framebuffer import FrameBuffer
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.tracking.sort_tracker import SortTracker
+from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
 
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
@@ -54,6 +55,11 @@ def prepare_stream(configs):
     sort_config = configs['SORT']
     tracker = SortTracker(sort_config)
 
+    # Instantiate the tracker
+    logging.info("Instantiating reidentifier...")
+    re_identifier_config = configs['Reid']
+    re_identifier = TorchReIdentifier('osnet_x1_0', 'cuda', re_identifier_config)
+
     # Frame counter starts at 0. Will probably work differently for streams
     logging.info("Starting stream...")
 
@@ -70,7 +76,7 @@ def prepare_stream(configs):
     # Get orchestrator configuration
     orchestrator_config = configs['Orchestrator']
 
-    return capture, detector, tracker, orchestrator_config['url']
+    return capture, detector, tracker, re_identifier, orchestrator_config['url']
 
 
 def prepare_scheduler(detector, tracker, on_processed_frame):
@@ -99,7 +105,7 @@ def prepare_scheduler(detector, tracker, on_processed_frame):
     return Scheduler(start_node)
 
 
-async def process_stream(capture, detector, tracker, on_processed_frame, ws_client=None):
+async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -109,6 +115,7 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         capture (ICapture): capture object to process a stream of frames.
         detector (IDetector): detector performing the detections on a given frame.
         tracker (ITracker): tracker performing simple tracking of all objects using the detections.
+        re_identifier (IReIdentifier): re-identifier extracting features and comparing them
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied
     """
@@ -137,6 +144,10 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
 
         # Get objects tracked in current frame from tracking stage.
         tracked_boxes = tracker.track(frame_obj, detected_boxes, tracking_dict)
+
+        # Use tracked boxes for possible re-identification
+        # TODO: CHANGE
+        print(re_identifier.extract_features(frame_obj, tracked_boxes))
 
         # Buffer the tracked object
         framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
