@@ -44,7 +44,8 @@ def __bounding_box_to_dict(bounding_box):
                 bounding_box.get_rectangle().get_y1(),
                 bounding_box.get_rectangle().get_x2(),
                 bounding_box.get_rectangle().get_y2()
-            ]
+            ],
+            "objectType": bounding_box.get_classification()
         }
 
 
