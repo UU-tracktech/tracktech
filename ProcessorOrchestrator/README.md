@@ -90,4 +90,4 @@ The stages can be run as follows:
 - Unit testing: run "docker-compose -f compose/docker-compose_test_unit.yml"
 - Integration testing: run "docker-compose -f compose/docker-compose_test_integration.yml"
 
-TEST
+TEST2
