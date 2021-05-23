@@ -18,7 +18,7 @@ class TestITracker(ITracker):
     def test_itracker_error(self):
         """Test if track raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
-            ITracker.track(self, BoundingBoxes, FrameObj)
+            ITracker.track(self, BoundingBoxes, FrameObj, {})
 
 
 if __name__ == '__main__':
