@@ -48,15 +48,6 @@ class TestReceivingFromOrchestrator:
         """Mock interface client sends a start command to the orchestrator. Check if camera processor handles this
         command properly. Then sends a stop command. Check if camera processor also handles this stop.
         """
-        """Sends data to the orchestrator and tests if it receives the same data back
-
-        Args:
-            message_type: Pytest fixture, being one of the available message types
-            amount: Tuple consisting of any number, or None for all the test data, and a boolean for Random data
-
-        Returns:
-
-        """
         # Get a connected processor client
         processor_client = await create_dummy_client(PC_URL, "mock_id")
 
