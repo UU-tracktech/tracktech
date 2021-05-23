@@ -5,7 +5,10 @@ This component trains the object detection component of the program. It uses obj
 
 ## Training a model
 
-Executing [train.py](train.py) starts the training of the detection model. It runs the following command:
+Executing [train.py](train.py) starts the training of the detection model. It runs the command for the specified
+training mode in the [configs file](../../../configs.ini):
+
+### Training Yolov5:
 ```
 python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --hyp hyp.scratch.yaml --batch-size 4
 ```
@@ -21,6 +24,36 @@ python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --hyp hyp.sc
 - ```--batch-size``` defines the batch size to use. This can be set to 2-4 times your GPU memory.
 
 The values of these parameters can be configured in the [configs.ini](../../../configs.ini) file.
+
+### Training Yolor:
+
+Yolor also allows for multi-GPU training. This speeds up the training process significantly.
+
+```
+python train.py --batch-size 8 --img 1280 1280 --data coco.yaml --cfg cfg/yolor_p6.cfg --weights '' --device 0 --name yolor_p6 --hyp hyp.scratch.1280.yaml --epochs 300
+```
+- ```--multi-gpu``` defines whether or not to use multiple GPUs for training.
+
+- ```--data``` defines the location of the dataset.
+
+- ```--cfg``` defines the config file for reading the weights from the dataset.
+
+- ```--weights``` defines the weights to use for training.
+
+- ```--hyp``` defines the hyp configuration for use for training.
+
+- ```--batch-size``` defines the batch size to use. This can be set to 2-4 times your GPU memory.
+
+- ```--img``` defines the image dimensions.
+
+- ```--device``` defines what GPU top use.
+
+- ```--name``` defines the name of the model resulting from training.
+
+- ```--epochs``` defines how many iterations to train on. More is better but takes longer.
+
+The values of these parameters can be configured in the [configs.ini](../../../configs.ini) file.
+
 
 ## accuracy_object.py
 

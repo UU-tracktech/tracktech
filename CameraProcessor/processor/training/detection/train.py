@@ -40,6 +40,14 @@ if __name__ == '__main__':
         hyp = config['hyp']
         epochs = config['epochs']
         path = os.path.join(root_path, 'processor', 'pipeline', 'detection', 'yolor')
-        os.system(f'python "{path}{file}" --data "{path}{data}" --cfg "{path}{cfg}" '
-                  f'--weights {weights} --hyp "{path}{hyp}" --batch-size {batch_size} '
-                  f'--img {img} --device "{device}" --name "{name}" --epochs "{epochs}"')
+        if config['multi-gpu']:
+            # Single GPU training.
+            os.system(f'python "{path}{file}" --data "{path}{data}" --cfg "{path}{cfg}" '
+                      f'--weights {weights} --hyp "{path}{hyp}" --batch-size {batch_size} '
+                      f'--img {img} --device "{device}" --name "{name}" --epochs "{epochs}"')
+        if not config['multi-gpu']:
+            # Multi GPU training.
+            os.system(f'python -m torch.distributed.launch --nproc_per_node 2 --master_port 9527 '
+                      f'"{path}{file}" --data "{path}{data}" --cfg "{path}{cfg}" '
+                      f'--weights {weights} --hyp "{path}{hyp}" --batch-size {batch_size} '
+                      f'--img {img} --device "{device}" --name "{name}" --epochs "{epochs}"')
