@@ -12,12 +12,13 @@ class ITracker(IComponent):
     """Tracker runner interface that can be run as Scheduler component.
     """
 
-    def track(self, frame_obj, det_obj):
+    def track(self, frame_obj, det_obj, tracking_dict):
         """Performs tracking stage using the tracking object.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
             det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.
+            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID
 
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
