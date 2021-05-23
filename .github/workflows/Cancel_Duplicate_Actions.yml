@@ -1,5 +1,4 @@
 name: Cancel Workflow Action
-uses: styfle/cancel-workflow-action@0.6.0
 
 on:
   pull_request:
@@ -8,3 +7,10 @@ on:
       - VideoForwarder/**
       - Interface/**
       - ProcessorOrchestrator/**
+
+jobs:
+  cancel_workflows:
+    name: Cancel Workflow Action
+    runs-on: self-hosted
+    steps:
+      - uses: styfle/cancel-workflow-action@0.6.0
