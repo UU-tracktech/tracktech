@@ -5,10 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-
-from typing import Callable
-
-
 from processor.scheduling.component.component_interface import IComponent
 
 
@@ -32,15 +28,21 @@ class OutputComponent(IComponent):
 
         self.out = None
 
-    def work(self, obj) -> object:
+    def work(self, obj):
         """Example function with single argument that can be returned by execute_component().
 
         Outputs to object outside of scheduler and there is no next layer to pass objects to.
+
+        Args:
+            obj (object): any object passed to function.
+
+        Returns:
+            object: resulting object from component function.
         """
         self.out = obj
 
         return self.func(self.out)
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """See base class."""
         return self.work

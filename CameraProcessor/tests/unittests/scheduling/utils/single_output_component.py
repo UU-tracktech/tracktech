@@ -5,8 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-
-from typing import Callable
 from processor.scheduling.component.component_interface import IComponent
 
 
@@ -14,19 +12,18 @@ class SingleOutputComponent(IComponent):
     """Example component with a work function containing multiple inputs."""
 
     @staticmethod
-    def work(args) -> object:
+    def work(args):
         """Example function with multiple arguments that can be returned by execute_component().
 
         Args:
-            first_arg: example argument.
-            second_arg: another example argument.
+            args ([object]): two arguments.
 
         Returns:
-            A list of both inputs for the next layer.
+            str: A list of both inputs for the next layer.
         """
         first_arg, second_arg = args
         return first_arg + "," + second_arg + ",merged"
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """See base class."""
         return self.work

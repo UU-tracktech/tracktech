@@ -8,13 +8,14 @@ Utrecht University within the Software Project course.
 import numpy as np
 import torch
 
+from processor.scheduling.component.component_interface import IComponent
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.pipeline.detection.yolor.utils.general import non_max_suppression, scale_coords
 
 
-class IDetector:
-    """Superclass for detectors.
+class IDetector(IComponent):
+    """Detection runner interface that can be run as Scheduler component.
     """
 
     def detect(self, frame_obj):

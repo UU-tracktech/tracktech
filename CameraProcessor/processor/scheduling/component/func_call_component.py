@@ -1,27 +1,24 @@
-"""Simplest definition of a component
+"""Component that returns any function.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
-
-
 from processor.scheduling.component.component_interface import IComponent
 
 
-class BaseComponent(IComponent):
-    """Base of every component containing only the minimal required functionality.
+class FuncCallComponent(IComponent):
+    """Componenent that holds a single function that can be run by the Scheduler.
     """
 
-    def work(self):
-        """Example function that can be returned by execute_component().
+    def __init__(self, func):
+        """Inits FuncCallComponent.
 
-        Returns:
-            object: example object that a component could return.
+        Args:
+            func (function): function to pass to scheduler.
         """
-        return object
+        self.__func = func
 
     def execute_component(self):
         """See base class."""
-        return self.work
+        return self.__func

@@ -12,6 +12,7 @@ import asyncio
 import cv2
 
 import processor.utils.convert as convert
+from processor.utils.config_parser import ConfigParser
 
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
@@ -25,6 +26,9 @@ from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 
+import processor.scheduling.plan.pipeline_plan as pipeline_plan
+from processor.scheduling.scheduler import Scheduler
+
 
 def prepare_stream(configs):
     """Read the configuration information and prepare the objects for the frame stream
@@ -35,6 +39,10 @@ def prepare_stream(configs):
     Returns:
         (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id
     """
+    # Load the config file
+    config_parser = ConfigParser('configs.ini')
+    configs = config_parser.configs
+
     # Instantiate the detector
     logging.info("Instantiating detector...")
     yolo_config = configs['Yolov5']
@@ -65,6 +73,32 @@ def prepare_stream(configs):
     return capture, detector, tracker, orchestrator_config['url']
 
 
+def prepare_scheduler(detector, tracker, on_processed_frame):
+    """Prepare the Scheduler with a valid plan configuration.
+
+    Args:
+        detector (IDetector): detector performing the detections on a given frame.
+        tracker (ITracker): tracker performing simple tracking of all objects using the detections.
+        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
+
+    Returns:
+        Scheduler: Scheduler that has been configured with a plan.
+    """
+    # Get args dict from used plan.
+    plan_args = pipeline_plan.args
+
+    # Put configuration into args dict.
+    plan_args['detector'] = detector
+    plan_args['tracker'] = tracker
+    plan_args['func'] = on_processed_frame
+
+    # Apply configuration to plan.
+    start_node = pipeline_plan.create_plan(plan_args)
+
+    # Return Scheduler.
+    return Scheduler(start_node)
+
+
 async def process_stream(capture, detector, tracker, on_processed_frame, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
@@ -73,11 +107,14 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
 
     Args:
         capture (ICapture): capture object to process a stream of frames.
-        detector (Detector): Yolov5 detector performing the detection using det_obj.
-        tracker (SortTracker): tracker performing SORT tracking.
+        detector (IDetector): detector performing the detections on a given frame.
+        tracker (ITracker): tracker performing simple tracking of all objects using the detections.
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied
     """
+    # Create Scheduler.
+    # scheduler = prepare_scheduler(detector, tracker, on_processed_frame)
+
     framebuffer = FrameBuffer()
 
     frame_nr = 0
@@ -97,6 +134,9 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         if not ret:
             continue
 
+        # # Execute scheduler plan on current frame.
+        # scheduler.schedule_graph(frame_obj)
+
         # Get detections from running detection stage.
         detected_boxes = detector.detect(frame_obj)
 
@@ -108,9 +148,11 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         framebuffer.clean_up()
 
         # Handle side effects of frame processing
-        await on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
+        on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         frame_nr += 1
+
+        await asyncio.sleep(0)
 
     logging.info(f'capture object stopped after {frame_nr} frames')
 
@@ -141,7 +183,7 @@ def process_message_queue(ws_client, tracking_dict):
 
 
 # pylint: disable=unused-argument
-async def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
+def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
     """Sends the bounding boxes to the orchestrator using a websocket client
 
     Args:
@@ -155,12 +197,9 @@ async def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_box
     ws_client.write_message(client_message)
     logging.info(client_message)
 
-    # Give control to asyncio to work through queue
-    await asyncio.sleep(0)
-
 
 # pylint: disable=unused-argument
-async def opencv_display(frame_obj, detected_boxes, tracked_boxes):
+def opencv_display(frame_obj, detected_boxes, tracked_boxes):
     """Displays frame in tiled mode
 
     Is async because the process_frames.py loop expects to get a async function it can await

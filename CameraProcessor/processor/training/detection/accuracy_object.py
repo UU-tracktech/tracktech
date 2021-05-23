@@ -7,12 +7,12 @@ Utrecht University within the Software Project course.
 """
 import os
 import time
-from typing import List
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
 from processor.training.pre_annotations import PreAnnotations
 from processor.utils.config_parser import ConfigParser
+
 
 class AccuracyObject:
     """This class is used to test the accuracy of predictions."""
@@ -37,7 +37,7 @@ class AccuracyObject:
         self.yolo_config = configs['Yolov5']
         self.accuracy_config = configs['Accuracy']
 
-    def parse_info_file(self) -> None:
+    def parse_info_file(self):
         """Reads frame height, width and the amount of frames from the info file."""
         with open(self.accuracy_config['det-info_path'], 'r') as file:
             lines = [line.rstrip('\n') for line in file]
@@ -63,7 +63,7 @@ class AccuracyObject:
             A list of bounding boxes as specified by the podm.podm library.
 
         """
-        list_parsed_boxes: List[BoundingBox] = []
+        list_parsed_boxes = []
         for i in enumerate(boxes_to_parse):
 
             # Getting the bounding boxes that are detected in frame i

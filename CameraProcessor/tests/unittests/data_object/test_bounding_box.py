@@ -187,7 +187,20 @@ class TestBoundingBox:
         """
         assert1 = json.loads(bounding_boxes_to_json(BoundingBoxes([self.data]), 1))
         assert2 = json.loads(
-            json.dumps({"type": "boundingBoxes", "frameId": 1, "boxes": [{"boxId": 1, "rect": [0, 0, 1, 1]}]}))
+            json.dumps(
+                {
+                    "type": "boundingBoxes",
+                    "frameId": 1,
+                    "boxes": [
+                        {
+                            "boxId": 1,
+                            "rect": [0, 0, 1, 1],
+                            'objectType': self.classification
+                        }
+                    ]
+                }
+            )
+        )
         assert assert1 == assert2
 
     def test_value_error(self):

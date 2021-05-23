@@ -32,12 +32,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: cp-coverage_html
-          path: output/cp-coverage.html
+          path: cp-coverage.html
       - name: Upload unit test report artifact
         uses: actions/upload-artifact@v2
         with:
           name: cp-unit-report.xml
-          path: output/cp-unit-report.xml
+          path: cp-unit-report.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
         with:

@@ -5,10 +5,11 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+from processor.scheduling.component.component_interface import IComponent
 
 
-class ITracker:
-    """Tracker interface.
+class ITracker(IComponent):
+    """Tracker runner interface that can be run as Scheduler component.
     """
     def track(self, frame_obj, det_obj, tracking_dict):
         """Performs tracking stage using the tracking object.
