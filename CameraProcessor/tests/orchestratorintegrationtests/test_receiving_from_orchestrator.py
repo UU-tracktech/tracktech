@@ -7,10 +7,12 @@ Utrecht University within the Software Project course.
 """
 # pylint: disable=unused-variable
 import asyncio
+import json
 import pytest
 
 from super_websocket_client import create_dummy_client
-from utils.jsonloader import load_data
+from processor.webhosting.start_command import StartCommand
+from processor.webhosting.stop_command import StopCommand
 from utils.utils import PC_URL, IF_URL
 
 
@@ -42,8 +44,10 @@ class TestReceivingFromOrchestrator:
         return request.param
 
     @pytest.mark.asyncio
-    @pytest.mark.skip("BUG: PROCESSOR ORCHESTRATOR BUGS ON CONNECTION WITH INTERFACE WEBSOCKET CLIENT?")
-    async def test_retrieve_data(self, message_type, amount):
+    async def test_retrieve_start_stop(self):
+        """Mock interface client sends a start command to the orchestrator. Check if camera processor handles this
+        command properly. Then sends a stop command. Check if camera processor also handles this stop.
+        """
         """Sends data to the orchestrator and tests if it receives the same data back
 
         Args:
@@ -59,22 +63,30 @@ class TestReceivingFromOrchestrator:
         # Get a connected interface client
         interface_client = await create_dummy_client(IF_URL)
 
-        msg = load_data(message_type, amount[0], amount[1])
-        ws_client = await create_dummy_client(PC_URL, "mock_id1")
-        ws_client2 = await create_dummy_client(PC_URL, "mock_id2")
-        for j in msg:
-            ws_client.write_message(j)
-        await ws_client2.await_message(len(msg))
-        assert len(ws_client2.message_list) == len(msg)
-        for i in msg:
-            assert ws_client2.message_list[i.index(i)].__eq__(i)
-        ws_client.connection.close()
-        ws_client2.connection.close()
-        await asyncio.sleep(1)
-        task1 = asyncio.create_task(self._check_closed(ws_client))
-        task2 = asyncio.create_task(self._check_closed(ws_client2))
-        await task1
-        await task2
+        start_command = json.dumps({"type": "start", "frameId": 1, "boxId": 5, "cameraId": "mock_id"})
+        interface_client.write_message(start_command)
+
+        await asyncio.sleep(2)
+
+        received_start = processor_client.message_queue.popleft()
+        assert isinstance(received_start, StartCommand)
+        assert received_start.box_id == 5
+        assert received_start.frame_id == 1
+
+        # Processor orchestrator determines object ID. Should be 1 if this is the first start command.
+        assert received_start.object_id == 1
+
+        stop_command = json.dumps({"type": "stop", "objectId": 1})
+        interface_client.write_message(stop_command)
+
+        await asyncio.sleep(2)
+
+        received_stop = processor_client.message_queue.popleft()
+        assert isinstance(received_stop, StopCommand)
+        assert received_stop.object_id == 1
+
+        processor_client.disconnect()
+        interface_client.disconnect()
 
     @staticmethod
     async def _is_queue_empty(ws_client):

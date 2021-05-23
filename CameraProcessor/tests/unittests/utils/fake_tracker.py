@@ -24,7 +24,7 @@ class FakeTracker(ITracker):
         self.sort = None
 
     #  pylint: disable=unused-argument
-    def track(self, _, bounding_boxes):
+    def track(self, _, bounding_boxes, tracking_dict):
         """Appends a couple random bounding boxes."""
         tracked_bounding_boxes = []
 
