@@ -40,6 +40,7 @@ class TimeLineHandler(RequestHandler):
         # Remove final comma
         data = data[:-1]
         self.write(f'{{"data":[{data}]}}')
+        file.close()
 
     def data_received(self, chunk):
         """Unused method that could handle streamed request data"""
