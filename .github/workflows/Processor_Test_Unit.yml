@@ -15,7 +15,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Install git lfs
-        run: apt-get update&& apt-get install -y git-lfs
+        run: apt-get update && apt-get install -y git-lfs
       - uses: actions/checkout@v2
         with:
           submodules: recursive
