@@ -73,6 +73,9 @@ class YolorDetector(IDetector):
         # Get names
         self.names = self.load_classes(config['names_path'])
 
+        img = torch.zeros((1, 3, self.config.getint('img-size'), self.config.getint('img-size')), device=self.device)
+        _ = self.model(img.half() if self.half else img) if self.device.type != 'cpu' else None  # run once
+
     # pylint: disable=duplicate-code
     def detect(self, frame_obj):
         """Run detection on a Detection Object.
@@ -86,7 +89,7 @@ class YolorDetector(IDetector):
         bounding_boxes = []
 
         # Resize
-        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'))[0]
+        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'), auto_size=self.config.getint('stride'))[0]
         img = self.convert_image(img, self.device, self.half)
 
         # Inference
