@@ -74,7 +74,6 @@ class TestProcessFrames:
         video_capture.close()
 
     @pytest.mark.timeout(90)
-    # @pytest.mark.skip("Yolor does not work with cpu")
     def test_process_stream_with_yolor(self, configs):
         """Tests process_stream function with YOLOR
 
