@@ -31,7 +31,7 @@ COPY configs.ini configs.ini
 COPY test-configs.ini test-configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
-COPY yolor_p6.pt yolor_p6.pt
+COPY yolor_p6.pt processor/pipeline/detection/yolor/yolor_p6.pt
 COPY tests/conftest.py tests/conftest.py
 RUN apt-get install tree
 RUN tree
