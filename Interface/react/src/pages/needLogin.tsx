@@ -16,24 +16,28 @@ import { Alert } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
 
 export function NeedLogin() {
-  const { keycloak } = useKeycloak()
+  const { keycloak, initialized } = useKeycloak()
 
-  return (
-    <div
-      data-testid="loginAlert"
-      style={{
-        display: 'grid',
-        justifyContent: 'center',
-        alignContent: 'center'
-      }}
-    >
-      <Alert
-        type="error"
-        message="Login"
-        description="You need to be logged-in to view this page."
-        onClose={() => keycloak.login()}
-        closable
-      />
-    </div>
-  )
+  if (!initialized) {
+    return <></>
+  } else {
+    return (
+      <div
+        data-testid="loginAlert"
+        style={{
+          display: 'grid',
+          justifyContent: 'center',
+          alignContent: 'center'
+        }}
+      >
+        <Alert
+          type="error"
+          message="Login"
+          description="You need to be logged-in to view this page."
+          onClose={() => keycloak.login()}
+          closable
+        />
+      </div>
+    )
+  }
 }
