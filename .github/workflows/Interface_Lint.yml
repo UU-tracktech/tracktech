@@ -20,5 +20,5 @@ jobs:
       - name: Build and start
         run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
       - name: Remove
-        run: docker-compose -f Interface/compose/docker-compose_lint.yml down
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml down --rmi all
         if: ${{ always() }}
