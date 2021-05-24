@@ -4,3 +4,6 @@
 [submodule "yolor"]
 	path = CameraProcessor/processor/pipeline/detection/yolor
 	url = https://github.com/UU-tracktech/yolor.git
+[submodule "torchreid"]
+	path = CameraProcessor/processor/pipeline/reidentification/torchreid
+	url = https://github.com/UU-tracktech/deep-person-reid.git
