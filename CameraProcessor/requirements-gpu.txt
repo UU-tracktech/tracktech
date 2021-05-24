@@ -17,4 +17,4 @@ torchvision==0.9.0+cu101
 
 # TorchReid
 processor/pipeline/reidentification/torchreid
--r processor/pipeline/reidentification/torchreid/docs/requirements.txt
+-r processor/pipeline/reidentification/torchreid/requirements.txt
