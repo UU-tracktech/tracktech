@@ -36,7 +36,15 @@ class SortTracker(ITracker):
                          iou_threshold=config.getfloat('iou_threshold')
                          )
 
-    def track(self, frame_obj, det_obj):
+    def execute_component(self):
+        """Function given to scheduler so the scheduler can run the tracking stage.
+
+        Returns:
+            function: function that the scheduler can run.
+        """
+        return self.track
+
+    def track(self, frame_obj, det_obj, tracking_dict):
         """Performing tracking using SORT tracking to get a tracking ID for all tracked detections.
 
         Converts detections to correct format, gets trackers from SORT tracking and converts trackers to bounding boxes.
@@ -45,6 +53,7 @@ class SortTracker(ITracker):
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
             det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
+            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID
 
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
@@ -53,42 +62,37 @@ class SortTracker(ITracker):
 
         # Get bounding boxes into format expected by SORT tracker.
         det_bounding_boxes = det_obj.get_bounding_boxes()
-
-        if len(det_bounding_boxes) == 0:
-            detections = np.empty((0, 5))
-        else:
-            sort_detections = []
-
+        sort_detections = []
+        if len(det_bounding_boxes) > 0:
             for bounding_box in det_bounding_boxes:
-                sort_detections.append([
+                sort_detections.append((np.asarray([
                     bounding_box.get_rectangle().get_x1() * width,
                     bounding_box.get_rectangle().get_y1() * height,
                     bounding_box.get_rectangle().get_x2() * width,
                     bounding_box.get_rectangle().get_y2() * height,
-                    bounding_box.get_certainty().item()
-                ])
-
-            detections = np.asarray(sort_detections)
+                    bounding_box.get_certainty().item()]),
+                    bounding_box.get_classification(),
+                    bounding_box.get_certainty()))
 
         # Get all tracked objects found in current frame.
-        trackers = self.sort.update(detections)
+        trackers = self.sort.update(sort_detections)
 
         # Turn tracked objects into BoundingBox objects.
         bounding_boxes = []
 
         for tracker in trackers:
             bounding_box = BoundingBox(
-                identifier=int(tracker[4]),
+                identifier=int(tracker[0][4]),
                 rectangle=Rectangle(
-                    int(tracker[0]) / width,
-                    int(tracker[1]) / height,
-                    int(tracker[2]) / width,
-                    int(tracker[3]) / height
+                    max(int(tracker[0][0]) / width, 0),
+                    max(int(tracker[0][1]) / height, 0),
+                    min(int(tracker[0][2]) / width, 1),
+                    min(int(tracker[0][3]) / height, 1),
                 ),
-                classification='',
-                certainty=1
+                classification=tracker[1],
+                certainty=tracker[2],
+                object_id=tracking_dict.get(int(tracker[0][4]), None)
             )
-
             bounding_boxes.append(bounding_box)
 
         return BoundingBoxes(bounding_boxes)

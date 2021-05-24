@@ -23,12 +23,12 @@ class TestBoundingBox:
         """Set ups bounding_box for unit testing.
 
         """
-        self.data = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5)
+        self.data = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5, object_id=5)
         self.identifier = self.data.get_identifier()
         self.rectangle = self.data.get_rectangle()
-        self.feature = None
         self.classification = self.data.get_classification()
         self.certainty = self.data.get_certainty()
+        self.object_id = self.data.get_object_id()
 
     # Testing typechecking
     def test_type_identifier(self):
@@ -45,13 +45,6 @@ class TestBoundingBox:
         assert isinstance(self.rectangle,
                           type(self.rectangle))
 
-    def test_type_feature(self):
-        """Asserts if value of feature is of correct type.
-
-        """
-        assert isinstance(self.feature,
-                          type(self.feature))
-
     def test_type_classification(self):
         """Asserts if value of classification is of correct type.
 
@@ -66,6 +59,13 @@ class TestBoundingBox:
         assert isinstance(self.certainty,
                           type(self.certainty))
 
+    def test_type_object_id(self):
+        """Asserts if value of object id is of correct type.
+
+        """
+        assert isinstance(self.object_id,
+                          type(self.object_id))
+
     # Testing empty fields that can be empty
     def test_empty_identifier(self):
         """Asserts if identifier is not None.
@@ -79,13 +79,6 @@ class TestBoundingBox:
         """
         assert self.rectangle is not None
 
-    @pytest.mark.skip(reason="feature attribute is currently unused")
-    def test_empty_feature(self):
-        """Asserts if feature is not None.
-
-        """
-        assert self.feature is not None
-
     def test_empty_classification(self):
         """Asserts if classification is not None.
 
@@ -97,6 +90,12 @@ class TestBoundingBox:
 
         """
         assert self.certainty is not None
+
+    def test_empty_object_id(self):
+        """Asserts if object id is not None.
+
+        """
+        assert self.object_id is not None
 
     # Testing exceptions
     def test_exception_identifier(self):
@@ -112,13 +111,6 @@ class TestBoundingBox:
         """
         with pytest.raises(Exception):
             assert str(self.rectangle) == 'some invalid value'
-
-    def test_exception_feature(self):
-        """Asserts if feature throws exception.
-
-        """
-        with pytest.raises(Exception):
-            assert str(self.feature) == 'some invalid value'
 
     def test_exception_classification(self):
         """Asserts if classification throws exception.
@@ -155,12 +147,6 @@ class TestBoundingBox:
                    self.rectangle.get_y2())
         assert assert1 == assert2
 
-    def test_value_feature(self):
-        """Asserts if value of feature is correct.
-
-        """
-        assert self.feature is None
-
     def test_value_classification(self):
         """Asserts if value of classification is correct.
 
@@ -172,6 +158,12 @@ class TestBoundingBox:
 
         """
         assert self.certainty == 0.5
+
+    def test_value_object_id(self):
+        """Asserts if value of object_id is correct.
+
+        """
+        assert self.object_id == 5
 
     # Testing form
     def test_range_certainty(self):
@@ -187,7 +179,21 @@ class TestBoundingBox:
         """
         assert1 = json.loads(bounding_boxes_to_json(BoundingBoxes([self.data]), 1))
         assert2 = json.loads(
-            json.dumps({"type": "boundingBoxes", "frameId": 1, "boxes": [{"boxId": 1, "rect": [0, 0, 1, 1]}]}))
+            json.dumps(
+                {
+                    "type": "boundingBoxes",
+                    "frameId": 1,
+                    "boxes": [
+                        {
+                            "boxId": 1,
+                            "rect": [0, 0, 1, 1],
+                            "objectType": self.classification,
+                            "objectId": 5
+                        }
+                    ]
+                }
+            )
+        )
         assert assert1 == assert2
 
     def test_value_error(self):

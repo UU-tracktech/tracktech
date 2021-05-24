@@ -41,6 +41,18 @@ async def test_incomplete_message_interface():
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(5)
+async def test_unknown_action_message_interface():
+    """Test if the interface can send a message of unknown type without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    interface.write_message(json.dumps({
+        "type": "unknown"
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
 async def test_unknown_processor_message_interface():
     """Test if the interface can send an incomplete message without crashing the server."""
 
@@ -86,6 +98,18 @@ async def test_incomplete_message_processor():
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     interface.write_message(json.dumps({
         "type": "identifier"
+    }))
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(5)
+async def test_unknown_action_message_processor():
+    """Test if the processor can send a message of unknown type without crashing the server."""
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    interface.write_message(json.dumps({
+        "type": "unknown"
     }))
 
 
@@ -212,6 +236,16 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
 
     processor.close()
 
+    # Stop tracking both objects, as tey are no longer needed
+    interface.write_message(json.dumps({
+        "type": "stop",
+        "objectId": 1
+    }))
+    interface.write_message(json.dumps({
+        "type": "stop",
+        "objectId": 2
+    }))
+
 
 def assert_boxes_message(message):
     """Help method to assert if the received boxes message is as expected"""
@@ -280,7 +314,7 @@ async def test_stop_tracking():
         "objectId": 1
     }))
 
-    # read start message first
+    # Read start message first
     _ = await processor.read_message()
     message = await processor.read_message()
     assert assert_stop_tracking(message, 1)
@@ -292,6 +326,45 @@ def assert_stop_tracking(message, object_id):
     assert message_json["type"] == "stop"
     assert message_json["objectId"] == object_id
     return True
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(30)
+async def test_startup_message():
+    """Test if a processor gets the currently tracked feature maps"""
+
+    processor_1 = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    await processor_1.write_message(json.dumps({
+        "type": "identifier",
+        "id": "processor_6"
+    }))
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    await interface.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "processor_6",
+        "frameId": 1,
+        "boxId": 1,
+    }))
+
+    processor_1.write_message(json.dumps({
+        "type": "featureMap",
+        "objectId": 1,
+        "featureMap": {"test": "test"}
+    }))
+
+    processor_2 = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    await processor_2.write_message(json.dumps({
+        "type": "identifier",
+        "id": "processor_7"
+    }))
+
+    # read start message first
+    message = await processor_2.read_message()
+    assert assert_feature_map(message)
 
 
 @pytest.mark.asyncio

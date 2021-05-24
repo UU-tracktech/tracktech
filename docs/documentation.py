@@ -7,6 +7,8 @@ Utrecht University within the Software Project course.
 
 import os
 import sys
+import argparse
+import logging
 from pathlib import Path
 import pkgutil
 import pkg_resources
@@ -15,89 +17,69 @@ import mock
 import dis
 import importlib
 import importlib.util
+import shutil
 
 
-def generate_documentation(root_folder):
+def generate_documentation(component_source_path):
     """Generates pdoc documentation for all Python modules in CameraProcessor project.
 
+    Removes previously created documentation if it exists.
+
     Args:
-        root_folder (Path): path to root folder of Python code.
+        component_source_path (Path): path to root folder of Python code.
     """
     doc_folder = os.path.dirname(__file__)
-    absolute_root_folder = os.path.join(os.path.dirname(doc_folder), root_folder)
-
-    component_root = os.path.dirname(absolute_root_folder)
+    abs_component_source_path = os.path.realpath(os.path.join(os.path.dirname(doc_folder), component_source_path))
+    component_root = os.path.dirname(abs_component_source_path)
 
     # Points pdoc to used jinja2 template and sets Google docstrings as the used docstring format.
-    pdoc.render.configure(template_directory=Path(os.path.join(doc_folder, 'template')),
+    pdoc.render.configure(template_directory=Path(os.path.realpath(os.path.join(doc_folder, 'template'))),
                           docformat='google')
 
     # Add to_tree to Jinja2 environment filters to generate tree from modules list.
     pdoc.render.env.filters['to_tree'] = to_tree
 
     # Output directory
-    output_dir = Path(os.path.join(doc_folder, 'html', root_folder))
+    output_dir = Path(os.path.realpath(os.path.join(doc_folder, 'html', component_source_path)))
+
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
 
     # Create docs html dir if it doesn't exist.
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Get all modules included by pdoc, respecting the __all__ attribute in __init__.py.
-    included_paths = get_modules(absolute_root_folder)
+    included_paths = get_modules(abs_component_source_path)
 
     # Create module imports from included paths.
     included_modules = [path_to_module(component_root, included_path) for included_path in included_paths]
+    logging.info(f'Included modules: {included_modules}')
 
-    mock_modules = set()
+    # Remove modules for which pdoc is going to generate documentation.
+    for module in included_modules:
+        if module in sys.modules:
+            logging.info(f'Removed the following module so it can generate documentation: {module}')
+            del sys.modules[module]
 
-    # Create mock for all import statements not included in included_modules.
-    for included_module in included_paths:
-        # Get imports of module from included module.
-        module_imports = get_imports(included_module)
+    # Get modules that might need to get mocked.
+    mock_modules = get_mock_modules(included_paths, included_modules)
+    logging.info(f'Mocked modules: {mock_modules}')
 
-        # Loop over all found imports.
-        for module_import in module_imports:
-            # Get all possible module parts.
-            for module_import_part in get_module_import_parts(module_import):
-                # Create mock if module part hasn't been included yet.
-                if module_import_part not in included_modules:
-                    mock_modules.add(module_import_part)
-
-    installed_packages = [p.project_name for p in pkg_resources.working_set]
-
-    # Add mock if sys.modules doesn't include an import statement or if the package is already installed.
-    for mod_name in mock_modules:
-        # Don't mock object if it has already been installed.
-        skip = False
-        for package in installed_packages:
-            if mod_name == package or mod_name.startswith(f'{package}.'):
-                skip = True
-
-        if skip:
-            continue
-
-        # Add mock object with associated module name if it hasn't been loaded in yet.
-        if mod_name not in sys.modules:
-            mod_mock = mock.Mock(name=mod_name)
-            sys.modules[mod_name] = mod_mock
-
-    # Modules loaded before executing pdoc.
-    # Convert keys to list to copy current content (otherwise object changes during pdoc run).
-    preloaded_modules = list(sys.modules.keys())
+    # Get modules that have been mocked.
+    mocked_modules = get_mocked(mock_modules)
 
     # Generate documentation for all found modules in the /docs.
-    pdoc.pdoc(absolute_root_folder, output_directory=output_dir)
+    pdoc.pdoc(abs_component_source_path, output_directory=output_dir)
 
-    # All modules loaded after executing pdoc (in a list like before).
-    loaded_modules = list(sys.modules.keys())
+    logging.info('Cleaning up the mocked modules')
 
-    # Remove modules loaded in for documentation generation.
-    for module in loaded_modules:
-        if module not in preloaded_modules:
-            del sys.modules[module]
+    # Remove mocked modules.
+    for module in mocked_modules:
+        del sys.modules[module]
 
 
 def generate_index():
-    """Generate index.html file that links to all generated HTML in subfolders.
+    """Generate index.html file that links to all generated HTML in sub-folders.
     """
     html_root = os.path.join(os.path.dirname(__file__), 'html')
 
@@ -119,7 +101,7 @@ def generate_index():
 
     with open(index_loc, 'w') as index_file:
         for index_path in index_paths:
-            index_file.write(f'<a href="{index_path}">{index_path}</a>\n<hr>\n')
+            index_file.write(f'<a href=".{index_path}">{index_path}</a>\n<hr>\n')
 
 
 def get_imports(file_path):
@@ -139,7 +121,7 @@ def get_imports(file_path):
     elif Path.exists(Path(f'{file_path}/__init__.py')):
         py_file_path = f'{file_path}/__init__.py'
     else:
-        raise FileNotFoundError('Python module not found')
+        raise FileNotFoundError(f'Python module not found in file: {file_path}')
 
     # Open Python file as if it is a normal file.
     file = open(Path(py_file_path), encoding='UTF-8')
@@ -147,8 +129,8 @@ def get_imports(file_path):
     # Get all instructions in Python file.
     instructions = dis.get_instructions(file.read())
 
-    # Filter on IMPORT_NAME and IMPORT_FROM.
-    instruction_names = ['IMPORT_NAME', 'IMPORT_FROM']
+    # Filter on IMPORT_NAME.
+    instruction_names = ['IMPORT_NAME']
 
     # argval of allowed instruction arguments
     imports = [instruction.argval for instruction in instructions if instruction.opname in instruction_names]
@@ -195,42 +177,44 @@ def get_modules(root_folder):
 
     includes = dict()
 
-    # Import all packages to retrieve the __all__ attribute (if there is one).
-    for module in pkgutil.iter_modules(folders):
-        if not module.ispkg:
-            continue
+    for iter_folder in folders:
+        # Import all packages to retrieve the __all__ attribute (if there is one).
+        for module in pkgutil.iter_modules([iter_folder]):
+            if not module.ispkg:
+                continue
 
-        module_path = os.path.join(module.module_finder.path, module.name)
+            module_path = os.path.join(module.module_finder.path, module.name)
 
-        import_path = path_to_module(component_root, module_path)
+            import_path = path_to_module(component_root, module_path)
 
-        # Package module shouldn't contain code with side effects.
-        imported_module = importlib.import_module(import_path)
+            # Package module shouldn't contain code with side effects.
+            imported_module = importlib.import_module(import_path)
 
-        # Get included modules from the __all__ attribute,
-        # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
-        if hasattr(imported_module, '__all__'):
-            all_included = getattr(imported_module, '__all__')
-            includes[module_path] = all_included
+            # Get included modules from the __all__ attribute,
+            # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
+            if hasattr(imported_module, '__all__'):
+                all_included = getattr(imported_module, '__all__')
+                includes[module_path] = all_included
 
     # Find all modules in found folders and append the full path.
     modules = [root_folder]
-    for module in pkgutil.iter_modules(folders):
-        if module.name.startswith('_'):
-            continue
+    for iter_folder in folders:
+        for module in pkgutil.iter_modules([iter_folder]):
+            if module.name.startswith('_'):
+                continue
 
-        module_path = os.path.join(module.module_finder.path, module.name)
+            module_path = os.path.join(module.module_finder.path, module.name)
 
-        # Check if module is included.
-        include = True
-        for key in includes.keys():
-            # Module isn't included if a valid key exists for any package it is in that doesn't include it via __all__.
-            if key != module_path and key in module_path and module.name not in includes[key]:
-                include = False
-                break
+            # Check if module is included.
+            include = True
+            for key in includes.keys():
+                # Module excluded if present in __all__ attribute within __init__.py file.
+                if key != module_path and key in module_path and module.name not in includes[key]:
+                    include = False
+                    break
 
-        if include:
-            modules.append(module_path)
+            if include:
+                modules.append(module_path)
 
     sys.path.remove(component_root)
 
@@ -294,6 +278,69 @@ def get_module_import_parts(module_import):
     return module_imports
 
 
+def get_mock_modules(included_paths, included_modules):
+    """Get all modules that need to be loaded in the environment when code is run by pdoc.
+
+    Args:
+        included_paths ([str]): all paths to Python modules that get documentation generated.
+        included_modules ([str]): all package and module level imports.
+
+    Returns:
+        set(str): all modules that might need to get mocked if no alternative has been loaded.
+    """
+    mocks = set()
+
+    # Create mock for all import statements not included in included_modules.
+    for included_module in included_paths:
+        # Get imports of module from included module.
+        module_imports = get_imports(included_module)
+
+        # Loop over all found imports.
+        for module_import in module_imports:
+            # Get all possible module parts.
+            for module_import_part in get_module_import_parts(module_import):
+                # Create mock if module part hasn't been included yet.
+                if module_import_part not in included_modules:
+                    mocks.add(module_import_part)
+
+    return mocks
+
+
+def get_mocked(mock_modules):
+    """Get all modules that get mocked, because they were not loaded into the environment.
+
+    Args:
+        mock_modules (set(str)): modules that need to get mocked if they are not loaded in.
+
+    Returns:
+        [str]: modules that are mocked.
+    """
+    installed_packages = [p.project_name for p in pkg_resources.working_set]
+
+    mocked = []
+
+    # Add mock if sys.modules doesn't include an import statement or if the package is already installed.
+    for mod_name in mock_modules:
+        # Don't mock object if it has already been installed.
+        skip = False
+        for package in installed_packages:
+            if mod_name == package or mod_name.startswith(f'{package}.'):
+                skip = True
+
+        if skip:
+            continue
+
+        # Add mock object with associated module name if it hasn't been loaded in yet.
+        if mod_name not in sys.modules:
+            mod_mock = mock.Mock(name=mod_name)
+            sys.modules[mod_name] = mod_mock
+
+            # Mocked module.
+            mocked.append(mod_name)
+
+    return mocked
+
+
 def to_tree(modules):
     """Turn a list of modules into a dictionary representing a tree
     which gets turned into a JSON object by Jinja2.
@@ -321,7 +368,12 @@ def to_tree(modules):
 
 
 if __name__ == '__main__':
-    import argparse
+    # Configure the logger
+    logging.basicConfig(filename='documentation.log', filemode='w',
+                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                        level=logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     # Argument parser for configuration.
     parser = argparse.ArgumentParser(description='Generate documentation.')
@@ -356,11 +408,12 @@ if __name__ == '__main__':
 
     # Generate documentation for all provided roots.
     for root in args.roots:
-        code_root_folder = Path(root)
-
+        component_source_path = Path(root)
+        logging.info(f'generating documentation for: {component_source_path}')
         # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
-        generate_documentation(code_root_folder)
+        generate_documentation(component_source_path)
 
     # Create index if flag was provided.
     if args.create_index:
+        logging.info('generating index')
         generate_index()

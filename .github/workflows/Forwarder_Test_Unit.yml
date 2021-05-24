@@ -15,17 +15,18 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Build and run
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml up --build --exit-code-from video-forwarder
-      - name: Copy out report
-        run: docker cp video-forwarder_container:/app/vf-unit-report.xml vf-unit-report.xml
-      - name: Copy out report
-        run: docker cp video-forwarder_container:/app/htmlcov vf-coverage_html
+      - name: Copy xml coverage report
+        run: docker cp video-forwarder_container:/app/coverage.xml coverage.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
         with:
-          files: vf-unit-report.xml
+          files: coverage.xml
           flags: Forwarder
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}

@@ -7,15 +7,11 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
-from processor.utils.config_parser import ConfigParser
 from processor.input.hls_capture import HlsCapture
 from processor.input.video_capture import VideoCapture
 from processor.input.image_capture import ImageCapture
 
-import processor.utils.config_parser
-
-# Set test config to true, so it processes a shorter video
-processor.utils.config_parser.USE_TEST_CONFIG = True
+from tests.conftest import get_test_configs
 
 
 def __get_images_dir():
@@ -24,8 +20,8 @@ def __get_images_dir():
     Returns: a string containing the file path to the image folder.
 
     """
-    config_parser = ConfigParser('configs.ini')
-    return config_parser.configs['Accuracy']['source_path']
+    configs = get_test_configs()
+    return configs['Accuracy']['source_path']
 
 
 def __get_video_path():
@@ -34,10 +30,11 @@ def __get_video_path():
     Returns: a string containing the file path to a video
 
     """
-    config_parser = ConfigParser('configs.ini')
-    return config_parser.configs['Yolov5']['source_path']
+    configs = get_test_configs()
+    return configs['Yolov5']['source_path']
 
 
+# pylint: disable=unnecessary-lambda
 @pytest.fixture(scope="class",
                 params=[lambda: ImageCapture(__get_images_dir()),
                         lambda: VideoCapture(__get_video_path()),
@@ -46,7 +43,8 @@ def __get_video_path():
                 ids=["Image",
                      "video",
                      "HLS Stream"
-                     ])
+                     ],
+                )
 def capture_implementation(request):
     """ Defines capture_implementation as multiple implementations of iCapture,
     to be use in generic capture tests.

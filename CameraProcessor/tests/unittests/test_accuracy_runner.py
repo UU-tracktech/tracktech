@@ -7,12 +7,6 @@ Utrecht University within the Software Project course.
 """
 
 from processor.accuracy_runner import main
-from processor.utils.config_parser import ConfigParser, USE_TEST_CONFIG
-
-import processor.utils.config_parser
-
-# Set test config to true, so it processes a shorter video
-processor.utils.config_parser.USE_TEST_CONFIG = True
 
 
 class TestAccuracyRunner:
@@ -20,16 +14,17 @@ class TestAccuracyRunner:
 
     """
     # pylint: disable=attribute-defined-outside-init
-    def test_accuracy_runner(self):
+    def test_accuracy_runner(self, configs):
         """Runs the accuracy runner and gets the correct paths from the config file
 
+        Args:
+            configs (ConfigParser): configs for the test
         """
         # run the accuracy runner
-        main()
+        main(configs)
 
         # Getting the config file for the accuracy
-        config_parser = ConfigParser('configs.ini')
-        self.config_accuracy = config_parser.configs['Accuracy']
+        self.config_accuracy = configs['Accuracy']
 
         # Test the files created by the accuracy runner
         self.detection_info_file()

@@ -1,3 +1,11 @@
+/*
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+ */
+
 import * as React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Home } from '../../src/pages/home'
@@ -11,7 +19,7 @@ test('The card containing the buttons is there', async () => {
     render(<Home />)
   })
 
-  expect(screen.queryByTestId('SelectionCard')).not.toBe(null)
+  expect(screen.queryByTestId('indicatorsCard')).not.toBe(null)
 })
 
 /** Check that the buttons exist and the card contains the buttons */
@@ -21,7 +29,7 @@ test('The buttons are there', async () => {
     render(<Home />)
   })
 
-  const card = screen.queryByTestId('SelectionCard')
+  const card = screen.queryByTestId('indicatorsCard')
   expect(card).not.toBe(null)
 
   const allBut = screen.queryByTestId('AllButton')
@@ -54,6 +62,7 @@ test('Clicking buttons changes selection', async () => {
   //'ant-btn-primary' means that button is selected, while 'ant-btn-default' is not
 
   //by default, the 'all' button is primary, and the others are default
+  allBut.click()
   expect(allBut).toHaveClass('ant-btn-primary')
   expect(allBut).not.toHaveClass('ant-btn-default')
   expect(selBut).not.toHaveClass('ant-btn-primary')
@@ -62,7 +71,7 @@ test('Clicking buttons changes selection', async () => {
   expect(noneBut).toHaveClass('ant-btn-default')
 
   //Simulate a click on the selection button
-  fireEvent.click(selBut)
+  selBut.click()
   //Now the All button should be back to default and selection should be primary
   expect(allBut).not.toHaveClass('ant-btn-primary')
   expect(allBut).toHaveClass('ant-btn-default')
@@ -72,7 +81,7 @@ test('Clicking buttons changes selection', async () => {
   expect(noneBut).toHaveClass('ant-btn-default')
 
   //again but now for the none button
-  fireEvent.click(noneBut)
+  noneBut.click()
   expect(allBut).not.toHaveClass('ant-btn-primary')
   expect(allBut).toHaveClass('ant-btn-default')
   expect(selBut).not.toHaveClass('ant-btn-primary')

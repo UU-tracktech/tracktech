@@ -15,27 +15,30 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Build and run
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml up --build --exit-code-from processor-orchestrator
-      - name: Copy out report
+      - name: Copy unit test report
         run: docker cp processor-orchestrator_container:/app/po-unit-report.xml po-unit-report.xml
       - uses: actions/upload-artifact@v2
         with:
           name: unit-report
           path: po-unit-report.xml
-      - name: Copy out coverage
+      - name: Copy html coverage report
         run: docker cp processor-orchestrator_container:/app/po_coverage_html po_coverage_html
       - uses: actions/upload-artifact@v2
         with:
           name: coverage
           path: po_coverage_html
-      - name: Copy out coverage
+      - name: Copy xml coverage report
         run: docker cp processor-orchestrator_container:/app/coverage.xml po-coverage.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
         with:
           files: po-coverage.xml
           flags: Orchestrator
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml down
         if: ${{ always() }}

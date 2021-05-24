@@ -13,6 +13,14 @@ the templating of the documentation can be adjusted via the Jinja2 templates.
   - `-rs` (or `roots`): defaults to empty list.
     Contains all arguments provided after flag as code paths to start documentation generation at.
 
+## Exclude Python file from documentation generation
+
+You can exclude certain Python files from documentation generation by adding the `__all__` attribute.
+The `__all__` attribute must reside in the `__init__.py` file, 
+every module name in `__all__`. gets documentation, 
+and every module name not in it gets excluded.
+
+
 ## Constraints
 
 - pdoc runs the global code of each module included in the documentation generation. 
@@ -24,12 +32,15 @@ the templating of the documentation can be adjusted via the Jinja2 templates.
   - Imports: packages must be installed if they are necessary for the other mentioned issues. 
     However documentation automatically creates a mock object for all modules that haven't been loaded in 
     or will not have documentation generated for the module.
-    This also means that a mock is created for a project module if a module is ignored from documentation via __all__.
+    This also means that a mock is created for a project module 
+    if a module is ignored from documentation via `__all__`.
   - Global space: code can be run in the global space if they have no required configuration 
     and all necessary packages are installed in the Python interpreter.
   - Class inheritance: the super class of a certain class must be included in the loaded modules. 
     This is necessary for pdoc inheritance checks.
     This requires the Python interpreter to have the package installed if a class of it is used as super class.
     An example is the WebsocketHandler of tornado, this is the super class of all Websocket classes in this project.
+    Another example is using a class from src code as super class in testing code, 
+    this would crash the documentation generation.  
   - Class constants: ensure that the constants can be initialized 
     without additional project configuration not handled before pdoc execution.
