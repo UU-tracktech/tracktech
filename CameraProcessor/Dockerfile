@@ -32,9 +32,8 @@ COPY test-configs.ini test-configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
 COPY yolor_p6.pt yolor_p6.pt
+COPY coco.names coco.names
 COPY tests/conftest.py tests/conftest.py
-RUN apt-get install tree
-RUN tree -h
 
 
 FROM test AS test_unit
