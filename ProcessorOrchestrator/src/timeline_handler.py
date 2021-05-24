@@ -5,6 +5,8 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
+import os
+
 from tornado.web import RequestHandler
 
 
@@ -28,7 +30,12 @@ class TimeLineHandler(RequestHandler):
             self.set_status(400, "Missing 'objectId' query parameter")
             self.finish("Missing 'objectId' query parameter")
             return
-        file = open(f"tracking_timelines/tracking_logs_{object_id}.txt", "r")
+        filename = f"tracking_timelines/tracking_logs_{object_id}.txt"
+        if not os.path.exists(filename):
+            self.set_status(400, "Object id not present in tracking history")
+            self.finish("Object id not present in tracking history")
+            return
+        file = open(filename, "r")
         data = file.read().replace("\n", "")
         # Remove final comma
         data = data[:-1]
