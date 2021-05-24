@@ -16,7 +16,6 @@ RUN apt update
 
 RUN apt install -y ffmpeg
 RUN apt install -y g++
-RUN apt-get update && apt-get install git-lfs
 
 # Install pip requirements
 COPY requirements.txt .
