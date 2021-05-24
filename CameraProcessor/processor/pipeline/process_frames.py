@@ -175,9 +175,13 @@ def process_message_queue(ws_client, tracking_dict):
         # Stop command
         elif isinstance(track_elem, StopCommand):
             logging.info(f'Stop tracking object {track_elem.object_id}')
+            delete_id = None
             for box_id, object_id in tracking_dict.items():
                 if object_id == track_elem.object_id:
-                    del tracking_dict[box_id]
+                    delete_id = box_id
+
+            if delete_id is not None:
+                del tracking_dict[delete_id]
 
 
 # pylint: disable=unused-argument
