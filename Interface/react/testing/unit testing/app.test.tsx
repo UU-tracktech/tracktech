@@ -25,6 +25,7 @@ let mockLogin = jest.fn()
 jest.mock('@react-keycloak/web', () => {
   return {
     useKeycloak: () => ({
+      initialized: true,
       keycloak: {
         authenticated: mockAuthenticated,
         login: mockLogin
@@ -42,18 +43,30 @@ test('App renders without errors', async () => {
 
 /** Test if the not logged in notification shows up when not authenticated */
 test('shows login notification if not authenticated', async () => {
+  jest.setTimeout(30000)
+
   await act(async () => {
     render(<App />)
   })
+
+  while (screen.queryByTestId('loginAlert') == null) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
 
   expect(screen.queryByTestId('loginAlert')).not.toBe(null)
 })
 
 /** Test if closing the notification calls the close function which should call login */
 test('redirects to login when closing notification', async () => {
+  jest.setTimeout(30000)
+
   await act(async () => {
     render(<App />)
   })
+
+  while (screen.queryByTestId('loginAlert') == null) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
 
   const alert = screen.getByTestId('loginAlert')
   const btn = getByRole(alert, 'button')
