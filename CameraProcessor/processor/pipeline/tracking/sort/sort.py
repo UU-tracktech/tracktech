@@ -87,11 +87,13 @@ class KalmanBoxTracker(object):
     """
     count = 0
 
-    def __init__(self, bbox):
+    def __init__(self, bbox, classification, certainty):
         """
         Initialises a tracker using initial bounding box.
         """
         # define constant velocity model
+        self.classification = classification
+        self.certainty = certainty
         self.kf = KalmanFilter(dim_x=7, dim_z=4)
         self.kf.F = np.array(
             [[1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0, 1], [0, 0, 0, 1, 0, 0, 0],
@@ -114,10 +116,12 @@ class KalmanBoxTracker(object):
         self.hit_streak = 0
         self.age = 0
 
-    def update(self, bbox):
+    def update(self, bbox, classification, certainty):
         """
         Updates the state vector with observed bbox.
         """
+        self.classification = classification
+        self.certainty = certainty
         self.time_since_update = 0
         self.history = []
         self.hits += 1
@@ -154,7 +158,9 @@ def associate_detections_to_trackers(detections, trackers, iou_threshold=0.3):
     if len(trackers) == 0:
         return np.empty((0, 2), dtype=int), np.arange(len(detections)), np.empty((0, 5), dtype=int)
 
-    iou_matrix = iou_batch(detections, trackers)
+    iou_matrix = np.asarray([])
+    if len(detections) > 0:
+        iou_matrix = iou_batch(detections, trackers)
 
     if min(iou_matrix.shape) > 0:
         a = (iou_matrix > iou_threshold).astype(np.int32)
@@ -201,7 +207,7 @@ class Sort(object):
         self.trackers = []
         self.frame_count = 0
 
-    def update(self, dets=np.empty((0, 5))):
+    def update(self, dets=[]):
         """
         Params:
           dets - a numpy array of detections in the format [[x1,y1,x2,y2,score],[x1,y1,x2,y2,score],...]
@@ -211,6 +217,13 @@ class Sort(object):
 
         NOTE: The number of objects returned may differ from the number of detections provided.
         """
+
+        dets_only_bbox = []
+        for d in dets:
+            dets_only_bbox.append(d[0])
+
+        dets_only_bbox = np.asarray(dets_only_bbox)
+
         self.frame_count += 1
         # get predicted locations from existing trackers.
         trks = np.zeros((len(self.trackers), 5))
@@ -224,25 +237,25 @@ class Sort(object):
         trks = np.ma.compress_rows(np.ma.masked_invalid(trks))
         for t in reversed(to_del):
             self.trackers.pop(t)
-        matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(dets, trks, self.iou_threshold)
+        matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(dets_only_bbox, trks, self.iou_threshold)
 
         # update matched trackers with assigned detections
         for m in matched:
-            self.trackers[m[1]].update(dets[m[0], :])
+            self.trackers[m[1]].update(np.asarray(dets[m[0]][0]), dets[m[0]][1], dets[m[0]][2])
 
         # create and initialise new trackers for unmatched detections
         for i in unmatched_dets:
-            trk = KalmanBoxTracker(dets[i, :])
+            trk = KalmanBoxTracker(np.asarray(dets[i][0]), dets[i][1], dets[i][2])
             self.trackers.append(trk)
         i = len(self.trackers)
         for trk in reversed(self.trackers):
             d = trk.get_state()[0]
             if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
-                ret.append(np.concatenate((d, [trk.id + 1])).reshape(1, -1))  # +1 as MOT benchmark requires positive
+                ret.append(((np.concatenate((d, [trk.id + 1])).reshape(1, -1))[0], trk.classification, trk.certainty))  # +1 as MOT benchmark requires positive
             i -= 1
             # remove dead tracklet
             if trk.time_since_update > self.max_age:
                 self.trackers.pop(i)
         if len(ret) > 0:
-            return np.concatenate(ret)
+            return ret
         return np.empty((0, 5))

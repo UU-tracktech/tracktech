@@ -7,16 +7,11 @@ Utrecht University within the Software Project course.
 """
 
 import os
+import pytest
 
 from processor.training.detection.accuracy_object import AccuracyObject
-import processor.data_object.bounding_box
-import processor.data_object.rectangle
-import processor.utils.config_parser
-
-from tests.conftest import root_path
-
-# Set test config to true, so it processes a shorter video
-processor.utils.config_parser.USE_TEST_CONFIG = True
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.rectangle import Rectangle
 
 
 class TestAccuracyObject:
@@ -42,12 +37,15 @@ class TestAccuracyObject:
         assert accuracy_object.image_width < 10000 and accuracy_object.image_height < 10000
 
     # pylint: disable=consider-iterating-dictionary
-    def test_detection(self):
-        """Tests if the detection done by the library produces possible results"""
-        # Making the accuracy object
-        accuracy_object = AccuracyObject()
+    @pytest.mark.skip("Rectangle coords should be normalized in pre_annotations.py")
+    def test_detection(self, configs):
+        """Tests if the detection done by the library produces possible results
 
-        self.update_paths(accuracy_object)
+        Args:
+            The configuration of the tests
+        """
+        # Making the accuracy object
+        accuracy_object = AccuracyObject(configs)
 
         # Reading the detection file and making the dictionary with results
         accuracy_object.detect()
@@ -67,22 +65,24 @@ class TestAccuracyObject:
             assert metrics_for_detection_class.get_mAP(accuracy_object.results) <= 1
             assert metrics_for_detection_class.get_mAP(accuracy_object.results) >= 0
 
-    def test_parse_boxes(self):
-        """Tests if the boxes are parsed correctly"""
-        # Making the accuracy object
-        accuracy_object = AccuracyObject()
+    def test_parse_boxes(self, configs):
+        """Tests if the boxes are parsed correctly
 
-        self.update_paths(accuracy_object)
+        Args:
+            configs (ConfigParser): The configurations of the test
+        """
+        # Making the accuracy object
+        accuracy_object = AccuracyObject(configs)
 
         # Making 3 bounding boxes
-        rectangle1 = processor.data_object.rectangle.Rectangle(10, 10, 20, 20)
-        box1 = processor.data_object.bounding_box.BoundingBox(-1, rectangle1, "", 0.5)
+        rectangle1 = Rectangle(0.1, 0.1, 0.2, 0.2)
+        box1 = BoundingBox(-1, rectangle1, "", 0.5)
 
-        rectangle2 = processor.data_object.rectangle.Rectangle(0, 0, 30, 30)
-        box2 = processor.data_object.bounding_box.BoundingBox(-1, rectangle2, "", 0.7)
+        rectangle2 = Rectangle(0, 0, 0.3, 0.3)
+        box2 = BoundingBox(-1, rectangle2, "", 0.7)
 
-        rectangle3 = processor.data_object.rectangle.Rectangle(20, 20, 60, 60)
-        box3 = processor.data_object.bounding_box.BoundingBox(-1, rectangle3, "", 0.9)
+        rectangle3 = Rectangle(0.2, 0.2, 0.6, 0.6)
+        box3 = BoundingBox(-1, rectangle3, "", 0.9)
 
         # Putting the boxes into frames
         frame1 = [box1]
@@ -101,26 +101,37 @@ class TestAccuracyObject:
 
         # Checking in box1 is correct
         parsed_box = parsed_boxes[0]
-        assert parsed_box.xtl == 0.1 and parsed_box.ytl == 0.1
-        assert parsed_box.xbr == 0.2 and parsed_box.ybr == 0.2
+        assert parsed_box.xtl * accuracy_object.image_width == 0.1\
+               and parsed_box.ytl * accuracy_object.image_height == 0.1
+        assert parsed_box.xbr * accuracy_object.image_width == 0.2\
+               and parsed_box.ybr * accuracy_object.image_height == 0.2
         assert parsed_box.score == 0.5
         assert parsed_box.image_name == "0"
 
         # Checking in box2 is correct
         parsed_box = parsed_boxes[1]
-        assert parsed_box.xtl == 0 and parsed_box.ytl == 0
-        assert parsed_box.xbr == 0.3 and parsed_box.ybr == 0.3
+        assert parsed_box.xtl * accuracy_object.image_width == 0\
+               and parsed_box.ytl * accuracy_object.image_height == 0
+        assert parsed_box.xbr * accuracy_object.image_width == 0.3\
+               and parsed_box.ybr * accuracy_object.image_height == 0.3
         assert parsed_box.score == 0.7
         assert parsed_box.image_name == "1"
 
         # Checking in box3 is correct
         parsed_box = parsed_boxes[2]
-        assert parsed_box.xtl == 0.2 and parsed_box.ytl == 0.2
-        assert parsed_box.xbr == 0.6 and parsed_box.ybr == 0.6
+        assert parsed_box.xtl * accuracy_object.image_width == 0.2\
+               and parsed_box.ytl * accuracy_object.image_height == 0.2
+        assert parsed_box.xbr * accuracy_object.image_width == 0.6\
+               and parsed_box.ybr * accuracy_object.image_height == 0.6
         assert parsed_box.score == 0.9
         assert parsed_box.image_name == "1"
 
     def draw_plots(self, accuracy_object):
+        """Draws the plots and checks whether files are indeed created
+
+        Args:
+            accuracy_object (AccuracyObject): Accuracy object containing all the data
+        """
         plots_path = accuracy_object.accuracy_config['plots_path']
         if os.path.exists(plots_path):
             number_files = len(os.listdir(plots_path))
@@ -131,13 +142,3 @@ class TestAccuracyObject:
         accuracy_object.draw_all_pr_plots()
 
         assert len(os.listdir(plots_path)) > number_files
-
-    @staticmethod
-    def update_paths(accuracy_object):
-        """Make the accuracy runner read the files from unittests folder for consistency
-
-        Args:
-            accuracy_object (AccuracyObject): Object containing the accuracy information
-        """
-        accuracy_object.det_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest.txt')
-        accuracy_object.det_info_path = os.path.join(root_path, 'data', 'tests', 'unittests', 'configtest-info.txt')

@@ -108,7 +108,10 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   }
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div
+      data-testid="overlayDiv"
+      style={{ position: 'relative', width: '100%', height: '100%' }}
+    >
       <div
         style={{
           position: 'absolute',

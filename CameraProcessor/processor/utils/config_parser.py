@@ -10,10 +10,6 @@ import os
 import configparser
 
 
-# Whether or not to use the test configuration
-USE_TEST_CONFIG = False
-
-
 class ConfigParser:
     """Config parser class that reads the config file, replaces all paths with the absolute one
 
@@ -29,19 +25,16 @@ class ConfigParser:
             config_name (str): name of the config file
         """
         # Config path
-        self.root_path = os.path.join(__file__, '../../../')
-        self.config_path = os.path.realpath(os.path.join(self.root_path, config_name))
+        self.root_path = os.path.realpath(os.path.join(__file__, '../../../'))
+        self.config_path = os.path.join(self.root_path, config_name)
 
         # Make sure path does indeed exist
         if not os.path.exists(self.config_path):
-            raise FileNotFoundError(f'Config file does not exist in {self.root_path} + {config_name}')
+            raise FileNotFoundError(f'Config file does not exist in {self.config_path}')
 
         # Read config file
-        self.configs = configparser.ConfigParser(allow_no_value=True)
+        self.configs = configparser.ConfigParser(allow_no_value=True, converters={'tuple': self.__parse_int_tuple})
         self.configs.read(self.config_path)
-
-        if USE_TEST_CONFIG:
-            self.configs['Yolov5']['source_path'] = './data/videos/short_venice.mp4'
 
         # Converts paths
         self.__convert_paths_to_absolute()
@@ -54,3 +47,34 @@ class ConfigParser:
                 if section_key.endswith('path'):
                     self.configs[section][section_key] = \
                         os.path.realpath(os.path.join(self.root_path, self.configs[section][section_key]))
+
+    def append_config(self, config_name):
+        """Appends another config file to the self.configs
+
+        Args:
+            config_path (str): File name of the configuration file that needs to get appended
+        """
+        temp_config_path = os.path.realpath(os.path.join(self.root_path, config_name))
+        temp_configs = configparser.ConfigParser(allow_no_value=True, converters={'tuple': self.__parse_int_tuple})
+        temp_configs.read(temp_config_path)
+
+        # Each section
+        for section in temp_configs:
+            # Make sure key exists
+            if not self.configs.has_section(section):
+                continue
+            # If also option exists, give new value from temp_configs
+            for section_key in temp_configs[section]:
+                if not self.configs.has_option(section, section_key):
+                    continue
+                if section_key.endswith('path'):
+                    self.configs[section][section_key] = \
+                        os.path.realpath(os.path.join(self.root_path, temp_configs[section][section_key]))
+                else:
+                    self.configs[section][section_key] = temp_configs[section][section_key]
+
+    @staticmethod
+    def __parse_int_tuple(item):
+        """Converter for parsing a tuple
+        """
+        return tuple(int(k.strip()) for k in item[1:-1].split(','))

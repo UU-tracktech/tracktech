@@ -15,10 +15,15 @@ jobs:
     name: Camera Processor - Video Forwarder integration test
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Start service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml up --build --exit-code-from camera-processor-test-service
       - name: Copy integration test report
         run: docker cp processor-forwarder-integration-test-container:/app/cp-vf-integration-report.xml cp-vf-integration-report.xml
+      - name: Copy xml coverage report
+        run: docker cp processor-forwarder-integration-test-container:/app/coverage.xml coverage.xml
       - name: Stop service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose+forwarder.yml down
         if: ${{ always() }}
@@ -27,3 +32,9 @@ jobs:
         with:
           name: cp-vf-integration-report.xml
           path: cp-vf-integration-report.xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          files: coverage.xml
+          flags: Processor
+          token: ${{ secrets.CODECOV_TOKEN }}

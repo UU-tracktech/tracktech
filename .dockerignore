@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# Whitelist component folders that need to get documented
+!docs
+!utility
+!CameraProcessor/processor
+!ProcessorOrchestrator/src
+!VideoForwarder/src
+
+# Exclude existing html
+**/docs/html/

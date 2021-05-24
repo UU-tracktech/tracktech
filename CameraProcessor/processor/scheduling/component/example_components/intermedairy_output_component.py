@@ -5,9 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
 """
-from typing import Callable
-
-
 from processor.scheduling.component.component_interface import IComponent
 
 
@@ -28,20 +25,20 @@ class IntermediaryOutputComponent(IComponent):
         """
         self.func = func
 
-    def work(self, obj) -> object:
+    def work(self, obj):
         """Example function with single argument that can be returned by execute_component().
 
         Args:
             obj: example object.
 
         Returns:
-            Possibly modified object used by the next layer.
+            object: Possibly modified object used by the next layer.
         """
         output = obj
 
         self.func(output)
         return obj
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """See base class."""
         return self.work
