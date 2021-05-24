@@ -56,7 +56,10 @@ class YolorDetector(IDetector):
             logging.info("I am using GPU")
 
         # Load model
-        self.model = Darknet(self.config['cfg_path'], self.config['img-size']).cuda()
+        if self.device.type == 'cpu':
+            self.model = Darknet(self.config['cfg_path'], self.config['img-size'])
+        else:
+            self.model = Darknet(self.config['cfg_path'], self.config['img-size']).cuda()
         self.model.load_state_dict(torch.load(self.config['weights_path'], map_location=self.device)['model'])
         self.model.to(self.device).eval()
         if self.half:
