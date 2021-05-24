@@ -33,6 +33,8 @@ COPY .coveragerc .coveragerc
 COPY processor processor
 COPY yolor_p6.pt yolor_p6.pt
 COPY tests/conftest.py tests/conftest.py
+RUN apt-get install tree
+RUN tree
 
 
 FROM test AS test_unit
