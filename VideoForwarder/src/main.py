@@ -36,7 +36,7 @@ if __name__ == "__main__":
     # Create the web application with the camera handler and the public key
     app = tornado.web.Application(
         [
-            (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
+            (r'/(.*)', CameraHandler, {'path': os.environ.get('STREAM_FOLDER') or 'app/streams'}),
         ],
         authenticator=create_authenticator(),
         camera=create_camera(),
