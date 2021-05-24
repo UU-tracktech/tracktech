@@ -18,8 +18,6 @@ jobs:
         with:
           submodules: recursive
           lfs: true
-      - name: install git lfs
-        run: git lfs install
       - name: checkout LFS objects
         run: git lfs checkout
       - name: Start unit test camera processor service
