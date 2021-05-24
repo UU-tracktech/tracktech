@@ -13,3 +13,4 @@ services:
   processor-orchestrator:
     build:
       context: ../../ProcessorOrchestrator
+    container_name: processor-orchestrator
