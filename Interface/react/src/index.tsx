@@ -23,17 +23,7 @@ const keycloakEventLogger = (event, error) => {
 
 /** Writes received tokens to the console for debugging */
 const keycloakTokenLogger = (tokens) => {
-  //console.log('onKeycloakToken:', tokens)
-  localStorage.setItem('kc_token', tokens.token)
-  localStorage.setItem('kc_refreshToken', tokens.refreshToken)
-  localStorage.setItem('kc_idToken', tokens.idToken)
-}
-
-const initOptions = {
-  onLoad: 'check-sso',
-  token: localStorage.getItem('kc_token'),
-  refreshToken: localStorage.getItem('kc_refreshToken'),
-  idToken: localStorage.getItem('kc_idToken')
+  console.log('onKeycloakToken:', tokens)
 }
 
 ReactDOM.render(
@@ -43,7 +33,6 @@ ReactDOM.render(
       authClient={keycloak}
       onEvent={keycloakEventLogger}
       onTokens={keycloakTokenLogger}
-      initOptions={initOptions}
     >
       <App />
     </ReactKeycloakProvider>
