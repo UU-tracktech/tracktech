@@ -11,6 +11,8 @@ torchvision==0.9.0+cu101
 # YOLOv5
 -r processor/pipeline/detection/yolov5/requirements.txt
 
+# YOLOR
+-r processor/pipeline/detection/yolor/requirements.txt
 
 # SORT tracking
 -r processor/pipeline/tracking/sort/requirements.txt
