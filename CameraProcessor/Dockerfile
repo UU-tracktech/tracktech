@@ -167,6 +167,7 @@ RUN ["g++","--version"]
 # Install pip requirements
 COPY requirements.txt .
 COPY requirements-gpu.txt .
+COPY requirements-reid.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
 COPY processor/pipeline/reidentification/torchreid/requirements.txt processor/pipeline/reidentification/torchreid/requirements.txt
