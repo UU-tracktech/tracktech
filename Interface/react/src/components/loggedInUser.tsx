@@ -13,18 +13,50 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
+import { Skeleton, Typography } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
+import useAuthState from '../classes/useAuthState'
 
 export function LoggedInUser() {
   //Obtain keycloak so we can check for login info
   const { keycloak } = useKeycloak()
 
+  const status = useAuthState()
+
   //If the user is logged in, obtain the username from the token and display it
-  return keycloak.authenticated && keycloak.tokenParsed ? (
-    <div data-testid="loggedInAsDiv">
-      Logged in as: {keycloak.tokenParsed['name']}
-    </div>
-  ) : (
-    <div data-testid="notLoggedInDiv">You are currently not logged in</div>
-  )
+  switch (status) {
+    case 'loading':
+      return (
+        <Skeleton
+          data-testid="loadingSkeleton"
+          title={{ width: 150, style: { verticalAlign: 'middle' } }}
+          paragraph={{
+            rows: 1,
+            width: 200,
+            style: { margin: 0, verticalAlign: 'middle' }
+          }}
+          active
+        />
+      )
+    case 'unauthenticated':
+      return (
+        <Typography.Text data-testid="notLoggedInDiv">
+          You are currently not logged in
+        </Typography.Text>
+      )
+    case 'authenticated':
+      return (
+        <div style={{ display: 'grid' }}>
+          <Typography.Text
+            data-testid="loggedInAsDiv"
+            style={{ lineHeight: 3, color: 'rgb(153, 153, 153)' }}
+          >
+            Logged in as:
+          </Typography.Text>
+          <Typography.Text data-testid="usernameText" style={{ lineHeight: 0 }}>
+            {keycloak.tokenParsed!['name']}
+          </Typography.Text>
+        </div>
+      )
+  }
 }
