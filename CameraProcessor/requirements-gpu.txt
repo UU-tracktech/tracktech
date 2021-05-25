@@ -16,5 +16,7 @@ torchvision==0.9.0+cu101
 -r processor/pipeline/tracking/sort/requirements.txt
 
 # TorchReid
+gdown
+tensorboard
 processor/pipeline/reidentification/torchreid
 -r processor/pipeline/reidentification/torchreid/requirements.txt
