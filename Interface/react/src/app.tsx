@@ -29,7 +29,7 @@ export function App() {
   function body() {
     switch (status) {
       case 'loading':
-        return <></>
+        return <div data-testid="emptyWaitDiv"></div>
       case 'unauthenticated':
         return <NeedLogin />
       case 'authenticated':
