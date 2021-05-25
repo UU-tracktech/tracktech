@@ -44,7 +44,7 @@ class SortTracker(ITracker):
         """
         return self.track
 
-    def track(self, frame_obj, det_obj, tracking_dict):
+    def track(self, frame_obj, det_obj, re_id_data):
         """Performing tracking using SORT tracking to get a tracking ID for all tracked detections.
 
         Converts detections to correct format, gets trackers from SORT tracking and converts trackers to bounding boxes.
@@ -53,7 +53,7 @@ class SortTracker(ITracker):
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
             det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
-            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID
+            re_id_data (ReidData): Object containing data necessary for re-identification
 
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
@@ -91,7 +91,7 @@ class SortTracker(ITracker):
                 ),
                 classification=tracker[1],
                 certainty=tracker[2],
-                object_id=tracking_dict.get(int(tracker[0][4]), None)
+                object_id=re_id_data.get_object_id_for_box(int(tracker[0][4]))
             )
             bounding_boxes.append(bounding_box)
 

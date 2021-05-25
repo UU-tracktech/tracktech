@@ -4,20 +4,18 @@ import requests
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 from scipy.spatial.distance import cosine
 from processor.utils.features import slice_bounding_box, resize_cutout
-
-
 from processor.pipeline.reidentification.ireidentifier import IReIdentifier
 
 
 class TorchReIdentifier(IReIdentifier):
 
     def __init__(self, model_name, device, configs):
-        """ Initialize torch re-identifier
+        """Initialize torch re-identifier.
 
         Args:
-            model_name (string): The name of the model weights
-            device (string): determines whether or not to use the gpu or cpu
-            configs (configparser.SectionProxy): Re-ID configuration
+            model_name (string): The file name of the model weights.
+            device (string): determines whether or not to use the gpu or cpu.
+            configs (configparser.SectionProxy): Re-ID configuration.
         """
 
         # the path where the model weight file should be located
@@ -40,38 +38,53 @@ class TorchReIdentifier(IReIdentifier):
 
         self.configs = configs
 
-    def extract_features(self, frame_obj, track_obj):
-        """ Extracts features from all bounding boxes generated in the tracking stage by generating a
+    def extract_features(self, frame_obj, bbox):
+        """Extracts features from a single bounding box by generating a
         cutout of the bounding boxes and feeding them to the feature extractor of Torchreid.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage
+            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
 
         Returns:
-            float[]: returns the feature vectors of the tracked objects.
+             [float]: Feature vector of single bounding box.
+
+        """
+        # Cutout the bounding box from the frame and resize the cutout to the right size
+        cutout = slice_bounding_box(bbox, frame_obj.get_frame())
+        resized_cutout = resize_cutout(cutout, self.configs)
+
+        # Extract the feature from the cutout and convert it to a normal float array
+        feature = self.extractor(resized_cutout).cpu().numpy().tolist()
+
+        return feature
+
+    def extract_features_boxes(self, frame_obj, track_obj):
+        """Extracts features from all bounding boxes generated in the tracking stage.
+
+        Args:
+            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
+            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+
+        Returns:
+            [[float]]: returns the feature vectors of the tracked objects.
         """
 
         features = []
 
         for tracked_box in track_obj.get_bounding_boxes():
-            # Cutout the bounding box from the frame and resize the cutout to the right size
-            cutout = slice_bounding_box(tracked_box, frame_obj.get_frame())
-            resized_cutout = resize_cutout(cutout, self.configs)
-            # Extract the feature from the cutout
-            feature = self.extractor(resized_cutout)
-            features.append(feature.cpu().numpy())
+            features.append(self.extract_features(frame_obj, tracked_box))
 
         return features
 
     def similarity(self, query_features, gallery_features):
-        """
+        """Calculates the similarity rate between two feature vectors.
 
         Args:
-            query_features: the feature vector of the query image
-            gallery_features: the feature vector of the gallery image
+            query_features ([float]): the feature vector of the query image.
+            gallery_features ([float]): the feature vector of the gallery image.
 
-        Returns: float: returns the cosine similarity of two feature vectors
+        Returns: float: returns the cosine similarity of two feature vectors.
 
         """
         cosine_similarity = 1 - cosine(query_features, gallery_features)
