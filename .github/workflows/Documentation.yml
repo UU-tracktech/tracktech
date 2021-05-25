@@ -46,6 +46,11 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: documentation
+      
+      - name: Install rsync 📚
+        run: |
+          apt-get update && apt-get install -y rsync
+      
 
       - name: Deploy 🚀
         uses: UU-tracktech/github-pages-deploy-action@4.1.3
