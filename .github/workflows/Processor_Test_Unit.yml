@@ -14,9 +14,14 @@ jobs:
     name: Processor unit test
     runs-on: self-hosted
     steps:
+      - name: Install git lfs
+        run: apt-get update && apt-get install -y git-lfs
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+          lfs: true
+      - name: checkout LFS objects
+        run: git lfs checkout
       - name: Start unit test camera processor service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml up --build --exit-code-from cameraprocessor
       - name: Copy html coverage report
@@ -26,7 +31,7 @@ jobs:
       - name: Copy unit test report
         run: docker cp camera-processor_container:/app/coverage.xml coverage.xml
       - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2

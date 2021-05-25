@@ -29,5 +29,5 @@ jobs:
           flags: Interface
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
-        run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down
+        run: docker-compose -f Interface/compose/docker-compose_test_integration.yml down --rmi all
         if: ${{ always() }}

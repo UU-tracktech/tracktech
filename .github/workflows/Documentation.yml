@@ -28,7 +28,7 @@ jobs:
       - name: Copy documentation artifacts
         run: docker cp documentation_container:/app/docs/html html
       - name: Stop service
-        run: docker-compose down
+        run: docker-compose down --rmi all
         if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2
