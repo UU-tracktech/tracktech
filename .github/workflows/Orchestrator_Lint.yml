@@ -28,5 +28,5 @@ jobs:
       - name: Start
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --exit-code-from processor-orchestrator
       - name: Remove
-        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml down
+        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml down --rmi all
         if: ${{ always() }}

@@ -28,5 +28,5 @@ jobs:
           flags: Forwarder
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
-        run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}
