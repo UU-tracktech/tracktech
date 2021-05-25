@@ -35,3 +35,26 @@ jobs:
         with:
           name: documentation
           path: html
+  deploy:
+    needs: [Documentation] # The second job must depend on the first one to complete before running, and uses ubuntu-latest instead of windows.
+    runs-on: self-hosted
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Download Artifacts 🔻 # The built project is downloaded into the 'site' folder.
+        uses: actions/download-artifact@v1
+        with:
+          name: documentation
+      
+      - name: Install rsync 📚
+        run: |
+          apt-get update && apt-get install -y rsync
+      
+
+      - name: Deploy 🚀
+        uses: UU-tracktech/github-pages-deploy-action@4.1.3
+        with:
+          # token: ${{ secrets.ACCESS_TOKEN }}
+          branch: gh-pages
+          folder: 'documentation' # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.
