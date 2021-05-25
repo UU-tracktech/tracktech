@@ -28,11 +28,11 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         """
 
         # the path where the model weight file should be located
-        weights_path = 'pipeline/reidentification/torchreid/weights/' + model_name + '.pth'
+        weights_path = os.path.join(configs['weights_dir_path'], model_name + '.pth')
 
         # download the weights if it's not in the directory
-        if not os.path.exists('pipeline/reidentification/torchreid/weights'):
-            os.mkdir('pipeline/reidentification/torchreid/weights')
+        if not os.path.exists(configs['weights_dir_path']):
+            os.mkdir(configs['weights_dir_path'])
 
         if not os.path.exists(weights_path):
             req = requests.get('https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download')

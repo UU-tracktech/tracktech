@@ -183,6 +183,9 @@ def get_modules(root_folder):
             if not module.ispkg:
                 continue
 
+            if module.name.endswith('reidentification'):
+                pass
+
             module_path = os.path.join(module.module_finder.path, module.name)
 
             import_path = path_to_module(component_root, module_path)
