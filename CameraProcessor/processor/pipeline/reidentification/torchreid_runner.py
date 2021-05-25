@@ -1,13 +1,22 @@
+"""Torch reid class
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+
+"""
 import os
 import requests
 
+import processor.utils.features as UtilsFeatures
+import processor.pipeline.reidentification.ireidentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 from scipy.spatial.distance import cosine
-from processor.utils.features import slice_bounding_box, resize_cutout
-from processor.pipeline.reidentification.ireidentifier import IReIdentifier
 
 
-class TorchReIdentifier(IReIdentifier):
+class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIdentifier):
+    """Re-id class that uses torch-reid to extract and compare features.
+    """
 
     def __init__(self, model_name, device, configs):
         """Initialize torch re-identifier.
@@ -26,9 +35,9 @@ class TorchReIdentifier(IReIdentifier):
             os.mkdir('pipeline/reidentification/torchreid/weights')
 
         if not os.path.exists(weights_path):
-            r = requests.get('https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download')
-            with open(weights_path, 'wb') as f:
-                f.write(r.content)
+            req = requests.get('https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download')
+            with open(weights_path, 'wb') as file:
+                file.write(req.content)
 
         # Initialize the feature extractor of torch re-id
         self.extractor = FeatureExtractor(
@@ -51,8 +60,8 @@ class TorchReIdentifier(IReIdentifier):
 
         """
         # Cutout the bounding box from the frame and resize the cutout to the right size
-        cutout = slice_bounding_box(bbox, frame_obj.get_frame())
-        resized_cutout = resize_cutout(cutout, self.configs)
+        cutout = UtilsFeatures.slice_bounding_box(bbox, frame_obj.get_frame())
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
 
         # Extract the feature from the cutout and convert it to a normal float array
         feature = self.extractor(resized_cutout).cpu().numpy().tolist()
@@ -90,7 +99,7 @@ class TorchReIdentifier(IReIdentifier):
         cosine_similarity = 1 - cosine(query_features, gallery_features)
         return cosine_similarity
 
-    def reidentify(self, tracked_boxes, track_features, query_boxID, query_features, threshold):
+    def reidentify(self, tracked_boxes, track_features, query_box_id, query_features, threshold):
         """ Performing re-identification using torchreid to possibly couple a detection to an earlier detection of a
         tracked subject.
 

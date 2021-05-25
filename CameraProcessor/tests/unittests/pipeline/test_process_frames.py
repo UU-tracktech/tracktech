@@ -68,7 +68,7 @@ class TestProcessFrames:
             configs (ConfigParser): Configurations of the test
         """
         # Open video
-        video_capture, detector, tracker, _ = prepare_stream(configs)
+        video_capture, detector, tracker, _, _ = prepare_stream(configs)
 
         asyncio.get_event_loop().run_until_complete(self.await_detection(video_capture, detector, tracker))
         video_capture.close()
@@ -83,7 +83,7 @@ class TestProcessFrames:
         """
         # Open video
         capture = self.__get_video(configs)
-        unused_capture, _, tracker, _ = prepare_stream(configs)
+        unused_capture, _, tracker, _, _ = prepare_stream(configs)
         unused_capture.close()
         detector = self.__get_yolorrunner(configs)
 

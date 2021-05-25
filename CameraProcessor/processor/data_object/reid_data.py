@@ -6,8 +6,6 @@ Utrecht University within the Software Project course.
 
 """
 
-import sys
-
 
 class ReidData:
     """This class stores two dictionaries that are useful for re-identification. The first dictionary,
