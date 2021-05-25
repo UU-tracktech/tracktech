@@ -28,6 +28,7 @@ export function LoggedInUser() {
     case 'loading':
       return (
         <Skeleton
+          data-testid="loadingSkeleton"
           title={{ width: 150, style: { verticalAlign: 'middle' } }}
           paragraph={{
             rows: 1,
@@ -52,7 +53,7 @@ export function LoggedInUser() {
           >
             Logged in as:
           </Typography.Text>
-          <Typography.Text style={{ lineHeight: 0 }}>
+          <Typography.Text data-testid="usernameText" style={{ lineHeight: 0 }}>
             {keycloak.tokenParsed!['name']}
           </Typography.Text>
         </div>

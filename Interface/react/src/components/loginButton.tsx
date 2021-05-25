@@ -25,7 +25,13 @@ export function LoginButton() {
   //Otherwise return a login button
   switch (status) {
     case 'loading':
-      return <Skeleton.Button active style={{ verticalAlign: 'middle' }} />
+      return (
+        <Skeleton.Button
+          data-testid="buttonSkeleton"
+          active
+          style={{ verticalAlign: 'middle' }}
+        />
+      )
     case 'unauthenticated':
       return <Button onClick={() => keycloak.login()}>Login</Button>
     case 'authenticated':

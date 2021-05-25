@@ -22,6 +22,22 @@ it('renders without error', () => {
   )
 })
 
+//To stop some errors during testing, make an alert mock
+var originalAlert
+beforeAll(() => {
+  //store the original alert to restore it later
+  originalAlert = window.alert
+  //replace the alert with a mock function that prints the alert to console
+  window.alert = jest.fn((txt) => {
+    console.log('Alert: ' + txt)
+  })
+})
+
+afterAll(() => {
+  //restore the alert
+  window.alert = originalAlert
+})
+
 /** A list containing 3 made up sources to test with */
 const mockSources = [
   {

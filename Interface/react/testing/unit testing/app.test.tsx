@@ -28,7 +28,8 @@ jest.mock('@react-keycloak/web', () => {
       initialized: true,
       keycloak: {
         authenticated: mockAuthenticated,
-        login: mockLogin
+        login: mockLogin,
+        tokenParsed: { name: 'Firstname Lastname' }
       }
     })
   }
