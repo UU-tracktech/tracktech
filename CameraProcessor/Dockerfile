@@ -142,7 +142,7 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=10.1"
 COPY requirements-gpu.txt requirements-gpu.txt
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
-COPY processor/pipeline/reidentification/torchreid/requirements.txt
+COPY processor/pipeline/reidentification/torchreid/requirements.txt processor/pipeline/reidentification/torchreid/requirements.txt
 RUN ["pip", "install", "-r", "requirements-gpu.txt"]
 
 COPY requirements-reid.txt requirements-reid.txt
@@ -169,7 +169,7 @@ COPY requirements.txt .
 COPY requirements-gpu.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
-COPY processor/pipeline/reidentification/torchreid/requirements.txt
+COPY processor/pipeline/reidentification/torchreid/requirements.txt processor/pipeline/reidentification/torchreid/requirements.txt
 
 RUN ["python3.8","-m","pip", "install", "--upgrade", "pip"]
 RUN ["python3.8","-m","pip", "install", "-r", "requirements.txt"]
