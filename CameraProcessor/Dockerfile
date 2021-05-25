@@ -36,10 +36,10 @@ COPY tests/conftest.py tests/conftest.py
 
 
 FROM test AS test_unit
+
 COPY requirements-gpu.txt .
 RUN ["pip", "install", "-r", "requirements-gpu.txt"]
-COPY requirements-reid.txt .
-RUN ["pip", "install", "-r", "requirements-reid.txt"]
+RUN ["pip", "-m", "install", "-r", "processor/pipeline/reidentification/torchreid"]
 COPY filter.names filter.names
 COPY data/tests/unittests data/tests/unittests
 COPY tests/unittests tests/unittests
