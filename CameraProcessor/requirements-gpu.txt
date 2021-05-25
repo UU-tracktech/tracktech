@@ -15,6 +15,5 @@ torchvision==0.9.0+cu101
 # SORT tracking
 -r processor/pipeline/tracking/sort/requirements.txt
 
-# TorchReid
+# ReID
 -r processor/pipeline/reidentification/torchreid/requirements.txt
-processor/pipeline/reidentification/torchreid
