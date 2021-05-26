@@ -18,7 +18,7 @@ jobs:
     name: Camera Processor - Processor Orchestrator integration test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Start service
