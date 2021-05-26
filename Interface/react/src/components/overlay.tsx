@@ -102,8 +102,8 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    */
   function handleQueue() {
     //Keep dequeueing until a set of boxes with matching frameID is reached
-    if (queueRef.current.length === 0) return
     while (playerFrameIdRef.current >= frameIdRef.current) {
+      if (queueRef.current.length == 0) break
       var boxes: Box[] = queueRef.current.dequeue().boxes
       var objectIds: number[] = []
 
