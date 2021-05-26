@@ -86,6 +86,16 @@ export function VideoPlayer(props: VideoPlayerProps) {
           player?.clearInterval(updateIntervalRef.current)
         props.onPlayPause(false)
       })
+
+      player?.on('seeked', () => {
+        //reached a timestamp and starts to play
+        //Seems to always happen after a waiting
+        console.log('Event: seeked')
+      })
+      player?.on('waiting', () => {
+        //Seems to happen on buffer
+        console.log('Event: waiting')
+      })
     })
 
     return () => playerRef.current?.dispose()
@@ -102,7 +112,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (tech) {
         //ensure that the current playing segment has a uri
         if (tech.textTracks()[0].activeCues[0]['value'].uri) {
-          console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
+          //console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
           return tech.textTracks()[0].activeCues[0]['value'].uri
         }
       }
@@ -122,7 +132,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     let currentUri = getURI()
     if (currentUri) {
       //if a segment name has been found, save it and start looking for an updated name
-      console.log('InitialURI: ', currentUri)
+      //console.log('InitialURI: ', currentUri)
 
       startUri = currentUri
       if (initialUriIntervalRef.current)
@@ -161,7 +171,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
    */
   function updateTimestamp() {
     if (!startTime) {
-      console.log('Timestamp: Loading...')
+      //console.log('Timestamp: Loading...')
       return
     }
 
