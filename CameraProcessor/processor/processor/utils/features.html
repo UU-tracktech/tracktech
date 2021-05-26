@@ -104,7 +104,6 @@ Utrecht University within the Software Project course.
 <span class="sd">    Args:</span>
 <span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
 <span class="sd">        reference to the original image.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
@@ -113,7 +112,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Read size from the config</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
 
     <span class="c1"># Return the cutout, which is another reference to the original image</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
@@ -213,7 +212,6 @@ use <code>del</code>.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
 <span class="sd">        reference to the original image.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
@@ -222,7 +220,7 @@ use <code>del</code>.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Read size from the config</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
 
     <span class="c1"># Return the cutout, which is another reference to the original image</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
@@ -237,7 +235,6 @@ use <code>del</code>.</p>
 <ul>
 <li><strong>cutout (np.ndarray):</strong>  an np.ndarray representing the cutout you want to resize. In most cases, this is a</li>
 <li>reference to the original image.</li>
-<li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
