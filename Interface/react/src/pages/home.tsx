@@ -16,9 +16,10 @@ import { Button, Card } from 'antd'
 import { Layout } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-import { Grid, source } from '../components/grid'
+import { Grid } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
 import { ObjectTypeFilter } from '../components/objectTypeFilter'
+import { source } from '../classes/source'
 
 /** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
@@ -100,16 +101,16 @@ export function Home() {
       >
         <Card
           //This card contains the buttons to change which boundingboxes are drawn
-          data-testid="indicatorsCard"
+          data-testid='indicatorsCard'
           bodyStyle={{ padding: '4px', display: 'flex' }}
           headStyle={{ padding: 0 }}
-          size="small"
+          size='small'
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Indicators</h2>
           }
         >
           <Button
-            data-testid="AllButton"
+            data-testid='AllButton'
             style={{ marginLeft: '4px' }}
             type={currentIndicator === 'All' ? 'primary' : 'default'}
             onClick={() => setCurrentIndicator('All')}
@@ -117,7 +118,7 @@ export function Home() {
             All
           </Button>
           <Button
-            data-testid="SelectionButton"
+            data-testid='SelectionButton'
             style={{ marginLeft: '4px' }}
             type={currentIndicator === 'Selection' ? 'primary' : 'default'}
             onClick={() => setCurrentIndicator('Selection')}
@@ -125,7 +126,7 @@ export function Home() {
             Selection
           </Button>
           <Button
-            data-testid="NoneButton"
+            data-testid='NoneButton'
             style={{ marginLeft: '4px' }}
             type={currentIndicator === 'None' ? 'primary' : 'default'}
             onClick={() => setCurrentIndicator('None')}
@@ -150,7 +151,7 @@ export function Home() {
           data-testid={'selectionCard'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size="small"
+          size='small'
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Selection</h2>
           }
@@ -171,7 +172,7 @@ export function Home() {
                 return (
                   <img
                     key={`image-${iterator++}`}
-                    alt="tracked person"
+                    alt='tracked person'
                     onClick={() => removeSelection(tracked.id)}
                     style={{ width: '100%', height: '100%', margin: '5px' }}
                     src={tracked.image}
@@ -186,7 +187,7 @@ export function Home() {
           data-testid={'cameraList'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size="small"
+          size='small'
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Cameras</h2>
           }

@@ -13,7 +13,6 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
-import { useKeycloak } from '@react-keycloak/web'
 import { Layout } from 'antd'
 import './app.less'
 
@@ -29,12 +28,12 @@ export function App() {
   function body() {
     switch (status) {
       case 'loading':
-        return <div data-testid="emptyWaitDiv"></div>
+        return <div data-testid='emptyWaitDiv'></div>
       case 'unauthenticated':
         return <NeedLogin />
       case 'authenticated':
         return (
-          <Route exact path="/">
+          <Route exact path='/'>
             <Home />
           </Route>
         )
