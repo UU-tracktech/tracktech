@@ -8,6 +8,7 @@ omit =
     # Don't test the detection or tracking repositories
     */pipeline/detection/yolov5/*
     */pipeline/detection/yolor/*
+    */pipeline/detection/reidentification/torchreid/*
     */pipeline/tracking/sort/*
     # Cannot be tested in docker
     */processor/input/cam_capture.py
