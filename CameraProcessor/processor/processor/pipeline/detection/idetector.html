@@ -128,7 +128,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
+        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): 2</span>
@@ -148,7 +148,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
+        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
@@ -173,7 +173,7 @@ Utrecht University within the Software Project course.
                         <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
                                   <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
                         <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
-                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                        <span class="n">conf</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">get_classification</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
                         <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
@@ -233,7 +233,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
+        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): 2</span>
@@ -253,7 +253,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
+        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
@@ -278,7 +278,7 @@ Utrecht University within the Software Project course.
                         <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
                                   <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
                         <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
-                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                        <span class="n">conf</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">get_classification</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
                         <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
@@ -411,7 +411,7 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
+        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): 2</span>
@@ -432,7 +432,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Generates the predictions of the detection.</p>
+            <div class="docstring"><p>Generates the predictions of the detection</p>
 
 <h6 id="args">Args</h6>
 
@@ -464,7 +464,7 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
+        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
@@ -489,7 +489,7 @@ Utrecht University within the Software Project course.
                         <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
                                   <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
                         <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
-                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                        <span class="n">conf</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">get_classification</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
                         <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
@@ -498,7 +498,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Creates the bounding boxes of the detection.</p>
+            <div class="docstring"><p>Creates the bounding boxes of the detection</p>
 
 <h6 id="args">Args</h6>
 
