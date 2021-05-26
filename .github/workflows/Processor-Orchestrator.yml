@@ -9,6 +9,9 @@ on:
     paths:
       - CameraProcessor/**
       - ProcessorOrchestrator/**
+    branches:
+      - develop
+      - master
 
 jobs:
   processor_orchestrator_integration_test:
