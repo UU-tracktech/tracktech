@@ -36,13 +36,13 @@ export function App() {
       case 'authenticated':
         return (
           <>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/timelines">
-                <Timelines />
-              </Route>
-            </>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route exact path="/timelines">
+              <Timelines />
+            </Route>
+          </>
         )
     }
   }
