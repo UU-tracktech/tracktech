@@ -93,7 +93,6 @@ Utrecht University within the Software Project course.
 
 <span class="kn">from</span> <span class="nn">processor.pipeline.framebuffer</span> <span class="kn">import</span> <span class="n">FrameBuffer</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor_runner</span> <span class="kn">import</span> <span class="n">YolorDetector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
 
 <span class="kn">from</span> <span class="nn">processor.webhosting.start_command</span> <span class="kn">import</span> <span class="n">StartCommand</span>
@@ -110,7 +109,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (ICapture, IDetector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</span>
+<span class="sd">        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the config file</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
@@ -118,15 +117,9 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Instantiate the detector</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
+    <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
     <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yolov5&#39;</span><span class="p">:</span>
-        <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-        <span class="n">detector</span> <span class="o">=</span> <span class="n">Yolov5Detector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yolor&#39;</span><span class="p">:</span>
-        <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolor&#39;</span><span class="p">]</span>
-        <span class="n">detector</span> <span class="o">=</span> <span class="n">YolorDetector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">Yolov5Detector</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
@@ -144,7 +137,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">hls_enabled</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">HlsCapture</span><span class="p">(</span><span class="n">hls_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">detector_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
+        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
 
     <span class="c1"># Get orchestrator configuration</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
@@ -327,7 +320,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (ICapture, IDetector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</span>
+<span class="sd">        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the config file</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
@@ -335,15 +328,9 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Instantiate the detector</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
+    <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
     <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yolov5&#39;</span><span class="p">:</span>
-        <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-        <span class="n">detector</span> <span class="o">=</span> <span class="n">Yolov5Detector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;yolor&#39;</span><span class="p">:</span>
-        <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolor&#39;</span><span class="p">]</span>
-        <span class="n">detector</span> <span class="o">=</span> <span class="n">YolorDetector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">Yolov5Detector</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
@@ -361,7 +348,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">hls_enabled</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">HlsCapture</span><span class="p">(</span><span class="n">hls_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">detector_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
+        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
 
     <span class="c1"># Get orchestrator configuration</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
@@ -382,7 +369,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(ICapture, IDetector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</p>
+  <p>(ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</p>
 </blockquote>
 </div>
 
