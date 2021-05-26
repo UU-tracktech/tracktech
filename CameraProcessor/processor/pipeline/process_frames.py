@@ -11,7 +11,6 @@ import logging
 import asyncio
 import cv2
 
-import processor.utils.convert as convert
 from processor.utils.config_parser import ConfigParser
 
 from processor.input.video_capture import VideoCapture
@@ -22,6 +21,9 @@ import processor.utils.display as display
 from processor.pipeline.framebuffer import FrameBuffer
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.tracking.sort_tracker import SortTracker
+from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
+
+from processor.data_object.reid_data import ReidData
 
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
@@ -54,6 +56,11 @@ def prepare_stream(configs):
     sort_config = configs['SORT']
     tracker = SortTracker(sort_config)
 
+    # Instantiate the tracker
+    logging.info("Instantiating reidentifier...")
+    re_identifier_config = configs['Reid']
+    re_identifier = TorchReIdentifier('osnet_x1_0', 'cuda', re_identifier_config)
+
     # Frame counter starts at 0. Will probably work differently for streams
     logging.info("Starting stream...")
 
@@ -70,7 +77,7 @@ def prepare_stream(configs):
     # Get orchestrator configuration
     orchestrator_config = configs['Orchestrator']
 
-    return capture, detector, tracker, orchestrator_config['url']
+    return capture, detector, tracker, re_identifier, orchestrator_config['url']
 
 
 def prepare_scheduler(detector, tracker, on_processed_frame):
@@ -99,7 +106,7 @@ def prepare_scheduler(detector, tracker, on_processed_frame):
     return Scheduler(start_node)
 
 
-async def process_stream(capture, detector, tracker, on_processed_frame, ws_client=None):
+async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
 
     Outputs to frame using OpenCV if not client is used.
@@ -109,19 +116,19 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         capture (ICapture): capture object to process a stream of frames.
         detector (IDetector): detector performing the detections on a given frame.
         tracker (ITracker): tracker performing simple tracking of all objects using the detections.
+        re_identifier (IReIdentifier): re-identifier extracting features and comparing them
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied
     """
     # Create Scheduler.
     # scheduler = prepare_scheduler(detector, tracker, on_processed_frame)
 
-    framebuffer = FrameBuffer()
+    framebuffer = FrameBuffer(300)
 
     frame_nr = 0
 
-    # This dictionary maps bounding box id's to the object ID to be assigned
-    # to the tracked object belonging to the bounding box.
-    tracking_dict = {}
+    # Contains re-identification data
+    re_id_data = ReidData()
 
     while capture.opened():
         ret, frame_obj = capture.get_next_frame()
@@ -136,18 +143,21 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
         detected_boxes = detector.detect(frame_obj)
 
         # Get objects tracked in current frame from tracking stage.
-        tracked_boxes = tracker.track(frame_obj, detected_boxes, tracking_dict)
+        tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
+
+        # Use tracked boxes for possible re-identification
+        # TODO: CHANGE
+        # print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))
 
         # Buffer the tracked object
-        framebuffer.add(convert.to_buffer_dict(frame_obj, tracked_boxes))
-        framebuffer.clean_up()
+        framebuffer.add_frame(frame_obj, tracked_boxes)
 
         # Handle side effects of frame processing
         on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         # Process the message queue if there is a websocket connection
         if ws_client is not None:
-            process_message_queue(ws_client, tracking_dict)
+            process_message_queue(ws_client, framebuffer, re_identifier, re_id_data)
 
         frame_nr += 1
 
@@ -156,12 +166,14 @@ async def process_stream(capture, detector, tracker, on_processed_frame, ws_clie
     logging.info(f'capture object stopped after {frame_nr} frames')
 
 
-def process_message_queue(ws_client, tracking_dict):
+def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
     """Processes the message queue processing each start and stop command
 
     Args:
         ws_client (WebsocketClient): Websocket client to get the message queue from
-        tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID
+        framebuffer (dict): Frame buffer containing previous frames and bounding boxes
+        re_identifier (IReIdentifier): re-identifier extracting features and comparing them
+        re_id_data (ReidData): Object containing data necessary for re-identification
     """
     # Empty queue if there are messages left that were not sent
     while len(ws_client.message_queue) > 0:
@@ -171,17 +183,22 @@ def process_message_queue(ws_client, tracking_dict):
         if isinstance(track_elem, StartCommand):
             logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} '
                          f'with new object id {track_elem.object_id}')
-            tracking_dict[track_elem.box_id] = track_elem.object_id
+
+            # Get the feature vector of the object we want to track (query)
+            # First, get the bounding box and frame for the query
+            stored_frame = framebuffer.get_frame(track_elem.frame_id)
+            stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+
+            # Extract the features from this bounding box and store them in the data
+            re_id_data.add_query_feature(track_elem.object_id, re_identifier.extract_features(stored_frame, stored_box))
+
+            # Also store the map of the first box_id to the object_id
+            re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
+
         # Stop command
         elif isinstance(track_elem, StopCommand):
             logging.info(f'Stop tracking object {track_elem.object_id}')
-            delete_id = None
-            for box_id, object_id in tracking_dict.items():
-                if object_id == track_elem.object_id:
-                    delete_id = box_id
-
-            if delete_id is not None:
-                del tracking_dict[delete_id]
+            re_id_data.remove_query(track_elem.object_id)
 
 
 # pylint: disable=unused-argument
