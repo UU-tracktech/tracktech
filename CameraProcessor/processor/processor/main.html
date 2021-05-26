@@ -112,7 +112,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (ConfigParser): configurations for the prepare stream</span>
 <span class="sd">        ws_id (str): Id of the camera processor for the orchestrator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+    <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
     <span class="n">websocket_client</span> <span class="o">=</span> <span class="n">WebsocketClient</span><span class="p">(</span><span class="n">ws_url</span><span class="p">,</span> <span class="n">ws_id</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">websocket_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
     <span class="c1"># Initiate the stream processing loop, giving the websocket client</span>
@@ -120,6 +120,7 @@ Utrecht University within the Software Project course.
         <span class="n">capture</span><span class="p">,</span>
         <span class="n">detector</span><span class="p">,</span>
         <span class="n">tracker</span><span class="p">,</span>
+        <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed</span>
         <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
                                                                               <span class="n">frame_obj</span><span class="p">,</span>
@@ -148,9 +149,9 @@ Utrecht University within the Software Project course.
         <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="c1"># If we want to run it with opencv gui</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;opencv&#39;</span><span class="p">:</span>
-        <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
-            <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
@@ -236,7 +237,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (ConfigParser): configurations for the prepare stream</span>
 <span class="sd">        ws_id (str): Id of the camera processor for the orchestrator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+    <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
     <span class="n">websocket_client</span> <span class="o">=</span> <span class="n">WebsocketClient</span><span class="p">(</span><span class="n">ws_url</span><span class="p">,</span> <span class="n">ws_id</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">websocket_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
     <span class="c1"># Initiate the stream processing loop, giving the websocket client</span>
@@ -244,6 +245,7 @@ Utrecht University within the Software Project course.
         <span class="n">capture</span><span class="p">,</span>
         <span class="n">detector</span><span class="p">,</span>
         <span class="n">tracker</span><span class="p">,</span>
+        <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed</span>
         <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
                                                                               <span class="n">frame_obj</span><span class="p">,</span>
@@ -296,9 +298,9 @@ Utrecht University within the Software Project course.
         <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="c1"># If we want to run it with opencv gui</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;opencv&#39;</span><span class="p">:</span>
-        <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
-            <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>

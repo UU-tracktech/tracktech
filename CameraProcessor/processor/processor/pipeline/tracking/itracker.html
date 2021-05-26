@@ -78,13 +78,13 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.</span>
-<span class="sd">            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
@@ -110,13 +110,13 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.</span>
-<span class="sd">            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
@@ -146,18 +146,18 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">def</span>
-            <span class="name">track</span><span class="signature">(self, frame_obj, det_obj, tracking_dict)</span>:
+            <span class="name">track</span><span class="signature">(self, frame_obj, det_obj, re_id_data)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.</span>
-<span class="sd">            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
@@ -174,7 +174,7 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>frame_obj (FrameObj):</strong>  frame object storing OpenCV frame and timestamp.</li>
 <li><strong>det_obj (BoundingBoxes):</strong>  BoundingBoxes object containing detections from detection stage.</li>
-<li><strong>tracking_dict (dictionary):</strong>  Dictionary mapping from bounding box ID to object ID</li>
+<li><strong>re_id_data (ReidData):</strong>  Object containing data necessary for re-identification</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
