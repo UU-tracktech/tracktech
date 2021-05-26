@@ -9,6 +9,9 @@ on:
     paths:
       - Interface/**
       - ProcessorOrchestrator/**
+    branches:
+      - develop
+      - master
 
 jobs:
   interface-orchestrator:
