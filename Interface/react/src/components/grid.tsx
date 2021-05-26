@@ -15,7 +15,7 @@ import React from 'react'
 
 import { Overlay } from './overlay'
 import { indicator } from '../pages/home'
-import { source } from '../classes/source'
+import { stream } from '../classes/source'
 
 /**
  * Properties of the grid component
@@ -25,7 +25,7 @@ import { source } from '../classes/source'
 export type gridProps = {
   primary?: string
   setPrimary: (sourceId: string) => void
-  sources: source[]
+  sources: stream[]
   indicator: indicator
   hiddenObjectTypes: string[]
 }
@@ -60,8 +60,6 @@ export function Grid(props: gridProps) {
             <Overlay
               source={source}
               onPrimary={() => props.setPrimary(source.id)}
-              onPlayPause={() => {}}
-              onTimestamp={() => {}}
               sources={[source.srcObject]}
               showBoxes={props.indicator}
               hiddenObjectTypes={props.hiddenObjectTypes}

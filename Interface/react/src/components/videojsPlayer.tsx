@@ -15,12 +15,16 @@ import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
+import { size } from '../classes/size'
+import { Box } from '../classes/clientMessage'
+
 // The properties used by the videoplayer
 export type VideoPlayerProps = {
+  setSnapCallback: (snap: (box: Box) => string | undefined) => void
   onTimestamp: (time: number) => void //Callback which updates the timestamp for the overlay
   onPlayPause: (playing: boolean) => void //Callback which updates the playback state for the overlay
   onPrimary: () => void //Callback to make this videoplayer the primary video player
-  onResize?: (width: number, height: number, left: number, top: number) => void //Callback to update viewport on resize
+  onResize?: (size: size) => void //Callback to update viewport on resize
 } & videojs.PlayerOptions
 
 export function VideoPlayer(props: VideoPlayerProps) {
@@ -30,8 +34,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
   // The videoplayer object
   const playerRef = useRef<videojs.Player>()
 
-  // A ref to keep track of the canvas, to place screenshots on
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  // Use the snap function callback to give the parent the ability to create snaps
+  useEffect(() => {
+    props.setSnapCallback(takeSnapshot)
+  }, [props.setSnapCallback])
 
   //Constants used to calculate the timestamp of the livestream based on segment file names
   const initialUriIntervalRef = useRef<number>() //How often to check for the initial segment name
@@ -52,7 +58,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       //Add button to make this videoplayer the primary player at the top of the page
       player?.controlBar.addChild(
         new extraButton(player, {
-          onPress: () => props.onPrimary,
+          onPress: props.onPrimary,
           icon: 'bi-zoom-in',
           text: 'Set primary'
         }),
@@ -211,34 +217,48 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
-        props.onResize(
-          playerWidth,
-          actualVideoHeight,
-          0,
-          (playerHeight - actualVideoHeight) / 2
-        )
+        props.onResize({
+          width: playerWidth,
+          height: actualVideoHeight,
+          left: 0,
+          top: (playerHeight - actualVideoHeight) / 2
+        })
       } else {
         var heightRatio = playerHeight / videoHeight
         var actualVideoWidth = heightRatio * videoWidth
-        props.onResize(
-          actualVideoWidth,
-          playerHeight,
-          (playerWidth - actualVideoWidth) / 2,
-          0
-        )
+        props.onResize({
+          width: actualVideoWidth,
+          height: playerHeight,
+          left: (playerWidth - actualVideoWidth) / 2,
+          top: 0
+        })
       }
     }
   }
 
-  function takeSnapshot(w: number, h: number, l: number, t: number) {
-    var width = playerRef.current?.videoWidth()
-    var height = playerRef.current?.videoHeight()
-    if (videoRef.current && width && height) {
+  function takeSnapshot(box: Box) {
+    if (videoRef.current) {
+      var { left, top, width, height } = box.toSize(
+        videoRef.current.videoWidth,
+        videoRef.current.videoHeight
+      )
       var canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
       var context = canvas.getContext('2d')
       if (context) {
-        context.drawImage(videoRef.current, 0, 0, width, height)
-        console.log(canvas.toDataURL())
+        context.drawImage(
+          videoRef.current,
+          left,
+          top,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height
+        )
+        return canvas.toDataURL()
       }
     }
   }
