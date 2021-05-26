@@ -53,7 +53,7 @@ def main(configs):
         image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string
-        boxes_string = boxes_to_accuracy_json(bounding_boxes.get_bounding_boxes(),
+        boxes_string = boxes_to_accuracy_json(bounding_boxes,
                                               image_id)
 
         # Write boxes found by detection to
