@@ -45,13 +45,6 @@ class YolorDetector(IDetector):
             format="%(message)s",
             level=logging.INFO)
 
-        # Check if weights file exists, download if needed
-        if not os.path.exists(self.config['weights_path']):
-            logging.info("Downloading weights file")
-            gdd.download_file_from_google_drive(file_id='1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76',
-                                                dest_path=self.config['weights_path'],
-                                                unzip=False)
-
         # Initialize
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
