@@ -1,4 +1,4 @@
-"""Contains frame buffer class
+"""Contains frame buffer class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -10,18 +10,18 @@ from math import floor
 
 
 class FrameBuffer:
-    """Class that handles frame buffering logic and holds the buffer
+    """Class that handles frame buffering logic and holds the buffer.
 
     """
     def __init__(self):
-        """Set buffer size and initialize deque
+        """Set buffer size and initialize deque.
 
         """
         self.__buffer_size = 50
         self.__buffer = deque()
 
     def clean_up(self):
-        """Removes buffer items over the maximum size
+        """Removes buffer items over the maximum size.
 
         TODO: add functionality to work with timestamp instead of buffer size
         """
@@ -29,10 +29,10 @@ class FrameBuffer:
             self.__buffer.pop()
 
     def add(self, track_obj):
-        """Add a tracking object to the buffer
+        """Add a tracking object to the buffer.
 
         Args:
-            track_obj (dict): Tracking object in python dict format
+            track_obj (dict): Tracking object in python dict format.
 
         """
         self.__buffer.appendleft(track_obj)
@@ -42,7 +42,7 @@ class FrameBuffer:
         the list of frames since then AND the bounding box of the given box id.
 
         Args:
-            bbox_id (integer): id of the tracked object we want to look for
+            bbox_id (integer): id of the tracked object we want to look for.
 
         Returns:
             [integer], [numpy.ndarray]: unpacked tuple of last spotted boundingbox rectangle of that id, and list
@@ -63,15 +63,15 @@ class FrameBuffer:
         return rect, stack
 
     def binary_search(self, search_list, key, value):
-        """Searches a *SORTED* list for a certain value occurrence in O(lg n)
+        """Searches a *SORTED* list for a certain value occurrence in O(lg n).
 
         Arguments:
-            search_list (list[dict]): a list of "tracking object" dictionary items
-            key (str): the key to access in each of the tracking object dicts
-            value (int): The value of the key to look for in each tracking object dict
+            search_list (list[dict]): a list of "tracking object" dictionary items.
+            key (str): the key to access in each of the tracking object dicts.
+            value (int): The value of the key to look for in each tracking object dict.
 
         Returns:
-            integer: the index of the searched for value
+            integer: the index of the searched for value.
         """
         left = 0
         right = len(search_list) - 1
