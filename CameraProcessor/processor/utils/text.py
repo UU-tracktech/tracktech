@@ -45,7 +45,8 @@ def __bounding_box_to_dict(bounding_box):
                 bounding_box.get_rectangle().get_x2(),
                 bounding_box.get_rectangle().get_y2()
             ],
-            "objectType": bounding_box.get_classification()
+            "objectType": bounding_box.get_classification(),
+            "certainty": bounding_box.get_certainty()
         }
 
     if bounding_box.get_object_id() is not None:

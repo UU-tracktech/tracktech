@@ -36,7 +36,7 @@ class JSONDataloader(IDataloader):
         current_image_id = annotations[0][0]
         # Extract information from lines
         for annotation in annotations:
-            (image_id, person_id, certainty, pos_x, pos_y, pos_x2, pos_y2) = annotation
+            (image_id, person_id, certainty, object_type, pos_x, pos_y, pos_x2, pos_y2) = annotation
             if not current_image_id == image_id:
                 bounding_boxes_list.append(BoundingBoxes(current_boxes, self.__get_image_name(current_image_id)))
                 current_boxes = []
@@ -70,11 +70,12 @@ class JSONDataloader(IDataloader):
             for box in boxes:
                 person_id = box['boxId']
                 certainty = box['certainty']
+                object_type = box['objectType']
                 x1 = box['rect'][0]
                 y1 = box['rect'][1]
                 x2 = box['rect'][2]
                 y2 = box['rect'][3]
-                annotations.append((image_id, person_id, certainty, x1, y1, x2, y2))
+                annotations.append((image_id, person_id, certainty, object_type, x1, y1, x2, y2))
         return annotations
 
 
