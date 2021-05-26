@@ -53,7 +53,7 @@ class IDetector(IComponent):
 
     @staticmethod
     def generate_predictions(img, model, configs):
-        """Generates the predictions of the detection
+        """Generates the predictions of the detection.
 
         Args:
             img (Tensor): 2
@@ -73,7 +73,7 @@ class IDetector(IComponent):
 
     @staticmethod
     def create_bounding_boxes(pred, img, frame_obj, bounding_boxes, filter_types, names):
-        """Creates the bounding boxes of the detection
+        """Creates the bounding boxes of the detection.
 
         Args:
             pred ([Tensor]): List of tensors containing the predictions
