@@ -15,7 +15,7 @@ import {
 } from '../../src/components/websocketContext'
 import { Overlay } from '../../src/components/overlay'
 import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
-import { Box } from '../../src/classes/clientMessage'
+import { Box, BoxesClientMessage } from '../../src/classes/clientMessage'
 
 var websocketAddress
 
@@ -160,11 +160,9 @@ test('Bounding boxes start tracking', async () => {
   }
   processorSocket.send(JSON.stringify(identifyMessage))
 
-  var boxesMessage = {
-    type: 'boundingBoxes',
-    frameId: 0,
-    boxes: [new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject')]
-  }
+  var boxesMessage = new BoxesClientMessage('boundingBoxes', 0, [
+    new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject')
+  ])
 
   screen.getByTestId('button').click()
   while (screen.getByTestId('state').textContent != 'OPEN') {
