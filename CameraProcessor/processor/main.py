@@ -49,7 +49,7 @@ async def deploy(configs, ws_id):
         configs (ConfigParser): configurations for the prepare stream
         ws_id (str): Id of the camera processor for the orchestrator
     """
-    capture, detector, tracker, ws_url = prepare_stream(configs)
+    capture, detector, tracker, re_identifier, ws_url = prepare_stream(configs)
     websocket_client = WebsocketClient(ws_url, ws_id)
     await websocket_client.connect()
     # Initiate the stream processing loop, giving the websocket client
@@ -57,6 +57,7 @@ async def deploy(configs, ws_id):
         capture,
         detector,
         tracker,
+        re_identifier,
         # Function to call when frame is processed
         lambda frame_obj, detected_boxes, tracked_boxes: send_to_orchestrator(websocket_client,
                                                                               frame_obj,
@@ -85,9 +86,9 @@ def main():
         tornado.ioloop.IOLoop.current().start()
     # If we want to run it with opencv gui
     elif configs['Main']['mode'].lower() == 'opencv':
-        capture, detector, tracker, _ = prepare_stream(configs)
+        capture, detector, tracker, re_identifier, _ = prepare_stream(configs)
         asyncio.get_event_loop().run_until_complete(
-            process_stream(capture, detector, tracker, opencv_display, None)
+            process_stream(capture, detector, tracker, re_identifier, opencv_display, None)
         )
     # Deploy mode where all is sent to the orchestrator using the websocket url
     elif configs['Main']['mode'].lower() == 'deploy':
