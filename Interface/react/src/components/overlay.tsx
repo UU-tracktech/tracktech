@@ -263,7 +263,7 @@ export function Overlay(props: overlayProps) {
                 (hiddenObjectType) => hiddenObjectType === box.objectType
               )
           )
-          .map((box) => {
+          .map((box: Box) => {
             var { width, height, left, top } = box.toSize(
               size.width,
               size.height

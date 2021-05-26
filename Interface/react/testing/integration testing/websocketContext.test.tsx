@@ -15,6 +15,7 @@ import {
 } from '../../src/components/websocketContext'
 import { Overlay } from '../../src/components/overlay'
 import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
+import { Box } from '../../src/classes/clientMessage'
 
 var websocketAddress
 
@@ -130,7 +131,7 @@ test('Bounding box send to queue', async () => {
   var boxesMessage = {
     type: 'boundingBoxes',
     frameId: 0,
-    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8], objectType: 'testObject' }]
+    boxes: [new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject')]
   }
 
   // Send the bounding boxes
@@ -162,7 +163,7 @@ test('Bounding boxes start tracking', async () => {
   var boxesMessage = {
     type: 'boundingBoxes',
     frameId: 0,
-    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8], objectType: 'testObject' }]
+    boxes: [new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject')]
   }
 
   screen.getByTestId('button').click()
