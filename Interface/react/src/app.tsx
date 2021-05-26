@@ -35,10 +35,10 @@ export function App() {
       case 'authenticated':
         return (
           <>
-            <Route exact path="/">
+            <Route exact path='/'>
               <Home />
             </Route>
-            <Route exact path="/timelines">
+            <Route exact path='/timelines'>
               <Timelines />
             </Route>
           </>

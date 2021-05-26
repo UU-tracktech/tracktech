@@ -30,17 +30,17 @@ export function ObjectCard(props: objectCardProps) {
         </div>
       }
       //Styling
-      size="small"
+      size='small'
       headStyle={{ padding: '0px 8px' }}
       bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
       {/*Button that can be clicked to view the timelines of this object*/}
       <Button
-        type="primary"
+        type='primary'
         onClick={() => props.viewCallback(props.id)}
         style={{ marginTop: 10 }}
-        data-testid="objectViewButton"
+        data-testid='objectViewButton'
       >
         View
       </Button>

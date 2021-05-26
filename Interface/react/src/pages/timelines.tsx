@@ -37,7 +37,7 @@ export function Timelines() {
     //Get all the tracked objects from the server and display them
     fetch('https://tracktech.ml:50011/objectIds').then((text) =>
       text.json().then((json) => {
-        if(json.data != undefined) setObjects(json.data)
+        if (json.data != undefined) setObjects(json.data)
       })
     )
   }, [])
@@ -86,8 +86,8 @@ export function Timelines() {
           //This card contains the objects have been or are being tracked
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size="small"
-          data-testid="tracked-objects-container"
+          size='small'
+          data-testid='tracked-objects-container'
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>
               Tracked Objects
@@ -119,10 +119,15 @@ export function Timelines() {
         style={{ overflowY: 'auto', backgroundColor: 'white', margin: '5px' }}
       >
         {/*Show the currently selected object data */}
-        <Title data-testid="timelines-page-title" style={{ padding: '10px 10px 0px' }}>{currentObject}</Title>
+        <Title
+          data-testid='timelines-page-title'
+          style={{ padding: '10px 10px 0px' }}
+        >
+          {currentObject}
+        </Title>
         <Divider />
-        <div 
-          data-testid="timelines-page-content"
+        <div
+          data-testid='timelines-page-content'
           style={{
             display: 'flex',
             flexWrap: 'nowrap',
@@ -168,7 +173,7 @@ export function Timelines() {
       )
       //To
       val.push(
-        <Timeline.Item key={`${cameraId}-to-${x.to.toUTCString()}`} color="red">
+        <Timeline.Item key={`${cameraId}-to-${x.to.toUTCString()}`} color='red'>
           {x.to.toUTCString()} | Lost object
         </Timeline.Item>
       )
