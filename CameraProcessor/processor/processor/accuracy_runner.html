@@ -68,7 +68,7 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.input.image_capture</span> <span class="kn">import</span> <span class="n">ImageCapture</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
-<span class="kn">from</span> <span class="nn">processor.utils.text</span> <span class="kn">import</span> <span class="n">boxes_to_txt</span>
+<span class="kn">from</span> <span class="nn">processor.utils.text</span> <span class="kn">import</span> <span class="n">boxes_to_accuracy_json</span>
 
 <span class="n">curr_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 <span class="n">root_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">curr_dir</span><span class="si">}</span><span class="s1">/../&#39;</span><span class="p">)</span>
@@ -84,9 +84,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Opening files where the information is stored that is used to determine the accuracy</span>
     <span class="n">accuracy_dest</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">]</span>
-    <span class="n">accuracy_info_dest</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det-info_path&#39;</span><span class="p">]</span>
     <span class="n">detection_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">accuracy_dest</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-    <span class="n">detection_file_info</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">accuracy_info_dest</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I will write the detection objects to a txt file&#39;</span><span class="p">)</span>
 
@@ -100,10 +98,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting video stream...&quot;</span><span class="p">)</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># Using default values</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]</span>
     <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
         <span class="c1"># Set the detected bounding box list to empty</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame_obj</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">get_next_frame</span><span class="p">()</span>
@@ -112,24 +107,20 @@ Utrecht University within the Software Project course.
             <span class="k">continue</span>
 
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">image_names</span><span class="p">[</span><span class="n">capture</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Convert boxes to string</span>
-        <span class="n">boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_txt</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">(),</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(),</span> <span class="n">counter</span><span class="p">)</span>
+        <span class="n">boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">(),</span>
+                                              <span class="n">image_id</span><span class="p">)</span>
 
         <span class="c1"># Write boxes found by detection to</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">detection_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">boxes_string</span><span class="p">)</span>
+            <span class="n">detection_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">boxes_string</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">run_error</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot write to the file with following exception: </span><span class="si">{</span><span class="n">run_error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Save the shape so it can be saved in the detection-info file</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span>
-        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-
     <span class="c1"># Close files</span>
     <span class="n">detection_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">detection_file_info</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">counter</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">detection_file_info</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -158,9 +149,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Opening files where the information is stored that is used to determine the accuracy</span>
     <span class="n">accuracy_dest</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">]</span>
-    <span class="n">accuracy_info_dest</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det-info_path&#39;</span><span class="p">]</span>
     <span class="n">detection_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">accuracy_dest</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-    <span class="n">detection_file_info</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">accuracy_info_dest</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I will write the detection objects to a txt file&#39;</span><span class="p">)</span>
 
@@ -174,10 +163,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting video stream...&quot;</span><span class="p">)</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># Using default values</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]</span>
     <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
         <span class="c1"># Set the detected bounding box list to empty</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame_obj</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">get_next_frame</span><span class="p">()</span>
@@ -186,24 +172,20 @@ Utrecht University within the Software Project course.
             <span class="k">continue</span>
 
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">image_names</span><span class="p">[</span><span class="n">capture</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Convert boxes to string</span>
-        <span class="n">boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_txt</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">(),</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(),</span> <span class="n">counter</span><span class="p">)</span>
+        <span class="n">boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">(),</span>
+                                              <span class="n">image_id</span><span class="p">)</span>
 
         <span class="c1"># Write boxes found by detection to</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">detection_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">boxes_string</span><span class="p">)</span>
+            <span class="n">detection_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">boxes_string</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">run_error</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot write to the file with following exception: </span><span class="si">{</span><span class="n">run_error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Save the shape so it can be saved in the detection-info file</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span>
-        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-
     <span class="c1"># Close files</span>
     <span class="n">detection_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">detection_file_info</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">counter</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">detection_file_info</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
         </details>
