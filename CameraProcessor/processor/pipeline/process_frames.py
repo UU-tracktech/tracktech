@@ -21,6 +21,7 @@ import processor.utils.display as display
 
 from processor.pipeline.framebuffer import FrameBuffer
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
 
 from processor.webhosting.start_command import StartCommand
@@ -37,7 +38,7 @@ def prepare_stream(configs):
         configs (ConfigParser): Configuration of the application when preparing the stream
 
     Returns:
-        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id
+        (ICapture, IDetector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id
     """
     # Load the config file
     config_parser = ConfigParser('configs.ini')
@@ -45,9 +46,15 @@ def prepare_stream(configs):
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
-    yolo_config = configs['Yolov5']
     config_filter = configs['Filter']
-    detector = Yolov5Detector(yolo_config, config_filter)
+    if configs['Main'].get('detector') == 'yolov5':
+        detector_config = configs['Yolov5']
+        detector = Yolov5Detector(detector_config, config_filter)
+    elif configs['Main'].get('detector') == 'yolor':
+        detector_config = configs['Yolor']
+        detector = YolorDetector(detector_config, config_filter)
+    else:
+        raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
 
     # Instantiate the tracker
     logging.info("Instantiating tracker...")
@@ -65,7 +72,7 @@ def prepare_stream(configs):
     if hls_enabled:
         capture = HlsCapture(hls_config['url'])
     else:
-        capture = VideoCapture(yolo_config['source_path'])
+        capture = VideoCapture(detector_config['source_path'])
 
     # Get orchestrator configuration
     orchestrator_config = configs['Orchestrator']
