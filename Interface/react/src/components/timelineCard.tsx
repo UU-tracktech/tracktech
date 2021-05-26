@@ -16,7 +16,7 @@ import React, { ReactNode } from 'react'
 import { Card } from 'antd'
 import { VideoCameraOutlined } from '@ant-design/icons'
 
-type timelineCardProps = { cameraId: string; children: ReactNode }
+type timelineCardProps = { cameraId: string; children?: ReactNode }
 
 export function TimelineCard(props: timelineCardProps) {
   return (
@@ -25,7 +25,7 @@ export function TimelineCard(props: timelineCardProps) {
       title={
         <div style={{ display: 'inline-flex', alignItems: 'center' }}>
           <VideoCameraOutlined style={{ marginRight: '10px' }} />
-          {props.cameraId}
+          <span>{props.cameraId}</span>
         </div>
       }
       style={{

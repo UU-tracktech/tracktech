@@ -23,7 +23,7 @@ export class TimelineData {
 
   constructor(data: trackingLog[]) {
     this.data = data.map((x) => ({
-      timeStamp: this.toDate(x.timeStamp),
+      timeStamp: ToDate(x.timeStamp),
       processorId: x.processorId
     }))
   }
@@ -79,19 +79,19 @@ export class TimelineData {
 
     return events
   }
+}
 
-  // Convert a string from the server to a date
-  toDate(logString: string): Date {
-    var split = logString.split(' | ')
-    var ymd = split[0].split('/')
-    var hms = split[1].split(':')
-    return new Date(
-      parseInt(ymd[0]),
-      parseInt(ymd[1]),
-      parseInt(ymd[2]),
-      parseInt(hms[0]),
-      parseInt(hms[1]),
-      parseInt(hms[2])
-    )
-  }
+// Convert a string from the server to a date
+export function ToDate(logString: string): Date {
+  var split = logString.split(' | ')
+  var ymd = split[0].split('/')
+  var hms = split[1].split(':')
+  return new Date(
+    parseInt(ymd[0]),
+    parseInt(ymd[1]),
+    parseInt(ymd[2]),
+    parseInt(hms[0]),
+    parseInt(hms[1]),
+    parseInt(hms[2])
+  )
 }

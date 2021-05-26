@@ -37,7 +37,7 @@ export function Timelines() {
     //Get all the tracked objects from the server and display them
     fetch('https://tracktech.ml:50011/objectIds').then((text) =>
       text.json().then((json) => {
-        setObjects(json.data)
+        if(json.data != undefined) setObjects(json.data)
       })
     )
   }, [])
@@ -87,6 +87,7 @@ export function Timelines() {
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
           size="small"
+          data-testid="tracked-objects-container"
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>
               Tracked Objects
@@ -118,9 +119,10 @@ export function Timelines() {
         style={{ overflowY: 'auto', backgroundColor: 'white', margin: '5px' }}
       >
         {/*Show the currently selected object data */}
-        <Title style={{ padding: '10px 10px 0px' }}>{currentObject}</Title>
+        <Title data-testid="timelines-page-title" style={{ padding: '10px 10px 0px' }}>{currentObject}</Title>
         <Divider />
-        <div
+        <div 
+          data-testid="timelines-page-content"
           style={{
             display: 'flex',
             flexWrap: 'nowrap',
@@ -160,14 +162,14 @@ export function Timelines() {
     rangeArray.forEach((x) => {
       //From
       val.push(
-        <Timeline.Item key={`${cameraId}-from-${x.from.toISOString()}`}>
-          {x.from.toISOString()} | Found object
+        <Timeline.Item key={`${cameraId}-from-${x.from.toUTCString()}`}>
+          {x.from.toUTCString()} | Found object
         </Timeline.Item>
       )
       //To
       val.push(
-        <Timeline.Item key={`${cameraId}-to-${x.to.toISOString()}`} color="red">
-          {x.to.toISOString()} | Lost object
+        <Timeline.Item key={`${cameraId}-to-${x.to.toUTCString()}`} color="red">
+          {x.to.toUTCString()} | Lost object
         </Timeline.Item>
       )
     })

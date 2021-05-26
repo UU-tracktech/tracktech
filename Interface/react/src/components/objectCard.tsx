@@ -15,7 +15,7 @@ import React from 'react'
 import { Button, Card } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 
-type objectCardProps = { id: number; viewCallback: (id: number) => {} }
+type objectCardProps = { id: number; viewCallback: (id: number) => void }
 
 export function ObjectCard(props: objectCardProps) {
   return (
@@ -26,7 +26,7 @@ export function ObjectCard(props: objectCardProps) {
       title={
         <div style={{ display: 'inline-flex', alignItems: 'center' }}>
           <UserOutlined style={{ margin: 'middle', paddingRight: 7 }} />
-          {`Object ${props.id}`}
+          <span>{`Object ${props.id}`}</span>
         </div>
       }
       //Styling
@@ -40,6 +40,7 @@ export function ObjectCard(props: objectCardProps) {
         type="primary"
         onClick={() => props.viewCallback(props.id)}
         style={{ marginTop: 10 }}
+        data-testid="objectViewButton"
       >
         View
       </Button>
