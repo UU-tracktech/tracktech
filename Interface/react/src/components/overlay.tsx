@@ -11,8 +11,9 @@ Utrecht University within the Software Project course.
   to draw the bounding boxes received from the orchestrator
 */
 
-import React from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import { Queue } from 'queue-typescript'
+import { Modal, notification } from 'antd'
 
 import { indicator } from '../pages/home'
 import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
@@ -22,37 +23,43 @@ import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
 } from '../classes/orchestratorMessage'
-import { Modal } from 'antd'
+import { source } from '../classes/source'
 
-/** The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not */
+// The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not
 export type overlayProps = {
-  cameraId: string
+  source: source
   showBoxes: indicator
   hiddenObjectTypes: string[]
-  autoplay?: boolean
+  autoplay: boolean
 }
 
-/** The size of the overlay, used to scale the drawing of the bounding boxes */
+// The size of the overlay, used to scale the drawing of the bounding boxes
 type size = { width: number; height: number; left: number; top: number }
 
 export function Overlay(props: overlayProps & VideoPlayerProps) {
-  /** Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn */
-  const queueRef = React.useRef(new Queue<QueueItem>())
+  // Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn
+  const queueRef = useRef(new Queue<QueueItem>())
 
-  /** The frameID the video player is currently displaying */
-  const playerFrameIdRef = React.useRef(0)
+  // The frameID the video player is currently displaying
+  const playerFrameIdRef = useRef(0)
 
-  /** The frameID of the boxes that are currently drawn */
-  const frameIdRef = React.useRef(0)
+  // The frameID of the boxes that are currently drawn
+  const frameIdRef = useRef(0)
 
-  /** If the video player is paused or not */
-  const playerPlayingRef = React.useRef(props.autoplay ?? false)
+  // If the video player is paused or not
+  const playerPlayingRef = useRef(props.autoplay)
 
-  /** State containing the boxes to be drawn this frame */
-  const [boxes, setBoxes] = React.useState<Box[]>([])
+  // A ref to the overlay itself
+  const thisRef = useRef<HTMLDivElement>(null)
 
-  /** State containing videoplayer dimensions/position on the page */
-  const [size, setSize] = React.useState<size>({
+  // A list to keep track of recently seen object ids
+  const seenRef = useRef<number[]>([])
+
+  // State containing the boxes to be drawn this frame
+  const [boxes, setBoxes] = useState<Box[]>([])
+
+  // State containing videoplayer dimensions/position on the page
+  const [size, setSize] = useState<size>({
     //initial value
     width: 10,
     height: 10,
@@ -60,16 +67,22 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
     top: 10
   })
 
-  //Access the websocket in order to create a listener for receiving boundingbox updates
-  const socketContext = React.useContext(websocketContext)
+  //State to keep track of the outline and a removeal timeout
+  const [outline, setOutline] = useState<{
+    visible: boolean
+    timeout?: NodeJS.Timeout
+  }>({
+    visible: false
+  })
 
-  const { confirm } = Modal
+  //Access the websocket in order to create a listener for receiving boundingbox updates
+  const socketContext = useContext(websocketContext)
 
   React.useEffect(() => {
     //Create a listener for the websocket which receives boundingbox messages
     //Put the messages in a Queue so the boxes are kept until it's time to draw them
     var id = socketContext.addListener(
-      props.cameraId,
+      props.source.id,
       (boxes: Box[], fID: number) => {
         //only accept new bounding boxes when the video is actually playing
         //This prevents the boxes from updating while the video is paused
@@ -88,29 +101,39 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * Once the correct set of boxes has been reached it will set these to be drawn
    */
   function handleQueue() {
-    let new_item
-    let current_time = frameIdRef.current
     //Keep dequeueing until a set of boxes with matching frameID is reached
-    while (playerFrameIdRef.current >= current_time) {
-      if (queueRef.current.length > 0) {
-        new_item = queueRef.current.dequeue()
-        current_time = new_item.frameId
-      } else {
-        break
-      }
-    }
+    while (playerFrameIdRef.current >= frameIdRef.current) {
+      if (queueRef.current.length == 0) break
+      var boxes: Box[] = queueRef.current.dequeue().boxes
+      var objectIds: number[] = []
 
-    if (new_item) {
-      //set the boxes to be drawn
-      setBoxes(new_item.boxes)
-      frameIdRef.current = current_time
+      //Create a notification for every new objectid
+      boxes.forEach((box) => {
+        if (box.objectId) {
+          //Save the object, so we do not see it again
+          objectIds.push(box.objectId)
+          if (!seenRef.current.includes(box.objectId)) Reappear(box.objectId)
+        }
+      })
+
+      //Replace the seen objects
+      seenRef.current = objectIds
+
+      setBoxes(boxes)
     }
   }
 
   return (
     <div
-      data-testid="overlayDiv"
-      style={{ position: 'relative', width: '100%', height: '100%' }}
+      data-testid='overlayDiv'
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        outline: '#096dd9',
+        outlineStyle: outline.visible ? 'solid' : 'none'
+      }}
+      ref={thisRef}
     >
       <div
         style={{
@@ -131,7 +154,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
           onResize={(w, h, l, t) =>
             setSize({ width: w, height: h, left: l, top: t })
           }
-          autoplay={props.autoplay ?? false}
+          autoplay={props.autoplay}
           controls={true}
           onPrimary={props.onPrimary}
           sources={props.sources}
@@ -146,18 +169,18 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
   function onTrackingStart(boxId: number, frameId: number) {
-    confirm({
+    Modal.confirm({
       title: 'Start tracking this object?',
       okButtonProps: { title: 'startTrackButton' },
       onOk() {
         console.log('Start tracking', {
-          cam: props.cameraId,
+          cam: props.source,
           frame: frameId,
           box: boxId
         })
 
         socketContext.send(
-          new StartOrchestratorMessage(props.cameraId, frameId, boxId)
+          new StartOrchestratorMessage(props.source.id, frameId, boxId)
         )
       },
       onCancel() {}
@@ -169,7 +192,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param objectId The ID of the object that is being tracked and will be untracked
    */
   function onTrackingStop(objectId: number) {
-    confirm({
+    Modal.confirm({
       title: 'Stop tracking this object?',
       onOk() {
         console.log('Stop tracking ', objectId)
@@ -263,5 +286,39 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
           })}
       </div>
     )
+  }
+
+  /**
+   * Open a notification which can be clicked on to go to a reappeared object
+   * @param objectId The object that reappeared
+   */
+  function Reappear(objectId: number) {
+    //Close other messages of this object, as they are no longer needed
+    notification.close(objectId.toString())
+    notification.open({
+      key: objectId.toString(),
+      message: 'Subject reappeared',
+      description: `object ${objectId} was found on camera ${props.source.name}`,
+      onClick: () => {
+        //Close the message, as it is not needed anymore
+        notification.close(objectId.toString())
+
+        //Cancel the existing timeout so it does not remove the outline prematurely
+        if (outline.timeout) clearTimeout(outline.timeout)
+
+        //Start a timeout to remove the badge
+        var timeout = setTimeout(() => {
+          setOutline({ visible: false, timeout: undefined })
+        }, 2000)
+
+        //Set the badge, with the new timeout
+        setOutline({ visible: true, timeout: timeout })
+
+        //Scroll to the video, so we can see it
+        thisRef.current?.scrollIntoView({ behavior: 'smooth' })
+      },
+      placement: 'bottomRight',
+      bottom: 5
+    })
   }
 }

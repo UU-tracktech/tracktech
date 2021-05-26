@@ -9,6 +9,9 @@ on:
     paths:
       - CameraProcessor/**
       - VideoForwarder/**
+    branches:
+      - develop
+      - master
 
 jobs:
   processor_forwarder_integration_test:
