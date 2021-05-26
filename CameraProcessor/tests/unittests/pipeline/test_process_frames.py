@@ -19,9 +19,7 @@ from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
 from tests.unittests.utils.fake_reidentifier import FakeReIdentifier
 
-from tests.unittests.utils.fake_websocket import FakeWebsocket
-
-@pytest.mark.skip("Not working for some reason?")
+@pytest.mark.skip("Timeout errors")
 class TestProcessFrames:
     """Tests process_frames.py.
 
