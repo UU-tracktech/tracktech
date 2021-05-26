@@ -70,7 +70,7 @@ class SortTracker(ITracker):
                     bounding_box.get_rectangle().get_y1() * height,
                     bounding_box.get_rectangle().get_x2() * width,
                     bounding_box.get_rectangle().get_y2() * height,
-                    bounding_box.get_certainty().item()]),
+                    bounding_box.get_certainty()]),
                     bounding_box.get_classification(),
                     bounding_box.get_certainty()))
 

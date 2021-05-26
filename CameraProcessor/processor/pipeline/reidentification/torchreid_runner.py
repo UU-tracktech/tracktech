@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
 """
 import os
-import requests
+import gdown
 
 import processor.utils.features as UtilsFeatures
 import processor.pipeline.reidentification.ireidentifier
@@ -35,9 +35,9 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             os.mkdir(configs['weights_dir_path'])
 
         if not os.path.exists(weights_path):
-            req = requests.get('https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download')
-            with open(weights_path, 'wb') as file:
-                file.write(req.content)
+            url = 'https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download'
+            output = weights_path
+            gdown.download(url, output, quiet=False)
 
         # Initialize the feature extractor of torch re-id
         self.extractor = FeatureExtractor(
