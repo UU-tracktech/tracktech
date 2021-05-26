@@ -10,12 +10,12 @@ Utrecht University within the Software Project course.
   This component creates a videoplayer using the VideoJS plugin
 */
 
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-/** The properties used by the videoplayer */
+// The properties used by the videoplayer
 export type VideoPlayerProps = {
   onTimestamp: (time: number) => void //Callback which updates the timestamp for the overlay
   onPlayPause: (playing: boolean) => void //Callback which updates the playback state for the overlay
@@ -24,16 +24,19 @@ export type VideoPlayerProps = {
 } & videojs.PlayerOptions
 
 export function VideoPlayer(props: VideoPlayerProps) {
-  /** The DOM node to attach the videplayer to */
-  var videoNode: HTMLVideoElement
+  // The DOM node to attach the videplayer to
+  const videoRef = useRef<HTMLVideoElement>(null)
 
-  /** The videoplayer object */
-  const playerRef = React.useRef<videojs.Player>()
+  // The videoplayer object
+  const playerRef = useRef<videojs.Player>()
+
+  // A ref to keep track of the canvas, to place screenshots on
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   //Constants used to calculate the timestamp of the livestream based on segment file names
-  const initialUriIntervalRef = React.useRef<number>() //How often to check for the initial segment name
-  const changeIntervalRef = React.useRef<number>() //how often to check for a new segemnt after the inital has been obtained
-  const updateIntervalRef = React.useRef<number>() //How often to update the timestamp once it's known
+  const initialUriIntervalRef = useRef<number>() //How often to check for the initial segment name
+  const changeIntervalRef = useRef<number>() //how often to check for a new segemnt after the inital has been obtained
+  const updateIntervalRef = useRef<number>() //How often to update the timestamp once it's known
 
   var startUri //The name of the first segment received by the videoplayer
   var startTime //The timestamp of the stream where the player was started
@@ -41,15 +44,15 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var playerSwitchTime //The timestamp of when the video player switch to the second segment
   var playerStartTime //The current time of the video player when it's first being played
 
-  React.useEffect(() => {
+  useEffect(() => {
     // instantiate video.js
-    playerRef.current = videojs(videoNode, props, () => {
+    playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
 
       //Add button to make this videoplayer the primary player at the top of the page
       player?.controlBar.addChild(
         new extraButton(player, {
-          onPress: props.onPrimary,
+          onPress: () => props.onPrimary,
           icon: 'bi-zoom-in',
           text: 'Set primary'
         }),
@@ -102,7 +105,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (tech) {
         //ensure that the current playing segment has a uri
         if (tech.textTracks()[0].activeCues[0]['value'].uri) {
-          console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
+          //console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
           return tech.textTracks()[0].activeCues[0]['value'].uri
         }
       }
@@ -161,7 +164,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
    */
   function updateTimestamp() {
     if (!startTime) {
-      console.log('Timestamp: Loading...')
+      //console.log('Timestamp: Loading...')
       return
     }
 
@@ -227,6 +230,19 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
   }
 
+  function takeSnapshot(w: number, h: number, l: number, t: number) {
+    var width = playerRef.current?.videoWidth()
+    var height = playerRef.current?.videoHeight()
+    if (videoRef.current && width && height) {
+      var canvas = document.createElement('canvas')
+      var context = canvas.getContext('2d')
+      if (context) {
+        context.drawImage(videoRef.current, 0, 0, width, height)
+        console.log(canvas.toDataURL())
+      }
+    }
+  }
+
   // wrap the player in a div with a `data-vjs-player` attribute
   // so videojs won't create additional wrapper in the DOM
   // see https://github.com/videojs/video.js/pull/3856
@@ -241,10 +257,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         data-vjs-player='true'
         style={{ width: '100%', height: '100%' }}
       >
-        <video
-          ref={(node: HTMLVideoElement) => (videoNode = node)}
-          className='video-js'
-        />
+        <video ref={videoRef} className='video-js' />
       </div>
     </div>
   )

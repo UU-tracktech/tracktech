@@ -49,8 +49,11 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
   // If the video player is paused or not
   const playerPlayingRef = useRef(props.autoplay)
 
+  // The actual player, to get the image from
+  const playerRef = useRef<typeof VideoPlayer>(null)
+
   // A ref to the overlay itself
-  const thisRef = useRef<HTMLDivElement>(null)
+  const thisRef = useRef(null)
 
   // A list to keep track of recently seen object ids
   const seenRef = useRef<number[]>([])
@@ -147,6 +150,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       </div>
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <VideoPlayer
+          ref={playerRef}
           onTimestamp={(t) => (playerFrameIdRef.current = t)}
           onPlayPause={(p) => {
             playerPlayingRef.current = p
