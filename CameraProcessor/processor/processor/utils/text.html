@@ -32,7 +32,7 @@
                     <a class="function" href="#bounding_boxes_to_json">bounding_boxes_to_json</a>
             </li>
             <li>
-                    <a class="function" href="#boxes_to_accuracy_json">boxes_to_accuracy_json</a>
+                    <a class="function" href="#boxes_to_txt">boxes_to_txt</a>
             </li>
     </ul>
 
@@ -114,22 +114,30 @@ Utrecht University within the Software Project course.
     <span class="k">return</span> <span class="n">res</span>
 
 
-<span class="k">def</span> <span class="nf">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts the bounding boxes to JSON format of Accuracy.</span>
+<span class="k">def</span> <span class="nf">boxes_to_txt</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">frame_nr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write the detection object to a txt file, so that accuracy testing can read it.</span>
 
-<span class="sd">      Args:</span>
-<span class="sd">          bounding_boxes (BoundingBoxes): boxes that get converted to json.</span>
-<span class="sd">          image_id (int): image_id of box used for accuracy calculations.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        bounding_boxes (List[BoundingBox]): list of bounding boxes.</span>
+<span class="sd">        shape (int, int): shape of frame.</span>
+<span class="sd">        frame_nr (int): number of frame.</span>
 
-<span class="sd">      Returns:</span>
-<span class="sd">          JSON representation of the object.</span>
-<span class="sd">      &quot;&quot;&quot;</span>
-    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Boxes in string format with comma separation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes_text_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">shape</span>
 
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-        <span class="s2">&quot;imageId&quot;</span><span class="p">:</span> <span class="n">image_id</span><span class="p">,</span>
-        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
-    <span class="p">})</span>
+    <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
+        <span class="n">boxes_text_string</span> <span class="o">+=</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">frame_nr</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">())</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">())</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;1,1,1 </span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">return</span> <span class="n">boxes_text_string</span>
 </pre></div>
 
         </details>
@@ -187,49 +195,58 @@ Utrecht University within the Software Project course.
 
 
                 </section>
-                <section id="boxes_to_accuracy_json">
-                            <div class="attr function"><a class="headerlink" href="#boxes_to_accuracy_json">#&nbsp;&nbsp</a>
+                <section id="boxes_to_txt">
+                            <div class="attr function"><a class="headerlink" href="#boxes_to_txt">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">boxes_to_accuracy_json</span><span class="signature">(bounding_boxes, image_id)</span>:
+            <span class="name">boxes_to_txt</span><span class="signature">(bounding_boxes, shape, frame_nr)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts the bounding boxes to JSON format of Accuracy.</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">boxes_to_txt</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">frame_nr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write the detection object to a txt file, so that accuracy testing can read it.</span>
 
-<span class="sd">      Args:</span>
-<span class="sd">          bounding_boxes (BoundingBoxes): boxes that get converted to json.</span>
-<span class="sd">          image_id (int): image_id of box used for accuracy calculations.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        bounding_boxes (List[BoundingBox]): list of bounding boxes.</span>
+<span class="sd">        shape (int, int): shape of frame.</span>
+<span class="sd">        frame_nr (int): number of frame.</span>
 
-<span class="sd">      Returns:</span>
-<span class="sd">          JSON representation of the object.</span>
-<span class="sd">      &quot;&quot;&quot;</span>
-    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Boxes in string format with comma separation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes_text_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">shape</span>
 
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-        <span class="s2">&quot;imageId&quot;</span><span class="p">:</span> <span class="n">image_id</span><span class="p">,</span>
-        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
-    <span class="p">})</span>
+    <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
+        <span class="n">boxes_text_string</span> <span class="o">+=</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">frame_nr</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">())</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">())</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
+            <span class="sa">f</span><span class="s1">&#39;1,1,1 </span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">return</span> <span class="n">boxes_text_string</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Converts the bounding boxes to JSON format of Accuracy.</p>
+            <div class="docstring"><p>Write the detection object to a txt file, so that accuracy testing can read it.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>bounding_boxes (BoundingBoxes):</strong>  boxes that get converted to json.</li>
-<li><strong>image_id (int):</strong>  image_id of box used for accuracy calculations.</li>
+<li><strong>bounding_boxes (List[BoundingBox]):</strong>  list of bounding boxes.</li>
+<li><strong>shape (int, int):</strong>  shape of frame.</li>
+<li><strong>frame_nr (int):</strong>  number of frame.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>JSON representation of the object.</p>
+  <p>str: Boxes in string format with comma separation</p>
 </blockquote>
 </div>
 
