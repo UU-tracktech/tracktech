@@ -39,12 +39,12 @@ export function NavMenu() {
         src={
           'https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif'
         }
-        alt="logo"
+        alt='logo'
       />
       {/* Links to the pages in the navbar */}
-      <Menu mode="horizontal">
+      <Menu mode='horizontal'>
         <Menu.Item>
-          <Link to="/">Home</Link>
+          <Link to='/'>Home</Link>
         </Menu.Item>
       </Menu>
 
