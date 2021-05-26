@@ -129,7 +129,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
 
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performing tracking using SORT tracking to get a tracking ID for all tracked detections.</span>
 
 <span class="sd">        Converts detections to correct format, gets trackers from SORT tracking and converts trackers to bounding boxes.</span>
@@ -138,7 +138,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage</span>
-<span class="sd">            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
@@ -155,7 +155,7 @@ Utrecht University within the Software Project course.
                     <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
                     <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
                     <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
-                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()]),</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()]),</span>
                     <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">(),</span>
                     <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()))</span>
 
@@ -176,7 +176,7 @@ Utrecht University within the Software Project course.
                 <span class="p">),</span>
                 <span class="n">classification</span><span class="o">=</span><span class="n">tracker</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="n">certainty</span><span class="o">=</span><span class="n">tracker</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                <span class="n">object_id</span><span class="o">=</span><span class="n">tracking_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">object_id</span><span class="o">=</span><span class="n">re_id_data</span><span class="o">.</span><span class="n">get_object_id_for_box</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]))</span>
             <span class="p">)</span>
             <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span>
 
@@ -214,13 +214,13 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.</span>
-<span class="sd">            tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>

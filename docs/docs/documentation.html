@@ -267,13 +267,20 @@ Utrecht University within the Software Project course.
             <span class="n">import_path</span> <span class="o">=</span> <span class="n">path_to_module</span><span class="p">(</span><span class="n">component_root</span><span class="p">,</span> <span class="n">module_path</span><span class="p">)</span>
 
             <span class="c1"># Package module shouldn&#39;t contain code with side effects.</span>
-            <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
 
-            <span class="c1"># Get included modules from the __all__ attribute,</span>
-            <span class="c1"># module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">):</span>
-                <span class="n">all_included</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">)</span>
-                <span class="n">includes</span><span class="p">[</span><span class="n">module_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_included</span>
+                <span class="c1"># Get included modules from the __all__ attribute,</span>
+                <span class="c1"># module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">):</span>
+                    <span class="n">all_included</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">)</span>
+                    <span class="n">includes</span><span class="p">[</span><span class="n">module_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_included</span>
+            <span class="c1"># Package cannot be imported</span>
+            <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Module path </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s1"> with import </span><span class="si">{</span><span class="n">import_path</span><span class="si">}</span><span class="s1"> throws </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="s1">&#39;Most likely the __init__.py contains imports or code with side-effects.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="s1">&#39;You must include the imports in your Python environment to &#39;</span>
+                                <span class="s1">&#39;respect the __all__ property&#39;</span><span class="p">)</span>
 
     <span class="c1"># Find all modules in found folders and append the full path.</span>
     <span class="n">modules</span> <span class="o">=</span> <span class="p">[</span><span class="n">root_folder</span><span class="p">]</span>
@@ -488,13 +495,13 @@ Utrecht University within the Software Project course.
     <span class="c1"># Generate documentation for all provided roots.</span>
     <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">roots</span><span class="p">:</span>
         <span class="n">component_source_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;generating documentation for: </span><span class="si">{</span><span class="n">component_source_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generating documentation for: </span><span class="si">{</span><span class="n">component_source_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).</span>
         <span class="n">generate_documentation</span><span class="p">(</span><span class="n">component_source_path</span><span class="p">)</span>
 
     <span class="c1"># Create index if flag was provided.</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">create_index</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;generating index&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Generating index&#39;</span><span class="p">)</span>
         <span class="n">generate_index</span><span class="p">()</span>
 </pre></div>
 
@@ -750,13 +757,20 @@ Utrecht University within the Software Project course.
             <span class="n">import_path</span> <span class="o">=</span> <span class="n">path_to_module</span><span class="p">(</span><span class="n">component_root</span><span class="p">,</span> <span class="n">module_path</span><span class="p">)</span>
 
             <span class="c1"># Package module shouldn&#39;t contain code with side effects.</span>
-            <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
 
-            <span class="c1"># Get included modules from the __all__ attribute,</span>
-            <span class="c1"># module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">):</span>
-                <span class="n">all_included</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">)</span>
-                <span class="n">includes</span><span class="p">[</span><span class="n">module_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_included</span>
+                <span class="c1"># Get included modules from the __all__ attribute,</span>
+                <span class="c1"># module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">):</span>
+                    <span class="n">all_included</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">)</span>
+                    <span class="n">includes</span><span class="p">[</span><span class="n">module_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_included</span>
+            <span class="c1"># Package cannot be imported</span>
+            <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Module path </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s1"> with import </span><span class="si">{</span><span class="n">import_path</span><span class="si">}</span><span class="s1"> throws </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="s1">&#39;Most likely the __init__.py contains imports or code with side-effects.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="s1">&#39;You must include the imports in your Python environment to &#39;</span>
+                                <span class="s1">&#39;respect the __all__ property&#39;</span><span class="p">)</span>
 
     <span class="c1"># Find all modules in found folders and append the full path.</span>
     <span class="n">modules</span> <span class="o">=</span> <span class="p">[</span><span class="n">root_folder</span><span class="p">]</span>

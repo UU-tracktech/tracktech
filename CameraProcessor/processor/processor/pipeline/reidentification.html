@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="pdoc 6.4.2" />
-    <title>processor.utils.features API documentation</title>
+    <title>processor.pipeline.reidentification API documentation</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%2244.5%202.5%2015%2015%22%3E%3Cpath%20d%3D%22M49.351%2021.041c-.233-.721-.546-2.408-.772-4.076-.042-.09-.067-.187-.046-.288-.166-1.347-.277-2.625-.241-3.351-1.378-1.008-2.271-2.586-2.271-4.362%200-.976.272-1.935.788-2.774.057-.094.122-.18.184-.268-.033-.167-.052-.339-.052-.516%200-1.477%201.202-2.679%202.679-2.679.791%200%201.496.352%201.987.9a6.3%206.3%200%200%201%201.001.029c.492-.564%201.207-.929%202.012-.929%201.477%200%202.679%201.202%202.679%202.679a2.65%202.65%200%200%201-.269%201.148c.383.747.595%201.572.595%202.41%200%202.311-1.507%204.29-3.635%205.107.037.699.147%202.27.423%203.294l.137.461c.156%202.136-4.612%205.166-5.199%203.215zm.127-4.919a4.78%204.78%200%200%200%20.775-.584c-.172-.115-.505-.254-.88-.378zm.331%202.302l.828-.502c-.202-.143-.576-.328-.984-.49zm.45%202.157l.701-.403c-.214-.115-.536-.249-.891-.376l.19.779zM49.13%204.141c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm.735-.389a1.15%201.15%200%200%201%20.314.783%201.16%201.16%200%200%201-1.162%201.162c-.457%200-.842-.27-1.032-.653-.026.117-.042.238-.042.362a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.843-.626-1.535-1.436-1.654zm3.076%201.654a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.037-.009-.072-.011-.109-.21.3-.541.508-.935.508a1.16%201.16%200%200%201-1.162-1.162%201.14%201.14%200%200%201%20.474-.912c-.015%200-.03-.005-.045-.005-.926.001-1.679.754-1.679%201.68zm1.861-1.265c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm1.823%204.823c0-.52-.103-1.035-.288-1.52-.466.394-1.06.64-1.717.64-1.144%200-2.116-.725-2.499-1.738-.383%201.012-1.355%201.738-2.499%201.738-.867%200-1.631-.421-2.121-1.062-.307.605-.478%201.267-.478%201.942%200%202.486%202.153%204.51%204.801%204.51s4.801-2.023%204.801-4.51zm-3.032%209.156l-.146-.492c-.276-1.02-.395-2.457-.444-3.268a6.11%206.11%200%200%201-1.18.115%206.01%206.01%200%200%201-2.536-.562l.006.175c.802.215%201.848.612%202.021%201.25.079.295-.021.601-.274.837l-.598.501c.667.304%201.243.698%201.311%201.179.02.144.022.507-.393.787l-.564.365c1.285.521%201.361.96%201.381%201.126.018.142.011.496-.427.746l-.854.489c.064-1.19%201.985-2.585%202.697-3.248zM49.34%209.925c0-.667%201-.667%201%200%200%20.653.818%201.205%201.787%201.205s1.787-.552%201.787-1.205c0-.667%201-.667%201%200%200%201.216-1.25%202.205-2.787%202.205s-2.787-.989-2.787-2.205zm-.887-7.633c-.093.077-.205.114-.317.114a.5.5%200%200%201-.318-.886L49.183.397a.5.5%200%200%201%20.703.068.5.5%200%200%201-.069.703zm7.661-.065c-.086%200-.173-.022-.253-.068l-1.523-.893c-.575-.337-.069-1.2.506-.863l1.523.892a.5.5%200%200%201%20.179.685c-.094.158-.261.247-.432.247z%22%20fill%3D%22%233bb300%22/%3E%3C/svg%3E"/>
 
 
@@ -16,23 +16,28 @@
             <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
             <input id="togglestate" type="checkbox">
             <div>
-                        <a class="pdoc-button module-list-button" href="../utils.html">
+                        <a class="pdoc-button module-list-button" href="../pipeline.html">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
   <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
-</svg>                            &nbsp;processor.utils</a>
+</svg>                            &nbsp;processor.pipeline</a>
 
 <img src="https://placedog.net/200?random" style="display: block; margin: 1em auto">
 
 
+                    <h2>Submodules</h2>
+                    <ul>
+                            <li><a href="reidentification/ireidentifier.html">processor.pipeline.reidentification.ireidentifier</a></li>
+                            <li><a href="reidentification/torchreid_runner.html">processor.pipeline.reidentification.torchreid_runner</a></li>
+                    </ul>
 
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="function" href="#slice_bounding_box">slice_bounding_box</a>
+                    <a class="module" href="#ireidentifier">ireidentifier</a>
             </li>
             <li>
-                    <a class="function" href="#resize_cutout">resize_cutout</a>
+                    <a class="module" href="#torchreid_runner">torchreid_runner</a>
             </li>
     </ul>
 
@@ -47,9 +52,9 @@
     <main class="pdoc">
             <section>
                     <h1 class="modulename">
-<a href="./../../processor.html">processor</a>.<a href="./../utils.html">utils</a>.features    </h1>
+<a href="./../../processor.html">processor</a>.<a href="./../pipeline.html">pipeline</a>.reidentification    </h1>
 
-                        <div class="docstring"><p>Has utility functions for the reid</p>
+                        <div class="docstring"><p>Excludes torchreid folder from documentation generation.__all__</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -58,7 +63,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Has utility functions for the reid</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Excludes torchreid folder from documentation generation.__all__</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -66,187 +71,196 @@ Utrecht University within the Software Project course.
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">cv2</span>
-
-
-<span class="k">def</span> <span class="nf">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Slices the bounding box out of the image given</span>
-<span class="sd">    Args:</span>
-<span class="sd">        bbox (BoundingBox): A boundingbox which holds the rectangle we need</span>
-<span class="sd">        img (np.ndarray): the numpy array representing the frame/image</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">         np.ndarray: a REFERENCE to a slice of the original image</span>
-
-<span class="sd">    IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely</span>
-<span class="sd">    need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</span>
-
-<span class="sd">    ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues</span>
-<span class="sd">    to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or</span>
-<span class="sd">    use `del`.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice</span>
-<span class="sd">        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!</span>
-<span class="sd">        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up</span>
-<span class="sd">                   the memory</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">return</span> <span class="n">img</span><span class="p">[</span>
-           <span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">),</span>
-           <span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-           <span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function that resizes the cutout to specified size in the configs</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
-<span class="sd">        reference to the original image.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
-<span class="sd">         image reflect on this resized slice of the image too. But maybe not the other way around, since I am not sure</span>
-<span class="sd">         if this constitutes a &quot;shallow copy&quot;!</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Read size from the config</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Return the cutout, which is another reference to the original image</span>
-    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ireidentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;torchreid_runner&#39;</span><span class="p">]</span>
 </pre></div>
 
         </details>
 
             </section>
-                <section id="slice_bounding_box">
-                            <div class="attr function"><a class="headerlink" href="#slice_bounding_box">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">slice_bounding_box</span><span class="signature">(bbox, img)</span>:
-    </div>
+                <section id="ireidentifier">
+                                <div class="attr module"><a class="headerlink" href="#ireidentifier">#&nbsp;&nbsp</a>
+<span class="name"><a href="reidentification/ireidentifier.html">processor.pipeline.reidentification.ireidentifier</a></span></div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Slices the bounding box out of the image given</span>
-<span class="sd">    Args:</span>
-<span class="sd">        bbox (BoundingBox): A boundingbox which holds the rectangle we need</span>
-<span class="sd">        img (np.ndarray): the numpy array representing the frame/image</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">         np.ndarray: a REFERENCE to a slice of the original image</span>
+<span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
+<span class="sd">Utrecht University within the Software Project course.</span>
+<span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 
-<span class="sd">    IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely</span>
-<span class="sd">    need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">    ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues</span>
-<span class="sd">    to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or</span>
-<span class="sd">    use `del`.</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice</span>
-<span class="sd">        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!</span>
-<span class="sd">        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up</span>
-<span class="sd">                   the memory</span>
+<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Superclass for identifiers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">return</span> <span class="n">img</span><span class="p">[</span>
-           <span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">),</span>
-           <span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-           <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a det_obj object, extract the features of it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float[]: returns the feature vectors of the tracked objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the similarity rate between the feature vectors of the query object and the gallery object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_features (numpy.array(float)): The feature vector of the query object.</span>
+<span class="sd">            gallery_features (numpy.array(float)): The feature vector of a object in the gallery.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: returns a numpy array containing the feature values of a det_obj object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Similarity function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Slices the bounding box out of the image given</p>
+            <div class="docstring"><p>Detection abstract class</p>
 
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>bbox (BoundingBox):</strong>  A boundingbox which holds the rectangle we need</li>
-<li><strong>img (np.ndarray):</strong>  the numpy array representing the frame/image</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>np.ndarray: a REFERENCE to a slice of the original image</p>
-</blockquote>
-
-<p>IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely
-need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</p>
-
-<p>ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues
-to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or
-use <code>del</code>.</p>
-
-<h6 id="example">Example</h6>
-
-<blockquote>
-  <p>a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice
-  img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!
-  a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up
-             the memory</p>
-</blockquote>
+<p>This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)</p>
 </div>
 
 
                 </section>
-                <section id="resize_cutout">
-                            <div class="attr function"><a class="headerlink" href="#resize_cutout">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">resize_cutout</span><span class="signature">(cutout, configs)</span>:
-    </div>
+                <section id="torchreid_runner">
+                                <div class="attr module"><a class="headerlink" href="#torchreid_runner">#&nbsp;&nbsp</a>
+<span class="name"><a href="reidentification/torchreid_runner.html">processor.pipeline.reidentification.torchreid_runner</a></span></div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function that resizes the cutout to specified size in the configs</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Torch reid class</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
-<span class="sd">        reference to the original image.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
+<span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
+<span class="sd">Utrecht University within the Software Project course.</span>
+<span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
-<span class="sd">         image reflect on this resized slice of the image too. But maybe not the other way around, since I am not sure</span>
-<span class="sd">         if this constitutes a &quot;shallow copy&quot;!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gdown</span>
 
+<span class="kn">import</span> <span class="nn">processor.utils.features</span> <span class="k">as</span> <span class="nn">UtilsFeatures</span>
+<span class="kn">import</span> <span class="nn">processor.pipeline.reidentification.ireidentifier</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid.torchreid.utils</span> <span class="kn">import</span> <span class="n">FeatureExtractor</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cosine</span>
+
+
+<span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">reidentification</span><span class="o">.</span><span class="n">ireidentifier</span><span class="o">.</span><span class="n">IReIdentifier</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Re-id class that uses torch-reid to extract and compare features.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Read size from the config</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Return the cutout, which is another reference to the original image</span>
-    <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize torch re-identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_name (string): The file name of the model weights.</span>
+<span class="sd">            device (string): determines whether or not to use the gpu or cpu.</span>
+<span class="sd">            configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># the path where the model weight file should be located</span>
+        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">model_name</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
+
+        <span class="c1"># download the weights if it&#39;s not in the directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">weights_path</span><span class="p">):</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&amp;export=download&#39;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">weights_path</span>
+            <span class="n">gdown</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the feature extractor of torch re-id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">FeatureExtractor</span><span class="p">(</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+            <span class="n">model_path</span><span class="o">=</span><span class="n">weights_path</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
+
+    <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts features from a single bounding box by generating a</span>
+<span class="sd">        cutout of the bounding boxes and feeding them to the feature extractor of Torchreid.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             [float]: Feature vector of single bounding box.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size</span>
+        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">())</span>
+        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
+
+        <span class="c1"># Extract the feature from the cutout and convert it to a normal float array</span>
+        <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">feature</span>
+
+    <span class="k">def</span> <span class="nf">extract_features_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts features from all bounding boxes generated in the tracking stage.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [[float]]: returns the feature vectors of the tracked objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">():</span>
+            <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_box</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">features</span>
+
+    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the similarity rate between two feature vectors.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query_features ([float]): the feature vector of the query image.</span>
+<span class="sd">            gallery_features ([float]): the feature vector of the gallery image.</span>
+
+<span class="sd">        Returns: float: returns the cosine similarity of two feature vectors.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cosine_similarity</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">cosine</span><span class="p">(</span><span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cosine_similarity</span>
+
+    <span class="k">def</span> <span class="nf">reidentify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">track_features</span><span class="p">,</span> <span class="n">query_box_id</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple a detection to an earlier detection of a</span>
+<span class="sd">        tracked subject.</span>
+
+<span class="sd">        Updates list of bounding box by possibly assigning an object ID to an existing bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># query_features: features van persoon om te tracken</span>
+        <span class="c1"># det_features: lijst van features van alle bounding boxes op deze frame</span>
+        <span class="c1"># threshold: threshold waarbij je bepaalt om ze hetzelfde te noemen</span>
+
+        <span class="c1"># TODO: ALs tracking_dict bestaat, update deze dan ook</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Function that resizes the cutout to specified size in the configs</p>
+            <div class="docstring"><p>Torch reid class</p>
 
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>cutout (np.ndarray):</strong>  an np.ndarray representing the cutout you want to resize. In most cases, this is a</li>
-<li>reference to the original image.</li>
-<li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original
-  image reflect on this resized slice of the image too. But maybe not the other way around, since I am not sure
-  if this constitutes a "shallow copy"!</p>
-</blockquote>
+<p>This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)</p>
 </div>
 
 

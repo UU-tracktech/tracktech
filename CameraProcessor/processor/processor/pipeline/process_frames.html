@@ -83,7 +83,6 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 
-<span class="kn">import</span> <span class="nn">processor.utils.convert</span> <span class="k">as</span> <span class="nn">convert</span>
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 
 <span class="kn">from</span> <span class="nn">processor.input.video_capture</span> <span class="kn">import</span> <span class="n">VideoCapture</span>
@@ -94,6 +93,9 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.pipeline.framebuffer</span> <span class="kn">import</span> <span class="n">FrameBuffer</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
+
+<span class="kn">from</span> <span class="nn">processor.data_object.reid_data</span> <span class="kn">import</span> <span class="n">ReidData</span>
 
 <span class="kn">from</span> <span class="nn">processor.webhosting.start_command</span> <span class="kn">import</span> <span class="n">StartCommand</span>
 <span class="kn">from</span> <span class="nn">processor.webhosting.stop_command</span> <span class="kn">import</span> <span class="n">StopCommand</span>
@@ -126,6 +128,11 @@ Utrecht University within the Software Project course.
     <span class="n">sort_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;SORT&#39;</span><span class="p">]</span>
     <span class="n">tracker</span> <span class="o">=</span> <span class="n">SortTracker</span><span class="p">(</span><span class="n">sort_config</span><span class="p">)</span>
 
+    <span class="c1"># Instantiate the tracker</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
+    <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
 
@@ -142,7 +149,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Get orchestrator configuration</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">orchestrator_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">orchestrator_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">):</span>
@@ -171,7 +178,7 @@ Utrecht University within the Software Project course.
     <span class="k">return</span> <span class="n">Scheduler</span><span class="p">(</span><span class="n">start_node</span><span class="p">)</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Processes a stream of frames, outputs to frame or sends to client.</span>
 
 <span class="sd">    Outputs to frame using OpenCV if not client is used.</span>
@@ -181,19 +188,19 @@ Utrecht University within the Software Project course.
 <span class="sd">        capture (ICapture): capture object to process a stream of frames.</span>
 <span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
 <span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Create Scheduler.</span>
     <span class="c1"># scheduler = prepare_scheduler(detector, tracker, on_processed_frame)</span>
 
-    <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">()</span>
+    <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># This dictionary maps bounding box id&#39;s to the object ID to be assigned</span>
-    <span class="c1"># to the tracked object belonging to the bounding box.</span>
-    <span class="n">tracking_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Contains re-identification data</span>
+    <span class="n">re_id_data</span> <span class="o">=</span> <span class="n">ReidData</span><span class="p">()</span>
 
     <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame_obj</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">get_next_frame</span><span class="p">()</span>
@@ -208,18 +215,21 @@ Utrecht University within the Software Project course.
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
 
         <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
-        <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">)</span>
+        <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+
+        <span class="c1"># Use tracked boxes for possible re-identification</span>
+        <span class="c1"># TODO: CHANGE</span>
+        <span class="c1"># print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))</span>
 
         <span class="c1"># Buffer the tracked object</span>
-        <span class="n">framebuffer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">convert</span><span class="o">.</span><span class="n">to_buffer_dict</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">))</span>
-        <span class="n">framebuffer</span><span class="o">.</span><span class="n">clean_up</span><span class="p">()</span>
+        <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Handle side effects of frame processing</span>
         <span class="n">on_processed_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Process the message queue if there is a websocket connection</span>
         <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">)</span>
+            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="n">frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -228,12 +238,14 @@ Utrecht University within the Software Project course.
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;capture object stopped after </span><span class="si">{</span><span class="n">frame_nr</span><span class="si">}</span><span class="s1"> frames&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Processes the message queue processing each start and stop command</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket client to get the message queue from</span>
-<span class="sd">        tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">        framebuffer (dict): Frame buffer containing previous frames and bounding boxes</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
+<span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Empty queue if there are messages left that were not sent</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -243,17 +255,22 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start tracking box </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> in frame_id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> &#39;</span>
                          <span class="sa">f</span><span class="s1">&#39;with new object id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">tracking_dict</span><span class="p">[</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span>
+
+            <span class="c1"># Get the feature vector of the object we want to track (query)</span>
+            <span class="c1"># First, get the bounding box and frame for the query</span>
+            <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
+            <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">)</span>
+
+            <span class="c1"># Extract the features from this bounding box and store them in the data</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">))</span>
+
+            <span class="c1"># Also store the map of the first box_id to the object_id</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+
         <span class="c1"># Stop command</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StopCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stop tracking object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">delete_id</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span> <span class="ow">in</span> <span class="n">tracking_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">object_id</span> <span class="o">==</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">:</span>
-                    <span class="n">delete_id</span> <span class="o">=</span> <span class="n">box_id</span>
-
-            <span class="k">if</span> <span class="n">delete_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">tracking_dict</span><span class="p">[</span><span class="n">delete_id</span><span class="p">]</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 
 
 <span class="c1"># pylint: disable=unused-argument</span>
@@ -337,6 +354,11 @@ Utrecht University within the Software Project course.
     <span class="n">sort_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;SORT&#39;</span><span class="p">]</span>
     <span class="n">tracker</span> <span class="o">=</span> <span class="n">SortTracker</span><span class="p">(</span><span class="n">sort_config</span><span class="p">)</span>
 
+    <span class="c1"># Instantiate the tracker</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
+    <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
 
@@ -353,7 +375,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Get orchestrator configuration</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">orchestrator_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">orchestrator_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -437,12 +459,19 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">async def</span>
-            <span class="name">process_stream</span><span class="signature">(capture, detector, tracker, on_processed_frame, ws_client=None)</span>:
+            <span class="name">process_stream</span><span class="signature">(
+    capture,
+    detector,
+    tracker,
+    re_identifier,
+    on_processed_frame,
+    ws_client=None
+)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Processes a stream of frames, outputs to frame or sends to client.</span>
 
 <span class="sd">    Outputs to frame using OpenCV if not client is used.</span>
@@ -452,19 +481,19 @@ Utrecht University within the Software Project course.
 <span class="sd">        capture (ICapture): capture object to process a stream of frames.</span>
 <span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
 <span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Create Scheduler.</span>
     <span class="c1"># scheduler = prepare_scheduler(detector, tracker, on_processed_frame)</span>
 
-    <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">()</span>
+    <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># This dictionary maps bounding box id&#39;s to the object ID to be assigned</span>
-    <span class="c1"># to the tracked object belonging to the bounding box.</span>
-    <span class="n">tracking_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Contains re-identification data</span>
+    <span class="n">re_id_data</span> <span class="o">=</span> <span class="n">ReidData</span><span class="p">()</span>
 
     <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame_obj</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">get_next_frame</span><span class="p">()</span>
@@ -479,18 +508,21 @@ Utrecht University within the Software Project course.
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
 
         <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
-        <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">)</span>
+        <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+
+        <span class="c1"># Use tracked boxes for possible re-identification</span>
+        <span class="c1"># TODO: CHANGE</span>
+        <span class="c1"># print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))</span>
 
         <span class="c1"># Buffer the tracked object</span>
-        <span class="n">framebuffer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">convert</span><span class="o">.</span><span class="n">to_buffer_dict</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">))</span>
-        <span class="n">framebuffer</span><span class="o">.</span><span class="n">clean_up</span><span class="p">()</span>
+        <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Handle side effects of frame processing</span>
         <span class="n">on_processed_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Process the message queue if there is a websocket connection</span>
         <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">)</span>
+            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="n">frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -512,6 +544,7 @@ Sends detections to client if client is used (HlsCapture).</p>
 <li><strong>capture (ICapture):</strong>  capture object to process a stream of frames.</li>
 <li><strong>detector (IDetector):</strong>  detector performing the detections on a given frame.</li>
 <li><strong>tracker (ITracker):</strong>  tracker performing simple tracking of all objects using the detections.</li>
+<li><strong>re_identifier (IReIdentifier):</strong>  re-identifier extracting features and comparing them</li>
 <li><strong>on_processed_frame (Function):</strong>  when the frame got processed. Call this function to handle effects</li>
 <li><strong>ws_client (WebsocketClient):</strong>  The websocket client so the message queue can be emptied</li>
 </ul>
@@ -524,17 +557,19 @@ Sends detections to client if client is used (HlsCapture).</p>
 
         
             <span class="def">def</span>
-            <span class="name">process_message_queue</span><span class="signature">(ws_client, tracking_dict)</span>:
+            <span class="name">process_message_queue</span><span class="signature">(ws_client, framebuffer, re_identifier, re_id_data)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">tracking_dict</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Processes the message queue processing each start and stop command</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket client to get the message queue from</span>
-<span class="sd">        tracking_dict (dictionary): Dictionary mapping from bounding box ID to object ID</span>
+<span class="sd">        framebuffer (dict): Frame buffer containing previous frames and bounding boxes</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
+<span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Empty queue if there are messages left that were not sent</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -544,17 +579,22 @@ Sends detections to client if client is used (HlsCapture).</p>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start tracking box </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> in frame_id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> &#39;</span>
                          <span class="sa">f</span><span class="s1">&#39;with new object id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">tracking_dict</span><span class="p">[</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span>
+
+            <span class="c1"># Get the feature vector of the object we want to track (query)</span>
+            <span class="c1"># First, get the bounding box and frame for the query</span>
+            <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
+            <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">)</span>
+
+            <span class="c1"># Extract the features from this bounding box and store them in the data</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">))</span>
+
+            <span class="c1"># Also store the map of the first box_id to the object_id</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
+
         <span class="c1"># Stop command</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StopCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stop tracking object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">delete_id</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span> <span class="ow">in</span> <span class="n">tracking_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">object_id</span> <span class="o">==</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">:</span>
-                    <span class="n">delete_id</span> <span class="o">=</span> <span class="n">box_id</span>
-
-            <span class="k">if</span> <span class="n">delete_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">tracking_dict</span><span class="p">[</span><span class="n">delete_id</span><span class="p">]</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -565,7 +605,9 @@ Sends detections to client if client is used (HlsCapture).</p>
 
 <ul>
 <li><strong>ws_client (WebsocketClient):</strong>  Websocket client to get the message queue from</li>
-<li><strong>tracking_dict (dictionary):</strong>  Dictionary mapping from bounding box ID to object ID</li>
+<li><strong>framebuffer (dict):</strong>  Frame buffer containing previous frames and bounding boxes</li>
+<li><strong>re_identifier (IReIdentifier):</strong>  re-identifier extracting features and comparing them</li>
+<li><strong>re_id_data (ReidData):</strong>  Object containing data necessary for re-identification</li>
 </ul>
 </div>
 
