@@ -20,6 +20,7 @@ import './app.less'
 import { NavMenu } from './components/navbar'
 import { NeedLogin } from './pages/needLogin'
 import { Home } from './pages/home'
+import { Timelines } from './pages/timelines'
 import { WebsocketProvider } from './components/websocketContext'
 
 export function App() {
@@ -42,6 +43,9 @@ export function App() {
             <>
               <Route exact path="/">
                 <Home />
+              </Route>
+              <Route exact path="/timelines">
+                <Timelines />
               </Route>
             </>
           ) : (

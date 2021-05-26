@@ -62,6 +62,9 @@ export function NavMenu() {
         <Menu.Item style={{ borderBottom: '0px' }}>
           <Link to="/">Home</Link>
         </Menu.Item>
+        <Menu.Item style={{ borderBottom: '0px' }}>
+          <Link to="/timelines">Timelines</Link>
+        </Menu.Item>
       </Menu>
     </Layout.Header>
   )

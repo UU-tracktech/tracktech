@@ -2,7 +2,7 @@
   {
     "Name": "TestVid",
     "Ip": "192.168.178.30",
-    "Forwarder": "https://tracktech.ml:50008/cam1.m3u8",
+    "Forwarder": "https://tracktech.ml:50008/stream.m3u8",
     "Type": "application/x-mpegURL"
   },
   {
