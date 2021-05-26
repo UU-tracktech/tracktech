@@ -59,5 +59,3 @@ coverage.xml
 venv/
 .idea/
 ENV/
-
-**/*.pt

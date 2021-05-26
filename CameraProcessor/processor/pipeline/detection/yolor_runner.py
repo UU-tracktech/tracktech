@@ -10,6 +10,7 @@ import os
 import sys
 import logging
 import torch
+from google_drive_downloader import GoogleDriveDownloader as gdd
 
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.idetector import IDetector
@@ -39,10 +40,19 @@ class YolorDetector(IDetector):
             self.filter = filter_names.read().splitlines()
         print('I am filtering on the following objects: ' + str(self.filter))
 
-        # Initialize
+        # Set logging
         logging.basicConfig(
             format="%(message)s",
             level=logging.INFO)
+
+        # Check if weights file exists, download if needed
+        if not os.path.exists(self.config['weights_path']):
+            logging.info("Downloading weights file")
+            gdd.download_file_from_google_drive(file_id='1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76',
+                                                dest_path=self.config['weights_path'],
+                                                unzip=False)
+
+        # Initialize
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
                 logging.info("CUDA unavailable")
@@ -56,7 +66,10 @@ class YolorDetector(IDetector):
             logging.info("I am using GPU")
 
         # Load model
-        self.model = Darknet(self.config['cfg_path'], self.config['img-size']).cuda()
+        if self.device.type == 'cpu':
+            self.model = Darknet(self.config['cfg_path'], self.config['img-size'])
+        else:
+            self.model = Darknet(self.config['cfg_path'], self.config['img-size']).cuda()
         self.model.load_state_dict(torch.load(self.config['weights_path'], map_location=self.device)['model'])
         self.model.to(self.device).eval()
         if self.half:
@@ -73,6 +86,9 @@ class YolorDetector(IDetector):
         # Get names
         self.names = self.load_classes(config['names_path'])
 
+        img = torch.zeros((1, 3, self.config.getint('img-size'), self.config.getint('img-size')), device=self.device)
+        _ = self.model(img.half() if self.half else img) if self.device.type != 'cpu' else None  # run once
+
     # pylint: disable=duplicate-code
     def detect(self, frame_obj):
         """Run detection on a Detection Object.
@@ -86,7 +102,8 @@ class YolorDetector(IDetector):
         bounding_boxes = []
 
         # Resize
-        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'))[0]
+        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'),
+                        auto_size=self.config.getint('stride'))[0]
         img = self.convert_image(img, self.device, self.half)
 
         # Inference

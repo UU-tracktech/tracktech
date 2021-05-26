@@ -1,6 +1,9 @@
 # Ignore all generated HTML for documentation
 /docs/html/*
 
+# Log files
+*.log
+
 # Python related ignores
 # Dependent on personal environment and settings
 **/.idea

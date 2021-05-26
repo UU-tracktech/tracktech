@@ -25,12 +25,12 @@ class ConfigParser:
             config_name (str): name of the config file
         """
         # Config path
-        self.root_path = os.path.join(__file__, '../../../')
-        self.config_path = os.path.realpath(os.path.join(self.root_path, config_name))
+        self.root_path = os.path.realpath(os.path.join(__file__, '../../../'))
+        self.config_path = os.path.join(self.root_path, config_name)
 
         # Make sure path does indeed exist
         if not os.path.exists(self.config_path):
-            raise FileNotFoundError(f'Config file does not exist in {self.root_path} + {config_name}')
+            raise FileNotFoundError(f'Config file does not exist in {self.config_path}')
 
         # Read config file
         self.configs = configparser.ConfigParser(allow_no_value=True, converters={'tuple': self.__parse_int_tuple})

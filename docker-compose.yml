@@ -1,0 +1,6 @@
+version: "3.8"
+
+services:
+    documentation-service:
+      build: .
+      container_name: documentation_container

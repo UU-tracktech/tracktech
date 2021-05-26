@@ -20,5 +20,5 @@ jobs:
       - name: Build
         run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml build --no-cache
       - name: Remove
-        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml rm
+        run: docker-compose -f ./ProcessorOrchestrator/docker-compose.yml down --rmi all
         if: ${{ always() }}

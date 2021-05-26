@@ -26,11 +26,15 @@ class TestText:
         proper_string = json.dumps({"type": "boundingBoxes",
                                     "frameId": 1,
                                     "boxes": [
-                                        {"boxId": 1,
-                                         "rect": [bbox.get_rectangle().get_x1(),
-                                                  bbox.get_rectangle().get_x2(),
-                                                  bbox.get_rectangle().get_y1(),
-                                                  bbox.get_rectangle().get_y2()]
+                                        {
+                                            "boxId": 1,
+                                            "rect": [
+                                                bbox.get_rectangle().get_x1(),
+                                                bbox.get_rectangle().get_x2(),
+                                                bbox.get_rectangle().get_y1(),
+                                                bbox.get_rectangle().get_y2()
+                                            ],
+                                            "objectType": bbox.get_classification()
                                          }
                                     ]
                                     })

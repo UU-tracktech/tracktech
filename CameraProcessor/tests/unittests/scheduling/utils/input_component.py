@@ -7,29 +7,25 @@ Utrecht University within the Software Project course.
 """
 
 
-from typing import Callable
-from processor.scheduling.component.component_interface import IComponent
-
-
-class InputComponent(IComponent):
+class InputComponent:
     """Test input component.
 
     Work function must contain one argument,
     because the current scheduler can only pass one argument to the initial node.
     """
     @staticmethod
-    def work(obj) -> object:
+    def work(obj):
         """Example function with single argument that can be returned by execute_component().
 
         Args:
-            obj: input object passed through by scheduler.
+            obj (str): input object passed through by scheduler.
 
         Returns:
-            Modified object used by the next layer.
+            str: Modified object used by the next layer.
         """
         obj = obj.__add__(",start")
         return obj
 
-    def execute_component(self) -> Callable:
+    def execute_component(self):
         """See base class."""
         return self.work

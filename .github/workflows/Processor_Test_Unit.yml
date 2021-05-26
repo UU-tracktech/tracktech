@@ -26,18 +26,18 @@ jobs:
       - name: Copy unit test report
         run: docker cp camera-processor_container:/app/coverage.xml coverage.xml
       - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2
         with:
           name: cp-coverage_html
-          path: output/cp-coverage.html
+          path: cp-coverage.html
       - name: Upload unit test report artifact
         uses: actions/upload-artifact@v2
         with:
           name: cp-unit-report.xml
-          path: output/cp-unit-report.xml
+          path: cp-unit-report.xml
       - name: Codecov
         uses: codecov/codecov-action@v1.5.0
         with:

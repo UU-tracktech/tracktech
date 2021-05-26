@@ -25,7 +25,7 @@ jobs:
       - name: Copy xml coverage report
         run: docker cp processor-integration-test-container:/app/coverage.xml coverage.xml
       - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down --rmi all
         if: ${{ always() }}
       - name: Upload integration test report artifact
         uses: actions/upload-artifact@v2

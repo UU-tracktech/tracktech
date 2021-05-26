@@ -37,7 +37,7 @@ def __bounding_box_to_dict(bounding_box):
     Returns:
         str: JSON representation of the BoundingBox object.
     """
-    return {
+    res = {
             "boxId": bounding_box.get_identifier(),
             "rect": [
                 bounding_box.get_rectangle().get_x1(),
@@ -45,8 +45,13 @@ def __bounding_box_to_dict(bounding_box):
                 bounding_box.get_rectangle().get_x2(),
                 bounding_box.get_rectangle().get_y2()
             ],
-            "certainty": bounding_box.get_certainty()
+            "objectType": bounding_box.get_classification()
         }
+
+    if bounding_box.get_object_id() is not None:
+        res["objectId"] = bounding_box.get_object_id()
+
+    return res
 
 
 def boxes_to_accuracy_json(bounding_boxes, image_id):
