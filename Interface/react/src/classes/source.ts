@@ -6,8 +6,12 @@ Utrecht University within the Software Project course.
 
  */
 
-/*
-  This file is needed to make sure a custom Ant UI theme can be set
-*/
-
-@import '../node_modules/antd/dist/antd.less';
+/**
+ * Defines the properties of a single camera feed
+ * Contians an identifier, a name and the stream URL
+ */
+export type source = {
+  id: string
+  name: string
+  srcObject: { src: string; type: string }
+}
