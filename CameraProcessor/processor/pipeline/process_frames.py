@@ -46,7 +46,7 @@ def prepare_stream(configs):
         configs (ConfigParser): Configuration of the application when preparing the stream
 
     Returns:
-        (ICapture, IDetector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id
+        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id
     """
     # Load the config file
     config_parser = ConfigParser('configs.ini')
