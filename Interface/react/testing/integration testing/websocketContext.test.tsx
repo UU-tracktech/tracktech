@@ -39,10 +39,7 @@ beforeEach(() => {
                   srcObject: { src: 'src', type: 'type' }
                 }}
                 showBoxes={'All'}
-                onTimestamp={() => {}}
-                onPlayPause={() => {}}
                 onPrimary={() => {}}
-                onResize={() => {}}
                 data-testId='overlay'
                 hiddenObjectTypes={[]}
                 sources={[
