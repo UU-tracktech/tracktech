@@ -22,9 +22,30 @@ import { NeedLogin } from './pages/needLogin'
 import { Home } from './pages/home'
 import { Timelines } from './pages/timelines'
 import { WebsocketProvider } from './components/websocketContext'
+import useAuthState from './classes/useAuthState'
 
 export function App() {
-  const { keycloak } = useKeycloak()
+  const status = useAuthState()
+
+  function body() {
+    switch (status) {
+      case 'loading':
+        return <div data-testid="emptyWaitDiv"></div>
+      case 'unauthenticated':
+        return <NeedLogin />
+      case 'authenticated':
+        return (
+          <>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/timelines">
+                <Timelines />
+              </Route>
+            </>
+        )
+    }
+  }
 
   return (
     <Layout
@@ -39,18 +60,7 @@ export function App() {
       <WebsocketProvider>
         <BrowserRouter key={1}>
           <NavMenu key={0} />
-          {keycloak.authenticated ? (
-            <>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/timelines">
-                <Timelines />
-              </Route>
-            </>
-          ) : (
-            <NeedLogin />
-          )}
+          {body()}
         </BrowserRouter>
       </WebsocketProvider>
     </Layout>

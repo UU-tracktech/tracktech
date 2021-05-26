@@ -23,49 +23,41 @@ export function NavMenu() {
       //Navbar styling
       style={{
         background: '#fff',
-        width: '100%',
-        height: '66px',
         paddingLeft: '10px',
         paddingRight: '10px',
-        zIndex: 10
+        zIndex: 10,
+        display: 'grid',
+        gridTemplateColumns: 'auto auto 1fr auto auto',
+        gridTemplateRows: '66px',
+        alignContent: 'center',
+        columnGap: '10px'
       }}
     >
-      <div
-        //Tracktech image logo styling
-        style={{
-          display: 'grid',
-          width: '100px',
-          height: '64px',
-          overflow: 'hide',
-          alignContent: 'center',
-          float: 'left'
-        }}
-      >
-        <img
-          //The Tracktech logo at the left of the navbar
-          style={{ maxHeight: '100px', maxWidth: '100px' }}
-          src={
-            'https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif'
-          }
-          alt="logo"
-        />
-      </div>
-      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
-      <div style={{ float: 'right' }}>
-        <LoginButton />
-      </div>
-      <div style={{ float: 'right', marginRight: '10px' }}>
-        <LoggedInUser />
-      </div>
+      <img
+        //The Tracktech logo at the left of the navbar
+        style={{ maxHeight: '100px', maxWidth: '100px', alignSelf: 'center' }}
+        src={
+          'https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif'
+        }
+        alt="logo"
+      />
       {/* Links to the pages in the navbar */}
-      <Menu mode="horizontal" style={{ borderBottom: '3px solid #096dd9' }}>
-        <Menu.Item style={{ borderBottom: '0px' }}>
+      <Menu mode="horizontal">
+        <Menu.Item>
           <Link to="/">Home</Link>
         </Menu.Item>
         <Menu.Item style={{ borderBottom: '0px' }}>
           <Link to="/timelines">Timelines</Link>
         </Menu.Item>
       </Menu>
+
+      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
+      <div style={{ gridColumnStart: '4' }}>
+        <LoggedInUser />
+      </div>
+      <div style={{ gridColumnStart: '5' }}>
+        <LoginButton />
+      </div>
     </Layout.Header>
   )
 }

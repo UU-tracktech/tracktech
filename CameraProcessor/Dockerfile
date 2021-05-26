@@ -31,6 +31,7 @@ COPY configs.ini configs.ini
 COPY test-configs.ini test-configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
+COPY coco.names coco.names
 COPY tests/conftest.py tests/conftest.py
 
 
