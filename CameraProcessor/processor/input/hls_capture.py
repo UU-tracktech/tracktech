@@ -204,9 +204,6 @@ class HlsCapture(ICapture):
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
-        # Whether or not to find prob the meta data
-        probe_for_meta_data = self.hls_url.endswith('.m3u8')
-
         # Creating meta thread for meta data collection
         meta_thread = kthread.KThread(target=self.__get_meta_data)
         meta_thread.daemon = True
