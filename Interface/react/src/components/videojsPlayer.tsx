@@ -40,6 +40,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var timeStamp //The current timestamp of the stream
   var playerSwitchTime //The timestamp of when the video player switch to the second segment
   var playerStartTime //The current time of the video player when it's first being played
+  var bufferTimer //The interval that counts down while buffering
+  var bufferTime //Time to wait during bufferring before giving up on the stream
 
   React.useEffect(() => {
     // instantiate video.js
@@ -87,14 +89,43 @@ export function VideoPlayer(props: VideoPlayerProps) {
         props.onPlayPause(false)
       })
 
-      player?.on('seeked', () => {
-        //reached a timestamp and starts to play
-        //Seems to always happen after a waiting
-        console.log('Event: seeked')
-      })
+      //When the player starts bufferring it fires the waiting event
       player?.on('waiting', () => {
-        //Seems to happen on buffer
-        console.log('Event: waiting')
+        if (!bufferTimer) {
+          //Start an interval to count down
+          bufferTime = 15 //how long to wait for
+          const delta = 0.5
+
+          bufferTimer = player?.setInterval(() => {
+            bufferTime -= delta
+            if (bufferTime <= 0) {
+              //Once it waited long enough, clear the interval and show a message to the user showing the problem
+              player?.clearInterval(bufferTimer)
+              bufferTimer = undefined
+
+              var modal = player?.createModal(
+                'Unable to load stream. Check the video forwarder. Player will attempt to reconnect when closing this message',
+                null
+              )
+
+              //Try to reload the videoplayer when the user closes the warning message
+              modal?.on('modalclose', () => {
+                player?.pause()
+                player?.load()
+                player?.play()
+              })
+            }
+          }, delta * 1000)
+        }
+      })
+
+      //Seeked is fired when the player starts playing video again
+      player?.on('seeked', () => {
+        //Use this as a signal to stop waiting for a buffer if the timer is running
+        if (bufferTimer) {
+          player?.clearInterval(bufferTimer)
+          bufferTimer = undefined
+        }
       })
     })
 
