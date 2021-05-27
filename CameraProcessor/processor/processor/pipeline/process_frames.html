@@ -83,6 +83,8 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 
+<span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+
 <span class="kn">from</span> <span class="nn">processor.input.video_capture</span> <span class="kn">import</span> <span class="n">VideoCapture</span>
 <span class="kn">from</span> <span class="nn">processor.input.hls_capture</span> <span class="kn">import</span> <span class="n">HlsCapture</span>
 <span class="kn">import</span> <span class="nn">processor.utils.text</span> <span class="k">as</span> <span class="nn">text</span>
@@ -115,11 +117,14 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (dict): Configuration of the application when preparing the stream</span>
+<span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load the config file</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
     <span class="c1"># Instantiate the detector</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
@@ -142,7 +147,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
-    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
@@ -379,11 +384,14 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (dict): Configuration of the application when preparing the stream</span>
+<span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load the config file</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
     <span class="c1"># Instantiate the detector</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
@@ -406,7 +414,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
-    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
@@ -434,7 +442,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (dict):</strong>  Configuration of the application when preparing the stream</li>
+<li><strong>configs (ConfigParser):</strong>  Configuration of the application when preparing the stream</li>
 </ul>
 
 <h6 id="returns">Returns</h6>

@@ -142,11 +142,11 @@
     <ul id="pdoc-modules">
     </ul>
     <script>
-        const modules = ["src", "src.client_socket", "src.connections", "src.get_auth", "src.http_server", "src.logger", "src.main", "src.object_manager", "src.processor_socket", "src.timeline_handler"];
+        const modules = ["src", "src.client_socket", "src.connections", "src.get_auth", "src.http_server", "src.logger", "src.main", "src.object_ids_handler", "src.object_manager", "src.processor_socket", "src.timeline_handler"];
         const module_list = document.getElementById("pdoc-modules");
         const searchbox = document.getElementById("pdoc-search")
 
-        const modulesTree = {"src": {"client_socket": {}, "connections": {}, "get_auth": {}, "http_server": {}, "logger": {}, "main": {}, "object_manager": {}, "processor_socket": {}, "timeline_handler": {}}};
+        const modulesTree = {"src": {"client_socket": {}, "connections": {}, "get_auth": {}, "http_server": {}, "logger": {}, "main": {}, "object_ids_handler": {}, "object_manager": {}, "processor_socket": {}, "timeline_handler": {}}};
 
         renderTree("");
 
