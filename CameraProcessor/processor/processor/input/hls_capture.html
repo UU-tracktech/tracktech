@@ -285,21 +285,15 @@ Utrecht University within the Software Project course.
         <span class="c1"># Whether or not to find prob the meta data</span>
         <span class="n">probe_for_meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">)</span>
 
-        <span class="n">meta_thread</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
-        <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
-            <span class="c1"># Creating meta thread for meta data collection</span>
-            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Creating meta thread for meta data collection</span>
+        <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Instantiates the connection with the hls stream</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
-        <span class="c1"># Make sure thread has finished before starting main loop</span>
-        <span class="k">if</span> <span class="n">probe_for_meta_data</span> <span class="ow">and</span> <span class="n">meta_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="c1"># Exit thread if stream was not found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
@@ -602,21 +596,15 @@ Utrecht University within the Software Project course.
         <span class="c1"># Whether or not to find prob the meta data</span>
         <span class="n">probe_for_meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">)</span>
 
-        <span class="n">meta_thread</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
-        <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
-            <span class="c1"># Creating meta thread for meta data collection</span>
-            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Creating meta thread for meta data collection</span>
+        <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Instantiates the connection with the hls stream</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
-        <span class="c1"># Make sure thread has finished before starting main loop</span>
-        <span class="k">if</span> <span class="n">probe_for_meta_data</span> <span class="ow">and</span> <span class="n">meta_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="c1"># Exit thread if stream was not found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
@@ -962,21 +950,15 @@ Another thread gets the time stamp of the stream once and going from there.</p>
         <span class="c1"># Whether or not to find prob the meta data</span>
         <span class="n">probe_for_meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">)</span>
 
-        <span class="n">meta_thread</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
-        <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
-            <span class="c1"># Creating meta thread for meta data collection</span>
-            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Creating meta thread for meta data collection</span>
+        <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Instantiates the connection with the hls stream</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
-        <span class="c1"># Make sure thread has finished before starting main loop</span>
-        <span class="k">if</span> <span class="n">probe_for_meta_data</span> <span class="ow">and</span> <span class="n">meta_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="c1"># Exit thread if stream was not found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
