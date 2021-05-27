@@ -50,9 +50,6 @@ def prepare_stream(configs):
     Returns:
         (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id
     """
-    # Load the config file
-    config_parser = ConfigParser('configs.ini')
-    configs = config_parser.configs
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
@@ -75,7 +72,7 @@ def prepare_stream(configs):
     # Instantiate the tracker
     logging.info("Instantiating reidentifier...")
     re_identifier_config = configs['Reid']
-    re_identifier = TorchReIdentifier('osnet_x1_0', 'cuda', re_identifier_config)
+    re_identifier = TorchReIdentifier('osnet_x1_0', re_identifier_config)
 
     # Frame counter starts at 0. Will probably work differently for streams
     logging.info("Starting stream...")
