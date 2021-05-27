@@ -35,7 +35,7 @@ export class TimelineData {
 
     this.data.forEach((logEvent) => {
       // Never seen before
-      if (spottedOn[logEvent.processorId] == undefined) {
+      if (!spottedOn[logEvent.processorId]) {
         spottedOn[logEvent.processorId] = {
           from: logEvent.timeStamp,
           to: logEvent.timeStamp
