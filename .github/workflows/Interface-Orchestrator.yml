@@ -9,13 +9,16 @@ on:
     paths:
       - Interface/**
       - ProcessorOrchestrator/**
+    branches:
+      - develop
+      - master
 
 jobs:
   interface-orchestrator:
     name: Interface-Orchestrator Integration Test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build and run

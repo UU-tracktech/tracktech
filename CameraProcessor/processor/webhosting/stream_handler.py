@@ -54,8 +54,8 @@ class StreamHandler(tornado.web.RequestHandler):
         self.__flush_interval = .1
 
         # Get the objects needed for process_stream and starts the function
-        capture, detector, tracker, _ = prepare_stream(self.configs)
-        yield process_stream(capture, detector, tracker, self.__frame_processed, None)
+        capture, detector, tracker, re_identifier, _ = prepare_stream(self.configs)
+        yield process_stream(capture, detector, tracker, re_identifier, self.__frame_processed, None)
 
         # Close capture and send response
         capture.close()

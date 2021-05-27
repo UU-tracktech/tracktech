@@ -120,6 +120,7 @@ class Yolov5Detector(IDetector):
         self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
 
         # Print time (inference + NMS)
-        print(f'Finished processing of frame {frame_obj.get_timestamp()} in ({time_synchronized() - start_time:.3f}s)')
+        print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
+              f'({time_synchronized() - start_time:.3f}s)')
 
         return BoundingBoxes(bounding_boxes)

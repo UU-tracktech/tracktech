@@ -28,7 +28,7 @@ jobs:
     name: Processor build compose test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build camera processor test service

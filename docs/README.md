@@ -44,3 +44,6 @@ and every module name not in it gets excluded.
     this would crash the documentation generation.  
   - Class constants: ensure that the constants can be initialized 
     without additional project configuration not handled before pdoc execution.
+- Init files: when an `__init__.py` contains imports or code with side effects. 
+  You must include the imports (or remove the side effects) in your Python environment to respect the `__all__` property.
+  An `__init__.py` that at most contains attributes (like `__all__`) and documentation is preferred.
