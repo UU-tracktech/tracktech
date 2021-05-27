@@ -27,7 +27,7 @@ export function LoginButton() {
     case 'loading':
       return (
         <Skeleton.Button
-          data-testid='buttonSkeleton'
+          data-testid={'buttonSkeleton'}
           active
           style={{ verticalAlign: 'middle' }}
         />
