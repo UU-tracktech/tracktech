@@ -92,6 +92,7 @@ Utrecht University within the Software Project course.
 
 <span class="kn">from</span> <span class="nn">processor.pipeline.framebuffer</span> <span class="kn">import</span> <span class="n">FrameBuffer</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor_runner</span> <span class="kn">import</span> <span class="n">YolorDetector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
 
@@ -103,6 +104,14 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">processor.scheduling.plan.pipeline_plan</span> <span class="k">as</span> <span class="nn">pipeline_plan</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
 
+<span class="n">DETECTOR_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;yolov5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Yolov5Detector</span><span class="p">,</span> <span class="s1">&#39;Yolov5&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;yolor&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">YolorDetector</span><span class="p">,</span> <span class="s1">&#39;Yolor&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">TRACKER_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SortTracker</span><span class="p">,</span> <span class="s1">&#39;SORT&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
 
 <span class="k">def</span> <span class="nf">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream</span>
@@ -111,27 +120,31 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</span>
+<span class="sd">        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Load the config file</span>
-    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
-    <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
     <span class="c1"># Instantiate the detector</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
-    <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-    <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
-    <span class="n">detector</span> <span class="o">=</span> <span class="n">Yolov5Detector</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">__create_detector</span><span class="p">(</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                                                  <span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                                                  <span class="n">configs</span>
+                                                  <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
-    <span class="n">sort_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;SORT&#39;</span><span class="p">]</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">SortTracker</span><span class="p">(</span><span class="n">sort_config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">__create_tracker</span><span class="p">(</span><span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                               <span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="n">configs</span>
+                               <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
-    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
@@ -144,7 +157,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">hls_enabled</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">HlsCapture</span><span class="p">(</span><span class="n">hls_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
+        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">detector_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
 
     <span class="c1"># Get orchestrator configuration</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
@@ -315,6 +328,40 @@ Utrecht University within the Software Project course.
     <span class="c1"># A timeout of 0 will not display the image</span>
     <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">__create_detector</span><span class="p">(</span><span class="n">idetector</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a detector of the given type</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        idetector (IDetector): The CLASS, or object type, of the detector we want</span>
+<span class="sd">        config_section (string): The config section name associated with the given detector</span>
+<span class="sd">        configs (dict): The configs file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        IDetector: The requested detector of the given type</span>
+<span class="sd">        dict: The config associated with the detector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
+    <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">idetector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span>
+
+
+<span class="k">def</span> <span class="nf">__create_tracker</span><span class="p">(</span><span class="n">itracker</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a tracker of the given type</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        itracker (ITracker class type): The CLASS, or object type, of the detector we want</span>
+<span class="sd">        config_section (string): The config section name associated with the given tracker</span>
+<span class="sd">        configs (dict): The configs file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ITracker: The requested tracker</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tracker_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">itracker</span><span class="p">(</span><span class="n">tracker_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tracker</span>
 </pre></div>
 
         </details>
@@ -337,27 +384,31 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</span>
+<span class="sd">        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Load the config file</span>
-    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
-    <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
     <span class="c1"># Instantiate the detector</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
-    <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-    <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
-    <span class="n">detector</span> <span class="o">=</span> <span class="n">Yolov5Detector</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">__create_detector</span><span class="p">(</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                                                  <span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                                                  <span class="n">configs</span>
+                                                  <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
-    <span class="n">sort_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;SORT&#39;</span><span class="p">]</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">SortTracker</span><span class="p">(</span><span class="n">sort_config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">__create_tracker</span><span class="p">(</span><span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                               <span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="n">configs</span>
+                               <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
-    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
@@ -370,7 +421,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">hls_enabled</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">HlsCapture</span><span class="p">(</span><span class="n">hls_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
+        <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">detector_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
 
     <span class="c1"># Get orchestrator configuration</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
@@ -391,7 +442,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id</p>
+  <p>(ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</p>
 </blockquote>
 </div>
 
