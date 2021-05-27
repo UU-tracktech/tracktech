@@ -95,7 +95,14 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
    */
   function onMessage(ev: MessageEvent<any>) {
     //console.log('socket message', ev.data)
-    var message: BoxesClientMessage = JSON.parse(ev.data)
+    let object: BoxesClientMessage = JSON.parse(ev.data)
+    var message = new BoxesClientMessage(
+      object.cameraId,
+      object.frameId,
+      object.boxes.map(
+        (box: Box) => new Box(box.boxId, box.rect, box.objectType, box.objectId)
+      )
+    )
     listenersRef.current
       ?.filter((listener) => listener.id === message.cameraId)
       .forEach((listener) => listener.callback(message.boxes, message.frameId))

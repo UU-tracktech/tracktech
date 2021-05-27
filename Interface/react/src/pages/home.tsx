@@ -19,7 +19,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Grid } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
 import { ObjectTypeFilter } from '../components/objectTypeFilter'
-import { source } from '../classes/source'
+import { stream } from '../classes/source'
 
 /** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
@@ -28,7 +28,7 @@ export type indicator = 'All' | 'Selection' | 'None'
 type tracked = { id: number; name: string; image: string; data: string }
 export function Home() {
   /** State containing all the camera sources */
-  const [sources, setSources] = React.useState<source[]>()
+  const [sources, setSources] = React.useState<stream[]>()
 
   /** State containing which boundingboxes to draw */
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
