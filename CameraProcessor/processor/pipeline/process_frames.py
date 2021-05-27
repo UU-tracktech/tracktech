@@ -11,8 +11,6 @@ import logging
 import asyncio
 import cv2
 
-from processor.utils.config_parser import ConfigParser
-
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
 import processor.utils.text as text
