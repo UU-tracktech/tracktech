@@ -43,7 +43,7 @@ def prepare_stream(configs):
     """Read the configuration information and prepare the objects for the frame stream
 
     Args:
-        configs (ConfigParser): Configuration of the application when preparing the stream
+        configs (dict): Configuration of the application when preparing the stream
 
     Returns:
         (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id
