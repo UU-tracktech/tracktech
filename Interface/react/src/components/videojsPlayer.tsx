@@ -104,15 +104,25 @@ export function VideoPlayer(props: VideoPlayerProps) {
               bufferTimer = undefined
 
               var modal = player?.createModal(
-                'Unable to load stream. Check the video forwarder. Player will attempt to reconnect when closing this message',
+                'Unable to load stream. Check your connection or the video forwarder. Close this message to attempt reloading the stream',
                 null
               )
 
               //Try to reload the videoplayer when the user closes the warning message
               modal?.on('modalclose', () => {
                 player?.pause()
+
+                //reset the source
+                if (props.sources && props.sources[0].type)
+                  player?.src({
+                    src: props.sources[0].src,
+                    type: props.sources[0].type
+                  })
+                else if (props.sources)
+                  player?.src({ src: props.sources[0].src })
+
                 player?.load()
-                player?.play()
+                //player?.play()
               })
             }
           }, delta * 1000)
