@@ -147,7 +147,7 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
 
         # Use tracked boxes for possible re-identification
         # TODO: CHANGE
-        # print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))
+        print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))
 
         # Buffer the tracked object
         framebuffer.add_frame(frame_obj, tracked_boxes)
@@ -171,7 +171,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
     Args:
         ws_client (WebsocketClient): Websocket client to get the message queue from
-        framebuffer (dict): Frame buffer containing previous frames and bounding boxes
+        framebuffer (FrameBuffer): Frame buffer containing previous frames and bounding boxes
         re_identifier (IReIdentifier): re-identifier extracting features and comparing them
         re_id_data (ReidData): Object containing data necessary for re-identification
     """

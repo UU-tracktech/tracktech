@@ -67,3 +67,22 @@ class ReidData:
             return None.
         """
         return self.__query_boxes.get(box_id, None)
+
+    def get_queries(self):
+        """Get a list of queries (object ids) that are currently being tracked.
+
+        Returns:
+            ([int]): The list of object IDs currently being tracked
+        """
+        return self.__query_features.keys()
+
+    def get_feature_for_query(self, object_id):
+        """Returns the feature vector for a given object id. Raises error if the object_id is not in the list.
+
+        Args:
+            object_id (int): id of the object
+
+        Returns:
+            ([float]): Feature vector for the object
+        """
+        return self.__query_featuers[object_id]
