@@ -290,7 +290,7 @@ Utrecht University within the Software Project course.
         <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
         <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
             <span class="c1"># Creating meta thread for meta data collection</span>
-            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">])</span>
+            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
             <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
@@ -354,7 +354,7 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">__connect_to_stream</span><span class="p">()</span>
 
     <span class="c1"># pylint: disable=protected-access</span>
-    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a http request with ffmpeg to get the meta-data of the HLS stream.&quot;&quot;&quot;</span>
         <span class="c1"># extract the start_time from the meta-data to get the absolute segment time</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving meta data from HLS stream&#39;</span><span class="p">)</span>
@@ -607,7 +607,7 @@ Utrecht University within the Software Project course.
         <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
         <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
             <span class="c1"># Creating meta thread for meta data collection</span>
-            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">])</span>
+            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
             <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
@@ -671,7 +671,7 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">__connect_to_stream</span><span class="p">()</span>
 
     <span class="c1"># pylint: disable=protected-access</span>
-    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a http request with ffmpeg to get the meta-data of the HLS stream.&quot;&quot;&quot;</span>
         <span class="c1"># extract the start_time from the meta-data to get the absolute segment time</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving meta data from HLS stream&#39;</span><span class="p">)</span>
@@ -967,7 +967,7 @@ Another thread gets the time stamp of the stream once and going from there.</p>
         <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
         <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
             <span class="c1"># Creating meta thread for meta data collection</span>
-            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">])</span>
+            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
             <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
