@@ -207,21 +207,15 @@ class HlsCapture(ICapture):
         # Whether or not to find prob the meta data
         probe_for_meta_data = self.hls_url.endswith('.m3u8')
 
-        meta_thread = None
-
-        # Only retrieve meta data for a .m3u8 stream
-        if probe_for_meta_data:
-            # Creating meta thread for meta data collection
-            meta_thread = kthread.KThread(target=self.__get_meta_data)
-            meta_thread.daemon = True
-            meta_thread.start()
+        # Creating meta thread for meta data collection
+        meta_thread = kthread.KThread(target=self.__get_meta_data)
+        meta_thread.daemon = True
+        meta_thread.start()
 
         # Instantiates the connection with the hls stream
         cap = cv2.VideoCapture(self.hls_url)
 
-        # Make sure thread has finished before starting main loop
-        if probe_for_meta_data and meta_thread is not None:
-            meta_thread.join()
+        meta_thread.join()
 
         # Exit thread if stream was not found
         if not self.__found_stream:
