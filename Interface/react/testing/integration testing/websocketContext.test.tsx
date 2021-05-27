@@ -33,13 +33,17 @@ beforeEach(() => {
           {({ send, setSocket, socketUrl, connectionState }: websocketArgs) => (
             <>
               <Overlay
-                cameraId="1"
+                source={{
+                  id: '1',
+                  name: 'name',
+                  srcObject: { src: 'src', type: 'type' }
+                }}
                 showBoxes={'All'}
                 onTimestamp={() => {}}
                 onPlayPause={() => {}}
                 onPrimary={() => {}}
                 onResize={() => {}}
-                data-testId="overlay"
+                data-testId='overlay'
                 hiddenObjectTypes={[]}
                 sources={[
                   {
@@ -51,10 +55,10 @@ beforeEach(() => {
                 autoplay={true}
               ></Overlay>
               <button
-                data-testid="button"
+                data-testid='button'
                 onClick={() => setSocket(websocketAddress)}
               />
-              <span data-testid="state">{connectionState}</span>
+              <span data-testid='state'>{connectionState}</span>
             </>
           )}
         </websocketContext.Consumer>

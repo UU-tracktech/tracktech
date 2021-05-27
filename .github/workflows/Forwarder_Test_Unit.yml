@@ -8,13 +8,16 @@ on:
   pull_request:
     paths:
       - VideoForwarder/**
+    branches:
+      - develop
+      - master
 
 jobs:
   forwarder_test_unit:
     name: Forwarder Unit Test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build and run

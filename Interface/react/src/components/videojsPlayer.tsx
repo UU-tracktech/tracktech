@@ -283,18 +283,18 @@ export function VideoPlayer(props: VideoPlayerProps) {
   // see https://github.com/videojs/video.js/pull/3856
   return (
     <div
-      data-testid="videojsplayer"
-      className="c-player"
+      data-testid='videojsplayer'
+      className='c-player'
       style={{ width: '100%', height: '100%' }}
     >
       <div
-        className="c-player__screen vjs-fill"
-        data-vjs-player="true"
+        className='c-player__screen vjs-fill'
+        data-vjs-player='true'
         style={{ width: '100%', height: '100%' }}
       >
         <video
           ref={(node: HTMLVideoElement) => (videoNode = node)}
-          className="video-js"
+          className='video-js'
         />
       </div>
     </div>

@@ -1,9 +1,17 @@
-"""Excludes yolov5 and yolor folder from documentation generation.__all__
+/*
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
-"""
+ */
 
-__all__ = ['idetector', 'yolov5_runner', 'yolor_runner']
+/**
+ * Defines the properties of a single camera feed
+ * Contians an identifier, a name and the stream URL
+ */
+export type source = {
+  id: string
+  name: string
+  srcObject: { src: string; type: string }
+}

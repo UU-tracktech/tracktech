@@ -1,5 +1,5 @@
 [MASTER]
-init-hook="import os, sys; sys.path.append(os.getcwd()); from utility.pylint_ignore import PylintIgnorePaths; PylintIgnorePaths('.git', 'CameraProcessor/processor/pipeline/detection/yolor', 'CameraProcessor/processor/pipeline/detection/yolov5', 'CameraProcessor/processor/training/detection/yolov5', '/app/.git', '/app/processor/pipeline/detection/yolor', '/app/processor/pipeline/detection/yolov5', '/app/processor/training/detection/yolov5')"
+init-hook="import os, sys; sys.path.append(os.getcwd()); from utility.pylint_ignore import PylintIgnorePaths; PylintIgnorePaths('.git', 'CameraProcessor/processor/pipeline/detection/yolor', 'CameraProcessor/processor/pipeline/detection/yolov5', 'CameraProcessor/processor/training/detection/yolov5', '/app/.git', '/app/processor/pipeline/detection/yolor', '/app/processor/pipeline/detection/yolov5', '/app/processor/training/detection/yolov5', 'CameraProcessor/processor/pipeline/reidentification/torchreid', '/app/processor/pipeline/reidentification/torchreid')"
 
 
 # A comma-separated list of package or module names from where C extensions may
@@ -23,7 +23,7 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,__init__,sort,yolor
+ignore=CVS,venv,yolov5,__init__,sort,yolor,torchreid
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
@@ -161,7 +161,8 @@ disable=print-statement,
         import-error,
         no-self-use,
         logging-fstring-interpolation,
-        len-as-condition
+        len-as-condition,
+        fixme
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
