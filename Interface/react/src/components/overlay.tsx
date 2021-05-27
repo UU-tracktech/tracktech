@@ -16,27 +16,27 @@ import { Queue } from 'queue-typescript'
 import { Modal, notification } from 'antd'
 
 import { indicator } from '../pages/home'
-import { VideoPlayer, VideoPlayerProps } from './videojsPlayer'
+import { VideoPlayer } from './videojsPlayer'
 import { Box, QueueItem } from '../classes/clientMessage'
 import { websocketContext } from './websocketContext'
 import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
 } from '../classes/orchestratorMessage'
-import { source } from '../classes/source'
+import { stream, source } from '../classes/source'
+import { size } from '../classes/size'
 
 // The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not
 export type overlayProps = {
-  source: source
+  source: stream
   showBoxes: indicator
   hiddenObjectTypes: string[]
   autoplay: boolean
+  onPrimary: () => void
+  sources: source[]
 }
 
-// The size of the overlay, used to scale the drawing of the bounding boxes
-type size = { width: number; height: number; left: number; top: number }
-
-export function Overlay(props: overlayProps & VideoPlayerProps) {
+export function Overlay(props: overlayProps) {
   // Queue which keeps the incoming bounding boxes and the frameID at which they should be drawn
   const queueRef = useRef(new Queue<QueueItem>())
 
@@ -48,6 +48,9 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
 
   // If the video player is paused or not
   const playerPlayingRef = useRef(props.autoplay)
+
+  // The actual player, to get the image from
+  const snapRef = useRef<(box: Box) => string | undefined>(() => undefined)
 
   // A ref to the overlay itself
   const thisRef = useRef<HTMLDivElement>(null)
@@ -147,13 +150,12 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
       </div>
       <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
         <VideoPlayer
+          setSnapCallback={(snap) => (snapRef.current = snap)}
           onTimestamp={(t) => (playerFrameIdRef.current = t)}
           onPlayPause={(p) => {
             playerPlayingRef.current = p
           }}
-          onResize={(w, h, l, t) =>
-            setSize({ width: w, height: h, left: l, top: t })
-          }
+          onResize={setSize}
           autoplay={props.autoplay}
           controls={true}
           onPrimary={props.onPrimary}
@@ -168,19 +170,30 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
    * @param boxId The ID of the box that was clicked on
    * @param frameId The frameID, or timestamp, when the box was clicked
    */
-  function onTrackingStart(boxId: number, frameId: number) {
+  function onTrackingStart(box: Box, frameId: number) {
+    //Get the box coordinates and take a snap
+    var snap = snapRef.current(box)
+
     Modal.confirm({
       title: 'Start tracking this object?',
       okButtonProps: { title: 'startTrackButton' },
+      content: <img src={snap} style={{ outlineStyle: 'solid' }} />,
+      width: 'auto',
+      centered: true,
       onOk() {
         console.log('Start tracking', {
           cam: props.source,
           frame: frameId,
-          box: boxId
+          box: box.boxId
         })
 
         socketContext.send(
-          new StartOrchestratorMessage(props.source.id, frameId, boxId)
+          new StartOrchestratorMessage(
+            props.source.id,
+            frameId,
+            box.boxId,
+            snap
+          )
         )
       },
       onCancel() {}
@@ -250,24 +263,21 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
                 (hiddenObjectType) => hiddenObjectType === box.objectType
               )
           )
-          .map((box) => {
-            var x1 = box.rect[0],
-              x2 = box.rect[2],
-              y1 = box.rect[1],
-              y2 = box.rect[3]
-            if (x1 > x2) [x1, x2] = [x2, x1]
-            if (y1 > y2) [y1, y2] = [y2, y1]
-
+          .map((box: Box) => {
+            var { width, height, left, top } = box.toSize(
+              size.width,
+              size.height
+            )
             return (
               <div
                 key={box.boxId}
                 data-testid={`box-${box.boxId}`}
                 style={{
                   position: 'absolute',
-                  left: `${x1 * size.width + size.left}px`,
-                  top: `${y1 * size.height + size.top}px`,
-                  width: `${(x2 - x1) * size.width}px`,
-                  height: `${(y2 - y1) * size.height}px`,
+                  left: `${left + size.left}px`,
+                  top: `${top + size.top}px`,
+                  width: `${width}px`,
+                  height: `${height}px`,
                   borderColor: colordict[box.objectId ?? 0],
                   borderStyle: 'solid',
                   transitionProperty: 'all',
@@ -277,8 +287,7 @@ export function Overlay(props: overlayProps & VideoPlayerProps) {
                   cursor: box.objectId === undefined ? 'pointer' : 'default'
                 }}
                 onClick={() => {
-                  if (box.objectId === undefined)
-                    onTrackingStart(box.boxId, frameId)
+                  if (box.objectId === undefined) onTrackingStart(box, frameId)
                   else onTrackingStop(box.objectId)
                 }}
               />
