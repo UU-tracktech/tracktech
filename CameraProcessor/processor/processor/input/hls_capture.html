@@ -233,7 +233,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span>
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">FrameObj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">thread_start_time</span><span class="p">,</span> <span class="n">hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method that runs in separate thread that goes through the frames of the stream at a consistent pace.</span>
 
 <span class="sd">        Reads frames at frame rate of the stream and puts them in self.current_frame.</span>
@@ -241,6 +241,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Set a timeout, in seconds</span>
         <span class="n">current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="c1"># Reads next frame</span>
             <span class="k">try</span><span class="p">:</span>
@@ -253,15 +255,15 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="n">current_frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Saves timestamp of the current frame</span>
+            <span class="n">current_frame_time</span> <span class="o">=</span> <span class="n">current_frame_nr</span> <span class="o">*</span> <span class="n">wait_ms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="n">hls_start_time_stamp</span> <span class="o">+</span> <span class="p">(</span><span class="n">current_frame_time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
 
-            <span class="c1"># What is the wait time until next frame has to be prepared</span>
-            <span class="n">expected_next_frame_time</span> <span class="o">=</span> <span class="n">wait_ms</span> <span class="o">*</span> <span class="n">current_frame_nr</span>
+            <span class="c1"># Calculate the wait time for the next frame</span>
             <span class="n">time_into_stream</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">thread_start_time</span>
-            <span class="n">wait_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">expected_next_frame_time</span> <span class="o">-</span> <span class="n">time_into_stream</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">wait_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_frame_time</span> <span class="o">+</span> <span class="n">wait_ms</span> <span class="o">-</span> <span class="n">time_into_stream</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
-            <span class="c1"># Saves timestamp and waits calculated amount</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="n">hls_start_time_stamp</span> <span class="o">+</span> <span class="n">time_into_stream</span>
+            <span class="n">current_frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="c1"># Next frame should already have been read</span>
             <span class="k">if</span> <span class="n">wait_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -280,26 +282,30 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Creating meta thread for meta data collection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Whether or not to find prob the meta data</span>
+        <span class="n">probe_for_meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">)</span>
+
+        <span class="n">meta_thread</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
+        <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
+            <span class="c1"># Creating meta thread for meta data collection</span>
+            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">])</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Instantiates the connection with the hls stream</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
         <span class="c1"># Make sure thread has finished before starting main loop</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">probe_for_meta_data</span> <span class="ow">and</span> <span class="n">meta_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="c1"># Exit thread if stream was not found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stream was not found. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="c1"># Saves the current time of a successful established connection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="c1"># Exit because capture did not start correctly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
@@ -315,8 +321,8 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Done with probing, starting the reading thread</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span><span class="p">,</span>
-                                                                          <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span>
+                                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -348,7 +354,7 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">__connect_to_stream</span><span class="p">()</span>
 
     <span class="c1"># pylint: disable=protected-access</span>
-    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a http request with ffmpeg to get the meta-data of the HLS stream.&quot;&quot;&quot;</span>
         <span class="c1"># extract the start_time from the meta-data to get the absolute segment time</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving meta data from HLS stream&#39;</span><span class="p">)</span>
@@ -544,7 +550,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span>
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">FrameObj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">thread_start_time</span><span class="p">,</span> <span class="n">hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method that runs in separate thread that goes through the frames of the stream at a consistent pace.</span>
 
 <span class="sd">        Reads frames at frame rate of the stream and puts them in self.current_frame.</span>
@@ -552,6 +558,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Set a timeout, in seconds</span>
         <span class="n">current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="c1"># Reads next frame</span>
             <span class="k">try</span><span class="p">:</span>
@@ -564,15 +572,15 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="n">current_frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Saves timestamp of the current frame</span>
+            <span class="n">current_frame_time</span> <span class="o">=</span> <span class="n">current_frame_nr</span> <span class="o">*</span> <span class="n">wait_ms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="n">hls_start_time_stamp</span> <span class="o">+</span> <span class="p">(</span><span class="n">current_frame_time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
 
-            <span class="c1"># What is the wait time until next frame has to be prepared</span>
-            <span class="n">expected_next_frame_time</span> <span class="o">=</span> <span class="n">wait_ms</span> <span class="o">*</span> <span class="n">current_frame_nr</span>
+            <span class="c1"># Calculate the wait time for the next frame</span>
             <span class="n">time_into_stream</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">thread_start_time</span>
-            <span class="n">wait_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">expected_next_frame_time</span> <span class="o">-</span> <span class="n">time_into_stream</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">wait_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_frame_time</span> <span class="o">+</span> <span class="n">wait_ms</span> <span class="o">-</span> <span class="n">time_into_stream</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
-            <span class="c1"># Saves timestamp and waits calculated amount</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="n">hls_start_time_stamp</span> <span class="o">+</span> <span class="n">time_into_stream</span>
+            <span class="n">current_frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="c1"># Next frame should already have been read</span>
             <span class="k">if</span> <span class="n">wait_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -591,26 +599,30 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Creating meta thread for meta data collection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Whether or not to find prob the meta data</span>
+        <span class="n">probe_for_meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">)</span>
+
+        <span class="n">meta_thread</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
+        <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
+            <span class="c1"># Creating meta thread for meta data collection</span>
+            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">])</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Instantiates the connection with the hls stream</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
         <span class="c1"># Make sure thread has finished before starting main loop</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">probe_for_meta_data</span> <span class="ow">and</span> <span class="n">meta_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="c1"># Exit thread if stream was not found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stream was not found. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="c1"># Saves the current time of a successful established connection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="c1"># Exit because capture did not start correctly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
@@ -626,8 +638,8 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Done with probing, starting the reading thread</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span><span class="p">,</span>
-                                                                          <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span>
+                                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -659,7 +671,7 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">__connect_to_stream</span><span class="p">()</span>
 
     <span class="c1"># pylint: disable=protected-access</span>
-    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a http request with ffmpeg to get the meta-data of the HLS stream.&quot;&quot;&quot;</span>
         <span class="c1"># extract the start_time from the meta-data to get the absolute segment time</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving meta data from HLS stream&#39;</span><span class="p">)</span>
@@ -947,26 +959,30 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Creating meta thread for meta data collection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Whether or not to find prob the meta data</span>
+        <span class="n">probe_for_meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.m3u8&#39;</span><span class="p">)</span>
+
+        <span class="n">meta_thread</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Only retrieve meta data for a .m3u8 stream</span>
+        <span class="k">if</span> <span class="n">probe_for_meta_data</span><span class="p">:</span>
+            <span class="c1"># Creating meta thread for meta data collection</span>
+            <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">])</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Instantiates the connection with the hls stream</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
         <span class="c1"># Make sure thread has finished before starting main loop</span>
-        <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">probe_for_meta_data</span> <span class="ow">and</span> <span class="n">meta_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="c1"># Exit thread if stream was not found</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stream was not found. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="c1"># Saves the current time of a successful established connection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="c1"># Exit because capture did not start correctly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
@@ -982,8 +998,8 @@ Another thread gets the time stamp of the stream once and going from there.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Done with probing, starting the reading thread</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span><span class="p">,</span>
-                                                                          <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span>
+                                                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
