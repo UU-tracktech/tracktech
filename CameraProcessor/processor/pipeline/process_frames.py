@@ -20,6 +20,7 @@ import processor.utils.display as display
 
 from processor.pipeline.framebuffer import FrameBuffer
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
 
@@ -31,6 +32,14 @@ from processor.webhosting.stop_command import StopCommand
 import processor.scheduling.plan.pipeline_plan as pipeline_plan
 from processor.scheduling.scheduler import Scheduler
 
+DETECTOR_SWITCH = {
+    'yolov5': (Yolov5Detector, 'Yolov5'),
+    'yolor': (YolorDetector, 'Yolor')
+}
+TRACKER_SWITCH = {
+    'sort': (SortTracker, 'SORT')
+}
+
 
 def prepare_stream(configs):
     """Read the configuration information and prepare the objects for the frame stream
@@ -39,7 +48,7 @@ def prepare_stream(configs):
         configs (ConfigParser): Configuration of the application when preparing the stream
 
     Returns:
-        (ICapture, Yolov5Detector, SortTracker, str): Capture instance, a detector and tracker and a websocket_id
+        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id
     """
     # Load the config file
     config_parser = ConfigParser('configs.ini')
@@ -47,14 +56,21 @@ def prepare_stream(configs):
 
     # Instantiate the detector
     logging.info("Instantiating detector...")
-    yolo_config = configs['Yolov5']
-    config_filter = configs['Filter']
-    detector = Yolov5Detector(yolo_config, config_filter)
+    if configs['Main'].get('detector') not in DETECTOR_SWITCH:
+        raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
+    detector, detector_config = __create_detector(DETECTOR_SWITCH[configs['Main'].get('detector')][0],
+                                                  DETECTOR_SWITCH[configs['Main'].get('detector')][1],
+                                                  configs
+                                                  )
 
     # Instantiate the tracker
     logging.info("Instantiating tracker...")
-    sort_config = configs['SORT']
-    tracker = SortTracker(sort_config)
+    if configs['Main'].get('tracker') not in TRACKER_SWITCH:
+        raise NameError(f"Incorrect tracker. Tracker {configs['Main'].get('tracker')} not found.")
+    tracker = __create_tracker(TRACKER_SWITCH[configs['Main'].get('tracker')][0],
+                               TRACKER_SWITCH[configs['Main'].get('tracker')][1],
+                               configs
+                               )
 
     # Instantiate the tracker
     logging.info("Instantiating reidentifier...")
@@ -72,7 +88,7 @@ def prepare_stream(configs):
     if hls_enabled:
         capture = HlsCapture(hls_config['url'])
     else:
-        capture = VideoCapture(yolo_config['source_path'])
+        capture = VideoCapture(detector_config['source_path'])
 
     # Get orchestrator configuration
     orchestrator_config = configs['Orchestrator']
@@ -243,3 +259,37 @@ def opencv_display(frame_obj, detected_boxes, tracked_boxes):
     # A timeout of 0 will not display the image
     if cv2.waitKey(1) & 0xFF == ord('q'):
         sys.exit()
+
+
+def __create_detector(idetector, config_section, configs):
+    """Creates and returns a detector of the given type
+
+    Args:
+        idetector (IDetector): The CLASS, or object type, of the detector we want
+        config_section (string): The config section name associated with the given detector
+        configs (dict): The configs file
+
+    Returns:
+        IDetector: The requested detector of the given type
+        dict: The config associated with the detector
+    """
+    config_filter = configs['Filter']
+    detector_config = configs[config_section]
+    detector = idetector(detector_config, config_filter)
+    return detector, detector_config
+
+
+def __create_tracker(itracker, config_section, configs):
+    """Creates and returns a tracker of the given type
+
+    Args:
+        itracker (ITracker class type): The CLASS, or object type, of the detector we want
+        config_section (string): The config section name associated with the given tracker
+        configs (dict): The configs file
+
+    Returns:
+        ITracker: The requested tracker
+    """
+    tracker_config = configs[config_section]
+    tracker = itracker(tracker_config)
+    return tracker
