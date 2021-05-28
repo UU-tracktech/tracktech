@@ -255,20 +255,6 @@ export function Overlay(props: overlayProps) {
 
     return (
       <div>
-        <div
-          style={{
-            position: 'absolute',
-            left: `${0 + size.left}px`,
-            top: `${0 + size.top}px`,
-            width: `${size.width}px`,
-            height: `${size.height}px`,
-            borderStyle: 'solid',
-            transitionProperty: 'all',
-            transitionDuration: '100ms',
-            transitionTimingFunction: 'linear',
-            zIndex: 1000
-          }}
-        ></div>
         {item.boxes
           .filter(
             (box) =>
