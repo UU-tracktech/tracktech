@@ -41,22 +41,6 @@ class AccuracyObject:
         self.yolo_config = configs['Yolov5']
         self.accuracy_config = configs['Accuracy']
 
-    def parse_info_file(self):
-        """Reads frame height, width and the amount of frames from the info file."""
-        with open(self.accuracy_config['det-info_path'], 'r') as file:
-            lines = [line.rstrip('\n') for line in file]
-
-        line = lines[0]
-
-        # Determine delimiter automatically
-        if line.__contains__(','):
-            delimiter = ','
-        else:
-            return
-
-        # Extract information from line
-        (self.frame_amount, self.image_width, self.image_height) = [int(i) for i in line.split(delimiter)[:3]]
-
     def parse_boxes(self, boxes_to_parse):
         """Parses boxes to podm format.
 
