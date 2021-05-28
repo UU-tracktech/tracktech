@@ -19,8 +19,8 @@ from processor.dataloaders.idataloader import IDataloader
 class COCODataloader(IDataloader):
     """Dataloader for COCO dataser."""
 
-    def __init__(self, configs):
-        super().__init__(configs)
+    def __init__(self, configs, path_location):
+        super().__init__(configs, path_location)
         self.coco = COCO(self.file_path)
 
     def parse_file(self):

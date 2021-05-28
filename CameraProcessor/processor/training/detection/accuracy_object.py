@@ -10,6 +10,9 @@ import time
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
+from processor.dataloaders.coco_dataloader import COCODataloader
+from processor.dataloaders.json_dataloader import JSONDataloader
+from processor.dataloaders.mot_dataloader import MOTDataloader
 from processor.training.pre_annotations import PreAnnotations
 from processor.utils.config_parser import ConfigParser
 
@@ -28,6 +31,7 @@ class AccuracyObject:
 
         # Assign class variables from config
         self.read_config(configs)
+        self.configs = configs
 
         self.bounding_boxes_gt = []
 
@@ -77,29 +81,38 @@ class AccuracyObject:
                 # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(
                     label="undefined",
-                    xtl=box.get_rectangle().get_x1() / self.image_width,
-                    ytl=box.get_rectangle().get_y1() / self.image_height,
-                    xbr=box.get_rectangle().get_x2() / self.image_width,
-                    ybr=box.get_rectangle().get_y2() / self.image_height,
+                    xtl=box.get_rectangle().get_x1(),
+                    ytl=box.get_rectangle().get_y1(),
+                    xbr=box.get_rectangle().get_x2(),
+                    ybr=box.get_rectangle().get_y2(),
                     image_name=str(i[0]),
                     score=box.get_certainty()
                 )
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def read_boxes(self, path_to_boxes):
+    def get_dataloader(self, type, path_location):
+        switch = {
+            "COCO": COCODataloader(self.configs, path_location),
+            "JSON": JSONDataloader(self.configs, path_location),
+            "MOT": MOTDataloader(self.configs, path_location)
+        }
+        return switch.get(type, ValueError("This is not a valid dataloader"))
+
+    def read_boxes(self, type, path_location):
         """A method for reading the bounding boxes with the pre_annotations.
 
         Args:
-            path_to_boxes: Path to the file where the boxes are stored.
+            path_location: Path to the file where the boxes are stored.
 
         Returns:
             A list of bounding boxes.
         """
-        # Using the PreAnnotations class to get the bounding boxes from a file
-        bounding_boxes_annotations = PreAnnotations(path_to_boxes, self.frame_amount)
-        bounding_boxes_annotations.parse_file()
-        bounding_boxes = bounding_boxes_annotations.boxes
+        dataloader = self.get_dataloader(type, path_location)
+        bounding_boxes_objects = dataloader.parse_file()
+        bounding_boxes = []
+        for bounding_boxes_object in bounding_boxes_objects:
+            bounding_boxes.append(bounding_boxes_object.get_bounding_boxes())
         return self.parse_boxes(bounding_boxes)
 
     def detect(self):
@@ -111,14 +124,11 @@ class AccuracyObject:
             This method currently has no returns.
         """
 
-        # Get the image width, height and nr of frames
-        self.parse_info_file()
-
         # Getting the bounding boxes from the gt file
-        self.bounding_boxes_gt = self.read_boxes(self.accuracy_config['gt_path'])
+        self.bounding_boxes_gt = self.read_boxes(self.accuracy_config['det_format'], 'gt_path')
 
         # Getting and parsing the bounding boxes from the detection file
-        bounding_boxes_det = self.read_boxes(self.accuracy_config['det_path'])
+        bounding_boxes_det = self.read_boxes('JSON', 'det_path')
 
         # Using the podm.podm library to get the accuracy metrics
         self.results = get_pascal_voc_metrics(

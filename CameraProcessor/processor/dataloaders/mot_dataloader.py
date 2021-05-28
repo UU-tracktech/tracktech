@@ -18,8 +18,8 @@ class MOTDataloader(IDataloader):
     """
 
     """
-    def __init__(self, configs):
-        super().__init__(configs)
+    def __init__(self, configs, path_location):
+        super().__init__(configs, path_location)
         self.skipped_lines = []
 
     def __get_annotations(self):
