@@ -32,6 +32,9 @@
                     <a class="class" href="#TimeLineHandler">TimeLineHandler</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="function" href="#TimeLineHandler.set_default_headers">set_default_headers</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#TimeLineHandler.get">get</a>
                         </li>
                         <li>
@@ -83,6 +86,14 @@ Utrecht University within the Software Project course.
 <span class="sd">    with html br tags.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
 
@@ -133,6 +144,14 @@ Utrecht University within the Software Project course.
 <span class="sd">    with html br tags.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
 
@@ -171,6 +190,38 @@ with html br tags.</p>
 </div>
 
 
+                            <div id="TimeLineHandler.set_default_headers" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#TimeLineHandler.set_default_headers">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">set_default_headers</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Sets the default request headers for the request.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>None</p>
+</blockquote>
+</div>
+
+
+                            </div>
                             <div id="TimeLineHandler.get" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#TimeLineHandler.get">#&nbsp;&nbsp</a>
 
