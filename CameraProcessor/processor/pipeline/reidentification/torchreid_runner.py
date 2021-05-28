@@ -65,7 +65,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
 
         # Extract the feature from the cutout and convert it to a normal float array
-        feature = self.extractor(resized_cutout).cpu().numpy().tolist()
+        feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
 
@@ -100,7 +100,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         cosine_similarity = 1 - cosine(query_features, gallery_features)
         return cosine_similarity
 
-    def reidentify(self, track_obj, box_features, re_id_data, threshold):
+    def re_identify(self, track_obj, box_features, re_id_data, threshold):
         """ Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
         to an existing bounding box. Does not return anything, just updates the existing list.
@@ -122,7 +122,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
 
             # track_features: list of feature vectors in same order as bounding boxes
             # Loop over the detected features in the frame
-            for i in range(box_features):
+            for i in range(len(box_features)):
                 # if the bounding box is already assigned to an object, don't compare it
                 if tracked_bounding_boxes[i].get_object_id() is None:
                     if self.similarity(query_feature, box_features[i]) > threshold:

@@ -51,10 +51,15 @@ class ReidData:
         # Delete the feature vector from the object ID
         del self.__query_features[object_id]
 
-        # Delete all box ids that map to the object ID
+        # Store all box ids that map to the object ID
+        del_box_ids = []
         for box_id, obj_id in self.__query_boxes.items():
             if obj_id == object_id:
-                del self.__query_boxes[box_id]
+                del_box_ids.append(box_id)
+
+        # Delete all box ids that map to the object ID
+        for del_box_id in del_box_ids:
+            del self.__query_boxes[del_box_id]
 
     def get_object_id_for_box(self, box_id):
         """ Returns the object id for a given box id (possibly None).
@@ -85,4 +90,4 @@ class ReidData:
         Returns:
             ([float]): Feature vector for the object
         """
-        return self.__query_featuers[object_id]
+        return self.__query_features[object_id]
