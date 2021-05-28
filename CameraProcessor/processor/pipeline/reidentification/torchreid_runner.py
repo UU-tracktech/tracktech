@@ -11,7 +11,7 @@ import gdown
 import processor.utils.features as UtilsFeatures
 import processor.pipeline.reidentification.ireidentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
-from scipy.spatial.distance import cosine
+from scipy.spatial.distance import cosine, euclidean
 from processor.data_object.reid_data import ReidData
 
 
@@ -97,8 +97,12 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         Returns: float: returns the cosine similarity of two feature vectors.
 
         """
-        cosine_similarity = 1 - cosine(query_features, gallery_features)
-        return cosine_similarity
+        #cosine_similarity = 1 - cosine(query_features, gallery_features)
+        #return cosine_similarity
+
+        euclidean_distance = euclidean(query_features, gallery_features)
+        return euclidean_distance
+
 
     def re_identify(self, track_obj, box_features, re_id_data, threshold):
         """ Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject
@@ -125,7 +129,9 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             for i in range(len(box_features)):
                 # if the bounding box is already assigned to an object, don't compare it
                 if tracked_bounding_boxes[i].get_object_id() is None:
-                    if self.similarity(query_feature, box_features[i]) > threshold:
+                    # calculate the similarity value of the 2 feature vectors
+                    similarity_value = self.similarity(query_feature, box_features[i])
+                    if similarity_value < threshold:
                         box_id = tracked_bounding_boxes[i].get_identifier()
 
                         # Store that this box id belongs to a certain object id
