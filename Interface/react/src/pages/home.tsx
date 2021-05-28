@@ -19,7 +19,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Grid } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
 import { ObjectTypeFilter } from '../components/objectTypeFilter'
-import { source } from '../classes/source'
+import { stream } from '../classes/source'
 
 /** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
@@ -28,7 +28,7 @@ export type indicator = 'All' | 'Selection' | 'None'
 type tracked = { id: number; name: string; image: string; data: string }
 export function Home() {
   /** State containing all the camera sources */
-  const [sources, setSources] = React.useState<source[]>()
+  const [sources, setSources] = React.useState<stream[]>()
 
   /** State containing which boundingboxes to draw */
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
@@ -47,10 +47,9 @@ export function Home() {
     //Read all the sources from the config file and create sources for the videoplayers
     fetch(process.env.PUBLIC_URL + '/cameras.json').then((text) =>
       text.json().then((json) => {
-        var nexId = 0
         setSources(
           json.map((stream) => ({
-            id: nexId++,
+            id: stream.Forwarder,
             name: stream.Name,
             srcObject: {
               src: stream.Forwarder,
@@ -94,45 +93,53 @@ export function Home() {
       <div
         style={{
           padding: '5px',
-          overflowY: 'auto',
           display: 'grid',
           gap: '5px'
         }}
       >
         <Card
           //This card contains the buttons to change which boundingboxes are drawn
-          data-testid={'indicatorsCard'}
-          bodyStyle={{ padding: '4px', display: 'flex' }}
+          data-testid='indicatorsCard'
           headStyle={{ padding: 0 }}
-          size={'small'}
+          bodyStyle={{ padding: 0 }}
+          size='small'
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Indicators</h2>
           }
         >
-          <Button
-            data-testid={'AllButton'}
-            style={{ marginLeft: '4px' }}
-            type={currentIndicator === 'All' ? 'primary' : 'default'}
-            onClick={() => setCurrentIndicator('All')}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+              justifyContent: 'left',
+              padding: '4px'
+            }}
           >
-            All
-          </Button>
-          <Button
-            data-testid={'SelectionButton'}
-            style={{ marginLeft: '4px' }}
-            type={currentIndicator === 'Selection' ? 'primary' : 'default'}
-            onClick={() => setCurrentIndicator('Selection')}
-          >
-            Selection
-          </Button>
-          <Button
-            data-testid={'NoneButton'}
-            style={{ marginLeft: '4px' }}
-            type={currentIndicator === 'None' ? 'primary' : 'default'}
-            onClick={() => setCurrentIndicator('None')}
-          >
-            None
-          </Button>
+            <Button
+              data-testid='AllButton'
+              style={{ marginLeft: '4px' }}
+              type={currentIndicator === 'All' ? 'primary' : 'default'}
+              onClick={() => setCurrentIndicator('All')}
+            >
+              All
+            </Button>
+            <Button
+              data-testid='SelectionButton'
+              style={{ marginLeft: '4px' }}
+              type={currentIndicator === 'Selection' ? 'primary' : 'default'}
+              onClick={() => setCurrentIndicator('Selection')}
+            >
+              Selection
+            </Button>
+            <Button
+              data-testid='NoneButton'
+              style={{ marginLeft: '4px' }}
+              type={currentIndicator === 'None' ? 'primary' : 'default'}
+              onClick={() => setCurrentIndicator('None')}
+            >
+              None
+            </Button>
+          </div>
         </Card>
 
         <ObjectTypeFilter

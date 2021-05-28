@@ -20,17 +20,24 @@ export abstract class OrchestratorMessage {
  * boundingbox data for the specified camera
  */
 export class StartOrchestratorMessage extends OrchestratorMessage {
-  constructor(cameraId: string, frameId: number, boxId: number) {
+  constructor(
+    cameraId: string,
+    frameId: number,
+    boxId: number,
+    image?: string
+  ) {
     super('start')
 
     this.cameraId = cameraId
     this.frameId = frameId
     this.boxId = boxId
+    this.image = image
   }
 
   cameraId: string
   frameId: number
   boxId: number
+  image?: string
 }
 
 /**
