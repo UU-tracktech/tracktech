@@ -68,6 +68,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
 
       player?.on('playerresize', () => onResize())
       player?.on('play', () => onResize())
+      player?.on('loadeddata', () => onResize())
 
       //Timestamp calculation
       /* On the first time a stream is started, attempt getting the
@@ -96,7 +97,6 @@ export function VideoPlayer(props: VideoPlayerProps) {
         props.onPlayPause(false)
       })
     })
-
     return () => playerRef.current?.dispose()
   }, [])
 
