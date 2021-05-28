@@ -10,9 +10,7 @@ Utrecht University within the Software Project course.
 class TestClass:
     """Class."""
     def classmethod1(self):
-        """Test method without a dot in docstring
-
-        """
+        """Test method without a dot in docstring."""
         return
 
     def classmethod2(self):
@@ -24,13 +22,11 @@ class TestClass:
         return
 
     def classmethod3(self, param1):
-        """
-
-        """
+        """SDFSDF."""
         return param1
 
     def classmethod4(self, param1):
-        """
+        """SDFSDF.
 
         Args:
             param1 (Dummy): comment with a .
@@ -38,7 +34,7 @@ class TestClass:
         return param1
 
     def classmethod5(self, param1, param2):
-        """
+        """SDFSDF.
 
         Args:
             param2 (D): param2.
@@ -47,7 +43,7 @@ class TestClass:
         return param1, param2
 
     def classmethod6(self, param1, param2):
-        """
+        """SDFSDF.
 
         Args:
             param1 (s): param1.
@@ -55,7 +51,7 @@ class TestClass:
         return param1, param2
 
     def classmethod7(self, param1):
-        """
+        """SDFSDF.
 
         Args:
             param2 (s): non-existing param.
@@ -63,7 +59,7 @@ class TestClass:
         return param1
 
     def classmethod8(self, param1, param2):
-        """
+        """SDFSDF.
 
         Args:
             param1 (D): param2.
@@ -72,7 +68,7 @@ class TestClass:
         return param1, param2
 
     def classmethod9(self, param1, param2):
-        """
+        """SDFSDF.
 
         Args:
             param1 (D): param2.

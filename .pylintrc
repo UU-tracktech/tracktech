@@ -44,8 +44,7 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
-load-plugins=copyright_checker,docstring_checker
-#alphabetically_sorted_imports
+load-plugins=copyright_checker,docstring_checker,docstring_content_checker
 #pylint_junit
 
 # Pickle collected data for later comparisons.

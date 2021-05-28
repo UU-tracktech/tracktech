@@ -28,7 +28,6 @@ class CopyrightChecker(BaseChecker):
         number_quotes = 0
 
         with node.stream() as stream:
-            print(enumerate(stream))
             for (lineno, line) in enumerate(stream):
                 # Break when there are two triple quotes passed already
                 if str(line).__contains__('"""'):

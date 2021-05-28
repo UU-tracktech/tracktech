@@ -11,33 +11,43 @@ class DocstringChecker(BaseChecker):
     name = 'incorrect-docstring'
 
     msgs = {
-        'C1120': ("Incorrect function docstring",
-                  'incorrect-docstring',
-                  'Emitted when a docstring function has the wrong format'
+        'C1220': ('Last line should be \"\"\"',
+                  'last-docstring-line-contains-letters',
+                  'Emitted when a docstring does not end with triple quotes'
                   ),
-        'C1121': ('Section "Args:" is missing from the docstring',
-                  'missing-args-in-docstring',
-                  'Emitted when a docstring is missing an "Args:" section when it has arguments'
+        'C1221': ('Multiple consequent new lines in docstring',
+                  'multiple-new-lines-in-docstring',
+                  'Emitted when a docstring function has multiple newlines'
                   ),
-        'C1122': ('Argument "%s" missing from the docstring args',
-                  'missing-argument-in-docstring',
-                  'Emitted when a docstring is missing an argument'
+        'C1222': ('There should be a newline before section %s',
+                  'docstring-section-not-separated',
+                  'Emitted when a docstring section is started without a newline'
                   ),
-        'C1123': ('Argument "%s" not an argument of the method, did you make a typo?',
-                  'wrong-argument-in-docstring',
-                  'Emitted when a docstring contains an argument'
+        'C1223': ('First line of docstring should end with a dot',
+                  'first-line-in-docstring-must-end-with-dot',
+                  'Emitted when a docstring first line has no dot'
                   ),
-        'C1124': ('Argument "%s" is in the wrong position. Put it in the docstring section at index %s',
-                  'argument-wrong-place-in-docstring',
-                  'Emitted when a docstring argument is in the wrong position'
+        'C1224': ('Make docstring single line',
+                  'make-docstring-one-line',
+                  'Unnecessary multiline docstring'
+                  ),
+        'C1225': ('Second line of docstring should be empty',
+                  'second-docstring-line-must-be-empty',
+                  'Second line in docstring'
+                  ),
+        'C1226': ('Last line of docstring should not be empty',
+                  'docstring-last-line-empty',
+                  'Last line is empty in docstring'
                   ),
         }
 
-    @utils.check_messages('incorrect-docstring',
-                          'missing-args-in-docstring',
-                          'missing-argument-in-docstring',
-                          'wrong-argument-in-docstring',
-                          'argument-wrong-place-in-docstring')
+    @utils.check_messages('last-docstring-line-contains-letters',
+                          'multiple-new-lines-in-docstring',
+                          'docstring-section-not-separated',
+                          'first-line-in-docstring-must-end-with-dot',
+                          'make-docstring-one-line',
+                          'second-docstring-line-must-be-empty',
+                          'docstring-last-line-empty')
     def visit_functiondef(self, node):
         """
             Checks for presence of return statement at the end of a function
@@ -48,51 +58,71 @@ class DocstringChecker(BaseChecker):
         if not node.doc:
             return
 
-        args = node.args.args
-        if args:
-            if args[0].name == 'self':
-                args = args[1:]
+        doc_lines = [line.strip() for line in node.doc.splitlines()]
 
-        arg_list = [arg.name for arg in args]
-        arg_dict = {arg.name: False for arg in args}
+        if len(doc_lines) > 1:
+            if doc_lines[-1]:
+                self.add_message('last-docstring-line-contains-letters',
+                                 node=node)
+            doc_lines = doc_lines[:-1]
 
-        contains_arg = False
-        arg_index = 0
+        contains_double_white_line = False
+        number_white_lines = 0
 
-        for doc_line in node.doc.splitlines():
-            if not contains_arg:
-                args_match = re.match(r'^\s*Args:\s*$', doc_line)
-                if args_match is not None:
-                    contains_arg = True
-            elif arg_index < len(arg_list):
-                arg_match = re.match(r'^\s*([a-z_0-9]+)\s\([a-zA-Z0-9_.\[\]{}]+\):\s.*\.\s*$', doc_line)
-                if arg_match is None:
-                    # Arg is wrong
-                    continue
+        self.check_summary(node, doc_lines)
+        self.check_last_line(node, doc_lines)
 
-                argument_name = arg_match.group(1)
-                if not arg_dict.__contains__(argument_name):
-                    self.add_message('wrong-argument-in-docstring',
+        line_index = 0
+
+        for doc_line in doc_lines:
+            # Prevent double lines in comments
+            if not doc_line:
+                number_white_lines += 1
+                if number_white_lines > 1:
+                    contains_double_white_line = True
+            else:
+                number_white_lines = 0
+
+            # Section has to be after a newline
+            section_match = re.match(r'^\s*(\w+):\s*$', doc_line)
+            if section_match is not None and line_index > 0:
+                if doc_lines[line_index - 1]:
+                    section_name = section_match.group(1)
+                    self.add_message('docstring-section-not-separated',
                                      node=node,
-                                     args=argument_name)
-                    continue
-                elif arg_list[arg_index] != argument_name:
-                    self.add_message('argument-wrong-place-in-docstring',
-                                     node=node,
-                                     args=(argument_name, arg_index))
+                                     args=section_name)
 
-                arg_dict[argument_name] = True
-                arg_index += 1
+            line_index += 1
 
-        if args and not contains_arg:
-            self.add_message('missing-args-in-docstring',
+        # There should never be two white lines
+        if contains_double_white_line:
+            self.add_message('multiple-new-lines-in-docstring',
                              node=node)
-        elif not all(arg_dict.values()):
-            for key in arg_dict.keys():
-                if not arg_dict[key]:
-                    self.add_message('missing-argument-in-docstring',
-                                     node=node,
-                                     args=key)
+
+    def check_summary(self, node, docstring_lines):
+        first_line_match = re.match(r'^.*\.\s*$', docstring_lines[0])
+        if not first_line_match:
+            self.add_message('first-line-in-docstring-must-end-with-dot',
+                             node=node)
+
+        if len(docstring_lines) == 1:
+            return
+        elif len(docstring_lines) == 2 and not docstring_lines[1]:
+            self.add_message('make-docstring-one-line',
+                             node=node)
+        elif docstring_lines[1]:
+            self.add_message('second-docstring-line-must-be-empty',
+                             node=node)
+
+    def check_last_line(self, node, docstring_lines):
+        # Small docstring has other messages
+        if len(docstring_lines) < 3:
+            return
+
+        # Last line is empty but should not
+        if not docstring_lines[-1]:
+            self.add_message('docstring-last-line-empty',
+                             node=node)
 
 
 def register(linter):
