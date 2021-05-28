@@ -56,11 +56,6 @@ class JSONDataloader(IDataloader):
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
 
-        # Determine delimiter automatically
-        delimiter = ' '
-        if lines[0].__contains__(','):
-            delimiter = ','
-
         annotations = []
         # Extract information from lines
         for line in lines:
