@@ -28,6 +28,13 @@ class COCODataloader(IDataloader):
         bounding_boxes_list = self.__parse_boxes(annotations)
         return bounding_boxes_list
 
+    def download_coco_image(self, image_id):
+        image = self.coco.loadImgs([image_id])[0]
+
+        image_data = requests.get(image['coco_url']).content
+        with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
+            handler.write(image_data)
+
     def download_coco_images(self, amount):
         """Download images from the COCO dataset containing the category person.
 
@@ -58,6 +65,8 @@ class COCODataloader(IDataloader):
         for annotation in annotations:
             image_id = annotation['image_id']
             this_image_path = self.__get_image_path(image_id)
+            if not path.exists(this_image_path):
+                self.download_coco_image(image_id)
             width, height = self.get_image_dimensions(image_id, this_image_path)
             if not current_image_id == image_id:
                 bounding_boxes_list.append(BoundingBoxes(current_boxes, self.__get_image_name(current_image_id)))
@@ -105,7 +114,7 @@ class COCODataloader(IDataloader):
         zeros = ''
         for _ in range(12 - len(str(image_id))):
             zeros += '0'
-        image_name = zeros + image_id
+        image_name = zeros + str(image_id)
         return image_name
 
     def __get_image_path(self, image_id):
