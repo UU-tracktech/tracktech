@@ -1,31 +1,16 @@
 [
   {
-    "Name": "TestVid",
-    "Ip": "192.168.178.30",
-    "Forwarder": "https://tracktech.ml:50008/cam1.m3u8",
+    "Name": "Cam1",
+    "Forwarder": "https://tracktech.ml:50008/stream.m3u8",
     "Type": "application/x-mpegURL"
   },
   {
-    "Name": "TestVid2",
-    "Ip": "192.168.178.30",
-    "Forwarder": "http://localhost:80/stream.m3u8",
-    "Type": "application/x-mpegURL"
-  },
-  {
-    "Name": "TestVid",
-    "Ip": "192.168.178.30",
-    "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8",
+    "Name": "Cam2",
+    "Forwarder": "https://tracktech.ml:50012/stream.m3u8",
     "Type": "application/x-mpegURL"
   },
   {
     "Name": "TestVid",
-    "Ip": "192.168.178.30",
-    "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8",
-    "Type": "application/x-mpegURL"
-  },
-  {
-    "Name": "TestVid",
-    "Ip": "192.168.178.30",
     "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8",
     "Type": "application/x-mpegURL"
   }
