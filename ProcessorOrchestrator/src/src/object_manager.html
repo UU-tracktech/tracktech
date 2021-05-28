@@ -58,9 +58,6 @@
             <li>
                     <a class="variable" href="#objects">objects</a>
             </li>
-            <li>
-                    <a class="variable" href="#objectHistory">objectHistory</a>
-            </li>
     </ul>
 
 
@@ -122,7 +119,6 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">objects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-        <span class="n">objectHistory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates feature map of this object.</span>
@@ -209,12 +205,6 @@ Utrecht University within the Software Project course.
 
 <span class="sd">type: Dict[str, (TrackingObject, Optional[int])]</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="n">objectHistory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="sd">&quot;&quot;&quot;List containing the ids of objects that have been tracked.</span>
-
-<span class="sd">type: List[int]</span>
-<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -245,7 +235,6 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">objects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-        <span class="n">objectHistory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates feature map of this object.</span>
@@ -300,7 +289,6 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">objects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-        <span class="n">objectHistory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -531,19 +519,6 @@ makes sure they are no longer tracked after a given timeout</p>
             <div class="docstring"><p>Dictionary which matches an object identifier to.</p>
 
 <p>type: Dict[str, (TrackingObject, Optional[int])]</p>
-</div>
-
-
-                </section>
-                <section id="objectHistory">
-                                <div class="attr variable"><a class="headerlink" href="#objectHistory">#&nbsp;&nbsp</a>
-
-        <span class="name">objectHistory</span><span class="default_value"> = []</span>
-    </div>
-
-            <div class="docstring"><p>List containing the ids of objects that have been tracked.</p>
-
-<p>type: List[int]</p>
 </div>
 
 
