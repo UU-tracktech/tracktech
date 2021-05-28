@@ -19,6 +19,7 @@ import './app.less'
 import { NavMenu } from './components/navbar'
 import { NeedLogin } from './pages/needLogin'
 import { Home } from './pages/home'
+import { Timelines } from './pages/timelines'
 import { WebsocketProvider } from './components/websocketContext'
 import useAuthState from './classes/useAuthState'
 
@@ -33,9 +34,14 @@ export function App() {
         return <NeedLogin />
       case 'authenticated':
         return (
-          <Route exact path={'/'}>
-            <Home />
-          </Route>
+          <>
+            <Route exact path='/'>
+              <Home />
+            </Route>
+            <Route exact path='/timelines'>
+              <Timelines />
+            </Route>
+          </>
         )
     }
   }
