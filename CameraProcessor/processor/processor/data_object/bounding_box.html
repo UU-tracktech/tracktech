@@ -67,7 +67,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../data_object.html">data_object</a>.bounding_box    </h1>
 
-                        <div class="docstring"><p>Contains the bounding box class</p>
+                        <div class="docstring"><p>Contains the bounding box class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -76,7 +76,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the bounding box class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the bounding box class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -86,10 +86,10 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">BoundingBox</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits the bounding box.</span>
+        <span class="sd">&quot;&quot;&quot;Init the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier (int): identifier of bounding box.</span>
@@ -105,7 +105,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 
     <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets bounding box identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
@@ -113,7 +113,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
 
     <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets Rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
@@ -129,7 +129,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
 
     <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets certainty/confidence that bounding box is correctly classified.</span>
+        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: certainty/confidence of bounding box detection.</span>
@@ -159,10 +159,10 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BoundingBox</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits the bounding box.</span>
+        <span class="sd">&quot;&quot;&quot;Init the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier (int): identifier of bounding box.</span>
@@ -178,7 +178,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 
     <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets bounding box identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
@@ -186,7 +186,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
 
     <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets Rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
@@ -202,7 +202,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
 
     <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets certainty/confidence that bounding box is correctly classified.</span>
+        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: certainty/confidence of bounding box detection.</span>
@@ -233,7 +233,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits the bounding box.</span>
+        <span class="sd">&quot;&quot;&quot;Init the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier (int): identifier of bounding box.</span>
@@ -251,7 +251,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Inits the bounding box.</p>
+            <div class="docstring"><p>Init the bounding box.</p>
 
 <h6 id="args">Args</h6>
 
@@ -277,7 +277,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets bounding box identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
@@ -287,7 +287,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Gets bounding box identifier.</p>
+            <div class="docstring"><p>Get bounding box identifier.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -309,7 +309,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets Rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
@@ -319,7 +319,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Gets Rectangle.</p>
+            <div class="docstring"><p>Get Rectangle.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -373,7 +373,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets certainty/confidence that bounding box is correctly classified.</span>
+        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: certainty/confidence of bounding box detection.</span>
@@ -383,7 +383,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Gets certainty/confidence that bounding box is correctly classified.</p>
+            <div class="docstring"><p>Get certainty/confidence that bounding box is correctly classified.</p>
 
 <h6 id="returns">Returns</h6>
 
