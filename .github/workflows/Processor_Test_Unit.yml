@@ -17,7 +17,7 @@ jobs:
     name: Processor unit test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Start unit test camera processor service

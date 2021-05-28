@@ -10,30 +10,39 @@ Utrecht University within the Software Project course.
   This component creates a videoplayer using the VideoJS plugin
 */
 
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-/** The properties used by the videoplayer */
+import { size } from '../classes/size'
+import { Box } from '../classes/clientMessage'
+
+// The properties used by the videoplayer
 export type VideoPlayerProps = {
+  setSnapCallback: (snap: (box: Box) => string | undefined) => void
   onTimestamp: (time: number) => void //Callback which updates the timestamp for the overlay
   onPlayPause: (playing: boolean) => void //Callback which updates the playback state for the overlay
   onPrimary: () => void //Callback to make this videoplayer the primary video player
-  onResize?: (width: number, height: number, left: number, top: number) => void //Callback to update viewport on resize
+  onResize?: (size: size) => void //Callback to update viewport on resize
 } & videojs.PlayerOptions
 
 export function VideoPlayer(props: VideoPlayerProps) {
-  /** The DOM node to attach the videplayer to */
-  var videoNode: HTMLVideoElement
+  // The DOM node to attach the videplayer to
+  const videoRef = useRef<HTMLVideoElement>(null)
 
-  /** The videoplayer object */
-  const playerRef = React.useRef<videojs.Player>()
+  // The videoplayer object
+  const playerRef = useRef<videojs.Player>()
+
+  // Use the snap function callback to give the parent the ability to create snaps
+  useEffect(() => {
+    props.setSnapCallback(takeSnapshot)
+  }, [props.setSnapCallback])
 
   //Constants used to calculate the timestamp of the livestream based on segment file names
-  const initialUriIntervalRef = React.useRef<number>() //How often to check for the initial segment name
-  const changeIntervalRef = React.useRef<number>() //how often to check for a new segemnt after the inital has been obtained
-  const updateIntervalRef = React.useRef<number>() //How often to update the timestamp once it's known
+  const initialUriIntervalRef = useRef<number>() //How often to check for the initial segment name
+  const changeIntervalRef = useRef<number>() //how often to check for a new segemnt after the inital has been obtained
+  const updateIntervalRef = useRef<number>() //How often to update the timestamp once it's known
 
   var startUri //The name of the first segment received by the videoplayer
   var startTime //The timestamp of the stream where the player was started
@@ -41,9 +50,9 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var playerSwitchTime //The timestamp of when the video player switch to the second segment
   var playerStartTime //The current time of the video player when it's first being played
 
-  React.useEffect(() => {
+  useEffect(() => {
     // instantiate video.js
-    playerRef.current = videojs(videoNode, props, () => {
+    playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
 
       //Add button to make this videoplayer the primary player at the top of the page
@@ -102,7 +111,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (tech) {
         //ensure that the current playing segment has a uri
         if (tech.textTracks()[0].activeCues[0]['value'].uri) {
-          console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
+          //console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
           return tech.textTracks()[0].activeCues[0]['value'].uri
         }
       }
@@ -161,7 +170,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
    */
   function updateTimestamp() {
     if (!startTime) {
-      console.log('Timestamp: Loading...')
+      //console.log('Timestamp: Loading...')
       return
     }
 
@@ -208,21 +217,48 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
-        props.onResize(
-          playerWidth,
-          actualVideoHeight,
-          0,
-          (playerHeight - actualVideoHeight) / 2
-        )
+        props.onResize({
+          width: playerWidth,
+          height: actualVideoHeight,
+          left: 0,
+          top: (playerHeight - actualVideoHeight) / 2
+        })
       } else {
         var heightRatio = playerHeight / videoHeight
         var actualVideoWidth = heightRatio * videoWidth
-        props.onResize(
-          actualVideoWidth,
-          playerHeight,
-          (playerWidth - actualVideoWidth) / 2,
-          0
+        props.onResize({
+          width: actualVideoWidth,
+          height: playerHeight,
+          left: (playerWidth - actualVideoWidth) / 2,
+          top: 0
+        })
+      }
+    }
+  }
+
+  function takeSnapshot(box: Box) {
+    if (videoRef.current) {
+      var { left, top, width, height } = box.toSize(
+        videoRef.current.videoWidth,
+        videoRef.current.videoHeight
+      )
+      var canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      var context = canvas.getContext('2d')
+      if (context) {
+        context.drawImage(
+          videoRef.current,
+          left,
+          top,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height
         )
+        return canvas.toDataURL()
       }
     }
   }
@@ -241,10 +277,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         data-vjs-player='true'
         style={{ width: '100%', height: '100%' }}
       >
-        <video
-          ref={(node: HTMLVideoElement) => (videoNode = node)}
-          className='video-js'
-        />
+        <video ref={videoRef} className='video-js' />
       </div>
     </div>
   )

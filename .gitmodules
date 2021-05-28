@@ -6,3 +6,7 @@
 	path = CameraProcessor/processor/pipeline/detection/yolov5
 	url = https://github.com/UU-tracktech/yolov5.git
 	branch = master
+[submodule "torchreid"]
+	path = CameraProcessor/processor/pipeline/reidentification/torchreid
+	url = https://github.com/UU-tracktech/deep-person-reid.git
+	branch = master
