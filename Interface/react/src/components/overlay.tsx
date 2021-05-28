@@ -43,23 +43,20 @@ export function Overlay(props: overlayProps) {
   // The frameID the video player is currently displaying
   const playerFrameIdRef = useRef(0)
 
-  // The frameID of the boxes that are currently drawn
-  const frameIdRef = useRef(0)
-
   // If the video player is paused or not
   const playerPlayingRef = useRef(props.autoplay)
 
   // The actual player, to get the image from
   const snapRef = useRef<(box: Box) => string | undefined>(() => undefined)
 
-  // A ref to the overlay itself
+  // A ref to the overlay itself, to scroll to
   const thisRef = useRef<HTMLDivElement>(null)
 
   // A list to keep track of recently seen object ids
   const seenRef = useRef<number[]>([])
 
   // State containing the boxes to be drawn this frame
-  const [boxes, setBoxes] = useState<Box[]>([])
+  const [item, setItem] = useState<QueueItem>()
 
   // State containing videoplayer dimensions/position on the page
   const [size, setSize] = useState<size>({
@@ -96,7 +93,7 @@ export function Overlay(props: overlayProps) {
     )
     //Start an interval to take boxes from the queue for drawing
     setInterval(() => handleQueue(), 1000 / 24)
-    return socketContext.removeListener(id)
+    return () => socketContext.removeListener(id)
   }, [])
 
   /**
@@ -105,10 +102,10 @@ export function Overlay(props: overlayProps) {
    */
   function handleQueue() {
     //Keep dequeueing until a set of boxes with matching frameID is reached
-    while (playerFrameIdRef.current >= frameIdRef.current) {
-      if (queueRef.current.length == 0) break
-      var boxes: Box[] = queueRef.current.dequeue().boxes
-      var objectIds: number[] = []
+    while (playerFrameIdRef.current >= queueRef.current.front?.frameId) {
+      let item = queueRef.current.dequeue()
+      let boxes: Box[] = item.boxes
+      let objectIds: number[] = []
 
       //Create a notification for every new objectid
       boxes.forEach((box) => {
@@ -122,7 +119,7 @@ export function Overlay(props: overlayProps) {
       //Replace the seen objects
       seenRef.current = objectIds
 
-      setBoxes(boxes)
+      setItem(item)
     }
   }
 
@@ -219,14 +216,17 @@ export function Overlay(props: overlayProps) {
    * Draws the overlay with the bounding boxes according to the setting of which boxes to display
    */
   function DrawOverlay(): JSX.Element {
+    if (!item) return <div />
     switch (props.showBoxes) {
       case 'All': {
-        return DrawBoxes(boxes, frameIdRef.current)
+        return DrawBoxes(item)
       }
       case 'Selection': {
         return DrawBoxes(
-          boxes.filter((x) => x.objectId !== undefined),
-          frameIdRef.current
+          new QueueItem(
+            item.frameId,
+            item.boxes.filter((x) => x.objectId !== undefined)
+          )
         )
       }
       default: {
@@ -240,7 +240,7 @@ export function Overlay(props: overlayProps) {
    * @param boxes The list of bounding boxes to draw
    * @param frameId The timestamp when these boxes are being drawn
    */
-  function DrawBoxes(boxes: Box[], frameId: number): JSX.Element {
+  function DrawBoxes(item: QueueItem): JSX.Element {
     // TODO: make sure objectIds can be infinitely big without causing an index out of bounds
     var colordict: string[] = [
       'Green',
@@ -255,7 +255,21 @@ export function Overlay(props: overlayProps) {
 
     return (
       <div>
-        {boxes
+        <div
+          style={{
+            position: 'absolute',
+            left: `${0 + size.left}px`,
+            top: `${0 + size.top}px`,
+            width: `${size.width}px`,
+            height: `${size.height}px`,
+            borderStyle: 'solid',
+            transitionProperty: 'all',
+            transitionDuration: '100ms',
+            transitionTimingFunction: 'linear',
+            zIndex: 1000
+          }}
+        ></div>
+        {item.boxes
           .filter(
             (box) =>
               /* eslint-disable react/prop-types */
@@ -287,7 +301,8 @@ export function Overlay(props: overlayProps) {
                   cursor: box.objectId === undefined ? 'pointer' : 'default'
                 }}
                 onClick={() => {
-                  if (box.objectId === undefined) onTrackingStart(box, frameId)
+                  if (box.objectId === undefined)
+                    onTrackingStart(box, item.frameId)
                   else onTrackingStop(box.objectId)
                 }}
               />

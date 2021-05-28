@@ -94,7 +94,6 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
    *  This will pass on the message to all relevant listeners
    */
   function onMessage(ev: MessageEvent<any>) {
-    //console.log('socket message', ev.data)
     let object: BoxesClientMessage = JSON.parse(ev.data)
     var message = new BoxesClientMessage(
       object.cameraId,
@@ -135,7 +134,9 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
    * @param listener The ID of the listener to remove
    */
   function removeListener(listener: number) {
-    listenersRef.current?.filter((x) => x.listener === listener)
+    listenersRef.current = listenersRef.current?.filter(
+      (x) => x.listener === listener
+    )
   }
 
   /**
