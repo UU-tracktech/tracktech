@@ -34,7 +34,7 @@ export class BoxesClientMessage extends ClientMessage {
 export class Box {
   constructor(
     boxId: number,
-    rect: number[],
+    rect: [number, number, number, number],
     objectType: string,
     objectId?: number
   ) {
@@ -45,9 +45,27 @@ export class Box {
   }
 
   boxId: number
-  rect: number[]
+  rect: [number, number, number, number]
   objectType: string
   objectId?: number
+
+  toSize(width: number, height: number) {
+    var x1 = this.rect[0],
+      y1 = this.rect[1],
+      x2 = this.rect[2],
+      y2 = this.rect[3]
+
+    //Flip x/y to get the top left corner
+    if (x1 > x2) [x1, x2] = [x2, x1]
+    if (y1 > y2) [y1, y2] = [y2, y1]
+
+    return {
+      left: x1 * width,
+      top: y1 * height,
+      width: (x2 - x1) * width,
+      height: (y2 - y1) * height
+    }
+  }
 }
 
 /** Used by the overlay to store bounding boxes alongside their frameID */
