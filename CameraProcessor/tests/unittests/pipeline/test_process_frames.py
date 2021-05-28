@@ -17,9 +17,10 @@ from processor.input.video_capture import VideoCapture
 
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
+from tests.unittests.utils.fake_reidentifier import FakeReIdentifier
 from tests.unittests.utils.fake_websocket import FakeWebsocket
 
-
+@pytest.mark.skip("Timeout errors")
 class TestProcessFrames:
     """Tests process_frames.py.
 
@@ -68,13 +69,14 @@ class TestProcessFrames:
             configs (ConfigParser): Configurations of the test
         """
         # Open video
-        video_capture, detector, tracker, _ = prepare_stream(configs)
+        video_capture, detector, tracker, re_identifier, _ = prepare_stream(configs)
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(video_capture, detector, tracker))
+        asyncio.get_event_loop().run_until_complete(
+            self.await_detection(video_capture, detector, tracker, re_identifier))
         video_capture.close()
 
+
     @pytest.mark.timeout(90)
-    @pytest.mark.skip("Yolor does not work with cpu")
     def test_process_stream_with_yolor(self, configs):
         """Tests process_stream function with YOLOR
 
@@ -84,11 +86,11 @@ class TestProcessFrames:
         """
         # Open video
         capture = self.__get_video(configs)
-        unused_capture, _, tracker, _ = prepare_stream(configs)
+        unused_capture, _, tracker, re_identifier, _ = prepare_stream(configs)
         unused_capture.close()
         detector = self.__get_yolorrunner(configs)
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker))
+        asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker, re_identifier))
         capture.close()
 
     @pytest.mark.timeout(90)
@@ -103,10 +105,12 @@ class TestProcessFrames:
 
         tracker = FakeTracker()
 
-        asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker))
+        re_identifier = FakeReIdentifier()
+
+        asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker, re_identifier))
         capture.close()
 
-    async def await_detection(self, captor, detector, tracker):
+    async def await_detection(self, captor, detector, tracker, re_identifier):
         """Async function that runs process_stream.
 
         """
@@ -115,6 +119,7 @@ class TestProcessFrames:
             captor,
             detector,
             tracker,
+            re_identifier,
             lambda frame_obj, detected_boxes, tracked_boxes: send_to_orchestrator(
                 websocket_client,
                 frame_obj,

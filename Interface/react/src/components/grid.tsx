@@ -12,18 +12,10 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
+
 import { Overlay } from './overlay'
 import { indicator } from '../pages/home'
-
-/**
- * Defines the properties of a single camera feed
- * Contians an identifier, a name and the stream URL
- */
-export type source = {
-  id: string
-  name: string
-  srcObject: { src: string; type: string }
-}
+import { stream } from '../classes/source'
 
 /**
  * Properties of the grid component
@@ -33,7 +25,7 @@ export type source = {
 export type gridProps = {
   primary?: string
   setPrimary: (sourceId: string) => void
-  sources: source[]
+  sources: stream[]
   indicator: indicator
   hiddenObjectTypes: string[]
 }
@@ -44,8 +36,8 @@ export function Grid(props: gridProps) {
       style={{
         width: '100%',
         height: '100%',
-        padding: '5px',
         display: 'grid',
+        padding: '5px',
         gap: '5px',
         gridTemplateColumns: `repeat(auto-fit,minmax(30%, 1fr))`,
         gridTemplateRows: '60%',
@@ -57,7 +49,7 @@ export function Grid(props: gridProps) {
         //which includes the video player
         return (
           <div
-            data-testid="gridElement"
+            data-testid='gridElement'
             key={source.id}
             style={
               props.primary === source.id
@@ -66,13 +58,12 @@ export function Grid(props: gridProps) {
             }
           >
             <Overlay
-              cameraId={source.srcObject.src}
+              source={source}
               onPrimary={() => props.setPrimary(source.id)}
-              onPlayPause={() => {}}
-              onTimestamp={() => {}}
               sources={[source.srcObject]}
               showBoxes={props.indicator}
               hiddenObjectTypes={props.hiddenObjectTypes}
+              autoplay={process.env.NODE_ENV === 'production'}
             />
           </div>
         )

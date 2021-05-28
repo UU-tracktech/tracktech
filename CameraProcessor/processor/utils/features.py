@@ -44,6 +44,7 @@ def resize_cutout(cutout, configs):
     Args:
         cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a
         reference to the original image.
+        configs (configparser.SectionProxy): Re-ID configuration
 
     Returns:
          np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original
@@ -52,7 +53,7 @@ def resize_cutout(cutout, configs):
 
     """
     # Read size from the config
-    size = configs['Reid'].gettuple('size')
+    size = configs.gettuple('size')
 
     # Return the cutout, which is another reference to the original image
     return cv2.resize(cutout, size, interpolation=cv2.INTER_AREA)

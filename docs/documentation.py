@@ -188,13 +188,20 @@ def get_modules(root_folder):
             import_path = path_to_module(component_root, module_path)
 
             # Package module shouldn't contain code with side effects.
-            imported_module = importlib.import_module(import_path)
+            try:
+                imported_module = importlib.import_module(import_path)
 
-            # Get included modules from the __all__ attribute,
-            # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
-            if hasattr(imported_module, '__all__'):
-                all_included = getattr(imported_module, '__all__')
-                includes[module_path] = all_included
+                # Get included modules from the __all__ attribute,
+                # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
+                if hasattr(imported_module, '__all__'):
+                    all_included = getattr(imported_module, '__all__')
+                    includes[module_path] = all_included
+            # Package cannot be imported
+            except ImportError as err:
+                logging.warning(f'Module path {module_path} with import {import_path} throws {err}.\n'
+                                'Most likely the __init__.py contains imports or code with side-effects.\n'
+                                'You must include the imports in your Python environment to '
+                                'respect the __all__ property')
 
     # Find all modules in found folders and append the full path.
     modules = [root_folder]
@@ -409,11 +416,11 @@ if __name__ == '__main__':
     # Generate documentation for all provided roots.
     for root in args.roots:
         component_source_path = Path(root)
-        logging.info(f'generating documentation for: {component_source_path}')
+        logging.info(f'Generating documentation for: {component_source_path}')
         # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
         generate_documentation(component_source_path)
 
     # Create index if flag was provided.
     if args.create_index:
-        logging.info('generating index')
+        logging.info('Generating index')
         generate_index()

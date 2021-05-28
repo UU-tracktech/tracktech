@@ -32,6 +32,7 @@ class TrackingObject:
         self.identifier = max(objects.keys(), default=0) + 1
         self.feature_map = {}
         objects[self.identifier] = (self, datetime.now())
+        objectHistory.append(self.identifier)
 
     def update_feature_map(self, feature_map):
         """Updates feature map of this object.
@@ -117,4 +118,10 @@ objects = dict()
 """Dictionary which matches an object identifier to.
 
 type: Dict[str, (TrackingObject, Optional[int])]
+"""
+
+objectHistory = list()
+"""List containing the ids of objects that have been tracked.
+
+type: List[int]
 """

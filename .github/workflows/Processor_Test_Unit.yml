@@ -8,13 +8,16 @@ on:
   pull_request:
     paths:
       - CameraProcessor/**
+    branches:
+      - develop
+      - master
 
 jobs:
   processor_unit_test:
     name: Processor unit test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Start unit test camera processor service
@@ -26,7 +29,7 @@ jobs:
       - name: Copy unit test report
         run: docker cp camera-processor_container:/app/coverage.xml coverage.xml
       - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2

@@ -9,13 +9,16 @@ on:
     paths:
       - CameraProcessor/**
       - ProcessorOrchestrator/**
+    branches:
+      - develop
+      - master
 
 jobs:
   processor_orchestrator_integration_test:
     name: Camera Processor - Processor Orchestrator integration test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Start service
@@ -25,7 +28,7 @@ jobs:
       - name: Copy xml coverage report
         run: docker cp processor-integration-test-container:/app/coverage.xml coverage.xml
       - name: Stop service
-        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down
+        run: docker-compose -f ./CameraProcessor/compose/docker-compose+orchestrator.yml down --rmi all
         if: ${{ always() }}
       - name: Upload integration test report artifact
         uses: actions/upload-artifact@v2

@@ -13,17 +13,38 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
-import { useKeycloak } from '@react-keycloak/web'
 import { Layout } from 'antd'
 import './app.less'
 
 import { NavMenu } from './components/navbar'
 import { NeedLogin } from './pages/needLogin'
 import { Home } from './pages/home'
+import { Timelines } from './pages/timelines'
 import { WebsocketProvider } from './components/websocketContext'
+import useAuthState from './classes/useAuthState'
 
 export function App() {
-  const { keycloak } = useKeycloak()
+  const status = useAuthState()
+
+  function body() {
+    switch (status) {
+      case 'loading':
+        return <div data-testid='emptyWaitDiv'></div>
+      case 'unauthenticated':
+        return <NeedLogin />
+      case 'authenticated':
+        return (
+          <>
+            <Route exact path='/'>
+              <Home />
+            </Route>
+            <Route exact path='/timelines'>
+              <Timelines />
+            </Route>
+          </>
+        )
+    }
+  }
 
   return (
     <Layout
@@ -38,15 +59,7 @@ export function App() {
       <WebsocketProvider>
         <BrowserRouter key={1}>
           <NavMenu key={0} />
-          {keycloak.authenticated ? (
-            <>
-              <Route exact path="/">
-                <Home />
-              </Route>
-            </>
-          ) : (
-            <NeedLogin />
-          )}
+          {body()}
         </BrowserRouter>
       </WebsocketProvider>
     </Layout>

@@ -31,12 +31,15 @@ COPY configs.ini configs.ini
 COPY test-configs.ini test-configs.ini
 COPY .coveragerc .coveragerc
 COPY processor processor
+COPY coco.names coco.names
 COPY tests/conftest.py tests/conftest.py
 
 
 FROM test AS test_unit
 COPY requirements-gpu.txt .
 RUN ["pip", "install", "-r", "requirements-gpu.txt"]
+COPY requirements-reid.txt .
+RUN ["pip", "install", "-r", "requirements-reid.txt"]
 COPY filter.names filter.names
 COPY data/tests/unittests data/tests/unittests
 COPY tests/unittests tests/unittests
@@ -139,7 +142,11 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=10.1"
 COPY requirements-gpu.txt requirements-gpu.txt
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
+COPY processor/pipeline/reidentification/torchreid/requirements.txt processor/pipeline/reidentification/torchreid/requirements.txt
 RUN ["pip", "install", "-r", "requirements-gpu.txt"]
+
+COPY requirements-reid.txt requirements-reid.txt
+RUN ["pip", "install", "-r", "requirements-reid.txt"]
 
 COPY configs.ini .
 COPY coco.names .
@@ -160,12 +167,15 @@ RUN ["g++","--version"]
 # Install pip requirements
 COPY requirements.txt .
 COPY requirements-gpu.txt .
+COPY requirements-reid.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
+COPY processor/pipeline/reidentification/torchreid/requirements.txt processor/pipeline/reidentification/torchreid/requirements.txt
 
 RUN ["python3.8","-m","pip", "install", "--upgrade", "pip"]
 RUN ["python3.8","-m","pip", "install", "-r", "requirements.txt"]
 RUN ["python3.8","-m","pip", "install", "-r", "requirements-gpu.txt"]
+RUN ["python3.8","-m","pip", "install", "-r", "requirements-reid.txt"]
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1

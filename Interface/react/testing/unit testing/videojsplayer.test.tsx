@@ -13,10 +13,13 @@ import {
   PrintTimestamp,
   VideoPlayer
 } from '../../src/components/videojsPlayer'
+import { size } from '../../src/classes/size'
 
 const mockOnTimestamp = jest.fn()
-const mockOnResize = jest.fn((w, h, l, t) => {
-  console.log(`w: ${w}, h: ${h}, l: ${l}, t: ${t}`)
+const mockOnResize = jest.fn((size: size) => {
+  console.log(
+    `w: ${size.width}, h: ${size.height}, l: ${size.left}, t: ${size.top}`
+  )
 })
 const mockOnPrimary = jest.fn()
 const mockOnPlayPause = jest.fn()
@@ -28,6 +31,7 @@ beforeEach(() => {
       onResize={mockOnResize}
       onPrimary={mockOnPrimary}
       onPlayPause={mockOnPlayPause}
+      setSnapCallback={() => undefined}
     />
   )
 })

@@ -14,11 +14,11 @@ jobs:
     name: Forwarder Build
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build
         run: docker-compose -f VideoForwarder/docker-compose.yml build --no-cache
       - name: Remove
-        run: docker-compose -f VideoForwarder/docker-compose.yml rm
+        run: docker-compose -f VideoForwarder/docker-compose.yml down --rmi all
         if: ${{ always() }}
