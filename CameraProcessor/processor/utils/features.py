@@ -10,7 +10,8 @@ import cv2
 
 
 def slice_bounding_box(bbox, img):
-    """Slices the bounding box out of the image given
+    """Slices the bounding box out of the image given.
+
     Args:
         bbox (BoundingBox): A boundingbox which holds the rectangle we need
         img (np.ndarray): the numpy array representing the frame/image
@@ -25,7 +26,7 @@ def slice_bounding_box(bbox, img):
     to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or
     use `del`.
 
-    Example:
+    Examples:
         a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice
         img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!
         a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up

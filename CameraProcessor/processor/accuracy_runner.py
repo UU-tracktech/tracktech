@@ -19,8 +19,10 @@ sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
 def main(configs):
-    """Runs YOLOv5 detection on a video file specified in configs.ini."""
-    # Load the config file, take the relevant Yolov5 section
+    """Runs YOLOv5 detection on a video file specified in configs.ini.
+
+    """
+    # Load the config file, take the relevant Yolov5 section.
     yolov5_config = configs['Yolov5']
     accuracy_config = configs['Accuracy']
 
