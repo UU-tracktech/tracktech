@@ -11,8 +11,7 @@ import gdown
 import processor.utils.features as UtilsFeatures
 import processor.pipeline.reidentification.ireidentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
-from scipy.spatial.distance import cosine, euclidean
-from processor.data_object.reid_data import ReidData
+from scipy.spatial.distance import euclidean #cosine
 
 
 class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIdentifier):
@@ -47,6 +46,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             device=device)
 
         self.configs = configs
+        self.threshold = float(self.configs["threshold"])
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box by generating a
@@ -94,31 +94,30 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             query_features ([float]): the feature vector of the query image.
             gallery_features ([float]): the feature vector of the gallery image.
 
-        Returns: float: returns the cosine similarity of two feature vectors.
+        Returns: float: returns the similarity value of two feature vectors.
 
         """
-        #cosine_similarity = 1 - cosine(query_features, gallery_features)
-        #return cosine_similarity
+        # cosine_similarity = 1 - cosine(query_features, gallery_features)
+        # return cosine_similarity
 
         euclidean_distance = euclidean(query_features, gallery_features)
         return euclidean_distance
 
-
-    def re_identify(self, track_obj, box_features, re_id_data, threshold):
+    def re_identify(self, frame_obj, track_obj, re_id_data):
         """ Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
         to an existing bounding box. Does not return anything, just updates the existing list.
 
         Args:
+            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.
             track_obj (BoundingBoxes): List of bounding boxes from tracking stage
-            box_features ([[float]]): List of feature vectors for bounding boxes from tracking stage. Note that this
             list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same
             way (feature vector i belongs to box i).
             re_id_data (ReidData): Data class containing data about tracked subjects
-            threshold (float): Threshold for similarity to match tracked subject to bounding box
         """
-        # track_obj: contains tracked bounding boxes
+
         tracked_bounding_boxes = track_obj.get_bounding_boxes()
+        box_features = self.extract_features_boxes(frame_obj, track_obj)
 
         # Loop over all objects being followed
         for query_id in re_id_data.get_queries():
@@ -126,12 +125,12 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
 
             # track_features: list of feature vectors in same order as bounding boxes
             # Loop over the detected features in the frame
-            for i in range(len(box_features)):
+            for i, feature in enumerate(box_features):
                 # if the bounding box is already assigned to an object, don't compare it
                 if tracked_bounding_boxes[i].get_object_id() is None:
                     # calculate the similarity value of the 2 feature vectors
-                    similarity_value = self.similarity(query_feature, box_features[i])
-                    if similarity_value < threshold:
+                    similarity_value = self.similarity(query_feature, feature)
+                    if similarity_value < self.threshold:
                         box_id = tracked_bounding_boxes[i].get_identifier()
 
                         # Store that this box id belongs to a certain object id
@@ -141,7 +140,3 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
                         tracked_bounding_boxes[i].set_object_id(query_id)
 
                         print(f"Re-Id of object {query_id} in box {box_id}")
-
-        # TODO : objects that are still on screen (box id in list is on screen) should not be reidentified
-        # TODO : test with custom video
-        # TODO : ?

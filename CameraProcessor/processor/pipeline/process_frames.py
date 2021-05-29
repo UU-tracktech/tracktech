@@ -161,11 +161,8 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         # Get objects tracked in current frame from tracking stage.
         tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
 
-        # Extract the feature maps of the tracked boxes
-        tracked_boxes_features = re_identifier.extract_features_boxes(frame_obj, tracked_boxes)
-
-        # Use the tracked boxes and its feature map for possible re-identification
-        re_identifier.re_identify(tracked_boxes, tracked_boxes_features, re_id_data, 10.5)
+        # Use the frame object and the tracked boxes for re-identification
+        re_identifier.re_identify(frame_obj, tracked_boxes, re_id_data)
 
         # Buffer the tracked object
         framebuffer.add_frame(frame_obj, tracked_boxes)
