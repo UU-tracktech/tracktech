@@ -19,6 +19,10 @@ class PylintIgnorePaths:
         """Get correct file paths for linting."""
         result, errors = self.original_expand_modules(*args, **kwargs)
 
+        # Filter on paths.
         result = list(filter(lambda item: not any(1 for path in self.paths if item['path'].startswith(path)), result))
+
+        # Ignore __init__.py files.
+        result = [item for item in result if not item['path'].endswith('__init__.py')]
 
         return result, errors

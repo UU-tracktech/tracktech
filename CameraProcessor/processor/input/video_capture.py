@@ -58,11 +58,10 @@ class VideoCapture(ICapture):
     def get_next_frame(self):
         """Gets the next frame of the video.
 
-        Returns (bool, FrameObj):
-            Boolean indicating if next frame was returned.
-            FrameObj containing frame and an empty datetime.
+        Returns:
+            bool, FrameObj: Indication whether the frame was found.
         """
-        # Return False if the capture was closed
+        # Return False if the capture was closed.
         if not self.opened():
             return False, None
 

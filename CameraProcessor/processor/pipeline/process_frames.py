@@ -267,11 +267,10 @@ def __create_detector(idetector, config_section, configs):
     Args:
         idetector (IDetector): The CLASS, or object type, of the detector we want
         config_section (string): The config section name associated with the given detector
-        configs (dict): The configs file
+        configs (dict): The configs file.
 
     Returns:
-        IDetector: The requested detector of the given type
-        dict: The config associated with the detector
+        IDetector, dict: Requested detector of the given type combined with its config.
     """
     config_filter = configs['Filter']
     detector_config = configs[config_section]

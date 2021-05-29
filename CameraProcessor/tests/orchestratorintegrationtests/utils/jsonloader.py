@@ -3,7 +3,6 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import os
 import json
@@ -15,8 +14,9 @@ def load_data(datatype, number=1, rng=False):
     """Load a JSON test data file of chosen type.
 
     Args:
-        - A string, which is one of these options: {'boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'}.
-        - A number which defaults to one. If it is not None, it will load 'nr' random json objects.
+        datatype (str): One of these options: ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'].
+        number (int): A number which will load 'nr' random json objects if not None.
+        rng (bool): Whether or not to load data in a random order.
 
     Returns:
         A dictionary of test data of the chosen JSON message type.

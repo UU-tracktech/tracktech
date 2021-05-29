@@ -163,7 +163,6 @@ class DocstringChecker(BaseChecker):
         # Return if single line.
         if len(doc_lines) == 1:
             return
-
         # Second line is empty and also the last line.
         if len(doc_lines) == 2 and not doc_lines[1]:
             self.add_message('make-docstring-one-line',

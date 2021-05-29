@@ -23,9 +23,12 @@ class DocstringContentChecker(BaseChecker):
         wrong-argument-specification-syntax: Argument specification is wrong format.
         sections-in-wrong-order: Sections are not in the correct order.
         unknown-section: Section name was unknown.
+        section-wrong-format: Section should follow by spaces
         missing-return-type: "Returns:" section has no type specified.
         use-dict-keyword: When there are curly braces used to define a dictionary.
         returns-section-has-multiple-type-definitions: There should only be one type definition inside the returns.
+        enclose-type-in-parenthesis: The type should be enclosed with parenthesis.
+        type-not-defined: Type of argument or attribute is missing.
 
     Attributes:
         __implements__ (IAstroidChecker): Astroid checker interface.
@@ -59,7 +62,7 @@ class DocstringContentChecker(BaseChecker):
                   'argument-wrong-place-in-docstring',
                   'Emitted when a docstring argument is in the wrong position'
                   ),
-        'C1126': ('Argument "%s" has wrong specification, must be in form "<argument-name> (<argument-type>): "',
+        'C1126': ('Argument "%s" has wrong specification, "<argument-name> (<argument-type>): " must be the form',
                   'wrong-argument-specification-syntax',
                   'Emitted when a docstring argument is in the wrong position'
                   ),
@@ -71,17 +74,29 @@ class DocstringContentChecker(BaseChecker):
                   'unknown-section',
                   'Emitted when docstring section is of the wrong type'
                   ),
-        'C1129': ('Return type definition is missing',
+        'C1129': (f'Section: "%s" is not formatted correctly, should be "<section-name>:\\n"',
+                  'section-wrong-format',
+                  'Emitted when docstring section has the wrong format'
+                  ),
+        'C1130': ('Return type definition is missing',
                   'missing-return-type',
                   'Emitted when docstring Returns section misses a type definition'
                   ),
-        'C1130': ('Dictionary types have to be of form dict[keytype, valuetype]',
+        'C1131': ('Dictionary types have to be of form dict[keytype, valuetype], not "%s"',
                   'use-dict-keyword',
                   'Emitted when docstring contains literal dict type'
                   ),
-        'C1131': ('Returns section contains type definitions on multiple lines',
+        'C1132': ('Returns section contains type definitions on multiple lines',
                   'returns-section-has-multiple-type-definitions',
                   'Emitted when returns section has multiple type definitions'
+                  ),
+        'C1133': ('Enclose type "%s" in parenthesis',
+                  'enclose-type-in-parenthesis',
+                  'Emitted when type is not enclosed in parenthesis'
+                  ),
+        'C1134': ('Type of "%s" is not defined inside section "%s"',
+                  'type-not-defined',
+                  'Emitted when type is not defined'
                   ),
         }
 
@@ -133,15 +148,11 @@ class DocstringContentChecker(BaseChecker):
         while line_index < len(doc_lines):
             # Match the line for a section.
             doc_line = doc_lines[line_index]
-            section_match = re.match(r'^\s*(\w+):\s*$', doc_line)
 
-            # If it is not the start of a section then the line is not linted.
-            if section_match is None:
+            section, section_name = self.match_section(node, doc_line)
+            if not section:
                 line_index += 1
                 continue
-
-            # Name of the section.
-            section_name = section_match.group(1)
 
             # Check if the section is known.
             if self.ordered_sections.__contains__(section_name):
@@ -154,20 +165,12 @@ class DocstringContentChecker(BaseChecker):
                 line_index += 1
                 continue
 
-            # Switch statement for linting of sections.
-            if section_name == 'Args':
-                # When there is an Args section without there being arguments.
-                if not args:
-                    self.add_message('unnecessary-args-section',
-                                     node=node)
-                    line_index += 1
-                # Only lint args section if it is a function.
-                elif is_function:
-                    line_index = self.doc_lint_args_section(node, doc_lines, line_index, args)
-            elif section_name == 'Returns' and is_function:
-                line_index = self.doc_lint_returns_section(node, doc_lines, line_index)
+            # Lint function section.
+            if is_function:
+                line_index = self.lint_function_section(node, doc_lines, section_name, line_index, args)
+            # Lint class section.
             else:
-                line_index += 1
+                line_index = self.lint_class_section(node, doc_lines, section_name, line_index)
 
         # Argument section needs to exist but is missing.
         if args and not sections_list.__contains__('Args'):
@@ -179,6 +182,55 @@ class DocstringContentChecker(BaseChecker):
         if ordered_sections_list != sections_list:
             self.add_message('sections-in-wrong-order',
                              node=node)
+
+    def lint_function_section(self, node, doc_lines, section_name, line_index, args):
+        """Lint any section of the function docstring.
+
+        Args:
+            node (Any): Function definition inside a astriod node.
+            doc_lines ([str]): Split lines of the documentation.
+            section_name (str): Name of the section to be checked.
+            line_index (int): Index where the section starts.
+            args ([astroid.node_classes.AssignName]): Arguments of the function.
+
+        Returns:
+            int: Line number of the last line in the section.
+        """
+        # Switch statement for linting of sections.
+        if section_name == 'Args' and not args:
+            # When there is an Args section without there being arguments.
+            self.add_message('unnecessary-args-section',
+                             node=node)
+            line_index += 1
+        elif section_name == 'Args' and args:
+            line_index = self.doc_lint_args_section(node, doc_lines, line_index, args)
+        elif section_name == 'Returns':
+            line_index = self.doc_lint_returns_section(node, doc_lines, line_index)
+        else:
+            line_index += 1
+
+        return line_index
+
+    def lint_class_section(self, node, doc_lines, section_name, line_index):
+        """Lint any section of the class docstring.
+
+        Args:
+            node (Any): Class definition inside a astriod node.
+            doc_lines ([str]): Split lines of the documentation.
+            section_name (str): Name of the section to be checked.
+            line_index (int): Index where the args section starts.
+
+        Returns:
+            int: Line number of the last line in the section.
+        """
+        # Switch statement for linting of sections.
+        if section_name == 'Attributes':
+            # When there is an Attributes section.
+            line_index = self.doc_lint_attribute_section(node, doc_lines, line_index)
+        else:
+            line_index += 1
+
+        return line_index
 
     def doc_lint_args_section(self, node, doc_lines, args_section_line_index, args):
         """Lint the "Args:" section of the docstring and enforce types are included.
@@ -200,49 +252,36 @@ class DocstringContentChecker(BaseChecker):
         arg_index = 0
         line_index = args_section_line_index + 1
 
-        # The strict an non strict version of an argument with type.
-        arg_with_type_regex = r'^\s*([a-z_0-9]+)\s\([\w\d_.\[\]{}]+\):\s.*$'
-        loose_arg_with_type_regex = r'^\s*([a-z_0-9]+)\s*\([\w\d_.\[\]{}]+\):.*$'
-
         # Loop through the argument section until another section is found or the end is reached.
         while line_index < len(doc_lines):
             doc_line = doc_lines[line_index]
 
             # Stop if next section is found.
-            section, _ = self.get_section_match(doc_line)
+            section, _ = self.match_section(node, doc_line)
             if section:
                 break
 
-            # Strict argument match.
-            arg_match = re.match(arg_with_type_regex, doc_line)
+            arg, arg_name, _ = self.match_type_definition(node, doc_line, "Args")
 
-            # See if a less strict match does detect the line.
-            if arg_match is None:
-                arg_loose_match = re.match(loose_arg_with_type_regex, doc_line)
-                # Wrong format of the argument.
-                if arg_loose_match is not None:
-                    self.add_message('wrong-argument-specification-syntax',
-                                     node=node,
-                                     args=arg_loose_match.group(1))
+            if not arg:
                 line_index += 1
                 continue
 
-            argument_name = arg_match.group(1)
             # Argument does not exist as parameter.
-            if not arg_dict.__contains__(argument_name):
+            if not arg_dict.__contains__(arg_name):
                 self.add_message('unknown-argument-in-docstring',
                                  node=node,
-                                 args=argument_name)
+                                 args=arg_name)
                 line_index += 1
                 continue
             # Argument is in the wrong position inside the docstring.
-            if arg_list[arg_index] != argument_name:
+            if arg_list[arg_index] != arg_name:
                 self.add_message('argument-wrong-place-in-docstring',
                                  node=node,
-                                 args=(argument_name, arg_index))
+                                 args=(arg_name, arg_index))
 
             # Add to dictionary and go to the next line.
-            arg_dict[argument_name] = True
+            arg_dict[arg_name] = True
             arg_index += 1
             line_index += 1
 
@@ -254,6 +293,35 @@ class DocstringContentChecker(BaseChecker):
                                  args=key)
 
         # Return where the section stops.
+        return line_index
+
+    def doc_lint_attribute_section(self, node, doc_lines, attribute_section_line_index):
+        """Lint the "Args:" section of the docstring and enforce types are included.
+
+        Args:
+            node (Any): Only function should contain an argument section.
+            doc_lines ([str]): Split lines of the documentation.
+            attribute_section_line_index (int): Index where the section starts.
+
+        Returns:
+            int: Line number of the last line in the Attributes section.
+        """
+        # Content starts one line after section start.
+        line_index = attribute_section_line_index + 1
+
+        # Loop through the argument section until another section is found or the end is reached.
+        while line_index < len(doc_lines):
+            doc_line = doc_lines[line_index]
+
+            # Stop if next section is found.
+            section, _ = self.match_section(node, doc_line)
+            if section:
+                break
+
+            # Ensure each attribute has a type defined.
+            self.match_type_definition(node, doc_line, "Attributes")
+            line_index += 1
+
         return line_index
 
     def doc_lint_returns_section(self, node, doc_lines, returns_section_line_index):
@@ -277,14 +345,9 @@ class DocstringContentChecker(BaseChecker):
                              node=node)
             return line_index
 
-        # Get the return type.
+        # Get the return type and check for curly braces.
         return_type = doc_line.split(':')[0]
-
-        # Prevent the use of curly braces.
-        if return_type.__contains__('{') or return_type.__contains__('}'):
-            self.add_message('use-dict-keyword',
-                             node=node)
-            return line_index
+        self.check_type_definition(node, return_type, False)
 
         line_index += 1
         # Make sure there are no other type definitions inside the section.
@@ -292,7 +355,7 @@ class DocstringContentChecker(BaseChecker):
             doc_line = doc_lines[line_index]
 
             # Break when another section is reached.
-            section, _ = self.get_section_match(doc_line)
+            section, _ = self.match_section(node, doc_line)
             if section:
                 break
 
@@ -307,8 +370,50 @@ class DocstringContentChecker(BaseChecker):
         # Return the index of the line where the returns section stops.
         return line_index
 
-    @staticmethod
-    def get_section_match(line):
+    def match_type_definition(self, node, line, section_name):
+        """Checks whether the current line matches a section.
+
+        Args:
+            node (Any): Node the pylint message is connected to when linting error is found.
+            line (str): Line of which to check of whether it contains a type definition.
+            section_name (str): Name of the section.
+
+        Returns:
+            bool, str: Whether a section was found and what the name is of that section.
+        """
+        # No type definition inside this line.
+        if not line.__contains__(':'):
+            return False, "", ""
+
+        # Strict argument match.
+        arg_match = re.match(r'^\s*([a-z_0-9]+)\s\(([^:{}]+)\):\s.*$', line)
+
+        # Return match immediately when correctly formatted.
+        if arg_match is not None:
+            return True, arg_match.group(1), arg_match.group(2)
+
+        # Type is not defined.
+        arg_definition = line.split(':')[0]
+        type_definition = arg_definition.split()
+        if len(type_definition) == 1:
+            self.add_message('type-not-defined',
+                             node=node,
+                             args=(type_definition[0], section_name))
+            return True, type_definition[0], ""
+
+        # Check the type definition with parenthesis.
+        arg_name = type_definition[0]
+        type_definition = " ".join(type_definition[1:])
+        self.check_type_definition(node, type_definition, True)
+
+        # Wrong format of the argument.
+        self.add_message('wrong-argument-specification-syntax',
+                         node=node,
+                         args=arg_name)
+
+        return True, arg_name, type_definition
+
+    def match_section(self, node, line):
         """Checks whether the current line matches a section.
 
         Args:
@@ -318,12 +423,55 @@ class DocstringContentChecker(BaseChecker):
             bool, str: Whether a section was found and what the name is of that section.
         """
         section_match = re.match(r'^\s*(\w+):\s*$', line)
-        # No section was found.
-        if section_match is None:
-            return False, ""
+        # Section was found, also return name.
+        if section_match is not None:
+            return True, section_match.group(1)
 
-        # Section spotted.
-        return True, section_match.group(1)
+        single_line_section_match = re.match(r'^\s*(\w+):.*$', line)
+        if single_line_section_match is not None:
+            section_name = single_line_section_match.group(1)
+            self.add_message('section-wrong-format',
+                             node=node,
+                             args=section_name)
+            return False, ''
+
+        incorrect_section_match = re.match(r'^\s*((\w+).*):.*$', line)
+
+        if incorrect_section_match is None:
+            return False, ''
+
+        section_name = incorrect_section_match.group(2)
+        for section in self.ordered_sections:
+            if section.startswith(section_name):
+                self.add_message('unknown-section',
+                                 node=node,
+                                 args=incorrect_section_match.group(1))
+                break
+
+        return False, ''
+
+    def check_type_definition(self, node, type_str, enclosing_parenthesis):
+        """Check the type definitions inside a section.
+
+        Args:
+            node (Any): Node to connect message to.
+            type_str (str): Type definition inside docstring
+            enclosing_parenthesis (bool): Whether to enclose with parenthesis.
+        """
+        # Print message when type contains curly braces.
+        if type_str.__contains__('{') or type_str.__contains__('}'):
+            self.add_message('use-dict-keyword',
+                             node=node,
+                             args=type_str)
+
+        if not enclosing_parenthesis:
+            return
+
+        # Print message when type definition has not been enclosed.
+        if not type_str.startswith('(') or not type_str.endswith(')'):
+            self.add_message('enclose-type-in-parenthesis',
+                             node=node,
+                             args=type_str)
 
 
 def register(linter):

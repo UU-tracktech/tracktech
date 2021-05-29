@@ -3,14 +3,12 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from processor.pipeline.reidentification.ireidentifier import IReIdentifier
 
 
 class FakeReIdentifier(IReIdentifier):
-    """A fake re-identifier that implements the same methods but just mocks some functionality
-    """
+    """A fake re-identifier that implements the same methods but just mocks some functionality."""
     def extract_features(self, frame_obj, track_obj):
         """Given a det_obj object, extract the features of it.
 
