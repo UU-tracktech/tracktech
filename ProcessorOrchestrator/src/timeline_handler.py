@@ -17,6 +17,14 @@ class TimeLineHandler(RequestHandler):
     with html br tags.
     """
 
+    def set_default_headers(self):
+        """Sets the default request headers for the request.
+
+        Returns:
+            None
+        """
+        self.set_header("Access-Control-Allow-Origin", "*")
+
     def get(self):
         """Gets log file contents.
 
