@@ -11,7 +11,7 @@ import gdown
 import processor.utils.features as UtilsFeatures
 import processor.pipeline.reidentification.ireidentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
-from scipy.spatial.distance import cosine
+from scipy.spatial.distance import euclidean #cosine
 
 
 class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIdentifier):
@@ -46,6 +46,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             device=device)
 
         self.configs = configs
+        self.threshold = float(self.configs["threshold"])
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box by generating a
@@ -64,7 +65,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
 
         # Extract the feature from the cutout and convert it to a normal float array
-        feature = self.extractor(resized_cutout).cpu().numpy().tolist()
+        feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
 
@@ -93,22 +94,49 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             query_features ([float]): the feature vector of the query image.
             gallery_features ([float]): the feature vector of the gallery image.
 
-        Returns: float: returns the cosine similarity of two feature vectors.
+        Returns: float: returns the similarity value of two feature vectors.
 
         """
-        cosine_similarity = 1 - cosine(query_features, gallery_features)
-        return cosine_similarity
+        # cosine_similarity = 1 - cosine(query_features, gallery_features)
+        # return cosine_similarity
 
-    def reidentify(self, tracked_boxes, track_features, query_box_id, query_features, threshold):
-        """ Performing re-identification using torchreid to possibly couple a detection to an earlier detection of a
-        tracked subject.
+        euclidean_distance = euclidean(query_features, gallery_features)
+        return euclidean_distance
 
-        Updates list of bounding box by possibly assigning an object ID to an existing bounding box.
+    def re_identify(self, frame_obj, track_obj, re_id_data):
+        """ Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject
+        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
+        to an existing bounding box. Does not return anything, just updates the existing list.
+
+        Args:
+            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.
+            track_obj (BoundingBoxes): List of bounding boxes from tracking stage
+            list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same
+            way (feature vector i belongs to box i).
+            re_id_data (ReidData): Data class containing data about tracked subjects
         """
 
-        # query_features: features van persoon om te tracken
-        # det_features: lijst van features van alle bounding boxes op deze frame
-        # threshold: threshold waarbij je bepaalt om ze hetzelfde te noemen
+        tracked_bounding_boxes = track_obj.get_bounding_boxes()
+        box_features = self.extract_features_boxes(frame_obj, track_obj)
 
-        # TODO: ALs tracking_dict bestaat, update deze dan ook
-        raise NotImplementedError()
+        # Loop over all objects being followed
+        for query_id in re_id_data.get_queries():
+            query_feature = re_id_data.get_feature_for_query(query_id)
+
+            # track_features: list of feature vectors in same order as bounding boxes
+            # Loop over the detected features in the frame
+            for i, feature in enumerate(box_features):
+                # if the bounding box is already assigned to an object, don't compare it
+                if tracked_bounding_boxes[i].get_object_id() is None:
+                    # calculate the similarity value of the 2 feature vectors
+                    similarity_value = self.similarity(query_feature, feature)
+                    if similarity_value < self.threshold:
+                        box_id = tracked_bounding_boxes[i].get_identifier()
+
+                        # Store that this box id belongs to a certain object id
+                        re_id_data.add_query_box(box_id, query_id)
+
+                        # Update object id of the box
+                        tracked_bounding_boxes[i].set_object_id(query_id)
+
+                        print(f"Re-Id of object {query_id} in box {box_id}")
