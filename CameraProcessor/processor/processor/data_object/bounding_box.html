@@ -49,6 +49,9 @@
                         <li>
                                 <a class="function" href="#BoundingBox.get_object_id">get_object_id</a>
                         </li>
+                        <li>
+                                <a class="function" href="#BoundingBox.set_object_id">set_object_id</a>
+                        </li>
                 </ul>
 
             </li>
@@ -67,7 +70,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../data_object.html">data_object</a>.bounding_box    </h1>
 
-                        <div class="docstring"><p>Contains the bounding box class.</p>
+                        <div class="docstring"><p>Contains the bounding box class</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -76,7 +79,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the bounding box class.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the bounding box class</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -86,10 +89,10 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">BoundingBox</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.&quot;&quot;&quot;</span>
-
+    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init the bounding box.</span>
+        <span class="sd">&quot;&quot;&quot;Inits the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier (int): identifier of bounding box.</span>
@@ -105,7 +108,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 
     <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Gets bounding box identifier.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
@@ -113,7 +116,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
 
     <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Gets Rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
@@ -129,7 +132,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
 
     <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
+        <span class="sd">&quot;&quot;&quot;Gets certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: certainty/confidence of bounding box detection.</span>
@@ -142,6 +145,18 @@ Utrecht University within the Software Project course.
 <span class="sd">            int: certainty/confidence of bounding box detection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span>
+
+    <span class="k">def</span> <span class="nf">set_object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked</span>
+<span class="sd">        object. Raises ValueError if the box already was assigned to an object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_id: The updated object_id of the box</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box already has an object ID&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">new_id</span>
 </pre></div>
 
         </details>
@@ -159,10 +174,10 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BoundingBox</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.&quot;&quot;&quot;</span>
-
+    <span class="sd">&quot;&quot;&quot;Contains information about a single bounding box.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init the bounding box.</span>
+        <span class="sd">&quot;&quot;&quot;Inits the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier (int): identifier of bounding box.</span>
@@ -178,7 +193,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 
     <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Gets bounding box identifier.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
@@ -186,7 +201,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
 
     <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Gets Rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
@@ -202,7 +217,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
 
     <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
+        <span class="sd">&quot;&quot;&quot;Gets certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: certainty/confidence of bounding box detection.</span>
@@ -215,6 +230,18 @@ Utrecht University within the Software Project course.
 <span class="sd">            int: certainty/confidence of bounding box detection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span>
+
+    <span class="k">def</span> <span class="nf">set_object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked</span>
+<span class="sd">        object. Raises ValueError if the box already was assigned to an object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_id: The updated object_id of the box</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box already has an object ID&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">new_id</span>
 </pre></div>
 
         </details>
@@ -233,7 +260,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init the bounding box.</span>
+        <span class="sd">&quot;&quot;&quot;Inits the bounding box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier (int): identifier of bounding box.</span>
@@ -251,7 +278,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Init the bounding box.</p>
+            <div class="docstring"><p>Inits the bounding box.</p>
 
 <h6 id="args">Args</h6>
 
@@ -277,7 +304,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Gets bounding box identifier.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
@@ -287,7 +314,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Get bounding box identifier.</p>
+            <div class="docstring"><p>Gets bounding box identifier.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -309,7 +336,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Gets Rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
@@ -319,7 +346,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Get Rectangle.</p>
+            <div class="docstring"><p>Gets Rectangle.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -373,7 +400,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
+        <span class="sd">&quot;&quot;&quot;Gets certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: certainty/confidence of bounding box detection.</span>
@@ -383,7 +410,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Get certainty/confidence that bounding box is correctly classified.</p>
+            <div class="docstring"><p>Gets certainty/confidence that bounding box is correctly classified.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -421,6 +448,43 @@ Utrecht University within the Software Project course.
 <blockquote>
   <p>int: certainty/confidence of bounding box detection.</p>
 </blockquote>
+</div>
+
+
+                            </div>
+                            <div id="BoundingBox.set_object_id" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BoundingBox.set_object_id">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">set_object_id</span><span class="signature">(self, new_id)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked</span>
+<span class="sd">        object. Raises ValueError if the box already was assigned to an object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_id: The updated object_id of the box</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box already has an object ID&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">new_id</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked
+object. Raises ValueError if the box already was assigned to an object.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>new_id:</strong>  The updated object_id of the box</li>
+</ul>
 </div>
 
 

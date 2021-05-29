@@ -46,6 +46,12 @@
                         <li>
                                 <a class="function" href="#ReidData.get_object_id_for_box">get_object_id_for_box</a>
                         </li>
+                        <li>
+                                <a class="function" href="#ReidData.get_queries">get_queries</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ReidData.get_feature_for_query">get_feature_for_query</a>
+                        </li>
                 </ul>
 
             </li>
@@ -126,10 +132,15 @@ Utrecht University within the Software Project course.
         <span class="c1"># Delete the feature vector from the object ID</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 
-        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="c1"># Store all box ids that map to the object ID</span>
+        <span class="n">del_box_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">obj_id</span> <span class="o">==</span> <span class="n">object_id</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">box_id</span><span class="p">]</span>
+                <span class="n">del_box_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_id</span><span class="p">)</span>
+
+        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="k">for</span> <span class="n">del_box_id</span> <span class="ow">in</span> <span class="n">del_box_ids</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">del_box_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_object_id_for_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the object id for a given box id (possibly None).</span>
@@ -142,6 +153,25 @@ Utrecht University within the Software Project course.
 <span class="sd">            return None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a list of queries (object ids) that are currently being tracked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ([int]): The list of object IDs currently being tracked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_feature_for_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            object_id (int): id of the object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ([float]): Feature vector for the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -202,10 +232,15 @@ Utrecht University within the Software Project course.
         <span class="c1"># Delete the feature vector from the object ID</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 
-        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="c1"># Store all box ids that map to the object ID</span>
+        <span class="n">del_box_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">obj_id</span> <span class="o">==</span> <span class="n">object_id</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">box_id</span><span class="p">]</span>
+                <span class="n">del_box_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_id</span><span class="p">)</span>
+
+        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="k">for</span> <span class="n">del_box_id</span> <span class="ow">in</span> <span class="n">del_box_ids</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">del_box_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_object_id_for_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the object id for a given box id (possibly None).</span>
@@ -218,6 +253,25 @@ Utrecht University within the Software Project course.
 <span class="sd">            return None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a list of queries (object ids) that are currently being tracked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ([int]): The list of object IDs currently being tracked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_feature_for_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            object_id (int): id of the object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ([float]): Feature vector for the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -344,10 +398,15 @@ object that we want to re-identify (we call this a query).</p>
         <span class="c1"># Delete the feature vector from the object ID</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 
-        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="c1"># Store all box ids that map to the object ID</span>
+        <span class="n">del_box_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">obj_id</span> <span class="o">==</span> <span class="n">object_id</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">box_id</span><span class="p">]</span>
+                <span class="n">del_box_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_id</span><span class="p">)</span>
+
+        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="k">for</span> <span class="n">del_box_id</span> <span class="ow">in</span> <span class="n">del_box_ids</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">del_box_id</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -402,6 +461,79 @@ long want to re-identify.</p>
 <blockquote>
   <p>(int or None): If the box contains an object that is being followed, return the object_id. Otherwise,
   return None.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="ReidData.get_queries" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ReidData.get_queries">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_queries</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a list of queries (object ids) that are currently being tracked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ([int]): The list of object IDs currently being tracked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Get a list of queries (object ids) that are currently being tracked.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>([int]): The list of object IDs currently being tracked</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="ReidData.get_feature_for_query" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ReidData.get_feature_for_query">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_feature_for_query</span><span class="signature">(self, object_id)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_feature_for_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            object_id (int): id of the object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ([float]): Feature vector for the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>object_id (int):</strong>  id of the object</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>([float]): Feature vector for the object</p>
 </blockquote>
 </div>
 

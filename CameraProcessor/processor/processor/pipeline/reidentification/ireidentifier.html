@@ -38,7 +38,7 @@
                                 <a class="function" href="#IReIdentifier.extract_features">extract_features</a>
                         </li>
                         <li>
-                                <a class="function" href="#IReIdentifier.similarity">similarity</a>
+                                <a class="function" href="#IReIdentifier.re_identify">re_identify</a>
                         </li>
                 </ul>
 
@@ -58,7 +58,7 @@
                     <h1 class="modulename">
 <a href="./../../../processor.html">processor</a>.<a href="./../../pipeline.html">pipeline</a>.<a href="./../reidentification.html">reidentification</a>.ireidentifier    </h1>
 
-                        <div class="docstring"><p>Detection abstract class</p>
+                        <div class="docstring"><p>Contains reidentification interface</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -67,7 +67,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot; Contains reidentification interface</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -75,8 +75,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-
-<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Superclass for identifiers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -92,17 +91,19 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the similarity rate between the feature vectors of the query object and the gallery object.</span>
+    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject</span>
+<span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
+<span class="sd">        to an existing bounding box. Does not return anything, just updates the existing list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query_features (numpy.array(float)): The feature vector of the query object.</span>
-<span class="sd">            gallery_features (numpy.array(float)): The feature vector of a object in the gallery.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: returns a numpy array containing the feature values of a det_obj object</span>
+<span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage</span>
+<span class="sd">            list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
+<span class="sd">            way (feature vector i belongs to box i).</span>
+<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Similarity function not implemented&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Reidentification function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -119,7 +120,7 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Superclass for identifiers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -135,17 +136,19 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the similarity rate between the feature vectors of the query object and the gallery object.</span>
+    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject</span>
+<span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
+<span class="sd">        to an existing bounding box. Does not return anything, just updates the existing list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query_features (numpy.array(float)): The feature vector of the query object.</span>
-<span class="sd">            gallery_features (numpy.array(float)): The feature vector of a object in the gallery.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: returns a numpy array containing the feature values of a det_obj object</span>
+<span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage</span>
+<span class="sd">            list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
+<span class="sd">            way (feature vector i belongs to box i).</span>
+<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Similarity function not implemented&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Reidentification function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -208,45 +211,46 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="IReIdentifier.similarity" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IReIdentifier.similarity">#&nbsp;&nbsp</a>
+                            <div id="IReIdentifier.re_identify" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IReIdentifier.re_identify">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">similarity</span><span class="signature">(self, query_features, gallery_features)</span>:
+            <span class="name">re_identify</span><span class="signature">(self, frame_obj, track_obj, re_id_data)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the similarity rate between the feature vectors of the query object and the gallery object.</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject</span>
+<span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
+<span class="sd">        to an existing bounding box. Does not return anything, just updates the existing list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query_features (numpy.array(float)): The feature vector of the query object.</span>
-<span class="sd">            gallery_features (numpy.array(float)): The feature vector of a object in the gallery.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: returns a numpy array containing the feature values of a det_obj object</span>
+<span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage</span>
+<span class="sd">            list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
+<span class="sd">            way (feature vector i belongs to box i).</span>
+<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Similarity function not implemented&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Reidentification function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Compute the similarity rate between the feature vectors of the query object and the gallery object.</p>
+            <div class="docstring"><p>Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject
+which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
+to an existing bounding box. Does not return anything, just updates the existing list.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>query_features (numpy.array(float)):</strong>  The feature vector of the query object.</li>
-<li><strong>gallery_features (numpy.array(float)):</strong>  The feature vector of a object in the gallery.</li>
+<li><strong>frame_obj (FrameObj):</strong>   frame object storing OpenCV frame and timestamp.</li>
+<li><strong>track_obj (BoundingBoxes):</strong>  List of bounding boxes from tracking stage</li>
+<li>list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</li>
+<li>way (feature vector i belongs to box i).</li>
+<li><strong>re_id_data (ReidData):</strong>  Data class containing data about tracked subjects</li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>float: returns a numpy array containing the feature values of a det_obj object</p>
-</blockquote>
 </div>
 
 

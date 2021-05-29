@@ -233,9 +233,8 @@ Utrecht University within the Software Project course.
         <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
         <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
-        <span class="c1"># Use tracked boxes for possible re-identification</span>
-        <span class="c1"># TODO: CHANGE</span>
-        <span class="c1"># print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))</span>
+        <span class="c1"># Use the frame object and the tracked boxes for re-identification</span>
+        <span class="n">re_identifier</span><span class="o">.</span><span class="n">re_identify</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="c1"># Buffer the tracked object</span>
         <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
@@ -259,7 +258,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket client to get the message queue from</span>
-<span class="sd">        framebuffer (dict): Frame buffer containing previous frames and bounding boxes</span>
+<span class="sd">        framebuffer (FrameBuffer): Frame buffer containing previous frames and bounding boxes</span>
 <span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -567,9 +566,8 @@ Utrecht University within the Software Project course.
         <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
         <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
-        <span class="c1"># Use tracked boxes for possible re-identification</span>
-        <span class="c1"># TODO: CHANGE</span>
-        <span class="c1"># print(re_identifier.extract_features_boxes(frame_obj, tracked_boxes))</span>
+        <span class="c1"># Use the frame object and the tracked boxes for re-identification</span>
+        <span class="n">re_identifier</span><span class="o">.</span><span class="n">re_identify</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="c1"># Buffer the tracked object</span>
         <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
@@ -624,7 +622,7 @@ Sends detections to client if client is used (HlsCapture).</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket client to get the message queue from</span>
-<span class="sd">        framebuffer (dict): Frame buffer containing previous frames and bounding boxes</span>
+<span class="sd">        framebuffer (FrameBuffer): Frame buffer containing previous frames and bounding boxes</span>
 <span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -662,7 +660,7 @@ Sends detections to client if client is used (HlsCapture).</p>
 
 <ul>
 <li><strong>ws_client (WebsocketClient):</strong>  Websocket client to get the message queue from</li>
-<li><strong>framebuffer (dict):</strong>  Frame buffer containing previous frames and bounding boxes</li>
+<li><strong>framebuffer (FrameBuffer):</strong>  Frame buffer containing previous frames and bounding boxes</li>
 <li><strong>re_identifier (IReIdentifier):</strong>  re-identifier extracting features and comparing them</li>
 <li><strong>re_id_data (ReidData):</strong>  Object containing data necessary for re-identification</li>
 </ul>

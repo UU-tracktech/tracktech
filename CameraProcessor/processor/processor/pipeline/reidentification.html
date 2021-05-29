@@ -83,7 +83,7 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot; Contains reidentification interface</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -91,8 +91,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-
-<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Superclass for identifiers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -108,22 +107,24 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the similarity rate between the feature vectors of the query object and the gallery object.</span>
+    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject</span>
+<span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
+<span class="sd">        to an existing bounding box. Does not return anything, just updates the existing list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query_features (numpy.array(float)): The feature vector of the query object.</span>
-<span class="sd">            gallery_features (numpy.array(float)): The feature vector of a object in the gallery.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: returns a numpy array containing the feature values of a det_obj object</span>
+<span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage</span>
+<span class="sd">            list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
+<span class="sd">            way (feature vector i belongs to box i).</span>
+<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Similarity function not implemented&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Reidentification function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Detection abstract class</p>
+            <div class="docstring"><p>Contains reidentification interface</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -151,7 +152,7 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">processor.utils.features</span> <span class="k">as</span> <span class="nn">UtilsFeatures</span>
 <span class="kn">import</span> <span class="nn">processor.pipeline.reidentification.ireidentifier</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid.torchreid.utils</span> <span class="kn">import</span> <span class="n">FeatureExtractor</span>
-<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cosine</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">euclidean</span> <span class="c1">#cosine</span>
 
 
 <span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">reidentification</span><span class="o">.</span><span class="n">ireidentifier</span><span class="o">.</span><span class="n">IReIdentifier</span><span class="p">):</span>
@@ -186,6 +187,7 @@ Utrecht University within the Software Project course.
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extracts features from a single bounding box by generating a</span>
@@ -204,7 +206,7 @@ Utrecht University within the Software Project course.
         <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array</span>
-        <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">feature</span>
 
@@ -233,25 +235,52 @@ Utrecht University within the Software Project course.
 <span class="sd">            query_features ([float]): the feature vector of the query image.</span>
 <span class="sd">            gallery_features ([float]): the feature vector of the gallery image.</span>
 
-<span class="sd">        Returns: float: returns the cosine similarity of two feature vectors.</span>
+<span class="sd">        Returns: float: returns the similarity value of two feature vectors.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cosine_similarity</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">cosine</span><span class="p">(</span><span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cosine_similarity</span>
+        <span class="c1"># cosine_similarity = 1 - cosine(query_features, gallery_features)</span>
+        <span class="c1"># return cosine_similarity</span>
 
-    <span class="k">def</span> <span class="nf">reidentify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">track_features</span><span class="p">,</span> <span class="n">query_box_id</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple a detection to an earlier detection of a</span>
-<span class="sd">        tracked subject.</span>
+        <span class="n">euclidean_distance</span> <span class="o">=</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">euclidean_distance</span>
 
-<span class="sd">        Updates list of bounding box by possibly assigning an object ID to an existing bounding box.</span>
+    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performing re-identification using torchreid to possibly couple bounding boxes to a tracked subject</span>
+<span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
+<span class="sd">        to an existing bounding box. Does not return anything, just updates the existing list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
+<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage</span>
+<span class="sd">            list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
+<span class="sd">            way (feature vector i belongs to box i).</span>
+<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># query_features: features van persoon om te tracken</span>
-        <span class="c1"># det_features: lijst van features van alle bounding boxes op deze frame</span>
-        <span class="c1"># threshold: threshold waarbij je bepaalt om ze hetzelfde te noemen</span>
+        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+        <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
 
-        <span class="c1"># TODO: ALs tracking_dict bestaat, update deze dan ook</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="c1"># Loop over all objects being followed</span>
+        <span class="k">for</span> <span class="n">query_id</span> <span class="ow">in</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_queries</span><span class="p">():</span>
+            <span class="n">query_feature</span> <span class="o">=</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_feature_for_query</span><span class="p">(</span><span class="n">query_id</span><span class="p">)</span>
+
+            <span class="c1"># track_features: list of feature vectors in same order as bounding boxes</span>
+            <span class="c1"># Loop over the detected features in the frame</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_features</span><span class="p">):</span>
+                <span class="c1"># if the bounding box is already assigned to an object, don&#39;t compare it</span>
+                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_object_id</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># calculate the similarity value of the 2 feature vectors</span>
+                    <span class="n">similarity_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">query_feature</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">similarity_value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
+                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span>
+
+                        <span class="c1"># Store that this box id belongs to a certain object id</span>
+                        <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
+
+                        <span class="c1"># Update object id of the box</span>
+                        <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_object_id</span><span class="p">(</span><span class="n">query_id</span><span class="p">)</span>
+
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Re-Id of object </span><span class="si">{</span><span class="n">query_id</span><span class="si">}</span><span class="s2"> in box </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
