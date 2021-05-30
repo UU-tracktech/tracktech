@@ -260,12 +260,19 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;frameId&quot;  | The identifier of the frame on which the bounding box of the object to be tracked</span>
 <span class="sd">                                   was computed.</span>
 <span class="sd">                    - &quot;boxId&quot;    | The identifier of the bounding box computed for the object to be tracked.</span>
+<span class="sd">                    - &quot;image&quot;    | A serialisation of an image cutout of the subject to be tracked</span>
+<span class="sd">                Of these parameters, at least &quot;image&quot;, or the combination of &quot;frameId&quot; and &quot;boxId&quot; should</span>
+<span class="sd">                be present, though a full combination is also possible.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;cameraId&quot;</span><span class="p">]</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
-        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frameId&quot;</span><span class="p">)</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;boxId&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frame_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">camera_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
@@ -277,12 +284,21 @@ Utrecht University within the Software Project course.
             <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s2"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="n">processor_message</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-            <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
-            <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">box_id</span>
-        <span class="p">}))</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="k">if</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+
+        <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">processor_message</span>
+        <span class="p">))</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop_tracking</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
@@ -473,12 +489,19 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;frameId&quot;  | The identifier of the frame on which the bounding box of the object to be tracked</span>
 <span class="sd">                                   was computed.</span>
 <span class="sd">                    - &quot;boxId&quot;    | The identifier of the bounding box computed for the object to be tracked.</span>
+<span class="sd">                    - &quot;image&quot;    | A serialisation of an image cutout of the subject to be tracked</span>
+<span class="sd">                Of these parameters, at least &quot;image&quot;, or the combination of &quot;frameId&quot; and &quot;boxId&quot; should</span>
+<span class="sd">                be present, though a full combination is also possible.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;cameraId&quot;</span><span class="p">]</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
-        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frameId&quot;</span><span class="p">)</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;boxId&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frame_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">camera_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
@@ -490,12 +513,21 @@ Utrecht University within the Software Project course.
             <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s2"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="n">processor_message</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-            <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
-            <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">box_id</span>
-        <span class="p">}))</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="k">if</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+
+        <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">processor_message</span>
+        <span class="p">))</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop_tracking</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
@@ -906,12 +938,19 @@ format.</p>
 <span class="sd">                    - &quot;frameId&quot;  | The identifier of the frame on which the bounding box of the object to be tracked</span>
 <span class="sd">                                   was computed.</span>
 <span class="sd">                    - &quot;boxId&quot;    | The identifier of the bounding box computed for the object to be tracked.</span>
+<span class="sd">                    - &quot;image&quot;    | A serialisation of an image cutout of the subject to be tracked</span>
+<span class="sd">                Of these parameters, at least &quot;image&quot;, or the combination of &quot;frameId&quot; and &quot;boxId&quot; should</span>
+<span class="sd">                be present, though a full combination is also possible.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;cameraId&quot;</span><span class="p">]</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
-        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frameId&quot;</span><span class="p">)</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;boxId&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frame_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">camera_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
@@ -923,12 +962,21 @@ format.</p>
             <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s2"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="n">processor_message</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-            <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
-            <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">box_id</span>
-        <span class="p">}))</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="k">if</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+
+        <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="n">processor_message</span>
+        <span class="p">))</span>
 </pre></div>
 
         </details>
@@ -945,6 +993,9 @@ format.</p>
 <li>"frameId"  | The identifier of the frame on which the bounding box of the object to be tracked
               was computed.</li>
 <li>"boxId"    | The identifier of the bounding box computed for the object to be tracked.</li>
+<li>"image"    | A serialisation of an image cutout of the subject to be tracked
+Of these parameters, at least "image", or the combination of "frameId" and "boxId" should
+be present, though a full combination is also possible.</li>
 </ul></li>
 </ul>
 
