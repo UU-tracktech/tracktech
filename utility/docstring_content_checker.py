@@ -379,7 +379,7 @@ class DocstringContentChecker(BaseChecker):
             section_name (str): Name of the section.
 
         Returns:
-            bool, str: Whether a section was found and what the name is of that section.
+            bool, str, str: Whether a section was found and what the name and type of the argument is.
         """
         # No type definition inside this line.
         if not line.__contains__(':'):
