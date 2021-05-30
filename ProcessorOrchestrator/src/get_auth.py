@@ -1,11 +1,10 @@
-"""File that contains method to create authorisation parameters
+"""File that contains method to create authorisation parameters.
 
 This file sets up the tornado application.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import os
@@ -15,9 +14,10 @@ import src.logger as logger
 
 
 def get_auth_params():
-    """ Uses environment variables to create authentication parameters for the tornado application.
+    """Uses environment variables to create authentication parameters for the tornado application.
 
-    Returns: Auth objects for the client and processor if keys were provided in the environment variables.
+    Returns:
+        Auth, Auth: Objects for the client and processor if keys were provided in the environment variables.
     """
     public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
     client_auth, processor_auth = None, None

@@ -74,7 +74,7 @@ class DocstringContentChecker(BaseChecker):
                   'unknown-section',
                   'Emitted when docstring section is of the wrong type'
                   ),
-        'C1129': (f'Section: "%s" is not formatted correctly, should be "<section-name>:\\n"',
+        'C1129': ('Section: "%s" is not formatted correctly, should be "<section-name>:\\n"',
                   'section-wrong-format',
                   'Emitted when docstring section has the wrong format'
                   ),
@@ -386,7 +386,7 @@ class DocstringContentChecker(BaseChecker):
             return False, "", ""
 
         # Strict argument match.
-        arg_match = re.match(r'^\s*([a-z_0-9]+)\s\(([^:{}]+)\):\s.*$', line)
+        arg_match = re.match(r'^\s*([a-z_0-9]+)\s\(([^:{}]+)\):.*$', line)
 
         # Return match immediately when correctly formatted.
         if arg_match is not None:
@@ -417,6 +417,7 @@ class DocstringContentChecker(BaseChecker):
         """Checks whether the current line matches a section.
 
         Args:
+            node (Any): Node the pylint message is connected to when linting error is found.
             line (str): Line of which to check of whether it starts a section.
 
         Returns:

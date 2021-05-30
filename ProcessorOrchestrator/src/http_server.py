@@ -5,7 +5,6 @@ This file contains methods to create a http or https server.
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import os
@@ -17,16 +16,15 @@ import src.logger as logger
 
 
 def create_http_servers(app):
-    """Creates http server and https server if ssl options are given in the environment
+    """Creates http server and https server if ssl options are given in the environment.
 
     Args:
-        app(tornado.web.Application): the web application to use when creating the servers.
+        app (tornado.web.Application): the web application to use when creating the servers.
 
     Returns:
-        The one or two created tornado http servers
-
+        HTTPServer, HTTPServer: The one or two created tornado http servers, second one containing ssl options.
     """
-    # Get ssl ready, if provided in the environment variables
+    # Get ssl ready, if provided in the environment variables.
     cert = os.environ.get('SSL_CERT')
     key = os.environ.get('SSL_KEY')
     use_tls = cert is not None and key is not None
@@ -34,7 +32,7 @@ def create_http_servers(app):
     https_server = None
 
     if use_tls:
-        # Create a ssl context
+        # Create a ssl context.
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_ctx.load_cert_chain(cert, key)
 
@@ -43,7 +41,7 @@ def create_http_servers(app):
         https_server.listen(443)
         logger.log('listening over https')
 
-    # Create a http server
+    # Create a http server.
     http_server = HTTPServer(app)
     http_server.listen(80)
     logger.log('listening over http')

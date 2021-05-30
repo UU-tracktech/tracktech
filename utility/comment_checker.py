@@ -88,7 +88,7 @@ class CommentChecker(BaseChecker):
 
     @staticmethod
     def get_line_indices(line):
-        """Gets the line start and stop index to improve the linting message
+        """Gets the line start and stop index to improve the linting message.
 
         Args:
             line (str): Line of which to get the start and end
