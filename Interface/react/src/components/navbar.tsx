@@ -46,6 +46,9 @@ export function NavMenu() {
         <Menu.Item>
           <Link to='/'>Home</Link>
         </Menu.Item>
+        <Menu.Item style={{ borderBottom: '0px' }}>
+          <Link to='/timelines'>Timelines</Link>
+        </Menu.Item>
       </Menu>
 
       {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
