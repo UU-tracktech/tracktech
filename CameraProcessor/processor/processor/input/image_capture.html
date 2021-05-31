@@ -92,7 +92,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Attributes:</span>
 <span class="sd">        images_paths (List[str]): List of paths of images in folder.</span>
 <span class="sd">        nr_images (int): Number of images contained in folder.</span>
-<span class="sd">        image_index (int): Index of current image frame.</span>
+<span class="sd">        __image_index (int): Index of current image frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_dir</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets all the paths to images inside the folder and stores them in order.</span>
@@ -104,11 +104,10 @@ Utrecht University within the Software Project course.
         <span class="c1"># Gets the number of images from the folder.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">images_dir</span><span class="p">,</span> <span class="n">image_name</span><span class="p">)</span>
                                     <span class="k">for</span> <span class="n">image_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">images_dir</span><span class="p">)])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">images_dir</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">)</span>
 
-        <span class="c1"># Start index is -1 because we want to know the index of current after it has been incremented</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1"># Start index is -1 because we want to know the index of current after it has been incremented.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span><span class="si">}</span><span class="s1"> images inside the folder&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -117,11 +116,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether there are more images to iterate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the capture by setting the index higher than the number of images.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the list of images.</span>
@@ -134,9 +133,9 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="c1"># Get path of next frame</span>
-        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Get path of next frame.</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span><span class="p">]</span>
 
         <span class="c1"># Reads the image file and returns it.</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
@@ -163,7 +162,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Attributes:</span>
 <span class="sd">        images_paths (List[str]): List of paths of images in folder.</span>
 <span class="sd">        nr_images (int): Number of images contained in folder.</span>
-<span class="sd">        image_index (int): Index of current image frame.</span>
+<span class="sd">        __image_index (int): Index of current image frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_dir</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets all the paths to images inside the folder and stores them in order.</span>
@@ -175,11 +174,10 @@ Utrecht University within the Software Project course.
         <span class="c1"># Gets the number of images from the folder.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">images_dir</span><span class="p">,</span> <span class="n">image_name</span><span class="p">)</span>
                                     <span class="k">for</span> <span class="n">image_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">images_dir</span><span class="p">)])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">images_dir</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">)</span>
 
-        <span class="c1"># Start index is -1 because we want to know the index of current after it has been incremented</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1"># Start index is -1 because we want to know the index of current after it has been incremented.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span><span class="si">}</span><span class="s1"> images inside the folder&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -188,11 +186,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether there are more images to iterate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the capture by setting the index higher than the number of images.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the list of images.</span>
@@ -205,9 +203,9 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="c1"># Get path of next frame</span>
-        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Get path of next frame.</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span><span class="p">]</span>
 
         <span class="c1"># Reads the image file and returns it.</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
@@ -223,7 +221,7 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>images_paths (List[str]):</strong>  List of paths of images in folder.</li>
 <li><strong>nr_images (int):</strong>  Number of images contained in folder.</li>
-<li><strong>image_index (int):</strong>  Index of current image frame.</li>
+<li><strong>__image_index (int):</strong>  Index of current image frame.</li>
 </ul>
 </div>
 
@@ -247,11 +245,10 @@ Utrecht University within the Software Project course.
         <span class="c1"># Gets the number of images from the folder.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">images_dir</span><span class="p">,</span> <span class="n">image_name</span><span class="p">)</span>
                                     <span class="k">for</span> <span class="n">image_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">images_dir</span><span class="p">)])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">images_dir</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">)</span>
 
-        <span class="c1"># Start index is -1 because we want to know the index of current after it has been incremented</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1"># Start index is -1 because we want to know the index of current after it has been incremented.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span><span class="si">}</span><span class="s1"> images inside the folder&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -284,7 +281,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: Whether there are more images to iterate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span>
 </pre></div>
 
         </details>
@@ -312,7 +309,7 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the capture by setting the index higher than the number of images.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_images</span> <span class="o">+</span> <span class="mi">1</span>
 </pre></div>
 
         </details>
@@ -343,9 +340,9 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_index</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="c1"># Get path of next frame</span>
-        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Get path of next frame.</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__image_index</span><span class="p">]</span>
 
         <span class="c1"># Reads the image file and returns it.</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
