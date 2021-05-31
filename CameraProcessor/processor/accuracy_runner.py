@@ -13,6 +13,7 @@ from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.utils.config_parser import ConfigParser
 from processor.utils.text import boxes_to_txt
 from processor.utils.create_runners import create_tracker, create_detector
+from processor.data_object.reid_data import ReidData
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -29,11 +30,6 @@ def main(configs):
     # Initialize the accuracy config
     accuracy_config = configs['Accuracy']
 
-    # Opening files where the information is stored that is used to determine the accuracy.
-    accuracy_dest = accuracy_config['det_path']
-    accuracy_info_dest = accuracy_config['det-info_path']
-    detection_file = open(accuracy_dest, 'w')
-
     print('I will write the detection objects to a txt file')
 
     # Capture the image stream.
@@ -41,12 +37,18 @@ def main(configs):
 
     # Instantiate the detector.
     print("Instantiating detector...")
-    detector = create_detector(configs['Accuracy']['detector'], configs)
+    detector, _ = create_detector(configs['Accuracy']['detector'], configs)
     tracker = create_tracker(configs['Accuracy']['tracker'], configs)
 
     # Frame counter starts at 0. Will probably work differently for streams.
     print("Starting video stream...")
-    counter = 0
+    counter = 1
+
+    # Reid data
+    reid_data = ReidData()
+
+    # List for sorting the writed data
+    write_list = []
 
     # Using default values.
     shape = [10000, 10000]
@@ -57,24 +59,37 @@ def main(configs):
         if not ret:
             continue
 
-        bounding_boxes = detector.detect(frame_obj)
+        detected_boxes = detector.detect(frame_obj)
+        tracked_boxes = tracker.track(frame_obj, detected_boxes, reid_data)
 
         # Convert boxes to string.
-        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(), counter)
+        boxes_string = boxes_to_txt(tracked_boxes.get_bounding_boxes(), frame_obj.get_shape(), counter)
+        for bb in tracked_boxes.get_bounding_boxes():
+            boxes_string2 = boxes_to_txt([bb], frame_obj.get_shape(), counter)
+            write_list.append((bb.get_identifier(), counter, boxes_string2))
 
-        # Write boxes found by detection to.
-        try:
-            detection_file.write(boxes_string)
-        except RuntimeError as run_error:
-            print(f'Cannot write to the file with following exception: {run_error}')
-
-        # Save the shape so it can be saved in the detection-info file.
         shape = frame_obj.get_shape()
         counter += 1
 
+    # Sorting the list:
+    write_list.sort(key=lambda e: e[:2])
+    write_list = [x[2] for x in write_list]
+    write_list[len(write_list) - 1] = write_list[len(write_list) - 1].rstrip("\n")
+
+    accuracy_dest = accuracy_config['det_path']
+    accuracy_info_dest = accuracy_config['det-info_path']
+    detection_file = open(accuracy_dest, 'w')
+    detection_file_info = open(accuracy_info_dest, 'w')
+
+    # Write boxes to file
+    try:
+        for entry in write_list:
+            detection_file.write(entry)
+    except RuntimeError as run_error:
+        print(f'Error encountered during writing to file: {run_error}')
+
     # Close files.
     detection_file.close()
-    detection_file_info = open(accuracy_info_dest, 'w')
     detection_file_info.write(f'{counter-1},{shape[0]},{shape[1]}')
     detection_file_info.close()
 
