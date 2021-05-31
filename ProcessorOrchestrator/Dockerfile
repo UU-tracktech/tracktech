@@ -36,7 +36,7 @@ RUN ["mkdir", "tracking_timelines"]
 
 FROM test as lint
 WORKDIR /app
-ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc","--output-format=colorized"]
+ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
 
 
 FROM python:3.8-slim-buster AS build

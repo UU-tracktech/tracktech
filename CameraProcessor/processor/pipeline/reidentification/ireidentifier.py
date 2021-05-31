@@ -1,36 +1,34 @@
-"""Detection abstract class
+"""Contains reidentification interface, containing the functionality required for an implementation.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 
-class IReIdentifier:
-    """Superclass for identifiers.
-    """
+class IReIdentifier():
+    """Superclass for identifiers."""
 
     def extract_features(self, frame_obj, track_obj):
         """Given a det_obj object, extract the features of it.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage
+            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
 
         Returns:
-            float[]: returns the feature vectors of the tracked objects.
+            [float]: Feature vectors of the tracked objects.
         """
         raise NotImplementedError("Extract features function not implemented")
 
-    def similarity(self, query_features, gallery_features):
-        """Compute the similarity rate between the feature vectors of the query object and the gallery object.
+    def re_identify(self, frame_obj, track_obj, re_id_data):
+        """Performing re-identification using a re-idintification implementation.
 
         Args:
-            query_features (numpy.array(float)): The feature vector of the query object.
-            gallery_features (numpy.array(float)): The feature vector of a object in the gallery.
-
-        Returns:
-            float: returns a numpy array containing the feature values of a det_obj object
+            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.
+            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.
+                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same
+                way (feature vector i belongs to box i).
+            re_id_data (ReidData): Data class containing data about tracked subjects.
         """
-        raise NotImplementedError("Similarity function not implemented")
+        raise NotImplementedError("Reidentification function not implemented")
