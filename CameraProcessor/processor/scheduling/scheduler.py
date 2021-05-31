@@ -1,27 +1,24 @@
-"""Defines the scheduler class, is for executing tasks concurrently by creating node structure
+"""Defines the scheduler class, is for executing tasks concurrently by creating node structure.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from queue import Queue
 
 
 class Scheduler:
-    """Sequential scheduler executing a starting node and all children of
-    said node when they are ready for execution.
+    """Sequential scheduler executing a starting node and all children of said node when they are ready for execution.
 
     Attributes:
         start_node (INode): INode representing the initial input node, starting point of the graph.
-        queue (Queue): a queue containing nodes to execute, initially contains start_node
+        queue (Queue): A queue containing nodes to execute, initially contains start_node
             and other nodes are put in queue when ready.
         queued (set): set of all nodes that have been queued in the current iteration.
     """
 
     def __init__(self, start_node):
-        """Inits Scheduler with a starting node that contains the graph
-        and a queue to determine execution order.
+        """Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.
 
         Args:
             start_node (INode): INode representing the initial input node, starting point of the graph.
@@ -29,7 +26,7 @@ class Scheduler:
         self.start_node = start_node
 
         self.queue = Queue()
-        self.queued: set = set()
+        self.queued = set()
 
     def schedule_graph(self, input_obj):
         """Executes an iteration on the graph.
@@ -43,7 +40,7 @@ class Scheduler:
         Raises:
             Exception: a node in the queue wasn't executable.
         """
-        self.queued: set = set()
+        self.queued = set()
 
         self.start_node.assign(input_obj, 0)
 

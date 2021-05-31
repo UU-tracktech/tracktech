@@ -8,13 +8,16 @@ on:
   pull_request:
     paths:
       - VideoForwarder/**
+    branches:
+      - develop
+      - master
 
 jobs:
   forwarder_test_unit:
     name: Forwarder Unit Test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build and run
@@ -28,5 +31,5 @@ jobs:
           flags: Forwarder
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
-        run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down
+        run: docker-compose -f ./VideoForwarder/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}

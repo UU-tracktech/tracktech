@@ -77,7 +77,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
     "jest-fetch-mock": "^3.0.3",
-    "prettier": "^2.2.1",
-    "queue-typescript": "^1.0.1"
+    "prettier": "^2.2.1"
   }
 }

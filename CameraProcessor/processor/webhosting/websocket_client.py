@@ -1,9 +1,8 @@
-""" Websocket client class that can connect to a websocket client url and write/read messages asynchronously.
+"""Websocket client class that can connect to a websocket client url and write/read messages asynchronously.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import asyncio
@@ -18,28 +17,30 @@ from processor.webhosting.stop_command import StopCommand
 
 class WebsocketClient:
     """Async websocket client that connects to a specified url and read/write messages.
-    Should not be instantiated directly. Rather, use the create_client function.
+
+    Note:
+        Should not be instantiated directly. Rather, use the create_client function.
 
     Attributes:
-        connection (WebsocketClient.Connection): Connection object of the websocket
-        reconnecting (bool): Whether or not we have to reconnect
-        websocket_url (str): Url of the websocket
-        write_queue (List[]): Stores messages that could not be sent due to a closed socket
-        message_queue (Queue): Stores commands sent from orchestrator
-        identifier (str): Identifier of the camera processor for the orchestrator
+        connection (WebsocketClient.Connection): Connection object of the websocket.
+        reconnecting (bool): Whether or not we have to reconnect.
+        websocket_url (str): Url of the websocket.
+        write_queue ([str]): Stores messages that could not be sent due to a closed socket.
+        message_queue (Queue): Stores commands sent from orchestrator.
+        identifier (str): Identifier of the camera processor for the orchestrator.
     """
 
     def __init__(self, websocket_url, identifier=None):
-        """Initialize the websocket client class with relevant parameters
+        """Initialize the websocket client class with relevant parameters.
 
         Args:
-            websocket_url (str): url of the websocket
-            identifier (str): Identifier of the camera-processor
+            websocket_url (str): url of the websocket.
+            identifier (str): Identifier of the camera-processor.
         """
         self.connection = None
         self.reconnecting = False
         self.websocket_url = websocket_url
-        # List of messages that could not get sent
+        # List of messages that could not get sent.
         self.write_queue = []
         self.message_queue = deque()
         self.identifier = identifier
@@ -50,17 +51,17 @@ class WebsocketClient:
         sleep = 1
         connected = False
 
-        # Whilst there is no connection
+        # Whilst there is no connection.
         while not connected and timeout_left > 0:
-            # Reconnect
+            # Reconnect.
             try:
                 self.connection =\
                     await websocket.websocket_connect(self.websocket_url,
                                                       on_message_callback=self._on_message)
                 logging.info(f'Connected to {self.websocket_url} successfully')
 
-                # Send an identification message to the orchestrator on connect
-                # Only do this when the websocket is a processor socket
+                # Send an identification message to the orchestrator on connect.
+                # Only do this when the websocket is a processor socket.
                 if self.identifier is not None:
                     id_message = json.dumps({
                         "type": "identifier",
@@ -70,34 +71,32 @@ class WebsocketClient:
                     await self.connection.write_message(id_message)
 
                 connected = True
-            # Reconnect failed
+            # Reconnect failed.
             except ConnectionRefusedError:
                 logging.warning(f"Could not connect to {self.websocket_url}, trying again in 1 second...")
                 await asyncio.sleep(sleep)
                 timeout_left -= sleep
 
-        # If timeout was reached without connection
+        # If timeout was reached without connection.
         if not connected:
             logging.error("Could never connect with orchestrator")
             raise TimeoutError("Never connected with orchestrator")
 
     async def disconnect(self):
-        """Disconnects the websocket
-
-        """
+        """Disconnects the websocket."""
         loop = asyncio.get_event_loop()
 
-        # If event loop was already not closed
+        # If event loop was already not closed.
         if not loop.is_closed():
-            # Wait until all tasks are complete
+            # Wait until all tasks are complete.
             for task in asyncio.all_tasks():
                 if not task.done():
                     await asyncio.sleep(0)
 
-            # Cancels any new tasks in the asyncio loop
+            # Cancels any new tasks in the asyncio loop.
             loop.stop()
 
-        # Close connection
+        # Close connection.
         self.connection.close()
 
     def write_message(self, message):
@@ -115,26 +114,26 @@ class WebsocketClient:
         """Internal write message that also writes all messages on the write queue if possible.
 
         Args:
-            message: the message to write
+            message: the message to write.
         """
         try:
             if self.connection is None:
                 raise websocket.WebSocketClosedError
 
-            # Write all not yet sent messages
+            # Write all not yet sent messages.
             for old_msg in self.write_queue:
                 self.connection.write_message(old_msg)
                 logging.info(f'Writing old message: {message}')
 
-            # Clear the write queue
+            # Clear the write queue.
             self.write_queue = []
 
-            # Write the new message
+            # Write the new message.
             await self.connection.write_message(message)
             logging.info(f'Writing message: {message}')
 
         except websocket.WebSocketClosedError:
-            # Non-blocking call to reconnect if necessary
+            # Non-blocking call to reconnect if necessary.
             if not self.reconnecting:
                 self.reconnecting = True
                 await self.connect()
@@ -147,9 +146,9 @@ class WebsocketClient:
         """On message callback function.
 
         Args:
-            message: the raw message posted on the websocket.
+            message (Union[str, bytes]): the raw message posted on the websocket.
         """
-        # Websocket closed, reconnect is handled by write_message
+        # Websocket closed, reconnect is handled by write_message.
         if not message:
             logging.error("The websocket connection was closed")
             return
@@ -157,7 +156,7 @@ class WebsocketClient:
         try:
             message_object = json.loads(message)
 
-            # Switch on message type
+            # Switch on message type.
             actions = {
                 "featureMap":
                     lambda: self.update_feature_map(message_object),
@@ -167,7 +166,7 @@ class WebsocketClient:
                     lambda: self.stop_tracking(message_object)
             }
 
-            # Execute correct function
+            # Execute correct function.
             function = actions.get(message_object["type"])
             if function is None:
                 logging.warning(f'Someone gave an unknown command: {message}')
@@ -179,13 +178,13 @@ class WebsocketClient:
         except KeyError:
             logging.warning(f'Someone missed a property in their json: {message}')
 
-    # Mock methods on received commands
+    # Mock methods on received commands.
     # pylint: disable=R0201
     def update_feature_map(self, message):
         """Handler for received feature maps.
 
         Args:
-            message: JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of the sent message.
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
@@ -195,7 +194,7 @@ class WebsocketClient:
         """Handler for the "start tracking" command.
 
         Args:
-            message: JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of the sent message.
         """
         frame_id = message["frameId"]
         box_id = message["boxId"]
@@ -207,7 +206,7 @@ class WebsocketClient:
         """Handler for the "stop tracking" command.
 
         Args:
-            message: JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of the sent message.
         """
         object_id = message["objectId"]
 

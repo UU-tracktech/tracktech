@@ -1,9 +1,8 @@
-"""An example wrapper file for scheduling
+"""An example wrapper file for scheduling.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 from processor.scheduling.scheduler import Scheduler
@@ -17,42 +16,39 @@ from tests.unittests.scheduling.utils.output_component import OutputComponent
 
 # pylint: disable=unused-argument
 def func(_):
-    """An empty function for testing purposes, to be passed to Output Components
-
-    """
+    """An empty function for testing purposes, to be passed to Output Components."""
 
 
 class ScheduleWrapper:
-    """A schedule wrapper for testing purposes
+    """A schedule wrapper for testing purposes, contains.
 
+    Attributes:
+        scheduler (Scheduler): Scheduler on which the test is run.
+        schedule_input_node (ScheduleNode): First node of the schedule.
+        schedule_output_node (ScheduleNode): Last node of the schedule.
     """
     def __init__(self):
+        """Create the wrapper and define some helper attributes."""
         self.scheduler = None
-        self.schedule_output_node = None
         self.schedule_input_node = None
+        self.schedule_output_node = None
 
     def prepare_invalid_schedule(self):
-        """Prepare an invalid schedule
-
-        """
+        """Prepare an invalid schedule."""
         self.schedule_output_node = self.schedule_input_node = ScheduleNode(3, [(), ()], OutputComponent(func))
         self.scheduler = Scheduler(self.schedule_output_node)
 
     def prepare_empty_schedule(self):
-        """Prepares a very small schedule
-
-        """
+        """Prepares a very small schedule."""
         self.schedule_output_node = self.schedule_input_node = ScheduleNode(1, [], OutputComponent(func))
         self.scheduler = Scheduler(self.schedule_output_node)
 
     def prepare_big_schedule(self):
-        """Prepares a full schedule
-
-        """
+        """Prepares a full schedule."""
         # Last node/layer.
         self.schedule_output_node = ScheduleNode(1, [], OutputComponent(func))
 
-        # Merges layers back together
+        # Merges layers back together.
         layer3_single_output_node = ScheduleNode(1, [(self.schedule_output_node, 0)], SingleOutputComponent())
 
         # Intermediary layer.

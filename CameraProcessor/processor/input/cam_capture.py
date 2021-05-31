@@ -1,9 +1,8 @@
-"""Contains camera capture class
+"""Contains camera capture class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import time
@@ -19,7 +18,6 @@ class CamCapture(ICapture):
 
     Attributes:
         cap (cv2.VideoCapture): Capture that serves webcam frame one by one.
-
     """
     def __init__(self):
         """Opens capture that connects to webcam.
@@ -31,21 +29,19 @@ class CamCapture(ICapture):
         """Checks if webcam is still opened.
 
         Returns:
-            Boolean whether webcam is still on.
+            bool: whether webcam is still on.
         """
         return self.cap.isOpened()
 
     def close(self):
-        """Releases webcam
-        """
+        """Releases webcam."""
         self.cap.release()
 
     def get_next_frame(self):
         """Gets the next frame from the capture object.
 
-        Returns ():
-            Boolean whether a next frame was found
-            Next webcam frame.
+        Returns:
+            bool, numpy.ndarray: Whether a next frame was found and its frame.
         """
         ret, frame = self.cap.read(0)
         return ret, FrameObj(frame, time.time())

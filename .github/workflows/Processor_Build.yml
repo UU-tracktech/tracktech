@@ -28,11 +28,11 @@ jobs:
     name: Processor build compose test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build camera processor test service
         run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml build --no-cache
       - name: Remove
-        run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml rm
+        run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml down --rmi all
         if: ${{ always() }}
