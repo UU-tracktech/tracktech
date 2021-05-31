@@ -38,7 +38,7 @@ class JSONDataloader(IDataloader):
         for annotation in annotations:
             (image_id, person_id, certainty, object_type, pos_x, pos_y, pos_x2, pos_y2) = annotation
             if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, self.__get_image_name(current_image_id)))
+                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
                 current_boxes = []
                 current_image_id = image_id
             current_boxes.append(BoundingBox(classification='person',

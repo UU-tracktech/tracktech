@@ -76,12 +76,15 @@ class AccuracyObject:
         return list_parsed_boxes
 
     def get_dataloader(self, type, path_location):
-        switch = {
-            "COCO": COCODataloader(self.configs, path_location),
-            "JSON": JSONDataloader(self.configs, path_location),
-            "MOT": MOTDataloader(self.configs, path_location)
-        }
-        return switch.get(type, ValueError("This is not a valid dataloader"))
+        if type == 'COCO':
+            dataloader = COCODataloader(self.configs, path_location)
+        elif type == 'JSON':
+            dataloader = JSONDataloader(self.configs, path_location)
+        elif type == 'MOT':
+            dataloader = MOTDataloader(self.configs, path_location)
+        else:
+            return ValueError("This is not a valid dataloader")
+        return dataloader
 
     def read_boxes(self, type, path_location):
         """A method for reading the bounding boxes with the pre_annotations.
