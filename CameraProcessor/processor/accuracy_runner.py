@@ -26,8 +26,7 @@ def main(configs):
     Args:
         configs (ConfigParser): Configurations to run the accuracy with.
     """
-    # Load the config file, take the relevant Yolov5 section.
-    yolov5_config = configs['Yolov5']
+    # Initialize the accuracy config
     accuracy_config = configs['Accuracy']
 
     # Opening files where the information is stored that is used to determine the accuracy.
@@ -42,8 +41,8 @@ def main(configs):
 
     # Instantiate the detector.
     print("Instantiating detector...")
-    detector = create_detector('yolov5', configs)
-    tracker = create_tracker('sort', configs)
+    detector = create_detector(configs['Accuracy']['detector'], configs)
+    tracker = create_tracker(configs['Accuracy']['tracker'], configs)
 
     # Frame counter starts at 0. Will probably work differently for streams.
     print("Starting video stream...")
