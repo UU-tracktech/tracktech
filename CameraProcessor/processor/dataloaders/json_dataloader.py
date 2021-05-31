@@ -11,6 +11,7 @@ from processor.data_object.rectangle import Rectangle
 from processor.dataloaders.idataloader import IDataloader
 import json
 
+
 class JSONDataloader(IDataloader):
     def parse_file(self):
         """Parses a file into a BoundingBoxes object.
@@ -50,7 +51,6 @@ class JSONDataloader(IDataloader):
                                              certainty=certainty))
         return bounding_boxes_list
 
-
     def __get_annotations(self):
         # Read file
         with open(self.file_path) as file:
@@ -72,8 +72,3 @@ class JSONDataloader(IDataloader):
                 y2 = box['rect'][3]
                 annotations.append((image_id, person_id, certainty, object_type, x1, y1, x2, y2))
         return annotations
-
-
-
-
-

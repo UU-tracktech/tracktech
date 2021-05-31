@@ -6,13 +6,13 @@ Utrecht University within the Software Project course.
 """
 import os
 import time
+
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
 from processor.dataloaders.coco_dataloader import COCODataloader
 from processor.dataloaders.json_dataloader import JSONDataloader
 from processor.dataloaders.mot_dataloader import MOTDataloader
-from processor.training.pre_annotations import PreAnnotations
 from processor.utils.config_parser import ConfigParser
 
 
@@ -120,7 +120,7 @@ class AccuracyObject:
         return self.parse_boxes(bounding_boxes)
 
     def detect(self):
-        """Retrieves accuracy of detections."""
+        """Retrieves accuracy of detections.
 
         Args:
             (directory from the folder specified when the object was initialized).
