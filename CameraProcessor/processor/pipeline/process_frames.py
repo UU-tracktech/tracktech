@@ -276,6 +276,12 @@ def __create_detector(idetector, config_section, configs):
 
 
 def get_reid_device(configs):
+    """
+    Args:
+        configs (ConfigParser): configuration to get the device out of
+    Returns:
+        device (String): String that represents the correct device
+    """
     device = configs['Yolov5']['device']
     if device == 'cpu':
         return 'cpu'
