@@ -58,7 +58,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.object_ids_handler    </h1>
 
-                        <div class="docstring"><p>HTTP handler to return an array of tracked object ids</p>
+                        <div class="docstring"><p>HTTP handler to return an array of tracked object ids.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -67,12 +67,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;HTTP handler to return an array of tracked object ids</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;HTTP handler to return an array of tracked object ids.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">RequestHandler</span>
 
@@ -86,25 +85,22 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets object ids.</span>
 
 <span class="sd">        Writes a response containing an array of object ids.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:</span><span class="si">{</span><span class="n">objectHistory</span><span class="si">}</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (Union[str, bytes, dict]): Chunk received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -128,25 +124,22 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets object ids.</span>
 
 <span class="sd">        Writes a response containing an array of object ids.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:</span><span class="si">{</span><span class="n">objectHistory</span><span class="si">}</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (Union[str, bytes, dict]): Chunk received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -168,23 +161,13 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Sets the default request headers for the request.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -203,9 +186,6 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Gets object ids.</span>
 
 <span class="sd">        Writes a response containing an array of object ids.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:</span><span class="si">{</span><span class="n">objectHistory</span><span class="si">}</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
@@ -215,12 +195,6 @@ Utrecht University within the Software Project course.
             <div class="docstring"><p>Gets object ids.</p>
 
 <p>Writes a response containing an array of object ids.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -236,12 +210,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (Union[str, bytes, dict]): Chunk received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Unused method that could handle streamed request data</p>
+            <div class="docstring"><p>Unused method that could handle streamed request data.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>chunk (Union[str, bytes, dict]):</strong>  Chunk received from the server.</li>
+</ul>
 </div>
 
 

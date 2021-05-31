@@ -61,7 +61,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../input.html">input</a>.icapture    </h1>
 
-                        <div class="docstring"><p>Contains the ICapture interface for different capture methods</p>
+                        <div class="docstring"><p>Contains the ICapture interface for different capture methods.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -70,12 +70,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the ICapture interface for different capture methods</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the ICapture interface for different capture methods.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 
@@ -84,8 +83,8 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns whether the capture object still opened.</span>
 
-<span class="sd">        Returns (bool):</span>
-<span class="sd">            Boolean which indicates whether stream is still opened</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Boolean which indicates whether stream is still opened</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;stopped method not implemented&#39;</span><span class="p">)</span>
 
@@ -96,9 +95,9 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the capture.</span>
 
-<span class="sd">        Returns (bool, FrameObj):</span>
-<span class="sd">            Boolean whether a next frame was found.</span>
-<span class="sd">            Frame from the capture object.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, FrameObj: Boolean whether a next frame was found.</span>
+<span class="sd">                            Frame from the capture object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No implementation for getting next frame&#39;</span><span class="p">)</span>
 </pre></div>
@@ -122,8 +121,8 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns whether the capture object still opened.</span>
 
-<span class="sd">        Returns (bool):</span>
-<span class="sd">            Boolean which indicates whether stream is still opened</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Boolean which indicates whether stream is still opened</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;stopped method not implemented&#39;</span><span class="p">)</span>
 
@@ -134,9 +133,9 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the capture.</span>
 
-<span class="sd">        Returns (bool, FrameObj):</span>
-<span class="sd">            Boolean whether a next frame was found.</span>
-<span class="sd">            Frame from the capture object.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, FrameObj: Boolean whether a next frame was found.</span>
+<span class="sd">                            Frame from the capture object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No implementation for getting next frame&#39;</span><span class="p">)</span>
 </pre></div>
@@ -171,8 +170,8 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns whether the capture object still opened.</span>
 
-<span class="sd">        Returns (bool):</span>
-<span class="sd">            Boolean which indicates whether stream is still opened</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Boolean which indicates whether stream is still opened</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;stopped method not implemented&#39;</span><span class="p">)</span>
 </pre></div>
@@ -181,8 +180,11 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Returns whether the capture object still opened.</p>
 
-<p>Returns (bool):
-    Boolean which indicates whether stream is still opened</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool: Boolean which indicates whether stream is still opened</p>
+</blockquote>
 </div>
 
 
@@ -222,9 +224,9 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the capture.</span>
 
-<span class="sd">        Returns (bool, FrameObj):</span>
-<span class="sd">            Boolean whether a next frame was found.</span>
-<span class="sd">            Frame from the capture object.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, FrameObj: Boolean whether a next frame was found.</span>
+<span class="sd">                            Frame from the capture object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No implementation for getting next frame&#39;</span><span class="p">)</span>
 </pre></div>
@@ -233,9 +235,12 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Gets the next frame from the capture.</p>
 
-<p>Returns (bool, FrameObj):
-    Boolean whether a next frame was found.
-    Frame from the capture object.</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool, FrameObj: Boolean whether a next frame was found.
+                  Frame from the capture object.</p>
+</blockquote>
 </div>
 
 

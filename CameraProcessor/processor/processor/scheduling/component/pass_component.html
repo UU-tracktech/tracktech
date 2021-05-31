@@ -77,11 +77,13 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">PassComponent</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Component that passes each object it is given as input to the next stage as output</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Component that passes each object it is given as input to the next stage as output.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">pass_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passed_input</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instantly passes input as output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            passed_input (object): Any input that is passed to the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">passed_input</span>
 
@@ -105,11 +107,13 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PassComponent</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Component that passes each object it is given as input to the next stage as output</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Component that passes each object it is given as input to the next stage as output.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">pass_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passed_input</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instantly passes input as output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            passed_input (object): Any input that is passed to the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">passed_input</span>
 
@@ -120,7 +124,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Component that passes each object it is given as input to the next stage as output</p>
+            <div class="docstring"><p>Component that passes each object it is given as input to the next stage as output.</p>
 </div>
 
 
@@ -147,6 +151,9 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pass_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passed_input</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instantly passes input as output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            passed_input (object): Any input that is passed to the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">passed_input</span>
 </pre></div>
@@ -154,6 +161,12 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Instantly passes input as output.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>passed_input (object):</strong>  Any input that is passed to the component.</li>
+</ul>
 </div>
 
 

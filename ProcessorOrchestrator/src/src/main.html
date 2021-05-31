@@ -49,7 +49,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.main    </h1>
 
-                        <div class="docstring"><p>Entry point of the application</p>
+                        <div class="docstring"><p>Entry point of the application.</p>
 
 <p>This file sets up the tornado application.</p>
 
@@ -60,14 +60,13 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Entry point of the application</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Entry point of the application.</span>
 
 <span class="sd">This file sets up the tornado application.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -85,20 +84,20 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Entry point of the application</span>
+    <span class="sd">&quot;&quot;&quot;Entry point of the application.</span>
 
 <span class="sd">    The main method is used to set up the tornado application, which includes routing, setting up</span>
 <span class="sd">    SSL certificates and compiling the documentation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get auth ready by reading the environment variables</span>
+    <span class="c1"># Get auth ready by reading the environment variables.</span>
     <span class="p">(</span><span class="n">client_auth</span><span class="p">,</span> <span class="n">processor_auth</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_auth_params</span><span class="p">()</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">client_auth</span><span class="p">,</span> <span class="n">processor_auth</span><span class="p">)</span>
 
-    <span class="c1"># Create http servers</span>
+    <span class="c1"># Create http servers.</span>
     <span class="n">create_http_servers</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
-    <span class="c1"># Start a tracking timeout process if it is given</span>
+    <span class="c1"># Start a tracking timeout process if it is given.</span>
     <span class="n">timeout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TRACKING_TIMEOUT&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">start_tracking_timeout_monitoring</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">),</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">())</span>
@@ -112,13 +111,13 @@ Utrecht University within the Software Project course.
 <span class="sd">    Creates the routing in the application and returns the complete app.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        client_auth:  A auth object to validate clients with</span>
-<span class="sd">        processor_auth:  A auth object to validate processors with</span>
+<span class="sd">        client_auth (Auth): An auth object to validate clients with.</span>
+<span class="sd">        processor_auth (Auth): An auth object to validate processors with.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Application</span>
+<span class="sd">        Application: The tornado application with handlers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Define socket for both client and processor</span>
+    <span class="c1"># Define socket for both client and processor.</span>
     <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="n">ClientSocket</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="n">ProcessorSocket</span><span class="p">),</span>
@@ -148,20 +147,20 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Entry point of the application</span>
+    <span class="sd">&quot;&quot;&quot;Entry point of the application.</span>
 
 <span class="sd">    The main method is used to set up the tornado application, which includes routing, setting up</span>
 <span class="sd">    SSL certificates and compiling the documentation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get auth ready by reading the environment variables</span>
+    <span class="c1"># Get auth ready by reading the environment variables.</span>
     <span class="p">(</span><span class="n">client_auth</span><span class="p">,</span> <span class="n">processor_auth</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_auth_params</span><span class="p">()</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">client_auth</span><span class="p">,</span> <span class="n">processor_auth</span><span class="p">)</span>
 
-    <span class="c1"># Create http servers</span>
+    <span class="c1"># Create http servers.</span>
     <span class="n">create_http_servers</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
-    <span class="c1"># Start a tracking timeout process if it is given</span>
+    <span class="c1"># Start a tracking timeout process if it is given.</span>
     <span class="n">timeout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TRACKING_TIMEOUT&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">start_tracking_timeout_monitoring</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">),</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">())</span>
@@ -171,7 +170,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Entry point of the application</p>
+            <div class="docstring"><p>Entry point of the application.</p>
 
 <p>The main method is used to set up the tornado application, which includes routing, setting up
 SSL certificates and compiling the documentation.</p>
@@ -195,13 +194,13 @@ SSL certificates and compiling the documentation.</p>
 <span class="sd">    Creates the routing in the application and returns the complete app.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        client_auth:  A auth object to validate clients with</span>
-<span class="sd">        processor_auth:  A auth object to validate processors with</span>
+<span class="sd">        client_auth (Auth): An auth object to validate clients with.</span>
+<span class="sd">        processor_auth (Auth): An auth object to validate processors with.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Application</span>
+<span class="sd">        Application: The tornado application with handlers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Define socket for both client and processor</span>
+    <span class="c1"># Define socket for both client and processor.</span>
     <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="n">ClientSocket</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="n">ProcessorSocket</span><span class="p">),</span>
@@ -222,14 +221,14 @@ SSL certificates and compiling the documentation.</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>client_auth:</strong>   A auth object to validate clients with</li>
-<li><strong>processor_auth:</strong>   A auth object to validate processors with</li>
+<li><strong>client_auth (Auth):</strong>  An auth object to validate clients with.</li>
+<li><strong>processor_auth (Auth):</strong>  An auth object to validate processors with.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Application</p>
+  <p>Application: The tornado application with handlers</p>
 </blockquote>
 </div>
 

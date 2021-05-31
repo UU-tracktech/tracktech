@@ -66,7 +66,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -86,7 +85,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates a tornado app on a given port</span>
+    <span class="sd">&quot;&quot;&quot;Creates a tornado app on a given port.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        configs (ConfigParser): configurations of the application</span>
@@ -97,7 +96,7 @@ Utrecht University within the Software Project course.
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;*   http://localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">    *&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
 
-    <span class="c1"># Create app and listen to port</span>
+    <span class="c1"># Create app and listen to port.</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">([</span>
         <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/(.*\.html)?&#39;</span><span class="p">,</span> <span class="n">HtmlPageHandler</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">)),</span>
         <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/video_feed&#39;</span><span class="p">,</span> <span class="n">StreamHandler</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">))</span>
@@ -115,13 +114,13 @@ Utrecht University within the Software Project course.
     <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
     <span class="n">websocket_client</span> <span class="o">=</span> <span class="n">WebsocketClient</span><span class="p">(</span><span class="n">ws_url</span><span class="p">,</span> <span class="n">ws_id</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">websocket_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-    <span class="c1"># Initiate the stream processing loop, giving the websocket client</span>
+    <span class="c1"># Initiate the stream processing loop, giving the websocket client.</span>
     <span class="k">await</span> <span class="n">process_stream</span><span class="p">(</span>
         <span class="n">capture</span><span class="p">,</span>
         <span class="n">detector</span><span class="p">,</span>
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
-        <span class="c1"># Function to call when frame is processed</span>
+        <span class="c1"># Function to call when frame is processed.</span>
         <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
                                                                               <span class="n">frame_obj</span><span class="p">,</span>
                                                                               <span class="n">detected_boxes</span><span class="p">,</span>
@@ -132,28 +131,28 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm</span>
+    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.</span>
 
 <span class="sd">    Tornado uses a custom IOLoop</span>
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Load the config file</span>
+    <span class="c1"># Load the config file.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
-    <span class="c1"># If mode is tornado</span>
+    <span class="c1"># If mode is tornado.</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tornado&#39;</span><span class="p">:</span>
-        <span class="c1"># Create the app and start the ioloop</span>
+        <span class="c1"># Create the app and start the ioloop.</span>
         <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;port&#39;</span><span class="p">])</span>
         <span class="n">create_app</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
         <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-    <span class="c1"># If we want to run it with opencv gui</span>
+    <span class="c1"># If we want to run it with opencv gui.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;opencv&#39;</span><span class="p">:</span>
         <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
             <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url</span>
+    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
         <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">websocket_id</span><span class="p">))</span>
@@ -162,14 +161,14 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># Configure the logger</span>
+    <span class="c1"># Configure the logger.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;main.log&#39;</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
                         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
                         <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
                         <span class="n">datefmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">))</span>
 
-    <span class="c1"># Run the main function</span>
+    <span class="c1"># Run the main function.</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
@@ -187,7 +186,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates a tornado app on a given port</span>
+    <span class="sd">&quot;&quot;&quot;Creates a tornado app on a given port.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        configs (ConfigParser): configurations of the application</span>
@@ -198,7 +197,7 @@ Utrecht University within the Software Project course.
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;*   http://localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">    *&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
 
-    <span class="c1"># Create app and listen to port</span>
+    <span class="c1"># Create app and listen to port.</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">([</span>
         <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/(.*\.html)?&#39;</span><span class="p">,</span> <span class="n">HtmlPageHandler</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">)),</span>
         <span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/video_feed&#39;</span><span class="p">,</span> <span class="n">StreamHandler</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">))</span>
@@ -208,7 +207,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Creates a tornado app on a given port</p>
+            <div class="docstring"><p>Creates a tornado app on a given port.</p>
 
 <h6 id="args">Args</h6>
 
@@ -240,13 +239,13 @@ Utrecht University within the Software Project course.
     <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
     <span class="n">websocket_client</span> <span class="o">=</span> <span class="n">WebsocketClient</span><span class="p">(</span><span class="n">ws_url</span><span class="p">,</span> <span class="n">ws_id</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">websocket_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-    <span class="c1"># Initiate the stream processing loop, giving the websocket client</span>
+    <span class="c1"># Initiate the stream processing loop, giving the websocket client.</span>
     <span class="k">await</span> <span class="n">process_stream</span><span class="p">(</span>
         <span class="n">capture</span><span class="p">,</span>
         <span class="n">detector</span><span class="p">,</span>
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
-        <span class="c1"># Function to call when frame is processed</span>
+        <span class="c1"># Function to call when frame is processed.</span>
         <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
                                                                               <span class="n">frame_obj</span><span class="p">,</span>
                                                                               <span class="n">detected_boxes</span><span class="p">,</span>
@@ -281,28 +280,28 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm</span>
+    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.</span>
 
 <span class="sd">    Tornado uses a custom IOLoop</span>
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Load the config file</span>
+    <span class="c1"># Load the config file.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
-    <span class="c1"># If mode is tornado</span>
+    <span class="c1"># If mode is tornado.</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tornado&#39;</span><span class="p">:</span>
-        <span class="c1"># Create the app and start the ioloop</span>
+        <span class="c1"># Create the app and start the ioloop.</span>
         <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;port&#39;</span><span class="p">])</span>
         <span class="n">create_app</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
         <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-    <span class="c1"># If we want to run it with opencv gui</span>
+    <span class="c1"># If we want to run it with opencv gui.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;opencv&#39;</span><span class="p">:</span>
         <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
             <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url</span>
+    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
         <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">websocket_id</span><span class="p">))</span>
@@ -312,7 +311,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm</p>
+            <div class="docstring"><p>Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.</p>
 
 <p>Tornado uses a custom IOLoop
 Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</p>

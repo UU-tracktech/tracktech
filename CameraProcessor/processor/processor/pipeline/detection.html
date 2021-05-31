@@ -87,12 +87,11 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -120,7 +119,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection</span>
+        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): Image in a tensor representation</span>
@@ -130,7 +129,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            Tensor: Image that is converted</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image</span>
+        <span class="c1"># Convert image.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -154,7 +153,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Apply NMS</span>
+        <span class="c1"># Apply NMS.</span>
         <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
                                    <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
                                    <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
@@ -172,14 +171,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            filter_types ([str]): What detection types to filter on</span>
 <span class="sd">            names ([str]): The complete list of types that get detected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># detections per image</span>
+        <span class="c1"># Detections per image.</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size</span>
+                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
                 <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 
                 <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj</span>
+                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
                 <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
                     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span>
                     <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
@@ -196,7 +195,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Detection abstract class</p>
+            <div class="docstring"><p>Detection abstract class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -211,12 +210,11 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the main methods for running YOLOv5 object detection on a frame</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the main methods for running YOLOv5 object detection on a frame.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -238,6 +236,13 @@ Utrecht University within the Software Project course.
 <span class="k">class</span> <span class="nc">Yolov5Detector</span><span class="p">(</span><span class="n">IDetector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Make it inherit from a generic Detector class.</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        config (ConfigParser): Configurations of the application.</span>
+<span class="sd">        filter ([str]): List of objects types to detect.</span>
+<span class="sd">        device (str): Device that runs the detector.</span>
+<span class="sd">        half (bool): Whether to half the model or not.</span>
+<span class="sd">        classify (bool): Whether to classify.</span>
+<span class="sd">        names ([str]): List of names which that should get detected.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
@@ -245,7 +250,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (ConfigParser): Yolov5 config file.</span>
-<span class="sd">            filters (ConfigParser): Filter for boundingBoxes.</span>
+<span class="sd">            filters (SectionProxy): Filter configurations for boundingBoxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">curr_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">curr_dir</span><span class="p">,</span> <span class="s1">&#39;./yolov5&#39;</span><span class="p">))</span>
@@ -256,38 +261,38 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">filter_names</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
 
-        <span class="c1"># Initialize</span>
+        <span class="c1"># Initialize.</span>
         <span class="n">set_logging</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA unavailable&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">select_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span>  <span class="c1"># half precision only supported on CUDA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span>  <span class="c1"># half precision only supported on CUDA.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using the CPU. Check CUDA version,&quot;</span>
                          <span class="s2">&quot;or whether Pytorch is installed with CUDA support.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using GPU&quot;</span><span class="p">)</span>
 
-        <span class="c1"># load FP32 model</span>
+        <span class="c1"># Load FP32 model.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">attempt_load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">],</span>
-                                  <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># load FP32 model</span>
+                                  <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># load FP32 model.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stride</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stride</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>  <span class="c1"># model stride</span>
-        <span class="n">imgsz</span> <span class="o">=</span> <span class="n">check_img_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>  <span class="c1"># check img_size</span>
+        <span class="n">imgsz</span> <span class="o">=</span> <span class="n">check_img_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>  <span class="c1"># check img_size.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>  <span class="c1"># to FP16</span>
 
-        <span class="c1"># Set secondary classification, by default off</span>
+        <span class="c1"># Set secondary classification, by default off.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classify</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span> <span class="o">=</span> <span class="n">load_classifier</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;resnet101&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># initialize</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span> <span class="o">=</span> <span class="n">load_classifier</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;resnet101&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># initialize.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;weights/resnet101.pt&#39;</span><span class="p">,</span>
                            <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span>
             <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
-        <span class="c1"># Get names and colors</span>
+        <span class="c1"># Get names and colors.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">names</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="p">[[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
 
@@ -295,7 +300,6 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">imgsz</span><span class="p">,</span>
                             <span class="n">imgsz</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())))</span>
-            <span class="c1"># run once</span>
 
     <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
@@ -313,26 +317,26 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): information object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects</span>
+<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Padded resize</span>
+        <span class="c1"># Padded resize.</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
 
-        <span class="c1"># Run inference on the converted image</span>
+        <span class="c1"># Run inference on the converted image.</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
-        <span class="c1"># Apply secondary Classifier</span>
+        <span class="c1"># Apply secondary Classifier.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
             <span class="n">pred</span> <span class="o">=</span> <span class="n">apply_classifier</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">())</span>
 
-        <span class="c1"># Create bounding boxes based on the predictions</span>
+        <span class="c1"># Create bounding boxes based on the predictions.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
-        <span class="c1"># Print time (inference + NMS)</span>
+        <span class="c1"># Print time (inference + NMS).</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">()</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
               <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
 
@@ -341,7 +345,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Contains the main methods for running YOLOv5 object detection on a frame</p>
+            <div class="docstring"><p>Contains the main methods for running YOLOv5 object detection on a frame.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -356,12 +360,11 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the main methods for running YOLOR object detection on a frame</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains the main methods for running YOLOR object detection on a frame.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -379,15 +382,22 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">YolorDetector</span><span class="p">(</span><span class="n">IDetector</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implementation of YOLOR repository</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of YOLOR repository.</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        config (ConfigParser): Configurations of the application.</span>
+<span class="sd">        filter ([str]): List of objects types to detect.</span>
+<span class="sd">        device (str): Device that runs the detector.</span>
+<span class="sd">        half (bool): Whether to half the model or not.</span>
+<span class="sd">        classify (bool): Whether to classify.</span>
+<span class="sd">        names ([str]): List of names which that should get detected.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initiate the YOLOR detector</span>
+        <span class="sd">&quot;&quot;&quot;Initiate the YOLOR detector.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config (ConfigParser): YOLOR config file.</span>
-<span class="sd">            filters (): Filtering for boundingBoxes.</span>
+<span class="sd">            config (ConfigParser): Configurations which also contain Yolor configurations.</span>
+<span class="sd">            filters (SectionProxy): Filtering for boundingBoxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">curr_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">curr_dir</span><span class="p">,</span> <span class="s1">&#39;./yolor&#39;</span><span class="p">))</span>
@@ -398,25 +408,25 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">filter_names</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
 
-        <span class="c1"># Set logging</span>
+        <span class="c1"># Set logging.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
             <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
-        <span class="c1"># Initialize</span>
+        <span class="c1"># Initialize.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA unavailable&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">select_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span>  <span class="c1"># half precision only supported on CUDA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span>  <span class="c1"># half precision only supported on CUDA.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using the CPU. Check CUDA version,&quot;</span>
                          <span class="s2">&quot;or whether Pytorch is installed with CUDA support.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using GPU&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Download weights if not present</span>
+        <span class="c1"># Download weights if not present.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight files for Yolor not found, downloading to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76&quot;</span>
@@ -425,7 +435,7 @@ Utrecht University within the Software Project course.
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Yolor weights found at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load model</span>
+        <span class="c1"># Load model.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">Darknet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cfg_path&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;img-size&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -435,19 +445,19 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>  <span class="c1"># to FP16</span>
 
-        <span class="c1"># Second-stage classifier</span>
+        <span class="c1"># Second-stage classifier.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classify</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span> <span class="o">=</span> <span class="n">load_classifier</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;resnet101&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># initialize</span>
-            <span class="c1"># load weights</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span> <span class="o">=</span> <span class="n">load_classifier</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;resnet101&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># initialize.</span>
+            <span class="c1"># Load weights.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;weights/resnet101.pt&#39;</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
-        <span class="c1"># Get names</span>
+        <span class="c1"># Get names.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_classes</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;names_path&#39;</span><span class="p">])</span>
 
         <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">)),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">half</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="k">else</span> <span class="n">img</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span> <span class="k">else</span> <span class="kc">None</span>  <span class="c1"># run once</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">half</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="k">else</span> <span class="n">img</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span> <span class="k">else</span> <span class="kc">None</span>  <span class="c1"># run once.</span>
 
     <span class="c1"># pylint: disable=duplicate-code</span>
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
@@ -457,29 +467,29 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): information object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects</span>
+<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c1"># Resize</span>
+        <span class="c1"># Resize.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span>
                         <span class="n">auto_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;stride&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
 
-        <span class="c1"># Inference</span>
+        <span class="c1"># Inference.</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;converted image&#39;</span><span class="p">)</span>
-        <span class="c1"># Apply secondary Classifier</span>
+        <span class="c1"># Apply secondary Classifier.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
             <span class="n">pred</span> <span class="o">=</span> <span class="n">apply_classifier</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">())</span>
 
-        <span class="c1"># Create bounding boxes based on the predictions</span>
+        <span class="c1"># Create bounding boxes based on the predictions.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Print time (inference + NMS)</span>
+        <span class="c1"># Print time (inference + NMS).</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">()</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
               <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
 
@@ -487,24 +497,24 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_classes</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loads the classes to detect</span>
+        <span class="sd">&quot;&quot;&quot;Loads the classes to detect.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path (str): path to the file the classes need to get loaded of</span>
+<span class="sd">            path (str): path to the file the classes need to get loaded of.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            [str]: List of empty strings</span>
+<span class="sd">            [str]: List of empty strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Loads *.names file at &#39;path&#39;</span>
+        <span class="c1"># Loads *.names file at &#39;path&#39;.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">names</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="c1"># filter removes empty strings (such as last line)</span>
+        <span class="c1"># Filter removes empty strings (such as last line).</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="p">))</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Contains the main methods for running YOLOR object detection on a frame</p>
+            <div class="docstring"><p>Contains the main methods for running YOLOR object detection on a frame.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

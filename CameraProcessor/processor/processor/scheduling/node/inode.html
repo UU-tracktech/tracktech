@@ -64,7 +64,7 @@
                     <h1 class="modulename">
 <a href="./../../../processor.html">processor</a>.<a href="./../../scheduling.html">scheduling</a>.<a href="./../node.html">node</a>.inode    </h1>
 
-                        <div class="docstring"><p>Defines node class for scheduler with its connections to other nodes</p>
+                        <div class="docstring"><p>Defines node class for scheduler with its connections to other nodes.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -73,18 +73,16 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines node class for scheduler with its connections to other nodes</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines node class for scheduler with its connections to other nodes.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">INode</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Node interface enforcing the implementation of functions needed</span>
-<span class="sd">    by the scheduler and schedule node.</span>
+    <span class="sd">&quot;&quot;&quot;Node interface enforcing the implementation of functions needed by the scheduler and schedule node.</span>
 
 <span class="sd">    Enforces the implementation of reset(), executable(), execute(notify), and assign(arg, arg_nr).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -94,7 +92,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to prepare the node for the next iteration, &quot;</span>
                                   <span class="s2">&quot;should also call on children/out nodes if applicable&quot;</span><span class="p">)</span>
@@ -107,7 +105,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to indicate if the node can be run isn&#39;t implemented&quot;</span><span class="p">)</span>
 
@@ -138,7 +136,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to assign an input to a node&quot;</span>
                                   <span class="s2">&quot;as argument not implemented&quot;</span><span class="p">)</span>
@@ -159,8 +157,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">INode</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Node interface enforcing the implementation of functions needed</span>
-<span class="sd">    by the scheduler and schedule node.</span>
+    <span class="sd">&quot;&quot;&quot;Node interface enforcing the implementation of functions needed by the scheduler and schedule node.</span>
 
 <span class="sd">    Enforces the implementation of reset(), executable(), execute(notify), and assign(arg, arg_nr).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -170,7 +167,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to prepare the node for the next iteration, &quot;</span>
                                   <span class="s2">&quot;should also call on children/out nodes if applicable&quot;</span><span class="p">)</span>
@@ -183,7 +180,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to indicate if the node can be run isn&#39;t implemented&quot;</span><span class="p">)</span>
 
@@ -214,7 +211,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to assign an input to a node&quot;</span>
                                   <span class="s2">&quot;as argument not implemented&quot;</span><span class="p">)</span>
@@ -222,8 +219,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Node interface enforcing the implementation of functions needed
-by the scheduler and schedule node.</p>
+            <div class="docstring"><p>Node interface enforcing the implementation of functions needed by the scheduler and schedule node.</p>
 
 <p>Enforces the implementation of reset(), executable(), execute(notify), and assign(arg, arg_nr).</p>
 </div>
@@ -255,7 +251,7 @@ by the scheduler and schedule node.</p>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to prepare the node for the next iteration, &quot;</span>
                                   <span class="s2">&quot;should also call on children/out nodes if applicable&quot;</span><span class="p">)</span>
@@ -268,8 +264,8 @@ by the scheduler and schedule node.</p>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden</li>
-<li>to ensure this function is defined.</li>
+<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden
+to ensure this function is defined.</li>
 </ul>
 </div>
 
@@ -293,7 +289,7 @@ by the scheduler and schedule node.</p>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to indicate if the node can be run isn&#39;t implemented&quot;</span><span class="p">)</span>
 </pre></div>
@@ -311,8 +307,8 @@ by the scheduler and schedule node.</p>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden</li>
-<li>to ensure this function is defined.</li>
+<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden
+to ensure this function is defined.</li>
 </ul>
 </div>
 
@@ -392,7 +388,7 @@ to ensure this function is defined.</li>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: occurs when this method is not overridden</span>
-<span class="sd">            to ensure this function is defined.</span>
+<span class="sd">                to ensure this function is defined.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Function to assign an input to a node&quot;</span>
                                   <span class="s2">&quot;as argument not implemented&quot;</span><span class="p">)</span>
@@ -412,8 +408,8 @@ to ensure this function is defined.</li>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden</li>
-<li>to ensure this function is defined.</li>
+<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden
+to ensure this function is defined.</li>
 </ul>
 </div>
 

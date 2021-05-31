@@ -49,7 +49,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../utils.html">utils</a>.features    </h1>
 
-                        <div class="docstring"><p>Has utility functions for the reid</p>
+                        <div class="docstring"><p>Has utility functions for the reid.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -58,19 +58,27 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Has utility functions for the reid</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Has utility functions for the reid.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
 
 
 <span class="k">def</span> <span class="nf">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Slices the bounding box out of the image given</span>
+    <span class="sd">&quot;&quot;&quot;Slices the bounding box out of the image given.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely</span>
+<span class="sd">        need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</span>
+
+<span class="sd">        The original image will continue to exist in memory as long as the reference made here continues</span>
+<span class="sd">        to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or</span>
+<span class="sd">        use `del`.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        bbox (BoundingBox): A boundingbox which holds the rectangle we need</span>
 <span class="sd">        img (np.ndarray): the numpy array representing the frame/image</span>
@@ -78,14 +86,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: a REFERENCE to a slice of the original image</span>
 
-<span class="sd">    IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely</span>
-<span class="sd">    need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</span>
-
-<span class="sd">    ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues</span>
-<span class="sd">    to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or</span>
-<span class="sd">    use `del`.</span>
-
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice</span>
 <span class="sd">        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!</span>
 <span class="sd">        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up</span>
@@ -99,23 +100,22 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function that resizes the cutout to specified size in the configs</span>
+    <span class="sd">&quot;&quot;&quot;Function that resizes the cutout to specified size in the configs.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
-<span class="sd">        reference to the original image.</span>
+<span class="sd">            reference to the original image.</span>
 <span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
 <span class="sd">         image reflect on this resized slice of the image too. But maybe not the other way around, since I am not sure</span>
 <span class="sd">         if this constitutes a &quot;shallow copy&quot;!</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Read size from the config</span>
+    <span class="c1"># Read size from the config.</span>
     <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Return the cutout, which is another reference to the original image</span>
+    <span class="c1"># Return the cutout, which is another reference to the original image.</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
 </pre></div>
 
@@ -133,7 +133,16 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Slices the bounding box out of the image given</span>
+    <span class="sd">&quot;&quot;&quot;Slices the bounding box out of the image given.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely</span>
+<span class="sd">        need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</span>
+
+<span class="sd">        The original image will continue to exist in memory as long as the reference made here continues</span>
+<span class="sd">        to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or</span>
+<span class="sd">        use `del`.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        bbox (BoundingBox): A boundingbox which holds the rectangle we need</span>
 <span class="sd">        img (np.ndarray): the numpy array representing the frame/image</span>
@@ -141,14 +150,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: a REFERENCE to a slice of the original image</span>
 
-<span class="sd">    IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely</span>
-<span class="sd">    need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</span>
-
-<span class="sd">    ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues</span>
-<span class="sd">    to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or</span>
-<span class="sd">    use `del`.</span>
-
-<span class="sd">    Example:</span>
+<span class="sd">    Examples:</span>
 <span class="sd">        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice</span>
 <span class="sd">        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!</span>
 <span class="sd">        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up</span>
@@ -163,7 +165,20 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Slices the bounding box out of the image given</p>
+            <div class="docstring"><p>Slices the bounding box out of the image given.</p>
+
+<h6 id="note">Note</h6>
+
+<blockquote>
+  <p>DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely
+  need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</p>
+</blockquote>
+
+<blockquote>
+  <p>The original image will continue to exist in memory as long as the reference made here continues
+  to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or
+  use <code>del</code>.</p>
+</blockquote>
 
 <h6 id="args">Args</h6>
 
@@ -178,14 +193,7 @@ Utrecht University within the Software Project course.
   <p>np.ndarray: a REFERENCE to a slice of the original image</p>
 </blockquote>
 
-<p>IMPORTANT: DO NOT ALTER THE RETURNED IMAGE SLICE DIRECTLY! This will alter the original image. If you absolutely
-need to do something to it, use copy() first. This is unrecommended, since copying an array is costly.</p>
-
-<p>ALSO IMPORTANT: The original image will continue to exist in memory as long as the reference made here continues
-to exist. To let Python garbage collection free the memory, you have to assign the variable to something new, or
-use <code>del</code>.</p>
-
-<h6 id="example">Example</h6>
+<h6 id="examples">Examples</h6>
 
 <blockquote>
   <p>a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice
@@ -208,35 +216,34 @@ use <code>del</code>.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function that resizes the cutout to specified size in the configs</span>
+    <span class="sd">&quot;&quot;&quot;Function that resizes the cutout to specified size in the configs.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
-<span class="sd">        reference to the original image.</span>
+<span class="sd">            reference to the original image.</span>
 <span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
 <span class="sd">         image reflect on this resized slice of the image too. But maybe not the other way around, since I am not sure</span>
 <span class="sd">         if this constitutes a &quot;shallow copy&quot;!</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Read size from the config</span>
+    <span class="c1"># Read size from the config.</span>
     <span class="n">size</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">gettuple</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Return the cutout, which is another reference to the original image</span>
+    <span class="c1"># Return the cutout, which is another reference to the original image.</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Function that resizes the cutout to specified size in the configs</p>
+            <div class="docstring"><p>Function that resizes the cutout to specified size in the configs.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>cutout (np.ndarray):</strong>  an np.ndarray representing the cutout you want to resize. In most cases, this is a</li>
-<li>reference to the original image.</li>
+<li><strong>cutout (np.ndarray):</strong>  an np.ndarray representing the cutout you want to resize. In most cases, this is a
+reference to the original image.</li>
 <li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration</li>
 </ul>
 

@@ -58,7 +58,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.timeline_handler    </h1>
 
-                        <div class="docstring"><p>HTTP handler to serve tracking timeline data</p>
+                        <div class="docstring"><p>HTTP handler to serve tracking timeline data.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -67,12 +67,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;HTTP handler to serve tracking timeline data</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;HTTP handler to serve tracking timeline data.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
@@ -87,20 +86,13 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
 
-<span class="sd">        Writes a response containing the contents of the timeline logfile of the specified objectId</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        Writes a response containing the contents of the timeline logfile of the specified objectId.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -114,13 +106,17 @@ Utrecht University within the Software Project course.
             <span class="k">return</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="c1"># Remove final comma</span>
+        <span class="c1"># Remove final comma.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:[</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">]</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (bytes): Byte data received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -145,20 +141,13 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
 
-<span class="sd">        Writes a response containing the contents of the timeline logfile of the specified objectId</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        Writes a response containing the contents of the timeline logfile of the specified objectId.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -172,13 +161,17 @@ Utrecht University within the Software Project course.
             <span class="k">return</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="c1"># Remove final comma</span>
+        <span class="c1"># Remove final comma.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:[</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">]</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (bytes): Byte data received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -201,23 +194,13 @@ with html br tags.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Sets the default request headers for the request.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -235,10 +218,7 @@ with html br tags.</p>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
 
-<span class="sd">        Writes a response containing the contents of the timeline logfile of the specified objectId</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        Writes a response containing the contents of the timeline logfile of the specified objectId.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -252,7 +232,7 @@ with html br tags.</p>
             <span class="k">return</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="c1"># Remove final comma</span>
+        <span class="c1"># Remove final comma.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:[</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">]</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -262,13 +242,7 @@ with html br tags.</p>
 
             <div class="docstring"><p>Gets log file contents.</p>
 
-<p>Writes a response containing the contents of the timeline logfile of the specified objectId</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
+<p>Writes a response containing the contents of the timeline logfile of the specified objectId.</p>
 </div>
 
 
@@ -284,12 +258,22 @@ with html br tags.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (bytes): Byte data received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Unused method that could handle streamed request data</p>
+            <div class="docstring"><p>Unused method that could handle streamed request data.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>chunk (bytes):</strong>  Byte data received from the server.</li>
+</ul>
 </div>
 
 

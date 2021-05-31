@@ -52,7 +52,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../utils.html">utils</a>.draw    </h1>
 
-                        <div class="docstring"><p>Contains logic to draw the boxes on the frame, tags depend on what type of box it is</p>
+                        <div class="docstring"><p>Contains logic to draw the boxes on the frame, tags depend on what type of box it is.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -61,12 +61,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains logic to draw the boxes on the frame, tags depend on what type of box it is</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains logic to draw the boxes on the frame, tags depend on what type of box it is.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">random</span>
@@ -80,10 +79,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
 <span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Color and shape</span>
+    <span class="c1"># Color and shape.</span>
     <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
 
-    <span class="c1"># Draw each box on frame</span>
+    <span class="c1"># Draw each box on frame.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">red</span><span class="p">)</span>
 
@@ -93,9 +92,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Args:</span>
 <span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
-<span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
+<span class="sd">        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Draw each box on the frame with tag</span>
+    <span class="c1"># Draw each box on the frame with tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">())</span>
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
@@ -115,9 +114,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
 <span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Draw each box on frame with identifier tag</span>
+    <span class="c1"># Draw each box on frame with identifier tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
-        <span class="c1"># Generate random color based on identifier</span>
+        <span class="c1"># Generate random color based on identifier.</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">())</span>
 
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
@@ -146,7 +145,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">__draw_text</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draw text at top left corner of the Bounding box given a certain color..</span>
+    <span class="sd">&quot;&quot;&quot;Draw text at top left corner of the Bounding box given a certain color.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frame (numpy.ndarray): frame the box is drawn on.</span>
@@ -154,10 +153,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        text (str): String of text that gets displayed.</span>
 <span class="sd">        color (int, int, int): Color of the tag background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Shape</span>
+    <span class="c1"># Shape.</span>
     <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span>
 
-    <span class="c1"># Pre-scaled coordinates</span>
+    <span class="c1"># Pre-scaled coordinates.</span>
     <span class="n">scaled_x1</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span>
     <span class="n">scaled_y1</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span>
 
@@ -183,13 +182,13 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">__generate_random_color</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate the color using the identifier as unique hash</span>
+    <span class="sd">&quot;&quot;&quot;Generate the color using the identifier as unique hash.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        identifier (int): Unique identifier on which color is generated</span>
+<span class="sd">        identifier (int): Unique identifier on which color is generated.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (int, int, int): BGR color value</span>
+<span class="sd">        (int, int, int): BGR color value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
@@ -215,10 +214,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
 <span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Color and shape</span>
+    <span class="c1"># Color and shape.</span>
     <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
 
-    <span class="c1"># Draw each box on frame</span>
+    <span class="c1"># Draw each box on frame.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">red</span><span class="p">)</span>
 </pre></div>
@@ -252,9 +251,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Args:</span>
 <span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
-<span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
+<span class="sd">        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Draw each box on the frame with tag</span>
+    <span class="c1"># Draw each box on the frame with tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">())</span>
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
@@ -275,7 +274,7 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>frame (numpy.ndarray):</strong>  Frame the bounding boxes get drawn on.</li>
-<li><strong>bounding_boxes (List[BoundingBox]):</strong>  List of bounding boxes that get drawn.</li>
+<li><strong>bounding_boxes ([BoundingBox]):</strong>  List of bounding boxes that get drawn.</li>
 </ul>
 </div>
 
@@ -298,9 +297,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
 <span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Draw each box on frame with identifier tag</span>
+    <span class="c1"># Draw each box on frame with identifier tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
-        <span class="c1"># Generate random color based on identifier</span>
+        <span class="c1"># Generate random color based on identifier.</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">())</span>
 
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>

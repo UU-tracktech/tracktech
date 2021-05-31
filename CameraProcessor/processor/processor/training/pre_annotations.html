@@ -76,12 +76,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot; Loads the ground truth and converts it to a list of bounding boxes.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Loads the ground truth and converts it to a list of bounding boxes.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
@@ -93,13 +92,13 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">PreAnnotations</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Class that loads the ground truth and converts it to a list of bounding boxes.</span>
+    <span class="sd">&quot;&quot;&quot;Class that loads the ground truth and converts it to a list of bounding boxes.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        file_path (str): Path to file that contains annotations</span>
 <span class="sd">        skipped_lines (int): How many lines are not readable in file</span>
 <span class="sd">        nr_frames (int): Number of frames read by PreAnnotations</span>
-<span class="sd">        boxes List[List[BoundingBox]]: List of boxes for each frame</span>
+<span class="sd">        boxes (List[List[BoundingBox]]): List of boxes for each frame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">nr_frames</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor for the preAnnotations object.</span>
@@ -132,7 +131,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">is_txt_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^.*.txt$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">is_json_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^.*.json$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-        <span class="c1"># Switch statement</span>
+        <span class="c1"># Switch statement.</span>
         <span class="k">if</span> <span class="n">is_txt_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parse_text_file</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">is_json_file</span><span class="p">:</span>
@@ -145,32 +144,32 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Reads file line by line and puts it inside a bounding box object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Read file</span>
+        <span class="c1"># Read file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
 
-        <span class="c1"># Determine delimiter automatically</span>
+        <span class="c1"># Determine delimiter automatically.</span>
         <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
         <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
 
-        <span class="c1"># Extract information from lines</span>
+        <span class="c1"># Extract information from lines.</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
             <span class="p">(</span><span class="n">frame_nr</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">frame_nr</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Create bounding box</span>
+            <span class="c1"># Create bounding box.</span>
             <span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">),</span> <span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="c1"># Append box to list of boxes</span>
+            <span class="c1"># Append box to list of boxes.</span>
             <span class="n">box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="s2">&quot;UFO&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="n">frame_nr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 
-        <span class="c1"># Logs when lines skipped</span>
+        <span class="c1"># Logs when lines skipped.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skipped lines: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -186,15 +185,15 @@ Utrecht University within the Software Project course.
 <span class="sd">            delimiter (str): delimiter values in line are separated with.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Integer values of line parsed and put inside string.</span>
+<span class="sd">            [int]: Number values of line parsed and put inside string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">6</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">parse_json_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses JSON file.&quot;&quot;&quot;</span>
-        <span class="c1"># Open file</span>
+        <span class="c1"># Open file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-            <span class="c1"># Every json object</span>
+            <span class="c1"># Every json object.</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">json_obj</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parse_json_object</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
@@ -206,22 +205,22 @@ Utrecht University within the Software Project course.
 <span class="sd">        Looping goes through each path and adds box for each frame.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            json_object: A single json object.</span>
+<span class="sd">            json_object (dict): A single json object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">first_frame</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># A rectangle</span>
+        <span class="c1"># A rectangle.</span>
         <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span> <span class="n">pos_y1</span> <span class="o">=</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">][</span><span class="n">first_frame</span><span class="p">]</span>
         <span class="n">half_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos_x1</span> <span class="o">-</span> <span class="n">pos_x0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">half_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos_y1</span> <span class="o">-</span> <span class="n">pos_y0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1"># Add bounding box for each frame</span>
+        <span class="c1"># Add bounding box for each frame.</span>
         <span class="k">for</span> <span class="n">frame_nr</span> <span class="ow">in</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">]:</span>
-            <span class="c1"># Skips frame when it does exceed list length</span>
+            <span class="c1"># Skips frame when it does exceed list length.</span>
             <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame_nr</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Create bounding box for a frame</span>
+            <span class="c1"># Create bounding box for a frame.</span>
             <span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">][</span><span class="n">frame_nr</span><span class="p">]</span>
             <span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">pos_x</span> <span class="o">-</span> <span class="n">half_width</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_y</span> <span class="o">-</span> <span class="n">half_height</span><span class="p">),</span>
@@ -229,7 +228,7 @@ Utrecht University within the Software Project course.
             <span class="p">)</span>
 
             <span class="n">box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="s1">&#39;UFO&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># Append to list</span>
+            <span class="c1"># Append to list.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">frame_nr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 </pre></div>
 
@@ -248,13 +247,13 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PreAnnotations</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Class that loads the ground truth and converts it to a list of bounding boxes.</span>
+    <span class="sd">&quot;&quot;&quot;Class that loads the ground truth and converts it to a list of bounding boxes.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        file_path (str): Path to file that contains annotations</span>
 <span class="sd">        skipped_lines (int): How many lines are not readable in file</span>
 <span class="sd">        nr_frames (int): Number of frames read by PreAnnotations</span>
-<span class="sd">        boxes List[List[BoundingBox]]: List of boxes for each frame</span>
+<span class="sd">        boxes (List[List[BoundingBox]]): List of boxes for each frame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">nr_frames</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor for the preAnnotations object.</span>
@@ -287,7 +286,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">is_txt_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^.*.txt$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">is_json_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^.*.json$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-        <span class="c1"># Switch statement</span>
+        <span class="c1"># Switch statement.</span>
         <span class="k">if</span> <span class="n">is_txt_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parse_text_file</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">is_json_file</span><span class="p">:</span>
@@ -300,32 +299,32 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Reads file line by line and puts it inside a bounding box object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Read file</span>
+        <span class="c1"># Read file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
 
-        <span class="c1"># Determine delimiter automatically</span>
+        <span class="c1"># Determine delimiter automatically.</span>
         <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
         <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
 
-        <span class="c1"># Extract information from lines</span>
+        <span class="c1"># Extract information from lines.</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
             <span class="p">(</span><span class="n">frame_nr</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">frame_nr</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Create bounding box</span>
+            <span class="c1"># Create bounding box.</span>
             <span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">),</span> <span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="c1"># Append box to list of boxes</span>
+            <span class="c1"># Append box to list of boxes.</span>
             <span class="n">box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="s2">&quot;UFO&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="n">frame_nr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 
-        <span class="c1"># Logs when lines skipped</span>
+        <span class="c1"># Logs when lines skipped.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skipped lines: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -341,15 +340,15 @@ Utrecht University within the Software Project course.
 <span class="sd">            delimiter (str): delimiter values in line are separated with.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Integer values of line parsed and put inside string.</span>
+<span class="sd">            [int]: Number values of line parsed and put inside string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">6</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">parse_json_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses JSON file.&quot;&quot;&quot;</span>
-        <span class="c1"># Open file</span>
+        <span class="c1"># Open file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-            <span class="c1"># Every json object</span>
+            <span class="c1"># Every json object.</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">json_obj</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parse_json_object</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
@@ -361,22 +360,22 @@ Utrecht University within the Software Project course.
 <span class="sd">        Looping goes through each path and adds box for each frame.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            json_object: A single json object.</span>
+<span class="sd">            json_object (dict): A single json object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">first_frame</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># A rectangle</span>
+        <span class="c1"># A rectangle.</span>
         <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span> <span class="n">pos_y1</span> <span class="o">=</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">][</span><span class="n">first_frame</span><span class="p">]</span>
         <span class="n">half_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos_x1</span> <span class="o">-</span> <span class="n">pos_x0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">half_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos_y1</span> <span class="o">-</span> <span class="n">pos_y0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1"># Add bounding box for each frame</span>
+        <span class="c1"># Add bounding box for each frame.</span>
         <span class="k">for</span> <span class="n">frame_nr</span> <span class="ow">in</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">]:</span>
-            <span class="c1"># Skips frame when it does exceed list length</span>
+            <span class="c1"># Skips frame when it does exceed list length.</span>
             <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame_nr</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Create bounding box for a frame</span>
+            <span class="c1"># Create bounding box for a frame.</span>
             <span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">][</span><span class="n">frame_nr</span><span class="p">]</span>
             <span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">pos_x</span> <span class="o">-</span> <span class="n">half_width</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_y</span> <span class="o">-</span> <span class="n">half_height</span><span class="p">),</span>
@@ -384,7 +383,7 @@ Utrecht University within the Software Project course.
             <span class="p">)</span>
 
             <span class="n">box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="s1">&#39;UFO&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># Append to list</span>
+            <span class="c1"># Append to list.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">frame_nr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 </pre></div>
 
@@ -398,7 +397,7 @@ Utrecht University within the Software Project course.
 <li><strong>file_path (str):</strong>  Path to file that contains annotations</li>
 <li><strong>skipped_lines (int):</strong>  How many lines are not readable in file</li>
 <li><strong>nr_frames (int):</strong>  Number of frames read by PreAnnotations</li>
-<li><strong>boxes List[List[BoundingBox]]:</strong>  List of boxes for each frame</li>
+<li><strong>boxes (List[List[BoundingBox]]):</strong>  List of boxes for each frame</li>
 </ul>
 </div>
 
@@ -476,7 +475,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">is_txt_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^.*.txt$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">is_json_file</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^.*.json$&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-        <span class="c1"># Switch statement</span>
+        <span class="c1"># Switch statement.</span>
         <span class="k">if</span> <span class="n">is_txt_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parse_text_file</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">is_json_file</span><span class="p">:</span>
@@ -513,32 +512,32 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Reads file line by line and puts it inside a bounding box object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Read file</span>
+        <span class="c1"># Read file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
 
-        <span class="c1"># Determine delimiter automatically</span>
+        <span class="c1"># Determine delimiter automatically.</span>
         <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
         <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
 
-        <span class="c1"># Extract information from lines</span>
+        <span class="c1"># Extract information from lines.</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
             <span class="p">(</span><span class="n">frame_nr</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">frame_nr</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Create bounding box</span>
+            <span class="c1"># Create bounding box.</span>
             <span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">),</span> <span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="c1"># Append box to list of boxes</span>
+            <span class="c1"># Append box to list of boxes.</span>
             <span class="n">box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="s2">&quot;UFO&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="n">frame_nr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 
-        <span class="c1"># Logs when lines skipped</span>
+        <span class="c1"># Logs when lines skipped.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skipped lines: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
@@ -575,7 +574,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            delimiter (str): delimiter values in line are separated with.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Integer values of line parsed and put inside string.</span>
+<span class="sd">            [int]: Number values of line parsed and put inside string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">6</span><span class="p">]]</span>
 </pre></div>
@@ -597,7 +596,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Integer values of line parsed and put inside string.</p>
+  <p>[int]: Number values of line parsed and put inside string.</p>
 </blockquote>
 </div>
 
@@ -615,9 +614,9 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_json_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses JSON file.&quot;&quot;&quot;</span>
-        <span class="c1"># Open file</span>
+        <span class="c1"># Open file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-            <span class="c1"># Every json object</span>
+            <span class="c1"># Every json object.</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">json_obj</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parse_json_object</span><span class="p">(</span><span class="n">json_obj</span><span class="p">)</span>
@@ -647,22 +646,22 @@ Utrecht University within the Software Project course.
 <span class="sd">        Looping goes through each path and adds box for each frame.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            json_object: A single json object.</span>
+<span class="sd">            json_object (dict): A single json object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">first_frame</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># A rectangle</span>
+        <span class="c1"># A rectangle.</span>
         <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span> <span class="n">pos_y1</span> <span class="o">=</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">][</span><span class="n">first_frame</span><span class="p">]</span>
         <span class="n">half_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos_x1</span> <span class="o">-</span> <span class="n">pos_x0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">half_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos_y1</span> <span class="o">-</span> <span class="n">pos_y0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1"># Add bounding box for each frame</span>
+        <span class="c1"># Add bounding box for each frame.</span>
         <span class="k">for</span> <span class="n">frame_nr</span> <span class="ow">in</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">]:</span>
-            <span class="c1"># Skips frame when it does exceed list length</span>
+            <span class="c1"># Skips frame when it does exceed list length.</span>
             <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame_nr</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Create bounding box for a frame</span>
+            <span class="c1"># Create bounding box for a frame.</span>
             <span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">json_object</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">][</span><span class="n">frame_nr</span><span class="p">]</span>
             <span class="n">rectangle</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">pos_x</span> <span class="o">-</span> <span class="n">half_width</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_y</span> <span class="o">-</span> <span class="n">half_height</span><span class="p">),</span>
@@ -670,7 +669,7 @@ Utrecht University within the Software Project course.
             <span class="p">)</span>
 
             <span class="n">box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">,</span> <span class="s1">&#39;UFO&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># Append to list</span>
+            <span class="c1"># Append to list.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">frame_nr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 </pre></div>
 
@@ -684,7 +683,7 @@ Looping goes through each path and adds box for each frame.</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>json_object:</strong>  A single json object.</li>
+<li><strong>json_object (dict):</strong>  A single json object.</li>
 </ul>
 </div>
 

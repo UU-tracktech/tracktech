@@ -69,30 +69,27 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">pylint.utils</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">pylintutils</span>
 
 
 <span class="k">class</span> <span class="nc">PylintIgnorePaths</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Patterns to ignore when linting</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Patterns to ignore when linting.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">paths</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets paths</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Gets paths.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="n">paths</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span> <span class="o">=</span> <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span>
         <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patched_expand</span>
 
     <span class="k">def</span> <span class="nf">patched_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get correct filepaths for linting</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.&quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="c1"># Filter on paths.</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">path</span><span class="p">)),</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="c1"># Ignore __init__.py files.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">)]</span>
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">errors</span>
 </pre></div>
@@ -112,31 +109,29 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PylintIgnorePaths</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Patterns to ignore when linting</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Patterns to ignore when linting.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">paths</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets paths</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Gets paths.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="n">paths</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span> <span class="o">=</span> <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span>
         <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patched_expand</span>
 
     <span class="k">def</span> <span class="nf">patched_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get correct filepaths for linting</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.&quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="c1"># Filter on paths.</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">path</span><span class="p">)),</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="c1"># Ignore __init__.py files.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">)]</span>
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">errors</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Patterns to ignore when linting</p>
+            <div class="docstring"><p>Patterns to ignore when linting.</p>
 </div>
 
 
@@ -150,9 +145,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">paths</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets paths</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Gets paths.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="n">paths</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span> <span class="o">=</span> <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span>
         <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patched_expand</span>
@@ -160,7 +153,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Gets paths</p>
+            <div class="docstring"><p>Gets paths.</p>
 </div>
 
 
@@ -176,19 +169,21 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">patched_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get correct filepaths for linting</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.&quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="c1"># Filter on paths.</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">path</span><span class="p">)),</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="c1"># Ignore __init__.py files.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">)]</span>
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">errors</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Get correct filepaths for linting</p>
+            <div class="docstring"><p>Get correct file paths for linting.</p>
 </div>
 
 

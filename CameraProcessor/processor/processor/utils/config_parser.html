@@ -55,7 +55,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../utils.html">utils</a>.config_parser    </h1>
 
-                        <div class="docstring"><p>Constructs paths from config reader</p>
+                        <div class="docstring"><p>Constructs paths from config reader.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -64,12 +64,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Constructs paths from config reader</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Constructs paths from config reader.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -77,7 +76,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">ConfigParser</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Config parser class that reads the config file, replaces all paths with the absolute one</span>
+    <span class="sd">&quot;&quot;&quot;Config parser class that reads the config file, replaces all paths with the absolute one.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        root_path (str): path to root</span>
@@ -85,29 +84,28 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute</span>
+        <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_name (str): name of the config file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Config path</span>
+        <span class="c1"># Config path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../../&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
 
-        <span class="c1"># Make sure path does indeed exist</span>
+        <span class="c1"># Make sure path does indeed exist.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Config file does not exist in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Read config file</span>
+        <span class="c1"># Read config file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
 
-        <span class="c1"># Converts paths</span>
+        <span class="c1"># Converts paths.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__convert_paths_to_absolute</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__convert_paths_to_absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts keys that end with path to absolute paths</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Converts keys that end with path to absolute paths.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">section_key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">):</span>
@@ -115,21 +113,21 @@ Utrecht University within the Software Project course.
                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">append_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends another config file to the self.configs</span>
+        <span class="sd">&quot;&quot;&quot;Appends another config file to the self.configs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_path (str): File name of the configuration file that needs to get appended</span>
+<span class="sd">            config_name (str): File name of the configuration file that needs to get appended.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">temp_config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">config_name</span><span class="p">))</span>
         <span class="n">temp_configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="n">temp_configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">temp_config_path</span><span class="p">)</span>
 
-        <span class="c1"># Each section</span>
+        <span class="c1"># Each section.</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">temp_configs</span><span class="p">:</span>
-            <span class="c1"># Make sure key exists</span>
+            <span class="c1"># Make sure key exists.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="c1"># If also option exists, give new value from temp_configs</span>
+            <span class="c1"># If also option exists, give new value from temp_configs.</span>
             <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="n">temp_configs</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">section_key</span><span class="p">):</span>
                     <span class="k">continue</span>
@@ -141,7 +139,10 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__parse_int_tuple</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converter for parsing a tuple</span>
+        <span class="sd">&quot;&quot;&quot;Converter for parsing a tuple.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (int, int): Tuple that needs to get parsed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
 </pre></div>
@@ -161,7 +162,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ConfigParser</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Config parser class that reads the config file, replaces all paths with the absolute one</span>
+    <span class="sd">&quot;&quot;&quot;Config parser class that reads the config file, replaces all paths with the absolute one.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        root_path (str): path to root</span>
@@ -169,29 +170,28 @@ Utrecht University within the Software Project course.
 <span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute</span>
+        <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_name (str): name of the config file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Config path</span>
+        <span class="c1"># Config path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../../&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
 
-        <span class="c1"># Make sure path does indeed exist</span>
+        <span class="c1"># Make sure path does indeed exist.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Config file does not exist in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Read config file</span>
+        <span class="c1"># Read config file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
 
-        <span class="c1"># Converts paths</span>
+        <span class="c1"># Converts paths.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__convert_paths_to_absolute</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__convert_paths_to_absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts keys that end with path to absolute paths</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Converts keys that end with path to absolute paths.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">section_key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">):</span>
@@ -199,21 +199,21 @@ Utrecht University within the Software Project course.
                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">append_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends another config file to the self.configs</span>
+        <span class="sd">&quot;&quot;&quot;Appends another config file to the self.configs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_path (str): File name of the configuration file that needs to get appended</span>
+<span class="sd">            config_name (str): File name of the configuration file that needs to get appended.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">temp_config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">config_name</span><span class="p">))</span>
         <span class="n">temp_configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="n">temp_configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">temp_config_path</span><span class="p">)</span>
 
-        <span class="c1"># Each section</span>
+        <span class="c1"># Each section.</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">temp_configs</span><span class="p">:</span>
-            <span class="c1"># Make sure key exists</span>
+            <span class="c1"># Make sure key exists.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="c1"># If also option exists, give new value from temp_configs</span>
+            <span class="c1"># If also option exists, give new value from temp_configs.</span>
             <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="n">temp_configs</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">section_key</span><span class="p">):</span>
                     <span class="k">continue</span>
@@ -225,14 +225,17 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__parse_int_tuple</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converter for parsing a tuple</span>
+        <span class="sd">&quot;&quot;&quot;Converter for parsing a tuple.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item (int, int): Tuple that needs to get parsed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Config parser class that reads the config file, replaces all paths with the absolute one</p>
+            <div class="docstring"><p>Config parser class that reads the config file, replaces all paths with the absolute one.</p>
 
 <h6 id="attributes">Attributes</h6>
 
@@ -254,30 +257,30 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute</span>
+        <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_name (str): name of the config file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Config path</span>
+        <span class="c1"># Config path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../../&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
 
-        <span class="c1"># Make sure path does indeed exist</span>
+        <span class="c1"># Make sure path does indeed exist.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Config file does not exist in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Read config file</span>
+        <span class="c1"># Read config file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
 
-        <span class="c1"># Converts paths</span>
+        <span class="c1"># Converts paths.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__convert_paths_to_absolute</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Creates the config and reads the values, converts paths to absolute</p>
+            <div class="docstring"><p>Creates the config and reads the values, converts paths to absolute.</p>
 
 <h6 id="args">Args</h6>
 
@@ -299,21 +302,21 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">append_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends another config file to the self.configs</span>
+        <span class="sd">&quot;&quot;&quot;Appends another config file to the self.configs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_path (str): File name of the configuration file that needs to get appended</span>
+<span class="sd">            config_name (str): File name of the configuration file that needs to get appended.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">temp_config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">config_name</span><span class="p">))</span>
         <span class="n">temp_configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="n">temp_configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">temp_config_path</span><span class="p">)</span>
 
-        <span class="c1"># Each section</span>
+        <span class="c1"># Each section.</span>
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">temp_configs</span><span class="p">:</span>
-            <span class="c1"># Make sure key exists</span>
+            <span class="c1"># Make sure key exists.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="c1"># If also option exists, give new value from temp_configs</span>
+            <span class="c1"># If also option exists, give new value from temp_configs.</span>
             <span class="k">for</span> <span class="n">section_key</span> <span class="ow">in</span> <span class="n">temp_configs</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">section_key</span><span class="p">):</span>
                     <span class="k">continue</span>
@@ -326,12 +329,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Appends another config file to the self.configs</p>
+            <div class="docstring"><p>Appends another config file to the self.configs.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>config_path (str):</strong>  File name of the configuration file that needs to get appended</li>
+<li><strong>config_name (str):</strong>  File name of the configuration file that needs to get appended.</li>
 </ul>
 </div>
 

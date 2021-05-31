@@ -102,7 +102,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
@@ -119,22 +118,23 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Websocket handler for camera processors.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        identifier: An int that serves as the unique identifier to this object.</span>
-<span class="sd">        authorized: A bool that shows whether or not the connection is authorized.</span>
+<span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
+<span class="sd">        authorized (bool): Shows whether or not the connection is authorized.</span>
+<span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates unique id and appends it to the dict of processors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            application (tornado.web.Application): The tornado web application</span>
-<span class="sd">            request (httputil.HTTPServerRequest): The HTTP server request</span>
+<span class="sd">            application (tornado.web.Application): The tornado web application.</span>
+<span class="sd">            request (httputil.HTTPServerRequest): The HTTP server request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Load the auth object from appsettings</span>
+        <span class="c1"># Load the auth object from app settings.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;processor_auth&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">check_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
@@ -143,18 +143,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            origin (string):</span>
 <span class="sd">                Origin of the HTTP request, is ignored as all origins are allowed.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            bool</span>
+<span class="sd">            bool: Whether origin is correct.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called upon opening of the websocket.</span>
 
-<span class="sd">        Method called upon the opening of the websocket, will log connection</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        Method called upon the opening of the websocket, will log connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;New processor connected&quot;</span><span class="p">)</span>
@@ -167,22 +165,20 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (string):</span>
-<span class="sd">                JSON with at least a &quot;type&quot; property. This property can have the following values:</span>
+<span class="sd">                JSON with at least a &quot;type&quot; property. This property can have the following values</span>
 <span class="sd">                    - &quot;identifier&quot;    | This signifies a message containing the identifier by which this processor</span>
 <span class="sd">                                        should be identified.</span>
 <span class="sd">                    - &quot;boundingBoxes&quot; | This signifies a message that contains bounding boxes, see send_bounding_boxes</span>
 <span class="sd">                                        for the other expected properties.</span>
 <span class="sd">                    - &quot;featureMap&quot;    | This signifies a message that contains a feature map of an object,</span>
 <span class="sd">                                        see update_feature_map, for the other expected properties.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-            <span class="c1"># Switch on message type</span>
+            <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
@@ -195,7 +191,7 @@ Utrecht University within the Software Project course.
             <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Execute correct function</span>
+                <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
@@ -216,12 +212,12 @@ Utrecht University within the Software Project course.
             <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Authenticates a processor</span>
+        <span class="sd">&quot;&quot;&quot;Authenticates a processor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property:</span>
-<span class="sd">                    - &quot;jwt&quot; | The jwt token containing information about a user</span>
+<span class="sd">                JSON message that was received. It should contain the following property.</span>
+<span class="sd">                    - &quot;jwt&quot; | The jwt token containing information about a user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -232,32 +228,30 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Sends a message over the websocket and logs it.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (string): string which should be send over this websocket</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (bytes): Byte data received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">register_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Registers a processor under the given identifier.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property:</span>
+<span class="sd">                JSON message that was received. It should contain the following property.</span>
 <span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -279,11 +273,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following properties:</span>
+<span class="sd">                JSON message that was received. It should contain the following properties.</span>
 <span class="sd">                    - &quot;frameId&quot; | The identifier of the frame for which these bounding boxes were computed.</span>
 <span class="sd">                    - &quot;boxes&quot;   | An object containing the bounding boxes that were computed for this frame.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">]</span>
@@ -309,15 +301,12 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sends an updated feature map to all processors</span>
+        <span class="sd">&quot;&quot;&quot;Sends an updated feature map to all processors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following properties:</span>
+<span class="sd">            message (json): JSON message that was received. It should contain the following properties.</span>
 <span class="sd">                    - &quot;objectId&quot;   | The identifier of the object for which this feature map was computed.</span>
 <span class="sd">                    - &quot;featureMap&quot; | An object containing the new feature map that was computed.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
         <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;featureMap&quot;</span><span class="p">]</span>
@@ -353,22 +342,23 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Websocket handler for camera processors.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        identifier: An int that serves as the unique identifier to this object.</span>
-<span class="sd">        authorized: A bool that shows whether or not the connection is authorized.</span>
+<span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
+<span class="sd">        authorized (bool): Shows whether or not the connection is authorized.</span>
+<span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates unique id and appends it to the dict of processors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            application (tornado.web.Application): The tornado web application</span>
-<span class="sd">            request (httputil.HTTPServerRequest): The HTTP server request</span>
+<span class="sd">            application (tornado.web.Application): The tornado web application.</span>
+<span class="sd">            request (httputil.HTTPServerRequest): The HTTP server request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Load the auth object from appsettings</span>
+        <span class="c1"># Load the auth object from app settings.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;processor_auth&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">check_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
@@ -377,18 +367,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            origin (string):</span>
 <span class="sd">                Origin of the HTTP request, is ignored as all origins are allowed.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            bool</span>
+<span class="sd">            bool: Whether origin is correct.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called upon opening of the websocket.</span>
 
-<span class="sd">        Method called upon the opening of the websocket, will log connection</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        Method called upon the opening of the websocket, will log connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;New processor connected&quot;</span><span class="p">)</span>
@@ -401,22 +389,20 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (string):</span>
-<span class="sd">                JSON with at least a &quot;type&quot; property. This property can have the following values:</span>
+<span class="sd">                JSON with at least a &quot;type&quot; property. This property can have the following values</span>
 <span class="sd">                    - &quot;identifier&quot;    | This signifies a message containing the identifier by which this processor</span>
 <span class="sd">                                        should be identified.</span>
 <span class="sd">                    - &quot;boundingBoxes&quot; | This signifies a message that contains bounding boxes, see send_bounding_boxes</span>
 <span class="sd">                                        for the other expected properties.</span>
 <span class="sd">                    - &quot;featureMap&quot;    | This signifies a message that contains a feature map of an object,</span>
 <span class="sd">                                        see update_feature_map, for the other expected properties.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-            <span class="c1"># Switch on message type</span>
+            <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
@@ -429,7 +415,7 @@ Utrecht University within the Software Project course.
             <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Execute correct function</span>
+                <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
@@ -450,12 +436,12 @@ Utrecht University within the Software Project course.
             <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Authenticates a processor</span>
+        <span class="sd">&quot;&quot;&quot;Authenticates a processor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property:</span>
-<span class="sd">                    - &quot;jwt&quot; | The jwt token containing information about a user</span>
+<span class="sd">                JSON message that was received. It should contain the following property.</span>
+<span class="sd">                    - &quot;jwt&quot; | The jwt token containing information about a user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -466,32 +452,30 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Sends a message over the websocket and logs it.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (string): string which should be send over this websocket</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (bytes): Byte data received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">register_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Registers a processor under the given identifier.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property:</span>
+<span class="sd">                JSON message that was received. It should contain the following property.</span>
 <span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -513,11 +497,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following properties:</span>
+<span class="sd">                JSON message that was received. It should contain the following properties.</span>
 <span class="sd">                    - &quot;frameId&quot; | The identifier of the frame for which these bounding boxes were computed.</span>
 <span class="sd">                    - &quot;boxes&quot;   | An object containing the bounding boxes that were computed for this frame.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">]</span>
@@ -543,15 +525,12 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sends an updated feature map to all processors</span>
+        <span class="sd">&quot;&quot;&quot;Sends an updated feature map to all processors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following properties:</span>
+<span class="sd">            message (json): JSON message that was received. It should contain the following properties.</span>
 <span class="sd">                    - &quot;objectId&quot;   | The identifier of the object for which this feature map was computed.</span>
 <span class="sd">                    - &quot;featureMap&quot; | An object containing the new feature map that was computed.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
         <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;featureMap&quot;</span><span class="p">]</span>
@@ -576,8 +555,9 @@ Utrecht University within the Software Project course.
 <h6 id="attributes">Attributes</h6>
 
 <ul>
-<li><strong>identifier:</strong>  An int that serves as the unique identifier to this object.</li>
-<li><strong>authorized:</strong>  A bool that shows whether or not the connection is authorized.</li>
+<li><strong>identifier (int):</strong>  Serves as the unique identifier to this object.</li>
+<li><strong>authorized (bool):</strong>  Shows whether or not the connection is authorized.</li>
+<li><strong>auth (Auth):</strong>  Authorization object for the websocket handler</li>
 </ul>
 </div>
 
@@ -595,14 +575,14 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Creates unique id and appends it to the dict of processors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            application (tornado.web.Application): The tornado web application</span>
-<span class="sd">            request (httputil.HTTPServerRequest): The HTTP server request</span>
+<span class="sd">            application (tornado.web.Application): The tornado web application.</span>
+<span class="sd">            request (httputil.HTTPServerRequest): The HTTP server request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Load the auth object from appsettings</span>
+        <span class="c1"># Load the auth object from app settings.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;processor_auth&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -613,8 +593,8 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>application (tornado.web.Application):</strong>  The tornado web application</li>
-<li><strong>request (httputil.HTTPServerRequest):</strong>  The HTTP server request</li>
+<li><strong>application (tornado.web.Application):</strong>  The tornado web application.</li>
+<li><strong>request (httputil.HTTPServerRequest):</strong>  The HTTP server request.</li>
 </ul>
 </div>
 
@@ -636,8 +616,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            origin (string):</span>
 <span class="sd">                Origin of the HTTP request, is ignored as all origins are allowed.</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            bool</span>
+<span class="sd">            bool: Whether origin is correct.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
@@ -655,7 +636,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>bool</p>
+  <p>bool: Whether origin is correct.</p>
 </blockquote>
 </div>
 
@@ -674,10 +655,7 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called upon opening of the websocket.</span>
 
-<span class="sd">        Method called upon the opening of the websocket, will log connection</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">        Method called upon the opening of the websocket, will log connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;New processor connected&quot;</span><span class="p">)</span>
@@ -687,13 +665,7 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Called upon opening of the websocket.</p>
 
-<p>Method called upon the opening of the websocket, will log connection</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
+<p>Method called upon the opening of the websocket, will log connection.</p>
 </div>
 
 
@@ -715,22 +687,20 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (string):</span>
-<span class="sd">                JSON with at least a &quot;type&quot; property. This property can have the following values:</span>
+<span class="sd">                JSON with at least a &quot;type&quot; property. This property can have the following values</span>
 <span class="sd">                    - &quot;identifier&quot;    | This signifies a message containing the identifier by which this processor</span>
 <span class="sd">                                        should be identified.</span>
 <span class="sd">                    - &quot;boundingBoxes&quot; | This signifies a message that contains bounding boxes, see send_bounding_boxes</span>
 <span class="sd">                                        for the other expected properties.</span>
 <span class="sd">                    - &quot;featureMap&quot;    | This signifies a message that contains a feature map of an object,</span>
 <span class="sd">                                        see update_feature_map, for the other expected properties.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-            <span class="c1"># Switch on message type</span>
+            <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
@@ -743,7 +713,7 @@ Utrecht University within the Software Project course.
             <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Execute correct function</span>
+                <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
@@ -773,7 +743,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>message (string):</strong>  JSON with at least a "type" property. This property can have the following values:
+<li><strong>message (string):</strong>  JSON with at least a "type" property. This property can have the following values
 <ul>
 <li>"identifier"    | This signifies a message containing the identifier by which this processor
                    should be identified.</li>
@@ -783,12 +753,6 @@ Utrecht University within the Software Project course.
                    see update_feature_map, for the other expected properties.</li>
 </ul></li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -804,12 +768,12 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Authenticates a processor</span>
+        <span class="sd">&quot;&quot;&quot;Authenticates a processor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property:</span>
-<span class="sd">                    - &quot;jwt&quot; | The jwt token containing information about a user</span>
+<span class="sd">                JSON message that was received. It should contain the following property.</span>
+<span class="sd">                    - &quot;jwt&quot; | The jwt token containing information about a user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -819,14 +783,14 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Authenticates a processor</p>
+            <div class="docstring"><p>Authenticates a processor.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>message (json):</strong>  JSON message that was received. It should contain the following property:
+<li><strong>message (json):</strong>  JSON message that was received. It should contain the following property.
 <ul>
-<li>"jwt" | The jwt token containing information about a user</li>
+<li>"jwt" | The jwt token containing information about a user.</li>
 </ul></li>
 </ul>
 </div>
@@ -847,9 +811,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Sends a message over the websocket and logs it.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (string): string which should be send over this websocket</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
@@ -862,14 +824,8 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>message (string):</strong>  string which should be send over this websocket</li>
+<li><strong>message (string):</strong>  string which should be send over this websocket.</li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -885,11 +841,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
@@ -898,12 +850,6 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Called when the websocket is closed, deletes itself from the dict of processors.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -919,12 +865,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunk (bytes): Byte data received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Unused method that could handle streamed request data</p>
+            <div class="docstring"><p>Unused method that could handle streamed request data.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>chunk (bytes):</strong>  Byte data received from the server.</li>
+</ul>
 </div>
 
 
@@ -944,7 +900,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property:</span>
+<span class="sd">                JSON message that was received. It should contain the following property.</span>
 <span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -969,7 +925,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>message (json):</strong>  JSON message that was received. It should contain the following property:
+<li><strong>message (json):</strong>  JSON message that was received. It should contain the following property.
 <ul>
 <li>"id" | The identifier of the processor under which this socket should be registered.</li>
 </ul></li>
@@ -993,11 +949,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following properties:</span>
+<span class="sd">                JSON message that was received. It should contain the following properties.</span>
 <span class="sd">                    - &quot;frameId&quot; | The identifier of the frame for which these bounding boxes were computed.</span>
 <span class="sd">                    - &quot;boxes&quot;   | An object containing the bounding boxes that were computed for this frame.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">]</span>
@@ -1029,18 +983,12 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>message (json):</strong>  JSON message that was received. It should contain the following properties:
+<li><strong>message (json):</strong>  JSON message that was received. It should contain the following properties.
 <ul>
 <li>"frameId" | The identifier of the frame for which these bounding boxes were computed.</li>
 <li>"boxes"   | An object containing the bounding boxes that were computed for this frame.</li>
 </ul></li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -1058,15 +1006,12 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sends an updated feature map to all processors</span>
+        <span class="sd">&quot;&quot;&quot;Sends an updated feature map to all processors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following properties:</span>
+<span class="sd">            message (json): JSON message that was received. It should contain the following properties.</span>
 <span class="sd">                    - &quot;objectId&quot;   | The identifier of the object for which this feature map was computed.</span>
 <span class="sd">                    - &quot;featureMap&quot; | An object containing the new feature map that was computed.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
         <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;featureMap&quot;</span><span class="p">]</span>
@@ -1086,23 +1031,17 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Sends an updated feature map to all processors</p>
+            <div class="docstring"><p>Sends an updated feature map to all processors.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>message (json):</strong>  JSON message that was received. It should contain the following properties:
+<li><strong>message (json):</strong>  JSON message that was received. It should contain the following properties.
 <ul>
 <li>"objectId"   | The identifier of the object for which this feature map was computed.</li>
 <li>"featureMap" | An object containing the new feature map that was computed.</li>
 </ul></li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 

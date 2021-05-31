@@ -64,7 +64,7 @@
                     <h1 class="modulename">
 <a href="./../../../processor.html">processor</a>.<a href="./../../pipeline.html">pipeline</a>.<a href="./../detection.html">detection</a>.idetector    </h1>
 
-                        <div class="docstring"><p>Detection abstract class</p>
+                        <div class="docstring"><p>Detection abstract class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -73,12 +73,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Detection abstract class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -106,7 +105,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection</span>
+        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): Image in a tensor representation</span>
@@ -116,7 +115,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            Tensor: Image that is converted</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image</span>
+        <span class="c1"># Convert image.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -140,7 +139,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Apply NMS</span>
+        <span class="c1"># Apply NMS.</span>
         <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
                                    <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
                                    <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
@@ -158,14 +157,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            filter_types ([str]): What detection types to filter on</span>
 <span class="sd">            names ([str]): The complete list of types that get detected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># detections per image</span>
+        <span class="c1"># Detections per image.</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size</span>
+                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
                 <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 
                 <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj</span>
+                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
                 <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
                     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span>
                     <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
@@ -211,7 +210,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection</span>
+        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): Image in a tensor representation</span>
@@ -221,7 +220,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            Tensor: Image that is converted</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image</span>
+        <span class="c1"># Convert image.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -245,7 +244,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Apply NMS</span>
+        <span class="c1"># Apply NMS.</span>
         <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
                                    <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
                                    <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
@@ -263,14 +262,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            filter_types ([str]): What detection types to filter on</span>
 <span class="sd">            names ([str]): The complete list of types that get detected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># detections per image</span>
+        <span class="c1"># Detections per image.</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size</span>
+                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
                 <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 
                 <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj</span>
+                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
                 <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
                     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span>
                     <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
@@ -356,7 +355,7 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection</span>
+        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            img (Tensor): Image in a tensor representation</span>
@@ -366,7 +365,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            Tensor: Image that is converted</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image</span>
+        <span class="c1"># Convert image.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -379,7 +378,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Converts the image to the size used for the detection</p>
+            <div class="docstring"><p>Converts the image to the size used for the detection.</p>
 
 <h6 id="args">Args</h6>
 
@@ -423,7 +422,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Apply NMS</span>
+        <span class="c1"># Apply NMS.</span>
         <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
                                    <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
                                    <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
@@ -474,14 +473,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            filter_types ([str]): What detection types to filter on</span>
 <span class="sd">            names ([str]): The complete list of types that get detected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># detections per image</span>
+        <span class="c1"># Detections per image.</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size</span>
+                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
                 <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
 
                 <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj</span>
+                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
                 <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
                     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span>
                     <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>

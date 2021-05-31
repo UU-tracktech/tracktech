@@ -35,9 +35,6 @@
                                 <a class="function" href="#Scheduler.__init__">Scheduler</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Scheduler.queued">queued</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Scheduler.schedule_graph">schedule_graph</a>
                         </li>
                         <li>
@@ -64,7 +61,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../scheduling.html">scheduling</a>.scheduler    </h1>
 
-                        <div class="docstring"><p>Defines the scheduler class, is for executing tasks concurrently by creating node structure</p>
+                        <div class="docstring"><p>Defines the scheduler class, is for executing tasks concurrently by creating node structure.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -73,30 +70,27 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines the scheduler class, is for executing tasks concurrently by creating node structure</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines the scheduler class, is for executing tasks concurrently by creating node structure.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
 
 
 <span class="k">class</span> <span class="nc">Scheduler</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Sequential scheduler executing a starting node and all children of</span>
-<span class="sd">    said node when they are ready for execution.</span>
+    <span class="sd">&quot;&quot;&quot;Sequential scheduler executing a starting node and all children of said node when they are ready for execution.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        start_node (INode): INode representing the initial input node, starting point of the graph.</span>
-<span class="sd">        queue (Queue): a queue containing nodes to execute, initially contains start_node</span>
+<span class="sd">        queue (Queue): A queue containing nodes to execute, initially contains start_node</span>
 <span class="sd">            and other nodes are put in queue when ready.</span>
 <span class="sd">        queued (set): set of all nodes that have been queued in the current iteration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph</span>
-<span class="sd">        and a queue to determine execution order.</span>
+        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start_node (INode): INode representing the initial input node, starting point of the graph.</span>
@@ -104,7 +98,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span> <span class="o">=</span> <span class="n">start_node</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Executes an iteration on the graph.</span>
@@ -118,7 +112,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: a node in the queue wasn&#39;t executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">input_obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
@@ -168,19 +162,17 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Scheduler</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Sequential scheduler executing a starting node and all children of</span>
-<span class="sd">    said node when they are ready for execution.</span>
+    <span class="sd">&quot;&quot;&quot;Sequential scheduler executing a starting node and all children of said node when they are ready for execution.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        start_node (INode): INode representing the initial input node, starting point of the graph.</span>
-<span class="sd">        queue (Queue): a queue containing nodes to execute, initially contains start_node</span>
+<span class="sd">        queue (Queue): A queue containing nodes to execute, initially contains start_node</span>
 <span class="sd">            and other nodes are put in queue when ready.</span>
 <span class="sd">        queued (set): set of all nodes that have been queued in the current iteration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph</span>
-<span class="sd">        and a queue to determine execution order.</span>
+        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start_node (INode): INode representing the initial input node, starting point of the graph.</span>
@@ -188,7 +180,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span> <span class="o">=</span> <span class="n">start_node</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Executes an iteration on the graph.</span>
@@ -202,7 +194,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: a node in the queue wasn&#39;t executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">input_obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
@@ -239,14 +231,13 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Sequential scheduler executing a starting node and all children of
-said node when they are ready for execution.</p>
+            <div class="docstring"><p>Sequential scheduler executing a starting node and all children of said node when they are ready for execution.</p>
 
 <h6 id="attributes">Attributes</h6>
 
 <ul>
 <li><strong>start_node (INode):</strong>  INode representing the initial input node, starting point of the graph.</li>
-<li><strong>queue (Queue):</strong>  a queue containing nodes to execute, initially contains start_node
+<li><strong>queue (Queue):</strong>  A queue containing nodes to execute, initially contains start_node
 and other nodes are put in queue when ready.</li>
 <li><strong>queued (set):</strong>  set of all nodes that have been queued in the current iteration.</li>
 </ul>
@@ -263,8 +254,7 @@ and other nodes are put in queue when ready.</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph</span>
-<span class="sd">        and a queue to determine execution order.</span>
+        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start_node (INode): INode representing the initial input node, starting point of the graph.</span>
@@ -272,13 +262,12 @@ and other nodes are put in queue when ready.</li>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span> <span class="o">=</span> <span class="n">start_node</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Inits Scheduler with a starting node that contains the graph
-and a queue to determine execution order.</p>
+            <div class="docstring"><p>Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</p>
 
 <h6 id="args">Args</h6>
 
@@ -287,15 +276,6 @@ and a queue to determine execution order.</p>
 </ul>
 </div>
 
-
-                            </div>
-                            <div id="Scheduler.queued" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Scheduler.queued">#&nbsp;&nbsp</a>
-
-        <span class="name">queued</span><span class="annotation">: set</span>
-    </div>
-
-    
 
                             </div>
                             <div id="Scheduler.schedule_graph" class="classattr">
@@ -320,7 +300,7 @@ and a queue to determine execution order.</p>
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: a node in the queue wasn&#39;t executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">input_obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 

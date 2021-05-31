@@ -69,37 +69,34 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">Filter</span>
 
 
 <span class="k">class</span> <span class="nc">LoggingFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The log filter object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The log filter object.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LoggingFilter&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a new filter instance</span>
+        <span class="sd">&quot;&quot;&quot;Create a new filter instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (str): Name of the filter instance</span>
+<span class="sd">            name (str): Name of the filter instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Instantiate a new filter with a given name</span>
+        <span class="c1"># Instantiate a new filter with a given name.</span>
         <span class="n">Filter</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Filter the log records</span>
+        <span class="sd">&quot;&quot;&quot;Filter the log records.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            record (LogRecord): Contains all the information pertinent to the event being logged</span>
+<span class="sd">            record (LogRecord): Contains all the information pertinent to the event being logged.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        LogRecord: Log messages that have been filtered</span>
+<span class="sd">            LogRecord: Log messages that have been filtered</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Removes logs messages that contains &#39;200 GET&#39;</span>
+        <span class="c1"># Removes logs messages that contains &#39;200 GET&#39;.</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">record</span><span class="o">.</span><span class="n">getMessage</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;200 GET&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -118,36 +115,34 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">LoggingFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The log filter object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The log filter object.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LoggingFilter&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a new filter instance</span>
+        <span class="sd">&quot;&quot;&quot;Create a new filter instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (str): Name of the filter instance</span>
+<span class="sd">            name (str): Name of the filter instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Instantiate a new filter with a given name</span>
+        <span class="c1"># Instantiate a new filter with a given name.</span>
         <span class="n">Filter</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Filter the log records</span>
+        <span class="sd">&quot;&quot;&quot;Filter the log records.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            record (LogRecord): Contains all the information pertinent to the event being logged</span>
+<span class="sd">            record (LogRecord): Contains all the information pertinent to the event being logged.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        LogRecord: Log messages that have been filtered</span>
+<span class="sd">            LogRecord: Log messages that have been filtered</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Removes logs messages that contains &#39;200 GET&#39;</span>
+        <span class="c1"># Removes logs messages that contains &#39;200 GET&#39;.</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">record</span><span class="o">.</span><span class="n">getMessage</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;200 GET&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>The log filter object</p>
+            <div class="docstring"><p>The log filter object.</p>
 </div>
 
 
@@ -161,24 +156,24 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LoggingFilter&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a new filter instance</span>
+        <span class="sd">&quot;&quot;&quot;Create a new filter instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (str): Name of the filter instance</span>
+<span class="sd">            name (str): Name of the filter instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Instantiate a new filter with a given name</span>
+        <span class="c1"># Instantiate a new filter with a given name.</span>
         <span class="n">Filter</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Create a new filter instance</p>
+            <div class="docstring"><p>Create a new filter instance.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>name (str):</strong>  Name of the filter instance</li>
+<li><strong>name (str):</strong>  Name of the filter instance.</li>
 </ul>
 </div>
 
@@ -195,31 +190,33 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Filter the log records</span>
+        <span class="sd">&quot;&quot;&quot;Filter the log records.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            record (LogRecord): Contains all the information pertinent to the event being logged</span>
+<span class="sd">            record (LogRecord): Contains all the information pertinent to the event being logged.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        LogRecord: Log messages that have been filtered</span>
+<span class="sd">            LogRecord: Log messages that have been filtered</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Removes logs messages that contains &#39;200 GET&#39;</span>
+        <span class="c1"># Removes logs messages that contains &#39;200 GET&#39;.</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">record</span><span class="o">.</span><span class="n">getMessage</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;200 GET&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Filter the log records</p>
+            <div class="docstring"><p>Filter the log records.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>record (LogRecord):</strong>  Contains all the information pertinent to the event being logged</li>
+<li><strong>record (LogRecord):</strong>  Contains all the information pertinent to the event being logged.</li>
 </ul>
 
-<p>Returns:
-LogRecord: Log messages that have been filtered</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>LogRecord: Log messages that have been filtered</p>
+</blockquote>
 </div>
 
 

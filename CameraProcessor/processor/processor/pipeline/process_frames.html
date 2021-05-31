@@ -61,7 +61,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../pipeline.html">pipeline</a>.process_frames    </h1>
 
-                        <div class="docstring"><p>Contains main video processing pipeline function</p>
+                        <div class="docstring"><p>Contains main video processing pipeline function.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -70,12 +70,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains main video processing pipeline function</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains main video processing pipeline function.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -114,19 +113,19 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream</span>
+    <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
+<span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</span>
+<span class="sd">        ICapture, IDetector, ITracker, str: Capture instance, a detector and tracker and a websocket_id.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Load the config file</span>
+    <span class="c1"># Load the config file.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
-    <span class="c1"># Instantiate the detector</span>
+    <span class="c1"># Instantiate the detector.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
@@ -135,7 +134,7 @@ Utrecht University within the Software Project course.
                                                   <span class="n">configs</span>
                                                   <span class="p">)</span>
 
-    <span class="c1"># Instantiate the tracker</span>
+    <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
@@ -144,25 +143,25 @@ Utrecht University within the Software Project course.
                                <span class="n">configs</span>
                                <span class="p">)</span>
 
-    <span class="c1"># Instantiate the tracker</span>
+    <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
     <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
-    <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
+    <span class="c1"># Frame counter starts at 0. Will probably work differently for streams.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
 
     <span class="n">hls_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">]</span>
 
     <span class="n">hls_enabled</span> <span class="o">=</span> <span class="n">hls_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;enabled&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Capture the video stream</span>
+    <span class="c1"># Capture the video stream.</span>
     <span class="k">if</span> <span class="n">hls_enabled</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">HlsCapture</span><span class="p">(</span><span class="n">hls_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">detector_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
 
-    <span class="c1"># Get orchestrator configuration</span>
+    <span class="c1"># Get orchestrator configuration.</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">orchestrator_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
@@ -204,18 +203,17 @@ Utrecht University within the Software Project course.
 <span class="sd">        capture (ICapture): capture object to process a stream of frames.</span>
 <span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
 <span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
-<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
-<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects</span>
-<span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them.</span>
+<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
+<span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Create Scheduler.</span>
-    <span class="c1"># scheduler = prepare_scheduler(detector, tracker, on_processed_frame)</span>
+    <span class="c1"># Create Scheduler by doing: scheduler = prepare_scheduler(detector, tracker, on_processed_frame).</span>
 
     <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># Contains re-identification data</span>
+    <span class="c1"># Contains re-identification data.</span>
     <span class="n">re_id_data</span> <span class="o">=</span> <span class="n">ReidData</span><span class="p">()</span>
 
     <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
@@ -224,8 +222,7 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
             <span class="k">continue</span>
 
-        <span class="c1"># # Execute scheduler plan on current frame.</span>
-        <span class="c1"># scheduler.schedule_graph(frame_obj)</span>
+        <span class="c1"># Execute scheduler plan on current frame: scheduler.schedule_graph(frame_obj).</span>
 
         <span class="c1"># Get detections from running detection stage.</span>
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
@@ -233,16 +230,16 @@ Utrecht University within the Software Project course.
         <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
         <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
-        <span class="c1"># Use the frame object and the tracked boxes for re-identification</span>
+        <span class="c1"># Use the frame object and the tracked boxes for re-identification.</span>
         <span class="n">re_identifier</span><span class="o">.</span><span class="n">re_identify</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
-        <span class="c1"># Buffer the tracked object</span>
+        <span class="c1"># Buffer the tracked object.</span>
         <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Handle side effects of frame processing</span>
+        <span class="c1"># Handle side effects of frame processing.</span>
         <span class="n">on_processed_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Process the message queue if there is a websocket connection</span>
+        <span class="c1"># Process the message queue if there is a websocket connection.</span>
         <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
@@ -254,7 +251,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Processes the message queue processing each start and stop command</span>
+    <span class="sd">&quot;&quot;&quot;Processes the message queue processing each start and stop command.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket client to get the message queue from</span>
@@ -262,27 +259,27 @@ Utrecht University within the Software Project course.
 <span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Empty queue if there are messages left that were not sent</span>
+    <span class="c1"># Empty queue if there are messages left that were not sent.</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="p">)</span>
         <span class="n">track_elem</span> <span class="o">=</span> <span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-        <span class="c1"># Start command</span>
+        <span class="c1"># Start command.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start tracking box </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> in frame_id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> &#39;</span>
                          <span class="sa">f</span><span class="s1">&#39;with new object id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="c1"># Get the feature vector of the object we want to track (query)</span>
-            <span class="c1"># First, get the bounding box and frame for the query</span>
+            <span class="c1"># Get the feature vector of the object we want to track (query).</span>
+            <span class="c1"># First, get the bounding box and frame for the query.</span>
             <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
             <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">)</span>
 
-            <span class="c1"># Extract the features from this bounding box and store them in the data</span>
+            <span class="c1"># Extract the features from this bounding box and store them in the data.</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">))</span>
 
-            <span class="c1"># Also store the map of the first box_id to the object_id</span>
+            <span class="c1"># Also store the map of the first box_id to the object_id.</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 
-        <span class="c1"># Stop command</span>
+        <span class="c1"># Stop command.</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StopCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stop tracking object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
@@ -290,59 +287,58 @@ Utrecht University within the Software Project course.
 
 <span class="c1"># pylint: disable=unused-argument</span>
 <span class="k">def</span> <span class="nf">send_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sends the bounding boxes to the orchestrator using a websocket client</span>
+    <span class="sd">&quot;&quot;&quot;Sends the bounding boxes to the orchestrator using a websocket client.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection</span>
-<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place</span>
-<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection</span>
-<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking</span>
+<span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection.</span>
+<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
+<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
+<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get message and send it through the websocket</span>
+    <span class="c1"># Get message and send it through the websocket.</span>
     <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">bounding_boxes_to_json</span><span class="p">(</span><span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">())</span>
     <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
 
 
-<span class="c1"># pylint: disable=unused-argument</span>
+<span class="c1"># pylint: disable=unused-argument.</span>
 <span class="k">def</span> <span class="nf">opencv_display</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode</span>
+    <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode.</span>
 
-<span class="sd">    Is async because the process_frames.py loop expects to get a async function it can await</span>
+<span class="sd">    Is async because the process_frames.py loop expects to get a async function it can await.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place</span>
-<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection</span>
-<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking</span>
+<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
+<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
+<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Generate tiled image to display in opencv</span>
+    <span class="c1"># Generate tiled image to display in opencv.</span>
     <span class="n">tiled_image</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">generate_tiled_image</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-    <span class="c1"># Play the video in a window called &quot;Output Video&quot;</span>
+    <span class="c1"># Play the video in a window called &quot;Output Video&quot;.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Output Video&quot;</span><span class="p">,</span> <span class="n">tiled_image</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="c1"># Figure out how to get Docker to use GUI</span>
+        <span class="c1"># Figure out how to get Docker to use GUI.</span>
         <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Error displaying video. Are you running this in Docker perhaps?&quot;</span><span class="p">)</span> \
             <span class="kn">from</span> <span class="nn">err</span>
 
-    <span class="c1"># This next line is **ESSENTIAL** for the video to actually play</span>
-    <span class="c1"># A timeout of 0 will not display the image</span>
+    <span class="c1"># This next line is **ESSENTIAL** for the video to actually play.</span>
+    <span class="c1"># A timeout of 0 will not display the image.</span>
     <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">__create_detector</span><span class="p">(</span><span class="n">idetector</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates and returns a detector of the given type</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a detector of the given type.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        idetector (IDetector): The CLASS, or object type, of the detector we want</span>
-<span class="sd">        config_section (string): The config section name associated with the given detector</span>
-<span class="sd">        configs (dict): The configs file</span>
+<span class="sd">        idetector (IDetector): The CLASS, or object type, of the detector we want.</span>
+<span class="sd">        config_section (str): The config section name associated with the given detector.</span>
+<span class="sd">        configs (ConfigParser): The configurations of the detector.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        IDetector: The requested detector of the given type</span>
-<span class="sd">        dict: The config associated with the detector</span>
+<span class="sd">        IDetector, SectionProxy: Requested detector of the given type combined with its config.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
     <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
@@ -351,15 +347,15 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">__create_tracker</span><span class="p">(</span><span class="n">itracker</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates and returns a tracker of the given type</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a tracker of the given type.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        itracker (ITracker class type): The CLASS, or object type, of the detector we want</span>
-<span class="sd">        config_section (string): The config section name associated with the given tracker</span>
-<span class="sd">        configs (dict): The configs file</span>
+<span class="sd">        itracker (ITracker): The CLASS, or object type, of the detector we want.</span>
+<span class="sd">        config_section (str): The config section name associated with the given tracker.</span>
+<span class="sd">        configs (ConfigParser): The configurations of the detector.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        ITracker: The requested tracker</span>
+<span class="sd">        ITracker: The requested tracker.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tracker_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
     <span class="n">tracker</span> <span class="o">=</span> <span class="n">itracker</span><span class="p">(</span><span class="n">tracker_config</span><span class="p">)</span>
@@ -380,19 +376,19 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream</span>
+    <span class="sd">&quot;&quot;&quot;Read the configuration information and prepare the objects for the frame stream.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream</span>
+<span class="sd">        configs (ConfigParser): Configuration of the application when preparing the stream.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</span>
+<span class="sd">        ICapture, IDetector, ITracker, str: Capture instance, a detector and tracker and a websocket_id.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Load the config file</span>
+    <span class="c1"># Load the config file.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
-    <span class="c1"># Instantiate the detector</span>
+    <span class="c1"># Instantiate the detector.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
@@ -401,7 +397,7 @@ Utrecht University within the Software Project course.
                                                   <span class="n">configs</span>
                                                   <span class="p">)</span>
 
-    <span class="c1"># Instantiate the tracker</span>
+    <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
@@ -410,25 +406,25 @@ Utrecht University within the Software Project course.
                                <span class="n">configs</span>
                                <span class="p">)</span>
 
-    <span class="c1"># Instantiate the tracker</span>
+    <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
     <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
-    <span class="c1"># Frame counter starts at 0. Will probably work differently for streams</span>
+    <span class="c1"># Frame counter starts at 0. Will probably work differently for streams.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
 
     <span class="n">hls_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">]</span>
 
     <span class="n">hls_enabled</span> <span class="o">=</span> <span class="n">hls_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;enabled&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Capture the video stream</span>
+    <span class="c1"># Capture the video stream.</span>
     <span class="k">if</span> <span class="n">hls_enabled</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">HlsCapture</span><span class="p">(</span><span class="n">hls_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">capture</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">detector_config</span><span class="p">[</span><span class="s1">&#39;source_path&#39;</span><span class="p">])</span>
 
-    <span class="c1"># Get orchestrator configuration</span>
+    <span class="c1"># Get orchestrator configuration.</span>
     <span class="n">orchestrator_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">orchestrator_config</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
@@ -436,18 +432,18 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Read the configuration information and prepare the objects for the frame stream</p>
+            <div class="docstring"><p>Read the configuration information and prepare the objects for the frame stream.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (ConfigParser):</strong>  Configuration of the application when preparing the stream</li>
+<li><strong>configs (ConfigParser):</strong>  Configuration of the application when preparing the stream.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(ICapture, IDetector, ITracker, str): Capture instance, a detector and tracker and a websocket_id</p>
+  <p>ICapture, IDetector, ITracker, str: Capture instance, a detector and tracker and a websocket_id.</p>
 </blockquote>
 </div>
 
@@ -537,18 +533,17 @@ Utrecht University within the Software Project course.
 <span class="sd">        capture (ICapture): capture object to process a stream of frames.</span>
 <span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
 <span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
-<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
-<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects</span>
-<span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them.</span>
+<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
+<span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Create Scheduler.</span>
-    <span class="c1"># scheduler = prepare_scheduler(detector, tracker, on_processed_frame)</span>
+    <span class="c1"># Create Scheduler by doing: scheduler = prepare_scheduler(detector, tracker, on_processed_frame).</span>
 
     <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># Contains re-identification data</span>
+    <span class="c1"># Contains re-identification data.</span>
     <span class="n">re_id_data</span> <span class="o">=</span> <span class="n">ReidData</span><span class="p">()</span>
 
     <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
@@ -557,8 +552,7 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
             <span class="k">continue</span>
 
-        <span class="c1"># # Execute scheduler plan on current frame.</span>
-        <span class="c1"># scheduler.schedule_graph(frame_obj)</span>
+        <span class="c1"># Execute scheduler plan on current frame: scheduler.schedule_graph(frame_obj).</span>
 
         <span class="c1"># Get detections from running detection stage.</span>
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
@@ -566,16 +560,16 @@ Utrecht University within the Software Project course.
         <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
         <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
-        <span class="c1"># Use the frame object and the tracked boxes for re-identification</span>
+        <span class="c1"># Use the frame object and the tracked boxes for re-identification.</span>
         <span class="n">re_identifier</span><span class="o">.</span><span class="n">re_identify</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
-        <span class="c1"># Buffer the tracked object</span>
+        <span class="c1"># Buffer the tracked object.</span>
         <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Handle side effects of frame processing</span>
+        <span class="c1"># Handle side effects of frame processing.</span>
         <span class="n">on_processed_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Process the message queue if there is a websocket connection</span>
+        <span class="c1"># Process the message queue if there is a websocket connection.</span>
         <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
@@ -599,9 +593,9 @@ Sends detections to client if client is used (HlsCapture).</p>
 <li><strong>capture (ICapture):</strong>  capture object to process a stream of frames.</li>
 <li><strong>detector (IDetector):</strong>  detector performing the detections on a given frame.</li>
 <li><strong>tracker (ITracker):</strong>  tracker performing simple tracking of all objects using the detections.</li>
-<li><strong>re_identifier (IReIdentifier):</strong>  re-identifier extracting features and comparing them</li>
-<li><strong>on_processed_frame (Function):</strong>  when the frame got processed. Call this function to handle effects</li>
-<li><strong>ws_client (WebsocketClient):</strong>  The websocket client so the message queue can be emptied</li>
+<li><strong>re_identifier (IReIdentifier):</strong>  re-identifier extracting features and comparing them.</li>
+<li><strong>on_processed_frame (Function):</strong>  when the frame got processed. Call this function to handle effects.</li>
+<li><strong>ws_client (WebsocketClient):</strong>  The websocket client so the message queue can be emptied.</li>
 </ul>
 </div>
 
@@ -618,7 +612,7 @@ Sends detections to client if client is used (HlsCapture).</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Processes the message queue processing each start and stop command</span>
+    <span class="sd">&quot;&quot;&quot;Processes the message queue processing each start and stop command.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket client to get the message queue from</span>
@@ -626,27 +620,27 @@ Sends detections to client if client is used (HlsCapture).</p>
 <span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Empty queue if there are messages left that were not sent</span>
+    <span class="c1"># Empty queue if there are messages left that were not sent.</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="p">)</span>
         <span class="n">track_elem</span> <span class="o">=</span> <span class="n">ws_client</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-        <span class="c1"># Start command</span>
+        <span class="c1"># Start command.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Start tracking box </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> in frame_id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> &#39;</span>
                          <span class="sa">f</span><span class="s1">&#39;with new object id </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="c1"># Get the feature vector of the object we want to track (query)</span>
-            <span class="c1"># First, get the bounding box and frame for the query</span>
+            <span class="c1"># Get the feature vector of the object we want to track (query).</span>
+            <span class="c1"># First, get the bounding box and frame for the query.</span>
             <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
             <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">)</span>
 
-            <span class="c1"># Extract the features from this bounding box and store them in the data</span>
+            <span class="c1"># Extract the features from this bounding box and store them in the data.</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">))</span>
 
-            <span class="c1"># Also store the map of the first box_id to the object_id</span>
+            <span class="c1"># Also store the map of the first box_id to the object_id.</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 
-        <span class="c1"># Stop command</span>
+        <span class="c1"># Stop command.</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StopCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stop tracking object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
@@ -654,7 +648,7 @@ Sends detections to client if client is used (HlsCapture).</p>
 
         </details>
 
-            <div class="docstring"><p>Processes the message queue processing each start and stop command</p>
+            <div class="docstring"><p>Processes the message queue processing each start and stop command.</p>
 
 <h6 id="args">Args</h6>
 
@@ -679,15 +673,15 @@ Sends detections to client if client is used (HlsCapture).</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">send_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sends the bounding boxes to the orchestrator using a websocket client</span>
+    <span class="sd">&quot;&quot;&quot;Sends the bounding boxes to the orchestrator using a websocket client.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection</span>
-<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place</span>
-<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection</span>
-<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking</span>
+<span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection.</span>
+<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
+<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
+<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get message and send it through the websocket</span>
+    <span class="c1"># Get message and send it through the websocket.</span>
     <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">bounding_boxes_to_json</span><span class="p">(</span><span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">())</span>
     <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
@@ -695,15 +689,15 @@ Sends detections to client if client is used (HlsCapture).</p>
 
         </details>
 
-            <div class="docstring"><p>Sends the bounding boxes to the orchestrator using a websocket client</p>
+            <div class="docstring"><p>Sends the bounding boxes to the orchestrator using a websocket client.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>ws_client (WebsocketClient):</strong>  Websocket object that contains the connection</li>
-<li><strong>frame_obj (FrameObj):</strong>  Frame object on which drawing takes place</li>
-<li><strong>detected_boxes (BoundingBoxes):</strong>  Boxes generated by the detection</li>
-<li><strong>tracked_boxes (BoundingBoxes):</strong>  Boxes generated by the tracking</li>
+<li><strong>ws_client (WebsocketClient):</strong>  Websocket object that contains the connection.</li>
+<li><strong>frame_obj (FrameObj):</strong>  Frame object on which drawing takes place.</li>
+<li><strong>detected_boxes (BoundingBoxes):</strong>  Boxes generated by the detection.</li>
+<li><strong>tracked_boxes (BoundingBoxes):</strong>  Boxes generated by the tracking.</li>
 </ul>
 </div>
 
@@ -720,44 +714,44 @@ Sends detections to client if client is used (HlsCapture).</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">opencv_display</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode</span>
+    <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode.</span>
 
-<span class="sd">    Is async because the process_frames.py loop expects to get a async function it can await</span>
+<span class="sd">    Is async because the process_frames.py loop expects to get a async function it can await.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place</span>
-<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection</span>
-<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking</span>
+<span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
+<span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
+<span class="sd">        tracked_boxes (BoundingBoxes): Boxes generated by the tracking.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Generate tiled image to display in opencv</span>
+    <span class="c1"># Generate tiled image to display in opencv.</span>
     <span class="n">tiled_image</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">generate_tiled_image</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-    <span class="c1"># Play the video in a window called &quot;Output Video&quot;</span>
+    <span class="c1"># Play the video in a window called &quot;Output Video&quot;.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;Output Video&quot;</span><span class="p">,</span> <span class="n">tiled_image</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="c1"># Figure out how to get Docker to use GUI</span>
+        <span class="c1"># Figure out how to get Docker to use GUI.</span>
         <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Error displaying video. Are you running this in Docker perhaps?&quot;</span><span class="p">)</span> \
             <span class="kn">from</span> <span class="nn">err</span>
 
-    <span class="c1"># This next line is **ESSENTIAL** for the video to actually play</span>
-    <span class="c1"># A timeout of 0 will not display the image</span>
+    <span class="c1"># This next line is **ESSENTIAL** for the video to actually play.</span>
+    <span class="c1"># A timeout of 0 will not display the image.</span>
     <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Displays frame in tiled mode</p>
+            <div class="docstring"><p>Displays frame in tiled mode.</p>
 
-<p>Is async because the process_frames.py loop expects to get a async function it can await</p>
+<p>Is async because the process_frames.py loop expects to get a async function it can await.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>frame_obj (FrameObj):</strong>  Frame object on which drawing takes place</li>
-<li><strong>detected_boxes (BoundingBoxes):</strong>  Boxes generated by the detection</li>
-<li><strong>tracked_boxes (BoundingBoxes):</strong>  Boxes generated by the tracking</li>
+<li><strong>frame_obj (FrameObj):</strong>  Frame object on which drawing takes place.</li>
+<li><strong>detected_boxes (BoundingBoxes):</strong>  Boxes generated by the detection.</li>
+<li><strong>tracked_boxes (BoundingBoxes):</strong>  Boxes generated by the tracking.</li>
 </ul>
 </div>
 

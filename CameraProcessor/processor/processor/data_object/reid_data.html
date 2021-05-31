@@ -70,7 +70,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../data_object.html">data_object</a>.reid_data    </h1>
 
-                        <div class="docstring"><p>Contains re-id data class</p>
+                        <div class="docstring"><p>Contains re-id data class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -79,29 +79,31 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains re-id data class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains re-id data class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">ReidData</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This class stores two dictionaries that are useful for re-identification. The first dictionary,</span>
-<span class="sd">    query_boxes, stores the object_ids belonging to box_ids, if those box_ids contain objects that need</span>
-<span class="sd">    to be re-identified. The second dictionary, query_features, stores the feature vectors from the cutout of each</span>
-<span class="sd">    object that we want to re-identify (we call this a query).</span>
+    <span class="sd">&quot;&quot;&quot;This class stores two dictionaries that are useful for re-identification.</span>
+
+<span class="sd">    The first dictionary, query_boxes, stores the object_ids belonging to box_ids, if those box_ids contain objects</span>
+<span class="sd">    that need to be re-identified. The second dictionary, query_features, stores the feature vectors from the cutout</span>
+<span class="sd">    of each object that we want to re-identify (we call this a query).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        __query_boxes (dict[int, int]): Dictionary that maps from box_id -&gt; object_id.</span>
+<span class="sd">        __query_features (dict[int, [float]]): Maps from object_id -&gt; feature vector.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializer for the class.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Dictionary that maps from box_id -&gt; object_id</span>
+        <span class="sd">&quot;&quot;&quot;Initializer for the class.&quot;&quot;&quot;</span>
+        <span class="c1"># Dictionary that maps from box_id -&gt; object_id.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># Dictionary that maps from object_id -&gt; feature vector</span>
+        <span class="c1"># Dictionary that maps from object_id -&gt; feature vector.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">add_query_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
@@ -114,7 +116,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">box_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_id</span>
 
     <span class="k">def</span> <span class="nf">add_query_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">feature_vector</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Store the feature vector of a queried object in a dictionary</span>
+        <span class="sd">&quot;&quot;&quot;Store the feature vector of a queried object in a dictionary.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): The id of the queried object.</span>
@@ -123,34 +125,35 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_vector</span>
 
     <span class="k">def</span> <span class="nf">remove_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Removes the items of query_boxes and query_features containing the object_id of a query we no</span>
-<span class="sd">        long want to re-identify.</span>
+        <span class="sd">&quot;&quot;&quot;Removes the items of query_boxes and query_features containing the object_id.</span>
+
+<span class="sd">        These are removed from the query we no long want to re-identify.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): The id of the query we no longer wish to re-identify.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Delete the feature vector from the object ID</span>
+        <span class="c1"># Delete the feature vector from the object ID.</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 
-        <span class="c1"># Store all box ids that map to the object ID</span>
+        <span class="c1"># Store all box ids that map to the object ID.</span>
         <span class="n">del_box_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">obj_id</span> <span class="o">==</span> <span class="n">object_id</span><span class="p">:</span>
                 <span class="n">del_box_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_id</span><span class="p">)</span>
 
-        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="c1"># Delete all box ids that map to the object ID.</span>
         <span class="k">for</span> <span class="n">del_box_id</span> <span class="ow">in</span> <span class="n">del_box_ids</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">del_box_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_object_id_for_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the object id for a given box id (possibly None).</span>
+        <span class="sd">&quot;&quot;&quot;Returns the object id for a given box id (possibly None).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            box_id (int): id of the box that is being followed.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (int or None): If the box contains an object that is being followed, return the object_id. Otherwise,</span>
-<span class="sd">            return None.</span>
+<span class="sd">            Union[int, None]: If the box contains an object that is being followed, return the object_id.</span>
+<span class="sd">                Otherwise return None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -158,7 +161,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Get a list of queries (object ids) that are currently being tracked.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ([int]): The list of object IDs currently being tracked</span>
+<span class="sd">            [int]: The list of object IDs currently being tracked</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
@@ -166,10 +169,10 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            object_id (int): id of the object</span>
+<span class="sd">            object_id (int): id of the object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ([float]): Feature vector for the object</span>
+<span class="sd">            [float]: Feature vector for the object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 </pre></div>
@@ -189,19 +192,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ReidData</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This class stores two dictionaries that are useful for re-identification. The first dictionary,</span>
-<span class="sd">    query_boxes, stores the object_ids belonging to box_ids, if those box_ids contain objects that need</span>
-<span class="sd">    to be re-identified. The second dictionary, query_features, stores the feature vectors from the cutout of each</span>
-<span class="sd">    object that we want to re-identify (we call this a query).</span>
+    <span class="sd">&quot;&quot;&quot;This class stores two dictionaries that are useful for re-identification.</span>
+
+<span class="sd">    The first dictionary, query_boxes, stores the object_ids belonging to box_ids, if those box_ids contain objects</span>
+<span class="sd">    that need to be re-identified. The second dictionary, query_features, stores the feature vectors from the cutout</span>
+<span class="sd">    of each object that we want to re-identify (we call this a query).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        __query_boxes (dict[int, int]): Dictionary that maps from box_id -&gt; object_id.</span>
+<span class="sd">        __query_features (dict[int, [float]]): Maps from object_id -&gt; feature vector.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializer for the class.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Dictionary that maps from box_id -&gt; object_id</span>
+        <span class="sd">&quot;&quot;&quot;Initializer for the class.&quot;&quot;&quot;</span>
+        <span class="c1"># Dictionary that maps from box_id -&gt; object_id.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># Dictionary that maps from object_id -&gt; feature vector</span>
+        <span class="c1"># Dictionary that maps from object_id -&gt; feature vector.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">add_query_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
@@ -214,7 +220,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">box_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_id</span>
 
     <span class="k">def</span> <span class="nf">add_query_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">feature_vector</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Store the feature vector of a queried object in a dictionary</span>
+        <span class="sd">&quot;&quot;&quot;Store the feature vector of a queried object in a dictionary.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): The id of the queried object.</span>
@@ -223,34 +229,35 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_vector</span>
 
     <span class="k">def</span> <span class="nf">remove_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Removes the items of query_boxes and query_features containing the object_id of a query we no</span>
-<span class="sd">        long want to re-identify.</span>
+        <span class="sd">&quot;&quot;&quot;Removes the items of query_boxes and query_features containing the object_id.</span>
+
+<span class="sd">        These are removed from the query we no long want to re-identify.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): The id of the query we no longer wish to re-identify.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Delete the feature vector from the object ID</span>
+        <span class="c1"># Delete the feature vector from the object ID.</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 
-        <span class="c1"># Store all box ids that map to the object ID</span>
+        <span class="c1"># Store all box ids that map to the object ID.</span>
         <span class="n">del_box_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">obj_id</span> <span class="o">==</span> <span class="n">object_id</span><span class="p">:</span>
                 <span class="n">del_box_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_id</span><span class="p">)</span>
 
-        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="c1"># Delete all box ids that map to the object ID.</span>
         <span class="k">for</span> <span class="n">del_box_id</span> <span class="ow">in</span> <span class="n">del_box_ids</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">del_box_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_object_id_for_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the object id for a given box id (possibly None).</span>
+        <span class="sd">&quot;&quot;&quot;Returns the object id for a given box id (possibly None).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            box_id (int): id of the box that is being followed.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (int or None): If the box contains an object that is being followed, return the object_id. Otherwise,</span>
-<span class="sd">            return None.</span>
+<span class="sd">            Union[int, None]: If the box contains an object that is being followed, return the object_id.</span>
+<span class="sd">                Otherwise return None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -258,7 +265,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Get a list of queries (object ids) that are currently being tracked.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ([int]): The list of object IDs currently being tracked</span>
+<span class="sd">            [int]: The list of object IDs currently being tracked</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
@@ -266,20 +273,28 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            object_id (int): id of the object</span>
+<span class="sd">            object_id (int): id of the object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ([float]): Feature vector for the object</span>
+<span class="sd">            [float]: Feature vector for the object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>This class stores two dictionaries that are useful for re-identification. The first dictionary,
-query_boxes, stores the object_ids belonging to box_ids, if those box_ids contain objects that need
-to be re-identified. The second dictionary, query_features, stores the feature vectors from the cutout of each
-object that we want to re-identify (we call this a query).</p>
+            <div class="docstring"><p>This class stores two dictionaries that are useful for re-identification.</p>
+
+<p>The first dictionary, query_boxes, stores the object_ids belonging to box_ids, if those box_ids contain objects
+that need to be re-identified. The second dictionary, query_features, stores the feature vectors from the cutout
+of each object that we want to re-identify (we call this a query).</p>
+
+<h6 id="attributes">Attributes</h6>
+
+<ul>
+<li><strong>__query_boxes (dict[int, int]):</strong>  Dictionary that maps from box_id -> object_id.</li>
+<li><strong>__query_features (dict[int, [float]]):</strong>  Maps from object_id -> feature vector.</li>
+</ul>
 </div>
 
 
@@ -293,13 +308,11 @@ object that we want to re-identify (we call this a query).</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializer for the class.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Dictionary that maps from box_id -&gt; object_id</span>
+        <span class="sd">&quot;&quot;&quot;Initializer for the class.&quot;&quot;&quot;</span>
+        <span class="c1"># Dictionary that maps from box_id -&gt; object_id.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># Dictionary that maps from object_id -&gt; feature vector</span>
+        <span class="c1"># Dictionary that maps from object_id -&gt; feature vector.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span> <span class="o">=</span> <span class="p">{}</span>
 </pre></div>
 
@@ -355,7 +368,7 @@ object that we want to re-identify (we call this a query).</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add_query_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">feature_vector</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Store the feature vector of a queried object in a dictionary</span>
+        <span class="sd">&quot;&quot;&quot;Store the feature vector of a queried object in a dictionary.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): The id of the queried object.</span>
@@ -366,7 +379,7 @@ object that we want to re-identify (we call this a query).</p>
 
         </details>
 
-            <div class="docstring"><p>Store the feature vector of a queried object in a dictionary</p>
+            <div class="docstring"><p>Store the feature vector of a queried object in a dictionary.</p>
 
 <h6 id="args">Args</h6>
 
@@ -389,30 +402,32 @@ object that we want to re-identify (we call this a query).</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">remove_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Removes the items of query_boxes and query_features containing the object_id of a query we no</span>
-<span class="sd">        long want to re-identify.</span>
+        <span class="sd">&quot;&quot;&quot;Removes the items of query_boxes and query_features containing the object_id.</span>
+
+<span class="sd">        These are removed from the query we no long want to re-identify.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): The id of the query we no longer wish to re-identify.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Delete the feature vector from the object ID</span>
+        <span class="c1"># Delete the feature vector from the object ID.</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 
-        <span class="c1"># Store all box ids that map to the object ID</span>
+        <span class="c1"># Store all box ids that map to the object ID.</span>
         <span class="n">del_box_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">obj_id</span> <span class="o">==</span> <span class="n">object_id</span><span class="p">:</span>
                 <span class="n">del_box_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_id</span><span class="p">)</span>
 
-        <span class="c1"># Delete all box ids that map to the object ID</span>
+        <span class="c1"># Delete all box ids that map to the object ID.</span>
         <span class="k">for</span> <span class="n">del_box_id</span> <span class="ow">in</span> <span class="n">del_box_ids</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="p">[</span><span class="n">del_box_id</span><span class="p">]</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Removes the items of query_boxes and query_features containing the object_id of a query we no
-long want to re-identify.</p>
+            <div class="docstring"><p>Removes the items of query_boxes and query_features containing the object_id.</p>
+
+<p>These are removed from the query we no long want to re-identify.</p>
 
 <h6 id="args">Args</h6>
 
@@ -434,14 +449,14 @@ long want to re-identify.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_object_id_for_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the object id for a given box id (possibly None).</span>
+        <span class="sd">&quot;&quot;&quot;Returns the object id for a given box id (possibly None).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            box_id (int): id of the box that is being followed.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (int or None): If the box contains an object that is being followed, return the object_id. Otherwise,</span>
-<span class="sd">            return None.</span>
+<span class="sd">            Union[int, None]: If the box contains an object that is being followed, return the object_id.</span>
+<span class="sd">                Otherwise return None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_boxes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
@@ -459,8 +474,8 @@ long want to re-identify.</p>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>(int or None): If the box contains an object that is being followed, return the object_id. Otherwise,
-  return None.</p>
+  <p>Union[int, None]: If the box contains an object that is being followed, return the object_id.
+      Otherwise return None.</p>
 </blockquote>
 </div>
 
@@ -480,7 +495,7 @@ long want to re-identify.</p>
         <span class="sd">&quot;&quot;&quot;Get a list of queries (object ids) that are currently being tracked.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ([int]): The list of object IDs currently being tracked</span>
+<span class="sd">            [int]: The list of object IDs currently being tracked</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </pre></div>
@@ -492,7 +507,7 @@ long want to re-identify.</p>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>([int]): The list of object IDs currently being tracked</p>
+  <p>[int]: The list of object IDs currently being tracked</p>
 </blockquote>
 </div>
 
@@ -512,10 +527,10 @@ long want to re-identify.</p>
         <span class="sd">&quot;&quot;&quot;Returns the feature vector for a given object id. Raises error if the object_id is not in the list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            object_id (int): id of the object</span>
+<span class="sd">            object_id (int): id of the object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ([float]): Feature vector for the object</span>
+<span class="sd">            [float]: Feature vector for the object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_features</span><span class="p">[</span><span class="n">object_id</span><span class="p">]</span>
 </pre></div>
@@ -527,13 +542,13 @@ long want to re-identify.</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>object_id (int):</strong>  id of the object</li>
+<li><strong>object_id (int):</strong>  id of the object.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>([float]): Feature vector for the object</p>
+  <p>[float]: Feature vector for the object</p>
 </blockquote>
 </div>
 

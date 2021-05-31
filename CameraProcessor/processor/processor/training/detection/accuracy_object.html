@@ -87,7 +87,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -99,25 +98,44 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">AccuracyObject</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        results (object): Results of the</span>
+<span class="sd">        image_width (int): Width of the image.</span>
+<span class="sd">        image_height (int): Height of the image.</span>
+<span class="sd">        iou_threshold (int): Threshold from which it is counted.</span>
+<span class="sd">        frame_amount (int): Number of frames.</span>
+<span class="sd">        bounding_boxes_gt ([BoundingBox]):</span>
+<span class="sd">        yolo_config (SectionProxy)</span>
+<span class="sd">        accuracy_config (SectionProxy): Configurations of the accuracy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.&quot;&quot;&quot;</span>
-        <span class="c1"># Initializing class variables</span>
+        <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Assign class variables from config</span>
+        <span class="c1"># Assign class variables from config.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.&quot;&quot;&quot;</span>
-        <span class="c1"># Load the config file, take the relevant Accuracy section</span>
+        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configurations of the</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the config file, take the relevant Accuracy section.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
 
@@ -128,36 +146,35 @@ Utrecht University within the Software Project course.
 
         <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Determine delimiter automatically</span>
+        <span class="c1"># Determine delimiter automatically.</span>
         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># Extract information from line</span>
+        <span class="c1"># Extract information from line.</span>
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            boxes_to_parse: A list of list of bounding boxes.</span>
+<span class="sd">            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list of bounding boxes as specified by the podm.podm library.</span>
-
+<span class="sd">            [BoundingBox]: A list of bounding boxes as specified by the podm.podm library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">list_parsed_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">boxes_to_parse</span><span class="p">):</span>
 
-            <span class="c1"># Getting the bounding boxes that are detected in frame i</span>
+            <span class="c1"># Getting the bounding boxes that are detected in frame i.</span>
 
             <span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes_to_parse</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
-            <span class="c1"># Parse every bounding box into a bounding box from the podm.podm library</span>
+            <span class="c1"># Parse every bounding box into a bounding box from the podm.podm library.</span>
 
             <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-                <span class="c1"># Parse a single box and append it to the list of already parsed boxes</span>
+                <span class="c1"># Parse a single box and append it to the list of already parsed boxes.</span>
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
@@ -175,56 +192,48 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path_to_boxes: Path to the file where the boxes are stored.</span>
+<span class="sd">            path_to_boxes (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list of bounding boxes.</span>
+<span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file</span>
+        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file.</span>
         <span class="n">bounding_boxes_annotations</span> <span class="o">=</span> <span class="n">PreAnnotations</span><span class="p">(</span><span class="n">path_to_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">)</span>
         <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">boxes</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            (directory from the folder specified when the object was initialized).</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            This method currently has no returns.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Get the image width, height and nr of frames</span>
+        <span class="c1"># Get the image width, height and nr of frames.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parse_info_file</span><span class="p">()</span>
 
-        <span class="c1"># Getting the bounding boxes from the gt file</span>
+        <span class="c1"># Getting the bounding boxes from the gt file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_path&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Getting and parsing the bounding boxes from the detection file</span>
+        <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
         <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Using the podm.podm library to get the accuracy metrics</span>
+        <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
             <span class="n">bounding_boxes_det</span><span class="p">,</span>
             <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
-        <span class="c1"># Printing a few metrics related to accuracy on the terminal, labels are undefined because the det and</span>
-        <span class="c1"># gt files currently don&#39;t save the classes of detected objects</span>
+        <span class="c1"># Printing a few metrics related to accuracy on the terminal.</span>
+        <span class="c1"># Labels are undefined because the det and gt files currently don&#39;t save the classes of detected objects.</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tp (only undefined): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fp: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fns:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mAP: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_mAP</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">draw_pr_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw a pr plot of a class.</span>
+        <span class="sd">&quot;&quot;&quot;Draw a pr plot of a class and saves it to a file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            result: A MetricPerClass object from the PODM library.</span>
-
-<span class="sd">        Returns: An image file in the plots folder called file_prefix-result.class.</span>
+<span class="sd">            result (MetricPerClass): A MetricPerClass object from the PODM library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -238,17 +247,17 @@ Utrecht University within the Software Project course.
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.</span>
-
-<span class="sd">        Returns: An image file for each class in the plots folder called file_prefix-result.class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw_pr_plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Run accuracy.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
     <span class="n">test_object</span> <span class="o">=</span> <span class="n">AccuracyObject</span><span class="p">(</span><span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
+
+    <span class="c1"># Detect and plot all the information.</span>
     <span class="n">test_object</span><span class="o">.</span><span class="n">detect</span><span class="p">()</span>
     <span class="n">test_object</span><span class="o">.</span><span class="n">draw_all_pr_plots</span><span class="p">()</span>
 </pre></div>
@@ -268,25 +277,44 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AccuracyObject</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        results (object): Results of the</span>
+<span class="sd">        image_width (int): Width of the image.</span>
+<span class="sd">        image_height (int): Height of the image.</span>
+<span class="sd">        iou_threshold (int): Threshold from which it is counted.</span>
+<span class="sd">        frame_amount (int): Number of frames.</span>
+<span class="sd">        bounding_boxes_gt ([BoundingBox]):</span>
+<span class="sd">        yolo_config (SectionProxy)</span>
+<span class="sd">        accuracy_config (SectionProxy): Configurations of the accuracy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.&quot;&quot;&quot;</span>
-        <span class="c1"># Initializing class variables</span>
+        <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Assign class variables from config</span>
+        <span class="c1"># Assign class variables from config.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.&quot;&quot;&quot;</span>
-        <span class="c1"># Load the config file, take the relevant Accuracy section</span>
+        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configurations of the</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the config file, take the relevant Accuracy section.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
 
@@ -297,36 +325,35 @@ Utrecht University within the Software Project course.
 
         <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Determine delimiter automatically</span>
+        <span class="c1"># Determine delimiter automatically.</span>
         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># Extract information from line</span>
+        <span class="c1"># Extract information from line.</span>
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            boxes_to_parse: A list of list of bounding boxes.</span>
+<span class="sd">            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list of bounding boxes as specified by the podm.podm library.</span>
-
+<span class="sd">            [BoundingBox]: A list of bounding boxes as specified by the podm.podm library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">list_parsed_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">boxes_to_parse</span><span class="p">):</span>
 
-            <span class="c1"># Getting the bounding boxes that are detected in frame i</span>
+            <span class="c1"># Getting the bounding boxes that are detected in frame i.</span>
 
             <span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes_to_parse</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
-            <span class="c1"># Parse every bounding box into a bounding box from the podm.podm library</span>
+            <span class="c1"># Parse every bounding box into a bounding box from the podm.podm library.</span>
 
             <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-                <span class="c1"># Parse a single box and append it to the list of already parsed boxes</span>
+                <span class="c1"># Parse a single box and append it to the list of already parsed boxes.</span>
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
@@ -344,56 +371,48 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path_to_boxes: Path to the file where the boxes are stored.</span>
+<span class="sd">            path_to_boxes (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list of bounding boxes.</span>
+<span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file</span>
+        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file.</span>
         <span class="n">bounding_boxes_annotations</span> <span class="o">=</span> <span class="n">PreAnnotations</span><span class="p">(</span><span class="n">path_to_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">)</span>
         <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">boxes</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            (directory from the folder specified when the object was initialized).</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            This method currently has no returns.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Get the image width, height and nr of frames</span>
+        <span class="c1"># Get the image width, height and nr of frames.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parse_info_file</span><span class="p">()</span>
 
-        <span class="c1"># Getting the bounding boxes from the gt file</span>
+        <span class="c1"># Getting the bounding boxes from the gt file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_path&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Getting and parsing the bounding boxes from the detection file</span>
+        <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
         <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Using the podm.podm library to get the accuracy metrics</span>
+        <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
             <span class="n">bounding_boxes_det</span><span class="p">,</span>
             <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
-        <span class="c1"># Printing a few metrics related to accuracy on the terminal, labels are undefined because the det and</span>
-        <span class="c1"># gt files currently don&#39;t save the classes of detected objects</span>
+        <span class="c1"># Printing a few metrics related to accuracy on the terminal.</span>
+        <span class="c1"># Labels are undefined because the det and gt files currently don&#39;t save the classes of detected objects.</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tp (only undefined): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fp: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fns:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mAP: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_mAP</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">draw_pr_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw a pr plot of a class.</span>
+        <span class="sd">&quot;&quot;&quot;Draw a pr plot of a class and saves it to a file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            result: A MetricPerClass object from the PODM library.</span>
-
-<span class="sd">        Returns: An image file in the plots folder called file_prefix-result.class.</span>
+<span class="sd">            result (MetricPerClass): A MetricPerClass object from the PODM library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -407,10 +426,7 @@ Utrecht University within the Software Project course.
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.</span>
-
-<span class="sd">        Returns: An image file for each class in the plots folder called file_prefix-result.class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw_pr_plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
@@ -418,6 +434,19 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>This class is used to test the accuracy of predictions.</p>
+
+<h6 id="attributes">Attributes</h6>
+
+<ul>
+<li><strong>results (object):</strong>  Results of the</li>
+<li><strong>image_width (int):</strong>  Width of the image.</li>
+<li><strong>image_height (int):</strong>  Height of the image.</li>
+<li><strong>iou_threshold (int):</strong>  Threshold from which it is counted.</li>
+<li><strong>frame_amount (int):</strong>  Number of frames.</li>
+<li><strong>bounding_boxes_gt ([BoundingBox]):</strong> </li>
+<li>yolo_config (SectionProxy)</li>
+<li><strong>accuracy_config (SectionProxy):</strong>  Configurations of the accuracy.</li>
+</ul>
 </div>
 
 
@@ -431,15 +460,19 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.&quot;&quot;&quot;</span>
-        <span class="c1"># Initializing class variables</span>
+        <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Assign class variables from config</span>
+        <span class="c1"># Assign class variables from config.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
@@ -448,6 +481,12 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Initialise AccuracyObject by reading the config and the ground truth file.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>configs (ConfigParser):</strong>  Configuration parser which also contains the accuracy configurations.</li>
+</ul>
 </div>
 
 
@@ -463,8 +502,12 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.&quot;&quot;&quot;</span>
-        <span class="c1"># Load the config file, take the relevant Accuracy section</span>
+        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configurations of the</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the config file, take the relevant Accuracy section.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
 </pre></div>
@@ -472,6 +515,12 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Assign class variables using the Accuracy config.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>configs (ConfigParser):</strong>  Configurations of the</li>
+</ul>
 </div>
 
 
@@ -493,13 +542,13 @@ Utrecht University within the Software Project course.
 
         <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># Determine delimiter automatically</span>
+        <span class="c1"># Determine delimiter automatically.</span>
         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
             <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># Extract information from line</span>
+        <span class="c1"># Extract information from line.</span>
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]]</span>
 </pre></div>
 
@@ -524,23 +573,22 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            boxes_to_parse: A list of list of bounding boxes.</span>
+<span class="sd">            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list of bounding boxes as specified by the podm.podm library.</span>
-
+<span class="sd">            [BoundingBox]: A list of bounding boxes as specified by the podm.podm library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">list_parsed_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">boxes_to_parse</span><span class="p">):</span>
 
-            <span class="c1"># Getting the bounding boxes that are detected in frame i</span>
+            <span class="c1"># Getting the bounding boxes that are detected in frame i.</span>
 
             <span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes_to_parse</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
-            <span class="c1"># Parse every bounding box into a bounding box from the podm.podm library</span>
+            <span class="c1"># Parse every bounding box into a bounding box from the podm.podm library.</span>
 
             <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-                <span class="c1"># Parse a single box and append it to the list of already parsed boxes</span>
+                <span class="c1"># Parse a single box and append it to the list of already parsed boxes.</span>
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
@@ -562,13 +610,13 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>boxes_to_parse:</strong>  A list of list of bounding boxes.</li>
+<li><strong>boxes_to_parse ([bounding_box]):</strong>  A list of list of bounding boxes.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A list of bounding boxes as specified by the podm.podm library.</p>
+  <p>[BoundingBox]: A list of bounding boxes as specified by the podm.podm library.</p>
 </blockquote>
 </div>
 
@@ -588,12 +636,12 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path_to_boxes: Path to the file where the boxes are stored.</span>
+<span class="sd">            path_to_boxes (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A list of bounding boxes.</span>
+<span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file</span>
+        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file.</span>
         <span class="n">bounding_boxes_annotations</span> <span class="o">=</span> <span class="n">PreAnnotations</span><span class="p">(</span><span class="n">path_to_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">)</span>
         <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">boxes</span>
@@ -607,13 +655,13 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>path_to_boxes:</strong>  Path to the file where the boxes are stored.</li>
+<li><strong>path_to_boxes (str):</strong>  Path to the file where the boxes are stored.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A list of bounding boxes.</p>
+  <p>[BoundingBox]: A list of read bounding boxes.</p>
 </blockquote>
 </div>
 
@@ -630,32 +678,26 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            (directory from the folder specified when the object was initialized).</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            This method currently has no returns.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Get the image width, height and nr of frames</span>
+        <span class="c1"># Get the image width, height and nr of frames.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parse_info_file</span><span class="p">()</span>
 
-        <span class="c1"># Getting the bounding boxes from the gt file</span>
+        <span class="c1"># Getting the bounding boxes from the gt file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_path&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Getting and parsing the bounding boxes from the detection file</span>
+        <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
         <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Using the podm.podm library to get the accuracy metrics</span>
+        <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
             <span class="n">bounding_boxes_det</span><span class="p">,</span>
             <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
-        <span class="c1"># Printing a few metrics related to accuracy on the terminal, labels are undefined because the det and</span>
-        <span class="c1"># gt files currently don&#39;t save the classes of detected objects</span>
+        <span class="c1"># Printing a few metrics related to accuracy on the terminal.</span>
+        <span class="c1"># Labels are undefined because the det and gt files currently don&#39;t save the classes of detected objects.</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tp (only undefined): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fp: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fp</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fns:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;undefined&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tp</span><span class="p">))</span>
@@ -665,18 +707,6 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Retrieves accuracy of detections.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li>(directory from the folder specified when the object was initialized).</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>This method currently has no returns.</p>
-</blockquote>
 </div>
 
 
@@ -692,12 +722,10 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">draw_pr_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw a pr plot of a class.</span>
+        <span class="sd">&quot;&quot;&quot;Draw a pr plot of a class and saves it to a file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            result: A MetricPerClass object from the PODM library.</span>
-
-<span class="sd">        Returns: An image file in the plots folder called file_prefix-result.class.</span>
+<span class="sd">            result (MetricPerClass): A MetricPerClass object from the PODM library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -713,15 +741,13 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Draw a pr plot of a class.</p>
+            <div class="docstring"><p>Draw a pr plot of a class and saves it to a file.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>result:</strong>  A MetricPerClass object from the PODM library.</li>
+<li><strong>result (MetricPerClass):</strong>  A MetricPerClass object from the PODM library.</li>
 </ul>
-
-<p>Returns: An image file in the plots folder called file_prefix-result.class.</p>
 </div>
 
 
@@ -737,10 +763,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.</span>
-
-<span class="sd">        Returns: An image file for each class in the plots folder called file_prefix-result.class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw_pr_plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
@@ -748,8 +771,6 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Draws the pr plots for all classes in the (podm) result.</p>
-
-<p>Returns: An image file for each class in the plots folder called file_prefix-result.class.</p>
 </div>
 
 

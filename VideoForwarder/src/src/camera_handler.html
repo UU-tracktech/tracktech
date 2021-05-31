@@ -73,8 +73,9 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.camera_handler    </h1>
 
-                        <div class="docstring"><p>The request handler that serves the actual HLS index and segment files
-It handles authentication/authorization and makes sure conversion processes of cameras are started and stopped</p>
+                        <div class="docstring"><p>The request handler that serves the actual HLS index and segment files.</p>
+
+<p>It handles authentication/authorization and makes sure conversion processes of cameras are started and stopped</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -83,13 +84,13 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;The request handler that serves the actual HLS index and segment files</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;The request handler that serves the actual HLS index and segment files.</span>
+
 <span class="sd">It handles authentication/authorization and makes sure conversion processes of cameras are started and stopped</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -99,62 +100,63 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">TimeoutExpired</span>
 <span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">StaticFileHandler</span>
 <span class="kn">import</span> <span class="nn">tornado</span>
-<span class="kn">from</span> <span class="nn">auth.auth</span> <span class="kn">import</span> <span class="n">Auth</span><span class="p">,</span> <span class="n">AuthenticationError</span><span class="p">,</span> <span class="n">AuthorizationError</span>
+<span class="kn">from</span> <span class="nn">auth.auth</span> <span class="kn">import</span> <span class="n">AuthenticationError</span><span class="p">,</span> <span class="n">AuthorizationError</span>
 
-<span class="kn">from</span> <span class="nn">src.camera</span> <span class="kn">import</span> <span class="n">Camera</span>
 <span class="kn">from</span> <span class="nn">src.conversion_process</span> <span class="kn">import</span> <span class="n">get_conversion_process</span>
-<span class="kn">from</span> <span class="nn">src.stream_options</span> <span class="kn">import</span> <span class="n">StreamOptions</span>
 
 
 <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
 <span class="k">class</span> <span class="nc">CameraHandler</span><span class="p">(</span><span class="n">StaticFileHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The camera file request handler</span>
+    <span class="sd">&quot;&quot;&quot;The camera file request handler.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        remove_delay (float): After how much time the section files will be removed from memory.</span>
+<span class="sd">        timeout_delay (int): After how much time the client becomes inactive.</span>
+<span class="sd">        wait_delay (int): Time it waits before stopping the stream.</span>
+<span class="sd">        stream_options (StreamOptions): Contains all the options of the stream.</span>
+<span class="sd">        authenticator (Auth): Authentication object of the handler.</span>
+<span class="sd">        camera (Camera): Camera that is being served.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># pylint: disable=arguments-differ</span>
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the root path and load the public key from application settings, run at the start of every request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path (str): path to root where files are stored</span>
-<span class="sd">            default_filename (Optional[str] = None): Optional file name</span>
+<span class="sd">            path (str): path to root where files are stored.</span>
+<span class="sd">            default_filename (Optional[str] = None): Optional file name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># noinspection PyAttributeOutsideInit</span>
-        <span class="c1"># Needed for the library</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="p">)</span>
 
-        <span class="c1"># Set properties of the handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
+        <span class="c1"># Set properties of the handler.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="p">:</span> <span class="n">StreamOptions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load the public key from application settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="p">:</span> <span class="n">Auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
+        <span class="c1"># Load the public key from application settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load the public key from application settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="p">:</span> <span class="n">Camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
+        <span class="c1"># Load the camera object from application settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Cache-control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-store&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">start_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates stream conversion and starts the stream</span>
+        <span class="sd">&quot;&quot;&quot;Creates stream conversion and starts the stream.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Path to the streams folder</span>
+<span class="sd">            root (str): Path to the streams folder.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># If there is no current conversion, start one</span>
+        <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
-            <span class="c1"># Configure entry conversion</span>
+            <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">audio</span><span class="p">,</span>
@@ -162,94 +164,92 @@ Utrecht University within the Software Project course.
                 <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span>
             <span class="p">)</span>
 
-            <span class="c1"># Wait and if not created, stop the conversion</span>
+            <span class="c1"># Wait and if not created, stop the conversion.</span>
             <span class="n">started</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_active</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">started</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop_stream</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">stream_active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wait a maximum of x seconds for the file to be created, otherwise</span>
+        <span class="sd">&quot;&quot;&quot;Wait a maximum of x seconds for the file to be created, otherwise.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">             root (path): path of the folder that contains the stream segments and index files</span>
+<span class="sd">             root (path): path of the folder that contains the stream segments and index files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;stream.m3u8&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span><span class="p">):</span>
 
-            <span class="c1"># See whether file exists</span>
+            <span class="c1"># See whether file exists.</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index_file_path</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
-            <span class="c1"># Sleep and check again</span>
+            <span class="c1"># Sleep and check again.</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">restart_stop_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Starts the HLS stream by using the conversion process that was created</span>
+        <span class="sd">&quot;&quot;&quot;Starts the HLS stream by using the conversion process that was created.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Path to the where the stream files are located</span>
+<span class="sd">            root (str): Path to the where the stream files are located.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Cancel any current callbacks</span>
+        <span class="c1"># Cancel any current callbacks.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># If there is an conversion</span>
+        <span class="c1"># If there is an conversion.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Reschedule a new callback to stop the stream</span>
+            <span class="c1"># Reschedule a new callback to stop the stream.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_stream</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">stop_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to stop a given camera stream, will be called once a stream is no longer used for a specific</span>
-<span class="sd">        amount of time</span>
+        <span class="sd">&quot;&quot;&quot;Called once a stream is no longer used for a specific amount of time.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Root directory of the stream</span>
+<span class="sd">            root (str): Root directory of the stream.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Print stopping for logging purposes</span>
+        <span class="c1"># Print stopping for logging purposes.</span>
         <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Stopping the conversion</span>
+        <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Wait a few seconds for it stop, so it does not lock any files</span>
+            <span class="c1"># Wait a few seconds for it stop, so it does not lock any files.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">TimeoutExpired</span><span class="p">:</span>
-            <span class="c1"># Handle a timeout exception if the process does not stop</span>
+            <span class="c1"># Handle a timeout exception if the process does not stop.</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="c1"># Remove the conversion</span>
+            <span class="c1"># Remove the conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="c1"># Remove the old segment and index files</span>
+            <span class="c1"># Remove the old segment and index files.</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
 
     <span class="c1"># pylint: disable=broad-except</span>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate and check the header token if a public key is specified</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate and check the header token if a public key is specified.&quot;&quot;&quot;</span>
 
         <span class="c1"># Validate the token and act accordingly if it is not good.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="c1"># Authentication (validating token) failed</span>
+                <span class="c1"># Authentication (validating token) failed.</span>
                 <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="n">AuthorizationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed)</span>
+                <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed).</span>
                 <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
@@ -260,34 +260,36 @@ Utrecht University within the Software Project course.
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
 
     <span class="k">def</span> <span class="nf">get_absolute_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the path of the camera stream, when the camera is not yet started it does so automatically</span>
+        <span class="sd">&quot;&quot;&quot;Gets the path of the camera stream, when the camera is not yet started it does so automatically.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): path to the root of the system</span>
-<span class="sd">            path (str): Name of the file searched, which should be a camera stream</span>
+<span class="sd">            root (str): path to the root of the system.</span>
+<span class="sd">            path (str): Name of the file searched, which should be a camera stream.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            Path: The absolute path to the stream files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Get the path on the file system</span>
+        <span class="c1"># Get the path on the file system.</span>
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
 
-        <span class="c1"># Regex the file path</span>
+        <span class="c1"># Regex the file path.</span>
         <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;stream(?:_V.*)?\.(m3u8|ts)&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-        <span class="c1"># If there is no match, return the path as usual</span>
+        <span class="c1"># If there is no match, return the path as usual.</span>
         <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">abspath</span>
 
-        <span class="c1"># Otherwise, grab the camera and extension information</span>
+        <span class="c1"># Otherwise, grab the camera and extension information.</span>
         <span class="n">extension</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># If the request is for an index file of an existing camera</span>
+        <span class="c1"># If the request is for an index file of an existing camera.</span>
         <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;m3u8&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start_stream</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">restart_stop_callback</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
-        <span class="c1"># Return path to files</span>
+        <span class="c1"># Return path to files.</span>
         <span class="k">return</span> <span class="n">abspath</span>
 </pre></div>
 
@@ -306,53 +308,56 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CameraHandler</span><span class="p">(</span><span class="n">StaticFileHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The camera file request handler</span>
+    <span class="sd">&quot;&quot;&quot;The camera file request handler.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        remove_delay (float): After how much time the section files will be removed from memory.</span>
+<span class="sd">        timeout_delay (int): After how much time the client becomes inactive.</span>
+<span class="sd">        wait_delay (int): Time it waits before stopping the stream.</span>
+<span class="sd">        stream_options (StreamOptions): Contains all the options of the stream.</span>
+<span class="sd">        authenticator (Auth): Authentication object of the handler.</span>
+<span class="sd">        camera (Camera): Camera that is being served.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># pylint: disable=arguments-differ</span>
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the root path and load the public key from application settings, run at the start of every request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path (str): path to root where files are stored</span>
-<span class="sd">            default_filename (Optional[str] = None): Optional file name</span>
+<span class="sd">            path (str): path to root where files are stored.</span>
+<span class="sd">            default_filename (Optional[str] = None): Optional file name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># noinspection PyAttributeOutsideInit</span>
-        <span class="c1"># Needed for the library</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="p">)</span>
 
-        <span class="c1"># Set properties of the handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
+        <span class="c1"># Set properties of the handler.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="p">:</span> <span class="n">StreamOptions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load the public key from application settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="p">:</span> <span class="n">Auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
+        <span class="c1"># Load the public key from application settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load the public key from application settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="p">:</span> <span class="n">Camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
+        <span class="c1"># Load the camera object from application settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Cache-control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-store&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">start_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates stream conversion and starts the stream</span>
+        <span class="sd">&quot;&quot;&quot;Creates stream conversion and starts the stream.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Path to the streams folder</span>
+<span class="sd">            root (str): Path to the streams folder.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># If there is no current conversion, start one</span>
+        <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
-            <span class="c1"># Configure entry conversion</span>
+            <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">audio</span><span class="p">,</span>
@@ -360,94 +365,92 @@ Utrecht University within the Software Project course.
                 <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span>
             <span class="p">)</span>
 
-            <span class="c1"># Wait and if not created, stop the conversion</span>
+            <span class="c1"># Wait and if not created, stop the conversion.</span>
             <span class="n">started</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_active</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">started</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop_stream</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">stream_active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wait a maximum of x seconds for the file to be created, otherwise</span>
+        <span class="sd">&quot;&quot;&quot;Wait a maximum of x seconds for the file to be created, otherwise.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">             root (path): path of the folder that contains the stream segments and index files</span>
+<span class="sd">             root (path): path of the folder that contains the stream segments and index files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;stream.m3u8&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span><span class="p">):</span>
 
-            <span class="c1"># See whether file exists</span>
+            <span class="c1"># See whether file exists.</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index_file_path</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
-            <span class="c1"># Sleep and check again</span>
+            <span class="c1"># Sleep and check again.</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">restart_stop_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Starts the HLS stream by using the conversion process that was created</span>
+        <span class="sd">&quot;&quot;&quot;Starts the HLS stream by using the conversion process that was created.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Path to the where the stream files are located</span>
+<span class="sd">            root (str): Path to the where the stream files are located.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Cancel any current callbacks</span>
+        <span class="c1"># Cancel any current callbacks.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># If there is an conversion</span>
+        <span class="c1"># If there is an conversion.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Reschedule a new callback to stop the stream</span>
+            <span class="c1"># Reschedule a new callback to stop the stream.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_stream</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">stop_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to stop a given camera stream, will be called once a stream is no longer used for a specific</span>
-<span class="sd">        amount of time</span>
+        <span class="sd">&quot;&quot;&quot;Called once a stream is no longer used for a specific amount of time.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Root directory of the stream</span>
+<span class="sd">            root (str): Root directory of the stream.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Print stopping for logging purposes</span>
+        <span class="c1"># Print stopping for logging purposes.</span>
         <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Stopping the conversion</span>
+        <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Wait a few seconds for it stop, so it does not lock any files</span>
+            <span class="c1"># Wait a few seconds for it stop, so it does not lock any files.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">TimeoutExpired</span><span class="p">:</span>
-            <span class="c1"># Handle a timeout exception if the process does not stop</span>
+            <span class="c1"># Handle a timeout exception if the process does not stop.</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="c1"># Remove the conversion</span>
+            <span class="c1"># Remove the conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="c1"># Remove the old segment and index files</span>
+            <span class="c1"># Remove the old segment and index files.</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
 
     <span class="c1"># pylint: disable=broad-except</span>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate and check the header token if a public key is specified</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate and check the header token if a public key is specified.&quot;&quot;&quot;</span>
 
         <span class="c1"># Validate the token and act accordingly if it is not good.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="c1"># Authentication (validating token) failed</span>
+                <span class="c1"># Authentication (validating token) failed.</span>
                 <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="n">AuthorizationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed)</span>
+                <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed).</span>
                 <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
@@ -458,40 +461,53 @@ Utrecht University within the Software Project course.
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
 
     <span class="k">def</span> <span class="nf">get_absolute_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the path of the camera stream, when the camera is not yet started it does so automatically</span>
+        <span class="sd">&quot;&quot;&quot;Gets the path of the camera stream, when the camera is not yet started it does so automatically.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): path to the root of the system</span>
-<span class="sd">            path (str): Name of the file searched, which should be a camera stream</span>
+<span class="sd">            root (str): path to the root of the system.</span>
+<span class="sd">            path (str): Name of the file searched, which should be a camera stream.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            Path: The absolute path to the stream files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Get the path on the file system</span>
+        <span class="c1"># Get the path on the file system.</span>
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
 
-        <span class="c1"># Regex the file path</span>
+        <span class="c1"># Regex the file path.</span>
         <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;stream(?:_V.*)?\.(m3u8|ts)&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-        <span class="c1"># If there is no match, return the path as usual</span>
+        <span class="c1"># If there is no match, return the path as usual.</span>
         <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">abspath</span>
 
-        <span class="c1"># Otherwise, grab the camera and extension information</span>
+        <span class="c1"># Otherwise, grab the camera and extension information.</span>
         <span class="n">extension</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># If the request is for an index file of an existing camera</span>
+        <span class="c1"># If the request is for an index file of an existing camera.</span>
         <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;m3u8&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start_stream</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">restart_stop_callback</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
-        <span class="c1"># Return path to files</span>
+        <span class="c1"># Return path to files.</span>
         <span class="k">return</span> <span class="n">abspath</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>The camera file request handler</p>
+            <div class="docstring"><p>The camera file request handler.</p>
+
+<h6 id="attributes">Attributes</h6>
+
+<ul>
+<li><strong>remove_delay (float):</strong>  After how much time the section files will be removed from memory.</li>
+<li><strong>timeout_delay (int):</strong>  After how much time the client becomes inactive.</li>
+<li><strong>wait_delay (int):</strong>  Time it waits before stopping the stream.</li>
+<li><strong>stream_options (StreamOptions):</strong>  Contains all the options of the stream.</li>
+<li><strong>authenticator (Auth):</strong>  Authentication object of the handler.</li>
+<li><strong>camera (Camera):</strong>  Camera that is being served.</li>
+</ul>
 </div>
 
 
@@ -509,26 +525,23 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Set the root path and load the public key from application settings, run at the start of every request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path (str): path to root where files are stored</span>
-<span class="sd">            default_filename (Optional[str] = None): Optional file name</span>
+<span class="sd">            path (str): path to root where files are stored.</span>
+<span class="sd">            default_filename (Optional[str] = None): Optional file name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># noinspection PyAttributeOutsideInit</span>
-        <span class="c1"># Needed for the library</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="p">)</span>
 
-        <span class="c1"># Set properties of the handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
+        <span class="c1"># Set properties of the handler.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="p">:</span> <span class="n">StreamOptions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load the public key from application settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="p">:</span> <span class="n">Auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
+        <span class="c1"># Load the public key from application settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load the public key from application settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="p">:</span> <span class="n">Camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
+        <span class="c1"># Load the camera object from application settings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -538,8 +551,8 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>path (str):</strong>  path to root where files are stored</li>
-<li><strong>default_filename (Optional[str] = None):</strong>  Optional file name</li>
+<li><strong>path (str):</strong>  path to root where files are stored.</li>
+<li><strong>default_filename (Optional[str] = None):</strong>  Optional file name.</li>
 </ul>
 </div>
 
@@ -556,15 +569,14 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Cache-control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-store&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Set the headers to allow cors and disable caching</p>
+            <div class="docstring"><p>Set the headers to allow cors and disable caching.</p>
 </div>
 
 
@@ -580,17 +592,17 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">start_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates stream conversion and starts the stream</span>
+        <span class="sd">&quot;&quot;&quot;Creates stream conversion and starts the stream.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Path to the streams folder</span>
+<span class="sd">            root (str): Path to the streams folder.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># If there is no current conversion, start one</span>
+        <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
-            <span class="c1"># Configure entry conversion</span>
+            <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">audio</span><span class="p">,</span>
@@ -598,7 +610,7 @@ Utrecht University within the Software Project course.
                 <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span>
             <span class="p">)</span>
 
-            <span class="c1"># Wait and if not created, stop the conversion</span>
+            <span class="c1"># Wait and if not created, stop the conversion.</span>
             <span class="n">started</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_active</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">started</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop_stream</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -606,12 +618,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Creates stream conversion and starts the stream</p>
+            <div class="docstring"><p>Creates stream conversion and starts the stream.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>root (str):</strong>  Path to the streams folder</li>
+<li><strong>root (str):</strong>  Path to the streams folder.</li>
 </ul>
 </div>
 
@@ -628,21 +640,21 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">stream_active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wait a maximum of x seconds for the file to be created, otherwise</span>
+        <span class="sd">&quot;&quot;&quot;Wait a maximum of x seconds for the file to be created, otherwise.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">             root (path): path of the folder that contains the stream segments and index files</span>
+<span class="sd">             root (path): path of the folder that contains the stream segments and index files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;stream.m3u8&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span><span class="p">):</span>
 
-            <span class="c1"># See whether file exists</span>
+            <span class="c1"># See whether file exists.</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index_file_path</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
-            <span class="c1"># Sleep and check again</span>
+            <span class="c1"># Sleep and check again.</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">False</span>
@@ -650,12 +662,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Wait a maximum of x seconds for the file to be created, otherwise</p>
+            <div class="docstring"><p>Wait a maximum of x seconds for the file to be created, otherwise.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>root (path):</strong>  path of the folder that contains the stream segments and index files</li>
+<li><strong>root (path):</strong>  path of the folder that contains the stream segments and index files.</li>
 </ul>
 </div>
 
@@ -672,20 +684,20 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">restart_stop_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Starts the HLS stream by using the conversion process that was created</span>
+        <span class="sd">&quot;&quot;&quot;Starts the HLS stream by using the conversion process that was created.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Path to the where the stream files are located</span>
+<span class="sd">            root (str): Path to the where the stream files are located.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Cancel any current callbacks</span>
+        <span class="c1"># Cancel any current callbacks.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># If there is an conversion</span>
+        <span class="c1"># If there is an conversion.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Reschedule a new callback to stop the stream</span>
+            <span class="c1"># Reschedule a new callback to stop the stream.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_stream</span><span class="p">,</span> <span class="p">[</span><span class="n">root</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -693,12 +705,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Starts the HLS stream by using the conversion process that was created</p>
+            <div class="docstring"><p>Starts the HLS stream by using the conversion process that was created.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>root (str):</strong>  Path to the where the stream files are located</li>
+<li><strong>root (str):</strong>  Path to the where the stream files are located.</li>
 </ul>
 </div>
 
@@ -715,43 +727,41 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">stop_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to stop a given camera stream, will be called once a stream is no longer used for a specific</span>
-<span class="sd">        amount of time</span>
+        <span class="sd">&quot;&quot;&quot;Called once a stream is no longer used for a specific amount of time.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): Root directory of the stream</span>
+<span class="sd">            root (str): Root directory of the stream.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Print stopping for logging purposes</span>
+        <span class="c1"># Print stopping for logging purposes.</span>
         <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Stopping the conversion</span>
+        <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Wait a few seconds for it stop, so it does not lock any files</span>
+            <span class="c1"># Wait a few seconds for it stop, so it does not lock any files.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">TimeoutExpired</span><span class="p">:</span>
-            <span class="c1"># Handle a timeout exception if the process does not stop</span>
+            <span class="c1"># Handle a timeout exception if the process does not stop.</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="c1"># Remove the conversion</span>
+            <span class="c1"># Remove the conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="c1"># Remove the old segment and index files</span>
+            <span class="c1"># Remove the old segment and index files.</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Function to stop a given camera stream, will be called once a stream is no longer used for a specific
-amount of time</p>
+            <div class="docstring"><p>Called once a stream is no longer used for a specific amount of time.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>root (str):</strong>  Root directory of the stream</li>
+<li><strong>root (str):</strong>  Root directory of the stream.</li>
 </ul>
 </div>
 
@@ -768,20 +778,19 @@ amount of time</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate and check the header token if a public key is specified</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate and check the header token if a public key is specified.&quot;&quot;&quot;</span>
 
         <span class="c1"># Validate the token and act accordingly if it is not good.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="c1"># Authentication (validating token) failed</span>
+                <span class="c1"># Authentication (validating token) failed.</span>
                 <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="n">AuthorizationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed)</span>
+                <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed).</span>
                 <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
@@ -794,7 +803,7 @@ amount of time</p>
 
         </details>
 
-            <div class="docstring"><p>Validate and check the header token if a public key is specified</p>
+            <div class="docstring"><p>Validate and check the header token if a public key is specified.</p>
 </div>
 
 
@@ -810,47 +819,55 @@ amount of time</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_absolute_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the path of the camera stream, when the camera is not yet started it does so automatically</span>
+        <span class="sd">&quot;&quot;&quot;Gets the path of the camera stream, when the camera is not yet started it does so automatically.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            root (str): path to the root of the system</span>
-<span class="sd">            path (str): Name of the file searched, which should be a camera stream</span>
+<span class="sd">            root (str): path to the root of the system.</span>
+<span class="sd">            path (str): Name of the file searched, which should be a camera stream.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            Path: The absolute path to the stream files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Get the path on the file system</span>
+        <span class="c1"># Get the path on the file system.</span>
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
 
-        <span class="c1"># Regex the file path</span>
+        <span class="c1"># Regex the file path.</span>
         <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;stream(?:_V.*)?\.(m3u8|ts)&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-        <span class="c1"># If there is no match, return the path as usual</span>
+        <span class="c1"># If there is no match, return the path as usual.</span>
         <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">abspath</span>
 
-        <span class="c1"># Otherwise, grab the camera and extension information</span>
+        <span class="c1"># Otherwise, grab the camera and extension information.</span>
         <span class="n">extension</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># If the request is for an index file of an existing camera</span>
+        <span class="c1"># If the request is for an index file of an existing camera.</span>
         <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;m3u8&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start_stream</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">restart_stop_callback</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
-        <span class="c1"># Return path to files</span>
+        <span class="c1"># Return path to files.</span>
         <span class="k">return</span> <span class="n">abspath</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Gets the path of the camera stream, when the camera is not yet started it does so automatically</p>
+            <div class="docstring"><p>Gets the path of the camera stream, when the camera is not yet started it does so automatically.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>root (str):</strong>  path to the root of the system</li>
-<li><strong>path (str):</strong>  Name of the file searched, which should be a camera stream</li>
+<li><strong>root (str):</strong>  path to the root of the system.</li>
+<li><strong>path (str):</strong>  Name of the file searched, which should be a camera stream.</li>
 </ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>Path: The absolute path to the stream files.</p>
+</blockquote>
 </div>
 
 

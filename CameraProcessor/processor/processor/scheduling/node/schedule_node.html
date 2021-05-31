@@ -64,7 +64,7 @@
                     <h1 class="modulename">
 <a href="./../../../processor.html">processor</a>.<a href="./../../scheduling.html">scheduling</a>.<a href="./../node.html">node</a>.schedule_node    </h1>
 
-                        <div class="docstring"><p>Defines node class for scheduler with its connections to other nodes</p>
+                        <div class="docstring"><p>Defines node class for scheduler with its connections to other nodes.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -73,12 +73,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines node class for scheduler with its connections to other nodes</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines node class for scheduler with its connections to other nodes.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.node.inode</span> <span class="kn">import</span> <span class="n">INode</span>
@@ -87,12 +86,12 @@ Utrecht University within the Software Project course.
 <span class="k">class</span> <span class="nc">ScheduleNode</span><span class="p">(</span><span class="n">INode</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Schedule node used by scheduler to schedule and ensure a minimum required order of execution.</span>
 
-<span class="sd">    Arguments:</span>
+<span class="sd">    Attributes:</span>
 <span class="sd">        input_count (int): total amount of arguments necessary to execute the component.</span>
 <span class="sd">        out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index</span>
-<span class="sd">        to push argument to.</span>
+<span class="sd">            to push argument to.</span>
 <span class="sd">        component (IComponent): component to execute once the scheduler calls the node</span>
-<span class="sd">        (all needed arguments should be ready).</span>
+<span class="sd">            (all needed arguments should be ready).</span>
 <span class="sd">        needed_args (int): amount of arguments still needed to execute the component.</span>
 <span class="sd">        arguments (np.array): array of all arguments provided so far.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -121,7 +120,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
 
-        <span class="c1"># Keeping the numpy array and only emptying would be preferred</span>
+        <span class="c1"># Keeping the numpy array and only emptying would be preferred.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -214,12 +213,12 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ScheduleNode</span><span class="p">(</span><span class="n">INode</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Schedule node used by scheduler to schedule and ensure a minimum required order of execution.</span>
 
-<span class="sd">    Arguments:</span>
+<span class="sd">    Attributes:</span>
 <span class="sd">        input_count (int): total amount of arguments necessary to execute the component.</span>
 <span class="sd">        out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index</span>
-<span class="sd">        to push argument to.</span>
+<span class="sd">            to push argument to.</span>
 <span class="sd">        component (IComponent): component to execute once the scheduler calls the node</span>
-<span class="sd">        (all needed arguments should be ready).</span>
+<span class="sd">            (all needed arguments should be ready).</span>
 <span class="sd">        needed_args (int): amount of arguments still needed to execute the component.</span>
 <span class="sd">        arguments (np.array): array of all arguments provided so far.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -248,7 +247,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
 
-        <span class="c1"># Keeping the numpy array and only emptying would be preferred</span>
+        <span class="c1"># Keeping the numpy array and only emptying would be preferred.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -328,17 +327,17 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Schedule node used by scheduler to schedule and ensure a minimum required order of execution.</p>
 
-<h6 id="arguments">Arguments</h6>
+<h6 id="attributes">Attributes</h6>
 
-<blockquote>
-  <p>input_count (int): total amount of arguments necessary to execute the component.
-  out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index
-  to push argument to.
-  component (IComponent): component to execute once the scheduler calls the node
-  (all needed arguments should be ready).
-  needed_args (int): amount of arguments still needed to execute the component.
-  arguments (np.array): array of all arguments provided so far.</p>
-</blockquote>
+<ul>
+<li><strong>input_count (int):</strong>  total amount of arguments necessary to execute the component.</li>
+<li><strong>out_nodes ([(INode, int)]):</strong>  tuples of nodes in the next layer together with argument index
+to push argument to.</li>
+<li><strong>component (IComponent):</strong>  component to execute once the scheduler calls the node
+(all needed arguments should be ready).</li>
+<li><strong>needed_args (int):</strong>  amount of arguments still needed to execute the component.</li>
+<li><strong>arguments (np.array):</strong>  array of all arguments provided so far.</li>
+</ul>
 </div>
 
 
@@ -403,7 +402,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
 
-        <span class="c1"># Keeping the numpy array and only emptying would be preferred</span>
+        <span class="c1"># Keeping the numpy array and only emptying would be preferred.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 </pre></div>
 

@@ -46,7 +46,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.conversion_process    </h1>
 
-                        <div class="docstring"><p>File that creates teh subprocess for the ffmpeg conversion</p>
+                        <div class="docstring"><p>File that creates the subprocess for the ffmpeg conversion.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -55,19 +55,18 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;File that creates teh subprocess for the ffmpeg conversion</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;File that creates the subprocess for the ffmpeg conversion.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span>
 
 
 <span class="k">def</span> <span class="nf">get_conversion_process</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">audio</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">stream_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Gets the ffmpeg conversion command for the camera stream that can be started later on</span>
+    <span class="sd">&quot;&quot;&quot;Gets the ffmpeg conversion command for the camera stream that can be started later on.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        url (str): Url of the camera</span>
@@ -84,6 +83,7 @@ Utrecht University within the Software Project course.
     <span class="n">conversions</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">stream_map</span> <span class="o">=</span> <span class="p">[]</span>
 
+    <span class="c1"># Options for the low stream quality.</span>
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">low</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:0&quot;</span><span class="p">,</span> <span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:1&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:0&quot;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
@@ -93,6 +93,7 @@ Utrecht University within the Software Project course.
         <span class="n">stream_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">,a:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+    <span class="c1"># Medium stream quality.</span>
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">medium</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
@@ -102,6 +103,7 @@ Utrecht University within the Software Project course.
         <span class="n">stream_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">,a:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+    <span class="c1"># High stream quality.</span>
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">high</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
@@ -110,29 +112,30 @@ Utrecht University within the Software Project course.
         <span class="p">])</span>  <span class="c1"># 720p - High bit-rate Stream</span>
         <span class="n">stream_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">,a:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="c1"># see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new</span>
-    <span class="c1"># Returns the opened path</span>
+    <span class="c1"># Create the command to start ffmpeg with.</span>
+    <span class="c1"># See https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new.</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="c1"># ffmpeg configurations</span>
+        <span class="c1"># Ffmpeg configurations.</span>
         <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-loglevel&#39;</span><span class="p">,</span> <span class="s1">&#39;fatal&#39;</span><span class="p">,</span> <span class="s1">&#39;-rtsp_transport&#39;</span><span class="p">,</span> <span class="s1">&#39;tcp&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
-        <span class="c1"># Create 3 variances of video + audio stream</span>
+        <span class="c1"># Create 3 variances of video + audio stream.</span>
         <span class="o">*</span><span class="n">maps</span><span class="p">,</span>
         <span class="s1">&#39;-profile:v&#39;</span><span class="p">,</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="s1">&#39;-crf&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span> <span class="s1">&#39;-force_key_frames&#39;</span><span class="p">,</span> <span class="s1">&#39;expr:gte(t,n_forced*2)&#39;</span><span class="p">,</span>
         <span class="s1">&#39;-sc_threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span> <span class="s1">&#39;-muxdelay&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;-keyint_min&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span>
         <span class="o">*</span><span class="p">([</span><span class="s1">&#39;-c:a&#39;</span><span class="p">,</span> <span class="s1">&#39;aac&#39;</span><span class="p">,</span> <span class="s1">&#39;-ar&#39;</span><span class="p">,</span> <span class="s1">&#39;48000&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[]),</span>
-        <span class="c1"># Set common properties of the video variances</span>
+        <span class="c1"># Set common properties of the video variances.</span>
         <span class="o">*</span><span class="n">conversions</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">([</span><span class="s1">&#39;-c:a&#39;</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[]),</span>  <span class="c1"># Copy original audio to the video variances</span>
+        <span class="o">*</span><span class="p">([</span><span class="s1">&#39;-c:a&#39;</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[]),</span>  <span class="c1"># Copy original audio to the video variances.</span>
         <span class="s1">&#39;-var_stream_map&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stream_map</span><span class="p">)),</span>
-        <span class="c1"># Create the master playlist</span>
+        <span class="c1"># Create the master playlist.</span>
         <span class="s1">&#39;-master_pl_name&#39;</span><span class="p">,</span> <span class="s1">&#39;stream.m3u8&#39;</span><span class="p">,</span>
-        <span class="c1"># HLS flags and segment properties</span>
+        <span class="c1"># HLS flags and segment properties.</span>
         <span class="s1">&#39;-hls_time&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">segment_size</span><span class="p">,</span> <span class="s1">&#39;-hls_list_size&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">segment_amount</span><span class="p">,</span> <span class="s1">&#39;-hls_flags&#39;</span><span class="p">,</span>
         <span class="s1">&#39;delete_segments&#39;</span><span class="p">,</span> <span class="s1">&#39;-start_number&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
-        <span class="c1"># Url</span>
+        <span class="c1"># Url.</span>
         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s1">/stream_V%v.m3u8&#39;</span>
     <span class="p">]</span>
 
+    <span class="c1"># Return the subprocess containing the ffmpeg command.</span>
     <span class="k">return</span> <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 </pre></div>
 
@@ -150,7 +153,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_conversion_process</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">audio</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">stream_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Gets the ffmpeg conversion command for the camera stream that can be started later on</span>
+    <span class="sd">&quot;&quot;&quot;Gets the ffmpeg conversion command for the camera stream that can be started later on.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        url (str): Url of the camera</span>
@@ -167,6 +170,7 @@ Utrecht University within the Software Project course.
     <span class="n">conversions</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">stream_map</span> <span class="o">=</span> <span class="p">[]</span>
 
+    <span class="c1"># Options for the low stream quality.</span>
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">low</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:0&quot;</span><span class="p">,</span> <span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:1&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;-map&quot;</span><span class="p">,</span> <span class="s2">&quot;0:0&quot;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
@@ -176,6 +180,7 @@ Utrecht University within the Software Project course.
         <span class="n">stream_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">,a:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+    <span class="c1"># Medium stream quality.</span>
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">medium</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
@@ -185,6 +190,7 @@ Utrecht University within the Software Project course.
         <span class="n">stream_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">,a:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
+    <span class="c1"># High stream quality.</span>
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">high</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
@@ -193,35 +199,36 @@ Utrecht University within the Software Project course.
         <span class="p">])</span>  <span class="c1"># 720p - High bit-rate Stream</span>
         <span class="n">stream_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">,a:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="c1"># see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new</span>
-    <span class="c1"># Returns the opened path</span>
+    <span class="c1"># Create the command to start ffmpeg with.</span>
+    <span class="c1"># See https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new.</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="c1"># ffmpeg configurations</span>
+        <span class="c1"># Ffmpeg configurations.</span>
         <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-loglevel&#39;</span><span class="p">,</span> <span class="s1">&#39;fatal&#39;</span><span class="p">,</span> <span class="s1">&#39;-rtsp_transport&#39;</span><span class="p">,</span> <span class="s1">&#39;tcp&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
-        <span class="c1"># Create 3 variances of video + audio stream</span>
+        <span class="c1"># Create 3 variances of video + audio stream.</span>
         <span class="o">*</span><span class="n">maps</span><span class="p">,</span>
         <span class="s1">&#39;-profile:v&#39;</span><span class="p">,</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="s1">&#39;-crf&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span> <span class="s1">&#39;-force_key_frames&#39;</span><span class="p">,</span> <span class="s1">&#39;expr:gte(t,n_forced*2)&#39;</span><span class="p">,</span>
         <span class="s1">&#39;-sc_threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span> <span class="s1">&#39;-muxdelay&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;-keyint_min&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span>
         <span class="o">*</span><span class="p">([</span><span class="s1">&#39;-c:a&#39;</span><span class="p">,</span> <span class="s1">&#39;aac&#39;</span><span class="p">,</span> <span class="s1">&#39;-ar&#39;</span><span class="p">,</span> <span class="s1">&#39;48000&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[]),</span>
-        <span class="c1"># Set common properties of the video variances</span>
+        <span class="c1"># Set common properties of the video variances.</span>
         <span class="o">*</span><span class="n">conversions</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">([</span><span class="s1">&#39;-c:a&#39;</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[]),</span>  <span class="c1"># Copy original audio to the video variances</span>
+        <span class="o">*</span><span class="p">([</span><span class="s1">&#39;-c:a&#39;</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[]),</span>  <span class="c1"># Copy original audio to the video variances.</span>
         <span class="s1">&#39;-var_stream_map&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stream_map</span><span class="p">)),</span>
-        <span class="c1"># Create the master playlist</span>
+        <span class="c1"># Create the master playlist.</span>
         <span class="s1">&#39;-master_pl_name&#39;</span><span class="p">,</span> <span class="s1">&#39;stream.m3u8&#39;</span><span class="p">,</span>
-        <span class="c1"># HLS flags and segment properties</span>
+        <span class="c1"># HLS flags and segment properties.</span>
         <span class="s1">&#39;-hls_time&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">segment_size</span><span class="p">,</span> <span class="s1">&#39;-hls_list_size&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">segment_amount</span><span class="p">,</span> <span class="s1">&#39;-hls_flags&#39;</span><span class="p">,</span>
         <span class="s1">&#39;delete_segments&#39;</span><span class="p">,</span> <span class="s1">&#39;-start_number&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
-        <span class="c1"># Url</span>
+        <span class="c1"># Url.</span>
         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s1">/stream_V%v.m3u8&#39;</span>
     <span class="p">]</span>
 
+    <span class="c1"># Return the subprocess containing the ffmpeg command.</span>
     <span class="k">return</span> <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Gets the ffmpeg conversion command for the camera stream that can be started later on</p>
+            <div class="docstring"><p>Gets the ffmpeg conversion command for the camera stream that can be started later on.</p>
 
 <h6 id="args">Args</h6>
 

@@ -52,7 +52,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.camera    </h1>
 
-                        <div class="docstring"><p>Contains information about a single camera object</p>
+                        <div class="docstring"><p>Contains information about a single camera object.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -61,12 +61,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains information about a single camera object</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains information about a single camera object.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 
@@ -74,28 +73,28 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Camera information object.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        url (str): Address of the camera</span>
-<span class="sd">        conversion (str): Conversion used to encode camera</span>
-<span class="sd">        callback (func): Callback function to stop running after a delay</span>
-<span class="sd">        audio (bool): Does camera contain audio</span>
+<span class="sd">        url (str): Address of the camera.</span>
+<span class="sd">        conversion (str): Conversion used to encode camera.</span>
+<span class="sd">        callback (func): Callback function to stop running after a delay.</span>
+<span class="sd">        audio (bool): Does camera contain audio.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">audio</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializes a camara object that holds values</span>
+        <span class="sd">&quot;&quot;&quot;Initializes a camara object that holds values.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url (str): Address of the camera</span>
 <span class="sd">            audio (bool): Whether camera contains audio</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># The ip address (with credentials) of the camera</span>
+        <span class="c1"># The ip address (with credentials) of the camera.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
-        <span class="c1"># Whether the camera stream contains audio</span>
+        <span class="c1"># Whether the camera stream contains audio.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">audio</span> <span class="o">=</span> <span class="n">audio</span>
 
-        <span class="c1"># The conversion process creating a hls stream from the camera feed</span>
+        <span class="c1"># The conversion process creating a hls stream from the camera feed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># A callback to stop the conversion at a set delay</span>
+        <span class="c1"># A callback to stop the conversion at a set delay.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
@@ -117,28 +116,28 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Camera information object.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        url (str): Address of the camera</span>
-<span class="sd">        conversion (str): Conversion used to encode camera</span>
-<span class="sd">        callback (func): Callback function to stop running after a delay</span>
-<span class="sd">        audio (bool): Does camera contain audio</span>
+<span class="sd">        url (str): Address of the camera.</span>
+<span class="sd">        conversion (str): Conversion used to encode camera.</span>
+<span class="sd">        callback (func): Callback function to stop running after a delay.</span>
+<span class="sd">        audio (bool): Does camera contain audio.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">audio</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializes a camara object that holds values</span>
+        <span class="sd">&quot;&quot;&quot;Initializes a camara object that holds values.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url (str): Address of the camera</span>
 <span class="sd">            audio (bool): Whether camera contains audio</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># The ip address (with credentials) of the camera</span>
+        <span class="c1"># The ip address (with credentials) of the camera.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
-        <span class="c1"># Whether the camera stream contains audio</span>
+        <span class="c1"># Whether the camera stream contains audio.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">audio</span> <span class="o">=</span> <span class="n">audio</span>
 
-        <span class="c1"># The conversion process creating a hls stream from the camera feed</span>
+        <span class="c1"># The conversion process creating a hls stream from the camera feed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># A callback to stop the conversion at a set delay</span>
+        <span class="c1"># A callback to stop the conversion at a set delay.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
@@ -149,10 +148,10 @@ Utrecht University within the Software Project course.
 <h6 id="attributes">Attributes</h6>
 
 <ul>
-<li><strong>url (str):</strong>  Address of the camera</li>
-<li><strong>conversion (str):</strong>  Conversion used to encode camera</li>
-<li><strong>callback (func):</strong>  Callback function to stop running after a delay</li>
-<li><strong>audio (bool):</strong>  Does camera contain audio</li>
+<li><strong>url (str):</strong>  Address of the camera.</li>
+<li><strong>conversion (str):</strong>  Conversion used to encode camera.</li>
+<li><strong>callback (func):</strong>  Callback function to stop running after a delay.</li>
+<li><strong>audio (bool):</strong>  Does camera contain audio.</li>
 </ul>
 </div>
 
@@ -167,28 +166,28 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">audio</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializes a camara object that holds values</span>
+        <span class="sd">&quot;&quot;&quot;Initializes a camara object that holds values.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            url (str): Address of the camera</span>
 <span class="sd">            audio (bool): Whether camera contains audio</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># The ip address (with credentials) of the camera</span>
+        <span class="c1"># The ip address (with credentials) of the camera.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
-        <span class="c1"># Whether the camera stream contains audio</span>
+        <span class="c1"># Whether the camera stream contains audio.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">audio</span> <span class="o">=</span> <span class="n">audio</span>
 
-        <span class="c1"># The conversion process creating a hls stream from the camera feed</span>
+        <span class="c1"># The conversion process creating a hls stream from the camera feed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># A callback to stop the conversion at a set delay</span>
+        <span class="c1"># A callback to stop the conversion at a set delay.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Initializes a camara object that holds values</p>
+            <div class="docstring"><p>Initializes a camara object that holds values.</p>
 
 <h6 id="args">Args</h6>
 

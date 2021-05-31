@@ -69,7 +69,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
@@ -81,31 +80,31 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">processor.utils.display</span> <span class="k">as</span> <span class="nn">display</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.process_frames</span> <span class="kn">import</span> <span class="n">prepare_stream</span><span class="p">,</span> <span class="n">process_stream</span>
 
-<span class="c1"># Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python</span>
-<span class="c1"># Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7</span>
+<span class="c1"># Tornado example gotten from: https://github.com/wildfios/Tornado-mjpeg-streamer-python.</span>
+<span class="c1"># Combined with: https://github.com/wildfios/Tornado-mjpeg-streamer-python/issues/7.</span>
 
 
 <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
 <span class="k">class</span> <span class="nc">StreamHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Streamhandler is for the tornado localhost page. It serves JPG images to the client</span>
+    <span class="sd">&quot;&quot;&quot;Streamhandler is for the tornado localhost page. It serves JPG images to the client.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        configs (ConfigParser): configurations of the stream</span>
-<span class="sd">        __previous_flush_timestamp (float): Timestamp of the previous flush</span>
-<span class="sd">        __flush_interval (float): Time inbetween flushes</span>
+<span class="sd">        configs (ConfigParser): configurations of the stream.</span>
+<span class="sd">        __previous_flush_timestamp (float): Timestamp of the previous flush.</span>
+<span class="sd">        __flush_interval (float): Time in between flushes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Give the configurations when initializing the stream handler</span>
+        <span class="sd">&quot;&quot;&quot;Give the configurations when initializing the stream handler.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (ConfigParser): configurations</span>
+<span class="sd">            configs (ConfigParser): configurations of the handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
 
     <span class="nd">@tornado</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get request handler for the webpage to show video stream.&quot;&quot;&quot;</span>
-        <span class="c1"># Sets headers of the stream handler</span>
+        <span class="c1"># Sets headers of the stream handler.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;set headers&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Cache-Control&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0&#39;</span><span class="p">)</span>
@@ -113,51 +112,51 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;multipart/x-mixed-replace;boundary=--jpgboundary&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Connection&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Timing of last flush</span>
+        <span class="c1"># Timing of last flush.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="c1"># Every .1 seconds the buffer gets flushed</span>
+        <span class="c1"># Every .1 seconds the buffer gets flushed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__flush_interval</span> <span class="o">=</span> <span class="mf">.1</span>
 
-        <span class="c1"># Get the objects needed for process_stream and starts the function</span>
+        <span class="c1"># Get the objects needed for process_stream and starts the function.</span>
         <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_processed</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="c1"># Close capture and send response</span>
+        <span class="c1"># Close capture and send response.</span>
         <span class="n">capture</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__frame_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;When the frame got processed, this function gets called to put it in the buffer</span>
+        <span class="sd">&quot;&quot;&quot;When the frame got processed, this function gets called to put it in the buffer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): Frame object containing the frame</span>
-<span class="sd">            detected_boxes (BoundingBoxes): Boxes generated by the detection</span>
-<span class="sd">            tracked_boxes (Boundingboxes): The tracked boxes from the frame processing loop</span>
+<span class="sd">            frame_obj (FrameObj): Frame object containing the frame.</span>
+<span class="sd">            detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
+<span class="sd">            tracked_boxes (Boundingboxes): The tracked boxes from the frame processing loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">img_tile</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">generate_tiled_image</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Encode the frame to jpg format</span>
+        <span class="c1"># Encode the frame to jpg format.</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">jpeg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imencode</span><span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">img_tile</span><span class="p">)</span>
 
-        <span class="c1"># Frame was not retrieved</span>
+        <span class="c1"># Frame was not retrieved.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">img</span> <span class="o">=</span> <span class="n">jpeg</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
 
-        <span class="c1"># Write to the buffer</span>
+        <span class="c1"># Write to the buffer.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;--jpgboundary&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Content-type: image/jpeg</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Content-length: </span><span class="si">%s</span><span class="se">\r\n\r\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="c1"># Connection lost</span>
+        <span class="c1"># Connection lost.</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client disconnected, throwing the following error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># If it is time to flush the buffer again</span>
+        <span class="c1"># If it is time to flush the buffer again.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flush_interval</span> <span class="o">&lt;</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -178,25 +177,25 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">StreamHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Streamhandler is for the tornado localhost page. It serves JPG images to the client</span>
+    <span class="sd">&quot;&quot;&quot;Streamhandler is for the tornado localhost page. It serves JPG images to the client.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        configs (ConfigParser): configurations of the stream</span>
-<span class="sd">        __previous_flush_timestamp (float): Timestamp of the previous flush</span>
-<span class="sd">        __flush_interval (float): Time inbetween flushes</span>
+<span class="sd">        configs (ConfigParser): configurations of the stream.</span>
+<span class="sd">        __previous_flush_timestamp (float): Timestamp of the previous flush.</span>
+<span class="sd">        __flush_interval (float): Time in between flushes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Give the configurations when initializing the stream handler</span>
+        <span class="sd">&quot;&quot;&quot;Give the configurations when initializing the stream handler.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (ConfigParser): configurations</span>
+<span class="sd">            configs (ConfigParser): configurations of the handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
 
     <span class="nd">@tornado</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get request handler for the webpage to show video stream.&quot;&quot;&quot;</span>
-        <span class="c1"># Sets headers of the stream handler</span>
+        <span class="c1"># Sets headers of the stream handler.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;set headers&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Cache-Control&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0&#39;</span><span class="p">)</span>
@@ -204,51 +203,51 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;multipart/x-mixed-replace;boundary=--jpgboundary&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Connection&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Timing of last flush</span>
+        <span class="c1"># Timing of last flush.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="c1"># Every .1 seconds the buffer gets flushed</span>
+        <span class="c1"># Every .1 seconds the buffer gets flushed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__flush_interval</span> <span class="o">=</span> <span class="mf">.1</span>
 
-        <span class="c1"># Get the objects needed for process_stream and starts the function</span>
+        <span class="c1"># Get the objects needed for process_stream and starts the function.</span>
         <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_processed</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="c1"># Close capture and send response</span>
+        <span class="c1"># Close capture and send response.</span>
         <span class="n">capture</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__frame_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;When the frame got processed, this function gets called to put it in the buffer</span>
+        <span class="sd">&quot;&quot;&quot;When the frame got processed, this function gets called to put it in the buffer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): Frame object containing the frame</span>
-<span class="sd">            detected_boxes (BoundingBoxes): Boxes generated by the detection</span>
-<span class="sd">            tracked_boxes (Boundingboxes): The tracked boxes from the frame processing loop</span>
+<span class="sd">            frame_obj (FrameObj): Frame object containing the frame.</span>
+<span class="sd">            detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
+<span class="sd">            tracked_boxes (Boundingboxes): The tracked boxes from the frame processing loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">img_tile</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">generate_tiled_image</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)</span>
 
-        <span class="c1"># Encode the frame to jpg format</span>
+        <span class="c1"># Encode the frame to jpg format.</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">jpeg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imencode</span><span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">img_tile</span><span class="p">)</span>
 
-        <span class="c1"># Frame was not retrieved</span>
+        <span class="c1"># Frame was not retrieved.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">img</span> <span class="o">=</span> <span class="n">jpeg</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
 
-        <span class="c1"># Write to the buffer</span>
+        <span class="c1"># Write to the buffer.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;--jpgboundary&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Content-type: image/jpeg</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Content-length: </span><span class="si">%s</span><span class="se">\r\n\r\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="c1"># Connection lost</span>
+        <span class="c1"># Connection lost.</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client disconnected, throwing the following error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># If it is time to flush the buffer again</span>
+        <span class="c1"># If it is time to flush the buffer again.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flush_interval</span> <span class="o">&lt;</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -256,14 +255,14 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Streamhandler is for the tornado localhost page. It serves JPG images to the client</p>
+            <div class="docstring"><p>Streamhandler is for the tornado localhost page. It serves JPG images to the client.</p>
 
 <h6 id="attributes">Attributes</h6>
 
 <ul>
-<li><strong>configs (ConfigParser):</strong>  configurations of the stream</li>
-<li><strong>__previous_flush_timestamp (float):</strong>  Timestamp of the previous flush</li>
-<li><strong>__flush_interval (float):</strong>  Time inbetween flushes</li>
+<li><strong>configs (ConfigParser):</strong>  configurations of the stream.</li>
+<li><strong>__previous_flush_timestamp (float):</strong>  Timestamp of the previous flush.</li>
+<li><strong>__flush_interval (float):</strong>  Time in between flushes.</li>
 </ul>
 </div>
 
@@ -279,22 +278,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Give the configurations when initializing the stream handler</span>
+        <span class="sd">&quot;&quot;&quot;Give the configurations when initializing the stream handler.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (ConfigParser): configurations</span>
+<span class="sd">            configs (ConfigParser): configurations of the handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Give the configurations when initializing the stream handler</p>
+            <div class="docstring"><p>Give the configurations when initializing the stream handler.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (ConfigParser):</strong>  configurations</li>
+<li><strong>configs (ConfigParser):</strong>  configurations of the handler.</li>
 </ul>
 </div>
 
@@ -314,7 +313,7 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="nd">@tornado</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get request handler for the webpage to show video stream.&quot;&quot;&quot;</span>
-        <span class="c1"># Sets headers of the stream handler</span>
+        <span class="c1"># Sets headers of the stream handler.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;set headers&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Cache-Control&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0&#39;</span><span class="p">)</span>
@@ -322,17 +321,17 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;multipart/x-mixed-replace;boundary=--jpgboundary&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Connection&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Timing of last flush</span>
+        <span class="c1"># Timing of last flush.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_flush_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="c1"># Every .1 seconds the buffer gets flushed</span>
+        <span class="c1"># Every .1 seconds the buffer gets flushed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__flush_interval</span> <span class="o">=</span> <span class="mf">.1</span>
 
-        <span class="c1"># Get the objects needed for process_stream and starts the function</span>
+        <span class="c1"># Get the objects needed for process_stream and starts the function.</span>
         <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">prepare_stream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_processed</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="c1"># Close capture and send response</span>
+        <span class="c1"># Close capture and send response.</span>
         <span class="n">capture</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 </pre></div>

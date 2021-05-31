@@ -81,7 +81,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
@@ -126,9 +125,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        __reconnect_thread (Thread): Contains thread that attempts to reconnect if connection was closed unexpectedly</span>
 
 <span class="sd">        __reconnecting (bool): Boolean indicating reconnect procedure must be started</span>
-<span class="sd">        __drop_reconnect(bool): Boolean indicating the reconnect thread can be closed</span>
+<span class="sd">        __drop_reconnect (bool): Boolean indicating the reconnect thread can be closed</span>
 <span class="sd">        __found_stream (bool): Boolean indicating whether stream was found.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hls_url</span><span class="o">=</span><span class="s1">&#39;http://81.83.10.9:8001/mjpg/video.mjpg&#39;</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initiates the capture object with a hls url and starts reading frames.</span>
@@ -140,37 +138,37 @@ Utrecht University within the Software Project course.
 <span class="sd">            retries (int): Number of retries before it is concluded connection cannot be made</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Stream related properties</span>
+        <span class="c1"># Stream related properties.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span> <span class="o">=</span> <span class="n">hls_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Time stamps</span>
+        <span class="c1"># Time stamps.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__start_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Time</span>
+        <span class="c1"># Time.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__wait_ms</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Frame numbers</span>
+        <span class="c1"># Frame numbers.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Tells thread they should keep running</span>
+        <span class="c1"># Tells thread they should keep running.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Timeout times</span>
+        <span class="c1"># Timeout times.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__retries</span> <span class="o">=</span> <span class="n">retries</span>
 
-        <span class="c1"># Thread</span>
+        <span class="c1"># Thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Reconnect with timeout</span>
+        <span class="c1"># Reconnect with timeout.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">False</span>
@@ -180,8 +178,8 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check whether the current capture object is still opened.</span>
 
-<span class="sd">        Returns (bool):</span>
-<span class="sd">            Whether stream is still opened at this point of time.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether stream is still opened at this point of time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span>
 
@@ -190,11 +188,11 @@ Utrecht University within the Software Project course.
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;HLS stream closing&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining threads&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Join the reading thread</span>
+        <span class="c1"># Join the reading thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="c1"># Join the reconnecting thread</span>
+        <span class="c1"># Join the reconnecting thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Threads joined&quot;</span><span class="p">)</span>
@@ -202,25 +200,25 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the hls stream.</span>
 
-<span class="sd">        Returns (bool, FrameObj):</span>
-<span class="sd">            Boolean whether a new frame has been returned compared to the previous one.</span>
-<span class="sd">            Frame Object containing the next frame.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, FrameObj: boolean whether a new frame has been returned compared to the previous one.</span>
+<span class="sd">                            Frame Object containing the next frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">diff_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="c1"># Return False if the capture was flagged to close</span>
+        <span class="c1"># Return False if the capture was flagged to close.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="c1"># Frame is not different from the last one</span>
+        <span class="c1"># Frame is not different from the last one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">-=</span> <span class="n">diff_time</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">-=</span> <span class="n">diff_time</span>
-                <span class="c1"># If the connection was dropped due to timeout, we will try to reconnect</span>
+                <span class="c1"># If the connection was dropped due to timeout, we will try to reconnect.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">=</span> <span class="mi">5</span>
@@ -238,34 +236,39 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Reads frames at frame rate of the stream and puts them in self.current_frame.</span>
 <span class="sd">        Calculates at what time the next frame is expected and waits that long.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cap (cv2.VideoCapture): Capture serving the HLS stream frame by frame.</span>
+<span class="sd">            hls_start_time_stamp (float): At what timestamp the stream started.</span>
+<span class="sd">            wait_ms (float): Number of milliseconds between the frames.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Set a timeout, in seconds</span>
+        <span class="c1"># Set a timeout, in seconds.</span>
         <span class="n">current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
-            <span class="c1"># Reads next frame</span>
+            <span class="c1"># Reads next frame.</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ret</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">SystemExit</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Capture read has been blocked&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Capture read has been blocked.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
 
-            <span class="c1"># If frame was not yet ready</span>
+            <span class="c1"># If frame was not yet ready.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Saves timestamp of the current frame</span>
+            <span class="c1"># Saves timestamp of the current frame.</span>
             <span class="n">current_frame_time</span> <span class="o">=</span> <span class="n">current_frame_nr</span> <span class="o">*</span> <span class="n">wait_ms</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="n">hls_start_time_stamp</span> <span class="o">+</span> <span class="p">(</span><span class="n">current_frame_time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
 
-            <span class="c1"># Calculate the wait time for the next frame</span>
+            <span class="c1"># Calculate the wait time for the next frame.</span>
             <span class="n">time_into_stream</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">thread_start_time</span>
             <span class="n">wait_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_frame_time</span> <span class="o">+</span> <span class="n">wait_ms</span> <span class="o">-</span> <span class="n">time_into_stream</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
             <span class="n">current_frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="c1"># Next frame should already have been read</span>
+            <span class="c1"># Next frame should already have been read.</span>
             <span class="k">if</span> <span class="n">wait_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">continue</span>
 
@@ -278,40 +281,40 @@ Utrecht University within the Software Project course.
 <span class="sd">        the reading and reconnection thread.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Bool: indicating a success or failure of setting up the capture and syncing the meta data</span>
+<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the meta data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Creating meta thread for meta data collection</span>
+        <span class="c1"># Creating meta thread for meta data collection.</span>
         <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="c1"># Instantiates the connection with the hls stream</span>
+        <span class="c1"># Instantiates the connection with the hls stream.</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="c1"># Exit thread if stream was not found</span>
+        <span class="c1"># Exit thread if stream was not found.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stream was not found. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># Exit because capture did not start correctly</span>
+        <span class="c1"># Exit because capture did not start correctly.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Capture not found correctly. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># How much time has to get awaited between frames</span>
+        <span class="c1"># How much time has to get awaited between frames.</span>
         <span class="n">wait_ms</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span>
 
-        <span class="c1"># Reset some variables</span>
+        <span class="c1"># Reset some variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Done with probing, starting the reading thread</span>
+        <span class="c1"># Done with probing, starting the reading thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span>
                                                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
@@ -320,7 +323,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading thread started successfully!&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Start the reconnect thread</span>
+        <span class="c1"># Start the reconnect thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reconnect</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -329,14 +332,13 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method to loop and check if we need to reconnect</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Method to loop and check if we need to reconnect.&quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shutting down reconnection thread.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Connection is not established.</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connection lost unexpectedly. Starting connection process&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
@@ -347,33 +349,31 @@ Utrecht University within the Software Project course.
     <span class="c1"># pylint: disable=protected-access</span>
     <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a http request with ffmpeg to get the meta-data of the HLS stream.&quot;&quot;&quot;</span>
-        <span class="c1"># extract the start_time from the meta-data to get the absolute segment time</span>
+        <span class="c1"># Extract the start_time from the meta-data to get the absolute segment time.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving meta data from HLS stream&#39;</span><span class="p">)</span>
-        <span class="c1"># Probe HLS stream link</span>
+        <span class="c1"># Probe HLS stream link.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># pylint: disable=no-member</span>
             <span class="n">meta_data</span> <span class="o">=</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">probe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
             <span class="c1"># pylint: enable=no-member</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">][</span><span class="s1">&#39;start_time&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Ffmpeg probe error</span>
+        <span class="c1"># Ffmpeg probe error.</span>
         <span class="k">except</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">_run</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ffmpeg could not find stream, giving the following error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="c1"># Json did not contain key</span>
+        <span class="c1"># Json did not contain key.</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Json does not contain keys for </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">__connect_to_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method to connect to the stream</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Method to connect to the stream.&quot;&quot;&quot;</span>
         <span class="n">tries_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__retries</span>
 
-        <span class="c1"># Sleep is essential so processor has a prepared self.cap</span>
+        <span class="c1"># Sleep is essential so processor has a prepared self.cap.</span>
         <span class="k">while</span> <span class="n">tries_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to connect. Attempts left: </span><span class="si">{</span><span class="n">tries_left</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">():</span>
@@ -381,7 +381,7 @@ Utrecht University within the Software Project course.
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">tries_left</span> <span class="o">-=</span> <span class="mi">1</span>
 
-        <span class="c1"># Raise error when capture is never created in other thread</span>
+        <span class="c1"># Raise error when capture is never created in other thread.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;cv2.VideoCapture probably raised exception&quot;</span><span class="p">)</span>
@@ -434,9 +434,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        __reconnect_thread (Thread): Contains thread that attempts to reconnect if connection was closed unexpectedly</span>
 
 <span class="sd">        __reconnecting (bool): Boolean indicating reconnect procedure must be started</span>
-<span class="sd">        __drop_reconnect(bool): Boolean indicating the reconnect thread can be closed</span>
+<span class="sd">        __drop_reconnect (bool): Boolean indicating the reconnect thread can be closed</span>
 <span class="sd">        __found_stream (bool): Boolean indicating whether stream was found.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hls_url</span><span class="o">=</span><span class="s1">&#39;http://81.83.10.9:8001/mjpg/video.mjpg&#39;</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initiates the capture object with a hls url and starts reading frames.</span>
@@ -448,37 +447,37 @@ Utrecht University within the Software Project course.
 <span class="sd">            retries (int): Number of retries before it is concluded connection cannot be made</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Stream related properties</span>
+        <span class="c1"># Stream related properties.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span> <span class="o">=</span> <span class="n">hls_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Time stamps</span>
+        <span class="c1"># Time stamps.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__start_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Time</span>
+        <span class="c1"># Time.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__wait_ms</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Frame numbers</span>
+        <span class="c1"># Frame numbers.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Tells thread they should keep running</span>
+        <span class="c1"># Tells thread they should keep running.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Timeout times</span>
+        <span class="c1"># Timeout times.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__retries</span> <span class="o">=</span> <span class="n">retries</span>
 
-        <span class="c1"># Thread</span>
+        <span class="c1"># Thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Reconnect with timeout</span>
+        <span class="c1"># Reconnect with timeout.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">False</span>
@@ -488,8 +487,8 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check whether the current capture object is still opened.</span>
 
-<span class="sd">        Returns (bool):</span>
-<span class="sd">            Whether stream is still opened at this point of time.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether stream is still opened at this point of time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span>
 
@@ -498,11 +497,11 @@ Utrecht University within the Software Project course.
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;HLS stream closing&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining threads&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Join the reading thread</span>
+        <span class="c1"># Join the reading thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="c1"># Join the reconnecting thread</span>
+        <span class="c1"># Join the reconnecting thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Threads joined&quot;</span><span class="p">)</span>
@@ -510,25 +509,25 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the hls stream.</span>
 
-<span class="sd">        Returns (bool, FrameObj):</span>
-<span class="sd">            Boolean whether a new frame has been returned compared to the previous one.</span>
-<span class="sd">            Frame Object containing the next frame.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, FrameObj: boolean whether a new frame has been returned compared to the previous one.</span>
+<span class="sd">                            Frame Object containing the next frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">diff_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="c1"># Return False if the capture was flagged to close</span>
+        <span class="c1"># Return False if the capture was flagged to close.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="c1"># Frame is not different from the last one</span>
+        <span class="c1"># Frame is not different from the last one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">-=</span> <span class="n">diff_time</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">-=</span> <span class="n">diff_time</span>
-                <span class="c1"># If the connection was dropped due to timeout, we will try to reconnect</span>
+                <span class="c1"># If the connection was dropped due to timeout, we will try to reconnect.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">=</span> <span class="mi">5</span>
@@ -546,34 +545,39 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Reads frames at frame rate of the stream and puts them in self.current_frame.</span>
 <span class="sd">        Calculates at what time the next frame is expected and waits that long.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cap (cv2.VideoCapture): Capture serving the HLS stream frame by frame.</span>
+<span class="sd">            hls_start_time_stamp (float): At what timestamp the stream started.</span>
+<span class="sd">            wait_ms (float): Number of milliseconds between the frames.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Set a timeout, in seconds</span>
+        <span class="c1"># Set a timeout, in seconds.</span>
         <span class="n">current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">thread_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
-            <span class="c1"># Reads next frame</span>
+            <span class="c1"># Reads next frame.</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ret</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">SystemExit</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Capture read has been blocked&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Capture read has been blocked.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
 
-            <span class="c1"># If frame was not yet ready</span>
+            <span class="c1"># If frame was not yet ready.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="c1"># Saves timestamp of the current frame</span>
+            <span class="c1"># Saves timestamp of the current frame.</span>
             <span class="n">current_frame_time</span> <span class="o">=</span> <span class="n">current_frame_nr</span> <span class="o">*</span> <span class="n">wait_ms</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="n">hls_start_time_stamp</span> <span class="o">+</span> <span class="p">(</span><span class="n">current_frame_time</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
 
-            <span class="c1"># Calculate the wait time for the next frame</span>
+            <span class="c1"># Calculate the wait time for the next frame.</span>
             <span class="n">time_into_stream</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">thread_start_time</span>
             <span class="n">wait_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_frame_time</span> <span class="o">+</span> <span class="n">wait_ms</span> <span class="o">-</span> <span class="n">time_into_stream</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
             <span class="n">current_frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="c1"># Next frame should already have been read</span>
+            <span class="c1"># Next frame should already have been read.</span>
             <span class="k">if</span> <span class="n">wait_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">continue</span>
 
@@ -586,40 +590,40 @@ Utrecht University within the Software Project course.
 <span class="sd">        the reading and reconnection thread.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Bool: indicating a success or failure of setting up the capture and syncing the meta data</span>
+<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the meta data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Creating meta thread for meta data collection</span>
+        <span class="c1"># Creating meta thread for meta data collection.</span>
         <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="c1"># Instantiates the connection with the hls stream</span>
+        <span class="c1"># Instantiates the connection with the hls stream.</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="c1"># Exit thread if stream was not found</span>
+        <span class="c1"># Exit thread if stream was not found.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stream was not found. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># Exit because capture did not start correctly</span>
+        <span class="c1"># Exit because capture did not start correctly.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Capture not found correctly. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># How much time has to get awaited between frames</span>
+        <span class="c1"># How much time has to get awaited between frames.</span>
         <span class="n">wait_ms</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span>
 
-        <span class="c1"># Reset some variables</span>
+        <span class="c1"># Reset some variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Done with probing, starting the reading thread</span>
+        <span class="c1"># Done with probing, starting the reading thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span>
                                                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
@@ -628,7 +632,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading thread started successfully!&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Start the reconnect thread</span>
+        <span class="c1"># Start the reconnect thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reconnect</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -637,14 +641,13 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method to loop and check if we need to reconnect</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Method to loop and check if we need to reconnect.&quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shutting down reconnection thread.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Connection is not established.</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connection lost unexpectedly. Starting connection process&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
@@ -655,33 +658,31 @@ Utrecht University within the Software Project course.
     <span class="c1"># pylint: disable=protected-access</span>
     <span class="k">def</span> <span class="nf">__get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a http request with ffmpeg to get the meta-data of the HLS stream.&quot;&quot;&quot;</span>
-        <span class="c1"># extract the start_time from the meta-data to get the absolute segment time</span>
+        <span class="c1"># Extract the start_time from the meta-data to get the absolute segment time.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retrieving meta data from HLS stream&#39;</span><span class="p">)</span>
-        <span class="c1"># Probe HLS stream link</span>
+        <span class="c1"># Probe HLS stream link.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># pylint: disable=no-member</span>
             <span class="n">meta_data</span> <span class="o">=</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">probe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
             <span class="c1"># pylint: enable=no-member</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">][</span><span class="s1">&#39;start_time&#39;</span><span class="p">])</span>
 
-        <span class="c1"># Ffmpeg probe error</span>
+        <span class="c1"># Ffmpeg probe error.</span>
         <span class="k">except</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">_run</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ffmpeg could not find stream, giving the following error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="c1"># Json did not contain key</span>
+        <span class="c1"># Json did not contain key.</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key_error</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Json does not contain keys for </span><span class="si">{</span><span class="n">key_error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">__connect_to_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method to connect to the stream</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Method to connect to the stream.&quot;&quot;&quot;</span>
         <span class="n">tries_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__retries</span>
 
-        <span class="c1"># Sleep is essential so processor has a prepared self.cap</span>
+        <span class="c1"># Sleep is essential so processor has a prepared self.cap.</span>
         <span class="k">while</span> <span class="n">tries_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to connect. Attempts left: </span><span class="si">{</span><span class="n">tries_left</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">():</span>
@@ -689,7 +690,7 @@ Utrecht University within the Software Project course.
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">tries_left</span> <span class="o">-=</span> <span class="mi">1</span>
 
-        <span class="c1"># Raise error when capture is never created in other thread</span>
+        <span class="c1"># Raise error when capture is never created in other thread.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;cv2.VideoCapture probably raised exception&quot;</span><span class="p">)</span>
@@ -724,7 +725,7 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 <li><strong>__reading_thread (Thread):</strong>  Contains thread that reads.</li>
 <li><strong>__reconnect_thread (Thread):</strong>  Contains thread that attempts to reconnect if connection was closed unexpectedly</li>
 <li><strong>__reconnecting (bool):</strong>  Boolean indicating reconnect procedure must be started</li>
-<li><strong>__drop_reconnect(bool):</strong>  Boolean indicating the reconnect thread can be closed</li>
+<li><strong>__drop_reconnect (bool):</strong>  Boolean indicating the reconnect thread can be closed</li>
 <li><strong>__found_stream (bool):</strong>  Boolean indicating whether stream was found.</li>
 </ul>
 </div>
@@ -749,37 +750,37 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 <span class="sd">            retries (int): Number of retries before it is concluded connection cannot be made</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Stream related properties</span>
+        <span class="c1"># Stream related properties.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span> <span class="o">=</span> <span class="n">hls_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Time stamps</span>
+        <span class="c1"># Time stamps.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__start_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Time</span>
+        <span class="c1"># Time.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_start_time</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__wait_ms</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c1"># Frame numbers</span>
+        <span class="c1"># Frame numbers.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Tells thread they should keep running</span>
+        <span class="c1"># Tells thread they should keep running.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Timeout times</span>
+        <span class="c1"># Timeout times.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__retries</span> <span class="o">=</span> <span class="n">retries</span>
 
-        <span class="c1"># Thread</span>
+        <span class="c1"># Thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Reconnect with timeout</span>
+        <span class="c1"># Reconnect with timeout.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span> <span class="o">=</span> <span class="kc">False</span>
@@ -816,8 +817,8 @@ Another thread gets the time stamp of the stream once and going from there.</p>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check whether the current capture object is still opened.</span>
 
-<span class="sd">        Returns (bool):</span>
-<span class="sd">            Whether stream is still opened at this point of time.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether stream is still opened at this point of time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span>
 </pre></div>
@@ -826,8 +827,11 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 
             <div class="docstring"><p>Check whether the current capture object is still opened.</p>
 
-<p>Returns (bool):
-    Whether stream is still opened at this point of time.</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool: Whether stream is still opened at this point of time.</p>
+</blockquote>
 </div>
 
 
@@ -847,11 +851,11 @@ Another thread gets the time stamp of the stream once and going from there.</p>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;HLS stream closing&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining threads&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Join the reading thread</span>
+        <span class="c1"># Join the reading thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="c1"># Join the reconnecting thread</span>
+        <span class="c1"># Join the reconnecting thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Threads joined&quot;</span><span class="p">)</span>
@@ -877,25 +881,25 @@ Another thread gets the time stamp of the stream once and going from there.</p>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the hls stream.</span>
 
-<span class="sd">        Returns (bool, FrameObj):</span>
-<span class="sd">            Boolean whether a new frame has been returned compared to the previous one.</span>
-<span class="sd">            Frame Object containing the next frame.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, FrameObj: boolean whether a new frame has been returned compared to the previous one.</span>
+<span class="sd">                            Frame Object containing the next frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">diff_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__previous_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-        <span class="c1"># Return False if the capture was flagged to close</span>
+        <span class="c1"># Return False if the capture was flagged to close.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="c1"># Frame is not different from the last one</span>
+        <span class="c1"># Frame is not different from the last one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_time_stamp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_frame_time_stamp</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__grace_period</span> <span class="o">-=</span> <span class="n">diff_time</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">-=</span> <span class="n">diff_time</span>
-                <span class="c1"># If the connection was dropped due to timeout, we will try to reconnect</span>
+                <span class="c1"># If the connection was dropped due to timeout, we will try to reconnect.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__timeout</span> <span class="o">=</span> <span class="mi">5</span>
@@ -913,9 +917,12 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 
             <div class="docstring"><p>Gets the next frame from the hls stream.</p>
 
-<p>Returns (bool, FrameObj):
-    Boolean whether a new frame has been returned compared to the previous one.
-    Frame Object containing the next frame.</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool, FrameObj: boolean whether a new frame has been returned compared to the previous one.
+                  Frame Object containing the next frame.</p>
+</blockquote>
 </div>
 
 
@@ -937,40 +944,40 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 <span class="sd">        the reading and reconnection thread.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Bool: indicating a success or failure of setting up the capture and syncing the meta data</span>
+<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the meta data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># Creating meta thread for meta data collection</span>
+        <span class="c1"># Creating meta thread for meta data collection.</span>
         <span class="n">meta_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_meta_data</span><span class="p">)</span>
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="c1"># Instantiates the connection with the hls stream</span>
+        <span class="c1"># Instantiates the connection with the hls stream.</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="p">)</span>
 
         <span class="n">meta_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="c1"># Exit thread if stream was not found</span>
+        <span class="c1"># Exit thread if stream was not found.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__found_stream</span><span class="p">:</span>
             <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stream was not found. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># Exit because capture did not start correctly</span>
+        <span class="c1"># Exit because capture did not start correctly.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Capture not found correctly. Retrying...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># How much time has to get awaited between frames</span>
+        <span class="c1"># How much time has to get awaited between frames.</span>
         <span class="n">wait_ms</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span>
 
-        <span class="c1"># Reset some variables</span>
+        <span class="c1"># Reset some variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Done with probing, starting the reading thread</span>
+        <span class="c1"># Done with probing, starting the reading thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">,</span>
                                                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
@@ -979,7 +986,7 @@ Another thread gets the time stamp of the stream once and going from there.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading thread started successfully!&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Start the reconnect thread</span>
+        <span class="c1"># Start the reconnect thread.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span> <span class="o">=</span> <span class="n">kthread</span><span class="o">.</span><span class="n">KThread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reconnect</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__reconnect_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -998,7 +1005,7 @@ the reading and reconnection thread.</p>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Bool: indicating a success or failure of setting up the capture and syncing the meta data</p>
+  <p>bool: indicating a success or failure of setting up the capture and syncing the meta data.</p>
 </blockquote>
 </div>
 
@@ -1015,14 +1022,13 @@ the reading and reconnection thread.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method to loop and check if we need to reconnect</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Method to loop and check if we need to reconnect.&quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reconnecting</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__drop_reconnect</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shutting down reconnection thread.&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Connection is not established.</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connection lost unexpectedly. Starting connection process&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reading_thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
@@ -1033,7 +1039,7 @@ the reading and reconnection thread.</p>
 
         </details>
 
-            <div class="docstring"><p>Method to loop and check if we need to reconnect</p>
+            <div class="docstring"><p>Method to loop and check if we need to reconnect.</p>
 </div>
 
 

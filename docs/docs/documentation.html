@@ -41,6 +41,9 @@
                     <a class="function" href="#get_modules">get_modules</a>
             </li>
             <li>
+                    <a class="function" href="#add_submodule_to_folders">add_submodule_to_folders</a>
+            </li>
+            <li>
                     <a class="function" href="#path_to_module">path_to_module</a>
             </li>
             <li>
@@ -70,33 +73,34 @@
                     <h1 class="modulename">
 <a href="./../docs.html">docs</a>.documentation    </h1>
 
-                        <div class="docstring"><p>This program has been developed by students from the bachelor Computer Science at
+                        <div class="docstring"><p>Generate the documentation using pdoc and jinja templating.</p>
+
+<p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)</p>
 </div>
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;This program has been developed by students from the bachelor Computer Science at</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Generate the documentation using pdoc and jinja templating.</span>
+
+<span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
-
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">pkgutil</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">import</span> <span class="nn">pdoc</span>
-<span class="kn">import</span> <span class="nn">mock</span>
 <span class="kn">import</span> <span class="nn">dis</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">importlib.util</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">pdoc</span>
+<span class="kn">import</span> <span class="nn">mock</span>
 
 
 <span class="k">def</span> <span class="nf">generate_documentation</span><span class="p">(</span><span class="n">component_source_path</span><span class="p">):</span>
@@ -118,7 +122,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Add to_tree to Jinja2 environment filters to generate tree from modules list.</span>
     <span class="n">pdoc</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="s1">&#39;to_tree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_tree</span>
 
-    <span class="c1"># Output directory</span>
+    <span class="c1"># Output directory.</span>
     <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_folder</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="n">component_source_path</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
@@ -211,15 +215,14 @@ Utrecht University within the Software Project course.
     <span class="c1"># Filter on IMPORT_NAME.</span>
     <span class="n">instruction_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IMPORT_NAME&#39;</span><span class="p">]</span>
 
-    <span class="c1"># argval of allowed instruction arguments</span>
+    <span class="c1"># Argval of allowed instruction arguments.</span>
     <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="n">instruction</span><span class="o">.</span><span class="n">argval</span> <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">instructions</span> <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">opname</span> <span class="ow">in</span> <span class="n">instruction_names</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">imports</span>
 
 
 <span class="k">def</span> <span class="nf">get_modules</span><span class="p">(</span><span class="n">root_folder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Gets all modules starting from the top folder,</span>
-<span class="sd">    excludes Python modules that are deemed as hidden.</span>
+    <span class="sd">&quot;&quot;&quot;Gets all modules starting from the top folder, excludes Python modules that are deemed as hidden.</span>
 
 <span class="sd">    Gets all modules starting from the top folder given as root_folder.</span>
 <span class="sd">    Starts by searching for all sub folders of the root folder,</span>
@@ -236,23 +239,10 @@ Utrecht University within the Software Project course.
     <span class="n">component_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component_root</span><span class="p">)</span>
 
-    <span class="c1"># Find all valid sub folders (dir name doesn&#39;t start with</span>
+    <span class="c1"># Find all valid sub folders (dir name doesn&#39;t start with.</span>
     <span class="c1"># &#39;.&#39; or &#39;_&#39;, starting at the root_folder.</span>
     <span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">root_folder</span><span class="p">]</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
-        <span class="n">current_folder</span> <span class="o">=</span> <span class="n">folders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-
-        <span class="c1"># Find all folders/directories in current folder, add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
-        <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">current_folder</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
-                <span class="k">continue</span>
-
-            <span class="n">folder_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_folder</span><span class="p">,</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-            <span class="n">folders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder_name</span><span class="p">)</span>
-
-        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">add_submodule_to_folders</span><span class="p">(</span><span class="n">folders</span><span class="p">)</span>
 
     <span class="n">includes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
@@ -270,12 +260,12 @@ Utrecht University within the Software Project course.
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
 
-                <span class="c1"># Get included modules from the __all__ attribute,</span>
-                <span class="c1"># module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
+                <span class="c1"># Get included modules from the __all__ attribute.</span>
+                <span class="c1"># Module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">):</span>
                     <span class="n">all_included</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">)</span>
                     <span class="n">includes</span><span class="p">[</span><span class="n">module_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_included</span>
-            <span class="c1"># Package cannot be imported</span>
+            <span class="c1"># Package cannot be imported.</span>
             <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Module path </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s1"> with import </span><span class="si">{</span><span class="n">import_path</span><span class="si">}</span><span class="s1"> throws </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span>
                                 <span class="s1">&#39;Most likely the __init__.py contains imports or code with side-effects.</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -293,7 +283,7 @@ Utrecht University within the Software Project course.
 
             <span class="c1"># Check if module is included.</span>
             <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">includes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">includes</span><span class="p">:</span>
                 <span class="c1"># Module excluded if present in __all__ attribute within __init__.py file.</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">module_path</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">module_path</span> <span class="ow">and</span> <span class="n">module</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">includes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
                     <span class="n">include</span> <span class="o">=</span> <span class="kc">False</span>
@@ -305,6 +295,28 @@ Utrecht University within the Software Project course.
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">component_root</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">modules</span>
+
+
+<span class="k">def</span> <span class="nf">add_submodule_to_folders</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the submodules recursively to the folder.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        folders ([str]): Folders that get.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
+        <span class="n">current_folder</span> <span class="o">=</span> <span class="n">folders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="c1"># Find all folders/directories in current folder, add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
+        <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">current_folder</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">folder_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_folder</span><span class="p">,</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="n">folders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder_name</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
 
 <span class="k">def</span> <span class="nf">path_to_module</span><span class="p">(</span><span class="n">component_root</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -401,7 +413,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">        [str]: modules that are mocked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>
+    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
 
     <span class="n">mocked</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -428,8 +440,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">to_tree</span><span class="p">(</span><span class="n">modules</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Turn a list of modules into a dictionary representing a tree</span>
-<span class="sd">    which gets turned into a JSON object by Jinja2.</span>
+    <span class="sd">&quot;&quot;&quot;Turn a list of modules into a dictionary representing a tree which gets turned into a JSON object by Jinja2.</span>
 
 <span class="sd">    The tree dictionary contains a dictionary for each package/module.</span>
 <span class="sd">    A module has an empty dictionary and packages leading up to</span>
@@ -454,7 +465,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># Configure the logger</span>
+    <span class="c1"># Configure the logger.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;documentation.log&#39;</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
                         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
                         <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
@@ -494,10 +505,10 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Generate documentation for all provided roots.</span>
     <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">roots</span><span class="p">:</span>
-        <span class="n">component_source_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generating documentation for: </span><span class="si">{</span><span class="n">component_source_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">component_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generating documentation for: </span><span class="si">{</span><span class="n">component_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).</span>
-        <span class="n">generate_documentation</span><span class="p">(</span><span class="n">component_source_path</span><span class="p">)</span>
+        <span class="n">generate_documentation</span><span class="p">(</span><span class="n">component_path</span><span class="p">)</span>
 
     <span class="c1"># Create index if flag was provided.</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">create_index</span><span class="p">:</span>
@@ -537,7 +548,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Add to_tree to Jinja2 environment filters to generate tree from modules list.</span>
     <span class="n">pdoc</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="s1">&#39;to_tree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_tree</span>
 
-    <span class="c1"># Output directory</span>
+    <span class="c1"># Output directory.</span>
     <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_folder</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="n">component_source_path</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
@@ -672,7 +683,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Filter on IMPORT_NAME.</span>
     <span class="n">instruction_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IMPORT_NAME&#39;</span><span class="p">]</span>
 
-    <span class="c1"># argval of allowed instruction arguments</span>
+    <span class="c1"># Argval of allowed instruction arguments.</span>
     <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="n">instruction</span><span class="o">.</span><span class="n">argval</span> <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">instructions</span> <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">opname</span> <span class="ow">in</span> <span class="n">instruction_names</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">imports</span>
@@ -708,8 +719,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_modules</span><span class="p">(</span><span class="n">root_folder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Gets all modules starting from the top folder,</span>
-<span class="sd">    excludes Python modules that are deemed as hidden.</span>
+    <span class="sd">&quot;&quot;&quot;Gets all modules starting from the top folder, excludes Python modules that are deemed as hidden.</span>
 
 <span class="sd">    Gets all modules starting from the top folder given as root_folder.</span>
 <span class="sd">    Starts by searching for all sub folders of the root folder,</span>
@@ -726,23 +736,10 @@ Utrecht University within the Software Project course.
     <span class="n">component_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component_root</span><span class="p">)</span>
 
-    <span class="c1"># Find all valid sub folders (dir name doesn&#39;t start with</span>
+    <span class="c1"># Find all valid sub folders (dir name doesn&#39;t start with.</span>
     <span class="c1"># &#39;.&#39; or &#39;_&#39;, starting at the root_folder.</span>
     <span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">root_folder</span><span class="p">]</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
-        <span class="n">current_folder</span> <span class="o">=</span> <span class="n">folders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-
-        <span class="c1"># Find all folders/directories in current folder, add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
-        <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">current_folder</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
-                <span class="k">continue</span>
-
-            <span class="n">folder_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_folder</span><span class="p">,</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-            <span class="n">folders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder_name</span><span class="p">)</span>
-
-        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">add_submodule_to_folders</span><span class="p">(</span><span class="n">folders</span><span class="p">)</span>
 
     <span class="n">includes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
@@ -760,12 +757,12 @@ Utrecht University within the Software Project course.
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">imported_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
 
-                <span class="c1"># Get included modules from the __all__ attribute,</span>
-                <span class="c1"># module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
+                <span class="c1"># Get included modules from the __all__ attribute.</span>
+                <span class="c1"># Module excluded if it isn&#39;t inside the __all__ attribute if the __init__.py has an __all__ attribute.</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">):</span>
                     <span class="n">all_included</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imported_module</span><span class="p">,</span> <span class="s1">&#39;__all__&#39;</span><span class="p">)</span>
                     <span class="n">includes</span><span class="p">[</span><span class="n">module_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_included</span>
-            <span class="c1"># Package cannot be imported</span>
+            <span class="c1"># Package cannot be imported.</span>
             <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Module path </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s1"> with import </span><span class="si">{</span><span class="n">import_path</span><span class="si">}</span><span class="s1"> throws </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span>
                                 <span class="s1">&#39;Most likely the __init__.py contains imports or code with side-effects.</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -783,7 +780,7 @@ Utrecht University within the Software Project course.
 
             <span class="c1"># Check if module is included.</span>
             <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">includes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">includes</span><span class="p">:</span>
                 <span class="c1"># Module excluded if present in __all__ attribute within __init__.py file.</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">module_path</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">module_path</span> <span class="ow">and</span> <span class="n">module</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">includes</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
                     <span class="n">include</span> <span class="o">=</span> <span class="kc">False</span>
@@ -799,8 +796,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Gets all modules starting from the top folder,
-excludes Python modules that are deemed as hidden.</p>
+            <div class="docstring"><p>Gets all modules starting from the top folder, excludes Python modules that are deemed as hidden.</p>
 
 <p>Gets all modules starting from the top folder given as root_folder.
 Starts by searching for all sub folders of the root folder,
@@ -818,6 +814,51 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
 <blockquote>
   <p>list[str]: list of all Python modules located in root_folder and its sub folders</p>
 </blockquote>
+</div>
+
+
+                </section>
+                <section id="add_submodule_to_folders">
+                            <div class="attr function"><a class="headerlink" href="#add_submodule_to_folders">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">add_submodule_to_folders</span><span class="signature">(folders)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">add_submodule_to_folders</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the submodules recursively to the folder.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        folders ([str]): Folders that get.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
+        <span class="n">current_folder</span> <span class="o">=</span> <span class="n">folders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="c1"># Find all folders/directories in current folder, add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
+        <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">current_folder</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">folder_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_folder</span><span class="p">,</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="n">folders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">folder_name</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Add the submodules recursively to the folder.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>folders ([str]):</strong>  Folders that get.</li>
+</ul>
 </div>
 
 
@@ -1023,7 +1064,7 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
 <span class="sd">    Returns:</span>
 <span class="sd">        [str]: modules that are mocked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>
+    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
 
     <span class="n">mocked</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -1079,8 +1120,7 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">to_tree</span><span class="p">(</span><span class="n">modules</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Turn a list of modules into a dictionary representing a tree</span>
-<span class="sd">    which gets turned into a JSON object by Jinja2.</span>
+    <span class="sd">&quot;&quot;&quot;Turn a list of modules into a dictionary representing a tree which gets turned into a JSON object by Jinja2.</span>
 
 <span class="sd">    The tree dictionary contains a dictionary for each package/module.</span>
 <span class="sd">    A module has an empty dictionary and packages leading up to</span>
@@ -1106,8 +1146,7 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
 
         </details>
 
-            <div class="docstring"><p>Turn a list of modules into a dictionary representing a tree
-which gets turned into a JSON object by Jinja2.</p>
+            <div class="docstring"><p>Turn a list of modules into a dictionary representing a tree which gets turned into a JSON object by Jinja2.</p>
 
 <p>The tree dictionary contains a dictionary for each package/module.
 A module has an empty dictionary and packages leading up to

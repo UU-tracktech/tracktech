@@ -96,7 +96,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -112,8 +111,8 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Abstract representation of objects that are tracked in the processors.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        identifier: An int that serves as the unique identifier to this object.</span>
-<span class="sd">        feature_map: A json which contains the features of this object, should be sent to all processors.</span>
+<span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
+<span class="sd">        feature_map (json): Contains the features of this object, should be sent to all processors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -139,7 +138,11 @@ Utrecht University within the Software Project course.
         <span class="k">del</span> <span class="n">objects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">log_spotting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Writes a spotting of this object to a log file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Writes a spotting of this object to a log file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            processor_id (int): Identifier of the processor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
             <span class="s2">&quot;timeStamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> | %H:%M:%S&quot;</span><span class="p">),</span>
@@ -150,8 +153,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">start_tracking_timeout_monitoring</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Starts a thread which monitors all objects currently being tracked and</span>
-<span class="sd">    makes sure they are no longer tracked after a given timeout</span>
+    <span class="sd">&quot;&quot;&quot;Starts a thread which monitors all objects currently being tracked and removes them after the timeout.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timeout (int):</span>
@@ -159,30 +161,29 @@ Utrecht University within the Software Project course.
 <span class="sd">        event_loop (AbstractEventLoop):</span>
 <span class="sd">            The event loop that should be used inside the thread</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">set_event_loop_and_start_tracking_monitoring_timout</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span><span class="n">event_loop</span><span class="p">,))</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">set_event_loop_and_start_tracking_monitoring_timout</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">,))</span>
     <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">set_event_loop_and_start_tracking_monitoring_timout</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sets the event loop in this thread and starts the timeout monitoring loop</span>
+    <span class="sd">&quot;&quot;&quot;Sets the event loop in this thread and starts the timeout monitoring loop.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timeout (int):</span>
-<span class="sd">            The time in seconds after which a tracking object should no longer be tracked</span>
+<span class="sd">            The time in seconds after which a tracking object should no longer be tracked.</span>
 <span class="sd">        event_loop (AbstractEventLoop):</span>
-<span class="sd">            The event loop that should be used inside the thread</span>
-
+<span class="sd">            The event loop that should be used inside the thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">event_loop</span><span class="p">)</span>
     <span class="n">monitor_tracking_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">monitor_tracking_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Checks all objects and deletes those that have and expired lifetime</span>
+    <span class="sd">&quot;&quot;&quot;Checks all objects and deletes those that have and expired lifetime.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timeout (int):</span>
-<span class="sd">            The time in seconds after which a tracking object should no longer be tracked</span>
+<span class="sd">            The time in seconds after which a tracking object should no longer be tracked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timeout_border</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
     <span class="n">delete_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -235,8 +236,8 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Abstract representation of objects that are tracked in the processors.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        identifier: An int that serves as the unique identifier to this object.</span>
-<span class="sd">        feature_map: A json which contains the features of this object, should be sent to all processors.</span>
+<span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
+<span class="sd">        feature_map (json): Contains the features of this object, should be sent to all processors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -262,7 +263,11 @@ Utrecht University within the Software Project course.
         <span class="k">del</span> <span class="n">objects</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">log_spotting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Writes a spotting of this object to a log file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Writes a spotting of this object to a log file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            processor_id (int): Identifier of the processor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
             <span class="s2">&quot;timeStamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> | %H:%M:%S&quot;</span><span class="p">),</span>
@@ -279,8 +284,8 @@ Utrecht University within the Software Project course.
 <h6 id="attributes">Attributes</h6>
 
 <ul>
-<li><strong>identifier:</strong>  An int that serves as the unique identifier to this object.</li>
-<li><strong>feature_map:</strong>  A json which contains the features of this object, should be sent to all processors.</li>
+<li><strong>identifier (int):</strong>  Serves as the unique identifier to this object.</li>
+<li><strong>feature_map (json):</strong>  Contains the features of this object, should be sent to all processors.</li>
 </ul>
 </div>
 
@@ -377,7 +382,11 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">log_spotting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processor_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Writes a spotting of this object to a log file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Writes a spotting of this object to a log file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            processor_id (int): Identifier of the processor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
             <span class="s2">&quot;timeStamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> | %H:%M:%S&quot;</span><span class="p">),</span>
@@ -389,7 +398,13 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Writes a spotting of this object to a log file</p>
+            <div class="docstring"><p>Writes a spotting of this object to a log file.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>processor_id (int):</strong>  Identifier of the processor</li>
+</ul>
 </div>
 
 
@@ -406,8 +421,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">start_tracking_timeout_monitoring</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Starts a thread which monitors all objects currently being tracked and</span>
-<span class="sd">    makes sure they are no longer tracked after a given timeout</span>
+    <span class="sd">&quot;&quot;&quot;Starts a thread which monitors all objects currently being tracked and removes them after the timeout.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timeout (int):</span>
@@ -415,14 +429,13 @@ Utrecht University within the Software Project course.
 <span class="sd">        event_loop (AbstractEventLoop):</span>
 <span class="sd">            The event loop that should be used inside the thread</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">set_event_loop_and_start_tracking_monitoring_timout</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span><span class="n">event_loop</span><span class="p">,))</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">set_event_loop_and_start_tracking_monitoring_timout</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">,))</span>
     <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Starts a thread which monitors all objects currently being tracked and
-makes sure they are no longer tracked after a given timeout</p>
+            <div class="docstring"><p>Starts a thread which monitors all objects currently being tracked and removes them after the timeout.</p>
 
 <h6 id="args">Args</h6>
 
@@ -445,14 +458,13 @@ makes sure they are no longer tracked after a given timeout</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">set_event_loop_and_start_tracking_monitoring_timout</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sets the event loop in this thread and starts the timeout monitoring loop</span>
+    <span class="sd">&quot;&quot;&quot;Sets the event loop in this thread and starts the timeout monitoring loop.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timeout (int):</span>
-<span class="sd">            The time in seconds after which a tracking object should no longer be tracked</span>
+<span class="sd">            The time in seconds after which a tracking object should no longer be tracked.</span>
 <span class="sd">        event_loop (AbstractEventLoop):</span>
-<span class="sd">            The event loop that should be used inside the thread</span>
-
+<span class="sd">            The event loop that should be used inside the thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">event_loop</span><span class="p">)</span>
     <span class="n">monitor_tracking_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
@@ -460,13 +472,13 @@ makes sure they are no longer tracked after a given timeout</p>
 
         </details>
 
-            <div class="docstring"><p>Sets the event loop in this thread and starts the timeout monitoring loop</p>
+            <div class="docstring"><p>Sets the event loop in this thread and starts the timeout monitoring loop.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>timeout (int):</strong>  The time in seconds after which a tracking object should no longer be tracked</li>
-<li><strong>event_loop (AbstractEventLoop):</strong>  The event loop that should be used inside the thread</li>
+<li><strong>timeout (int):</strong>  The time in seconds after which a tracking object should no longer be tracked.</li>
+<li><strong>event_loop (AbstractEventLoop):</strong>  The event loop that should be used inside the thread.</li>
 </ul>
 </div>
 
@@ -483,11 +495,11 @@ makes sure they are no longer tracked after a given timeout</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">monitor_tracking_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Checks all objects and deletes those that have and expired lifetime</span>
+    <span class="sd">&quot;&quot;&quot;Checks all objects and deletes those that have and expired lifetime.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        timeout (int):</span>
-<span class="sd">            The time in seconds after which a tracking object should no longer be tracked</span>
+<span class="sd">            The time in seconds after which a tracking object should no longer be tracked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timeout_border</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
     <span class="n">delete_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -511,12 +523,12 @@ makes sure they are no longer tracked after a given timeout</p>
 
         </details>
 
-            <div class="docstring"><p>Checks all objects and deletes those that have and expired lifetime</p>
+            <div class="docstring"><p>Checks all objects and deletes those that have and expired lifetime.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>timeout (int):</strong>  The time in seconds after which a tracking object should no longer be tracked</li>
+<li><strong>timeout (int):</strong>  The time in seconds after which a tracking object should no longer be tracked.</li>
 </ul>
 </div>
 

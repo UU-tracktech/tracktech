@@ -81,27 +81,25 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;logs.log&#39;</span><span class="p">,</span>
                     <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> | </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
                     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Writes a general message to the log</span>
+    <span class="sd">&quot;&quot;&quot;Writes a general message to the log.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        message (string):</span>
 <span class="sd">            The message to be logged.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
@@ -114,12 +112,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            Url path where this request was made.</span>
 <span class="sd">        ip_address (string):</span>
 <span class="sd">            Ip address where the message was sent from.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Received message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
@@ -132,12 +127,9 @@ Utrecht University within the Software Project course.
 <span class="sd">                Url path where this request was made.</span>
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address where the message was sent to.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Sent message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">log_connect</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
@@ -148,12 +140,9 @@ Utrecht University within the Software Project course.
 <span class="sd">                Url path where this connection was made.</span>
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket connected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">log_disconnect</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
@@ -164,30 +153,24 @@ Utrecht University within the Software Project course.
 <span class="sd">                Url path where this connection was stopped.</span>
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket disconnected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">log_error</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Logs an error.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            location (string):</span>
-<span class="sd">                Url path where this error was handled.</span>
-<span class="sd">            error (string):</span>
-<span class="sd">                The error that was handled.</span>
-<span class="sd">            ip_address (string):</span>
-<span class="sd">                Ip address of the source of the error.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
+<span class="sd">    Args:</span>
+<span class="sd">        location (string):</span>
+<span class="sd">            Url path where this error was handled.</span>
+<span class="sd">        error (string):</span>
+<span class="sd">            The error that was handled.</span>
+<span class="sd">        ip_address (string):</span>
+<span class="sd">            Ip address of the source of the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -204,33 +187,24 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Writes a general message to the log</span>
+    <span class="sd">&quot;&quot;&quot;Writes a general message to the log.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        message (string):</span>
 <span class="sd">            The message to be logged.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Writes a general message to the log</p>
+            <div class="docstring"><p>Writes a general message to the log.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
 <li><strong>message (string):</strong>  The message to be logged.</li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -255,12 +229,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            Url path where this request was made.</span>
 <span class="sd">        ip_address (string):</span>
 <span class="sd">            Ip address where the message was sent from.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Received message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -274,12 +245,6 @@ Utrecht University within the Software Project course.
 <li><strong>location (string):</strong>  Url path where this request was made.</li>
 <li><strong>ip_address (string):</strong>  Ip address where the message was sent from.</li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
 </div>
 
 
@@ -304,32 +269,22 @@ Utrecht University within the Software Project course.
 <span class="sd">                Url path where this request was made.</span>
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address where the message was sent to.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Sent message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Logs a message that was sent.</p>
 
-<pre><code>Args:
-    message (string):
-        The message that was sent.
-    location (string):
-        Url path where this request was made.
-    ip_address (string):
-        Ip address where the message was sent to.
-</code></pre>
+<h6 id="args">Args</h6>
 
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
+<ul>
+<li><strong>message (string):</strong>  The message that was sent.</li>
+<li><strong>location (string):</strong>  Url path where this request was made.</li>
+<li><strong>ip_address (string):</strong>  Ip address where the message was sent to.</li>
+</ul>
 </div>
 
 
@@ -352,30 +307,21 @@ Utrecht University within the Software Project course.
 <span class="sd">                Url path where this connection was made.</span>
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket connected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Logs a new websocket connection.</p>
 
-<pre><code>Args:
-    location (string):
-        Url path where this connection was made.
-    ip_address (string):
-        Ip address of the connection origin.
-</code></pre>
+<h6 id="args">Args</h6>
 
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
+<ul>
+<li><strong>location (string):</strong>  Url path where this connection was made.</li>
+<li><strong>ip_address (string):</strong>  Ip address of the connection origin.</li>
+</ul>
 </div>
 
 
@@ -398,30 +344,21 @@ Utrecht University within the Software Project course.
 <span class="sd">                Url path where this connection was stopped.</span>
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket disconnected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Logs a new websocket connection.</p>
 
-<pre><code>Args:
-    location (string):
-        Url path where this connection was stopped.
-    ip_address (string):
-        Ip address of the connection origin.
-</code></pre>
+<h6 id="args">Args</h6>
 
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
+<ul>
+<li><strong>location (string):</strong>  Url path where this connection was stopped.</li>
+<li><strong>ip_address (string):</strong>  Ip address of the connection origin.</li>
+</ul>
 </div>
 
 
@@ -439,39 +376,29 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">log_error</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Logs an error.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            location (string):</span>
-<span class="sd">                Url path where this error was handled.</span>
-<span class="sd">            error (string):</span>
-<span class="sd">                The error that was handled.</span>
-<span class="sd">            ip_address (string):</span>
-<span class="sd">                Ip address of the source of the error.</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
+<span class="sd">    Args:</span>
+<span class="sd">        location (string):</span>
+<span class="sd">            Url path where this error was handled.</span>
+<span class="sd">        error (string):</span>
+<span class="sd">            The error that was handled.</span>
+<span class="sd">        ip_address (string):</span>
+<span class="sd">            Ip address of the source of the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Logs an error.</p>
 
-<pre><code>Args:
-    location (string):
-        Url path where this error was handled.
-    error (string):
-        The error that was handled.
-    ip_address (string):
-        Ip address of the source of the error.
-</code></pre>
+<h6 id="args">Args</h6>
 
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>None</p>
-</blockquote>
+<ul>
+<li><strong>location (string):</strong>  Url path where this error was handled.</li>
+<li><strong>error (string):</strong>  The error that was handled.</li>
+<li><strong>ip_address (string):</strong>  Ip address of the source of the error.</li>
+</ul>
 </div>
 
 

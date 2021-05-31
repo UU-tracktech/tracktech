@@ -58,7 +58,7 @@
                     <h1 class="modulename">
 <a href="./../../../../processor.html">processor</a>.<a href="./../../../scheduling.html">scheduling</a>.<a href="./../../component.html">component</a>.<a href="./../example_components.html">example_components</a>.output_component    </h1>
 
-                        <div class="docstring"><p>Example component that points to other components and has output</p>
+                        <div class="docstring"><p>Example component that points to other components and has output.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -67,12 +67,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Example component that points to other components and has output</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Example component that points to other components and has output.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
 
@@ -82,16 +81,16 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Contains a function to handle the output that falls outside of the scheduler.</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        func: function to handle outputs send outside of the schedulers graph.</span>
-<span class="sd">        out: contains output, only here for example_plan.py to retrieve output.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        func (Function): function to handle outputs send outside of the schedulers graph.</span>
+<span class="sd">        out (object): contains output, only here for example_plan.py to retrieve output.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inits IntermediaryOutputComponent with output handling function.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            func: function to handle outputs send outside of the schedulers graph.</span>
+<span class="sd">            func (Function): function to handle outputs send outside of the schedulers graph.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
 
@@ -101,6 +100,9 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Example function with single argument that can be returned by execute_component().</span>
 
 <span class="sd">        Outputs to object outside of scheduler and there is no next layer to pass objects to.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            obj (object): Any argument can get used by the work function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            object: output of function that processed self.out.</span>
@@ -133,16 +135,16 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Contains a function to handle the output that falls outside of the scheduler.</span>
 
-<span class="sd">    Arguments:</span>
-<span class="sd">        func: function to handle outputs send outside of the schedulers graph.</span>
-<span class="sd">        out: contains output, only here for example_plan.py to retrieve output.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        func (Function): function to handle outputs send outside of the schedulers graph.</span>
+<span class="sd">        out (object): contains output, only here for example_plan.py to retrieve output.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inits IntermediaryOutputComponent with output handling function.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            func: function to handle outputs send outside of the schedulers graph.</span>
+<span class="sd">            func (Function): function to handle outputs send outside of the schedulers graph.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
 
@@ -152,6 +154,9 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Example function with single argument that can be returned by execute_component().</span>
 
 <span class="sd">        Outputs to object outside of scheduler and there is no next layer to pass objects to.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            obj (object): Any argument can get used by the work function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            object: output of function that processed self.out.</span>
@@ -171,12 +176,12 @@ Utrecht University within the Software Project course.
 
 <p>Contains a function to handle the output that falls outside of the scheduler.</p>
 
-<h6 id="arguments">Arguments</h6>
+<h6 id="attributes">Attributes</h6>
 
-<blockquote>
-  <p>func: function to handle outputs send outside of the schedulers graph.
-  out: contains output, only here for example_plan.py to retrieve output.</p>
-</blockquote>
+<ul>
+<li><strong>func (Function):</strong>  function to handle outputs send outside of the schedulers graph.</li>
+<li><strong>out (object):</strong>  contains output, only here for example_plan.py to retrieve output.</li>
+</ul>
 </div>
 
 
@@ -193,7 +198,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Inits IntermediaryOutputComponent with output handling function.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            func: function to handle outputs send outside of the schedulers graph.</span>
+<span class="sd">            func (Function): function to handle outputs send outside of the schedulers graph.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
 
@@ -207,7 +212,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>func:</strong>  function to handle outputs send outside of the schedulers graph.</li>
+<li><strong>func (Function):</strong>  function to handle outputs send outside of the schedulers graph.</li>
 </ul>
 </div>
 
@@ -228,6 +233,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Outputs to object outside of scheduler and there is no next layer to pass objects to.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            obj (object): Any argument can get used by the work function.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            object: output of function that processed self.out.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -241,6 +249,12 @@ Utrecht University within the Software Project course.
             <div class="docstring"><p>Example function with single argument that can be returned by execute_component().</p>
 
 <p>Outputs to object outside of scheduler and there is no next layer to pass objects to.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>obj (object):</strong>  Any argument can get used by the work function.</li>
+</ul>
 
 <h6 id="returns">Returns</h6>
 

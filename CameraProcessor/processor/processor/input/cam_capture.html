@@ -61,7 +61,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../input.html">input</a>.cam_capture    </h1>
 
-                        <div class="docstring"><p>Contains camera capture class</p>
+                        <div class="docstring"><p>Contains camera capture class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -70,12 +70,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains camera capture class</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains camera capture class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
@@ -91,7 +90,6 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        cap (cv2.VideoCapture): Capture that serves webcam frame one by one.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Opens capture that connects to webcam.</span>
@@ -103,21 +101,19 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks if webcam is still opened.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Boolean whether webcam is still on.</span>
+<span class="sd">            bool: whether webcam is still on.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Releases webcam</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Releases webcam.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the capture object.</span>
 
-<span class="sd">        Returns ():</span>
-<span class="sd">            Boolean whether a next frame was found</span>
-<span class="sd">            Next webcam frame.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, numpy.ndarray: Whether a next frame was found and its frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span><span class="p">,</span> <span class="n">FrameObj</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
@@ -142,7 +138,6 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        cap (cv2.VideoCapture): Capture that serves webcam frame one by one.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Opens capture that connects to webcam.</span>
@@ -154,21 +149,19 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks if webcam is still opened.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Boolean whether webcam is still on.</span>
+<span class="sd">            bool: whether webcam is still on.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Releases webcam</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Releases webcam.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the capture object.</span>
 
-<span class="sd">        Returns ():</span>
-<span class="sd">            Boolean whether a next frame was found</span>
-<span class="sd">            Next webcam frame.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, numpy.ndarray: Whether a next frame was found and its frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span><span class="p">,</span> <span class="n">FrameObj</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
@@ -223,7 +216,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks if webcam is still opened.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Boolean whether webcam is still on.</span>
+<span class="sd">            bool: whether webcam is still on.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">()</span>
 </pre></div>
@@ -235,7 +228,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Boolean whether webcam is still on.</p>
+  <p>bool: whether webcam is still on.</p>
 </blockquote>
 </div>
 
@@ -252,14 +245,13 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Releases webcam</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Releases webcam.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Releases webcam</p>
+            <div class="docstring"><p>Releases webcam.</p>
 </div>
 
 
@@ -277,9 +269,8 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the next frame from the capture object.</span>
 
-<span class="sd">        Returns ():</span>
-<span class="sd">            Boolean whether a next frame was found</span>
-<span class="sd">            Next webcam frame.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, numpy.ndarray: Whether a next frame was found and its frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span><span class="p">,</span> <span class="n">FrameObj</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
@@ -289,9 +280,11 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Gets the next frame from the capture object.</p>
 
-<p>Returns ():
-    Boolean whether a next frame was found
-    Next webcam frame.</p>
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool, numpy.ndarray: Whether a next frame was found and its frame.</p>
+</blockquote>
 </div>
 
 

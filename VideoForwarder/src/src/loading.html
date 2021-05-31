@@ -64,7 +64,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.loading    </h1>
 
-                        <div class="docstring"><p>Helper methods to load settings</p>
+                        <div class="docstring"><p>Helper methods to load settings.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -73,12 +73,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Helper methods to load settings</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Helper methods to load settings.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">ssl</span>
@@ -91,19 +90,19 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">create_camera</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Creat the camera using the URL and whether the camera has audio.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        A camera object containing the camera url and if it has any audio</span>
+<span class="sd">        Camera: A camera object containing the camera url and if it has any audio</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Camera</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_URL&quot;</span><span class="p">],</span> <span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_AUDIO&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">create_stream_options</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Create the stream options for the camera.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        StreamOptions: Load the stream options used for the conversion</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">StreamOptions</span><span class="p">(</span>
         <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEGMENT_SIZE&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
@@ -116,7 +115,8 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">get_remove_delay</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the delay after which conversion process is stopped.</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        float: How long the stream has no requests before stopping the conversion in seconds</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -124,35 +124,39 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">get_timeout_delay</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the delay before the stream will become inactive.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        int: The maximum amount of seconds we will wait with removing stream files after stopping the conversion</span>
+<span class="sd">        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TIMEOUT_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;30&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_wait_delay</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the delay to wait for from the environment.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        int: How long we will wait for the conversion process to stop before deleting the files</span>
+<span class="sd">        int: Waiting time between timeout and deleting files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOVE_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;60&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;WAIT_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;60&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">create_ssl_options</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Create the context with the given ssl options.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        ssl.SSLContext: an ssl_context to be used by the application</span>
+<span class="sd">        ssl.SSLContext: an ssl_context to be used by the application.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Load environment variable path of certificate and its key</span>
+    <span class="c1"># Load environment variable path of certificate and its key.</span>
     <span class="n">cert</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_CERT&#39;</span><span class="p">)</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_KEY&#39;</span><span class="p">)</span>
 
-    <span class="c1"># If one if missing, return None and do not use ssl</span>
+    <span class="c1"># If one if missing, return None and do not use ssl.</span>
     <span class="k">if</span> <span class="n">cert</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="c1"># Create the ssl context.</span>
     <span class="n">ssl_ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">ssl</span><span class="o">.</span><span class="n">Purpose</span><span class="o">.</span><span class="n">CLIENT_AUTH</span><span class="p">)</span>
     <span class="n">ssl_ctx</span><span class="o">.</span><span class="n">load_cert_chain</span><span class="p">(</span><span class="n">cert</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
@@ -160,15 +164,20 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">create_authenticator</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Creates the authenticator for the stream.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        Auth: Auth object containing used to validate tokens</span>
+<span class="sd">        Auth: Auth object containing used to validate tokens.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#</span>
+    <span class="c1"># Get variables from the environment.</span>
     <span class="n">public_key</span><span class="p">,</span> <span class="n">audience</span><span class="p">,</span> <span class="n">client_role</span> <span class="o">=</span>\
         <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PUBLIC_KEY&#39;</span><span class="p">),</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;AUDIENCE&#39;</span><span class="p">),</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CLIENT_ROLE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Environment variables not set, so return empty.</span>
     <span class="k">if</span> <span class="n">public_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">audience</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">client_role</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Give back the Authentication object.</span>
     <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Auth</span><span class="p">(</span>
         <span class="n">public_key_path</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
@@ -192,19 +201,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_camera</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Creat the camera using the URL and whether the camera has audio.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        A camera object containing the camera url and if it has any audio</span>
+<span class="sd">        Camera: A camera object containing the camera url and if it has any audio</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Camera</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_URL&quot;</span><span class="p">],</span> <span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_AUDIO&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Creat the camera using the URL and whether the camera has audio.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A camera object containing the camera url and if it has any audio</p>
+  <p>Camera: A camera object containing the camera url and if it has any audio</p>
 </blockquote>
 </div>
 
@@ -221,11 +233,10 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_stream_options</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Create the stream options for the camera.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        StreamOptions: Load the stream options used for the conversion</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">StreamOptions</span><span class="p">(</span>
         <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEGMENT_SIZE&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
@@ -239,7 +250,9 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Create the stream options for the camera.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
   <p>StreamOptions: Load the stream options used for the conversion</p>
@@ -259,7 +272,8 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_remove_delay</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the delay after which conversion process is stopped.</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        float: How long the stream has no requests before stopping the conversion in seconds</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -268,7 +282,9 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Get the delay after which conversion process is stopped.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
   <p>float: How long the stream has no requests before stopping the conversion in seconds</p>
@@ -288,19 +304,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_timeout_delay</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the delay before the stream will become inactive.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        int: The maximum amount of seconds we will wait with removing stream files after stopping the conversion</span>
+<span class="sd">        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TIMEOUT_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;30&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Get the delay before the stream will become inactive.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>int: The maximum amount of seconds we will wait with removing stream files after stopping the conversion</p>
+  <p>int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion</p>
 </blockquote>
 </div>
 
@@ -317,19 +336,22 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_wait_delay</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get the delay to wait for from the environment.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        int: How long we will wait for the conversion process to stop before deleting the files</span>
+<span class="sd">        int: Waiting time between timeout and deleting files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOVE_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;60&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;WAIT_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;60&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Get the delay to wait for from the environment.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>int: How long we will wait for the conversion process to stop before deleting the files</p>
+  <p>int: Waiting time between timeout and deleting files.</p>
 </blockquote>
 </div>
 
@@ -346,19 +368,21 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_ssl_options</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Create the context with the given ssl options.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        ssl.SSLContext: an ssl_context to be used by the application</span>
+<span class="sd">        ssl.SSLContext: an ssl_context to be used by the application.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Load environment variable path of certificate and its key</span>
+    <span class="c1"># Load environment variable path of certificate and its key.</span>
     <span class="n">cert</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_CERT&#39;</span><span class="p">)</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_KEY&#39;</span><span class="p">)</span>
 
-    <span class="c1"># If one if missing, return None and do not use ssl</span>
+    <span class="c1"># If one if missing, return None and do not use ssl.</span>
     <span class="k">if</span> <span class="n">cert</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="c1"># Create the ssl context.</span>
     <span class="n">ssl_ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">ssl</span><span class="o">.</span><span class="n">Purpose</span><span class="o">.</span><span class="n">CLIENT_AUTH</span><span class="p">)</span>
     <span class="n">ssl_ctx</span><span class="o">.</span><span class="n">load_cert_chain</span><span class="p">(</span><span class="n">cert</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
@@ -367,10 +391,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Create the context with the given ssl options.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>ssl.SSLContext: an ssl_context to be used by the application</p>
+  <p>ssl.SSLContext: an ssl_context to be used by the application.</p>
 </blockquote>
 </div>
 
@@ -387,15 +413,20 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_authenticator</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Creates the authenticator for the stream.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        Auth: Auth object containing used to validate tokens</span>
+<span class="sd">        Auth: Auth object containing used to validate tokens.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#</span>
+    <span class="c1"># Get variables from the environment.</span>
     <span class="n">public_key</span><span class="p">,</span> <span class="n">audience</span><span class="p">,</span> <span class="n">client_role</span> <span class="o">=</span>\
         <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PUBLIC_KEY&#39;</span><span class="p">),</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;AUDIENCE&#39;</span><span class="p">),</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CLIENT_ROLE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Environment variables not set, so return empty.</span>
     <span class="k">if</span> <span class="n">public_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">audience</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">client_role</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Give back the Authentication object.</span>
     <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Auth</span><span class="p">(</span>
         <span class="n">public_key_path</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
@@ -407,10 +438,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><h6 id="returns">Returns</h6>
+            <div class="docstring"><p>Creates the authenticator for the stream.</p>
+
+<h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Auth: Auth object containing used to validate tokens</p>
+  <p>Auth: Auth object containing used to validate tokens.</p>
 </blockquote>
 </div>
 

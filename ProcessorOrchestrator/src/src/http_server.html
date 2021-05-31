@@ -64,7 +64,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -76,16 +75,15 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">create_http_servers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates http server and https server if ssl options are given in the environment</span>
+    <span class="sd">&quot;&quot;&quot;Creates http server and https server if ssl options are given in the environment.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        app(tornado.web.Application): the web application to use when creating the servers.</span>
+<span class="sd">        app (tornado.web.Application): the web application to use when creating the servers.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        The one or two created tornado http servers</span>
-
+<span class="sd">        HTTPServer, HTTPServer: The one or two created tornado http servers, second one containing ssl options.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get ssl ready, if provided in the environment variables</span>
+    <span class="c1"># Get ssl ready, if provided in the environment variables.</span>
     <span class="n">cert</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_CERT&#39;</span><span class="p">)</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_KEY&#39;</span><span class="p">)</span>
     <span class="n">use_tls</span> <span class="o">=</span> <span class="n">cert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -93,7 +91,7 @@ Utrecht University within the Software Project course.
     <span class="n">https_server</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">use_tls</span><span class="p">:</span>
-        <span class="c1"># Create a ssl context</span>
+        <span class="c1"># Create a ssl context.</span>
         <span class="n">ssl_ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">ssl</span><span class="o">.</span><span class="n">Purpose</span><span class="o">.</span><span class="n">CLIENT_AUTH</span><span class="p">)</span>
         <span class="n">ssl_ctx</span><span class="o">.</span><span class="n">load_cert_chain</span><span class="p">(</span><span class="n">cert</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
@@ -102,7 +100,7 @@ Utrecht University within the Software Project course.
         <span class="n">https_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;listening over https&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Create a http server</span>
+    <span class="c1"># Create a http server.</span>
     <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
     <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;listening over http&#39;</span><span class="p">)</span>
@@ -124,16 +122,15 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_http_servers</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates http server and https server if ssl options are given in the environment</span>
+    <span class="sd">&quot;&quot;&quot;Creates http server and https server if ssl options are given in the environment.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        app(tornado.web.Application): the web application to use when creating the servers.</span>
+<span class="sd">        app (tornado.web.Application): the web application to use when creating the servers.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        The one or two created tornado http servers</span>
-
+<span class="sd">        HTTPServer, HTTPServer: The one or two created tornado http servers, second one containing ssl options.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get ssl ready, if provided in the environment variables</span>
+    <span class="c1"># Get ssl ready, if provided in the environment variables.</span>
     <span class="n">cert</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_CERT&#39;</span><span class="p">)</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SSL_KEY&#39;</span><span class="p">)</span>
     <span class="n">use_tls</span> <span class="o">=</span> <span class="n">cert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -141,7 +138,7 @@ Utrecht University within the Software Project course.
     <span class="n">https_server</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">use_tls</span><span class="p">:</span>
-        <span class="c1"># Create a ssl context</span>
+        <span class="c1"># Create a ssl context.</span>
         <span class="n">ssl_ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">ssl</span><span class="o">.</span><span class="n">Purpose</span><span class="o">.</span><span class="n">CLIENT_AUTH</span><span class="p">)</span>
         <span class="n">ssl_ctx</span><span class="o">.</span><span class="n">load_cert_chain</span><span class="p">(</span><span class="n">cert</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
@@ -150,7 +147,7 @@ Utrecht University within the Software Project course.
         <span class="n">https_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;listening over https&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Create a http server</span>
+    <span class="c1"># Create a http server.</span>
     <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
     <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;listening over http&#39;</span><span class="p">)</span>
@@ -160,18 +157,18 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Creates http server and https server if ssl options are given in the environment</p>
+            <div class="docstring"><p>Creates http server and https server if ssl options are given in the environment.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>app(tornado.web.Application):</strong>  the web application to use when creating the servers.</li>
+<li><strong>app (tornado.web.Application):</strong>  the web application to use when creating the servers.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>The one or two created tornado http servers</p>
+  <p>HTTPServer, HTTPServer: The one or two created tornado http servers, second one containing ssl options.</p>
 </blockquote>
 </div>
 

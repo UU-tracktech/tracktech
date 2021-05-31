@@ -46,7 +46,7 @@
                     <h1 class="modulename">
 <a href="./../../../processor.html">processor</a>.<a href="./../../scheduling.html">scheduling</a>.<a href="./../plan.html">plan</a>.pipeline_plan    </h1>
 
-                        <div class="docstring"><p>Defines a scheduler plan for the entire pipeline stage to run</p>
+                        <div class="docstring"><p>Defines a scheduler plan for the entire pipeline stage to run.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -55,12 +55,11 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines a scheduler plan for the entire pipeline stage to run</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Defines a scheduler plan for the entire pipeline stage to run.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.node.schedule_node</span> <span class="kn">import</span> <span class="n">ScheduleNode</span>
 
@@ -79,7 +78,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Create a plan using the configuration for the entire pipeline.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        dict: dictionary containing every argument based on name.</span>
+<span class="sd">        plan_args (dict[str, obj]): Dictionary containing every argument based on name.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ScheduleNode: starting node of the plan.</span>
@@ -132,7 +131,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Create a plan using the configuration for the entire pipeline.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        dict: dictionary containing every argument based on name.</span>
+<span class="sd">        plan_args (dict[str, obj]): Dictionary containing every argument based on name.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ScheduleNode: starting node of the plan.</span>
@@ -175,7 +174,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>dict:</strong>  dictionary containing every argument based on name.</li>
+<li><strong>plan_args (dict[str, obj]):</strong>  Dictionary containing every argument based on name.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>

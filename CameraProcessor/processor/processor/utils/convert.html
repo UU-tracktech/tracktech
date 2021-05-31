@@ -26,6 +26,13 @@
 
 
 
+                    <h2>API Documentation</h2>
+                        <ul class="memberlist">
+            <li>
+                    <a class="function" href="#to_buffer_dict">to_buffer_dict</a>
+            </li>
+    </ul>
+
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -53,36 +60,88 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="c1"># def to_buffer_dict(frame_obj, bounding_boxes):</span>
-<span class="c1">#     &quot;&quot;&quot;Turn FrameObj and BoundingBoxes into dictionary usable by frame buffer.</span>
-<span class="c1">#</span>
-<span class="c1">#     Args:</span>
-<span class="c1">#         frame_obj (FrameObj): information object containing the OpenCV frame and timestamp.</span>
-<span class="c1">#         bounding_boxes (BoundingBoxes): information object containing list of bounding boxes.</span>
-<span class="c1">#</span>
-<span class="c1">#     Returns:</span>
-<span class="c1">#         dict: dictionary containing all necessary frame and bounding boxes information for the buffer.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     return {</span>
-<span class="c1">#         &quot;frame&quot;: frame_obj.get_frame(),</span>
-<span class="c1">#         &quot;frameId&quot;: frame_obj.get_timestamp(),</span>
-<span class="c1">#         &quot;boxes&quot;: [</span>
-<span class="c1">#             {</span>
-<span class="c1">#                 &quot;boxId&quot;: bounding_box.get_identifier(),</span>
-<span class="c1">#                 &quot;rect&quot;: bounding_box.get_rectangle()</span>
-<span class="c1">#             }</span>
-<span class="c1">#             for bounding_box in bounding_boxes.get_bounding_boxes()</span>
-<span class="c1">#         ]</span>
-<span class="c1">#     }</span>
+<span class="k">def</span> <span class="nf">to_buffer_dict</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Turn FrameObj and BoundingBoxes into dictionary usable by frame buffer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frame_obj (FrameObj): information object containing the OpenCV frame and timestamp.</span>
+<span class="sd">        bounding_boxes (BoundingBoxes): information object containing list of bounding boxes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: dictionary containing all necessary frame and bounding boxes information for the buffer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;frame&quot;</span><span class="p">:</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(),</span>
+        <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(),</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">(),</span>
+                <span class="s2">&quot;rect&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
 </pre></div>
 
         </details>
 
             </section>
+                <section id="to_buffer_dict">
+                            <div class="attr function"><a class="headerlink" href="#to_buffer_dict">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">to_buffer_dict</span><span class="signature">(frame_obj, bounding_boxes)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">to_buffer_dict</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Turn FrameObj and BoundingBoxes into dictionary usable by frame buffer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frame_obj (FrameObj): information object containing the OpenCV frame and timestamp.</span>
+<span class="sd">        bounding_boxes (BoundingBoxes): information object containing list of bounding boxes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: dictionary containing all necessary frame and bounding boxes information for the buffer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;frame&quot;</span><span class="p">:</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(),</span>
+        <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(),</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">(),</span>
+                <span class="s2">&quot;rect&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Turn FrameObj and BoundingBoxes into dictionary usable by frame buffer.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>frame_obj (FrameObj):</strong>  information object containing the OpenCV frame and timestamp.</li>
+<li><strong>bounding_boxes (BoundingBoxes):</strong>  information object containing list of bounding boxes.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>dict: dictionary containing all necessary frame and bounding boxes information for the buffer.</p>
+</blockquote>
+</div>
+
+
+                </section>
     </main>
 </body>
 </html>
