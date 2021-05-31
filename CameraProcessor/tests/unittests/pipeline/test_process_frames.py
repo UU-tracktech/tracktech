@@ -20,7 +20,6 @@ from tests.unittests.utils.fake_reidentifier import FakeReIdentifier
 from tests.unittests.utils.fake_websocket import FakeWebsocket
 
 
-@pytest.mark.skip("Timeout errors")
 class TestProcessFrames:
     """Tests process_frames.py."""
     def __get_video(self, configs):
