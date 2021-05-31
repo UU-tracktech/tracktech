@@ -22,13 +22,17 @@ jobs:
       - name: Copy linting file into service
         run: docker cp .pylintrc camera-processor_lint_container:/app
       - name: Copy in utility
-        run: |
-          docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
-          docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
-          docker cp utility/copyright_checker.py processor-orchestrator_container:/app/utility/
-          docker cp utility/comment_checker.py processor-orchestrator_container:/app/utility/
-          docker cp utility/docstring_checker.py processor-orchestrator_container:/app/utility/
-          docker cp utility/docstring_content_checker.py processor-orchestrator_container:/app/utility/
+        run: docker cp utility/__init__.py camera-processor_lint_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/pylint_ignore.py camera-processor_lint_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/copyright_checker.py camera-processor_lint_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/comment_checker.py camera-processor_lint_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/docstring_checker.py camera-processor_lint_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/docstring_content_checker.py camera-processor_lint_container:/app/utility/
       - name: Start service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --exit-code-from cameraprocessor
       - name: Stop service

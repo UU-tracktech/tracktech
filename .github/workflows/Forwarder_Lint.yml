@@ -22,13 +22,17 @@ jobs:
       - name: Copy in pylintrc
         run: docker cp .pylintrc video-forwarder_container:/app
       - name: Copy in utility
-        run: |
-          docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
-          docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
-          docker cp utility/copyright_checker.py processor-orchestrator_container:/app/utility/
-          docker cp utility/comment_checker.py processor-orchestrator_container:/app/utility/
-          docker cp utility/docstring_checker.py processor-orchestrator_container:/app/utility/
-          docker cp utility/docstring_content_checker.py processor-orchestrator_container:/app/utility/
+        run: docker cp utility/__init__.py video-forwarder_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/copyright_checker.py video-forwarder_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/comment_checker.py video-forwarder_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/docstring_checker.py video-forwarder_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/docstring_content_checker.py video-forwarder_container:/app/utility/
       - name: Run
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --exit-code-from video-forwarder
       - name: Remove
