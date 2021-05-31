@@ -1,17 +1,16 @@
-"""Contains the bounding box class
+"""Contains the bounding box class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 
 class BoundingBox:
-    """Contains information about a single bounding box.
-    """
+    """Contains information about a single bounding box."""
+
     def __init__(self, identifier, rectangle, classification, certainty, object_id=None):
-        """Inits the bounding box.
+        """Init the bounding box.
 
         Args:
             identifier (int): identifier of bounding box.
@@ -27,7 +26,7 @@ class BoundingBox:
         self.__object_id = object_id
 
     def get_identifier(self):
-        """Gets bounding box identifier.
+        """Get bounding box identifier.
 
         Returns:
             int: identifier of bounding box.
@@ -35,7 +34,7 @@ class BoundingBox:
         return self.__identifier
 
     def get_rectangle(self):
-        """Gets Rectangle.
+        """Get Rectangle.
 
         Returns:
             Rectangle: rectangle composed of bottom right and top left coords.
@@ -51,7 +50,7 @@ class BoundingBox:
         return self.__classification
 
     def get_certainty(self):
-        """Gets certainty/confidence that bounding box is correctly classified.
+        """Get certainty/confidence that bounding box is correctly classified.
 
         Returns:
             float: certainty/confidence of bounding box detection.
@@ -59,18 +58,21 @@ class BoundingBox:
         return self.__certainty
 
     def get_object_id(self):
-        """Gets object id of tracked object depicted by the bounding box (can be None)
+        """Gets object id of tracked object depicted by the bounding box (can be None).
+
         Returns:
             int: certainty/confidence of bounding box detection.
         """
         return self.__object_id
 
     def set_object_id(self, new_id):
-        """ Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked
-        object. Raises ValueError if the box already was assigned to an object.
+        """Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked object.
 
         Args:
-            new_id: The updated object_id of the box
+            new_id (int): The updated object_id of the box.
+
+        Raises:
+            ValueError: if the box already was assigned to an object.
         """
         if self.__object_id is not None:
             raise ValueError("Box already has an object ID")

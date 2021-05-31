@@ -1,9 +1,8 @@
-"""Fixtures and configurations available to utils tests
+"""Fixtures and configurations available to utils tests.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import pytest
 import numpy as np
@@ -22,13 +21,12 @@ IMG_SIZE = 200
 
 @pytest.fixture
 def img():
-    """Fixture for a blank image
+    """Fixture for a blank image.
 
     Returns:
         np.ndarray: a numpy array representing an image, in this case a blank one
-
     """
-    # Create an empty white image
+    # Create an empty white image.
     image = np.zeros((IMG_SIZE, IMG_SIZE, 3), np.uint8)
     image.fill(255)
     return image
@@ -36,10 +34,10 @@ def img():
 
 @pytest.fixture
 def small_frame():
-    """Fixture for a small frame loaded with opencv
+    """Fixture for a small frame loaded with opencv.
 
-    Returns (frame):
-        Opencv frame from test data
+    Returns:
+        np.ndarray: Opencv frame from test data.
     """
     __image_name = f'{root_path}/data/tests/unittests/small_image.jpg'
     return cv2.imread(__image_name)
@@ -47,10 +45,10 @@ def small_frame():
 
 @pytest.fixture
 def large_frame():
-    """Fixture that gets a big frame loaded with opencv
+    """Fixture that gets a big frame loaded with opencv.
 
-    Returns (frame):
-        Opencv frame from test data
+    Returns:
+        np.ndarray: Opencv frame from test data.
     """
     __image_name = f'{root_path}/data/tests/unittests/big_image.jpg'
     return cv2.imread(__image_name)
@@ -58,12 +56,12 @@ def large_frame():
 
 @pytest.fixture
 def bbox():
-    """Fixture for a bounding box
+    """Fixture for an example bounding box.
 
     Returns:
-          BoundingBox: A boundingbox for use in testing
+        BoundingBox: A boundingbox for use in testing.
     """
-    # Create a dummy bounding box
+    # Create a dummy bounding box.
     return BoundingBox(1, Rectangle(round(float(X0 / IMG_SIZE), 1),
                                     round(float(Y0 / IMG_SIZE), 1),
                                     round(float(X1 / IMG_SIZE), 1),
@@ -82,7 +80,9 @@ def bbox():
      }],
     ids=["Detection", "Tracking"])
 def func_text_seed(request):
-    """Fixture for the function, text, and seed
+    """Fixture for the function, text, and seed.
 
+    Args:
+        request ([object]): List of parameters for the fixture
     """
     return request.param
