@@ -1,15 +1,13 @@
-"""Defines node class for scheduler with its connections to other nodes
+"""Defines node class for scheduler with its connections to other nodes.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 
 class INode:
-    """Node interface enforcing the implementation of functions needed
-    by the scheduler and schedule node.
+    """Node interface enforcing the implementation of functions needed by the scheduler and schedule node.
 
     Enforces the implementation of reset(), executable(), execute(notify), and assign(arg, arg_nr).
     """
@@ -19,7 +17,7 @@ class INode:
 
         Raises:
             NotImplementedError: occurs when this method is not overridden
-            to ensure this function is defined.
+                to ensure this function is defined.
         """
         raise NotImplementedError("Function to prepare the node for the next iteration, "
                                   "should also call on children/out nodes if applicable")
@@ -32,7 +30,7 @@ class INode:
 
         Raises:
             NotImplementedError: occurs when this method is not overridden
-            to ensure this function is defined.
+                to ensure this function is defined.
         """
         raise NotImplementedError("Function to indicate if the node can be run isn't implemented")
 

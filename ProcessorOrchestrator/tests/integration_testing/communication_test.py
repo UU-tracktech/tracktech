@@ -185,7 +185,14 @@ async def test_start_tracking_with_image_and_timeout():
 
 
 def assert_start_tracking_with_image(message):
-    """Help method to assert if the start tracking message is as expected, with an image parameter"""
+    """Help method to assert if the start tracking message is as expected, with an image parameter.
+
+    Args:
+        message (str): Json string containing the message.
+
+    Returns:
+        bool: Whether message has been correct.
+    """
     message_json = json.loads(message)
     assert message_json["type"] == "start"
     assert message_json["image"] == "test"

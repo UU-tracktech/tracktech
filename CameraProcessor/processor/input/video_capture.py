@@ -1,9 +1,8 @@
-"""Contains the video capture class
+"""Contains the video capture class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import time
@@ -14,26 +13,26 @@ from processor.data_object.frame_obj import FrameObj
 
 
 class VideoCapture(ICapture):
-    """ Captures video from a video file on the system.
+    """Captures video from a video file on the system.
 
     Attributes:
         cap (cv2.VideoCapture): VideoCapture that reads stream as frames.
         __nr_frames (int): Number of frames of video.
         __current_frame_nr (int): Index number of current frame.
     """
-    # Default path is the path to venice.mp4
+    # Default path is the path to venice.mp4.
     def __init__(self, path):
         """Create a VideoCapture given a path.
 
         Args:
             path (str): path to the video.
         """
-        # Open VideoCapture
+        # Open VideoCapture.
         logging.info(f"Opening video from path: {path}")
         self.cap = cv2.VideoCapture(path)
         logging.info("Successfully opened video file")
 
-        # Frame counter to stop at last frame
+        # Frame counter to stop at last frame.
         self.__nr_frames = self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
         self.__current_frame_nr = 0
         logging.info(f"Video has {self.__nr_frames} frames")
@@ -42,9 +41,9 @@ class VideoCapture(ICapture):
         """Check if the video is still opened.
 
         Returns:
-            A boolean indicating if video is opened.
+            bool: Indicating if video is opened.
         """
-        # Frame is beyond what current frame is
+        # Frame is beyond what current frame is.
         if self.__current_frame_nr >= self.__nr_frames:
             return False
 
