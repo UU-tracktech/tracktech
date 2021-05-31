@@ -8,6 +8,9 @@ torch==1.8.0+cu101
 torchvision==0.9.0+cu101
 -f https://download.pytorch.org/whl/torch_stable.html
 
+# Also necessary for yolov5 
+pandas
+
 # YOLOv5
 -r processor/pipeline/detection/yolov5/requirements.txt
 
