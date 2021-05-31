@@ -92,22 +92,22 @@ class AccuracyObject:
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def get_dataloader(self, type, path_location):
+    def get_dataloader(self, format, path_location):
         """Get a dataloader based on format and path_location.
 
         Args:
-            type (str): Dataloader format to select.
+            format (str): Dataloader format to select.
             path_location (str): Location in config to read annotations path from.
 
         Returns:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
 
         """
-        if type == 'COCO':
+        if format == 'COCO':
             dataloader = COCODataloader(self.configs, path_location)
-        elif type == 'JSON':
+        elif format == 'JSON':
             dataloader = JSONDataloader(self.configs, path_location)
-        elif type == 'MOT':
+        elif format == 'MOT':
             dataloader = MOTDataloader(self.configs, path_location)
         else:
             return ValueError("This is not a valid dataloader")
@@ -138,10 +138,10 @@ class AccuracyObject:
             This method currently has no returns.
         """
 
-        # Getting the bounding boxes from the gt file
+        # Getting the bounding boxes from the gt file.
         self.bounding_boxes_gt = self.read_boxes(self.accuracy_config['det_format'], 'gt_path')
 
-        # Getting and parsing the bounding boxes from the detection file
+        # Getting and parsing the bounding boxes from the detection file.
         bounding_boxes_det = self.read_boxes('JSON', 'det_path')
 
         # Using the podm.podm library to get the accuracy metrics.

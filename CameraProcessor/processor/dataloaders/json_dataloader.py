@@ -41,13 +41,14 @@ class JSONDataloader(IDataloader):
                 bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
                 current_boxes = []
                 current_image_id = image_id
-            current_boxes.append(BoundingBox(classification='person',
+            current_boxes.append(BoundingBox(classification=object_type,
                                              rectangle=Rectangle(x1=pos_x,
                                                                  y1=pos_y,
                                                                  x2=pos_x2,
                                                                  y2=pos_y2),
                                              identifier=person_id,
-                                             certainty=certainty))
+                                             certainty=certainty
+                                             ))
         return bounding_boxes_list
 
     def __get_annotations(self):
@@ -55,7 +56,6 @@ class JSONDataloader(IDataloader):
 
         Returns:
             annotations ([(str)]): Annotations tuples in a list.
-
         """
         # Read file.
         with open(self.file_path) as file:

@@ -8,7 +8,7 @@ from PIL import Image
 
 
 class IDataloader:
-    """Dataloader super class."""
+    """Dataloader superclass. A dataloader formats annotated data into generic BoundingBox objects."""
 
     def __init__(self, configs, path_location):
         """Initialize dataloader.

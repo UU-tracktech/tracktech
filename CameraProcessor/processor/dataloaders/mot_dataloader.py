@@ -14,9 +14,7 @@ from processor.dataloaders.idataloader import IDataloader
 
 
 class MOTDataloader(IDataloader):
-    """
-
-    """
+    """MOT Dataloader, formats MOT Data."""
     def __init__(self, configs, path_location):
         super().__init__(configs, path_location)
         self.skipped_lines = []

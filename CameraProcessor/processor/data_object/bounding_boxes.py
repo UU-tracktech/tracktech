@@ -14,6 +14,7 @@ class BoundingBoxes:
 
         Args:
             bounding_boxes ([BoundingBox]): list of bounding boxes.
+            image_id (int): id of the image.
         """
         self.__bounding_boxes = bounding_boxes
         self.__image_id = image_id

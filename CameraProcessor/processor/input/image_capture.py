@@ -35,7 +35,7 @@ class ImageCapture(ICapture):
         self.image_names = sorted(os.listdir(images_dir))
         self.nr_images = len(self.images_paths)
 
-        # Start index is -1 because we want to know the index of current after it has been incremented
+        # Start index is -1 because we want to know the index of current after it has been incremented.
         self.image_index = -1
         logging.info(f'Found {self.nr_images} images inside the folder')
 
@@ -63,7 +63,7 @@ class ImageCapture(ICapture):
             return False, None
 
         self.image_index += 1
-        # Get path of next frame
+        # Get path of next frame.
         image_path = self.images_paths[self.image_index]
 
         # Reads the image file and returns it.
