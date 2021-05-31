@@ -37,6 +37,9 @@
                         <li>
                                 <a class="function" href="#BoundingBoxes.get_bounding_boxes">get_bounding_boxes</a>
                         </li>
+                        <li>
+                                <a class="function" href="#BoundingBoxes.get_image_id">get_image_id</a>
+                        </li>
                 </ul>
 
             </li>
@@ -75,13 +78,14 @@ Utrecht University within the Software Project course.
 <span class="k">class</span> <span class="nc">BoundingBoxes</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Object that holds all the bounding boxes for a specific frame.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init information object used as wrapper for bounding boxes list.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inits information object used as wrapper for bounding boxes list.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            bounding_boxes ([BoundingBox]): list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span> <span class="o">=</span> <span class="n">image_id</span>
 
     <span class="k">def</span> <span class="nf">get_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get bounding boxes.</span>
@@ -90,6 +94,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            [BoundingBox]: list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span>
+
+    <span class="k">def</span> <span class="nf">get_image_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets image id.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            __image_io (int): Id of image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span>
 </pre></div>
 
         </details>
@@ -109,13 +121,14 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BoundingBoxes</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Object that holds all the bounding boxes for a specific frame.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init information object used as wrapper for bounding boxes list.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inits information object used as wrapper for bounding boxes list.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            bounding_boxes ([BoundingBox]): list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span> <span class="o">=</span> <span class="n">image_id</span>
 
     <span class="k">def</span> <span class="nf">get_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get bounding boxes.</span>
@@ -124,6 +137,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            [BoundingBox]: list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span>
+
+    <span class="k">def</span> <span class="nf">get_image_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets image id.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            __image_io (int): Id of image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span>
 </pre></div>
 
         </details>
@@ -136,23 +157,24 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#BoundingBoxes.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">BoundingBoxes</span><span class="signature">(bounding_boxes)</span>
+            <span class="name">BoundingBoxes</span><span class="signature">(bounding_boxes, image_id=&#39;&#39;)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init information object used as wrapper for bounding boxes list.</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inits information object used as wrapper for bounding boxes list.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            bounding_boxes ([BoundingBox]): list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span> <span class="o">=</span> <span class="n">image_id</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Init information object used as wrapper for bounding boxes list.</p>
+            <div class="docstring"><p>Inits information object used as wrapper for bounding boxes list.</p>
 
 <h6 id="args">Args</h6>
 
@@ -190,6 +212,38 @@ Utrecht University within the Software Project course.
 
 <blockquote>
   <p>[BoundingBox]: list of bounding boxes.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="BoundingBoxes.get_image_id" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BoundingBoxes.get_image_id">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_image_id</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets image id.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            __image_io (int): Id of image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Gets image id.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>__image_io (int): Id of image.</p>
 </blockquote>
 </div>
 
