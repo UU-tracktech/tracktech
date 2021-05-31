@@ -161,12 +161,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        threshold (float): Threshold from which a re-identification is included.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize torch re-identifier.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model_name (string): The file name of the model weights.</span>
-<span class="sd">            device (string): determines whether or not to use the gpu or cpu.</span>
 <span class="sd">            configs (configparser.SectionProxy): Re-ID configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -186,7 +185,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">FeatureExtractor</span><span class="p">(</span>
             <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
             <span class="n">model_path</span><span class="o">=</span><span class="n">weights_path</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
