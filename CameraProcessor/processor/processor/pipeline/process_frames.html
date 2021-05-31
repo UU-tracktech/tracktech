@@ -46,9 +46,6 @@
             <li>
                     <a class="function" href="#opencv_display">opencv_display</a>
             </li>
-            <li>
-                    <a class="function" href="#get_reid_device">get_reid_device</a>
-            </li>
     </ul>
 
 
@@ -149,8 +146,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
-    <span class="n">device</span> <span class="o">=</span> <span class="n">get_reid_device</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
@@ -350,19 +346,6 @@ Utrecht University within the Software Project course.
     <span class="k">return</span> <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span>
 
 
-<span class="k">def</span> <span class="nf">get_reid_device</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): configuration to get the device out of</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        device (String): String that represents the correct device</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">device</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">][</span><span class="s1">&#39;device&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;cpu&#39;</span>
-    <span class="k">return</span> <span class="s1">&#39;cuda&#39;</span>
-
-
 <span class="k">def</span> <span class="nf">__create_tracker</span><span class="p">(</span><span class="n">itracker</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates and returns a tracker of the given type.</span>
 
@@ -426,8 +409,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
     <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
-    <span class="n">device</span> <span class="o">=</span> <span class="n">get_reid_device</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
+    <span class="n">re_identifier</span> <span class="o">=</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
     <span class="c1"># Frame counter starts at 0. Will probably work differently for streams.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting stream...&quot;</span><span class="p">)</span>
@@ -771,46 +753,6 @@ Sends detections to client if client is used (HlsCapture).</p>
 <li><strong>detected_boxes (BoundingBoxes):</strong>  Boxes generated by the detection.</li>
 <li><strong>tracked_boxes (BoundingBoxes):</strong>  Boxes generated by the tracking.</li>
 </ul>
-</div>
-
-
-                </section>
-                <section id="get_reid_device">
-                            <div class="attr function"><a class="headerlink" href="#get_reid_device">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">get_reid_device</span><span class="signature">(configs)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_reid_device</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): configuration to get the device out of</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        device (String): String that represents the correct device</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">device</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">][</span><span class="s1">&#39;device&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;cpu&#39;</span>
-    <span class="k">return</span> <span class="s1">&#39;cuda&#39;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><h6 id="args">Args</h6>
-
-<ul>
-<li><strong>configs (ConfigParser):</strong>  configuration to get the device out of</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>device (String): String that represents the correct device</p>
-</blockquote>
 </div>
 
 
