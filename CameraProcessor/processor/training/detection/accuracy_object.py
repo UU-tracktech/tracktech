@@ -93,6 +93,16 @@ class AccuracyObject:
         return list_parsed_boxes
 
     def get_dataloader(self, type, path_location):
+        """Get a dataloader based on format and path_location.
+
+        Args:
+            type (str): Dataloader format to select.
+            path_location (str): Location in config to read annotations path from.
+
+        Returns:
+            dataloader (IDataloader): The dataloader to use for parsing annotations.
+
+        """
         if type == 'COCO':
             dataloader = COCODataloader(self.configs, path_location)
         elif type == 'JSON':
