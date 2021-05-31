@@ -11,6 +11,7 @@ import logging
 from collections import deque
 from tornado import websocket
 
+from processor.utils.authentication import get_token
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 
@@ -28,13 +29,15 @@ class WebsocketClient:
         write_queue ([str]): Stores messages that could not be sent due to a closed socket.
         message_queue (Queue): Stores commands sent from orchestrator.
         identifier (str): Identifier of the camera processor for the orchestrator.
+        configs (ConfigParser): Configurations of the application, contains the authorization url.
     """
 
-    def __init__(self, websocket_url, identifier=None):
+    def __init__(self, websocket_url, configs, identifier=None):
         """Initialize the websocket client class with relevant parameters.
 
         Args:
             websocket_url (str): url of the websocket.
+            configs (ConfigParser): Configurations of the application.
             identifier (str): Identifier of the camera-processor.
         """
         self.connection = None
@@ -44,12 +47,16 @@ class WebsocketClient:
         self.write_queue = []
         self.message_queue = deque()
         self.identifier = identifier
+        self.configs = configs
 
     async def connect(self):
         """Connect to the websocket url asynchronously."""
         timeout_left = 60
         sleep = 1
         connected = False
+
+
+        auth_token = get_token(self.configs['Authentication']['auth_server_url'])
 
         # Whilst there is no connection.
         while not connected and timeout_left > 0:
@@ -60,6 +67,11 @@ class WebsocketClient:
                                                       on_message_callback=self._on_message)
                 logging.info(f'Connected to {self.websocket_url} successfully')
 
+                if self.websocket_url.startswith('wss'):
+                    auth_message = json.dumps({
+                        "type": "authenticate",
+                        "jwt": utils.
+                    })
                 # Send an identification message to the orchestrator on connect.
                 # Only do this when the websocket is a processor socket.
                 if self.identifier is not None:
@@ -81,6 +93,26 @@ class WebsocketClient:
         if not connected:
             logging.error("Could never connect with orchestrator")
             raise TimeoutError("Never connected with orchestrator")
+
+    async def get_access_token(self):
+        """
+
+        Returns:
+            str: Access token to the authentication server.
+        """
+        token = None
+
+        if not self.websocket_url.startswith('wss'):
+            return token
+
+        while token is None:
+            try:
+                token = get_token(self.configs['Authentication']['auth_server_url'])
+            except ConnectionError:
+                logging.warning('Retrieval of token failed, trying again')
+                await asyncio.sleep(2)
+
+        return token
 
     async def disconnect(self):
         """Disconnects the websocket."""
