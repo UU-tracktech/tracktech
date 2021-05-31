@@ -1,16 +1,15 @@
-"""File that creates teh subprocess for the ffmpeg conversion
+"""File that creates the subprocess for the ffmpeg conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 from subprocess import Popen
 
 
 def get_conversion_process(url, audio, root, stream_options):
-    """Gets the ffmpeg conversion command for the camera stream that can be started later on
+    """Gets the ffmpeg conversion command for the camera stream that can be started later on.
 
     Args:
         url (str): Url of the camera
@@ -27,6 +26,7 @@ def get_conversion_process(url, audio, root, stream_options):
     conversions = []
     stream_map = []
 
+    # Options for the low stream quality.
     if stream_options.low:
         maps.extend(["-map", "0:0", "-map", "0:1"] if audio else ["-map", "0:0"])
         conversions.extend([
@@ -36,6 +36,7 @@ def get_conversion_process(url, audio, root, stream_options):
         stream_map.append(f'v:{index},a:{index}' if audio else f'v:{index}')
         index += 1
 
+    # Medium stream quality.
     if stream_options.medium:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
@@ -45,6 +46,7 @@ def get_conversion_process(url, audio, root, stream_options):
         stream_map.append(f'v:{index},a:{index}' if audio else f'v:{index}')
         index += 1
 
+    # High stream quality.
     if stream_options.high:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
@@ -53,27 +55,28 @@ def get_conversion_process(url, audio, root, stream_options):
         ])  # 720p - High bit-rate Stream
         stream_map.append(f'v:{index},a:{index}' if audio else f'v:{index}')
 
-    # see https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new
-    # Returns the opened path
+    # Create the command to start ffmpeg with.
+    # See https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new.
     command = [
-        # ffmpeg configurations
+        # Ffmpeg configurations.
         'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', url,
-        # Create 3 variances of video + audio stream
+        # Create 3 variances of video + audio stream.
         *maps,
         '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',
         '-sc_threshold', '0', '-g', '24', '-muxdelay', '0', '-keyint_min', '24',
         *(['-c:a', 'aac', '-ar', '48000'] if audio else []),
-        # Set common properties of the video variances
+        # Set common properties of the video variances.
         *conversions,
-        *(['-c:a', 'copy'] if audio else []),  # Copy original audio to the video variances
+        *(['-c:a', 'copy'] if audio else []),  # Copy original audio to the video variances.
         '-var_stream_map', (' '.join(stream_map)),
-        # Create the master playlist
+        # Create the master playlist.
         '-master_pl_name', 'stream.m3u8',
-        # HLS flags and segment properties
+        # HLS flags and segment properties.
         '-hls_time', stream_options.segment_size, '-hls_list_size', stream_options.segment_amount, '-hls_flags',
         'delete_segments', '-start_number', '1',
-        # Url
+        # Url.
         f'{root}/stream_V%v.m3u8'
     ]
 
+    # Return the subprocess containing the ffmpeg command.
     return Popen(command)

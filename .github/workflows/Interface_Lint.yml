@@ -14,11 +14,11 @@ jobs:
     name: Interface Lint
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build and start
         run: docker-compose -f Interface/compose/docker-compose_lint.yml up --build --exit-code-from interface
       - name: Remove
-        run: docker-compose -f Interface/compose/docker-compose_lint.yml down
+        run: docker-compose -f Interface/compose/docker-compose_lint.yml down --rmi all
         if: ${{ always() }}

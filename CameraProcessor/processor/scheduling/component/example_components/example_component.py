@@ -1,9 +1,8 @@
-"""An example component
+"""An example component.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 
@@ -18,11 +17,11 @@ class ExampleComponent(IComponent):
         """Example function with multiple arguments that can be returned by execute_component().
 
         Args:
-            first_arg: example argument.
-            second_arg: another example argument.
+            first_arg (obj): Example argument that gets appended to list.
+            second_arg (obj): Example argument that gets appended to list.
 
         Returns:
-            list: A list of both inputs for the next layer.
+            [object]: A list of both inputs for the next layer.
         """
         return [first_arg, second_arg]
 

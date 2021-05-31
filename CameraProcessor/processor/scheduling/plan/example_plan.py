@@ -1,4 +1,4 @@
-"""Just an example of a plan that can be executed by scheduler
+"""Just an example of a plan that can be executed by scheduler.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -10,9 +10,8 @@ from processor.scheduling.component.example_components.output_component import O
 from processor.scheduling.component.example_components.example_component import ExampleComponent
 
 
-# pylint: disable=unused-argument
-def func(ignore):
-    """Dummy function"""
+def func(_):
+    """Dummy function."""
     return
 
 

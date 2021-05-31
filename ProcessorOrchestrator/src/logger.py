@@ -6,27 +6,25 @@ log entries formatted in a standardised manner.
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
+import sys
 import logging
 
 logging.basicConfig(filename='logs.log',
                     format='%(asctime)s | %(name)s - %(levelname)s - %(message)s',
                     level=logging.DEBUG)
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
 def log(message):
-    """Writes a general message to the log
+    """Writes a general message to the log.
 
     Args:
         message (string):
             The message to be logged.
-    Returns:
-        None
     """
     logging.info(message)
-    print(message)
 
 
 def log_message_receive(message, location, ip_address):
@@ -39,12 +37,9 @@ def log_message_receive(message, location, ip_address):
             Url path where this request was made.
         ip_address (string):
             Ip address where the message was sent from.
-    Returns:
-        None
     """
     message = f"Received message on {location} from {ip_address}: {message}"
     logging.info(message)
-    print(message)
 
 
 def log_message_send(message, location, ip_address):
@@ -57,12 +52,9 @@ def log_message_send(message, location, ip_address):
                 Url path where this request was made.
             ip_address (string):
                 Ip address where the message was sent to.
-    Returns:
-        None
     """
     message = f"Sent message on {location} from {ip_address}: {message}"
     logging.info(message)
-    print(message)
 
 
 def log_connect(location, ip_address):
@@ -73,12 +65,9 @@ def log_connect(location, ip_address):
                 Url path where this connection was made.
             ip_address (string):
                 Ip address of the connection origin.
-    Returns:
-        None
     """
     message = f"Websocket connected on {location} from {ip_address}"
     logging.info(message)
-    print(message)
 
 
 def log_disconnect(location, ip_address):
@@ -89,27 +78,21 @@ def log_disconnect(location, ip_address):
                 Url path where this connection was stopped.
             ip_address (string):
                 Ip address of the connection origin.
-    Returns:
-        None
     """
     message = f"Websocket disconnected on {location} from {ip_address}"
     logging.info(message)
-    print(message)
 
 
 def log_error(location, error, ip_address):
     """Logs an error.
 
-        Args:
-            location (string):
-                Url path where this error was handled.
-            error (string):
-                The error that was handled.
-            ip_address (string):
-                Ip address of the source of the error.
-    Returns:
-        None
+    Args:
+        location (string):
+            Url path where this error was handled.
+        error (string):
+            The error that was handled.
+        ip_address (string):
+            Ip address of the source of the error.
     """
     message = f"{error} on {location} from {ip_address}"
     logging.warning(message)
-    print(message)

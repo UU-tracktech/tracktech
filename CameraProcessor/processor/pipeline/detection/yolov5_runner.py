@@ -1,9 +1,8 @@
-"""Contains the main methods for running YOLOv5 object detection on a frame
+"""Contains the main methods for running YOLOv5 object detection on a frame.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import os
@@ -25,6 +24,13 @@ from processor.pipeline.detection.idetector import IDetector
 class Yolov5Detector(IDetector):
     """Make it inherit from a generic Detector class.
 
+    Attributes:
+        config (ConfigParser): Configurations of the application.
+        filter ([str]): List of objects types to detect.
+        device (str): Device that runs the detector.
+        half (bool): Whether to half the model or not.
+        classify (bool): Whether to classify.
+        names ([str]): List of names which that should get detected.
     """
 
     def __init__(self, config, filters):
@@ -32,7 +38,7 @@ class Yolov5Detector(IDetector):
 
         Args:
             config (ConfigParser): Yolov5 config file.
-            filters (ConfigParser): Filter for boundingBoxes.
+            filters (SectionProxy): Filter configurations for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolov5'))
@@ -43,38 +49,38 @@ class Yolov5Detector(IDetector):
             self.filter = filter_names.read().splitlines()
         print('I am filtering on the following objects: ' + str(self.filter))
 
-        # Initialize
+        # Initialize.
         set_logging()
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
                 logging.info("CUDA unavailable")
                 self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
-        self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
+        self.half = self.device.type != 'cpu'  # half precision only supported on CUDA.
         if self.device.type == 'cpu':
             logging.info("I am using the CPU. Check CUDA version,"
                          "or whether Pytorch is installed with CUDA support.")
         else:
             logging.info("I am using GPU")
 
-        # load FP32 model
+        # Load FP32 model.
         self.model = attempt_load(self.config['weights_path'],
-                                  map_location=self.device)  # load FP32 model
+                                  map_location=self.device)  # load FP32 model.
         self.stride = int(self.model.stride.max())  # model stride
-        imgsz = check_img_size(self.config.getint('img-size'), s=self.stride)  # check img_size
+        imgsz = check_img_size(self.config.getint('img-size'), s=self.stride)  # check img_size.
         if self.half:
             self.model.half()  # to FP16
 
-        # Set secondary classification, by default off
+        # Set secondary classification, by default off.
         self.classify = False
         if self.classify:
-            self.modelc = load_classifier(name='resnet101', n=2)  # initialize
+            self.modelc = load_classifier(name='resnet101', n=2)  # initialize.
             self.modelc.load_state_dict(
                 torch.load('weights/resnet101.pt',
                            map_location=self.device)['model']
             ).to(self.device).eval()
 
-        # Get names and colors
+        # Get names and colors.
         self.names = self.model.module.names if hasattr(self.model, 'module') else self.model.names
         self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in self.names]
 
@@ -82,7 +88,6 @@ class Yolov5Detector(IDetector):
             self.model(
                 torch.zeros(1, 3, imgsz,
                             imgsz).to(self.device).type_as(next(self.model.parameters())))
-            # run once
 
     def execute_component(self):
         """Function given to scheduler so the scheduler can run the detection stage.
@@ -100,26 +105,27 @@ class Yolov5Detector(IDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects
+            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects
         """
-        # Padded resize
+        # Padded resize.
         bounding_boxes = []
 
         img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'), stride=self.stride)[0]
         img = self.convert_image(img, self.device, self.half)
 
-        # Run inference on the converted image
+        # Run inference on the converted image.
         start_time = time_synchronized()
         pred = self.generate_predictions(img, self.model, self.config)
 
-        # Apply secondary Classifier
+        # Apply secondary Classifier.
         if self.classify:
             pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
 
-        # Create bounding boxes based on the predictions
+        # Create bounding boxes based on the predictions.
         self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
 
-        # Print time (inference + NMS)
-        print(f'Finished processing of frame {frame_obj.get_timestamp()} in ({time_synchronized() - start_time:.3f}s)')
+        # Print time (inference + NMS).
+        print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
+              f'({time_synchronized() - start_time:.3f}s)')
 
         return BoundingBoxes(bounding_boxes)

@@ -30,6 +30,7 @@ def _start_server():
 
     server_container = []
 
+    # Create the handlers.
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
@@ -37,17 +38,22 @@ def _start_server():
         ('/stop', StopSocket, {'server': server_container})
     ]
 
+    # Create the server application.
     app = Application(handlers)
     server, _ = create_http_servers(app)
     server_container.append(server)
 
+    # Start the server.
     start_tracking_timeout_monitoring(10, asyncio.get_event_loop())
-
     IOLoop.current().start()
 
 
 def stop_server(server):
-    """Stops the server."""
+    """Stops the server.
+
+    Args:
+        server (HTTPServer): Server the of the test that should be stopped
+    """
 
     server.stop()
     io_loop = IOLoop.instance()
@@ -55,34 +61,45 @@ def stop_server(server):
 
 
 class StopSocket(WebSocketHandler):
-    """Websocket handler that can only be used to stop the server."""
+    """Websocket handler that can only be used to stop the server.
+
+    Attributes:
+        server (HTTPServer): Server on which the test is ran.
+    """
 
     def initialize(self, server):
-        """Sets server."""
-        # noinspection PyAttributeOutsideInit | In tornado, the init funciton should be replaced with initialize.
+        """Sets server.
+
+        Args:
+            server (HTTPServer): Server on which the test is ran.
+        """
+        # Noinspection PyAttributeOutsideInit | In tornado, the init function should be replaced with initialize.
         # pylint: disable=attribute-defined-outside-init
         self.server = server
 
     def data_received(self, chunk):
-        """Override to handle received data, unused."""
+        """Override to handle received data, unused.
+
+        Args:
+            chunk (bytes): Byte data received from the server.
+        """
 
     def check_origin(self, origin):
         """Override to enable support for allowing alternate origins.
 
         Args:
-            origin (str):
-                Origin of the HTTP request, is ignored as all origins are allowed.
+            origin (string): Origin of the HTTP request, is ignored as all origins are allowed.
+
         Returns:
-            True
+            bool: Whether the origin is correct.
         """
         return True
 
-    def on_message(self, message) -> None:
-        """Waits for test message
+    def on_message(self, message):
+        """Waits for test message.
 
         Args:
-            message:
-                String that should contain the string 'stop', which will stop the server.
+            message (string): String that should contain the string 'stop', which will stop the server.
         """
         if message == "stop":
             stop_server(self.server[0])

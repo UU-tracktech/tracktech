@@ -55,6 +55,10 @@ The client websocket knows the following types of messages:
   - "frameId": The identifier of the frame on which the bounding box of the object to be tracked
     was computed.
   - "boxId": The identifier of the bounding box computed for the object to be tracked.
+  - "image": A serialised image that can be used by the processor for re-identification.
+
+  Of these properties, it is required that at least the "image" parameter, or, a combination of the "frameId" and "boxId" 
+  parameters are sent.
 - "stop" | This command is used to stop the tracking of an object,
   needs the following additional properties:
   - "objectId" | The identifier of the object which should no longer be tracked.

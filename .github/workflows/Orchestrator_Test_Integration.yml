@@ -8,13 +8,16 @@ on:
   pull_request:
     paths:
       - ProcessorOrchestrator/**
+    branches:
+      - develop
+      - master
 
 jobs:
   orchestrator_test_integration:
     name: Orchestrator Integration Test
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           submodules: recursive
       - name: Build and start
@@ -41,5 +44,5 @@ jobs:
           flags: Orchestrator
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Remove
-        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down
+        run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_integration.yml down --rmi all
         if: ${{ always() }}

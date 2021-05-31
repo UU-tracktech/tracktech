@@ -3,7 +3,6 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from __future__ import print_function
 import multiprocessing
@@ -12,21 +11,19 @@ import traceback
 
 
 class EProcess(multiprocessing.Process):
-    """Variation of Process that sends back exceptions
+    """Variation of Process that sends back exceptions.
 
+    Attributes:
+        dfs
     """
     def __init__(self, *args, **kwargs):
-        """Runs multiprocessing.Process init with the arguments
-
-        """
+        """Runs multiprocessing.Process init with the arguments."""
         super().__init__(*args, **kwargs)
         self._pconn, self._ccon = Pipe()
         self._exception = None
 
     def run(self):
-        """Runs the process run with an added exception handler that sends the exception back
-
-        """
+        """Runs the process run with an added exception handler that sends the exception back."""
         try:
             Process.run(self)
             self._ccon.send(None)
@@ -37,11 +34,10 @@ class EProcess(multiprocessing.Process):
 
     @property
     def exception(self):
-        """Exception property
+        """Exception property.
 
         Returns:
-            The exception raised, or None if no exception was raised
-
+            Exception: The exception raised, or None if no exception was raised.
         """
         if self._pconn.poll():
             self._exception = self._pconn.recv()

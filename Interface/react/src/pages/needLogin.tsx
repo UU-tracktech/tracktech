@@ -20,7 +20,7 @@ export function NeedLogin() {
 
   return (
     <div
-      data-testid="loginAlert"
+      data-testid='loginAlert'
       style={{
         display: 'grid',
         justifyContent: 'center',
@@ -28,9 +28,9 @@ export function NeedLogin() {
       }}
     >
       <Alert
-        type="error"
-        message="Login"
-        description="You need to be logged-in to view this page."
+        type='error'
+        message='Login'
+        description='You need to be logged-in to view this page.'
         onClose={() => keycloak.login()}
         closable
       />

@@ -3,7 +3,6 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import sys
 import os
@@ -18,7 +17,7 @@ from src.camera_handler import CameraHandler
 
 # pylint: disable=invalid-name
 if __name__ == "__main__":
-    # Setup for logging
+    # Setup for logging.
     tornado.log.logging.basicConfig(
         filename='/app/src/main.log',
         filemode='w',
@@ -33,10 +32,10 @@ if __name__ == "__main__":
 
     tornado.log.gen_log.info('starting server')
 
-    # Create the web application with the camera handler and the public key
+    # Create the web application with the camera handler and the public key.
     app = tornado.web.Application(
         [
-            (r'/(.*)', CameraHandler, {'path': os.environ['STREAM_FOLDER']}),
+            (r'/(.*)', CameraHandler, {'path': os.environ.get('STREAM_FOLDER') or 'app/streams'}),
         ],
         authenticator=create_authenticator(),
         camera=create_camera(),
@@ -46,15 +45,15 @@ if __name__ == "__main__":
         stream_options=create_stream_options()
     )
 
-    # Load the ssl and port options
+    # Load the ssl and port options.
     ssl_options = create_ssl_options()
     port = 80 if ssl_options is None else 443
     ssl = 'without' if ssl_options is None else 'with'
 
-    # Start the webserver
+    # Start the webserver.
     http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_options)
     http_server.listen(port)
     tornado.log.gen_log.info(f'listening on port {port}, {ssl} ssl')
 
-    # Start the IO loop (used by tornado itself)
+    # Start the IO loop (used by tornado itself).
     tornado.ioloop.IOLoop.current().start()

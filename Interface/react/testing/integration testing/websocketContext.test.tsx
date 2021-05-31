@@ -15,6 +15,7 @@ import {
 } from '../../src/components/websocketContext'
 import { Overlay } from '../../src/components/overlay'
 import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
+import { Box, BoxesClientMessage } from '../../src/classes/clientMessage'
 
 var websocketAddress
 
@@ -33,13 +34,14 @@ beforeEach(() => {
           {({ send, setSocket, socketUrl, connectionState }: websocketArgs) => (
             <>
               <Overlay
-                cameraId="1"
+                source={{
+                  id: '1',
+                  name: 'name',
+                  srcObject: { src: 'src', type: 'type' }
+                }}
                 showBoxes={'All'}
-                onTimestamp={() => {}}
-                onPlayPause={() => {}}
                 onPrimary={() => {}}
-                onResize={() => {}}
-                data-testId="overlay"
+                data-testId='overlay'
                 hiddenObjectTypes={[]}
                 sources={[
                   {
@@ -51,10 +53,10 @@ beforeEach(() => {
                 autoplay={true}
               ></Overlay>
               <button
-                data-testid="button"
+                data-testid='button'
                 onClick={() => setSocket(websocketAddress)}
               />
-              <span data-testid="state">{connectionState}</span>
+              <span data-testid='state'>{connectionState}</span>
             </>
           )}
         </websocketContext.Consumer>
@@ -129,7 +131,7 @@ test('Bounding box send to queue', async () => {
   var boxesMessage = {
     type: 'boundingBoxes',
     frameId: 0,
-    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8], objectType: 'testObject' }]
+    boxes: [new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject')]
   }
 
   // Send the bounding boxes
@@ -158,11 +160,9 @@ test('Bounding boxes start tracking', async () => {
   }
   processorSocket.send(JSON.stringify(identifyMessage))
 
-  var boxesMessage = {
-    type: 'boundingBoxes',
-    frameId: 0,
-    boxes: [{ boxId: 1, rect: [0.2, 0.2, 0.8, 0.8], objectType: 'testObject' }]
-  }
+  var boxesMessage = new BoxesClientMessage('boundingBoxes', 0, [
+    new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject')
+  ])
 
   screen.getByTestId('button').click()
   while (screen.getByTestId('state').textContent != 'OPEN') {
