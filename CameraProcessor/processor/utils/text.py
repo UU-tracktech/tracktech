@@ -70,4 +70,3 @@ def boxes_to_accuracy_json(bounding_boxes, image_id):
         "imageId": image_id,
         "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
     })
-

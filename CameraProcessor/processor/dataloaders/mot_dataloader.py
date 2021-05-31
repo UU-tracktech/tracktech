@@ -3,7 +3,6 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import logging
 from os import path
@@ -15,30 +14,28 @@ from processor.dataloaders.idataloader import IDataloader
 
 
 class MOTDataloader(IDataloader):
-    """
-
-    """
+    """Dataloader for MOT."""
     def __init__(self, configs, path_location):
         super().__init__(configs, path_location)
         self.skipped_lines = []
 
     def __get_annotations(self):
-        """
+        """Gets annotations.
 
         Returns:
-
+            annotations (list): List of string annotations.
         """
-        # Read file
+        # Read file.
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
 
-        # Determine delimiter automatically
+        # Determine delimiter automatically.
         delimiter = ' '
         if lines[0].__contains__(','):
             delimiter = ','
 
         annotations = []
-        # Extract information from lines
+        # Extract information from lines.
         for line in lines:
             (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = self.__parse_line(line, delimiter)
             if image_id - 1 >= self.nr_frames:
@@ -48,18 +45,18 @@ class MOTDataloader(IDataloader):
         return annotations
 
     def __parse_boxes(self, annotations):
-        """
+        """Parses annotations to bounding boxes.
 
         Args:
-            annotations:
+            annotations (list): List with annotations.
 
         Returns:
-
+            bounding_boxes_list (list): List of bounding boxes.
         """
         bounding_boxes_list = []
         current_boxes = []
         current_image_id = annotations[0][0]
-        # Extract information from lines
+        # Extract information from lines.
         for annotation in annotations:
             (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
             this_image_path = self.__get_image_path(image_id)
@@ -78,11 +75,7 @@ class MOTDataloader(IDataloader):
         return bounding_boxes_list
 
     def __log_skipped(self):
-        """Logs when lines skipped.
-
-        Returns:
-            Null
-        """
+        """Logs when lines skipped."""
         if self.skipped_lines > 0:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
@@ -90,7 +83,7 @@ class MOTDataloader(IDataloader):
         """Parses an annotations file.
 
         Returns:
-            List of bounding boxes.
+            bounding_boxes_list (list): List of bounding boxes.
         """
         annotations = self.__get_annotations()
         self.__log_skipped()
@@ -105,7 +98,7 @@ class MOTDataloader(IDataloader):
             image_id (int): Id of the image.
 
         Returns:
-            (string) Properly formatted image id.
+            zeros (string): Properly formatted image id.
         """
         zeros = ''
         for _ in range(6 - len(str(image_id))):
@@ -137,6 +130,6 @@ class MOTDataloader(IDataloader):
             delimiter (str): delimiter values in line are separated with.
 
         Returns:
-            Integer values of line parsed and put inside string.
+            list (list): List of integer values of line parsed and put inside string.
         """
         return [int(i) for i in line.split(delimiter)[:6]]
