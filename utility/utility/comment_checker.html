@@ -103,7 +103,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Process a module and checks whether the comments inside are correctly formatted.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Go through each line.</span>
         <span class="k">with</span> <span class="n">node</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
@@ -123,7 +123,7 @@ Utrecht University within the Software Project course.
                 <span class="c1"># See what is wrong about the comment.</span>
                 <span class="n">wrong_spaces_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#(?:\S|\s\s+).*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">missing_dot_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#.*[^.]$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-                <span class="n">capital_letter_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[a-z].*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="n">capital_letter_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[^A-Z].*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
                 <span class="n">line_start_index</span><span class="p">,</span> <span class="n">line_end_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_line_indices</span><span class="p">(</span><span class="n">raw_line</span><span class="p">)</span>
 

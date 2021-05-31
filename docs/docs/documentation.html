@@ -239,8 +239,7 @@ Utrecht University within the Software Project course.
     <span class="n">component_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component_root</span><span class="p">)</span>
 
-    <span class="c1"># Find all valid sub folders (dir name doesn&#39;t start with.</span>
-    <span class="c1"># &#39;.&#39; or &#39;_&#39;, starting at the root_folder.</span>
+    <span class="c1"># Find all sub folders that do not start with &#39;.&#39; or &#39;_&#39;, starting at the root_folder.</span>
     <span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">root_folder</span><span class="p">]</span>
     <span class="n">add_submodule_to_folders</span><span class="p">(</span><span class="n">folders</span><span class="p">)</span>
 
@@ -736,8 +735,7 @@ Utrecht University within the Software Project course.
     <span class="n">component_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component_root</span><span class="p">)</span>
 
-    <span class="c1"># Find all valid sub folders (dir name doesn&#39;t start with.</span>
-    <span class="c1"># &#39;.&#39; or &#39;_&#39;, starting at the root_folder.</span>
+    <span class="c1"># Find all sub folders that do not start with &#39;.&#39; or &#39;_&#39;, starting at the root_folder.</span>
     <span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">root_folder</span><span class="p">]</span>
     <span class="n">add_submodule_to_folders</span><span class="p">(</span><span class="n">folders</span><span class="p">)</span>
 
