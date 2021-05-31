@@ -46,7 +46,7 @@ class CommentChecker(BaseChecker):
         """Process a module and checks whether the comments inside are correctly formatted.
 
         Args:
-            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file
+            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file.
         """
         # Go through each line.
         with node.stream() as stream:
@@ -66,7 +66,7 @@ class CommentChecker(BaseChecker):
                 # See what is wrong about the comment.
                 wrong_spaces_match = re.match(r'#(?:\S|\s\s+).*', line)
                 missing_dot_match = re.match(r'#.*[^.]$', line)
-                capital_letter_match = re.match(r'#\s[a-z].*', line)
+                capital_letter_match = re.match(r'#\s[^A-Z].*', line)
 
                 line_start_index, line_end_index = self.get_line_indices(raw_line)
 
