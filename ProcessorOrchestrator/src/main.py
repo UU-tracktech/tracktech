@@ -19,6 +19,7 @@ from src.client_socket import ClientSocket
 from src.object_manager import start_tracking_timeout_monitoring
 from src.processor_socket import ProcessorSocket
 from src.timeline_handler import TimeLineHandler
+from src.object_ids_handler import ObjectIdsHandler
 
 
 def main():
@@ -59,7 +60,8 @@ def create_app(client_auth, processor_auth):
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
-        ('/timelines', TimeLineHandler)
+        ('/timelines', TimeLineHandler),
+        ('/objectIds', ObjectIdsHandler)
     ]
 
     # Construct and serve the tornado application.
