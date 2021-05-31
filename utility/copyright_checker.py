@@ -36,9 +36,9 @@ class CopyrightChecker(BaseChecker):
         """
         # What the copyright statement should be.
         copyright_statement = [
-            b'This program has been developed by students from the bachelor Computer Science at\r\n',
-            b'Utrecht University within the Software Project course.\r\n',
-            b'\xc2\xa9 Copyright Utrecht University (Department of Information and Computing Sciences)\r\n'
+            'This program has been developed by students from the bachelor Computer Science at',
+            'Utrecht University within the Software Project course.',
+            '© Copyright Utrecht University (Department of Information and Computing Sciences)'
         ]
 
         # Create a small state.
@@ -49,18 +49,21 @@ class CopyrightChecker(BaseChecker):
         # Go through the file.
         with node.stream() as stream:
             for (_, line) in enumerate(stream):
+                line = line.decode('utf-8')
+
                 # Break when there are two triple quotes passed already.
-                if str(line).__contains__('"""'):
+                if line.__contains__('"""'):
                     number_quotes += 1
                 if number_quotes > 2:
                     break
 
                 # Check consequent lines on copyright string.
-                if current_copyright_line == 0 and line == copyright_statement[0]:
+                # Uses startswith to ignore line endings of the os.
+                if current_copyright_line == 0 and line.startswith(copyright_statement[0]):
                     current_copyright_line = 1
-                elif current_copyright_line == 1 and line == copyright_statement[1]:
+                elif current_copyright_line == 1 and line.startswith(copyright_statement[1]):
                     current_copyright_line = 2
-                elif current_copyright_line == 2 and line == copyright_statement[2]:
+                elif current_copyright_line == 2 and line.startswith(copyright_statement[2]):
                     contains_copyright = True
                     break
                 # Line was not the following line.
