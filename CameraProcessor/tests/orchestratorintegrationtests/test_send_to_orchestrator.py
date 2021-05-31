@@ -1,9 +1,8 @@
-""" Tests the sending of all possibly message types to the processor orchestrator, asserts that nothing is sent back
+"""Tests the sending of all possibly message types to the processor orchestrator, asserts that nothing is sent back.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import pytest
@@ -13,22 +12,18 @@ from utils.jsonloader import load_data
 
 
 class TestSendToOrchestrator:
-    """Class that contains the sending part to orchestrator tests
+    """Class that contains the sending part to orchestrator tests."""
 
-    """
     @pytest.mark.asyncio
     @pytest.mark.timeout(10)
     async def test_confirm_connection(self):
-        """Confirms connection with websocket
-
-        """
+        """Confirms connection with websocket."""
         ws_client = await create_dummy_client(PC_URL, "mock_id")
         assert ws_client.connection is not None
 
     @pytest.mark.asyncio
     async def test_send_message(self, message_type, amount):
-        """"Sends a message with different message types
-        and in different amounts
+        """"Sends a message with different message types and in different amounts.
 
         Args:
             message_type: ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid']

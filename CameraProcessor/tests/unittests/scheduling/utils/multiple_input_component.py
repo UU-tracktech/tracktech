@@ -1,9 +1,8 @@
-"""Contains an example component
+"""Contains an example component.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from processor.scheduling.component.component_interface import IComponent
 
@@ -27,5 +26,9 @@ class MultipleInputComponent(IComponent):
         return [first_arg, second_arg]
 
     def execute_component(self):
-        """See base class."""
+        """Interface function to execute the component.
+
+        Returns:
+            func: Work function to call when component is ran.
+        """
         return self.work

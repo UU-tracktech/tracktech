@@ -18,7 +18,7 @@ from tornado import websocket
 async def test_bad_message_interface():
     """Test if the interface can send a bad message without crashing the server."""
 
-    # Wait a little bit so the test server can start
+    # Wait a little bit so the test server can start.
     time.sleep(5)
 
     interface = \
@@ -143,7 +143,11 @@ async def test_start_tracking_and_timeout():
 
 
 def assert_start_tracking(message):
-    """Help method to assert if the start tracking message is as expected"""
+    """Help method to assert if the start tracking message is as expected.
+
+    Args:
+        message (json): json message with start tracking command.
+    """
     message_json = json.loads(message)
     assert message_json["type"] == "start"
     assert message_json["frameId"] == 1
@@ -181,7 +185,14 @@ async def test_start_tracking_with_image_and_timeout():
 
 
 def assert_start_tracking_with_image(message):
-    """Help method to assert if the start tracking message is as expected, with an image parameter"""
+    """Help method to assert if the start tracking message is as expected, with an image parameter.
+
+    Args:
+        message (str): Json string containing the message.
+
+    Returns:
+        bool: Whether message has been correct.
+    """
     message_json = json.loads(message)
     assert message_json["type"] == "start"
     assert message_json["image"] == "test"
@@ -191,7 +202,7 @@ def assert_start_tracking_with_image(message):
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_feature_map_distribution():
-    """Test if a processor can send a feature map and if it is correctly distributed among the processors"""
+    """Test if a processor can send a feature map and if it is correctly distributed among the processors."""
 
     processor_1 = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
@@ -221,7 +232,11 @@ async def test_feature_map_distribution():
 
 
 def assert_feature_map(message):
-    """Help method to assert if the received feature map message is as expected"""
+    """Help method to assert if the received feature map message is as expected.
+
+    Args:
+        message (json): json message with bounding boxes.
+    """
     message_json = json.loads(message)
     assert message_json["type"] == "featureMap"
     assert message_json["objectId"] == 1
@@ -232,9 +247,9 @@ def assert_feature_map(message):
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_bounding_boxes_distribution_and_timeline_logging():
-    """Test if a processor can send a bounding box message and if it is correctly received by the interface
+    """Test if a processor can send a bounding box message and if it is correctly received by the interface.
 
-    Also test if the timeline is logged properly and the serving handler is available
+    Also test if the timeline is logged properly and the serving handler is available.
     """
 
     processor = \
@@ -259,7 +274,7 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
         "frameId": 1,
         "boxes": [
             {"objectId": 1},
-            # This next one isn't tracked so should cause a message at the processor
+            # This next one isn't tracked so should cause a message at the processor.
             {"objectId": 2},
             {"rect": []}
         ]
@@ -273,7 +288,7 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
 
     processor.close()
 
-    # Stop tracking both objects, as tey are no longer needed
+    # Stop tracking both objects, as tey are no longer needed.
     interface.write_message(json.dumps({
         "type": "stop",
         "objectId": 1
@@ -285,7 +300,11 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
 
 
 def assert_boxes_message(message):
-    """Help method to assert if the received boxes message is as expected"""
+    """Help method to assert if the received boxes message is as expected.
+
+    Args:
+        message (json): json message with bounding boxes.
+    """
     message_json = json.loads(message)
     assert message_json["type"] == "boundingBoxes"
     assert message_json["cameraId"] == "processor_4"
@@ -301,7 +320,7 @@ def assert_boxes_message(message):
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_bad_bounding_boxes_message():
-    """Test if sending a bad bounding boxes message does not crash the server"""
+    """Test if sending a bad bounding boxes message does not crash the server."""
 
     processor = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
@@ -320,7 +339,7 @@ async def test_bad_bounding_boxes_message():
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_incomplete_timeline_data_request():
-    """Test if requesting timeline data without objectId parameter gives the correct response"""
+    """Test if requesting timeline data without objectId parameter gives the correct response."""
 
     response = requests.get('http://processor-orchestrator-service/timelines').text
     assert response == "Missing 'objectId' query parameter"
@@ -329,7 +348,7 @@ async def test_incomplete_timeline_data_request():
 @pytest.mark.asyncio
 @pytest.mark.timeout(30)
 async def test_stop_tracking():
-    """Test if an interface can send a stop tracking message and if it is correctly received by the processor"""
+    """Test if an interface can send a stop tracking message and if it is correctly received by the processor."""
 
     processor = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
@@ -351,14 +370,19 @@ async def test_stop_tracking():
         "objectId": 1
     }))
 
-    # Read start message first
+    # Read start message first.
     _ = await processor.read_message()
     message = await processor.read_message()
     assert assert_stop_tracking(message, 1)
 
 
 def assert_stop_tracking(message, object_id):
-    """Help method to assert if the stop tracking message is as expected"""
+    """Help method to assert if the stop tracking message is as expected.
+
+    Args:
+        message (json): json message containing the stop command.
+        object_id (int): integer containing the object id.
+    """
     message_json = json.loads(message)
     assert message_json["type"] == "stop"
     assert message_json["objectId"] == object_id
@@ -368,7 +392,7 @@ def assert_stop_tracking(message, object_id):
 @pytest.mark.asyncio
 @pytest.mark.timeout(30)
 async def test_startup_message():
-    """Test if a processor gets the currently tracked feature maps"""
+    """Test if a processor gets the currently tracked feature maps."""
 
     processor_1 = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
@@ -399,7 +423,7 @@ async def test_startup_message():
         "id": "processor_7"
     }))
 
-    # read start message first
+    # Read start message first.
     message = await processor_2.read_message()
     assert assert_feature_map(message)
 

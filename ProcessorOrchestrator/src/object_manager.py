@@ -6,7 +6,6 @@ it removes itself from upon removal.
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import asyncio
 import json
@@ -22,8 +21,8 @@ class TrackingObject:
     """Abstract representation of objects that are tracked in the processors.
 
     Attributes:
-        identifier: An int that serves as the unique identifier to this object.
-        feature_map: A json which contains the features of this object, should be sent to all processors.
+        identifier (int): Serves as the unique identifier to this object.
+        feature_map (json): Contains the features of this object, should be sent to all processors.
     """
 
     def __init__(self):
@@ -49,7 +48,11 @@ class TrackingObject:
         del objects[self.identifier]
 
     def log_spotting(self, processor_id):
-        """Writes a spotting of this object to a log file"""
+        """Writes a spotting of this object to a log file.
+
+        Args:
+            processor_id (int): Identifier of the processor
+        """
         file = open(f"tracking_timelines/tracking_logs_{self.identifier}.txt", "a")
         file.write(json.dumps({
             "timeStamp": datetime.now().strftime("%Y/%m/%d | %H:%M:%S"),
@@ -60,8 +63,7 @@ class TrackingObject:
 
 
 def start_tracking_timeout_monitoring(timeout, event_loop):
-    """Starts a thread which monitors all objects currently being tracked and
-    makes sure they are no longer tracked after a given timeout
+    """Starts a thread which monitors all objects currently being tracked and removes them after the timeout.
 
     Args:
         timeout (int):
@@ -69,30 +71,29 @@ def start_tracking_timeout_monitoring(timeout, event_loop):
         event_loop (AbstractEventLoop):
             The event loop that should be used inside the thread
     """
-    thread = threading.Thread(target=set_event_loop_and_start_tracking_monitoring_timout, args=(timeout,event_loop,))
+    thread = threading.Thread(target=set_event_loop_and_start_tracking_monitoring_timout, args=(timeout, event_loop,))
     thread.start()
 
 
 def set_event_loop_and_start_tracking_monitoring_timout(timeout, event_loop):
-    """Sets the event loop in this thread and starts the timeout monitoring loop
+    """Sets the event loop in this thread and starts the timeout monitoring loop.
 
     Args:
         timeout (int):
-            The time in seconds after which a tracking object should no longer be tracked
+            The time in seconds after which a tracking object should no longer be tracked.
         event_loop (AbstractEventLoop):
-            The event loop that should be used inside the thread
-
+            The event loop that should be used inside the thread.
     """
     asyncio.set_event_loop(event_loop)
     monitor_tracking_timeout(timeout)
 
 
 def monitor_tracking_timeout(timeout):
-    """ Checks all objects and deletes those that have and expired lifetime
+    """Checks all objects and deletes those that have and expired lifetime.
 
     Args:
         timeout (int):
-            The time in seconds after which a tracking object should no longer be tracked
+            The time in seconds after which a tracking object should no longer be tracked.
     """
     timeout_border = datetime.now() - timedelta(seconds=timeout)
     delete_list = list()

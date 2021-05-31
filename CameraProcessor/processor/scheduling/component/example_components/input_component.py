@@ -1,9 +1,8 @@
-"""Component that gets input from previous stage
+"""Component that gets input from previous stage.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 
@@ -22,7 +21,7 @@ class InputComponent(IComponent):
         """Example function with single argument that can be returned by execute_component().
 
         Args:
-            obj: input object passed through by scheduler.
+            obj (object): Input object passed through by scheduler.
 
         Returns:
             object: Modified object used by the next layer.

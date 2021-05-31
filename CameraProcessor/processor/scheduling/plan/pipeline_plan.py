@@ -1,9 +1,8 @@
-"""Defines a scheduler plan for the entire pipeline stage to run
+"""Defines a scheduler plan for the entire pipeline stage to run.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from processor.scheduling.node.schedule_node import ScheduleNode
 
@@ -22,7 +21,7 @@ def create_plan(plan_args):
     """Create a plan using the configuration for the entire pipeline.
 
     Args:
-        dict: dictionary containing every argument based on name.
+        plan_args (dict[str, obj]): Dictionary containing every argument based on name.
 
     Returns:
         ScheduleNode: starting node of the plan.

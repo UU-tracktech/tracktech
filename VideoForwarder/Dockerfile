@@ -56,7 +56,7 @@ RUN ["mkdir", "utility"]
 COPY src src
 COPY tests tests
 
-ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc","--output-format=colorized"]
+ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
 
 
 FROM installer AS production
