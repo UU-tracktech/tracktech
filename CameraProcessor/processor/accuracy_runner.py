@@ -55,7 +55,7 @@ def main(configs):
         bounding_boxes = detector.detect(frame_obj)
         image_id = capture.image_names[capture.image_index].split('.')[0]
 
-        # Convert boxes to string
+        # Convert boxes to string.
         boxes_string = boxes_to_accuracy_json(bounding_boxes,
                                               image_id)
 
@@ -65,7 +65,7 @@ def main(configs):
         except RuntimeError as run_error:
             print(f'Cannot write to the file with following exception: {run_error}')
 
-    # Close files
+    # Close files.
     detection_file.close()
 
 

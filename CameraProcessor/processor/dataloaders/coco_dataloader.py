@@ -3,7 +3,6 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from os import path
 
@@ -39,14 +38,11 @@ class COCODataloader(IDataloader):
         """Download images from the COCO dataset containing the category person.
 
         Args:
-            amount: Amount of images to download.
-
-        Returns: COCO images in the image_upload_path folder.
-
+            amount (integer): Amount of images to be downloaded.
         """
-        # Specify a list of category names of interest
+        # Specify a list of category names of interest.
         cat_ids = self.coco.getCatIds(catNms=['person'])
-        # Get the corresponding image ids and images using loadImgs
+        # Get the corresponding image ids and images using loadImgs.
         img_ids = self.coco.getImgIds(catIds=cat_ids)
         img_ids = img_ids[:amount]
         images = self.coco.loadImgs(img_ids)
@@ -89,9 +85,9 @@ class COCODataloader(IDataloader):
         return annotations
 
     def __get_all_annotations(self):
-        # Specify a list of category names of interest
+        # Specify a list of category names of interest.
         cat_ids = self.coco.getCatIds(catNms=self.categories)
-        # Get the corresponding image ids and images using loadImgs
+        # Get the corresponding image ids and images using loadImgs.
         img_ids = self.coco.getImgIds(catIds=cat_ids)
         img_ids = img_ids[:self.nr_frames]
 

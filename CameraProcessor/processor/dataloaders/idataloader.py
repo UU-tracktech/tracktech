@@ -3,15 +3,12 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from PIL import Image
 
 
 class IDataloader:
-    """
-    Dataloader super class.
-    """
+    """Dataloader super class."""
 
     def __init__(self, config_parser, path_location):
         """
@@ -36,11 +33,11 @@ class IDataloader:
         """Gets the size of an image based on its name.
 
         Args:
-            this_image_path: Path to image file.
-            image_id: String with the name of the image.
+            image_id (integer): String with the name of the image.
+            this_image_path (string): Path to image file.
 
-        Returns: width, height (integers).
-
+        Returns:
+            image.size (shape): width and height dimensions of the image.
         """
         if image_id in self.image_dimensions:
             return self.image_dimensions[image_id]
@@ -51,7 +48,7 @@ class IDataloader:
     def parse_file(self):
         """Parses a file into a BoundingBoxes object.
 
-        Returns: a BoundingBoxes object.
-
+        Raises:
+            NotImplementedError.
         """
         raise NotImplementedError('parse file method not implemented')
