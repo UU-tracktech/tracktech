@@ -159,10 +159,17 @@ class ClientSocket(WebSocketHandler):
                     - "frameId"  | The identifier of the frame on which the bounding box of the object to be tracked
                                    was computed.
                     - "boxId"    | The identifier of the bounding box computed for the object to be tracked.
+                    - "image"    | A serialisation of an image cutout of the subject to be tracked
+                Of these parameters, at least "image", or the combination of "frameId" and "boxId" should
+                be present, though a full combination is also possible.
         """
         camera_id = message["cameraId"]
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
+        frame_id = message.get("frameId")
+        box_id = message.get("boxId")
+        image = message.get("image")
+
+        if image is None and (frame_id is None or box_id is None):
+            raise KeyError()
 
         if camera_id not in processors.keys():
             logger.log("Unknown processor")
@@ -174,12 +181,21 @@ class ClientSocket(WebSocketHandler):
             f"New tracking object created with id {tracking_object.identifier}, "
             f"found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}")
 
-        processors[camera_id].send_message(json.dumps({
+        processor_message = {
             "type": "start",
-            "objectId": tracking_object.identifier,
-            "frameId": frame_id,
-            "boxId": box_id
-        }))
+            "objectId": tracking_object.identifier
+        }
+
+        if frame_id is not None:
+            processor_message["frameId"] = frame_id
+        if box_id is not None:
+            processor_message["boxId"] = box_id
+        if image is not None:
+            processor_message["image"] = image
+
+        processors[camera_id].send_message(json.dumps(
+            processor_message
+        ))
 
     @staticmethod
     def stop_tracking(message):
