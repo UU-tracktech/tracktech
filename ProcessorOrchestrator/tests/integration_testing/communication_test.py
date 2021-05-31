@@ -152,6 +152,43 @@ def assert_start_tracking(message):
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(40)
+async def test_start_tracking_with_image_and_timeout():
+    """Test if interface can send a start tracking command with only an image
+    that is then send to the correct processor.
+    Also test if after a few seconds the object is automatically no longer tracked."""
+
+    processor = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+    processor.write_message(json.dumps({
+        "type": "identifier",
+        "id": "processor_1b"
+    }))
+
+    interface = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    interface.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "processor_1b",
+        "image": "test"
+    }))
+
+    message = await processor.read_message()
+    assert assert_start_tracking_with_image(message)
+
+    message_2 = await processor.read_message()
+    assert assert_stop_tracking(message_2, 1)
+
+
+def assert_start_tracking_with_image(message):
+    """Help method to assert if the start tracking message is as expected, with an image parameter"""
+    message_json = json.loads(message)
+    assert message_json["type"] == "start"
+    assert message_json["image"] == "test"
+    return True
+
+
+@pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_feature_map_distribution():
     """Test if a processor can send a feature map and if it is correctly distributed among the processors"""

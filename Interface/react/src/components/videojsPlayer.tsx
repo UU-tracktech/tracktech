@@ -208,7 +208,6 @@ export function VideoPlayer(props: VideoPlayerProps) {
         console.log('URI changed: ', currentUri)
         startTime = GetSegmentStarttime(currentUri)
         console.log('Starttime: ', PrintTimestamp(startTime))
-        playerRef.current?.currentTime(playerStartTime)
         if (changeIntervalRef.current)
           playerRef.current?.clearInterval(changeIntervalRef.current)
       }
