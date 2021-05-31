@@ -1,11 +1,9 @@
-""" Tests receiving messages from orchestrator, example message pipeline with interface and processor connected
+"""Tests receiving messages from orchestrator, example message pipeline with interface and processor connected.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
-# pylint: disable=unused-variable
 import asyncio
 import json
 import pytest
@@ -17,41 +15,43 @@ from utils.utils import PC_URL, IF_URL
 
 
 class TestReceivingFromOrchestrator:
-    """Class that contains receiving from orchestrator tests
-
-    """
+    """Class that contains receiving from orchestrator tests."""
     @pytest.mark.asyncio
     @pytest.mark.timeout(10)
     async def test_confirm_connection(self):
-        """Confirms connection with websocket
-
-        """
+        """Confirms connection with websocket."""
         ws_client = await create_dummy_client(PC_URL, "mock_id")
         assert ws_client.connection.protocol is not None
 
     @pytest.fixture(params=['featureMap'])
     def message_type(self, request):
-        """Fixture to generate message types
+        """Fixture to generate message types.
 
+        Args:
+            request (Any): Type of message.
         """
         return request.param
 
     @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
     def amount(self, request):
-        """Fixture to generate message amounts and whether or not invalid messages
+        """Fixture to generate message amounts and whether or not invalid messages.
 
+        Args:
+            request (int, bool): Number of messages to send and whether it should be valid data
         """
         return request.param
 
     @pytest.mark.asyncio
     async def test_retrieve_start_stop(self):
-        """Mock interface client sends a start command to the orchestrator. Check if camera processor handles this
-        command properly. Then sends a stop command. Check if camera processor also handles this stop.
+        """Mock interface client sends a start and stop command to the processor
+
+        Check if camera processor handles this command properly.
+        Then sends a stop command. Check if camera processor also handles this stop.
         """
-        # Get a connected processor client
+        # Get a connected processor client.
         processor_client = await create_dummy_client(PC_URL, "mock_id")
 
-        # Get a connected interface client
+        # Get a connected interface client.
         interface_client = await create_dummy_client(IF_URL)
 
         start_command = json.dumps({"type": "start", "frameId": 1, "boxId": 5, "cameraId": "mock_id"})
@@ -84,7 +84,7 @@ class TestReceivingFromOrchestrator:
         """A coroutine used for waiting until the message queue is empty.
 
         Args:
-            ws_client: the given WebSocketClient
+            ws_client (WebsocketClient): Websocket to check whether the queue is empty.
         """
         while True:
             if not ws_client.write_queue:
@@ -92,6 +92,11 @@ class TestReceivingFromOrchestrator:
 
     @staticmethod
     async def _check_closed(ws_client):
+        """Coroutine to wait until the connection is closed.
+
+        Args:
+            ws_client (WebsocketClient): Websocket to check whether the queue is empty.
+        """
         while ws_client.connection is not None:
             pass
         return

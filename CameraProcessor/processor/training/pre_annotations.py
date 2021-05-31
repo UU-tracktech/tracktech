@@ -1,9 +1,8 @@
-""" Loads the ground truth and converts it to a list of bounding boxes.
+"""Loads the ground truth and converts it to a list of bounding boxes.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import json
@@ -15,13 +14,13 @@ from processor.data_object.rectangle import Rectangle
 
 
 class PreAnnotations:
-    """ Class that loads the ground truth and converts it to a list of bounding boxes.
+    """Class that loads the ground truth and converts it to a list of bounding boxes.
 
     Attributes:
         file_path (str): Path to file that contains annotations
         skipped_lines (int): How many lines are not readable in file
         nr_frames (int): Number of frames read by PreAnnotations
-        boxes List[List[BoundingBox]]: List of boxes for each frame
+        boxes (List[List[BoundingBox]]): List of boxes for each frame
     """
     def __init__(self, file_path, nr_frames):
         """Constructor for the preAnnotations object.
@@ -54,7 +53,7 @@ class PreAnnotations:
         """
         is_txt_file = re.search('^.*.txt$', self.file_path)
         is_json_file = re.search('^.*.json$', self.file_path)
-        # Switch statement
+        # Switch statement.
         if is_txt_file:
             self.parse_text_file()
         elif is_json_file:
@@ -67,32 +66,32 @@ class PreAnnotations:
 
         Reads file line by line and puts it inside a bounding box object.
         """
-        # Read file
+        # Read file.
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
 
-        # Determine delimiter automatically
+        # Determine delimiter automatically.
         delimiter = ' '
         if lines[0].__contains__(','):
             delimiter = ','
 
-        # Extract information from lines
+        # Extract information from lines.
         for line in lines:
             (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = self.parse_line(line, delimiter)
             if frame_nr - 1 >= self.nr_frames:
                 self.skipped_lines = self.skipped_lines + 1
                 continue
 
-            # Create bounding box
+            # Create bounding box.
             rectangle = Rectangle(
                 pos_x, pos_y,
                 (pos_x + pos_w), (pos_y + pos_h)
             )
-            # Append box to list of boxes
+            # Append box to list of boxes.
             box = BoundingBox(person_id, rectangle, "UFO", 1)
             self.boxes[frame_nr - 1].append(box)
 
-        # Logs when lines skipped
+        # Logs when lines skipped.
         if self.skipped_lines > 0:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
@@ -108,15 +107,15 @@ class PreAnnotations:
             delimiter (str): delimiter values in line are separated with.
 
         Returns:
-            Integer values of line parsed and put inside string.
+            [int]: Number values of line parsed and put inside string.
         """
         return [int(i) for i in line.split(delimiter)[:6]]
 
     def parse_json_file(self):
         """Parses JSON file."""
-        # Open file
+        # Open file.
         with open(self.file_path) as json_file:
-            # Every json object
+            # Every json object.
             data = [json.load(json_file)]
             for json_obj in data:
                 self.parse_json_object(json_obj)
@@ -128,22 +127,22 @@ class PreAnnotations:
         Looping goes through each path and adds box for each frame.
 
         Args:
-            json_object: A single json object.
+            json_object (dict): A single json object.
         """
         first_frame = list(json_object[0]['boxes'])[0]
-        # A rectangle
+        # A rectangle.
         pos_x0, pos_y0, pos_x1, pos_y1 = json_object[0]['boxes'][first_frame]
         half_width = int((pos_x1 - pos_x0) / 2)
         half_height = int((pos_y1 - pos_y0) / 2)
 
-        # Add bounding box for each frame
+        # Add bounding box for each frame.
         for frame_nr in json_object[0]['path']:
-            # Skips frame when it does exceed list length
+            # Skips frame when it does exceed list length.
             if int(frame_nr) >= self.nr_frames:
                 self.skipped_lines = self.skipped_lines + 1
                 continue
 
-            # Create bounding box for a frame
+            # Create bounding box for a frame.
             (pos_x, pos_y) = json_object[0]['path'][frame_nr]
             rectangle = Rectangle(
                 pos_x - half_width, (pos_y - half_height),
@@ -151,5 +150,5 @@ class PreAnnotations:
             )
 
             box = BoundingBox(1, rectangle, 'UFO', 1)
-            # Append to list
+            # Append to list.
             self.boxes[int(frame_nr) - 1].append(box)

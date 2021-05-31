@@ -1,9 +1,8 @@
-"""Contains the ICapture interface for different capture methods
+"""Contains the ICapture interface for different capture methods.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 
@@ -12,8 +11,8 @@ class ICapture:
     def opened(self):
         """Returns whether the capture object still opened.
 
-        Returns (bool):
-            Boolean which indicates whether stream is still opened
+        Returns:
+            bool: Boolean which indicates whether stream is still opened
         """
         raise NotImplementedError('stopped method not implemented')
 
@@ -24,8 +23,8 @@ class ICapture:
     def get_next_frame(self):
         """Gets the next frame from the capture.
 
-        Returns (bool, FrameObj):
-            Boolean whether a next frame was found.
-            Frame from the capture object.
+        Returns:
+            bool, FrameObj: Boolean whether a next frame was found.
+                            Frame from the capture object.
         """
         raise NotImplementedError('No implementation for getting next frame')

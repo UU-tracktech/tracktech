@@ -67,7 +67,7 @@ COPY tests tests
 
 WORKDIR /
 
-ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc","--output-format=colorized"]
+ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
 
 
 FROM base as deploy 
