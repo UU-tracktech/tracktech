@@ -93,6 +93,7 @@ export function Home() {
       <div
         style={{
           padding: '5px',
+          overflowY: 'auto',
           display: 'grid',
           gap: '5px'
         }}

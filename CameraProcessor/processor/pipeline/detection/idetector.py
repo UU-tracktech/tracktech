@@ -1,9 +1,8 @@
-"""Detection abstract class
+"""Detection abstract class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import numpy as np
 import torch
@@ -31,7 +30,7 @@ class IDetector(IComponent):
 
     @staticmethod
     def convert_image(img, device, half):
-        """Converts the image to the size used for the detection
+        """Converts the image to the size used for the detection.
 
         Args:
             img (Tensor): Image in a tensor representation
@@ -41,7 +40,7 @@ class IDetector(IComponent):
         Returns:
             Tensor: Image that is converted
         """
-        # Convert image
+        # Convert image.
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
         img = np.ascontiguousarray(img)
         img = torch.from_numpy(img).to(device)
@@ -65,7 +64,7 @@ class IDetector(IComponent):
         """
         pred = model(img, augment=configs.getboolean('augment'))[0]
 
-        # Apply NMS
+        # Apply NMS.
         return non_max_suppression(pred, configs.getfloat('conf-thres'),
                                    configs.getfloat('iou-thres'),
                                    classes=configs['classes'],
@@ -83,14 +82,14 @@ class IDetector(IComponent):
             filter_types ([str]): What detection types to filter on
             names ([str]): The complete list of types that get detected
         """
-        # detections per image
+        # Detections per image.
         for _, det in enumerate(pred):
             if det is not None and len(det) > 0:
-                # Rescale boxes from img_size to im0 size
+                # Rescale boxes from img_size to im0 size.
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], frame_obj.get_frame().shape).round()
 
                 bb_id = 0
-                # Get the xyxy, confidence, and class, attach them to det_obj
+                # Get the xyxy, confidence, and class, attach them to det_obj.
                 for *xyxy, conf, cls in reversed(det):
                     width, height = frame_obj.get_shape()
                     bbox = BoundingBox(

@@ -1,9 +1,8 @@
-"""Tests the test.py functions in utils
+"""Tests the test.py functions in utils.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import json
@@ -12,11 +11,9 @@ from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 class TestText:
-    """Class that holds the functions to test text.py
-    """
-
+    """Class that holds the functions to test text.py."""
     def test_bounding_boxes_to_json(self, bbox):
-        """Function to test the bounding_boxes_to_json function
+        """Function to test the bounding_boxes_to_json function.
 
         Args:
             bbox (BoundingBox): bounding box fixture
@@ -41,11 +38,11 @@ class TestText:
         assert json_string == proper_string
 
     def test_boxes_to_txt(self, bbox, img):
-        """Tests the boxes_to_txt function
+        """Tests the boxes_to_txt function.
 
         Args:
-            bbox (BoundingBox): the bounding box fixture
-            img (np.ndarray): the image fixture
+            bbox (BoundingBox): the bounding box fixture.
+            img (np.ndarray): the image fixture.
         """
         txt_string = boxes_to_txt([bbox], (img.shape[0], img.shape[1]), 1)
         assert txt_string == "1,1,60,120,60,60,1,1,1 \n"

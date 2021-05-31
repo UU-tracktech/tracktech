@@ -1,9 +1,8 @@
-"""Fixtures and configurations available to other capture unit tests
+"""Fixtures and configurations available to other capture unit tests.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import pytest
 
@@ -17,18 +16,18 @@ from tests.conftest import get_test_configs
 def __get_images_dir():
     """Get the path to the images directory.
 
-    Returns: a string containing the file path to the image folder.
-
+    Returns:
+        str: Path to the image folder.
     """
     configs = get_test_configs()
     return configs['Accuracy']['source_path']
 
 
 def __get_video_path():
-    """Get the path to a video
+    """Get the path to a video.
 
-    Returns: a string containing the file path to a video
-
+    Returns:
+        str: File path to the video.
     """
     configs = get_test_configs()
     return configs['Yolov5']['source_path']
@@ -46,13 +45,12 @@ def __get_video_path():
                      ],
                 )
 def capture_implementation(request):
-    """ Defines capture_implementation as multiple implementations of iCapture,
-    to be use in generic capture tests.
+    """Defines capture_implementation as multiple implementations of iCapture to be use in generic capture tests.
 
     Args:
-        request: different implementations of capture.
+        request (ICapture): different non initialized implementations of capture.
 
-    Returns: implementation of capture.
-
+    Returns:
+        ICapture: non initialized implementation of capture.
     """
     return request.param

@@ -1,9 +1,8 @@
-"""Tests start_command.py
+"""Tests start_command.py.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import pytest
 
@@ -15,7 +14,7 @@ class TestStartCommand:
     """Tests the start command."""
 
     def setup_method(self):
-        """Creates a StartCommand object"""
+        """Creates a StartCommand object."""
         self.start = StartCommand(1, 2, 3)
 
     def test_start_command(self):

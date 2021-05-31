@@ -25,6 +25,7 @@ import {
 } from '../classes/orchestratorMessage'
 import { stream, source } from '../classes/source'
 import { size } from '../classes/size'
+import { colours } from '../utilities/colours'
 
 // The overlayprops contain info on what camera feed the overlay belongs to and wheter to draw boxes or not
 export type overlayProps = {
@@ -242,16 +243,6 @@ export function Overlay(props: overlayProps) {
    */
   function DrawBoxes(item: QueueItem): JSX.Element {
     // TODO: make sure objectIds can be infinitely big without causing an index out of bounds
-    var colordict: string[] = [
-      'Green',
-      'Red',
-      'Yellow',
-      'Blue',
-      'Purple',
-      'Brown',
-      'Aqua',
-      'Navy'
-    ]
 
     return (
       <div>
@@ -278,8 +269,10 @@ export function Overlay(props: overlayProps) {
                   top: `${top + size.top}px`,
                   width: `${width}px`,
                   height: `${height}px`,
-                  borderColor: colordict[box.objectId ?? 0],
-                  borderStyle: 'solid',
+                  borderColor: box.objectId
+                    ? colours[box.objectId % 102]
+                    : 'green',
+                  borderStyle: box.objectId ? 'solid' : 'dashed',
                   transitionProperty: 'all',
                   transitionDuration: '100ms',
                   transitionTimingFunction: 'linear',

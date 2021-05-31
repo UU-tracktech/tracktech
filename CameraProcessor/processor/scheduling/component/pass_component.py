@@ -8,11 +8,13 @@ from processor.scheduling.component.component_interface import IComponent
 
 
 class PassComponent(IComponent):
-    """Component that passes each object it is given as input to the next stage as output
-    """
+    """Component that passes each object it is given as input to the next stage as output."""
 
     def pass_input(self, passed_input):
         """Instantly passes input as output.
+
+        Args:
+            passed_input (object): Any input that is passed to the component.
         """
         return passed_input
 

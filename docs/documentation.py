@@ -1,23 +1,22 @@
-"""This program has been developed by students from the bachelor Computer Science at
+"""Generate the documentation using pdoc and jinja templating.
+
+This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
-
-
 import os
 import sys
 import argparse
 import logging
 from pathlib import Path
-import pkgutil
-import pkg_resources
-import pdoc
-import mock
 import dis
 import importlib
 import importlib.util
 import shutil
+import pkgutil
+import pkg_resources
+import pdoc
+import mock
 
 
 def generate_documentation(component_source_path):
@@ -39,7 +38,7 @@ def generate_documentation(component_source_path):
     # Add to_tree to Jinja2 environment filters to generate tree from modules list.
     pdoc.render.env.filters['to_tree'] = to_tree
 
-    # Output directory
+    # Output directory.
     output_dir = Path(os.path.realpath(os.path.join(doc_folder, 'html', component_source_path)))
 
     if os.path.exists(output_dir):
@@ -132,15 +131,14 @@ def get_imports(file_path):
     # Filter on IMPORT_NAME.
     instruction_names = ['IMPORT_NAME']
 
-    # argval of allowed instruction arguments
+    # Argval of allowed instruction arguments.
     imports = [instruction.argval for instruction in instructions if instruction.opname in instruction_names]
 
     return imports
 
 
 def get_modules(root_folder):
-    """Gets all modules starting from the top folder,
-    excludes Python modules that are deemed as hidden.
+    """Gets all modules starting from the top folder, excludes Python modules that are deemed as hidden.
 
     Gets all modules starting from the top folder given as root_folder.
     Starts by searching for all sub folders of the root folder,
@@ -157,23 +155,9 @@ def get_modules(root_folder):
     component_root = os.path.dirname(root_folder)
     sys.path.append(component_root)
 
-    # Find all valid sub folders (dir name doesn't start with
-    # '.' or '_', starting at the root_folder.
+    # Find all sub folders that do not start with '.' or '_', starting at the root_folder.
     folders = [root_folder]
-    index = 0
-    while index < len(folders):
-        current_folder = folders[index]
-
-        # Find all folders/directories in current folder, add full path if folder name doesn't start with '.' or '_'.
-        for folder in os.scandir(current_folder):
-            if not folder.is_dir() or folder.name.startswith('.') or folder.name.startswith('_'):
-                continue
-
-            folder_name = os.path.join(current_folder, folder.name)
-
-            folders.append(folder_name)
-
-        index += 1
+    add_submodule_to_folders(folders)
 
     includes = dict()
 
@@ -191,12 +175,12 @@ def get_modules(root_folder):
             try:
                 imported_module = importlib.import_module(import_path)
 
-                # Get included modules from the __all__ attribute,
-                # module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
+                # Get included modules from the __all__ attribute.
+                # Module excluded if it isn't inside the __all__ attribute if the __init__.py has an __all__ attribute.
                 if hasattr(imported_module, '__all__'):
                     all_included = getattr(imported_module, '__all__')
                     includes[module_path] = all_included
-            # Package cannot be imported
+            # Package cannot be imported.
             except ImportError as err:
                 logging.warning(f'Module path {module_path} with import {import_path} throws {err}.\n'
                                 'Most likely the __init__.py contains imports or code with side-effects.\n'
@@ -214,7 +198,7 @@ def get_modules(root_folder):
 
             # Check if module is included.
             include = True
-            for key in includes.keys():
+            for key in includes:
                 # Module excluded if present in __all__ attribute within __init__.py file.
                 if key != module_path and key in module_path and module.name not in includes[key]:
                     include = False
@@ -226,6 +210,28 @@ def get_modules(root_folder):
     sys.path.remove(component_root)
 
     return modules
+
+
+def add_submodule_to_folders(folders):
+    """Add the submodules recursively to the folder.
+
+    Args:
+        folders ([str]): Folders that get.
+    """
+    index = 0
+    while index < len(folders):
+        current_folder = folders[index]
+
+        # Find all folders/directories in current folder, add full path if folder name doesn't start with '.' or '_'.
+        for folder in os.scandir(current_folder):
+            if not folder.is_dir() or folder.name.startswith('.') or folder.name.startswith('_'):
+                continue
+
+            folder_name = os.path.join(current_folder, folder.name)
+
+            folders.append(folder_name)
+
+        index += 1
 
 
 def path_to_module(component_root, path):
@@ -322,7 +328,7 @@ def get_mocked(mock_modules):
     Returns:
         [str]: modules that are mocked.
     """
-    installed_packages = [p.project_name for p in pkg_resources.working_set]
+    installed_packages = [p.project_name for p in pkg_resources.working_set]  # pylint: disable=not-an-iterable
 
     mocked = []
 
@@ -349,8 +355,7 @@ def get_mocked(mock_modules):
 
 
 def to_tree(modules):
-    """Turn a list of modules into a dictionary representing a tree
-    which gets turned into a JSON object by Jinja2.
+    """Turn a list of modules into a dictionary representing a tree which gets turned into a JSON object by Jinja2.
 
     The tree dictionary contains a dictionary for each package/module.
     A module has an empty dictionary and packages leading up to
@@ -375,7 +380,7 @@ def to_tree(modules):
 
 
 if __name__ == '__main__':
-    # Configure the logger
+    # Configure the logger.
     logging.basicConfig(filename='documentation.log', filemode='w',
                         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
                         level=logging.INFO,
@@ -415,10 +420,10 @@ if __name__ == '__main__':
 
     # Generate documentation for all provided roots.
     for root in args.roots:
-        component_source_path = Path(root)
-        logging.info(f'Generating documentation for: {component_source_path}')
+        component_path = Path(root)
+        logging.info(f'Generating documentation for: {component_path}')
         # Generate documentation for all packages included (via __init__ or if specified __all__ in __init__).
-        generate_documentation(component_source_path)
+        generate_documentation(component_path)
 
     # Create index if flag was provided.
     if args.create_index:

@@ -23,7 +23,7 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,__init__,sort,yolor,torchreid
+ignore=CVS,venv,yolov5,sort,yolor,torchreid
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
@@ -44,7 +44,10 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
-load-plugins=
+load-plugins=utility.copyright_checker,
+             utility.docstring_checker,
+             utility.docstring_content_checker,
+             utility.comment_checker
 #pylint_junit
 
 # Pickle collected data for later comparisons.
@@ -187,7 +190,7 @@ evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / stateme
 # Set the output format. Available formats are text, parseable, colorized, json
 # and msvs (visual studio). You can also give a reporter class, e.g.
 # mypackage.mymodule.MyReporterClass.
-output-format=text
+output-format=colorized
 #junit
 
 # Tells whether to display a full report or only the messages.
@@ -327,7 +330,7 @@ name-group=
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.
-no-docstring-rgx=^_
+no-docstring-rgx=
 
 # List of decorators that produce properties, such as abc.abstractproperty. Add
 # to this list to register other decorators that produce valid properties.
