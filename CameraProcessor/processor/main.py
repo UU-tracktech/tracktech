@@ -52,6 +52,7 @@ async def deploy(configs, ws_id):
     capture, detector, tracker, re_identifier, ws_url = prepare_stream(configs)
     websocket_client = WebsocketClient(ws_url, ws_id)
     await websocket_client.connect()
+    await websocket_client.send_feature_map()
     # Initiate the stream processing loop, giving the websocket client
     await process_stream(
         capture,
