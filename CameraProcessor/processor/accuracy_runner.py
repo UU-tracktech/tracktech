@@ -9,8 +9,10 @@ import sys
 
 from processor.input.image_capture import ImageCapture
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.utils.config_parser import ConfigParser
 from processor.utils.text import boxes_to_txt
+from processor.utils.create_runners import create_tracker, create_detector
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -32,7 +34,6 @@ def main(configs):
     accuracy_dest = accuracy_config['det_path']
     accuracy_info_dest = accuracy_config['det-info_path']
     detection_file = open(accuracy_dest, 'w')
-    detection_file_info = open(accuracy_info_dest, 'w')
 
     print('I will write the detection objects to a txt file')
 
@@ -41,8 +42,8 @@ def main(configs):
 
     # Instantiate the detector.
     print("Instantiating detector...")
-    yolov5_config['device'] = "cpu"
-    detector = Yolov5Detector(yolov5_config, configs['Filter'])
+    detector = create_detector('yolov5', configs)
+    tracker = create_tracker('sort', configs)
 
     # Frame counter starts at 0. Will probably work differently for streams.
     print("Starting video stream...")
@@ -74,6 +75,7 @@ def main(configs):
 
     # Close files.
     detection_file.close()
+    detection_file_info = open(accuracy_info_dest, 'w')
     detection_file_info.write(f'{counter-1},{shape[0]},{shape[1]}')
     detection_file_info.close()
 

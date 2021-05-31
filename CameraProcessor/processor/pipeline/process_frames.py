@@ -22,6 +22,7 @@ from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
+from processor.utils.create_runners import create_detector, create_tracker
 
 from processor.data_object.reid_data import ReidData
 
@@ -57,19 +58,17 @@ def prepare_stream(configs):
     logging.info("Instantiating detector...")
     if configs['Main'].get('detector') not in DETECTOR_SWITCH:
         raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
-    detector, detector_config = __create_detector(DETECTOR_SWITCH[configs['Main'].get('detector')][0],
-                                                  DETECTOR_SWITCH[configs['Main'].get('detector')][1],
-                                                  configs
-                                                  )
+    detector, detector_config = create_detector(configs['Main'].get('detector'),
+                                                configs
+                                                )
 
     # Instantiate the tracker.
     logging.info("Instantiating tracker...")
     if configs['Main'].get('tracker') not in TRACKER_SWITCH:
         raise NameError(f"Incorrect tracker. Tracker {configs['Main'].get('tracker')} not found.")
-    tracker = __create_tracker(TRACKER_SWITCH[configs['Main'].get('tracker')][0],
-                               TRACKER_SWITCH[configs['Main'].get('tracker')][1],
-                               configs
-                               )
+    tracker = create_tracker(configs['Main'].get('tracker'),
+                             configs
+                             )
 
     # Instantiate the tracker.
     logging.info("Instantiating reidentifier...")
@@ -255,36 +254,3 @@ def opencv_display(frame_obj, detected_boxes, tracked_boxes):
     # A timeout of 0 will not display the image.
     if cv2.waitKey(1) & 0xFF == ord('q'):
         sys.exit()
-
-
-def __create_detector(idetector, config_section, configs):
-    """Creates and returns a detector of the given type.
-
-    Args:
-        idetector (IDetector): The CLASS, or object type, of the detector we want.
-        config_section (str): The config section name associated with the given detector.
-        configs (ConfigParser): The configurations of the detector.
-
-    Returns:
-        IDetector, SectionProxy: Requested detector of the given type combined with its config.
-    """
-    config_filter = configs['Filter']
-    detector_config = configs[config_section]
-    detector = idetector(detector_config, config_filter)
-    return detector, detector_config
-
-
-def __create_tracker(itracker, config_section, configs):
-    """Creates and returns a tracker of the given type.
-
-    Args:
-        itracker (ITracker): The CLASS, or object type, of the detector we want.
-        config_section (str): The config section name associated with the given tracker.
-        configs (ConfigParser): The configurations of the detector.
-
-    Returns:
-        ITracker: The requested tracker.
-    """
-    tracker_config = configs[config_section]
-    tracker = itracker(tracker_config)
-    return tracker
