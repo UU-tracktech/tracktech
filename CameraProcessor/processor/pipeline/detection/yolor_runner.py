@@ -1,9 +1,8 @@
-"""Contains the main methods for running YOLOR object detection on a frame
+"""Contains the main methods for running YOLOR object detection on a frame.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import os
@@ -21,15 +20,22 @@ from processor.pipeline.detection.yolor.models.models import Darknet
 
 
 class YolorDetector(IDetector):
-    """Implementation of YOLOR repository
+    """Implementation of YOLOR repository.
 
+    Attributes:
+        config (ConfigParser): Configurations of the application.
+        filter ([str]): List of objects types to detect.
+        device (str): Device that runs the detector.
+        half (bool): Whether to half the model or not.
+        classify (bool): Whether to classify.
+        names ([str]): List of names which that should get detected.
     """
     def __init__(self, config, filters):
-        """Initiate the YOLOR detector
+        """Initiate the YOLOR detector.
 
         Args:
-            config (ConfigParser): YOLOR config file.
-            filters (): Filtering for boundingBoxes.
+            config (ConfigParser): Configurations which also contain Yolor configurations.
+            filters (SectionProxy): Filtering for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         sys.path.insert(0, os.path.join(curr_dir, './yolor'))
@@ -40,25 +46,25 @@ class YolorDetector(IDetector):
             self.filter = filter_names.read().splitlines()
         print('I am filtering on the following objects: ' + str(self.filter))
 
-        # Set logging
+        # Set logging.
         logging.basicConfig(
             format="%(message)s",
             level=logging.INFO)
 
-        # Initialize
+        # Initialize.
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
                 logging.info("CUDA unavailable")
                 self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
-        self.half = self.device.type != 'cpu'  # half precision only supported on CUDA
+        self.half = self.device.type != 'cpu'  # half precision only supported on CUDA.
         if self.device.type == 'cpu':
             logging.info("I am using the CPU. Check CUDA version,"
                          "or whether Pytorch is installed with CUDA support.")
         else:
             logging.info("I am using GPU")
 
-        # Download weights if not present
+        # Download weights if not present.
         if not os.path.exists(self.config['weights_path']):
             logging.warning(f"Weight files for Yolor not found, downloading to {self.config['weights_path']}")
             url = "https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76"
@@ -67,7 +73,7 @@ class YolorDetector(IDetector):
         else:
             logging.info(f"Yolor weights found at {self.config['weights_path']}")
 
-        # Load model
+        # Load model.
         if self.device.type == 'cpu':
             self.model = Darknet(self.config['cfg_path'], self.config['img-size'])
         else:
@@ -77,19 +83,19 @@ class YolorDetector(IDetector):
         if self.half:
             self.model.half()  # to FP16
 
-        # Second-stage classifier
+        # Second-stage classifier.
         self.classify = False
         if self.classify:
-            self.modelc = load_classifier(name='resnet101', n=2)  # initialize
-            # load weights
+            self.modelc = load_classifier(name='resnet101', n=2)  # initialize.
+            # Load weights.
             self.modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=self.device)['model'])
             self.modelc.to(self.device).eval()
 
-        # Get names
+        # Get names.
         self.names = self.load_classes(config['names_path'])
 
         img = torch.zeros((1, 3, self.config.getint('img-size'), self.config.getint('img-size')), device=self.device)
-        _ = self.model(img.half() if self.half else img) if self.device.type != 'cpu' else None  # run once
+        _ = self.model(img.half() if self.half else img) if self.device.type != 'cpu' else None  # run once.
 
     # pylint: disable=duplicate-code
     def detect(self, frame_obj):
@@ -99,29 +105,29 @@ class YolorDetector(IDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects
+            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects.
         """
         bounding_boxes = []
 
-        # Resize
+        # Resize.
         img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'),
                         auto_size=self.config.getint('stride'))[0]
         img = self.convert_image(img, self.device, self.half)
 
-        # Inference
+        # Inference.
         start_time = time_synchronized()
         pred = self.generate_predictions(img, self.model, self.config)
 
         print('converted image')
-        # Apply secondary Classifier
+        # Apply secondary Classifier.
         if self.classify:
             pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
 
-        # Create bounding boxes based on the predictions
+        # Create bounding boxes based on the predictions.
         self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
         boxes = BoundingBoxes(bounding_boxes)
 
-        # Print time (inference + NMS)
+        # Print time (inference + NMS).
         print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
               f'({time_synchronized() - start_time:.3f}s)')
 
@@ -129,16 +135,16 @@ class YolorDetector(IDetector):
 
     @staticmethod
     def load_classes(path):
-        """Loads the classes to detect
+        """Loads the classes to detect.
 
         Args:
-            path (str): path to the file the classes need to get loaded of
+            path (str): path to the file the classes need to get loaded of.
 
         Returns:
-            [str]: List of empty strings
+            [str]: List of empty strings.
         """
-        # Loads *.names file at 'path'
+        # Loads *.names file at 'path'.
         with open(path, 'r') as file:
             names = file.read().split('\n')
-        # filter removes empty strings (such as last line)
+        # Filter removes empty strings (such as last line).
         return list(filter(None, names))

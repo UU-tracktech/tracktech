@@ -1,9 +1,8 @@
-""" Run a detection algorithm and writes the detections to a detection file
+"""Run a detection algorithm and writes the detections to a detection file.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import os
 import sys
@@ -20,30 +19,34 @@ sys.path.insert(0, os.path.join(curr_dir, '../detection'))
 
 
 def main(configs):
-    """Runs YOLOv5 detection on a video file specified in configs.ini."""
-    # Load the config file, take the relevant Yolov5 section
+    """Runs YOLOv5 detection on a video file specified in configs.ini.
+
+    Args:
+        configs (ConfigParser): Configurations to run the accuracy with.
+    """
+    # Load the config file, take the relevant Yolov5 section.
     yolov5_config = configs['Yolov5']
     accuracy_config = configs['Accuracy']
 
-    # Opening files where the information is stored that is used to determine the accuracy
+    # Opening files where the information is stored that is used to determine the accuracy.
     accuracy_dest = accuracy_config['det_path']
     detection_file = open(accuracy_dest, 'w')
 
     print('I will write the detection objects to a txt file')
 
-    # Capture the image stream
+    # Capture the image stream.
     capture = ImageCapture(accuracy_config['source_path'])
 
-    # Instantiate the detector
+    # Instantiate the detector.
     print("Instantiating detector...")
     yolov5_config['device'] = "cpu"
     detector = Yolov5Detector(yolov5_config, configs['Filter'])
 
-    # Frame counter starts at 0. Will probably work differently for streams
+    # Frame counter starts at 0. Will probably work differently for streams.
     print("Starting video stream...")
 
     while capture.opened():
-        # Set the detected bounding box list to empty
+        # Set the detected bounding box list to empty.
         ret, frame_obj = capture.get_next_frame()
 
         if not ret:
@@ -56,7 +59,7 @@ def main(configs):
         boxes_string = boxes_to_accuracy_json(bounding_boxes,
                                               image_id)
 
-        # Write boxes found by detection to
+        # Write boxes found by detection to.
         try:
             detection_file.write(f'{boxes_string}\n')
         except RuntimeError as run_error:

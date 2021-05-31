@@ -1,9 +1,8 @@
-""" Contains the ImageCapture class
+"""Contains the ImageCapture class that reads a folder.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import os
@@ -19,7 +18,7 @@ class ImageCapture(ICapture):
     """Reads all images from a folder one by one.
 
     Attributes:
-        image_paths List[str]: List of paths of images in folder.
+        images_paths (List[str]): List of paths of images in folder.
         nr_images (int): Number of images contained in folder.
         image_index (int): Index of current image frame.
     """
@@ -30,7 +29,7 @@ class ImageCapture(ICapture):
             images_dir (str): Path to the directory that contains the images.
         """
         logging.info(f'Using images from folder {images_dir}')
-        # Gets the number of images from the folder
+        # Gets the number of images from the folder.
         self.images_paths = sorted([os.path.join(images_dir, image_name)
                                     for image_name in os.listdir(images_dir)])
         self.image_names = sorted(os.listdir(images_dir))
@@ -44,7 +43,7 @@ class ImageCapture(ICapture):
         """Capture is still opened when more images are available.
 
         Returns:
-            Boolean whether there are more images to iterate.
+            bool: Whether there are more images to iterate.
         """
         return self.image_index + 1 < self.nr_images
 
@@ -55,11 +54,11 @@ class ImageCapture(ICapture):
     def get_next_frame(self):
         """Gets the next frame from the list of images.
 
-        Returns (bool, FrameObj):
-            Boolean whether a next image was found.
-            FrameObject containing frame and missing timestamp.
+        Returns:
+            bool, FrameObj: Boolean whether a next image was found.
+                            FrameObject containing frame and missing timestamp.
         """
-        # Returns False if we are at the end of the directory
+        # Returns False if we are at the end of the directory.
         if not self.opened():
             return False, None
 
@@ -67,6 +66,6 @@ class ImageCapture(ICapture):
         # Get path of next frame
         image_path = self.images_paths[self.image_index]
 
-        # Reads the image file and returns it
+        # Reads the image file and returns it.
         frame = cv2.imread(image_path)
         return True, FrameObj(frame, time.time())

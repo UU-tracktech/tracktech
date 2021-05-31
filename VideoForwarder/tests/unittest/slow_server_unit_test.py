@@ -1,9 +1,8 @@
-"""Unit test of the forwarder checks camera.py + json conversion
+"""Unit test of the forwarder checks camera.py + json conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 from os import environ
@@ -16,12 +15,10 @@ from src.main import create_camera, create_stream_options
 
 
 class TestHandler(AsyncHTTPTestCase):
-    """Test the server when unable to connect to the stream quickly enough
-    """
+    """Test the server when unable to connect to the stream quickly enough."""
 
     def get_app(self):
-        """Creates the application to test
-        """
+        """Creates the application to test."""
         environ["CAMERA_URL"] = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
         environ["CAMERA_AUDIO"] = "true"
 
@@ -40,17 +37,19 @@ class TestHandler(AsyncHTTPTestCase):
         )
 
     def my_fetch(self, url):
-        """ Do a custom fetch, as the default one crashes
+        """Do a custom fetch, as the default one crashes.
+
+        Args:
+            url (str): Url to connect to.
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False)
 
     @testing.gen_test(timeout=10)
     def test_timeout(self):
-        """ Check not found is returned when the stream cannot be started within the timeout
-        """
+        """Check not found is returned when the stream cannot be started within the timeout."""
 
-        # Retrieve the steam file
+        # Retrieve the steam file.
         response = yield self.my_fetch('/stream.m3u8')
 
-        # Check if the response is Not Found
+        # Check if the response is Not Found.
         assert response.code == 404

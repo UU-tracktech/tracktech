@@ -1,9 +1,8 @@
-"""Defines node class for scheduler with its connections to other nodes
+"""Defines node class for scheduler with its connections to other nodes.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import numpy as np
 from processor.scheduling.node.inode import INode
@@ -12,12 +11,12 @@ from processor.scheduling.node.inode import INode
 class ScheduleNode(INode):
     """Schedule node used by scheduler to schedule and ensure a minimum required order of execution.
 
-    Arguments:
+    Attributes:
         input_count (int): total amount of arguments necessary to execute the component.
         out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index
-        to push argument to.
+            to push argument to.
         component (IComponent): component to execute once the scheduler calls the node
-        (all needed arguments should be ready).
+            (all needed arguments should be ready).
         needed_args (int): amount of arguments still needed to execute the component.
         arguments (np.array): array of all arguments provided so far.
     """
@@ -46,7 +45,7 @@ class ScheduleNode(INode):
         """
         self.needed_args = self.input_count
 
-        # Keeping the numpy array and only emptying would be preferred
+        # Keeping the numpy array and only emptying would be preferred.
         self.arguments = np.empty(self.needed_args, dtype=object)
 
     def executable(self):

@@ -1,9 +1,8 @@
-"""Example component that points to other components and has output
+"""Example component that points to other components and has output.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 from processor.scheduling.component.component_interface import IComponent
 
@@ -13,16 +12,16 @@ class OutputComponent(IComponent):
 
     Contains a function to handle the output that falls outside of the scheduler.
 
-    Arguments:
-        func: function to handle outputs send outside of the schedulers graph.
-        out: contains output, only here for example_plan.py to retrieve output.
+    Attributes:
+        func (Function): function to handle outputs send outside of the schedulers graph.
+        out (object): contains output, only here for example_plan.py to retrieve output.
     """
 
     def __init__(self, func):
         """Inits IntermediaryOutputComponent with output handling function.
 
         Args:
-            func: function to handle outputs send outside of the schedulers graph.
+            func (Function): function to handle outputs send outside of the schedulers graph.
         """
         self.func = func
 
@@ -32,6 +31,9 @@ class OutputComponent(IComponent):
         """Example function with single argument that can be returned by execute_component().
 
         Outputs to object outside of scheduler and there is no next layer to pass objects to.
+
+        Args:
+            obj (object): Any argument can get used by the work function.
 
         Returns:
             object: output of function that processed self.out.

@@ -3,7 +3,6 @@
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 import json
@@ -17,7 +16,7 @@ def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
         timestamp (Timestamp): timestamp of box used for syncing in interface.
 
     Returns:
-        JSON representation of the object.
+        json: JSON representation of the object.
     """
     boxes_list = bounding_boxes.get_bounding_boxes()
 
