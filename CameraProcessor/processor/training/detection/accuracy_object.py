@@ -92,28 +92,28 @@ class AccuracyObject:
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def get_dataloader(self, format, path_location):
+    def get_dataloader(self, annotation_format, path_location):
         """Get a dataloader based on format and path_location.
 
         Args:
-            format (str): Dataloader format to select.
+            annotation_format (str): Dataloader format to select.
             path_location (str): Location in config to read annotations path from.
 
         Returns:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
 
         """
-        if format == 'COCO':
+        if annotation_format == 'COCO':
             dataloader = COCODataloader(self.configs, path_location)
-        elif format == 'JSON':
+        elif annotation_format == 'JSON':
             dataloader = JSONDataloader(self.configs, path_location)
-        elif format == 'MOT':
+        elif annotation_format == 'MOT':
             dataloader = MOTDataloader(self.configs, path_location)
         else:
             return ValueError("This is not a valid dataloader")
         return dataloader
 
-    def read_boxes(self, type, path_location):
+    def read_boxes(self, annotation_format, path_location):
         """A method for reading the bounding boxes with the pre_annotations.
 
         Args:
@@ -122,7 +122,7 @@ class AccuracyObject:
         Returns:
             [BoundingBox]: A list of read bounding boxes.
         """
-        dataloader = self.get_dataloader(type, path_location)
+        dataloader = self.get_dataloader(annotation_format, path_location)
         bounding_boxes_objects = dataloader.parse_file()
         bounding_boxes = []
         for bounding_boxes_object in bounding_boxes_objects:
