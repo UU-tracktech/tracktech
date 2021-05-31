@@ -203,6 +203,8 @@ class DocstringContentChecker(BaseChecker):
             line_index = self.doc_lint_args_section(node, doc_lines, line_index, args)
         elif section_name == 'Returns':
             line_index = self.doc_lint_returns_section(node, doc_lines, line_index)
+        elif section_name == 'Raises':
+            line_index = self.doc_lint_raises_section(doc_lines, line_index)
         else:
             line_index += 1
 
@@ -326,7 +328,7 @@ class DocstringContentChecker(BaseChecker):
 
         Args:
             node (Any): Function definition that contains the returns section.
-            doc_lines ([List]): List of docstring lines.
+            doc_lines ([str]): List of docstring lines.
             returns_section_line_index (int): Line where the returns section starts.
 
         Returns:
@@ -360,6 +362,33 @@ class DocstringContentChecker(BaseChecker):
             if doc_line.__contains__(':'):
                 self.add_message('returns-section-has-multiple-type-definitions',
                                  node=node)
+                break
+
+            line_index += 1
+
+        # Return the index of the line where the returns section stops.
+        return line_index
+
+    def doc_lint_raises_section(self, doc_lines, raises_section_line_index):
+        """Lint the raises section inside a function.
+
+        Args:
+            doc_lines ([str]): List of docstring lines.
+            raises_section_line_index (int): Line where the Raises section starts.
+
+        Returns:
+            int: The line index where the Raises section stops.
+        """
+        # Lines and index.
+        line_index = raises_section_line_index + 1
+
+        # Parse the raises lines.
+        while line_index < len(doc_lines):
+            doc_line = doc_lines[line_index]
+
+            # Break when another section is reached in the exact format.
+            section, _ = self.match_strict_section(doc_line)
+            if section:
                 break
 
             line_index += 1
@@ -410,6 +439,23 @@ class DocstringContentChecker(BaseChecker):
 
         return True, arg_name, type_definition
 
+    def match_strict_section(self, line):
+        """A stricter version of self.match_section. That only returns true when the section was exactly matched.
+
+        Args:
+            line (str): Line to check whether it defines a section.
+
+        Returns:
+            bool, str: Whether section was found and its name.
+        """
+        section_match = re.match(r'^\s*(\w+):\s*$', line)
+        # Section was found, also return name.
+        if section_match is not None:
+            return True, section_match.group(1)
+
+        # Section was not found in exact format.
+        return False, ''
+
     def match_section(self, node, line):
         """Checks whether the current line matches a section.
 
@@ -425,6 +471,7 @@ class DocstringContentChecker(BaseChecker):
         if section_match is not None:
             return True, section_match.group(1)
 
+        # Section contains additional characters after the ':'.
         single_line_section_match = re.match(r'^\s*(\w+):.*$', line)
         if single_line_section_match is not None:
             section_name = single_line_section_match.group(1)
@@ -433,11 +480,13 @@ class DocstringContentChecker(BaseChecker):
                              args=section_name)
             return False, ''
 
+        # More information was given after the section name.
         incorrect_section_match = re.match(r'^\s*((\w+).*):.*$', line)
 
         if incorrect_section_match is None:
             return False, ''
 
+        # Section name is unknown to the linter.
         section_name = incorrect_section_match.group(2)
         for section in self.ordered_sections:
             if section.startswith(section_name):
@@ -446,6 +495,7 @@ class DocstringContentChecker(BaseChecker):
                                  args=incorrect_section_match.group(1))
                 break
 
+        # No section match.
         return False, ''
 
     def check_type_definition(self, node, type_str, enclosing_parenthesis):

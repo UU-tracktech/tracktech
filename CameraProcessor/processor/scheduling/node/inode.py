@@ -61,7 +61,7 @@ class INode:
 
         Raises:
             NotImplementedError: occurs when this method is not overridden
-            to ensure this function is defined.
+                to ensure this function is defined.
         """
         raise NotImplementedError("Function to assign an input to a node"
                                   "as argument not implemented")
