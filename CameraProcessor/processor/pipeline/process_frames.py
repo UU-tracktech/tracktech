@@ -74,7 +74,8 @@ def prepare_stream(configs):
     # Instantiate the tracker.
     logging.info("Instantiating reidentifier...")
     re_identifier_config = configs['Reid']
-    re_identifier = TorchReIdentifier('osnet_x1_0', 'cuda', re_identifier_config)
+    device = get_reid_device(configs)
+    re_identifier = TorchReIdentifier('osnet_x1_0', device, re_identifier_config)
 
     # Frame counter starts at 0. Will probably work differently for streams.
     logging.info("Starting stream...")
@@ -272,6 +273,14 @@ def __create_detector(idetector, config_section, configs):
     detector_config = configs[config_section]
     detector = idetector(detector_config, config_filter)
     return detector, detector_config
+
+
+def get_reid_device(configs):
+    device = configs['Yolov5']['device']
+    if device == 'cpu':
+        return 'cpu'
+    else:
+        return 'cuda'
 
 
 def __create_tracker(itracker, config_section, configs):
