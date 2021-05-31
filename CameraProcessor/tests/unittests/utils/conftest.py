@@ -80,5 +80,9 @@ def bbox():
      }],
     ids=["Detection", "Tracking"])
 def func_text_seed(request):
-    """Fixture for the function, text, and seed."""
+    """Fixture for the function, text, and seed.
+
+    Args:
+        request ([object]): List of parameters for the fixture
+    """
     return request.param

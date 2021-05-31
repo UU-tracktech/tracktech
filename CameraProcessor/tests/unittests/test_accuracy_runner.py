@@ -1,21 +1,20 @@
-"""This test file tests if the output of the accuracy_runner is in the correct format
+"""This test file tests if the output of the accuracy_runner is in the correct format.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 
 from processor.accuracy_runner import main
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestAccuracyRunner:
-    """Test if the accuracy outputs information in the correct format
+    """Test if the accuracy outputs information in the correct format.
 
     Attributes:
         config_accuracy (SectionProxy): Accuracy section of the test configurations.
     """
-    # pylint: disable=attribute-defined-outside-init
     def test_accuracy_runner(self, configs):
         """Runs the accuracy runner and gets the correct paths from the config file.
 

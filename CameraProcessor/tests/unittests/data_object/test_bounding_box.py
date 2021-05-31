@@ -1,9 +1,8 @@
-"""Tests the bounding box by creating one and testing the properties
+"""Tests the bounding box by creating one and testing the properties.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
-
 """
 import json
 import pytest
@@ -127,7 +126,7 @@ class TestBoundingBox:
         """Asserts if value of object_id is correct."""
         assert self.object_id == 5
 
-    # Testing form
+    # Testing form.
     def test_range_certainty(self):
         """Asserts if certainty is within range 0...1."""
         assert self.certainty <= 1

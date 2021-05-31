@@ -1,4 +1,4 @@
-""" Utility module that implements a time out function and custom __eq__ function to be shared across tests.
+"""Utility module that implements a time out function and custom __eq__ function to be shared across tests.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -13,7 +13,7 @@ def __eq__(self, other):
     """Custom equalize function for a pair.
 
     Args:
-        other: second object to compare.
+        other (obj): second object to compare.
 
     Returns:
         bool: Whether the objects are the same.
