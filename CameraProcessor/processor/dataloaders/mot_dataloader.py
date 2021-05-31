@@ -100,12 +100,13 @@ class MOTDataloader(IDataloader):
             image_id (int): Id of the image.
 
         Returns:
-            zeros (string): Properly formatted image id.
+            name (string): Properly formatted image id.
         """
         zeros = ''
         for _ in range(6 - len(str(image_id))):
             zeros += '0'
-        return f'{zeros}{image_id}'
+        name = f'{zeros}{image_id}'
+        return name
 
     def __get_image_path(self, image_id):
         """Converts the image id to a proper filepath.
@@ -123,9 +124,6 @@ class MOTDataloader(IDataloader):
     @staticmethod
     def __parse_line(line, delimiter):
         """Parse line from file given a delimiter.
-
-        First 6 values are
-        "<frameID>,<objectID>,<x1>,<y1>,<x2>,<y2>,.. jibberish"
 
         Args:
             line (str): line in file.

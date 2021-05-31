@@ -26,10 +26,10 @@ class JSONDataloader(IDataloader):
         """Parses bounding boxes.
 
         Args:
-            annotations (list): List of strings.
+            annotations ([(str)]): Annotations tuples in a list.
 
         Returns:
-            bounding_boxes_list (list): List of bounding boxes.
+            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
         """
         bounding_boxes_list = []
         current_boxes = []
@@ -51,6 +51,12 @@ class JSONDataloader(IDataloader):
         return bounding_boxes_list
 
     def __get_annotations(self):
+        """Reads the annotations from a file.
+
+        Returns:
+            annotations ([(str)]): Annotations tuples in a list.
+
+        """
         # Read file.
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]

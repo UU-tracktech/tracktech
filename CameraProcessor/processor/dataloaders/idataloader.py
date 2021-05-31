@@ -11,11 +11,11 @@ class IDataloader:
     """Dataloader super class."""
 
     def __init__(self, configs, path_location):
-        """
+        """Initialize dataloader.
 
         Args:
-            configs (Dict):
-            path_location:
+            configs (dict): A dictionary of the configs.
+            path_location (str): String to select gt or det from the accuracy config.
         """
         accuracy_config = configs['Accuracy']
         self.file_path = accuracy_config[path_location]
