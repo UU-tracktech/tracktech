@@ -285,8 +285,7 @@ def get_reid_device(configs):
     device = configs['Yolov5']['device']
     if device == 'cpu':
         return 'cpu'
-    else:
-        return 'cuda'
+    return 'cuda'
 
 
 def __create_tracker(itracker, config_section, configs):
