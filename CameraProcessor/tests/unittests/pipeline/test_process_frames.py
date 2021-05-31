@@ -7,17 +7,16 @@ Utrecht University within the Software Project course.
 import asyncio
 import pytest
 
-from processor.pipeline.process_frames import send_to_orchestrator
-
-from processor.pipeline.process_frames import process_stream, prepare_stream
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.pipeline.detection.yolor_runner import YolorDetector
-from processor.input.video_capture import VideoCapture
-
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
 from tests.unittests.utils.fake_reidentifier import FakeReIdentifier
 from tests.unittests.utils.fake_websocket import FakeWebsocket
+
+from processor.pipeline.process_frames import send_to_orchestrator
+from processor.pipeline.process_frames import process_stream, prepare_stream
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.detection.yolor_runner import YolorDetector
+from processor.input.video_capture import VideoCapture
 
 
 class TestProcessFrames:

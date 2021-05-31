@@ -101,7 +101,6 @@ class AccuracyObject:
 
         Returns:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
-
         """
         if annotation_format == 'COCO':
             dataloader = COCODataloader(self.configs, path_location)
@@ -117,7 +116,8 @@ class AccuracyObject:
         """A method for reading the bounding boxes with the pre_annotations.
 
         Args:
-            path_to_boxes (str): Path to the file where the boxes are stored.
+            annotation_format (str): String format of annotation.
+            path_location (str): Path to the file where the boxes are stored.
 
         Returns:
             [BoundingBox]: A list of read bounding boxes.
@@ -130,13 +130,7 @@ class AccuracyObject:
         return self.parse_boxes(bounding_boxes)
 
     def detect(self):
-        """Retrieves accuracy of detections.
-
-        Args:
-            (directory from the folder specified when the object was initialized).
-        Returns:
-            This method currently has no returns.
-        """
+        """Retrieves accuracy of detections."""
 
         # Getting the bounding boxes from the gt file.
         self.bounding_boxes_gt = self.read_boxes(self.accuracy_config['det_format'], 'gt_path')

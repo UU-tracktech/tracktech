@@ -8,9 +8,8 @@ import os
 import configparser
 import pytest
 
-from processor.utils.config_parser import ConfigParser
-
 from tests.conftest import get_test_configs, root_path
+from processor.utils.config_parser import ConfigParser
 
 
 # pylint: disable=attribute-defined-outside-init

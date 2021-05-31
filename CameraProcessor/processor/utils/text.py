@@ -62,7 +62,7 @@ def boxes_to_accuracy_json(bounding_boxes, image_id):
           image_id (int): image_id of box used for accuracy calculations.
 
       Returns:
-          JSON representation of the object.
+          (json): JSON representation of the object.
       """
     boxes_list = bounding_boxes.get_bounding_boxes()
 
