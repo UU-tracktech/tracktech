@@ -30,11 +30,11 @@ class AccuracyObject:
         accuracy_config (SectionProxy): Configurations of the accuracy.
     """
 
-    def __init__(self, configs):
+    def __init__(self, config_parser):
         """Initialise AccuracyObject by reading the config and the ground truth file.
 
         Args:
-            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.
+            config_parser (ConfigParser): Configuration parser which also contains the accuracy configurations.
         """
         # Initializing class variables.
         self.results = {}
@@ -44,20 +44,20 @@ class AccuracyObject:
         self.frame_amount = 0
 
         # Assign class variables from config.
-        self.read_config(configs)
-        self.configs = configs
+        self.read_config(config_parser)
+        self.config_parser = config_parser
 
         self.bounding_boxes_gt = []
 
-    def read_config(self, configs):
+    def read_config(self, config_parser):
         """Assign class variables using the Accuracy config.
 
         Args:
-            configs (ConfigParser): Configurations of the
+            config_parser (ConfigParser): Configurations of the
         """
         # Load the config file, take the relevant Accuracy section.
-        self.yolo_config = configs['Yolov5']
-        self.accuracy_config = configs['Accuracy']
+        self.yolo_config = config_parser.configs['Yolov5']
+        self.accuracy_config = config_parser.configs['Accuracy']
 
     def parse_boxes(self, boxes_to_parse):
         """Parses boxes to podm format.
@@ -94,11 +94,11 @@ class AccuracyObject:
 
     def get_dataloader(self, type, path_location):
         if type == 'COCO':
-            dataloader = COCODataloader(self.configs, path_location)
+            dataloader = COCODataloader(self.config_parser, path_location)
         elif type == 'JSON':
-            dataloader = JSONDataloader(self.configs, path_location)
+            dataloader = JSONDataloader(self.config_parser, path_location)
         elif type == 'MOT':
-            dataloader = MOTDataloader(self.configs, path_location)
+            dataloader = MOTDataloader(self.config_parser, path_location)
         else:
             return ValueError("This is not a valid dataloader")
         return dataloader

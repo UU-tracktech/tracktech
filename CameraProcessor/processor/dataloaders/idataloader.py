@@ -13,12 +13,18 @@ class IDataloader:
     Dataloader super class.
     """
 
-    def __init__(self, configs, path_location):
-        accuracy_config = configs['Accuracy']
+    def __init__(self, config_parser, path_location):
+        """
+
+        Args:
+            config_parser (ConfigParser):
+            path_location:
+        """
+        accuracy_config = config_parser.configs['Accuracy']
         self.file_path = accuracy_config[path_location]
         self.image_path = accuracy_config['image_path']
         self.categories = accuracy_config['categories']
-        self.filter_config = configs['Filter']
+        self.filter_config = config_parser.configs['Filter']
         self.image_dimensions = {}
         nr_frames = int(accuracy_config['nr_frames'])
         # Cannot contain negative amount of frames.
