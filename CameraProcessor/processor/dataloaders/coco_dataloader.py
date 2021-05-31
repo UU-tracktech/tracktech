@@ -16,13 +16,24 @@ from processor.dataloaders.idataloader import IDataloader
 
 
 class COCODataloader(IDataloader):
-    """Dataloader for COCO dataser."""
+    """COCO Dataloader, formats COCO Data."""
 
     def __init__(self, configs, path_location):
+        """Initialize coco dataloader.
+
+        Args:
+            configs (dict): A dictionary of the configs.
+            path_location (str): String to select gt or det from the accuracy config.
+        """
         super().__init__(configs, path_location)
         self.coco = COCO(self.file_path)
 
     def parse_file(self):
+        """Parses an annotations file.
+
+        Returns:
+            bounding_boxes_list (list): List of bounding boxes.
+        """
         annotations = self.__get_annotations()
         bounding_boxes_list = self.__parse_boxes(annotations)
         return bounding_boxes_list

@@ -12,6 +12,7 @@ from processor.dataloaders.idataloader import IDataloader
 
 
 class JSONDataloader(IDataloader):
+    """JSON Dataloader, formats MOT Data."""
     def parse_file(self):
         """Parses a file into a BoundingBoxes object.
 
@@ -71,9 +72,10 @@ class JSONDataloader(IDataloader):
                 person_id = box['boxId']
                 certainty = box['certainty']
                 object_type = box['objectType']
-                x1 = box['rect'][0]
-                y1 = box['rect'][1]
-                x2 = box['rect'][2]
-                y2 = box['rect'][3]
-                annotations.append((image_id, person_id, certainty, object_type, x1, y1, x2, y2))
+                x_left_top = box['rect'][0]
+                y_left_top = box['rect'][1]
+                x_right_bottom = box['rect'][2]
+                y_right_bottom = box['rect'][3]
+                annotations.append((image_id, person_id, certainty, object_type,
+                                    x_left_top, y_left_top, x_right_bottom, y_right_bottom))
         return annotations
