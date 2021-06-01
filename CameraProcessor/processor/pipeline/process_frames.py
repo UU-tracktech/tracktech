@@ -10,98 +10,15 @@ import logging
 import asyncio
 import cv2
 
-from processor.input.video_capture import VideoCapture
-from processor.input.hls_capture import HlsCapture
 import processor.utils.text as text
 import processor.utils.display as display
 
 from processor.pipeline.framebuffer import FrameBuffer
-from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
-from processor.utils.create_runners import create_detector, create_tracker, DETECTOR_SWITCH, TRACKER_SWITCH
 
 from processor.data_object.reid_data import ReidData
 
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
-
-import processor.scheduling.plan.pipeline_plan as pipeline_plan
-from processor.scheduling.scheduler import Scheduler
-
-
-def prepare_stream(configs):
-    """Read the configuration information and prepare the objects for the frame stream.
-
-    Args:
-        configs (dict): Configuration of the application when preparing the stream
-
-    Returns:
-        ICapture, IDetector, ITracker, str: Capture instance, a detector and tracker and a websocket_id.
-    """
-    # Instantiate the detector.
-    logging.info("Instantiating detector...")
-    if configs['Main'].get('detector') not in DETECTOR_SWITCH:
-        raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
-    detector = create_detector(configs['Main'].get('detector'),
-                               configs
-                               )
-    detector_config = configs[DETECTOR_SWITCH[configs['Main'].get('detector')][1]]
-
-    # Instantiate the tracker.
-    logging.info("Instantiating tracker...")
-    if configs['Main'].get('tracker') not in TRACKER_SWITCH:
-        raise NameError(f"Incorrect tracker. Tracker {configs['Main'].get('tracker')} not found.")
-    tracker = create_tracker(configs['Main'].get('tracker'),
-                             configs
-                             )
-
-    # Instantiate the tracker.
-    logging.info("Instantiating reidentifier...")
-    re_identifier_config = configs['Reid']
-    re_identifier = TorchReIdentifier('osnet_x1_0', re_identifier_config)
-
-    # Frame counter starts at 0. Will probably work differently for streams.
-    logging.info("Starting stream...")
-
-    hls_config = configs['HLS']
-
-    hls_enabled = hls_config.getboolean('enabled')
-
-    # Capture the video stream.
-    if hls_enabled:
-        capture = HlsCapture(hls_config['url'])
-    else:
-        capture = VideoCapture(detector_config['source_path'])
-
-    # Get orchestrator configuration.
-    orchestrator_config = configs['Orchestrator']
-
-    return capture, detector, tracker, re_identifier, orchestrator_config['url']
-
-
-def prepare_scheduler(detector, tracker, on_processed_frame):
-    """Prepare the Scheduler with a valid plan configuration.
-
-    Args:
-        detector (IDetector): detector performing the detections on a given frame.
-        tracker (ITracker): tracker performing simple tracking of all objects using the detections.
-        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
-
-    Returns:
-        Scheduler: Scheduler that has been configured with a plan.
-    """
-    # Get args dict from used plan.
-    plan_args = pipeline_plan.args
-
-    # Put configuration into args dict.
-    plan_args['detector'] = detector
-    plan_args['tracker'] = tracker
-    plan_args['func'] = on_processed_frame
-
-    # Apply configuration to plan.
-    start_node = pipeline_plan.create_plan(plan_args)
-
-    # Return Scheduler.
-    return Scheduler(start_node)
 
 
 async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
