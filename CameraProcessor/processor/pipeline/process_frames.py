@@ -10,8 +10,6 @@ import logging
 import asyncio
 import cv2
 
-from processor.utils.config_parser import ConfigParser
-
 from processor.input.video_capture import VideoCapture
 from processor.input.hls_capture import HlsCapture
 import processor.utils.text as text
@@ -44,15 +42,11 @@ def prepare_stream(configs):
     """Read the configuration information and prepare the objects for the frame stream.
 
     Args:
-        configs (ConfigParser): Configuration of the application when preparing the stream.
+        configs (dict): Configuration of the application when preparing the stream
 
     Returns:
         ICapture, IDetector, ITracker, str: Capture instance, a detector and tracker and a websocket_id.
     """
-    # Load the config file.
-    config_parser = ConfigParser('configs.ini')
-    configs = config_parser.configs
-
     # Instantiate the detector.
     logging.info("Instantiating detector...")
     if configs['Main'].get('detector') not in DETECTOR_SWITCH:
@@ -75,7 +69,7 @@ def prepare_stream(configs):
     logging.info("Instantiating reidentifier...")
     re_identifier_config = configs['Reid']
     device = get_reid_device(configs)
-    re_identifier = TorchReIdentifier('osnet_x1_0', device, re_identifier_config)
+    re_identifier = TorchReIdentifier('osnet_x1_0', re_identifier_config)
 
     # Frame counter starts at 0. Will probably work differently for streams.
     logging.info("Starting stream...")
@@ -276,11 +270,13 @@ def __create_detector(idetector, config_section, configs):
 
 
 def get_reid_device(configs):
-    """
+    """Reads the device out of the config.
+
     Args:
-        configs (ConfigParser): configuration to get the device out of
+        configs (ConfigParser): configuration to get the device out of.
+        
     Returns:
-        device (String): String that represents the correct device
+        device (String): String that represents the correct device.
     """
     device = configs['Yolov5']['device']
     if device == 'cpu':

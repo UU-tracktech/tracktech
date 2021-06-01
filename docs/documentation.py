@@ -155,8 +155,7 @@ def get_modules(root_folder):
     component_root = os.path.dirname(root_folder)
     sys.path.append(component_root)
 
-    # Find all valid sub folders (dir name doesn't start with.
-    # '.' or '_', starting at the root_folder.
+    # Find all sub folders that do not start with '.' or '_', starting at the root_folder.
     folders = [root_folder]
     add_submodule_to_folders(folders)
 

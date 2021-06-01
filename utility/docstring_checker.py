@@ -100,9 +100,7 @@ class DocstringChecker(BaseChecker):
         if not node.doc:
             return
 
-        doc_lines = self.get_full_docstring(node)
-        self.check_summary(node, doc_lines)
-        self.check_last_line(node, doc_lines)
+        self.check_docstring(node)
 
     def check_docstring(self, node):
         """Retrieves the lines of the documentation and runs several checks on it.
