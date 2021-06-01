@@ -74,7 +74,7 @@ def main():
     Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
     """
     # Load the config file.
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', True)
     configs = config_parser.configs
 
     # If mode is tornado.
