@@ -91,11 +91,14 @@ Utrecht University within the Software Project course.
 <span class="sd">    Attributes:</span>
 <span class="sd">        cap (cv2.VideoCapture): Capture that serves webcam frame one by one.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_nr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Opens capture that connects to webcam.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            device_nr (int): Number of the device to take the recorded data from.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;connecting to webcam&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to webcam on device </span><span class="si">{</span><span class="n">device_nr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">device_nr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks if webcam is still opened.</span>
@@ -139,11 +142,14 @@ Utrecht University within the Software Project course.
 <span class="sd">    Attributes:</span>
 <span class="sd">        cap (cv2.VideoCapture): Capture that serves webcam frame one by one.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_nr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Opens capture that connects to webcam.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            device_nr (int): Number of the device to take the recorded data from.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;connecting to webcam&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to webcam on device </span><span class="si">{</span><span class="n">device_nr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">device_nr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks if webcam is still opened.</span>
@@ -183,21 +189,30 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#CamCapture.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">CamCapture</span><span class="signature">()</span>
+            <span class="name">CamCapture</span><span class="signature">(device_nr)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_nr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Opens capture that connects to webcam.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            device_nr (int): Number of the device to take the recorded data from.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;connecting to webcam&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to webcam on device </span><span class="si">{</span><span class="n">device_nr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">VideoCapture</span><span class="p">(</span><span class="n">device_nr</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Opens capture that connects to webcam.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>device_nr (int):</strong>  Number of the device to take the recorded data from.</li>
+</ul>
 </div>
 
 

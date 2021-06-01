@@ -159,7 +159,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Read all the environment variables.</span>
         <span class="n">orchestrator_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span>
-        <span class="n">forwarder_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;FORWARDER_URL&#39;</span><span class="p">)</span>
+        <span class="n">hls_stream_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span>
         <span class="n">running_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROCESSOR_MODE&#39;</span><span class="p">)</span>
         <span class="n">detection_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DETECTION_ALG&#39;</span><span class="p">)</span>
         <span class="n">tracking_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TRACKING_ALG&#39;</span><span class="p">)</span>
@@ -170,9 +170,9 @@ Utrecht University within the Software Project course.
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: ORCHESTRATOR_URL used.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orchestrator_url</span>
 
-        <span class="k">if</span> <span class="n">forwarder_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: FORWARDER_URL used.&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forwarder_url</span>
+        <span class="k">if</span> <span class="n">hls_stream_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: HLS_STREAM_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hls_stream_url</span>
 
         <span class="k">if</span> <span class="n">running_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: PROCESSOR_MODE used.&#39;</span><span class="p">)</span>
@@ -294,7 +294,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Read all the environment variables.</span>
         <span class="n">orchestrator_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span>
-        <span class="n">forwarder_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;FORWARDER_URL&#39;</span><span class="p">)</span>
+        <span class="n">hls_stream_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span>
         <span class="n">running_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROCESSOR_MODE&#39;</span><span class="p">)</span>
         <span class="n">detection_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DETECTION_ALG&#39;</span><span class="p">)</span>
         <span class="n">tracking_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TRACKING_ALG&#39;</span><span class="p">)</span>
@@ -305,9 +305,9 @@ Utrecht University within the Software Project course.
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: ORCHESTRATOR_URL used.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orchestrator_url</span>
 
-        <span class="k">if</span> <span class="n">forwarder_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: FORWARDER_URL used.&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forwarder_url</span>
+        <span class="k">if</span> <span class="n">hls_stream_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: HLS_STREAM_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hls_stream_url</span>
 
         <span class="k">if</span> <span class="n">running_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: PROCESSOR_MODE used.&#39;</span><span class="p">)</span>
@@ -477,7 +477,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Read all the environment variables.</span>
         <span class="n">orchestrator_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span>
-        <span class="n">forwarder_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;FORWARDER_URL&#39;</span><span class="p">)</span>
+        <span class="n">hls_stream_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span>
         <span class="n">running_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROCESSOR_MODE&#39;</span><span class="p">)</span>
         <span class="n">detection_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DETECTION_ALG&#39;</span><span class="p">)</span>
         <span class="n">tracking_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TRACKING_ALG&#39;</span><span class="p">)</span>
@@ -488,9 +488,9 @@ Utrecht University within the Software Project course.
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: ORCHESTRATOR_URL used.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orchestrator_url</span>
 
-        <span class="k">if</span> <span class="n">forwarder_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: FORWARDER_URL used.&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forwarder_url</span>
+        <span class="k">if</span> <span class="n">hls_stream_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: HLS_STREAM_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hls_stream_url</span>
 
         <span class="k">if</span> <span class="n">running_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: PROCESSOR_MODE used.&#39;</span><span class="p">)</span>
