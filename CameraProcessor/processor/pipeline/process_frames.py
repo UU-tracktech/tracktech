@@ -20,7 +20,7 @@ from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
-from processor.utils.create_runners import create_detector, create_tracker
+from processor.utils.create_runners import create_detector, create_tracker, DETECTOR_SWITCH, TRACKER_SWITCH
 
 from processor.data_object.reid_data import ReidData
 
@@ -29,14 +29,6 @@ from processor.webhosting.stop_command import StopCommand
 
 import processor.scheduling.plan.pipeline_plan as pipeline_plan
 from processor.scheduling.scheduler import Scheduler
-
-DETECTOR_SWITCH = {
-    'yolov5': (Yolov5Detector, 'Yolov5'),
-    'yolor': (YolorDetector, 'Yolor')
-}
-TRACKER_SWITCH = {
-    'sort': (SortTracker, 'SORT')
-}
 
 
 def prepare_stream(configs):
@@ -52,9 +44,10 @@ def prepare_stream(configs):
     logging.info("Instantiating detector...")
     if configs['Main'].get('detector') not in DETECTOR_SWITCH:
         raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
-    detector, detector_config = create_detector(configs['Main'].get('detector'),
-                                                configs
-                                                )
+    detector = create_detector(configs['Main'].get('detector'),
+                               configs
+                               )
+    detector_config = configs[DETECTOR_SWITCH[configs['Main'].get('detector')][1]]
 
     # Instantiate the tracker.
     logging.info("Instantiating tracker...")

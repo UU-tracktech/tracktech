@@ -23,10 +23,10 @@ def create_detector(detector_name, configs):
 
     Args:
         detector_name (str): the name of the detector we want.
-        configs (ConfigParser): The configurations of the detector.
+        configs (dict): The configurations of the detector.
 
     Returns:
-        IDetector, SectionProxy: Requested detector of the given type combined with its config.
+        IDetector: Requested detector of the given type
     """
     idetector = DETECTOR_SWITCH[detector_name][0]
     config_section = DETECTOR_SWITCH[detector_name][1]
@@ -34,7 +34,7 @@ def create_detector(detector_name, configs):
     config_filter = configs['Filter']
     detector_config = configs[config_section]
     detector = idetector(detector_config, config_filter)
-    return detector, detector_config
+    return detector
 
 
 def create_tracker(tracker_name, configs):
@@ -42,7 +42,7 @@ def create_tracker(tracker_name, configs):
 
     Args:
         tracker_name (str): The name of the tracker we want.
-        configs (ConfigParser): The configurations of the detector.
+        configs (dict): The configurations of the detector.
 
     Returns:
         ITracker: The requested tracker.

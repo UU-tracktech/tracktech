@@ -23,7 +23,7 @@ def main(configs):
     """Runs YOLOv5 detection on a video file specified in configs.ini.
 
     Args:
-        configs (ConfigParser): Configurations to run the accuracy with.
+        configs (dict): Configurations to run the accuracy with.
     """
     # Initialize the accuracy config.
     accuracy_config = configs['Accuracy']
@@ -35,7 +35,7 @@ def main(configs):
 
     # Instantiate the detector.
     print("Instantiating detector...")
-    detector, _ = create_detector(configs['Accuracy']['detector'], configs)
+    detector = create_detector(configs['Accuracy']['detector'], configs)
     tracker = create_tracker(configs['Accuracy']['tracker'], configs)
 
     # Frame counter starts at 0. Will probably work differently for streams.
