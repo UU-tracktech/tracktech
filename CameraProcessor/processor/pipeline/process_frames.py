@@ -10,98 +10,15 @@ import logging
 import asyncio
 import cv2
 
-from processor.input.video_capture import VideoCapture
-from processor.input.hls_capture import HlsCapture
 import processor.utils.text as text
 import processor.utils.display as display
 
 from processor.pipeline.framebuffer import FrameBuffer
-from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
-from processor.utils.create_runners import create_detector, create_tracker, DETECTOR_SWITCH, TRACKER_SWITCH
 
 from processor.data_object.reid_data import ReidData
 
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
-
-import processor.scheduling.plan.pipeline_plan as pipeline_plan
-from processor.scheduling.scheduler import Scheduler
-
-
-def prepare_stream(configs):
-    """Read the configuration information and prepare the objects for the frame stream.
-
-    Args:
-        configs (dict): Configuration of the application when preparing the stream
-
-    Returns:
-        ICapture, IDetector, ITracker, str: Capture instance, a detector and tracker and a websocket_id.
-    """
-    # Instantiate the detector.
-    logging.info("Instantiating detector...")
-    if configs['Main'].get('detector') not in DETECTOR_SWITCH:
-        raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
-    detector = create_detector(configs['Main'].get('detector'),
-                               configs
-                               )
-    detector_config = configs[DETECTOR_SWITCH[configs['Main'].get('detector')][1]]
-
-    # Instantiate the tracker.
-    logging.info("Instantiating tracker...")
-    if configs['Main'].get('tracker') not in TRACKER_SWITCH:
-        raise NameError(f"Incorrect tracker. Tracker {configs['Main'].get('tracker')} not found.")
-    tracker = create_tracker(configs['Main'].get('tracker'),
-                             configs
-                             )
-
-    # Instantiate the tracker.
-    logging.info("Instantiating reidentifier...")
-    re_identifier_config = configs['Reid']
-    re_identifier = TorchReIdentifier('osnet_x1_0', re_identifier_config)
-
-    # Frame counter starts at 0. Will probably work differently for streams.
-    logging.info("Starting stream...")
-
-    hls_config = configs['HLS']
-
-    hls_enabled = hls_config.getboolean('enabled')
-
-    # Capture the video stream.
-    if hls_enabled:
-        capture = HlsCapture(hls_config['url'])
-    else:
-        capture = VideoCapture(detector_config['source_path'])
-
-    # Get orchestrator configuration.
-    orchestrator_config = configs['Orchestrator']
-
-    return capture, detector, tracker, re_identifier, orchestrator_config['url']
-
-
-def prepare_scheduler(detector, tracker, on_processed_frame):
-    """Prepare the Scheduler with a valid plan configuration.
-
-    Args:
-        detector (IDetector): detector performing the detections on a given frame.
-        tracker (ITracker): tracker performing simple tracking of all objects using the detections.
-        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
-
-    Returns:
-        Scheduler: Scheduler that has been configured with a plan.
-    """
-    # Get args dict from used plan.
-    plan_args = pipeline_plan.args
-
-    # Put configuration into args dict.
-    plan_args['detector'] = detector
-    plan_args['tracker'] = tracker
-    plan_args['func'] = on_processed_frame
-
-    # Apply configuration to plan.
-    start_node = pipeline_plan.create_plan(plan_args)
-
-    # Return Scheduler.
-    return Scheduler(start_node)
 
 
 async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
@@ -183,9 +100,13 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
             # First, get the bounding box and frame for the query.
             stored_frame = framebuffer.get_frame(track_elem.frame_id)
             stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+            feature_map = re_identifier.extract_features(stored_frame, stored_box)
+
+            # Send the feature_map to the orchestrator.
+            send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
 
             # Extract the features from this bounding box and store them in the data.
-            re_id_data.add_query_feature(track_elem.object_id, re_identifier.extract_features(stored_frame, stored_box))
+            re_id_data.add_query_feature(track_elem.object_id, feature_map)
 
             # Also store the map of the first box_id to the object_id.
             re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
@@ -197,7 +118,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
 
 # pylint: disable=unused-argument
-def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
+def send_boxes_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
     """Sends the bounding boxes to the orchestrator using a websocket client.
 
     Args:
@@ -208,6 +129,19 @@ def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
     """
     # Get message and send it through the websocket.
     client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
+    ws_client.write_message(client_message)
+    logging.info(client_message)
+
+
+def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):
+    """Sends the feature map to the orchestrator using a Websocket client.
+
+    Args:
+        ws_client (WebsocketClient): Websocket object that contains the connection.
+        feature_map ([Float]): Array of float representing the feature_map.
+        object_id (Int): The ID of the object the feature_map refers to.
+    """
+    client_message = text.feature_map_to_json(feature_map, object_id)
     ws_client.write_message(client_message)
     logging.info(client_message)
 

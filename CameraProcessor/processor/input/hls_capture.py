@@ -56,8 +56,8 @@ class HlsCapture(ICapture):
         Default hls_url is of a public stream that is available 24/7.
 
         Args:
-            hls_url (str): Url the videocapture has to connect to.
-            retries (int): Number of retries before it is concluded connection cannot be made
+            hls_url (str): Url the cv2.VideoCapture has to connect to.
+            retries (int): Number of retries before it is concluded connection cannot be made.
         """
 
         # Stream related properties.

@@ -70,5 +70,5 @@ def main(configs):
 
 
 if __name__ == '__main__':
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', True)
     main(config_parser.configs)

@@ -166,7 +166,7 @@ class AccuracyObject:
 
 if __name__ == "__main__":
     # Run accuracy.
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', True)
     test_object = AccuracyObject(config_parser.configs)
 
     # Detect and plot all the information.

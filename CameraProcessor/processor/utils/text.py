@@ -8,6 +8,21 @@ Utrecht University within the Software Project course.
 import json
 
 
+def feature_map_to_json(feature_map=None, object_id=None) -> json:
+    """Sends a featuremap to the orchestrator.
+
+    Args:
+        feature_map ([Float]): An array of numerical values.
+        object_id (Int): The object where the feature_map refers too.
+    """
+    # Parses a feature map into a json message.
+    return json.dumps({
+        "type": "featureMap",
+        "objectId": object_id,
+        "featureMap": feature_map
+    })
+
+
 def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
     """Converts the bounding boxes to JSON format of API call.
 
