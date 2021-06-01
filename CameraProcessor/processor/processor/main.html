@@ -77,7 +77,7 @@ Utrecht University within the Software Project course.
 
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 
-<span class="kn">from</span> <span class="nn">processor.pipeline.process_frames</span> <span class="kn">import</span> <span class="n">prepare_stream</span><span class="p">,</span> <span class="n">process_stream</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="n">send_boxes_to_orchestrator</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.process_frames</span> <span class="kn">import</span> <span class="n">prepare_stream</span><span class="p">,</span> <span class="n">process_stream</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="n">send_to_orchestrator</span>
 
 <span class="kn">from</span> <span class="nn">processor.webhosting.websocket_client</span> <span class="kn">import</span> <span class="n">WebsocketClient</span>
 <span class="kn">from</span> <span class="nn">processor.webhosting.html_page_handler</span> <span class="kn">import</span> <span class="n">HtmlPageHandler</span>
@@ -121,7 +121,7 @@ Utrecht University within the Software Project course.
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed.</span>
-        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
                                                                               <span class="n">frame_obj</span><span class="p">,</span>
                                                                               <span class="n">detected_boxes</span><span class="p">,</span>
                                                                               <span class="n">tracked_boxes</span>
@@ -246,7 +246,7 @@ Utrecht University within the Software Project course.
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed.</span>
-        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
                                                                               <span class="n">frame_obj</span><span class="p">,</span>
                                                                               <span class="n">detected_boxes</span><span class="p">,</span>
                                                                               <span class="n">tracked_boxes</span>
