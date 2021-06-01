@@ -16,9 +16,6 @@ import processor.utils.text as text
 import processor.utils.display as display
 
 from processor.pipeline.framebuffer import FrameBuffer
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.pipeline.detection.yolor_runner import YolorDetector
-from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
 from processor.utils.create_runners import create_detector, create_tracker, DETECTOR_SWITCH, TRACKER_SWITCH
 
