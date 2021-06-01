@@ -14,7 +14,8 @@ import tornado.web
 
 from processor.utils.config_parser import ConfigParser
 
-from processor.pipeline.process_frames import prepare_stream, process_stream, opencv_display, send_boxes_to_orchestrator
+from processor.pipeline.prepare_pipeline import prepare_objects
+from processor.pipeline.process_frames import process_stream, opencv_display, send_boxes_to_orchestrator
 
 from processor.webhosting.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler
@@ -48,7 +49,7 @@ async def deploy(configs, ws_id):
         configs (ConfigParser): configurations for the prepare stream
         ws_id (str): Id of the camera processor for the orchestrator
     """
-    capture, detector, tracker, re_identifier, ws_url = prepare_stream(configs)
+    capture, detector, tracker, re_identifier, ws_url = prepare_objects(configs)
     websocket_client = WebsocketClient(ws_url, ws_id)
     await websocket_client.connect()
     # Initiate the stream processing loop, giving the websocket client.
@@ -59,10 +60,10 @@ async def deploy(configs, ws_id):
         re_identifier,
         # Function to call when frame is processed.
         lambda frame_obj, detected_boxes, tracked_boxes: send_boxes_to_orchestrator(websocket_client,
-                                                                              frame_obj,
-                                                                              detected_boxes,
-                                                                              tracked_boxes
-                                                                              ),
+                                                                                    frame_obj,
+                                                                                    detected_boxes,
+                                                                                    tracked_boxes
+                                                                                    ),
         websocket_client
     )
 
@@ -72,6 +73,9 @@ def main():
 
     Tornado uses a custom IOLoop
     Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
+
+    Raises:
+        AttributeError: Mode in which is ran does not exist.
     """
     # Load the config file.
     config_parser = ConfigParser('configs.ini')
@@ -85,16 +89,16 @@ def main():
         tornado.ioloop.IOLoop.current().start()
     # If we want to run it with opencv gui.
     elif configs['Main']['mode'].lower() == 'opencv':
-        capture, detector, tracker, re_identifier, _ = prepare_stream(configs)
+        capture, detector, tracker, re_identifier, _ = prepare_objects(configs)
         asyncio.get_event_loop().run_until_complete(
             process_stream(capture, detector, tracker, re_identifier, opencv_display, None)
         )
     # Deploy mode where all is sent to the orchestrator using the websocket url.
     elif configs['Main']['mode'].lower() == 'deploy':
-        websocket_id = configs['HLS']['url']
+        websocket_id = configs['Input']['hls_url']
         asyncio.get_event_loop().run_until_complete(deploy(configs, websocket_id))
     else:
-        raise AttributeError("Mode you try to run in does not exist")
+        raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
 
 
 if __name__ == '__main__':
