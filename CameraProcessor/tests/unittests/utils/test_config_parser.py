@@ -119,7 +119,7 @@ class TestConfigParser:
 
     @staticmethod
     def set_environment_variables(dict_environment_vars):
-        """Set the environment variables to some test values
+        """Set the environment variables to some test values.
 
         Args:
             dict_environment_vars (dict[str, str]): environment variables to set.

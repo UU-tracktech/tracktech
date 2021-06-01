@@ -98,27 +98,27 @@ class ConfigParser:
 
         # Replace values inside the configuration when set.
         if orchestrator_url is not None:
-            logging.info(f'Environment variable: ORCHESTRATOR_URL used.')
+            logging.info('Environment variable: ORCHESTRATOR_URL used.')
             self.configs['Orchestrator']['url'] = orchestrator_url
 
         if forwarder_url is not None:
-            logging.info(f'Environment variable: FORWARDER_URL used.')
+            logging.info('Environment variable: FORWARDER_URL used.')
             self.configs['HLS']['url'] = forwarder_url
 
         if running_mode is not None:
-            logging.info(f'Environment variable: PROCESSOR_MODE used.')
+            logging.info('Environment variable: PROCESSOR_MODE used.')
             self.configs['Main']['mode'] = running_mode
 
         if detection_alg is not None:
-            logging.info(f'Environment variable: DETECTION_ALG used.')
+            logging.info('Environment variable: DETECTION_ALG used.')
             self.configs['Main']['detector'] = detection_alg
 
         if tracking_alg is not None:
-            logging.info(f'Environment variable: TRACKING_ALG used.')
+            logging.info('Environment variable: TRACKING_ALG used.')
             self.configs['Main']['tracker'] = tracking_alg
 
         if reid_alg is not None:
-            logging.info(f'Environment variable: REID_ALG used.')
+            logging.info('Environment variable: REID_ALG used.')
             self.configs['Main']['reid'] = reid_alg
 
     @staticmethod
