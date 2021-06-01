@@ -63,6 +63,7 @@ class ProcessorSocket(WebSocketHandler):
 
     # pylint: disable=broad-except
     def on_message(self, message):
+        print(message)
         """Handles a message from a processor that is received on the websocket.
 
         Method which handles messages coming in from a processor. The messages are expected in json format.

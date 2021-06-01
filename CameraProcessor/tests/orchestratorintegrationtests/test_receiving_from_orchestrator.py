@@ -54,7 +54,7 @@ class TestReceivingFromOrchestrator:
         And finally send an update command and check if camera processor also handles this update.
         """
         # Get a connected processor client.
-        processor_client = await create_dummy_client(PC_URL, "mock_id")
+        processor_client = await create_dummy_client(PC_URL, "mock_id_2")
 
         # Get a connected interface client.
         interface_client = await create_dummy_client(IF_URL)
@@ -80,20 +80,17 @@ class TestReceivingFromOrchestrator:
         received_stop = processor_client.message_queue.popleft()
         assert isinstance(received_stop, StopCommand)
         assert received_stop.object_id == 1
-        print(len(processor_client.message_queue))
         update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": "[]"})
         processor_client.write_message(update_command)
-        print(len(processor_client.message_queue))
 
         await asyncio.sleep(2)
-        print(len(processor_client.message_queue))
         received_update = interface_client.message_queue.popleft()
         assert isinstance(received_update, UpdateCommand)
         assert received_update.object_id == 1
         assert received_update.feature_map == []
 
-        interface_client.disconnect()
         processor_client.disconnect()
+        interface_client.disconnect()
         # interface_client.disconnect()
 
     @staticmethod
