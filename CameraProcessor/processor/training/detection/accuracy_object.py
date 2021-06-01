@@ -20,9 +20,13 @@ class AccuracyObject:
     """This class is used to test the accuracy of predictions.
 
     Attributes:
-        results (object): Results of the
+        results (object): Results of the podm library.
         iou_threshold (int): Threshold from which it is counted.
         frame_amount (int): Number of frames.
+        gt_format (str): Format of the ground truth.
+        plots_prefix (str): Prefix of the name of a plot.
+        plots_path (str): Path where to create plots.
+        configs (dict): The configs as a dictionary.
         bounding_boxes_gt ([BoundingBox]):
     """
 
@@ -43,7 +47,6 @@ class AccuracyObject:
         self.plots_path = accuracy_config['plots_path']
         self.configs = configs
         self.bounding_boxes_gt = []
-
 
     def parse_boxes(self, boxes_to_parse):
         """Parses boxes to podm format.
