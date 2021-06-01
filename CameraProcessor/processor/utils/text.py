@@ -70,3 +70,28 @@ def boxes_to_accuracy_json(bounding_boxes, image_id):
         "imageId": image_id,
         "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
     })
+
+def boxes_to_txt(bounding_boxes, shape, frame_nr):
+    """Write the detection object to a txt file, so that accuracy testing can read it.
+
+    Args:
+        bounding_boxes (List[BoundingBox]): list of bounding boxes.
+        shape (int, int): shape of frame.
+        frame_nr (int): number of frame.
+
+    Returns:
+        str: Boxes in string format with comma separation
+    """
+    boxes_text_string = ""
+    width, height = shape
+
+    for bounding_box in bounding_boxes:
+        boxes_text_string += \
+            f'{frame_nr},{bounding_box.get_identifier()},' \
+            f'{int(bounding_box.get_rectangle().get_x1() * width)},' \
+            f'{int(bounding_box.get_rectangle().get_y1() * height)},' \
+            f'{int((bounding_box.get_rectangle().get_x2() - bounding_box.get_rectangle().get_x1()) * width)},' \
+            f'{int((bounding_box.get_rectangle().get_y2() - bounding_box.get_rectangle().get_y1()) * height)},' \
+            f'1,1,{"%.2f" % round(float(bounding_box.get_certainty()), 2)} \n' # certainty rounded to 2 decimals
+
+    return boxes_text_string
