@@ -41,7 +41,10 @@
                     <a class="function" href="#process_message_queue">process_message_queue</a>
             </li>
             <li>
-                    <a class="function" href="#send_to_orchestrator">send_to_orchestrator</a>
+                    <a class="function" href="#send_boxes_to_orchestrator">send_boxes_to_orchestrator</a>
+            </li>
+            <li>
+                    <a class="function" href="#send_feature_map_to_orchestrator">send_feature_map_to_orchestrator</a>
             </li>
             <li>
                     <a class="function" href="#opencv_display">opencv_display</a>
@@ -88,10 +91,8 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">processor.utils.display</span> <span class="k">as</span> <span class="nn">display</span>
 
 <span class="kn">from</span> <span class="nn">processor.pipeline.framebuffer</span> <span class="kn">import</span> <span class="n">FrameBuffer</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor_runner</span> <span class="kn">import</span> <span class="n">YolorDetector</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
+<span class="kn">from</span> <span class="nn">processor.utils.create_runners</span> <span class="kn">import</span> <span class="n">create_detector</span><span class="p">,</span> <span class="n">create_tracker</span><span class="p">,</span> <span class="n">DETECTOR_SWITCH</span><span class="p">,</span> <span class="n">TRACKER_SWITCH</span>
 
 <span class="kn">from</span> <span class="nn">processor.data_object.reid_data</span> <span class="kn">import</span> <span class="n">ReidData</span>
 
@@ -100,14 +101,6 @@ Utrecht University within the Software Project course.
 
 <span class="kn">import</span> <span class="nn">processor.scheduling.plan.pipeline_plan</span> <span class="k">as</span> <span class="nn">pipeline_plan</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
-
-<span class="n">DETECTOR_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;yolov5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Yolov5Detector</span><span class="p">,</span> <span class="s1">&#39;Yolov5&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;yolor&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">YolorDetector</span><span class="p">,</span> <span class="s1">&#39;Yolor&#39;</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="n">TRACKER_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SortTracker</span><span class="p">,</span> <span class="s1">&#39;SORT&#39;</span><span class="p">)</span>
-<span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">prepare_stream</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
@@ -123,19 +116,18 @@ Utrecht University within the Software Project course.
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">__create_detector</span><span class="p">(</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
-                                                  <span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
-                                                  <span class="n">configs</span>
-                                                  <span class="p">)</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">create_detector</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">),</span>
+                               <span class="n">configs</span>
+                               <span class="p">)</span>
+    <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">]]</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">__create_tracker</span><span class="p">(</span><span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
-                               <span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
-                               <span class="n">configs</span>
-                               <span class="p">)</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">create_tracker</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">),</span>
+                             <span class="n">configs</span>
+                             <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
@@ -266,9 +258,13 @@ Utrecht University within the Software Project course.
             <span class="c1"># First, get the bounding box and frame for the query.</span>
             <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
             <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">)</span>
+            <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">)</span>
+
+            <span class="c1"># Send the feature_map to the orchestrator.</span>
+            <span class="n">send_feature_map_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 
             <span class="c1"># Extract the features from this bounding box and store them in the data.</span>
-            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">))</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">)</span>
 
             <span class="c1"># Also store the map of the first box_id to the object_id.</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
@@ -280,7 +276,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="c1"># pylint: disable=unused-argument</span>
-<span class="k">def</span> <span class="nf">send_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">send_boxes_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sends the bounding boxes to the orchestrator using a websocket client.</span>
 
 <span class="sd">    Args:</span>
@@ -291,6 +287,19 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get message and send it through the websocket.</span>
     <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">bounding_boxes_to_json</span><span class="p">(</span><span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">())</span>
+    <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">send_feature_map_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sends the feature map to the orchestrator using a Websocket client.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection.</span>
+<span class="sd">        feature_map ([Float]): Array of float representing the feature_map.</span>
+<span class="sd">        object_id (Int): The ID of the object the feature_map refers to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">feature_map_to_json</span><span class="p">(</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">object_id</span><span class="p">)</span>
     <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
 
@@ -321,39 +330,6 @@ Utrecht University within the Software Project course.
     <span class="c1"># A timeout of 0 will not display the image.</span>
     <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">__create_detector</span><span class="p">(</span><span class="n">idetector</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates and returns a detector of the given type.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        idetector (IDetector): The CLASS, or object type, of the detector we want.</span>
-<span class="sd">        config_section (str): The config section name associated with the given detector.</span>
-<span class="sd">        configs (ConfigParser): The configurations of the detector.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        IDetector, SectionProxy: Requested detector of the given type combined with its config.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
-    <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
-    <span class="n">detector</span> <span class="o">=</span> <span class="n">idetector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span>
-
-
-<span class="k">def</span> <span class="nf">__create_tracker</span><span class="p">(</span><span class="n">itracker</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates and returns a tracker of the given type.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        itracker (ITracker): The CLASS, or object type, of the detector we want.</span>
-<span class="sd">        config_section (str): The config section name associated with the given tracker.</span>
-<span class="sd">        configs (ConfigParser): The configurations of the detector.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        ITracker: The requested tracker.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tracker_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">itracker</span><span class="p">(</span><span class="n">tracker_config</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">tracker</span>
 </pre></div>
 
         </details>
@@ -382,19 +358,18 @@ Utrecht University within the Software Project course.
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">__create_detector</span><span class="p">(</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
-                                                  <span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
-                                                  <span class="n">configs</span>
-                                                  <span class="p">)</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">create_detector</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">),</span>
+                               <span class="n">configs</span>
+                               <span class="p">)</span>
+    <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">]]</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">__create_tracker</span><span class="p">(</span><span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
-                               <span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
-                               <span class="n">configs</span>
-                               <span class="p">)</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">create_tracker</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">),</span>
+                             <span class="n">configs</span>
+                             <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
@@ -623,9 +598,13 @@ Sends detections to client if client is used (HlsCapture).</p>
             <span class="c1"># First, get the bounding box and frame for the query.</span>
             <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">)</span>
             <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">)</span>
+            <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">)</span>
+
+            <span class="c1"># Send the feature_map to the orchestrator.</span>
+            <span class="n">send_feature_map_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 
             <span class="c1"># Extract the features from this bounding box and store them in the data.</span>
-            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">))</span>
+            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">)</span>
 
             <span class="c1"># Also store the map of the first box_id to the object_id.</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">box_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
@@ -652,17 +631,17 @@ Sends detections to client if client is used (HlsCapture).</p>
 
 
                 </section>
-                <section id="send_to_orchestrator">
-                            <div class="attr function"><a class="headerlink" href="#send_to_orchestrator">#&nbsp;&nbsp</a>
+                <section id="send_boxes_to_orchestrator">
+                            <div class="attr function"><a class="headerlink" href="#send_boxes_to_orchestrator">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">send_to_orchestrator</span><span class="signature">(ws_client, frame_obj, detected_boxes, tracked_boxes)</span>:
+            <span class="name">send_boxes_to_orchestrator</span><span class="signature">(ws_client, frame_obj, detected_boxes, tracked_boxes)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">send_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">send_boxes_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sends the bounding boxes to the orchestrator using a websocket client.</span>
 
 <span class="sd">    Args:</span>
@@ -688,6 +667,44 @@ Sends detections to client if client is used (HlsCapture).</p>
 <li><strong>frame_obj (FrameObj):</strong>  Frame object on which drawing takes place.</li>
 <li><strong>detected_boxes (BoundingBoxes):</strong>  Boxes generated by the detection.</li>
 <li><strong>tracked_boxes (BoundingBoxes):</strong>  Boxes generated by the tracking.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="send_feature_map_to_orchestrator">
+                            <div class="attr function"><a class="headerlink" href="#send_feature_map_to_orchestrator">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">send_feature_map_to_orchestrator</span><span class="signature">(ws_client, feature_map, object_id)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">send_feature_map_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sends the feature map to the orchestrator using a Websocket client.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection.</span>
+<span class="sd">        feature_map ([Float]): Array of float representing the feature_map.</span>
+<span class="sd">        object_id (Int): The ID of the object the feature_map refers to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">feature_map_to_json</span><span class="p">(</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">object_id</span><span class="p">)</span>
+    <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Sends the feature map to the orchestrator using a Websocket client.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>ws_client (WebsocketClient):</strong>  Websocket object that contains the connection.</li>
+<li><strong>feature_map ([Float]):</strong>  Array of float representing the feature_map.</li>
+<li><strong>object_id (Int):</strong>  The ID of the object the feature_map refers to.</li>
 </ul>
 </div>
 
