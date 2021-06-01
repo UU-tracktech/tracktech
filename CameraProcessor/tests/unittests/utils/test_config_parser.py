@@ -20,12 +20,13 @@ class TestConfigParser:
     Attributes:
         config_parser (ConfigParser): Config parser created from reading ini
         configs (configparser.ConfigParser): configs that are adapted by the config_parser
+        dummy_environment_variables (dict[str, str]): Dummy environment variables for the test.
     """
     def setup_method(self):
         """Initialise before tests."""
         self.test_configs = get_test_configs()
 
-        self.config_parser = ConfigParser('configs.ini')
+        self.config_parser = ConfigParser('configs.ini', False)
         self.configs = self.config_parser.configs
 
     def test_not_empty(self):
@@ -95,4 +96,59 @@ class TestConfigParser:
     def test_invalid_file_name(self):
         """Asserts if file is invalid."""
         with pytest.raises(FileNotFoundError):
-            assert ConfigParser('invalidfilename')
+            assert ConfigParser('invalidfilename', False)
+
+    def test_environment_variables(self):
+        """Test whether the environment variables are correctly used."""
+        # Set environment variables and init configparser.
+        env_vars_dict = self.dummy_environment_variables
+        self.set_environment_variables(env_vars_dict)
+        config_parser = ConfigParser('configs.ini', True)
+        configs = config_parser.configs
+
+        # Assert properties are correctly set in configs.
+        assert configs['Orchestrator']['url'] == env_vars_dict['ORCHESTRATOR_URL']
+        assert configs['HLS']['url'] == env_vars_dict['FORWARDER_URL']
+        assert configs['Main']['mode'] == env_vars_dict['PROCESSOR_MODE']
+        assert configs['Main']['detector'] == env_vars_dict['DETECTION_ALG']
+        assert configs['Main']['tracker'] == env_vars_dict['TRACKING_ALG']
+        assert configs['Main']['reid'] == env_vars_dict['REID_ALG']
+
+        # Remove environment variables.
+        self.remove_environment_variables(self.dummy_environment_variables)
+
+    @staticmethod
+    def set_environment_variables(dict_environment_vars):
+        """Set the environment variables to some test values
+
+        Args:
+            dict_environment_vars (dict[str, str]): environment variables to set.
+        """
+        for key in dict_environment_vars:
+            os.environ[key] = dict_environment_vars[key]
+
+    @staticmethod
+    def remove_environment_variables(dict_environment_vars):
+        """Remove the environment variables again.
+
+        Args:
+            dict_environment_vars (dict[str, str]): environment variables to remove.
+        """
+        for key in dict_environment_vars:
+            os.environ.pop(key)
+
+    @property
+    def dummy_environment_variables(self):
+        """Dummy environment variables to test with.
+
+        Returns:
+            dict[str, str]: Dictionary containing example environment variables.
+        """
+        return {
+            'ORCHESTRATOR_URL': 'test_orch_url',
+            'FORWARDER_URL': 'test_forw_url',
+            'PROCESSOR_MODE': 'test_mode',
+            'DETECTION_ALG': 'test_det_alg',
+            'TRACKING_ALG': 'test_track_alg',
+            'REID_ALG': 'test_reid_alg'
+        }
