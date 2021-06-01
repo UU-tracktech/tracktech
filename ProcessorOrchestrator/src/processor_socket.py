@@ -140,6 +140,7 @@ class ProcessorSocket(WebSocketHandler):
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
+        print(str(processors))
         del processors[self.identifier]
         logger.log(f"Processor with id {self.identifier} disconnected")
 

@@ -52,7 +52,6 @@ class WebsocketClientDummy(WebsocketClient):
         """
 
         # Websocket closed, reconnect is handled by write_message.
-        print(message)
         if message:
             message_json = json.loads(message)
             self.message_list.append(message_json)
