@@ -202,7 +202,6 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
         # Update command.
         elif isinstance(track_elem, UpdateCommand):
-
             logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
             re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
 

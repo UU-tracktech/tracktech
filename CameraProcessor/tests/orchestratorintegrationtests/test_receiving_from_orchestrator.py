@@ -11,6 +11,7 @@ import pytest
 from super_websocket_client import create_dummy_client
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
+from processor.webhosting.update_command import UpdateCommand
 from utils.utils import PC_URL, IF_URL
 
 
@@ -75,6 +76,34 @@ class TestReceivingFromOrchestrator:
         received_stop = processor_client.message_queue.popleft()
         assert isinstance(received_stop, StopCommand)
         assert received_stop.object_id == 1
+
+        processor_client.disconnect()
+        interface_client.disconnect()
+
+    @pytest.mark.asyncio
+    async def test_retrieve_update(self):
+        """Mock interface client sends a update command to the processor
+
+        Check if camera processor handles this command properly.
+        Then sends a update command. Check if camera processor also handles this update.
+        """
+
+        # Get a connected processor client.
+        processor_client = await create_dummy_client(PC_URL, "mock_id")
+
+        # Get a connected interface client.
+        interface_client = await create_dummy_client(IF_URL)
+
+        feature_map = [0] * 512
+        update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": feature_map})
+        interface_client.write_message(update_command)
+
+        await asyncio.sleep(2)
+
+        received_update = processor_client.message_queue.popleft()
+        assert isinstance(received_update, UpdateCommand)
+        assert received_update.object_id == 1
+        assert received_update.feature_map == feature_map
 
         processor_client.disconnect()
         interface_client.disconnect()
