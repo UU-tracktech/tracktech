@@ -43,11 +43,12 @@ class TestReceivingFromOrchestrator:
         return request.param
 
     @pytest.mark.asyncio
-    async def test_retrieve_start_stop(self):
-        """Mock interface client sends a start and stop command to the processor
+    async def test_retrieve_start_stop_update(self):
+        """Mock interface client sends a start, stop and update command to the processor
 
-        Check if camera processor handles this command properly.
-        Then sends a stop command. Check if camera processor also handles this stop.
+        Check if camera processor handles the start commands properly.
+        Then send a stop command. Check if camera processor also handles this stop.
+        And finally send an update command and check if camera processor also handles this update.
         """
         # Get a connected processor client.
         processor_client = await create_dummy_client(PC_URL, "mock_id")
@@ -77,24 +78,7 @@ class TestReceivingFromOrchestrator:
         assert isinstance(received_stop, StopCommand)
         assert received_stop.object_id == 1
 
-        processor_client.disconnect()
-        interface_client.disconnect()
-
-    @pytest.mark.asyncio
-    async def test_retrieve_update(self):
-        """Mock interface client sends a update command to the processor
-
-        Check if camera processor handles this command properly.
-        Then sends a update command. Check if camera processor also handles this update.
-        """
-
-        # Get a connected processor client.
-        processor_client = await create_dummy_client(PC_URL, "mock_id")
-
-        # Get a connected interface client.
-        interface_client = await create_dummy_client(IF_URL)
-
-        feature_map = [0] * 512
+        feature_map = [0, 1, 2, 3]
         update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": feature_map})
         interface_client.write_message(update_command)
 
