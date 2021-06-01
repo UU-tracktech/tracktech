@@ -21,13 +21,9 @@ class AccuracyObject:
 
     Attributes:
         results (object): Results of the
-        image_width (int): Width of the image.
-        image_height (int): Height of the image.
         iou_threshold (int): Threshold from which it is counted.
         frame_amount (int): Number of frames.
         bounding_boxes_gt ([BoundingBox]):
-        yolo_config (SectionProxy)
-        accuracy_config (SectionProxy): Configurations of the accuracy.
     """
 
     def __init__(self, configs):
@@ -36,28 +32,18 @@ class AccuracyObject:
         Args:
             configs (Dict): Configuration parser which also contains the accuracy configurations.
         """
+        yolo_config = configs['Yolov5']
+        accuracy_config = configs['Accuracy']
         # Initializing class variables.
         self.results = {}
-        self.image_width = 0
-        self.image_height = 0
-        self.iou_threshold = 0
-        self.frame_amount = 0
-
-        # Assign class variables from config.
-        self.read_config(configs)
+        self.iou_threshold = float(yolo_config['iou-thres'])
+        self.frame_amount = int(accuracy_config['nr_frames'])
+        self.gt_format = accuracy_config['det_format']
+        self.plots_prefix = accuracy_config['plots_prefix']
+        self.plots_path = accuracy_config['plots_path']
         self.configs = configs
-
         self.bounding_boxes_gt = []
 
-    def read_config(self, configs):
-        """Assign class variables using the Accuracy config.
-
-        Args:
-            configs (ConfigParser): Configurations of the
-        """
-        # Load the config file, take the relevant Accuracy section.
-        self.yolo_config = configs['Yolov5']
-        self.accuracy_config = configs['Accuracy']
 
     def parse_boxes(self, boxes_to_parse):
         """Parses boxes to podm format.
@@ -133,7 +119,7 @@ class AccuracyObject:
         """Retrieves accuracy of detections."""
 
         # Getting the bounding boxes from the gt file.
-        self.bounding_boxes_gt = self.read_boxes(self.accuracy_config['det_format'], 'gt_path')
+        self.bounding_boxes_gt = self.read_boxes(self.gt_format, 'gt_path')
 
         # Getting and parsing the bounding boxes from the detection file.
         bounding_boxes_det = self.read_boxes('JSON', 'det_path')
@@ -142,7 +128,7 @@ class AccuracyObject:
         self.results = get_pascal_voc_metrics(
             self.bounding_boxes_gt,
             bounding_boxes_det,
-            float(self.yolo_config['iou-thres'])
+            self.iou_threshold
         )
 
         # Printing a few metrics related to accuracy on the terminal.
@@ -159,15 +145,15 @@ class AccuracyObject:
             result (MetricPerClass): A MetricPerClass object from the PODM library.
         """
         try:
-            os.makedirs(self.accuracy_config['plots_path'], exist_ok=True)
+            os.makedirs(self.plots_path, exist_ok=True)
             plot_precision_recall_curve(result,
-                                        os.path.join(self.accuracy_config['plots_path'],
+                                        os.path.join(self.plots_path,
                                                      f'{time.strftime("%Y-%m-%d_%H-%M-%S")}-'
-                                                     f'{self.accuracy_config["plots_prefix"]}-'
+                                                     f'{self.plots_prefix}-'
                                                      f'{result.label}')
                                         )
         except RuntimeError:
-            print(f'{self.accuracy_config["plots_prefix"]}-{result.label}: Cannot plot')
+            print(f'{self.plots_prefix}-{result.label}: Cannot plot')
 
     def draw_all_pr_plots(self):
         """Draws the pr plots for all classes in the (podm) result."""
