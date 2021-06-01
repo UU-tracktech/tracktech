@@ -24,6 +24,8 @@ class TestReceivingFromOrchestrator:
         ws_client = await create_dummy_client(PC_URL, "mock_id")
         assert ws_client.connection.protocol is not None
 
+        ws_client.disconnect()
+
     @pytest.fixture(params=['featureMap'])
     def message_type(self, request):
         """Fixture to generate message types.
@@ -43,6 +45,7 @@ class TestReceivingFromOrchestrator:
         return request.param
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(60)
     async def test_retrieve_start_stop_update(self):
         """Mock interface client sends a start, stop and update command to the processor
 
@@ -78,15 +81,15 @@ class TestReceivingFromOrchestrator:
         assert isinstance(received_stop, StopCommand)
         assert received_stop.object_id == 1
 
-        # update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": "[]"})
-        # interface_client.write_message(update_command)
-        #
-        # await asyncio.sleep(2)
-        #
-        # received_update = processor_client.message_queue.popleft()
-        # assert isinstance(received_update, UpdateCommand)
-        # assert received_update.object_id == 1
-        # assert received_update.feature_map == []
+        update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": "[]"})
+        interface_client.write_message(update_command)
+
+        await asyncio.sleep(2)
+
+        received_update = processor_client.message_queue.popleft()
+        assert isinstance(received_update, UpdateCommand)
+        assert received_update.object_id == 1
+        assert received_update.feature_map == []
 
         processor_client.disconnect()
         interface_client.disconnect()
