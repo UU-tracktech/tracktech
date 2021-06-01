@@ -254,7 +254,7 @@ Utrecht University within the Software Project course.
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="c1"># Run accuracy.</span>
-    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
     <span class="n">test_object</span> <span class="o">=</span> <span class="n">AccuracyObject</span><span class="p">(</span><span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
 
     <span class="c1"># Detect and plot all the information.</span>
