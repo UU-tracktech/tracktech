@@ -137,7 +137,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the config file.</span>
-    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
     <span class="c1"># If mode is tornado.</span>
@@ -286,7 +286,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the config file.</span>
-    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">)</span>
+    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span>
 
     <span class="c1"># If mode is tornado.</span>

@@ -37,6 +37,9 @@
                         <li>
                                 <a class="function" href="#ConfigParser.append_config">append_config</a>
                         </li>
+                        <li>
+                                <a class="function" href="#ConfigParser.read_environment_variables">read_environment_variables</a>
+                        </li>
                 </ul>
 
             </li>
@@ -55,7 +58,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../utils.html">utils</a>.config_parser    </h1>
 
-                        <div class="docstring"><p>Constructs paths from config reader.</p>
+                        <div class="docstring"><p>Constructs paths from config reader and reads environment variables.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -64,7 +67,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Constructs paths from config reader.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Constructs paths from config reader and reads environment variables.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -73,6 +76,7 @@ Utrecht University within the Software Project course.
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 
 <span class="k">class</span> <span class="nc">ConfigParser</span><span class="p">:</span>
@@ -83,11 +87,15 @@ Utrecht University within the Software Project course.
 <span class="sd">        config_path (str): path to config file</span>
 <span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">,</span> <span class="n">use_environment_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_name (str): name of the config file</span>
+<span class="sd">            config_name (str): name of the config file.</span>
+<span class="sd">            use_environment_vars (bool): Use environment variables</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: The configuration file name searched for does not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Config path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../../&#39;</span><span class="p">))</span>
@@ -100,6 +108,11 @@ Utrecht University within the Software Project course.
         <span class="c1"># Read config file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
+
+        <span class="c1"># Also use environment variables in case those are needed.</span>
+        <span class="k">if</span> <span class="n">use_environment_vars</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using environment variables&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_environment_variables</span><span class="p">()</span>
 
         <span class="c1"># Converts paths.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__convert_paths_to_absolute</span><span class="p">()</span>
@@ -136,6 +149,46 @@ Utrecht University within the Software Project course.
                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="n">temp_configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">read_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Override configurations using environment variables.</span>
+
+<span class="sd">        These properties can be changed within the docker-compose file</span>
+<span class="sd">        in order to expose more to the outside and create an easier plug-and-play environment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read all the environment variables.</span>
+        <span class="n">orchestrator_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span>
+        <span class="n">forwarder_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;FORWARDER_URL&#39;</span><span class="p">)</span>
+        <span class="n">running_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROCESSOR_MODE&#39;</span><span class="p">)</span>
+        <span class="n">detection_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DETECTION_ALG&#39;</span><span class="p">)</span>
+        <span class="n">tracking_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TRACKING_ALG&#39;</span><span class="p">)</span>
+        <span class="n">reid_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REID_ALG&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Replace values inside the configuration when set.</span>
+        <span class="k">if</span> <span class="n">orchestrator_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: ORCHESTRATOR_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orchestrator_url</span>
+
+        <span class="k">if</span> <span class="n">forwarder_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: FORWARDER_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forwarder_url</span>
+
+        <span class="k">if</span> <span class="n">running_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: PROCESSOR_MODE used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">running_mode</span>
+
+        <span class="k">if</span> <span class="n">detection_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: DETECTION_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detection_alg</span>
+
+        <span class="k">if</span> <span class="n">tracking_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: TRACKING_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracking_alg</span>
+
+        <span class="k">if</span> <span class="n">reid_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: REID_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;reid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reid_alg</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__parse_int_tuple</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
@@ -169,11 +222,15 @@ Utrecht University within the Software Project course.
 <span class="sd">        config_path (str): path to config file</span>
 <span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">,</span> <span class="n">use_environment_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_name (str): name of the config file</span>
+<span class="sd">            config_name (str): name of the config file.</span>
+<span class="sd">            use_environment_vars (bool): Use environment variables</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: The configuration file name searched for does not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Config path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../../&#39;</span><span class="p">))</span>
@@ -186,6 +243,11 @@ Utrecht University within the Software Project course.
         <span class="c1"># Read config file.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
+
+        <span class="c1"># Also use environment variables in case those are needed.</span>
+        <span class="k">if</span> <span class="n">use_environment_vars</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using environment variables&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_environment_variables</span><span class="p">()</span>
 
         <span class="c1"># Converts paths.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__convert_paths_to_absolute</span><span class="p">()</span>
@@ -223,6 +285,46 @@ Utrecht University within the Software Project course.
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_configs</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_key</span><span class="p">]</span>
 
+    <span class="k">def</span> <span class="nf">read_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Override configurations using environment variables.</span>
+
+<span class="sd">        These properties can be changed within the docker-compose file</span>
+<span class="sd">        in order to expose more to the outside and create an easier plug-and-play environment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read all the environment variables.</span>
+        <span class="n">orchestrator_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span>
+        <span class="n">forwarder_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;FORWARDER_URL&#39;</span><span class="p">)</span>
+        <span class="n">running_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROCESSOR_MODE&#39;</span><span class="p">)</span>
+        <span class="n">detection_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DETECTION_ALG&#39;</span><span class="p">)</span>
+        <span class="n">tracking_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TRACKING_ALG&#39;</span><span class="p">)</span>
+        <span class="n">reid_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REID_ALG&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Replace values inside the configuration when set.</span>
+        <span class="k">if</span> <span class="n">orchestrator_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: ORCHESTRATOR_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orchestrator_url</span>
+
+        <span class="k">if</span> <span class="n">forwarder_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: FORWARDER_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forwarder_url</span>
+
+        <span class="k">if</span> <span class="n">running_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: PROCESSOR_MODE used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">running_mode</span>
+
+        <span class="k">if</span> <span class="n">detection_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: DETECTION_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detection_alg</span>
+
+        <span class="k">if</span> <span class="n">tracking_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: TRACKING_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracking_alg</span>
+
+        <span class="k">if</span> <span class="n">reid_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: REID_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;reid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reid_alg</span>
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__parse_int_tuple</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Converter for parsing a tuple.</span>
@@ -251,16 +353,20 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#ConfigParser.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">ConfigParser</span><span class="signature">(config_name)</span>
+            <span class="name">ConfigParser</span><span class="signature">(config_name, use_environment_vars)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">,</span> <span class="n">use_environment_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_name (str): name of the config file</span>
+<span class="sd">            config_name (str): name of the config file.</span>
+<span class="sd">            use_environment_vars (bool): Use environment variables</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: The configuration file name searched for does not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Config path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../../&#39;</span><span class="p">))</span>
@@ -274,6 +380,11 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">converters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tuple&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_int_tuple</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
 
+        <span class="c1"># Also use environment variables in case those are needed.</span>
+        <span class="k">if</span> <span class="n">use_environment_vars</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using environment variables&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_environment_variables</span><span class="p">()</span>
+
         <span class="c1"># Converts paths.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__convert_paths_to_absolute</span><span class="p">()</span>
 </pre></div>
@@ -285,7 +396,14 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>config_name (str):</strong>  name of the config file</li>
+<li><strong>config_name (str):</strong>  name of the config file.</li>
+<li><strong>use_environment_vars (bool):</strong>  Use environment variables</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>FileNotFoundError:</strong>  The configuration file name searched for does not exist.</li>
 </ul>
 </div>
 
@@ -336,6 +454,67 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>config_name (str):</strong>  File name of the configuration file that needs to get appended.</li>
 </ul>
+</div>
+
+
+                            </div>
+                            <div id="ConfigParser.read_environment_variables" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ConfigParser.read_environment_variables">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">read_environment_variables</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Override configurations using environment variables.</span>
+
+<span class="sd">        These properties can be changed within the docker-compose file</span>
+<span class="sd">        in order to expose more to the outside and create an easier plug-and-play environment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read all the environment variables.</span>
+        <span class="n">orchestrator_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span>
+        <span class="n">forwarder_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;FORWARDER_URL&#39;</span><span class="p">)</span>
+        <span class="n">running_mode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PROCESSOR_MODE&#39;</span><span class="p">)</span>
+        <span class="n">detection_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DETECTION_ALG&#39;</span><span class="p">)</span>
+        <span class="n">tracking_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TRACKING_ALG&#39;</span><span class="p">)</span>
+        <span class="n">reid_alg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REID_ALG&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Replace values inside the configuration when set.</span>
+        <span class="k">if</span> <span class="n">orchestrator_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: ORCHESTRATOR_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Orchestrator&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orchestrator_url</span>
+
+        <span class="k">if</span> <span class="n">forwarder_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: FORWARDER_URL used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;HLS&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forwarder_url</span>
+
+        <span class="k">if</span> <span class="n">running_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: PROCESSOR_MODE used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">running_mode</span>
+
+        <span class="k">if</span> <span class="n">detection_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: DETECTION_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detection_alg</span>
+
+        <span class="k">if</span> <span class="n">tracking_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: TRACKING_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracking_alg</span>
+
+        <span class="k">if</span> <span class="n">reid_alg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: REID_ALG used.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;reid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reid_alg</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Override configurations using environment variables.</p>
+
+<p>These properties can be changed within the docker-compose file
+in order to expose more to the outside and create an easier plug-and-play environment.</p>
 </div>
 
 
