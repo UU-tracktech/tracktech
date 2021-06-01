@@ -78,6 +78,7 @@ class ProcessorSocket(WebSocketHandler):
                                         see update_feature_map, for the other expected properties.
         """
         logger.log_message_receive(message, "/processor", self.request.remote_ip)
+        print(self.identifier)
 
         try:
             message_object = json.loads(message)
