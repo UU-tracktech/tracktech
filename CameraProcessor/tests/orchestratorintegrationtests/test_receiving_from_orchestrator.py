@@ -86,6 +86,7 @@ class TestReceivingFromOrchestrator:
 
         await asyncio.sleep(2)
 
+        print(processor_client.message_list.pop())
         received_update = interface_client.message_queue.popleft()
         assert isinstance(received_update, UpdateCommand)
         assert received_update.object_id == 1
