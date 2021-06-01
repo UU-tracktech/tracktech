@@ -24,7 +24,7 @@ class TestHtmlPageHandler(AsyncHTTPTestCase):
         configs = get_test_configs()
 
         return tornado.web.Application([
-            # .html regex pattern.
+            # HTML file regex pattern.
             (r"/(.*\.html)?", HtmlPageHandler, dict(configs=configs)),
         ])
 
