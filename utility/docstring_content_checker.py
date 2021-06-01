@@ -15,14 +15,14 @@ class DocstringContentChecker(BaseChecker):
     """Checks the docstrings from several layers.
 
     The following linting errors get caught:
-        - unnecessary-args-section: An args section is inside the docstring without parameters.
-        - missing-args-in-docstring: "Args:" section is missing inside the docstring specification.
-        - missing-argument-in-docstring: Missing argument in the docstring.
-        - unknown-argument-in-docstring: An unknown argument was found inside the docstring.
-        - argument-wrong-place-in-docstring: Argument is at a wrong location inside the docstring.
-        - wrong-argument-specification-syntax: Argument specification is wrong format.
-        - sections-in-wrong-order: Sections are not in the correct order.
-        - unknown-section: Section name was unknown.
+        unnecessary-args-section: An args section is inside the docstring without parameters.
+        missing-args-in-docstring: "Args:" section is missing inside the docstring specification.
+        missing-argument-in-docstring: Missing argument in the docstring.
+        unknown-argument-in-docstring: An unknown argument was found inside the docstring.
+        argument-wrong-place-in-docstring: Argument is at a wrong location inside the docstring.
+        wrong-argument-specification-syntax: Argument specification is wrong format.
+        sections-in-wrong-order: Sections are not in the correct order.
+        unknown-section: Section name was unknown.
         section-wrong-format: Section should follow by spaces
         missing-return-type: "Returns:" section has no type specified.
         use-dict-keyword: When there are curly braces used to define a dictionary.
