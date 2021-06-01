@@ -29,6 +29,42 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
+                    <a class="class" href="#DocstringChecker">DocstringChecker</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#DocstringChecker.name">name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DocstringChecker.msgs">msgs</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.visit_functiondef">visit_functiondef</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.visit_classdef">visit_classdef</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.visit_module">visit_module</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.check_docstring">check_docstring</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.get_full_docstring">get_full_docstring</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.check_summary">check_summary</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.check_last_line">check_last_line</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringChecker.check_body">check_body</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#register">register</a>
             </li>
     </ul>
@@ -295,6 +331,633 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
+                <section id="DocstringChecker">
+                                <div class="attr class">
+        <a class="headerlink" href="#DocstringChecker">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">DocstringChecker</span>(<span class="base">pylint.checkers.base_checker.BaseChecker</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DocstringChecker</span><span class="p">(</span><span class="n">BaseChecker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks the docstrings from several layers.</span>
+
+<span class="sd">    The following linting errors get caught:</span>
+<span class="sd">        last-docstring-line-contains-letters: Last line should only contain apostrophes.</span>
+<span class="sd">        multiple-new-lines-in-docstring: There should never be more than one white line.</span>
+<span class="sd">        docstring-section-not-separated: A section should be after an empty line.</span>
+<span class="sd">        first-line-in-docstring-must-end-with-dot: First line must end with a dot.</span>
+<span class="sd">        make-docstring-one-line: When docstring is able to be put in one line.</span>
+<span class="sd">        second-docstring-line-must-be-empty: Second docstring line has to be empty.</span>
+<span class="sd">        docstring-last-line-empty: There should be no trailing white lines.</span>
+<span class="sd">        docstring-starts-with-space: Docstrings should start with a character.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        __implements__ (IAstroidChecker): Astroid checker interface.</span>
+<span class="sd">        name (str): Name of the checker.</span>
+<span class="sd">        msgs (dict[str, (str, str, str)]): Dictionary with error codes and pylint messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__implements__</span> <span class="o">=</span> <span class="n">IAstroidChecker</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;incorrect-docstring&#39;</span>
+
+    <span class="n">msgs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;C1220&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Last docstring line should only be </span><span class="se">\&quot;\&quot;\&quot;</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;last-docstring-line-contains-letters&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring does not end with triple quotes&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1221&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Multiple consequent new lines in docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;multiple-new-lines-in-docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring function has multiple newlines&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1222&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;There should be a newline before section </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;docstring-section-not-separated&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring section is started without a newline&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1223&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;First line of docstring should end with a dot&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring first line has no dot&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1224&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Make docstring single line&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Unnecessary multiline docstring&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1225&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Second line of docstring should be empty&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;second-docstring-line-must-be-empty&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Second line in docstring&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1226&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Last line of docstring should not be empty&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;docstring-last-line-empty&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Last line is empty in docstring&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1227&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Docstring should start with a character&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;docstring-starts-with-space&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when first character is a space&#39;</span>
+                  <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each function inside a python file that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.FunctionDef): Function definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">visit_classdef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each class inside the files that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">visit_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each module that pylint processes and perform basic checks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the lines of the documentation and runs several checks on it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function or class definition containing the docstring.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get documentation.</span>
+        <span class="n">doc_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Check first and last line.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_summary</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_last_line</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">)</span>
+
+        <span class="c1"># See if body is correctly formatted.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_body</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_full_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the lines of the documentation and runs several checks on it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function or class definition containing the docstring.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [str]: List of strings which are the split and stripped docstrings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First line should start with character.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39; &#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-starts-with-space&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Strip all the lines and put in a list.</span>
+        <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># Multiline comment should end with an empty line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;last-docstring-line-contains-letters&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">doc_lines</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Return the lines in a list.</span>
+        <span class="k">return</span> <span class="n">doc_lines</span>
+
+    <span class="k">def</span> <span class="nf">check_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the lines of the documentation and runs several checks on it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function, class or module, definition containing the docstring.</span>
+<span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First line should end with a dot.</span>
+        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\.\s*$&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">first_line_match</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Return if single line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Second line is empty and also the last line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+        <span class="c1"># Second line contains commenting.</span>
+        <span class="k">elif</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;second-docstring-line-must-be-empty&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check_last_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the last line is not empty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function, class or module, definition containing the docstring.</span>
+<span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Small docstring has other messages.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Last line is empty but should not.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-last-line-empty&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether body has its sections correctly spaced and does not contain several white lines.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function, class or module, definition containing the docstring.</span>
+<span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Variables to keep track of the current state.</span>
+        <span class="n">contains_double_white_line</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">number_white_lines</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># For each line in the docstring.</span>
+        <span class="k">for</span> <span class="n">doc_line</span> <span class="ow">in</span> <span class="n">doc_lines</span><span class="p">:</span>
+            <span class="c1"># Detect double white lines in comments.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_line</span><span class="p">:</span>
+                <span class="n">number_white_lines</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">number_white_lines</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">contains_double_white_line</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">number_white_lines</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Section has to be after a newline.</span>
+            <span class="n">section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):\s*$&#39;</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">line_index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># If last line was not empty.</span>
+                <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">section_name</span> <span class="o">=</span> <span class="n">section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-section-not-separated&#39;</span><span class="p">,</span>
+                                     <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                     <span class="n">args</span><span class="o">=</span><span class="n">section_name</span><span class="p">)</span>
+
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Create pylint error when docstring contains two white lines.</span>
+        <span class="k">if</span> <span class="n">contains_double_white_line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;multiple-new-lines-in-docstring&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks the docstrings from several layers.</p>
+
+<p>The following linting errors get caught:
+    last-docstring-line-contains-letters: Last line should only contain apostrophes.
+    multiple-new-lines-in-docstring: There should never be more than one white line.
+    docstring-section-not-separated: A section should be after an empty line.
+    first-line-in-docstring-must-end-with-dot: First line must end with a dot.
+    make-docstring-one-line: When docstring is able to be put in one line.
+    second-docstring-line-must-be-empty: Second docstring line has to be empty.
+    docstring-last-line-empty: There should be no trailing white lines.
+    docstring-starts-with-space: Docstrings should start with a character.</p>
+
+<h6 id="attributes">Attributes</h6>
+
+<ul>
+<li><strong>__implements__ (IAstroidChecker):</strong>  Astroid checker interface.</li>
+<li><strong>name (str):</strong>  Name of the checker.</li>
+<li><strong>msgs (dict[str, (str, str, str)]):</strong>  Dictionary with error codes and pylint messages.</li>
+</ul>
+</div>
+
+
+                            <div id="DocstringChecker.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#DocstringChecker.name">#&nbsp;&nbsp</a>
+
+        <span class="name">name</span><span class="default_value"> = &#39;incorrect-docstring&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="DocstringChecker.msgs" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#DocstringChecker.msgs">#&nbsp;&nbsp</a>
+
+        <span class="name">msgs</span><span class="default_value"> = {&#39;C1220&#39;: (&#39;Last docstring line should only be &#34;&#34;&#34;&#39;, &#39;last-docstring-line-contains-letters&#39;, &#39;Emitted when a docstring does not end with triple quotes&#39;), &#39;C1221&#39;: (&#39;Multiple consequent new lines in docstring&#39;, &#39;multiple-new-lines-in-docstring&#39;, &#39;Emitted when a docstring function has multiple newlines&#39;), &#39;C1222&#39;: (&#39;There should be a newline before section %s&#39;, &#39;docstring-section-not-separated&#39;, &#39;Emitted when a docstring section is started without a newline&#39;), &#39;C1223&#39;: (&#39;First line of docstring should end with a dot&#39;, &#39;first-line-in-docstring-must-end-with-dot&#39;, &#39;Emitted when a docstring first line has no dot&#39;), &#39;C1224&#39;: (&#39;Make docstring single line&#39;, &#39;make-docstring-one-line&#39;, &#39;Unnecessary multiline docstring&#39;), &#39;C1225&#39;: (&#39;Second line of docstring should be empty&#39;, &#39;second-docstring-line-must-be-empty&#39;, &#39;Second line in docstring&#39;), &#39;C1226&#39;: (&#39;Last line of docstring should not be empty&#39;, &#39;docstring-last-line-empty&#39;, &#39;Last line is empty in docstring&#39;), &#39;C1227&#39;: (&#39;Docstring should start with a character&#39;, &#39;docstring-starts-with-space&#39;, &#39;Emitted when first character is a space&#39;)}</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="DocstringChecker.visit_functiondef" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.visit_functiondef">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">visit_functiondef</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each function inside a python file that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.FunctionDef): Function definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Called for each function inside a python file that pylint processes.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.FunctionDef):</strong>  Function definition containing the .doc property.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.visit_classdef" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.visit_classdef">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">visit_classdef</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">visit_classdef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each class inside the files that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Called for each class inside the files that pylint processes.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.ClassDef):</strong>  Class definition containing the .doc property.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.visit_module" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.visit_module">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">visit_module</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">visit_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each module that pylint processes and perform basic checks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Called for each module that pylint processes and perform basic checks.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition astroid creates</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.check_docstring" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.check_docstring">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">check_docstring</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">check_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the lines of the documentation and runs several checks on it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function or class definition containing the docstring.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get documentation.</span>
+        <span class="n">doc_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Check first and last line.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_summary</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_last_line</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">)</span>
+
+        <span class="c1"># See if body is correctly formatted.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_body</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Retrieves the lines of the documentation and runs several checks on it.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function or class definition containing the docstring.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.get_full_docstring" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.get_full_docstring">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_full_docstring</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_full_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the lines of the documentation and runs several checks on it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function or class definition containing the docstring.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [str]: List of strings which are the split and stripped docstrings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First line should start with character.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39; &#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-starts-with-space&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Strip all the lines and put in a list.</span>
+        <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># Multiline comment should end with an empty line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;last-docstring-line-contains-letters&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">doc_lines</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Return the lines in a list.</span>
+        <span class="k">return</span> <span class="n">doc_lines</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Retrieves the lines of the documentation and runs several checks on it.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function or class definition containing the docstring.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>[str]: List of strings which are the split and stripped docstrings.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.check_summary" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.check_summary">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">check_summary</span><span class="signature">(self, node, doc_lines)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">check_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the lines of the documentation and runs several checks on it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function, class or module, definition containing the docstring.</span>
+<span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First line should end with a dot.</span>
+        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\.\s*$&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">first_line_match</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Return if single line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Second line is empty and also the last line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+        <span class="c1"># Second line contains commenting.</span>
+        <span class="k">elif</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;second-docstring-line-must-be-empty&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Retrieves the lines of the documentation and runs several checks on it.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function, class or module, definition containing the docstring.</li>
+<li><strong>doc_lines ([str]):</strong>  List containing all the lines of the documentation.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.check_last_line" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.check_last_line">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">check_last_line</span><span class="signature">(self, node, doc_lines)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">check_last_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the last line is not empty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function, class or module, definition containing the docstring.</span>
+<span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Small docstring has other messages.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Last line is empty but should not.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-last-line-empty&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks whether the last line is not empty.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function, class or module, definition containing the docstring.</li>
+<li><strong>doc_lines ([str]):</strong>  List containing all the lines of the documentation.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringChecker.check_body" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringChecker.check_body">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">check_body</span><span class="signature">(self, node, doc_lines)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">check_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether body has its sections correctly spaced and does not contain several white lines.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function, class or module, definition containing the docstring.</span>
+<span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Variables to keep track of the current state.</span>
+        <span class="n">contains_double_white_line</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">number_white_lines</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># For each line in the docstring.</span>
+        <span class="k">for</span> <span class="n">doc_line</span> <span class="ow">in</span> <span class="n">doc_lines</span><span class="p">:</span>
+            <span class="c1"># Detect double white lines in comments.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_line</span><span class="p">:</span>
+                <span class="n">number_white_lines</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">number_white_lines</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">contains_double_white_line</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">number_white_lines</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Section has to be after a newline.</span>
+            <span class="n">section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):\s*$&#39;</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">line_index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># If last line was not empty.</span>
+                <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">section_name</span> <span class="o">=</span> <span class="n">section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-section-not-separated&#39;</span><span class="p">,</span>
+                                     <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                     <span class="n">args</span><span class="o">=</span><span class="n">section_name</span><span class="p">)</span>
+
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Create pylint error when docstring contains two white lines.</span>
+        <span class="k">if</span> <span class="n">contains_double_white_line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;multiple-new-lines-in-docstring&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks whether body has its sections correctly spaced and does not contain several white lines.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function, class or module, definition containing the docstring.</li>
+<li><strong>doc_lines ([str]):</strong>  List containing all the lines of the documentation.</li>
+</ul>
+</div>
+
+
+                            </div>
+                </section>
                 <section id="register">
                             <div class="attr function"><a class="headerlink" href="#register">#&nbsp;&nbsp</a>
 

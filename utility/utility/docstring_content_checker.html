@@ -29,6 +29,60 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
+                    <a class="class" href="#DocstringContentChecker">DocstringContentChecker</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#DocstringContentChecker.name">name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DocstringContentChecker.ordered_sections">ordered_sections</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DocstringContentChecker.msgs">msgs</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.visit_functiondef">visit_functiondef</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.visit_classdef">visit_classdef</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.lint_docstring">lint_docstring</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.lint_function_section">lint_function_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.lint_class_section">lint_class_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.doc_lint_args_section">doc_lint_args_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.doc_lint_attribute_section">doc_lint_attribute_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.doc_lint_returns_section">doc_lint_returns_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.doc_lint_raises_section">doc_lint_raises_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.match_type_definition">match_type_definition</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.match_strict_section">match_strict_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.match_section">match_section</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DocstringContentChecker.check_type_definition">check_type_definition</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#register">register</a>
             </li>
     </ul>
@@ -591,6 +645,1396 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
+                <section id="DocstringContentChecker">
+                                <div class="attr class">
+        <a class="headerlink" href="#DocstringContentChecker">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">DocstringContentChecker</span>(<span class="base">pylint.checkers.base_checker.BaseChecker</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DocstringContentChecker</span><span class="p">(</span><span class="n">BaseChecker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks the docstrings from several layers.</span>
+
+<span class="sd">    The following linting errors get caught:</span>
+<span class="sd">        unnecessary-args-section: An args section is inside the docstring without parameters.</span>
+<span class="sd">        missing-args-in-docstring: &quot;Args:&quot; section is missing inside the docstring specification.</span>
+<span class="sd">        missing-argument-in-docstring: Missing argument in the docstring.</span>
+<span class="sd">        unknown-argument-in-docstring: An unknown argument was found inside the docstring.</span>
+<span class="sd">        argument-wrong-place-in-docstring: Argument is at a wrong location inside the docstring.</span>
+<span class="sd">        wrong-argument-specification-syntax: Argument specification is wrong format.</span>
+<span class="sd">        sections-in-wrong-order: Sections are not in the correct order.</span>
+<span class="sd">        unknown-section: Section name was unknown.</span>
+<span class="sd">        section-wrong-format: Section should follow by spaces</span>
+<span class="sd">        missing-return-type: &quot;Returns:&quot; section has no type specified.</span>
+<span class="sd">        use-dict-keyword: When there are curly braces used to define a dictionary.</span>
+<span class="sd">        returns-section-has-multiple-type-definitions: There should only be one type definition inside the returns.</span>
+<span class="sd">        enclose-type-in-parenthesis: The type should be enclosed with parenthesis.</span>
+<span class="sd">        type-not-defined: Type of argument or attribute is missing.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        __implements__ (IAstroidChecker): Astroid checker interface.</span>
+<span class="sd">        name (str): Name of the checker.</span>
+<span class="sd">        ordered_sections ([str]): The order in which sections should be inside the docstring.</span>
+<span class="sd">        msgs (dict[str, (str, str, str)]): Dictionary with error codes and pylint messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__implements__</span> <span class="o">=</span> <span class="n">IAstroidChecker</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;incorrect-docstring-content&#39;</span>
+    <span class="n">ordered_sections</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Note&#39;</span><span class="p">,</span> <span class="s1">&#39;Args&#39;</span><span class="p">,</span> <span class="s1">&#39;Attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;Yields&#39;</span><span class="p">,</span> <span class="s1">&#39;Returns&#39;</span><span class="p">,</span> <span class="s1">&#39;Examples&#39;</span><span class="p">,</span> <span class="s1">&#39;Raises&#39;</span><span class="p">]</span>
+
+    <span class="n">msgs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;C1121&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Args section should not be there&quot;</span><span class="p">,</span>
+                  <span class="s1">&#39;unnecessary-args-section&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring has &quot;Args:&quot; section without arguments&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1122&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Section &quot;Args:&quot; is missing from the docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;missing-args-in-docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring is missing an &quot;Args:&quot; section when it has arguments&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1123&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Argument &quot;</span><span class="si">%s</span><span class="s1">&quot; missing from the docstring args&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;missing-argument-in-docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring is missing an argument&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1124&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Argument &quot;</span><span class="si">%s</span><span class="s1">&quot; not an argument of the method, did you make a typo?&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;unknown-argument-in-docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring contains an argument&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1125&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Argument &quot;</span><span class="si">%s</span><span class="s1">&quot; is in the wrong position. Put it in the docstring section at index </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;argument-wrong-place-in-docstring&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring argument is in the wrong position&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1126&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Argument &quot;</span><span class="si">%s</span><span class="s1">&quot; has wrong specification, &quot;&lt;argument-name&gt; (&lt;argument-type&gt;): &quot; must be the form&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;wrong-argument-specification-syntax&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring argument is in the wrong position&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1127&#39;</span><span class="p">:</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sections in wrong order, must be like </span><span class="si">{</span><span class="n">ordered_sections</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;sections-in-wrong-order&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when docstring sections are in the wrong order&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1128&#39;</span><span class="p">:</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Section: &quot;%s&quot; is unknown, only known sections are: </span><span class="si">{</span><span class="n">ordered_sections</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;unknown-section&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when docstring section is of the wrong type&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1129&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Section: &quot;</span><span class="si">%s</span><span class="s1">&quot; is not formatted correctly, should be &quot;&lt;section-name&gt;:</span><span class="se">\\</span><span class="s1">n&quot;&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;section-wrong-format&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when docstring section has the wrong format&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1130&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Return type definition is missing&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;missing-return-type&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when docstring Returns section misses a type definition&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1131&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Dictionary types have to be of form dict[keytype, valuetype], not &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;use-dict-keyword&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when docstring contains literal dict type&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1132&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Returns section contains type definitions on multiple lines&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;returns-section-has-multiple-type-definitions&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when returns section has multiple type definitions&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1133&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Enclose type &quot;</span><span class="si">%s</span><span class="s1">&quot; in parenthesis&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;enclose-type-in-parenthesis&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when type is not enclosed in parenthesis&#39;</span>
+                  <span class="p">),</span>
+        <span class="s1">&#39;C1134&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Type of &quot;</span><span class="si">%s</span><span class="s1">&quot; is not defined inside section &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;type-not-defined&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when type is not defined&#39;</span>
+                  <span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each function inside a python file that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.FunctionDef): Function definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Discard the &#39;self&#39; and &#39;_&#39; argument.</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Lint the documentation inside the node.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">visit_classdef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each class inside the files that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">def</span> <span class="nf">lint_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">is_function</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lints the docstring for a Class or method, only checking the content.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Class or method definition containing the .doc property.</span>
+<span class="sd">            is_function (bool): Whether it is called for a function.</span>
+<span class="sd">            args ([astroid.node_classes.AssignName]): List of arguments given to the function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the lines of the documentation.</span>
+        <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">sections_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Index of the current line that is getting linted.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="c1"># Match the line for a section.</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="n">section</span><span class="p">,</span> <span class="n">section_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">section</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check if the section is known.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sections</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">section_name</span><span class="p">):</span>
+                <span class="n">sections_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="c1"># Create pylint message otherwise.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unknown-section&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">section_name</span><span class="p">)</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Lint function section.</span>
+            <span class="k">if</span> <span class="n">is_function</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_function_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="c1"># Lint class section.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_class_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+
+        <span class="c1"># Argument section needs to exist but is missing.</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-args-in-docstring&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Sections are not the in the correct order.</span>
+        <span class="n">ordered_sections_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sections_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ordered_sections</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ordered_sections_list</span> <span class="o">!=</span> <span class="n">sections_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;sections-in-wrong-order&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">lint_function_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint any section of the function docstring.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function definition inside a astriod node.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            section_name (str): Name of the section to be checked.</span>
+<span class="sd">            line_index (int): Index where the section starts.</span>
+<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Switch statement for linting of sections.</span>
+        <span class="k">if</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Args&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="c1"># When there is an Args section without there being arguments.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unnecessary-args-section&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Args&#39;</span> <span class="ow">and</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_args_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Returns&#39;</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_returns_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Raises&#39;</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_raises_section</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">line_index</span>
+
+    <span class="k">def</span> <span class="nf">lint_class_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint any section of the class docstring.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Class definition inside a astriod node.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            section_name (str): Name of the section to be checked.</span>
+<span class="sd">            line_index (int): Index where the args section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Switch statement for linting of sections.</span>
+        <span class="k">if</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Attributes&#39;</span><span class="p">:</span>
+            <span class="c1"># When there is an Attributes section.</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_attribute_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">line_index</span>
+
+    <span class="k">def</span> <span class="nf">doc_lint_args_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">args_section_line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the &quot;Args:&quot; section of the docstring and enforce types are included.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Only function should contain an argument section.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            args_section_line_index (int): Index where the args section starts.</span>
+<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the Args section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Puts the argument names in both a list and dictionary to enable order and fast lookup.</span>
+        <span class="n">arg_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
+
+        <span class="c1"># Index of the argument that is being linted and the current line.</span>
+        <span class="n">arg_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">args_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Loop through the argument section until another section is found or the end is reached.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Stop if next section is found.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">arg</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">,</span> <span class="s2">&quot;Args&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Argument does not exist as parameter.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_dict</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">arg_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unknown-argument-in-docstring&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">arg_name</span><span class="p">)</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="c1"># Argument is in the wrong position inside the docstring.</span>
+            <span class="k">if</span> <span class="n">arg_list</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;argument-wrong-place-in-docstring&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_index</span><span class="p">))</span>
+
+            <span class="c1"># Add to dictionary and go to the next line.</span>
+            <span class="n">arg_dict</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">arg_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># When the &quot;Args:&quot; section is done check whether all keys are specified in the docstring.</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">arg_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-argument-in-docstring&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="c1"># Return where the section stops.</span>
+        <span class="k">return</span> <span class="n">line_index</span>
+
+    <span class="k">def</span> <span class="nf">doc_lint_attribute_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">attribute_section_line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the &quot;Args:&quot; section of the docstring and enforce types are included.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Only function should contain an argument section.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            attribute_section_line_index (int): Index where the section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the Attributes section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Content starts one line after section start.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">attribute_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Loop through the argument section until another section is found or the end is reached.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Stop if next section is found.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Ensure each attribute has a type defined.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">match_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">,</span> <span class="s2">&quot;Attributes&quot;</span><span class="p">)</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">line_index</span>
+
+    <span class="k">def</span> <span class="nf">doc_lint_returns_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">returns_section_line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the &quot;Returns:&quot; section inside the docstring and enforces only the first line can contain a type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function definition that contains the returns section.</span>
+<span class="sd">            doc_lines ([str]): List of docstring lines.</span>
+<span class="sd">            returns_section_line_index (int): Line where the returns section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The line index where the returns section stops.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Lines and index.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">returns_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+        <span class="c1"># If the first line contains no type.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-return-type&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line_index</span>
+
+        <span class="c1"># Get the return type and check for curly braces.</span>
+        <span class="n">return_type</span> <span class="o">=</span> <span class="n">doc_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Make sure there are no other type definitions inside the section.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Break when another section is reached.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># A double dot indicates another type definition is made.</span>
+            <span class="k">if</span> <span class="n">doc_line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;returns-section-has-multiple-type-definitions&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Return the index of the line where the returns section stops.</span>
+        <span class="k">return</span> <span class="n">line_index</span>
+
+    <span class="k">def</span> <span class="nf">doc_lint_raises_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">raises_section_line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the raises section inside a function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            doc_lines ([str]): List of docstring lines.</span>
+<span class="sd">            raises_section_line_index (int): Line where the Raises section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The line index where the Raises section stops.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Lines and index.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">raises_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Parse the raises lines.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Break when another section is reached in the exact format.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_strict_section</span><span class="p">(</span><span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Return the index of the line where the returns section stops.</span>
+        <span class="k">return</span> <span class="n">line_index</span>
+
+    <span class="k">def</span> <span class="nf">match_type_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">section_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current line matches a section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Node the pylint message is connected to when linting error is found.</span>
+<span class="sd">            line (str): Line of which to check of whether it contains a type definition.</span>
+<span class="sd">            section_name (str): Name of the section.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, str, str: Whether a section was found and what the name and type of the argument is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># No type definition inside this line.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Strict argument match.</span>
+        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+
+        <span class="c1"># Return match immediately when correctly formatted.</span>
+        <span class="k">if</span> <span class="n">arg_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">arg_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">arg_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Type is not defined.</span>
+        <span class="n">arg_definition</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">type_definition</span> <span class="o">=</span> <span class="n">arg_definition</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">type_definition</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;type-not-defined&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">type_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">section_name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">type_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Check the type definition with parenthesis.</span>
+        <span class="n">arg_name</span> <span class="o">=</span> <span class="n">type_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">type_definition</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">type_definition</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">type_definition</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Wrong format of the argument.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;wrong-argument-specification-syntax&#39;</span><span class="p">,</span>
+                         <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                         <span class="n">args</span><span class="o">=</span><span class="n">arg_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">type_definition</span>
+
+    <span class="k">def</span> <span class="nf">match_strict_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A stricter version of self.match_section. That only returns true when the section was exactly matched.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line (str): Line to check whether it defines a section.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, str: Whether section was found and its name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Section was found, also return name.</span>
+        <span class="k">if</span> <span class="n">section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Section was not found in exact format.</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">match_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current line matches a section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Node the pylint message is connected to when linting error is found.</span>
+<span class="sd">            line (str): Line of which to check of whether it starts a section.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, str: Whether a section was found and what the name is of that section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Section was found, also return name.</span>
+        <span class="k">if</span> <span class="n">section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Section contains additional characters after the &#39;:&#39;.</span>
+        <span class="n">single_line_section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">single_line_section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">section_name</span> <span class="o">=</span> <span class="n">single_line_section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;section-wrong-format&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># More information was given after the section name.</span>
+        <span class="n">incorrect_section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*((\w+).*):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">incorrect_section_match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Section name is unknown to the linter.</span>
+        <span class="n">section_name</span> <span class="o">=</span> <span class="n">incorrect_section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">section_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unknown-section&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">incorrect_section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">break</span>
+
+        <span class="c1"># No section match.</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">check_type_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">type_str</span><span class="p">,</span> <span class="n">enclosing_parenthesis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check the type definitions inside a section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Node to connect message to.</span>
+<span class="sd">            type_str (str): Type definition inside docstring</span>
+<span class="sd">            enclosing_parenthesis (bool): Whether to enclose with parenthesis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Print message when type contains curly braces.</span>
+        <span class="k">if</span> <span class="n">type_str</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">type_str</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;use-dict-keyword&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="n">type_str</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">enclosing_parenthesis</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Print message when type definition has not been enclosed.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">type_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">type_str</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;enclose-type-in-parenthesis&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="n">type_str</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks the docstrings from several layers.</p>
+
+<p>The following linting errors get caught:
+    unnecessary-args-section: An args section is inside the docstring without parameters.
+    missing-args-in-docstring: "Args:" section is missing inside the docstring specification.
+    missing-argument-in-docstring: Missing argument in the docstring.
+    unknown-argument-in-docstring: An unknown argument was found inside the docstring.
+    argument-wrong-place-in-docstring: Argument is at a wrong location inside the docstring.
+    wrong-argument-specification-syntax: Argument specification is wrong format.
+    sections-in-wrong-order: Sections are not in the correct order.
+    unknown-section: Section name was unknown.
+    section-wrong-format: Section should follow by spaces
+    missing-return-type: "Returns:" section has no type specified.
+    use-dict-keyword: When there are curly braces used to define a dictionary.
+    returns-section-has-multiple-type-definitions: There should only be one type definition inside the returns.
+    enclose-type-in-parenthesis: The type should be enclosed with parenthesis.
+    type-not-defined: Type of argument or attribute is missing.</p>
+
+<h6 id="attributes">Attributes</h6>
+
+<ul>
+<li><strong>__implements__ (IAstroidChecker):</strong>  Astroid checker interface.</li>
+<li><strong>name (str):</strong>  Name of the checker.</li>
+<li><strong>ordered_sections ([str]):</strong>  The order in which sections should be inside the docstring.</li>
+<li><strong>msgs (dict[str, (str, str, str)]):</strong>  Dictionary with error codes and pylint messages.</li>
+</ul>
+</div>
+
+
+                            <div id="DocstringContentChecker.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#DocstringContentChecker.name">#&nbsp;&nbsp</a>
+
+        <span class="name">name</span><span class="default_value"> = &#39;incorrect-docstring-content&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="DocstringContentChecker.ordered_sections" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#DocstringContentChecker.ordered_sections">#&nbsp;&nbsp</a>
+
+        <span class="name">ordered_sections</span><span class="default_value"> = [&#39;Note&#39;, &#39;Args&#39;, &#39;Attributes&#39;, &#39;Yields&#39;, &#39;Returns&#39;, &#39;Examples&#39;, &#39;Raises&#39;]</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="DocstringContentChecker.msgs" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#DocstringContentChecker.msgs">#&nbsp;&nbsp</a>
+
+        <span class="name">msgs</span><span class="default_value"> = {&#39;C1121&#39;: (&#39;Args section should not be there&#39;, &#39;unnecessary-args-section&#39;, &#39;Emitted when a docstring has &#34;Args:&#34; section without arguments&#39;), &#39;C1122&#39;: (&#39;Section &#34;Args:&#34; is missing from the docstring&#39;, &#39;missing-args-in-docstring&#39;, &#39;Emitted when a docstring is missing an &#34;Args:&#34; section when it has arguments&#39;), &#39;C1123&#39;: (&#39;Argument &#34;%s&#34; missing from the docstring args&#39;, &#39;missing-argument-in-docstring&#39;, &#39;Emitted when a docstring is missing an argument&#39;), &#39;C1124&#39;: (&#39;Argument &#34;%s&#34; not an argument of the method, did you make a typo?&#39;, &#39;unknown-argument-in-docstring&#39;, &#39;Emitted when a docstring contains an argument&#39;), &#39;C1125&#39;: (&#39;Argument &#34;%s&#34; is in the wrong position. Put it in the docstring section at index %s&#39;, &#39;argument-wrong-place-in-docstring&#39;, &#39;Emitted when a docstring argument is in the wrong position&#39;), &#39;C1126&#39;: (&#39;Argument &#34;%s&#34; has wrong specification, &#34;&lt;argument-name&gt; (&lt;argument-type&gt;): &#34; must be the form&#39;, &#39;wrong-argument-specification-syntax&#39;, &#39;Emitted when a docstring argument is in the wrong position&#39;), &#39;C1127&#39;: (&#34;Sections in wrong order, must be like [&#39;Note&#39;, &#39;Args&#39;, &#39;Attributes&#39;, &#39;Yields&#39;, &#39;Returns&#39;, &#39;Examples&#39;, &#39;Raises&#39;]&#34;, &#39;sections-in-wrong-order&#39;, &#39;Emitted when docstring sections are in the wrong order&#39;), &#39;C1128&#39;: (&#39;Section: &#34;%s&#34; is unknown, only known sections are: [\&#39;Note\&#39;, \&#39;Args\&#39;, \&#39;Attributes\&#39;, \&#39;Yields\&#39;, \&#39;Returns\&#39;, \&#39;Examples\&#39;, \&#39;Raises\&#39;]&#39;, &#39;unknown-section&#39;, &#39;Emitted when docstring section is of the wrong type&#39;), &#39;C1129&#39;: (&#39;Section: &#34;%s&#34; is not formatted correctly, should be &#34;&lt;section-name&gt;:\\n&#34;&#39;, &#39;section-wrong-format&#39;, &#39;Emitted when docstring section has the wrong format&#39;), &#39;C1130&#39;: (&#39;Return type definition is missing&#39;, &#39;missing-return-type&#39;, &#39;Emitted when docstring Returns section misses a type definition&#39;), &#39;C1131&#39;: (&#39;Dictionary types have to be of form dict[keytype, valuetype], not &#34;%s&#34;&#39;, &#39;use-dict-keyword&#39;, &#39;Emitted when docstring contains literal dict type&#39;), &#39;C1132&#39;: (&#39;Returns section contains type definitions on multiple lines&#39;, &#39;returns-section-has-multiple-type-definitions&#39;, &#39;Emitted when returns section has multiple type definitions&#39;), &#39;C1133&#39;: (&#39;Enclose type &#34;%s&#34; in parenthesis&#39;, &#39;enclose-type-in-parenthesis&#39;, &#39;Emitted when type is not enclosed in parenthesis&#39;), &#39;C1134&#39;: (&#39;Type of &#34;%s&#34; is not defined inside section &#34;%s&#34;&#39;, &#39;type-not-defined&#39;, &#39;Emitted when type is not defined&#39;)}</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="DocstringContentChecker.visit_functiondef" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.visit_functiondef">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">visit_functiondef</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each function inside a python file that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.FunctionDef): Function definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Discard the &#39;self&#39; and &#39;_&#39; argument.</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Lint the documentation inside the node.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Called for each function inside a python file that pylint processes.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.FunctionDef):</strong>  Function definition containing the .doc property.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.visit_classdef" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.visit_classdef">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">visit_classdef</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">visit_classdef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called for each class inside the files that pylint processes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[])</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Called for each class inside the files that pylint processes.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.ClassDef):</strong>  Class definition containing the .doc property.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.lint_docstring" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.lint_docstring">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">lint_docstring</span><span class="signature">(self, node, is_function, args)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">lint_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">is_function</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lints the docstring for a Class or method, only checking the content.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Class or method definition containing the .doc property.</span>
+<span class="sd">            is_function (bool): Whether it is called for a function.</span>
+<span class="sd">            args ([astroid.node_classes.AssignName]): List of arguments given to the function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the lines of the documentation.</span>
+        <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">sections_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Index of the current line that is getting linted.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="c1"># Match the line for a section.</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="n">section</span><span class="p">,</span> <span class="n">section_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">section</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check if the section is known.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sections</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">section_name</span><span class="p">):</span>
+                <span class="n">sections_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="c1"># Create pylint message otherwise.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unknown-section&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">section_name</span><span class="p">)</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Lint function section.</span>
+            <span class="k">if</span> <span class="n">is_function</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_function_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="c1"># Lint class section.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_class_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+
+        <span class="c1"># Argument section needs to exist but is missing.</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-args-in-docstring&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Sections are not the in the correct order.</span>
+        <span class="n">ordered_sections_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sections_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ordered_sections</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ordered_sections_list</span> <span class="o">!=</span> <span class="n">sections_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;sections-in-wrong-order&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lints the docstring for a Class or method, only checking the content.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Class or method definition containing the .doc property.</li>
+<li><strong>is_function (bool):</strong>  Whether it is called for a function.</li>
+<li><strong>args ([astroid.node_classes.AssignName]):</strong>  List of arguments given to the function</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.lint_function_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.lint_function_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">lint_function_section</span><span class="signature">(self, node, doc_lines, section_name, line_index, args)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">lint_function_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint any section of the function docstring.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function definition inside a astriod node.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            section_name (str): Name of the section to be checked.</span>
+<span class="sd">            line_index (int): Index where the section starts.</span>
+<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Switch statement for linting of sections.</span>
+        <span class="k">if</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Args&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="c1"># When there is an Args section without there being arguments.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unnecessary-args-section&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Args&#39;</span> <span class="ow">and</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_args_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Returns&#39;</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_returns_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Raises&#39;</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_raises_section</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">line_index</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lint any section of the function docstring.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function definition inside a astriod node.</li>
+<li><strong>doc_lines ([str]):</strong>  Split lines of the documentation.</li>
+<li><strong>section_name (str):</strong>  Name of the section to be checked.</li>
+<li><strong>line_index (int):</strong>  Index where the section starts.</li>
+<li><strong>args ([astroid.node_classes.AssignName]):</strong>  Arguments of the function.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: Line number of the last line in the section.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.lint_class_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.lint_class_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">lint_class_section</span><span class="signature">(self, node, doc_lines, section_name, line_index)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">lint_class_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint any section of the class docstring.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Class definition inside a astriod node.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            section_name (str): Name of the section to be checked.</span>
+<span class="sd">            line_index (int): Index where the args section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Switch statement for linting of sections.</span>
+        <span class="k">if</span> <span class="n">section_name</span> <span class="o">==</span> <span class="s1">&#39;Attributes&#39;</span><span class="p">:</span>
+            <span class="c1"># When there is an Attributes section.</span>
+            <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_lint_attribute_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">line_index</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lint any section of the class docstring.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Class definition inside a astriod node.</li>
+<li><strong>doc_lines ([str]):</strong>  Split lines of the documentation.</li>
+<li><strong>section_name (str):</strong>  Name of the section to be checked.</li>
+<li><strong>line_index (int):</strong>  Index where the args section starts.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: Line number of the last line in the section.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.doc_lint_args_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.doc_lint_args_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">doc_lint_args_section</span><span class="signature">(self, node, doc_lines, args_section_line_index, args)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">doc_lint_args_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">args_section_line_index</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the &quot;Args:&quot; section of the docstring and enforce types are included.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Only function should contain an argument section.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            args_section_line_index (int): Index where the args section starts.</span>
+<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the Args section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Puts the argument names in both a list and dictionary to enable order and fast lookup.</span>
+        <span class="n">arg_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
+
+        <span class="c1"># Index of the argument that is being linted and the current line.</span>
+        <span class="n">arg_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">args_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Loop through the argument section until another section is found or the end is reached.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Stop if next section is found.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">arg</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">,</span> <span class="s2">&quot;Args&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg</span><span class="p">:</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Argument does not exist as parameter.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_dict</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">arg_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unknown-argument-in-docstring&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">arg_name</span><span class="p">)</span>
+                <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="c1"># Argument is in the wrong position inside the docstring.</span>
+            <span class="k">if</span> <span class="n">arg_list</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;argument-wrong-place-in-docstring&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_index</span><span class="p">))</span>
+
+            <span class="c1"># Add to dictionary and go to the next line.</span>
+            <span class="n">arg_dict</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">arg_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># When the &quot;Args:&quot; section is done check whether all keys are specified in the docstring.</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">arg_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-argument-in-docstring&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="c1"># Return where the section stops.</span>
+        <span class="k">return</span> <span class="n">line_index</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lint the "Args:" section of the docstring and enforce types are included.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Only function should contain an argument section.</li>
+<li><strong>doc_lines ([str]):</strong>  Split lines of the documentation.</li>
+<li><strong>args_section_line_index (int):</strong>  Index where the args section starts.</li>
+<li><strong>args ([astroid.node_classes.AssignName]):</strong>  Arguments of the function.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: Line number of the last line in the Args section.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.doc_lint_attribute_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.doc_lint_attribute_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">doc_lint_attribute_section</span><span class="signature">(self, node, doc_lines, attribute_section_line_index)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">doc_lint_attribute_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">attribute_section_line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the &quot;Args:&quot; section of the docstring and enforce types are included.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Only function should contain an argument section.</span>
+<span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
+<span class="sd">            attribute_section_line_index (int): Index where the section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Line number of the last line in the Attributes section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Content starts one line after section start.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">attribute_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Loop through the argument section until another section is found or the end is reached.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Stop if next section is found.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Ensure each attribute has a type defined.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">match_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">,</span> <span class="s2">&quot;Attributes&quot;</span><span class="p">)</span>
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">line_index</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lint the "Args:" section of the docstring and enforce types are included.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Only function should contain an argument section.</li>
+<li><strong>doc_lines ([str]):</strong>  Split lines of the documentation.</li>
+<li><strong>attribute_section_line_index (int):</strong>  Index where the section starts.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: Line number of the last line in the Attributes section.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.doc_lint_returns_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.doc_lint_returns_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">doc_lint_returns_section</span><span class="signature">(self, node, doc_lines, returns_section_line_index)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">doc_lint_returns_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">returns_section_line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the &quot;Returns:&quot; section inside the docstring and enforces only the first line can contain a type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Function definition that contains the returns section.</span>
+<span class="sd">            doc_lines ([str]): List of docstring lines.</span>
+<span class="sd">            returns_section_line_index (int): Line where the returns section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The line index where the returns section stops.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Lines and index.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">returns_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+        <span class="c1"># If the first line contains no type.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-return-type&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line_index</span>
+
+        <span class="c1"># Get the return type and check for curly braces.</span>
+        <span class="n">return_type</span> <span class="o">=</span> <span class="n">doc_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Make sure there are no other type definitions inside the section.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Break when another section is reached.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># A double dot indicates another type definition is made.</span>
+            <span class="k">if</span> <span class="n">doc_line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;returns-section-has-multiple-type-definitions&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Return the index of the line where the returns section stops.</span>
+        <span class="k">return</span> <span class="n">line_index</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lint the "Returns:" section inside the docstring and enforces only the first line can contain a type.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Function definition that contains the returns section.</li>
+<li><strong>doc_lines ([str]):</strong>  List of docstring lines.</li>
+<li><strong>returns_section_line_index (int):</strong>  Line where the returns section starts.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: The line index where the returns section stops.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.doc_lint_raises_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.doc_lint_raises_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">doc_lint_raises_section</span><span class="signature">(self, doc_lines, raises_section_line_index)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">doc_lint_raises_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">raises_section_line_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lint the raises section inside a function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            doc_lines ([str]): List of docstring lines.</span>
+<span class="sd">            raises_section_line_index (int): Line where the Raises section starts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The line index where the Raises section stops.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Lines and index.</span>
+        <span class="n">line_index</span> <span class="o">=</span> <span class="n">raises_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Parse the raises lines.</span>
+        <span class="k">while</span> <span class="n">line_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">):</span>
+            <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
+
+            <span class="c1"># Break when another section is reached in the exact format.</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_strict_section</span><span class="p">(</span><span class="n">doc_line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Return the index of the line where the returns section stops.</span>
+        <span class="k">return</span> <span class="n">line_index</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Lint the raises section inside a function.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>doc_lines ([str]):</strong>  List of docstring lines.</li>
+<li><strong>raises_section_line_index (int):</strong>  Line where the Raises section starts.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>int: The line index where the Raises section stops.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.match_type_definition" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.match_type_definition">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">match_type_definition</span><span class="signature">(self, node, line, section_name)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">match_type_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">section_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current line matches a section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Node the pylint message is connected to when linting error is found.</span>
+<span class="sd">            line (str): Line of which to check of whether it contains a type definition.</span>
+<span class="sd">            section_name (str): Name of the section.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, str, str: Whether a section was found and what the name and type of the argument is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># No type definition inside this line.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Strict argument match.</span>
+        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+
+        <span class="c1"># Return match immediately when correctly formatted.</span>
+        <span class="k">if</span> <span class="n">arg_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">arg_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">arg_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Type is not defined.</span>
+        <span class="n">arg_definition</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">type_definition</span> <span class="o">=</span> <span class="n">arg_definition</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">type_definition</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;type-not-defined&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">type_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">section_name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">type_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Check the type definition with parenthesis.</span>
+        <span class="n">arg_name</span> <span class="o">=</span> <span class="n">type_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">type_definition</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">type_definition</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_type_definition</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">type_definition</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Wrong format of the argument.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;wrong-argument-specification-syntax&#39;</span><span class="p">,</span>
+                         <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                         <span class="n">args</span><span class="o">=</span><span class="n">arg_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">type_definition</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks whether the current line matches a section.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Node the pylint message is connected to when linting error is found.</li>
+<li><strong>line (str):</strong>  Line of which to check of whether it contains a type definition.</li>
+<li><strong>section_name (str):</strong>  Name of the section.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool, str, str: Whether a section was found and what the name and type of the argument is.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.match_strict_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.match_strict_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">match_strict_section</span><span class="signature">(self, line)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">match_strict_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A stricter version of self.match_section. That only returns true when the section was exactly matched.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line (str): Line to check whether it defines a section.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, str: Whether section was found and its name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Section was found, also return name.</span>
+        <span class="k">if</span> <span class="n">section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Section was not found in exact format.</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>A stricter version of self.match_section. That only returns true when the section was exactly matched.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>line (str):</strong>  Line to check whether it defines a section.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool, str: Whether section was found and its name.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.match_section" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.match_section">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">match_section</span><span class="signature">(self, node, line)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">match_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current line matches a section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Node the pylint message is connected to when linting error is found.</span>
+<span class="sd">            line (str): Line of which to check of whether it starts a section.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool, str: Whether a section was found and what the name is of that section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Section was found, also return name.</span>
+        <span class="k">if</span> <span class="n">section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Section contains additional characters after the &#39;:&#39;.</span>
+        <span class="n">single_line_section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*(\w+):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">single_line_section_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">section_name</span> <span class="o">=</span> <span class="n">single_line_section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;section-wrong-format&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># More information was given after the section name.</span>
+        <span class="n">incorrect_section_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*((\w+).*):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">incorrect_section_match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="c1"># Section name is unknown to the linter.</span>
+        <span class="n">section_name</span> <span class="o">=</span> <span class="n">incorrect_section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">section_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;unknown-section&#39;</span><span class="p">,</span>
+                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                                 <span class="n">args</span><span class="o">=</span><span class="n">incorrect_section_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">break</span>
+
+        <span class="c1"># No section match.</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks whether the current line matches a section.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Node the pylint message is connected to when linting error is found.</li>
+<li><strong>line (str):</strong>  Line of which to check of whether it starts a section.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>bool, str: Whether a section was found and what the name is of that section.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="DocstringContentChecker.check_type_definition" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DocstringContentChecker.check_type_definition">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">check_type_definition</span><span class="signature">(self, node, type_str, enclosing_parenthesis)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">check_type_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">type_str</span><span class="p">,</span> <span class="n">enclosing_parenthesis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check the type definitions inside a section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (Any): Node to connect message to.</span>
+<span class="sd">            type_str (str): Type definition inside docstring</span>
+<span class="sd">            enclosing_parenthesis (bool): Whether to enclose with parenthesis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Print message when type contains curly braces.</span>
+        <span class="k">if</span> <span class="n">type_str</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">type_str</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;use-dict-keyword&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="n">type_str</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">enclosing_parenthesis</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Print message when type definition has not been enclosed.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">type_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">type_str</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;enclose-type-in-parenthesis&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">=</span><span class="n">type_str</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check the type definitions inside a section.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (Any):</strong>  Node to connect message to.</li>
+<li><strong>type_str (str):</strong>  Type definition inside docstring</li>
+<li><strong>enclosing_parenthesis (bool):</strong>  Whether to enclose with parenthesis.</li>
+</ul>
+</div>
+
+
+                            </div>
+                </section>
                 <section id="register">
                             <div class="attr function"><a class="headerlink" href="#register">#&nbsp;&nbsp</a>
 

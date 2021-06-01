@@ -29,6 +29,21 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
+                    <a class="class" href="#CopyrightChecker">CopyrightChecker</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#CopyrightChecker.name">name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CopyrightChecker.msgs">msgs</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CopyrightChecker.process_module">process_module</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#register">register</a>
             </li>
     </ul>
@@ -145,6 +160,192 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
+                <section id="CopyrightChecker">
+                                <div class="attr class">
+        <a class="headerlink" href="#CopyrightChecker">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">CopyrightChecker</span>(<span class="base">pylint.checkers.base_checker.BaseChecker</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CopyrightChecker</span><span class="p">(</span><span class="n">BaseChecker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks the module for our own license.</span>
+
+<span class="sd">    The following linting errors get caught:</span>
+<span class="sd">        file-no-copyright: File contains no copyright message.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        __implements__ (IRawChecker): Raw checker in order to enumerate the lines</span>
+<span class="sd">        name (str): Name of the checker.</span>
+<span class="sd">        msgs (dict[str, (str, str, str)]): Dictionary with error codes and pylint messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__implements__</span> <span class="o">=</span> <span class="n">IRawChecker</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;custom_copy&#39;</span>
+    <span class="n">msgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;W9902&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Include copyright in file&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;file-no-copyright&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;Your file has no copyright&#39;</span><span class="p">),</span>
+            <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">process_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process a module and checks whether the docstring contains the correct copyright notice.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># What the copyright statement should be.</span>
+        <span class="n">copyright_statement</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;This program has been developed by students from the bachelor Computer Science at&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Utrecht University within the Software Project course.&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;© Copyright Utrecht University (Department of Information and Computing Sciences)&#39;</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Create a small state.</span>
+        <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">current_copyright_line</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">number_quotes</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Go through the file.</span>
+        <span class="k">with</span> <span class="n">node</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Break when there are two triple quotes passed already.</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;&quot;&quot;&quot;&#39;</span><span class="p">):</span>
+                    <span class="n">number_quotes</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">number_quotes</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># Check consequent lines on copyright string.</span>
+                <span class="c1"># Uses startswith to ignore line endings of the os.</span>
+                <span class="k">if</span> <span class="n">current_copyright_line</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">copyright_statement</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">current_copyright_line</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">current_copyright_line</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">copyright_statement</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">current_copyright_line</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">elif</span> <span class="n">current_copyright_line</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">copyright_statement</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                    <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+                <span class="c1"># Line was not the following line.</span>
+                <span class="k">elif</span> <span class="n">current_copyright_line</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># File does not contain copyright notice.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">contains_copyright</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;file-no-copyright&#39;</span><span class="p">,</span>
+                                 <span class="n">line</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks the module for our own license.</p>
+
+<p>The following linting errors get caught:
+    file-no-copyright: File contains no copyright message.</p>
+
+<h6 id="attributes">Attributes</h6>
+
+<ul>
+<li><strong>__implements__ (IRawChecker):</strong>  Raw checker in order to enumerate the lines</li>
+<li><strong>name (str):</strong>  Name of the checker.</li>
+<li><strong>msgs (dict[str, (str, str, str)]):</strong>  Dictionary with error codes and pylint messages.</li>
+</ul>
+</div>
+
+
+                            <div id="CopyrightChecker.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CopyrightChecker.name">#&nbsp;&nbsp</a>
+
+        <span class="name">name</span><span class="default_value"> = &#39;custom_copy&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="CopyrightChecker.msgs" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CopyrightChecker.msgs">#&nbsp;&nbsp</a>
+
+        <span class="name">msgs</span><span class="default_value"> = {&#39;W9902&#39;: (&#39;Include copyright in file&#39;, &#39;file-no-copyright&#39;, &#39;Your file has no copyright&#39;)}</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="CopyrightChecker.process_module" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CopyrightChecker.process_module">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">process_module</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">process_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process a module and checks whether the docstring contains the correct copyright notice.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># What the copyright statement should be.</span>
+        <span class="n">copyright_statement</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;This program has been developed by students from the bachelor Computer Science at&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Utrecht University within the Software Project course.&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;© Copyright Utrecht University (Department of Information and Computing Sciences)&#39;</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Create a small state.</span>
+        <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">current_copyright_line</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">number_quotes</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Go through the file.</span>
+        <span class="k">with</span> <span class="n">node</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Break when there are two triple quotes passed already.</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;&quot;&quot;&quot;&#39;</span><span class="p">):</span>
+                    <span class="n">number_quotes</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">number_quotes</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># Check consequent lines on copyright string.</span>
+                <span class="c1"># Uses startswith to ignore line endings of the os.</span>
+                <span class="k">if</span> <span class="n">current_copyright_line</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">copyright_statement</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">current_copyright_line</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">current_copyright_line</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">copyright_statement</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">current_copyright_line</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">elif</span> <span class="n">current_copyright_line</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">copyright_statement</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                    <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+                <span class="c1"># Line was not the following line.</span>
+                <span class="k">elif</span> <span class="n">current_copyright_line</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># File does not contain copyright notice.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">contains_copyright</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;file-no-copyright&#39;</span><span class="p">,</span>
+                                 <span class="n">line</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Process a module and checks whether the docstring contains the correct copyright notice.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition containing the raw content of the file</li>
+</ul>
+</div>
+
+
+                            </div>
+                </section>
                 <section id="register">
                             <div class="attr function"><a class="headerlink" href="#register">#&nbsp;&nbsp</a>
 
