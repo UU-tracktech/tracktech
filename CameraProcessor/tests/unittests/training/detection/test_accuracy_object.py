@@ -29,9 +29,14 @@ class TestAccuracyObject:
         # Test if the ground truth contains an amount of frames that is strictly larger then 0.
         assert accuracy_object.frame_amount > 0
 
-        # Test if the image width and height have valid values and are read correctly.
-        assert accuracy_object.image_width > 0 and accuracy_object.image_height > 0
-        assert accuracy_object.image_width < 10000 and accuracy_object.image_height < 10000
+
+        assert len(accuracy_object.gt_format) > 0 #TODO CHECK IF FORMAT EXISTS
+
+        assert len(accuracy_object.plots_prefix) > 0
+
+        assert len(accuracy_object.plots_path) > 0
+
+
 
     # pylint: disable=consider-iterating-dictionary
     @pytest.mark.skip("Rectangle coords should be normalized in pre_annotations.py")
