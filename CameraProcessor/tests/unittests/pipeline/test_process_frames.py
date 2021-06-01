@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 import asyncio
 import pytest
 
-from processor.pipeline.process_frames import send_to_orchestrator
+from processor.pipeline.process_frames import send_boxes_to_orchestrator
 
 from processor.pipeline.process_frames import process_stream, prepare_stream
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
