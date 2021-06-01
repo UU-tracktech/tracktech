@@ -78,7 +78,7 @@ def main():
         AttributeError: Mode in which is ran does not exist.
     """
     # Load the config file.
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', True)
     configs = config_parser.configs
 
     # If mode is tornado.
