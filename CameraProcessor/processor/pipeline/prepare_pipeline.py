@@ -33,7 +33,7 @@ def prepare_objects(configs):
     tracker = prepare_tracker(configs)
     re_identifier = prepare_reidentifier(configs)
 
-    # Capture and websocket url
+    # Capture and websocket url.
     capture = prepare_capture(configs['Input'])
     websocket_url = configs['Orchestrator']['url']
 
@@ -102,7 +102,7 @@ def prepare_reidentifier(configs):
 
 
 def prepare_capture(input_config):
-    """Prepares the capture of the stream
+    """Prepares the capture of the stream.
 
     Args:
         input_config (SectionProxy): Configurations of the capture.
@@ -118,14 +118,15 @@ def prepare_capture(input_config):
     # Switch statement creating the capture.
     if capture_type == 'webcam':
         return CamCapture(int(input_config['webcam_device']))
-    elif capture_type == 'images':
+    if capture_type == 'images':
         return ImageCapture(input_config['images_dir_path'])
-    elif capture_type == 'video':
+    if capture_type == 'video':
         return VideoCapture(input_config['video_file_path'])
-    elif capture_type == 'hls':
+    if capture_type == 'hls':
         return HlsCapture(input_config['hls_url'])
-    else:
-        raise NameError(f'Input type "{capture_type}" is unknown')
+
+    # No cv2.VideoCapture returned.
+    raise NameError(f'Input type "{capture_type}" is unknown')
 
 
 def prepare_scheduler(detector, tracker, on_processed_frame):
