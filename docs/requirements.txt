@@ -1,5 +1,11 @@
+# Documentation libraries
 pdoc==6.4.2
 jinja2==2.11.3
+
+# Support for generating documentation
 argparse
-tornado
 mock
+
+# Because of being used as superclasses
+tornado==6.1
+pylint==2.6.0
