@@ -99,28 +99,6 @@ class WebsocketClient:
         # Close connection.
         self.connection.close()
 
-    async def send_feature_map(self, feature_map=None, object_id=None):
-        """Sends a featuremap to the orchestrator
-
-        Args:
-            feature_map ([Float]): An array of numerical values
-            object_id (Int): The object where the feature_map refers too
-        """
-
-        # Temporary code for initializing feature_map and object_id
-        if feature_map is None:
-            feature_map = [0] * 256
-        if object_id is None:
-            object_id = 1
-
-        message = json.dumps({
-            "type": "featureMap",
-            "objectId": object_id,
-            "featureMap": feature_map
-        })
-        logging.info(f'Sending object to orchestrator {object_id} with feature map {feature_map}')
-        self.write_message(message)
-
     def write_message(self, message):
         """Write a message on the websocket asynchronously.
 
