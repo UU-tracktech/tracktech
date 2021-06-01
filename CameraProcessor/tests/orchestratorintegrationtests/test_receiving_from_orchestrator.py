@@ -82,11 +82,11 @@ class TestReceivingFromOrchestrator:
         assert received_stop.object_id == 1
 
         update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": "[]"})
-        interface_client.write_message(update_command)
+        processor_client.write_message(update_command)
 
         await asyncio.sleep(2)
 
-        received_update = processor_client.message_queue.popleft()
+        received_update = interface_client.message_queue.popleft()
         assert isinstance(received_update, UpdateCommand)
         assert received_update.object_id == 1
         assert received_update.feature_map == []
