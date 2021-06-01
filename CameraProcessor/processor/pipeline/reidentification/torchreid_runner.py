@@ -23,12 +23,11 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         threshold (float): Threshold from which a re-identification is included.
     """
 
-    def __init__(self, model_name, device, configs):
+    def __init__(self, model_name, configs):
         """Initialize torch re-identifier.
 
         Args:
             model_name (string): The file name of the model weights.
-            device (string): determines whether or not to use the gpu or cpu.
             configs (configparser.SectionProxy): Re-ID configuration.
         """
 
@@ -48,7 +47,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         self.extractor = FeatureExtractor(
             model_name=model_name,
             model_path=weights_path,
-            device=device)
+            device=configs['device'])
 
         self.configs = configs
         self.threshold = float(self.configs["threshold"])
