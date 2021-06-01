@@ -85,8 +85,8 @@ class TestConfigParser:
         self.config_parser.append_config(path_to_configs)
 
         # Hls url is overwritten correctly.
-        assert self.configs.has_option('HLS', 'url')
-        assert self.configs['HLS']['url'] == 'http://localhost:300'
+        assert self.configs.has_option('Input', 'hls_url')
+        assert self.configs['Input']['hls_url'] == 'http://localhost:300'
 
         # Root gets added to path variable.
         assert len(self.configs['Yolov5']['source_path']) > len('./data/videos/short_venice.mp4')
@@ -108,7 +108,7 @@ class TestConfigParser:
 
         # Assert properties are correctly set in configs.
         assert configs['Orchestrator']['url'] == env_vars_dict['ORCHESTRATOR_URL']
-        assert configs['HLS']['url'] == env_vars_dict['FORWARDER_URL']
+        assert configs['Input']['hls_url'] == env_vars_dict['HLS_STREAM_URL']
         assert configs['Main']['mode'] == env_vars_dict['PROCESSOR_MODE']
         assert configs['Main']['detector'] == env_vars_dict['DETECTION_ALG']
         assert configs['Main']['tracker'] == env_vars_dict['TRACKING_ALG']
@@ -146,7 +146,7 @@ class TestConfigParser:
         """
         return {
             'ORCHESTRATOR_URL': 'test_orch_url',
-            'FORWARDER_URL': 'test_forw_url',
+            'HLS_STREAM_URL': 'test_hls_url',
             'PROCESSOR_MODE': 'test_mode',
             'DETECTION_ALG': 'test_det_alg',
             'TRACKING_ALG': 'test_track_alg',

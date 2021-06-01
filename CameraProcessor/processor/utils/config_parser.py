@@ -90,7 +90,7 @@ class ConfigParser:
 
         # Read all the environment variables.
         orchestrator_url = os.getenv('ORCHESTRATOR_URL')
-        forwarder_url = os.getenv('FORWARDER_URL')
+        hls_stream_url = os.getenv('HLS_STREAM_URL')
         running_mode = os.getenv('PROCESSOR_MODE')
         detection_alg = os.getenv('DETECTION_ALG')
         tracking_alg = os.getenv('TRACKING_ALG')
@@ -101,9 +101,9 @@ class ConfigParser:
             logging.info('Environment variable: ORCHESTRATOR_URL used.')
             self.configs['Orchestrator']['url'] = orchestrator_url
 
-        if forwarder_url is not None:
-            logging.info('Environment variable: FORWARDER_URL used.')
-            self.configs['HLS']['url'] = forwarder_url
+        if hls_stream_url is not None:
+            logging.info('Environment variable: HLS_STREAM_URL used.')
+            self.configs['Input']['hls_url'] = hls_stream_url
 
         if running_mode is not None:
             logging.info('Environment variable: PROCESSOR_MODE used.')
