@@ -92,7 +92,6 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor_runner</span> <span class="kn">import</span> <span class="n">YolorDetector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
-<span class="kn">from</span> <span class="nn">processor.utils.create_runners</span> <span class="kn">import</span> <span class="n">create_detector</span><span class="p">,</span> <span class="n">create_tracker</span>
 
 <span class="kn">from</span> <span class="nn">processor.data_object.reid_data</span> <span class="kn">import</span> <span class="n">ReidData</span>
 
@@ -124,17 +123,19 @@ Utrecht University within the Software Project course.
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">create_detector</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">),</span>
-                                                <span class="n">configs</span>
-                                                <span class="p">)</span>
+    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">__create_detector</span><span class="p">(</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                                                  <span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                                                  <span class="n">configs</span>
+                                                  <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">create_tracker</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">),</span>
-                             <span class="n">configs</span>
-                             <span class="p">)</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">__create_tracker</span><span class="p">(</span><span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                               <span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="n">configs</span>
+                               <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
@@ -320,6 +321,39 @@ Utrecht University within the Software Project course.
     <span class="c1"># A timeout of 0 will not display the image.</span>
     <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">):</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">__create_detector</span><span class="p">(</span><span class="n">idetector</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a detector of the given type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        idetector (IDetector): The CLASS, or object type, of the detector we want.</span>
+<span class="sd">        config_section (str): The config section name associated with the given detector.</span>
+<span class="sd">        configs (ConfigParser): The configurations of the detector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        IDetector, SectionProxy: Requested detector of the given type combined with its config.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config_filter</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
+    <span class="n">detector_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">idetector</span><span class="p">(</span><span class="n">detector_config</span><span class="p">,</span> <span class="n">config_filter</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span>
+
+
+<span class="k">def</span> <span class="nf">__create_tracker</span><span class="p">(</span><span class="n">itracker</span><span class="p">,</span> <span class="n">config_section</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a tracker of the given type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        itracker (ITracker): The CLASS, or object type, of the detector we want.</span>
+<span class="sd">        config_section (str): The config section name associated with the given tracker.</span>
+<span class="sd">        configs (ConfigParser): The configurations of the detector.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ITracker: The requested tracker.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tracker_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">itracker</span><span class="p">(</span><span class="n">tracker_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tracker</span>
 </pre></div>
 
         </details>
@@ -348,17 +382,19 @@ Utrecht University within the Software Project course.
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">create_detector</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">),</span>
-                                                <span class="n">configs</span>
-                                                <span class="p">)</span>
+    <span class="n">detector</span><span class="p">,</span> <span class="n">detector_config</span> <span class="o">=</span> <span class="n">__create_detector</span><span class="p">(</span><span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                                                  <span class="n">DETECTOR_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                                                  <span class="n">configs</span>
+                                                  <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-    <span class="n">tracker</span> <span class="o">=</span> <span class="n">create_tracker</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">),</span>
-                             <span class="n">configs</span>
-                             <span class="p">)</span>
+    <span class="n">tracker</span> <span class="o">=</span> <span class="n">__create_tracker</span><span class="p">(</span><span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span>
+                               <span class="n">TRACKER_SWITCH</span><span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="n">configs</span>
+                               <span class="p">)</span>
 
     <span class="c1"># Instantiate the tracker.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
