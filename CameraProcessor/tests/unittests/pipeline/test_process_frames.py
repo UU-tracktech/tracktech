@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 import asyncio
 import pytest
 
-from processor.pipeline.process_frames import send_to_orchestrator
+from processor.pipeline.process_frames import send_boxes_to_orchestrator
 
 from processor.pipeline.process_frames import process_stream, prepare_stream
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
@@ -139,7 +139,7 @@ class TestProcessFrames:
             detector,
             tracker,
             re_identifier,
-            lambda frame_obj, detected_boxes, tracked_boxes: send_to_orchestrator(
+            lambda frame_obj, detected_boxes, tracked_boxes: send_boxes_to_orchestrator(
                 websocket_client,
                 frame_obj,
                 detected_boxes,
