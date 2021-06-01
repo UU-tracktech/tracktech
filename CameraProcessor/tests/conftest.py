@@ -17,7 +17,7 @@ def configs():
     """Configs fixture so pytest methods can use them easily.
 
     Returns:
-        (ConfigParser): The test configurations.
+        (configparser.ConfigParser): The test configurations.
     """
     return get_test_configs()
 
@@ -26,8 +26,8 @@ def get_test_configs():
     """Test configs for when fixture cannot be used.
 
     Returns:
-        (ConfigParser): Which has the test-config appended to it.
+        (configparser.ConfigParser): Which has the test-config appended to it.
     """
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', False)
     config_parser.append_config('test-configs.ini')
     return config_parser.configs
