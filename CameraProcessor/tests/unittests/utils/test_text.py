@@ -45,4 +45,4 @@ class TestText:
             img (np.ndarray): the image fixture.
         """
         txt_string = boxes_to_txt([bbox], (img.shape[0], img.shape[1]), 1)
-        assert txt_string == "1,1,60,120,60,60,1,1,1 \n"
+        assert txt_string == "1,1,60,120,60,60,1,1,0.50 \n"
