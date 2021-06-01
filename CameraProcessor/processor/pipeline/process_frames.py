@@ -183,9 +183,13 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
             # First, get the bounding box and frame for the query.
             stored_frame = framebuffer.get_frame(track_elem.frame_id)
             stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+            feature_map = re_identifier.extract_features(stored_frame, stored_box)
+
+            # Send the feature_map to the orchestrator.
+            send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
 
             # Extract the features from this bounding box and store them in the data.
-            re_id_data.add_query_feature(track_elem.object_id, re_identifier.extract_features(stored_frame, stored_box))
+            re_id_data.add_query_feature(track_elem.object_id, feature_map)
 
             # Also store the map of the first box_id to the object_id.
             re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
@@ -197,7 +201,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
 
 # pylint: disable=unused-argument
-def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
+def send_boxes_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
     """Sends the bounding boxes to the orchestrator using a websocket client.
 
     Args:
@@ -208,6 +212,19 @@ def send_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_boxes):
     """
     # Get message and send it through the websocket.
     client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
+    ws_client.write_message(client_message)
+    logging.info(client_message)
+
+
+def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):
+    """Sends the feature map to the orchestrator using a Websocket client.
+
+    Args:
+        ws_client (WebsocketClient): Websocket object that contains the connection.
+        feature_map ([Float]): Array of float representing the feature_map.
+        object_id (Int): The ID of the object the feature_map refers to.
+    """
+    client_message = text.feature_map_to_json(feature_map, object_id)
     ws_client.write_message(client_message)
     logging.info(client_message)
 

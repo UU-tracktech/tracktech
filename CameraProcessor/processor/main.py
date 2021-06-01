@@ -14,7 +14,7 @@ import tornado.web
 
 from processor.utils.config_parser import ConfigParser
 
-from processor.pipeline.process_frames import prepare_stream, process_stream, opencv_display, send_to_orchestrator
+from processor.pipeline.process_frames import prepare_stream, process_stream, opencv_display, send_boxes_to_orchestrator
 
 from processor.webhosting.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler
@@ -58,7 +58,7 @@ async def deploy(configs, ws_id):
         tracker,
         re_identifier,
         # Function to call when frame is processed.
-        lambda frame_obj, detected_boxes, tracked_boxes: send_to_orchestrator(websocket_client,
+        lambda frame_obj, detected_boxes, tracked_boxes: send_boxes_to_orchestrator(websocket_client,
                                                                               frame_obj,
                                                                               detected_boxes,
                                                                               tracked_boxes
