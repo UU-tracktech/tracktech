@@ -92,8 +92,9 @@ class TestReceivingFromOrchestrator:
         assert received_update.object_id == 1
         assert received_update.feature_map == []
 
-        processor_client.disconnect()
         interface_client.disconnect()
+        processor_client.disconnect()
+        # interface_client.disconnect()
 
     @staticmethod
     async def _is_queue_empty(ws_client):
