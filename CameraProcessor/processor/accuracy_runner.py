@@ -8,8 +8,6 @@ import os
 import sys
 
 from processor.input.image_capture import ImageCapture
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.pipeline.tracking.sort_tracker import SortTracker
 from processor.utils.config_parser import ConfigParser
 from processor.utils.text import boxes_to_txt
 from processor.utils.create_runners import create_tracker, create_detector
@@ -27,7 +25,7 @@ def main(configs):
     Args:
         configs (ConfigParser): Configurations to run the accuracy with.
     """
-    # Initialize the accuracy config
+    # Initialize the accuracy config.
     accuracy_config = configs['Accuracy']
 
     print('I will write the detection objects to a txt file')
@@ -44,10 +42,10 @@ def main(configs):
     print("Starting video stream...")
     counter = 1
 
-    # Reid data
+    # Reid data.
     reid_data = ReidData()
 
-    # List for sorting the writed data
+    # List for sorting the writed data.
     write_list = []
 
     # Using default values.
@@ -63,15 +61,14 @@ def main(configs):
         tracked_boxes = tracker.track(frame_obj, detected_boxes, reid_data)
 
         # Convert boxes to string.
-        boxes_string = boxes_to_txt(tracked_boxes.get_bounding_boxes(), frame_obj.get_shape(), counter)
-        for bb in tracked_boxes.get_bounding_boxes():
-            boxes_string2 = boxes_to_txt([bb], frame_obj.get_shape(), counter)
-            write_list.append((bb.get_identifier(), counter, boxes_string2))
+        for bounding_box in tracked_boxes.get_bounding_boxes():
+            boxes_string2 = boxes_to_txt([bounding_box], frame_obj.get_shape(), counter)
+            write_list.append((bounding_box.get_identifier(), counter, boxes_string2))
 
         shape = frame_obj.get_shape()
         counter += 1
 
-    # Sorting the list:
+    # Sorting the list.
     write_list.sort(key=lambda e: e[:2])
     write_list = [x[2] for x in write_list]
     write_list[len(write_list) - 1] = write_list[len(write_list) - 1].rstrip("\n")
@@ -81,7 +78,7 @@ def main(configs):
     detection_file = open(accuracy_dest, 'w')
     detection_file_info = open(accuracy_info_dest, 'w')
 
-    # Write boxes to file
+    # Write boxes to file.
     try:
         for entry in write_list:
             detection_file.write(entry)
