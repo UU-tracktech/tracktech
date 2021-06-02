@@ -59,18 +59,35 @@ This information is shared amongst processors.
 The camera processor can be run both locally and in Docker although the used system must comply with the set requirements.
 For differences in CUDA versions, check out the following [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one. We used the cu101 version because it was available for all of the members of the team.
 
+### Environment variables
+The following environment variables can be used:
+(When these are set it overrides the configs.ini values with these)
+
+| Variable         | Config.ini value name | Description                                                                 
+| ---------------- | --------------------- | ----------------------------------------------------------------------------
+| ORCHESTRATOR_URL | Orchestrator.url      | The link of the orchestrator websocket                                      
+| HLS_STREAM_URL   | Input.hls_url         | The stream url of the video forwarder (when set it runs in Input.type "hls")
+| PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                             
+| DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                      
+| TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                       
+| TRACKING_ALG     | Main.reid             | Name of the re-identification algorithm to use                              
+
 ### Configurations
 
-There are some configurations inside the [configs.ini](configs.ini) file. Let's highlight some of the important ones:
-- **HLS.enabled:** When true the application will connect with the given URL
+CameraProcessor configurations inside the [configs.ini](configs.ini) file. Let's highlight some of the important ones:
 - **Main.mode:** This is the mode in which the application runs
   - **deploy**: Connect using a WebSocket with the orchestrator URL
   - **opencv**: Display the resulting processed frames inside an OpenCV native window
   - **tornado**: Stream the processed frames to a web port
-- **Yolov5.source_path**: Path to the video file in case HLS is disabled
-- **Yolov5.weights_path**: Path to the weights
-- **Yolov5.conf-thres**: The threshold at which detection is counted
-- **Yolov5.device**: What does yolov5 need to run on
+- **Input.type:** This is what type of input is used
+  - **webcam**: Use the webcam_device_nr as camera
+  - **images**: Goes through all images in order defined in Input.images_dir_path
+  - **video**: Uses Input.video_file_path as the videofile
+  - **hls**: Uses the Input.hls_url to create the HLS stream
+- **Orchestrator.url:** Websocket url to connect to
+- **weights_path**: Path to the weights file
+- **conf-thres**: The threshold at which detection is counted
+- **device**: What device does the algorithm need to run on
   - **cpu**
   - **0** for GPU
 - **Filter.targets_path**: Link to the file containing which classes will get detected

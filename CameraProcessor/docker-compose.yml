@@ -7,14 +7,12 @@ services:
     environment:
       ORCHESTRATOR_URL: "ws://tracktech.ml:50010/processor"
       HLS_STREAM_URL: "http://81.83.10.9:8001/mjpg/video.mjpg"
-      PROCESSOR_MODE: "tornado"
+      PROCESSOR_MODE: "deploy"
       DETECTION_ALG: "yolov5"
       TRACKING_ALG: "sort"
       REID_ALG: "torchreid"
-    ports:
-      - 9090:9090
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - capabilities: [gpu]
