@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import { screen, render, getAllByTestId } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { ObjectTypeFilter } from '../../src/components/objectTypeFilter'

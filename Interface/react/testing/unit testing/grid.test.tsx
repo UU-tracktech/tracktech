@@ -6,14 +6,33 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { Grid } from '../../src/components/grid'
+
+//mock functions and values to change the keycloak mock per test
+let mockInitialized = true
+let mockAuthenticated = false
+let mockToken = { name: 'Firstname Lastname' }
+
+//mock the keycloak implementation
+//https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
+jest.mock('@react-keycloak/web', () => {
+  return {
+    useKeycloak: () => ({
+      initialized: mockInitialized,
+      keycloak: {
+        authenticated: mockAuthenticated,
+        tokenParsed: mockToken
+      }
+    })
+  }
+})
 
 it('renders without error', () => {
   render(
     <Grid
-      primary="0"
+      primary='0'
       setPrimary={jest.fn}
       sources={[]}
       indicator={'All'}
@@ -66,7 +85,7 @@ it('number of elements match number of sources', () => {
 
   render(
     <Grid
-      primary="0"
+      primary='0'
       setPrimary={jest.fn}
       sources={mockSources}
       indicator={'All'}
@@ -90,7 +109,7 @@ it('Calls the setPrimary function', async () => {
 
   render(
     <Grid
-      primary="0"
+      primary='0'
       setPrimary={mockFunc}
       sources={mockSources}
       indicator={'All'}

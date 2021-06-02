@@ -6,22 +6,22 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { TimelineCard } from '../../src/components/timelineCard'
 
 test('Timeline card renders without error', () => {
-  render(<TimelineCard cameraId="testCam" />)
+  render(<TimelineCard cameraId='testCam' />)
 })
 
 test('Timeline card shows correct name', () => {
   //Render a card with 'testCam' as the title
-  const { rerender } = render(<TimelineCard cameraId="testCam" />)
+  const { rerender } = render(<TimelineCard cameraId='testCam' />)
   expect(screen.queryByText('testCam')).not.toBe(null)
 
   //rerender the card with 'differentCam' as title.
   //'title' as title should be gone and now it should be 'different'
-  rerender(<TimelineCard cameraId="differentCam" />)
+  rerender(<TimelineCard cameraId='differentCam' />)
   expect(screen.queryByText('testCam')).toBe(null)
   expect(screen.queryByText('differentCam')).not.toBe(null)
 })
@@ -29,7 +29,7 @@ test('Timeline card shows correct name', () => {
 test('Timeline card children are rendered', () => {
   //Render a card with children
   render(
-    <TimelineCard cameraId="testCam">
+    <TimelineCard cameraId='testCam'>
       <span>Test</span>
     </TimelineCard>
   )

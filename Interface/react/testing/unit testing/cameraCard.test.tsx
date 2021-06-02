@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { CameraCard } from '../../src/components/cameraCard'
 
