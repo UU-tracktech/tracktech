@@ -59,11 +59,11 @@ class CameraHandler(StaticFileHandler):
         self.set_header("Cache-control", "no-store")
         self.set_header("Access-Control-Allow-Origin", "*")
 
-        # Allow Authorization header to keep cors preflight happy
+        # Allow Authorization header to keep cors preflight happy.
         self.set_header('Access-Control-Allow-Headers', 'Authorization')
 
-    def options(self, path_args, **path_kwargs):
-        # no body
+    def options(self, _path_args, **_path_kwargs):
+        # No body.
         self.set_status(204)
         self.finish()
 

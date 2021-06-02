@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Home } from '../../src/pages/home'
 import '@testing-library/jest-dom'
