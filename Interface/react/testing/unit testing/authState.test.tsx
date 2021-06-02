@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import useAuthState from '../../src/classes/useAuthState'
 
 //Keycloak mock and variables to adjust the mock on a per test basis
