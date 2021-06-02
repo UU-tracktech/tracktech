@@ -189,7 +189,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Switch statement creating the capture.</span>
     <span class="k">if</span> <span class="n">capture_type</span> <span class="o">==</span> <span class="s1">&#39;webcam&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">CamCapture</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;webcam_device_nr&#39;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">CamCapture</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;webcam_device&#39;</span><span class="p">]))</span>
     <span class="k">if</span> <span class="n">capture_type</span> <span class="o">==</span> <span class="s1">&#39;images&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ImageCapture</span><span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;images_dir_path&#39;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">capture_type</span> <span class="o">==</span> <span class="s1">&#39;video&#39;</span><span class="p">:</span>
@@ -466,7 +466,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Switch statement creating the capture.</span>
     <span class="k">if</span> <span class="n">capture_type</span> <span class="o">==</span> <span class="s1">&#39;webcam&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">CamCapture</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;webcam_device_nr&#39;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">CamCapture</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;webcam_device&#39;</span><span class="p">]))</span>
     <span class="k">if</span> <span class="n">capture_type</span> <span class="o">==</span> <span class="s1">&#39;images&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ImageCapture</span><span class="p">(</span><span class="n">input_config</span><span class="p">[</span><span class="s1">&#39;images_dir_path&#39;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">capture_type</span> <span class="o">==</span> <span class="s1">&#39;video&#39;</span><span class="p">:</span>
