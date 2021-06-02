@@ -10,9 +10,8 @@ import tornado.testing
 import tornado.web
 from tornado.testing import AsyncHTTPTestCase
 
-from processor.webhosting.stream_handler import StreamHandler
-
 from tests.conftest import get_test_configs
+from processor.webhosting.stream_handler import StreamHandler
 
 
 class TestStreamHandler(AsyncHTTPTestCase):

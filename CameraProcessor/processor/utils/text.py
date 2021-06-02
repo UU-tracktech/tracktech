@@ -52,20 +52,39 @@ def __bounding_box_to_dict(bounding_box):
         str: JSON representation of the BoundingBox object.
     """
     res = {
-            "boxId": bounding_box.get_identifier(),
-            "rect": [
-                bounding_box.get_rectangle().get_x1(),
-                bounding_box.get_rectangle().get_y1(),
-                bounding_box.get_rectangle().get_x2(),
-                bounding_box.get_rectangle().get_y2()
-            ],
-            "objectType": bounding_box.get_classification()
-        }
+        "boxId": bounding_box.get_identifier(),
+        "rect": [
+            bounding_box.get_rectangle().get_x1(),
+            bounding_box.get_rectangle().get_y1(),
+            bounding_box.get_rectangle().get_x2(),
+            bounding_box.get_rectangle().get_y2()
+        ],
+        "objectType": bounding_box.get_classification(),
+        "certainty": bounding_box.get_certainty()
+    }
 
     if bounding_box.get_object_id() is not None:
         res["objectId"] = bounding_box.get_object_id()
 
     return res
+
+
+def boxes_to_accuracy_json(bounding_boxes, image_id):
+    """Converts the bounding boxes to JSON format of Accuracy.
+
+      Args:
+          bounding_boxes (BoundingBoxes): boxes that get converted to json.
+          image_id (int): image_id of box used for accuracy calculations.
+
+      Returns:
+          (json): JSON representation of the object.
+      """
+    boxes_list = bounding_boxes.get_bounding_boxes()
+
+    return json.dumps({
+        "imageId": image_id,
+        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
+    })
 
 
 def boxes_to_txt(bounding_boxes, shape, frame_nr):
@@ -89,6 +108,6 @@ def boxes_to_txt(bounding_boxes, shape, frame_nr):
             f'{int(bounding_box.get_rectangle().get_y1() * height)},' \
             f'{int((bounding_box.get_rectangle().get_x2() - bounding_box.get_rectangle().get_x1()) * width)},' \
             f'{int((bounding_box.get_rectangle().get_y2() - bounding_box.get_rectangle().get_y1()) * height)},' \
-            f'1,1,{"%.2f" % round(float(bounding_box.get_certainty()), 2)} \n' # certainty rounded to 2 decimals
+            f'1,1,{"%.2f" % round(float(bounding_box.get_certainty()), 2)} \n'  # certainty rounded to 2 decimals
 
     return boxes_text_string

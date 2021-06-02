@@ -8,11 +8,10 @@ import pytest
 import numpy as np
 import cv2
 
+from tests.conftest import root_path
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.utils.draw import draw_tracking_boxes, draw_detection_boxes
-
-from tests.conftest import root_path
 
 X0, X1 = 60, 120
 Y0, Y1 = 120, 180
