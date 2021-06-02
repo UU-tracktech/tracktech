@@ -35,10 +35,10 @@
                     <a class="function" href="#bounding_boxes_to_json">bounding_boxes_to_json</a>
             </li>
             <li>
-                    <a class="function" href="#boxes_to_txt">boxes_to_txt</a>
+                    <a class="function" href="#boxes_to_accuracy_json">boxes_to_accuracy_json</a>
             </li>
             <li>
-                    <a class="function" href="#error_to_json">error_to_json</a>
+                    <a class="function" href="#boxes_to_txt">boxes_to_txt</a>
             </li>
     </ul>
 
@@ -118,20 +118,39 @@ Utrecht University within the Software Project course.
 <span class="sd">        str: JSON representation of the BoundingBox object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">(),</span>
-            <span class="s2">&quot;rect&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span>
-            <span class="p">],</span>
-            <span class="s2">&quot;objectType&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">()</span>
-        <span class="p">}</span>
+        <span class="s2">&quot;boxId&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">(),</span>
+        <span class="s2">&quot;rect&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
+            <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
+            <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
+            <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;objectType&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">(),</span>
+        <span class="s2">&quot;certainty&quot;</span><span class="p">:</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
+    <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_object_id</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">res</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_object_id</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts the bounding boxes to JSON format of Accuracy.</span>
+
+<span class="sd">      Args:</span>
+<span class="sd">          bounding_boxes (BoundingBoxes): boxes that get converted to json.</span>
+<span class="sd">          image_id (int): image_id of box used for accuracy calculations.</span>
+
+<span class="sd">      Returns:</span>
+<span class="sd">          (json): JSON representation of the object.</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="s2">&quot;imageId&quot;</span><span class="p">:</span> <span class="n">image_id</span><span class="p">,</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
+    <span class="p">})</span>
 
 
 <span class="k">def</span> <span class="nf">boxes_to_txt</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">frame_nr</span><span class="p">):</span>
@@ -155,24 +174,9 @@ Utrecht University within the Software Project course.
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">())</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">())</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
-            <span class="sa">f</span><span class="s1">&#39;1,1,</span><span class="si">{</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># certainty rounded to 2 decimals</span>
+            <span class="sa">f</span><span class="s1">&#39;1,1,</span><span class="si">{</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># certainty rounded to 2 decimals</span>
 
     <span class="k">return</span> <span class="n">boxes_text_string</span>
-
-
-<span class="k">def</span> <span class="nf">error_to_json</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns a json object containing the error message.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        error (BaseException): the error to handle</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The error message in a JSON string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="p">})</span>
 </pre></div>
 
         </details>
@@ -272,6 +276,54 @@ Utrecht University within the Software Project course.
 
 
                 </section>
+                <section id="boxes_to_accuracy_json">
+                            <div class="attr function"><a class="headerlink" href="#boxes_to_accuracy_json">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">boxes_to_accuracy_json</span><span class="signature">(bounding_boxes, image_id)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts the bounding boxes to JSON format of Accuracy.</span>
+
+<span class="sd">      Args:</span>
+<span class="sd">          bounding_boxes (BoundingBoxes): boxes that get converted to json.</span>
+<span class="sd">          image_id (int): image_id of box used for accuracy calculations.</span>
+
+<span class="sd">      Returns:</span>
+<span class="sd">          (json): JSON representation of the object.</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="s2">&quot;imageId&quot;</span><span class="p">:</span> <span class="n">image_id</span><span class="p">,</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
+    <span class="p">})</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Converts the bounding boxes to JSON format of Accuracy.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>bounding_boxes (BoundingBoxes):</strong>  boxes that get converted to json.</li>
+<li><strong>image_id (int):</strong>  image_id of box used for accuracy calculations.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>(json): JSON representation of the object.</p>
+</blockquote>
+</div>
+
+
+                </section>
                 <section id="boxes_to_txt">
                             <div class="attr function"><a class="headerlink" href="#boxes_to_txt">#&nbsp;&nbsp</a>
 
@@ -303,7 +355,7 @@ Utrecht University within the Software Project course.
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">())</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">-</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">())</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span> \
-            <span class="sa">f</span><span class="s1">&#39;1,1,</span><span class="si">{</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># certainty rounded to 2 decimals</span>
+            <span class="sa">f</span><span class="s1">&#39;1,1,</span><span class="si">{</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># certainty rounded to 2 decimals</span>
 
     <span class="k">return</span> <span class="n">boxes_text_string</span>
 </pre></div>
@@ -324,50 +376,6 @@ Utrecht University within the Software Project course.
 
 <blockquote>
   <p>str: Boxes in string format with comma separation</p>
-</blockquote>
-</div>
-
-
-                </section>
-                <section id="error_to_json">
-                            <div class="attr function"><a class="headerlink" href="#error_to_json">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">error_to_json</span><span class="signature">(error)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">error_to_json</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns a json object containing the error message.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        error (BaseException): the error to handle</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The error message in a JSON string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-    <span class="p">})</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a json object containing the error message.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>error (BaseException):</strong>  the error to handle</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>str: The error message in a JSON string</p>
 </blockquote>
 </div>
 
