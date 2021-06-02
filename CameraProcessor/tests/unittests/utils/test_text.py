@@ -50,6 +50,11 @@ class TestText:
         assert txt_string == "1,1,60,120,60,60,1,1,0.50 \n"
 
     def test_boxes_to_accuracy_json(self, bbox):
+        """Tests the boxes_to_accuracy_json function.
+
+        Args:
+            bbox:(BoundingBox): the bounding box fixture.
+        """
         json_string = boxes_to_accuracy_json(BoundingBoxes([bbox]), 1)
         proper_string = json.dumps({"imageId": 1,
                                     "boxes": [

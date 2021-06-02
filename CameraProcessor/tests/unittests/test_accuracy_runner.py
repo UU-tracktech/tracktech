@@ -52,7 +52,7 @@ class TestAccuracyRunner:
                 assert 1 >= float(box['rect'][3]) >= 0
 
     def tracking_file(self):
-        """Tests if the information in the detection file is correct and within the logical bounds."""
+        """Tests if the information in the tracking file is correct and within the logical bounds."""
         # Opening and reading file.
         file = open(self.config_accuracy['det_path'], 'r')
         lines = file.readlines()
