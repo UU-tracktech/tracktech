@@ -53,7 +53,7 @@ class TestText:
         """Tests the boxes_to_accuracy_json function.
 
         Args:
-            bbox:(BoundingBox): the bounding box fixture.
+            bbox (BoundingBox): the bounding box fixture.
         """
         json_string = boxes_to_accuracy_json(BoundingBoxes([bbox]), 1)
         proper_string = json.dumps({"imageId": 1,
