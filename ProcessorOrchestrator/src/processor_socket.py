@@ -144,7 +144,8 @@ class ProcessorSocket(WebSocketHandler):
         logger.log_disconnect("/processor", self.request.remote_ip)
         print(self.identifier)
         print(str(processors))
-        del processors[self.identifier]
+        if self.identifier in processors:
+            del processors[self.identifier]
         logger.log(f"Processor with id {self.identifier} disconnected")
 
     def data_received(self, chunk):
@@ -223,6 +224,7 @@ class ProcessorSocket(WebSocketHandler):
             objects[object_id][0].update_feature_map(feature_map)
         except KeyError:
             logger.log("Unknown object id")
+            return
 
         for processor in processors.values():
             processor.send_message(json.dumps({

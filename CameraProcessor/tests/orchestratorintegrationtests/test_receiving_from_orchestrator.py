@@ -59,7 +59,7 @@ class TestReceivingFromOrchestrator:
         # Get a connected interface client.
         interface_client = await create_dummy_client(IF_URL)
 
-        start_command = json.dumps({"type": "start", "frameId": 1, "boxId": 5, "cameraId": "mock_id"})
+        start_command = json.dumps({"type": "start", "frameId": 1, "boxId": 5, "cameraId": "mock_id_2"})
         interface_client.write_message(start_command)
 
         await asyncio.sleep(2)
