@@ -16,7 +16,6 @@ class EProcess(multiprocessing.Process):
     Attributes:
         _pconn (Connection): One of two process connections.
         _ccon (Connection): One of two process connections.
-        _exception (): Property an exception is put inside
     """
     def __init__(self, *args, **kwargs):
         """Runs multiprocessing.Process init with the arguments.
