@@ -5,8 +5,9 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import pytest
-from processor.scheduling.node.schedule_node import ScheduleNode
+
 from tests.unittests.scheduling.utils.input_component import InputComponent
+from processor.scheduling.node.schedule_node import ScheduleNode
 
 
 class TestScheduleNode:

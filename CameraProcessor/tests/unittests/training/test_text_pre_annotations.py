@@ -6,8 +6,9 @@ Utrecht University within the Software Project course.
 """
 import os
 import pytest
-from processor.training.pre_annotations import PreAnnotations
+
 from tests.unittests.training.test_pre_annotations import example_text_file
+from processor.training.pre_annotations import PreAnnotations
 
 
 # pylint: disable=attribute-defined-outside-init

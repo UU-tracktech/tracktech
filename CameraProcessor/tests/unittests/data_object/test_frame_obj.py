@@ -7,8 +7,8 @@ Utrecht University within the Software Project course.
 import pytest
 import numpy
 
-from processor.data_object.frame_obj import FrameObj
 from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
+from processor.data_object.frame_obj import FrameObj
 
 
 # pylint: disable=attribute-defined-outside-init,no-member

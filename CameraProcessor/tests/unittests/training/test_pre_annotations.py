@@ -6,8 +6,9 @@ Utrecht University within the Software Project course.
 """
 import os
 import pytest
-from processor.training.pre_annotations import PreAnnotations
+
 from tests.conftest import root_path
+from processor.training.pre_annotations import PreAnnotations
 
 
 example_text_file = os.path.join(root_path, 'data/tests/unittests/example_pre_annotations.txt')
