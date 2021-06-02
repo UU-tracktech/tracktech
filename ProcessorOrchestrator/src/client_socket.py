@@ -161,6 +161,15 @@ class ClientSocket(WebSocketHandler):
         """
 
         self.uses_images = message["usesImages"]
+        if self.uses_images is True:
+            for tracking_object in objects.values():
+                if tracking_object.image is not None:
+                    client_message = {
+                        "type": "newObject",
+                        "objectId": tracking_object.identifier,
+                        "image": tracking_object[0].image
+                    }
+                    self.send_message(json.dumps(client_message))
 
     @staticmethod
     def start_tracking(message):
