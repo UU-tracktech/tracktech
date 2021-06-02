@@ -6,7 +6,7 @@ services:
       context: .
     environment:
       ORCHESTRATOR_URL: "ws://tracktech.ml:50010/processor"
-      HLS_STREAM_URL: "http://81.83.10.9:8001/mjpg/video.mjpg"
+      HLS_STREAM_URL: "https://tracktech.ml:50008/stream.m3u8"
       PROCESSOR_MODE: "deploy"
       DETECTION_ALG: "yolov5"
       TRACKING_ALG: "sort"
