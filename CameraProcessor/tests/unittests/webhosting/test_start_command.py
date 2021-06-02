@@ -15,13 +15,13 @@ class TestStartCommand:
 
     def setup_method(self):
         """Creates a StartCommand object."""
-        self.start = StartCommand(1, 2, 3)
+        self.start = StartCommand(object_id=1, frame_id=2, box_id=3)
 
     def test_start_command(self):
         """Asserts if StartCommand object has been initialized correctly."""
-        assert self.start.frame_id == 1
-        assert self.start.box_id == 2
-        assert self.start.object_id == 3
+        assert self.start.object_id == 1
+        assert self.start.frame_id == 2
+        assert self.start.box_id == 3
 
 
 if __name__ == '__main__':

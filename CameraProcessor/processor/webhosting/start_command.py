@@ -6,16 +6,29 @@ Utrecht University within the Software Project course.
 """
 
 
-class StartCommand:
-    """StartCommand class that stores data regarding which object to start tracking."""
-    def __init__(self, frame_id, box_id, object_id):
-        """Constructor for the StartCommand class.
+class StartCommand(dict):
+    """StartCommand class that stores data regarding which object to start tracking.
 
-        Args:
-            frame_id (timestamp): Id of the frame which contains the object to be tracked.
-            box_id (int): Id of the box that contains the object to be tracked.
-            object_id (int): Identifier to track the object with   .
-        """
-        self.frame_id = frame_id
-        self.box_id = box_id
-        self.object_id = object_id
+    It uses the dict __init__ to add the **kwargs or dict to this class. This class is, for all intents and purposes,
+    a dictionary with entries accessible like properties. Additional functionality can be added.
+
+    We expect some, but not all, of the following key-value pairs:
+    - object_id=(int)
+    - box_id=(int)
+    - frame_id=(int)
+    - cutout=(np.ndarray)
+    """
+
+    def __getattr__(self, item):
+        if item in self:
+            return self[item]
+        return None
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def __delattr__(self, item):
+        if item in self:
+            del self[item]
+        else:
+            raise AttributeError(f"No entry {item} in Start Command to delete")

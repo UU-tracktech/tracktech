@@ -93,23 +93,41 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
         track_elem = ws_client.message_queue.popleft()
         # Start command.
         if isinstance(track_elem, StartCommand):
-            logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} '
-                         f'with new object id {track_elem.object_id}')
+            if track_elem.object_id is None:
+                raise AttributeError("Missing required message keyword 'object_id'")
+            logging.info(f'Start tracking object with object id {track_elem.object_id}')
 
             # Get the feature vector of the object we want to track (query).
-            # First, get the bounding box and frame for the query.
-            stored_frame = framebuffer.get_frame(track_elem.frame_id)
-            stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
-            feature_map = re_identifier.extract_features(stored_frame, stored_box)
+            # If we have a cutout, extract features from it.
+            if track_elem.cutout is not None:
+                feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
+            # If we don't have a cutout, but we have a frame id and box id, attempt to find the box in the buffer.
+            elif all(k is not None for k in [track_elem.frame_id, track_elem.box_id]):
+                stored_frame = framebuffer.get_frame(track_elem.frame_id)
+                try:
+                    stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+                # Frame not found in the buffer, send error to Orchestrator, log the error and move on.
+                except IndexError as e:
+                    feature_map = None
+                    send_error_to_orchestrator(e)
+                    logging.error(e)
+                # Frame found in the buffer, extract features from the discovered bounding box.
+                else:
+                    feature_map = re_identifier.extract_features(stored_frame, stored_box)
+            else:
+                logging.error("Not enough information in the tracking message to start tracking object.")
+                feature_map = None
 
-            # Send the feature_map to the orchestrator.
-            send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
+            # If successfully extracted, send the feature_map to the orchestrator.
+            if feature_map is not None:
+                send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
 
-            # Extract the features from this bounding box and store them in the data.
-            re_id_data.add_query_feature(track_elem.object_id, feature_map)
+                # Extract the features from this bounding box and store them in the data.
+                re_id_data.add_query_feature(track_elem.object_id, feature_map)
 
-            # Also store the map of the first box_id to the object_id.
-            re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
+                # Also store the map of the first box_id to the object_id, if we have a box ID.
+                if track_elem.box_id is not None:
+                    re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
 
         # Stop command.
         elif isinstance(track_elem, StopCommand):
@@ -131,6 +149,17 @@ def send_boxes_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_box
     client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.get_timestamp())
     ws_client.write_message(client_message)
     logging.info(client_message)
+
+
+def send_error_to_orchestrator(ws_client, error):
+    """Sends an error message to the orchestrator.
+
+    Args:
+          ws_client (WebsocketClient):  Websocket object that contains the connection.
+          error (BaseException): The error
+    """
+    client_message = text.error_to_json(error)
+    ws_client.write_message(client_message)
 
 
 def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):

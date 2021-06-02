@@ -10,11 +10,11 @@ import gdown
 from scipy.spatial.distance import euclidean
 
 import processor.utils.features as UtilsFeatures
-import processor.pipeline.reidentification.ireidentifier
+from processor.pipeline.reidentification.ireidentifier import IReIdentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 
 
-class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIdentifier):
+class TorchReIdentifier(IReIdentifier):
     """Re-id class that uses torch-reid to extract and compare features.
 
     Attributes:
@@ -73,6 +73,20 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
+
+    def extract_features_from_cutout(self, cutout):
+        """Extracts features from a cutout.
+
+        Args:
+            cutout (np.ndarray): the cutout containing the object we want to extract features from
+
+        Returns:
+            [float]: Feature vector of the cutout
+        """
+        # Resize the cutout.
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
+
+        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
     def extract_features_boxes(self, frame_obj, track_obj):
         """Extracts features from all bounding boxes generated in the tracking stage.

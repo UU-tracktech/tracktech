@@ -196,11 +196,9 @@ class WebsocketClient:
         Args:
             message (Union[str, bytes]): JSON parse of the sent message.
         """
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
-        object_id = message["objectId"]
-
-        self.message_queue.append(StartCommand(frame_id, box_id, object_id))
+        # Remove the "type" item, because we don't need that anymore.
+        del message["type"]
+        self.message_queue.append(StartCommand(message))
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.

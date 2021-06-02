@@ -21,6 +21,14 @@ class IReIdentifier():
         """
         raise NotImplementedError("Extract features function not implemented")
 
+    def extract_features_from_cutout(self, cutout):
+        """Given a cutout, extracts the features from it.
+
+        Args:
+            cutout (np.ndarray): cutout of the object to extract features from
+        """
+        raise NotImplementedError("Extract features from cutout function not implemented")
+
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using a re-idintification implementation.
 
