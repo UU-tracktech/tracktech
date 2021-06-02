@@ -222,7 +222,10 @@ Utrecht University within the Software Project course.
             <span class="k">return</span>
 
         <span class="c1"># Discard the &#39;self&#39; and &#39;_&#39; argument.</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">kwarg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">kwarg</span><span class="p">)</span>
 
         <span class="c1"># Lint the documentation inside the node.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
@@ -245,7 +248,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            node (Any): Class or method definition containing the .doc property.</span>
 <span class="sd">            is_function (bool): Whether it is called for a function.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): List of arguments given to the function</span>
+<span class="sd">            args ([str]): List of argument names given to the function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get the lines of the documentation.</span>
         <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
@@ -281,7 +284,7 @@ Utrecht University within the Software Project course.
                 <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_class_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
 
         <span class="c1"># Argument section needs to exist but is missing.</span>
-        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-args-in-docstring&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
@@ -299,7 +302,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
 <span class="sd">            section_name (str): Name of the section to be checked.</span>
 <span class="sd">            line_index (int): Index where the section starts.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+<span class="sd">            args ([str]): Argument names of the function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Line number of the last line in the section.</span>
@@ -349,14 +352,13 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (Any): Only function should contain an argument section.</span>
 <span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
 <span class="sd">            args_section_line_index (int): Index where the args section starts.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+<span class="sd">            args ([str]): Arguments of the function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Line number of the last line in the Args section.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Puts the argument names in both a list and dictionary to enable order and fast lookup.</span>
-        <span class="n">arg_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
-        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
+        <span class="c1"># Puts the argument names in a dictionary to enable order and fast lookup.</span>
+        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
 
         <span class="c1"># Index of the argument that is being linted and the current line.</span>
         <span class="n">arg_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -385,7 +387,7 @@ Utrecht University within the Software Project course.
                 <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">continue</span>
             <span class="c1"># Argument is in the wrong position inside the docstring.</span>
-            <span class="k">if</span> <span class="n">arg_list</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;argument-wrong-place-in-docstring&#39;</span><span class="p">,</span>
                                  <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
                                  <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_index</span><span class="p">))</span>
@@ -523,7 +525,7 @@ Utrecht University within the Software Project course.
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Strict argument match.</span>
-        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([*a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
         <span class="c1"># Return match immediately when correctly formatted.</span>
         <span class="k">if</span> <span class="n">arg_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -756,7 +758,10 @@ Utrecht University within the Software Project course.
             <span class="k">return</span>
 
         <span class="c1"># Discard the &#39;self&#39; and &#39;_&#39; argument.</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">kwarg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">kwarg</span><span class="p">)</span>
 
         <span class="c1"># Lint the documentation inside the node.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
@@ -779,7 +784,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            node (Any): Class or method definition containing the .doc property.</span>
 <span class="sd">            is_function (bool): Whether it is called for a function.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): List of arguments given to the function</span>
+<span class="sd">            args ([str]): List of argument names given to the function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get the lines of the documentation.</span>
         <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
@@ -815,7 +820,7 @@ Utrecht University within the Software Project course.
                 <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_class_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
 
         <span class="c1"># Argument section needs to exist but is missing.</span>
-        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-args-in-docstring&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
@@ -833,7 +838,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
 <span class="sd">            section_name (str): Name of the section to be checked.</span>
 <span class="sd">            line_index (int): Index where the section starts.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+<span class="sd">            args ([str]): Argument names of the function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Line number of the last line in the section.</span>
@@ -883,14 +888,13 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (Any): Only function should contain an argument section.</span>
 <span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
 <span class="sd">            args_section_line_index (int): Index where the args section starts.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+<span class="sd">            args ([str]): Arguments of the function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Line number of the last line in the Args section.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Puts the argument names in both a list and dictionary to enable order and fast lookup.</span>
-        <span class="n">arg_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
-        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
+        <span class="c1"># Puts the argument names in a dictionary to enable order and fast lookup.</span>
+        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
 
         <span class="c1"># Index of the argument that is being linted and the current line.</span>
         <span class="n">arg_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -919,7 +923,7 @@ Utrecht University within the Software Project course.
                 <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">continue</span>
             <span class="c1"># Argument is in the wrong position inside the docstring.</span>
-            <span class="k">if</span> <span class="n">arg_list</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;argument-wrong-place-in-docstring&#39;</span><span class="p">,</span>
                                  <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
                                  <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_index</span><span class="p">))</span>
@@ -1057,7 +1061,7 @@ Utrecht University within the Software Project course.
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Strict argument match.</span>
-        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([*a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
         <span class="c1"># Return match immediately when correctly formatted.</span>
         <span class="k">if</span> <span class="n">arg_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1246,7 +1250,10 @@ Utrecht University within the Software Project course.
             <span class="k">return</span>
 
         <span class="c1"># Discard the &#39;self&#39; and &#39;_&#39; argument.</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">kwarg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">kwarg</span><span class="p">)</span>
 
         <span class="c1"># Lint the documentation inside the node.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lint_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
@@ -1317,7 +1324,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            node (Any): Class or method definition containing the .doc property.</span>
 <span class="sd">            is_function (bool): Whether it is called for a function.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): List of arguments given to the function</span>
+<span class="sd">            args ([str]): List of argument names given to the function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get the lines of the documentation.</span>
         <span class="n">doc_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
@@ -1353,7 +1360,7 @@ Utrecht University within the Software Project course.
                 <span class="n">line_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lint_class_section</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">line_index</span><span class="p">)</span>
 
         <span class="c1"># Argument section needs to exist but is missing.</span>
-        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sections_list</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;Args&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-args-in-docstring&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
@@ -1373,7 +1380,7 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>node (Any):</strong>  Class or method definition containing the .doc property.</li>
 <li><strong>is_function (bool):</strong>  Whether it is called for a function.</li>
-<li><strong>args ([astroid.node_classes.AssignName]):</strong>  List of arguments given to the function</li>
+<li><strong>args ([str]):</strong>  List of argument names given to the function</li>
 </ul>
 </div>
 
@@ -1397,7 +1404,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
 <span class="sd">            section_name (str): Name of the section to be checked.</span>
 <span class="sd">            line_index (int): Index where the section starts.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+<span class="sd">            args ([str]): Argument names of the function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Line number of the last line in the section.</span>
@@ -1431,7 +1438,7 @@ Utrecht University within the Software Project course.
 <li><strong>doc_lines ([str]):</strong>  Split lines of the documentation.</li>
 <li><strong>section_name (str):</strong>  Name of the section to be checked.</li>
 <li><strong>line_index (int):</strong>  Index where the section starts.</li>
-<li><strong>args ([astroid.node_classes.AssignName]):</strong>  Arguments of the function.</li>
+<li><strong>args ([str]):</strong>  Argument names of the function.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -1514,14 +1521,13 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (Any): Only function should contain an argument section.</span>
 <span class="sd">            doc_lines ([str]): Split lines of the documentation.</span>
 <span class="sd">            args_section_line_index (int): Index where the args section starts.</span>
-<span class="sd">            args ([astroid.node_classes.AssignName]): Arguments of the function.</span>
+<span class="sd">            args ([str]): Arguments of the function.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Line number of the last line in the Args section.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Puts the argument names in both a list and dictionary to enable order and fast lookup.</span>
-        <span class="n">arg_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
-        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
+        <span class="c1"># Puts the argument names in a dictionary to enable order and fast lookup.</span>
+        <span class="n">arg_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">arg</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
 
         <span class="c1"># Index of the argument that is being linted and the current line.</span>
         <span class="n">arg_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1550,7 +1556,7 @@ Utrecht University within the Software Project course.
                 <span class="n">line_index</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">continue</span>
             <span class="c1"># Argument is in the wrong position inside the docstring.</span>
-            <span class="k">if</span> <span class="n">arg_list</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">arg_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">arg_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;argument-wrong-place-in-docstring&#39;</span><span class="p">,</span>
                                  <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
                                  <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_index</span><span class="p">))</span>
@@ -1581,7 +1587,7 @@ Utrecht University within the Software Project course.
 <li><strong>node (Any):</strong>  Only function should contain an argument section.</li>
 <li><strong>doc_lines ([str]):</strong>  Split lines of the documentation.</li>
 <li><strong>args_section_line_index (int):</strong>  Index where the args section starts.</li>
-<li><strong>args ([astroid.node_classes.AssignName]):</strong>  Arguments of the function.</li>
+<li><strong>args ([str]):</strong>  Arguments of the function.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -1816,7 +1822,7 @@ Utrecht University within the Software Project course.
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Strict argument match.</span>
-        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="n">arg_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s*([*a-z_0-9]+)\s\(([^:</span><span class="si">{}</span><span class="s1">]+)\):.*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
         <span class="c1"># Return match immediately when correctly formatted.</span>
         <span class="k">if</span> <span class="n">arg_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

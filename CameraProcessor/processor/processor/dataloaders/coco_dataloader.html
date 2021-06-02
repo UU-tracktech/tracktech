@@ -114,6 +114,11 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="k">def</span> <span class="nf">download_coco_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Downloads a single coco image given the identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
@@ -155,6 +160,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
 
     <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -179,11 +192,21 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            annotations (list): List of string annotations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_all_annotations</span><span class="p">()</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__filter_annotations</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">annotations</span>
 
     <span class="k">def</span> <span class="nf">__get_all_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves all the annotations from the self.categories.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [(str)]: List of all the annotations from a category.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Specify a list of category names of interest.</span>
         <span class="n">cat_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">getCatIds</span><span class="p">(</span><span class="n">catNms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
         <span class="c1"># Get the corresponding image ids and images using loadImgs.</span>
@@ -195,6 +218,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">anns</span>
 
     <span class="k">def</span> <span class="nf">__filter_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filters the annotations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [(str)]: List of filtered annotations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filtered_annotations</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_config</span><span class="p">[</span><span class="s1">&#39;targets_path&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">filter_names</span><span class="p">:</span>
@@ -206,6 +237,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">filtered_annotations</span>
 
     <span class="k">def</span> <span class="nf">__get_image_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the image name given an identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Name of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">zeros</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_id</span><span class="p">))):</span>
             <span class="n">zeros</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
@@ -213,6 +252,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">image_name</span>
 
     <span class="k">def</span> <span class="nf">__get_image_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the image path given an identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Path of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
         <span class="n">this_image_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1">.jpg&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">this_image_path</span>
@@ -256,6 +303,11 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="k">def</span> <span class="nf">download_coco_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Downloads a single coco image given the identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
@@ -297,6 +349,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
 
     <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -321,11 +381,21 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            annotations (list): List of string annotations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_all_annotations</span><span class="p">()</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__filter_annotations</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">annotations</span>
 
     <span class="k">def</span> <span class="nf">__get_all_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves all the annotations from the self.categories.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [(str)]: List of all the annotations from a category.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Specify a list of category names of interest.</span>
         <span class="n">cat_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">getCatIds</span><span class="p">(</span><span class="n">catNms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
         <span class="c1"># Get the corresponding image ids and images using loadImgs.</span>
@@ -337,6 +407,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">anns</span>
 
     <span class="k">def</span> <span class="nf">__filter_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filters the annotations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [(str)]: List of filtered annotations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filtered_annotations</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_config</span><span class="p">[</span><span class="s1">&#39;targets_path&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">filter_names</span><span class="p">:</span>
@@ -348,6 +426,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">filtered_annotations</span>
 
     <span class="k">def</span> <span class="nf">__get_image_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the image name given an identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Name of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">zeros</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_id</span><span class="p">))):</span>
             <span class="n">zeros</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
@@ -355,6 +441,14 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">image_name</span>
 
     <span class="k">def</span> <span class="nf">__get_image_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the image path given an identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Path of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
         <span class="n">this_image_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1">.jpg&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">this_image_path</span>
@@ -445,6 +539,11 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">download_coco_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Downloads a single coco image given the identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (int): Identifier of the image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
@@ -454,7 +553,15 @@ Utrecht University within the Software Project course.
 
         </details>
 
-    
+            <div class="docstring"><p>Downloads a single coco image given the identifier.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>image_id (int):</strong>  Identifier of the image</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="COCODataloader.download_coco_images" class="classattr">
