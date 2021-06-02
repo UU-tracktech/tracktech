@@ -54,12 +54,12 @@ class TestReceivingFromOrchestrator:
         And finally send an update command and check if camera processor also handles this update.
         """
         # Get a connected processor client.
-        processor_client = await create_dummy_client(PC_URL, "mock_id_2")
+        processor_client = await create_dummy_client(PC_URL, "mock_id")
 
         # Get a connected interface client.
         interface_client = await create_dummy_client(IF_URL)
 
-        start_command = json.dumps({"type": "start", "frameId": 1, "boxId": 5, "cameraId": "mock_id_2"})
+        start_command = json.dumps({"type": "start", "frameId": 1, "boxId": 5, "cameraId": "mock_id"})
         interface_client.write_message(start_command)
 
         await asyncio.sleep(2)
@@ -72,6 +72,17 @@ class TestReceivingFromOrchestrator:
         # Processor orchestrator determines object ID. Should be 1 if this is the first start command.
         assert received_start.object_id == 1
 
+        feature_map = [0.1] * 512
+        update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": feature_map})
+        processor_client.write_message(update_command)
+
+        # The processor orchestrator sends an update command to all processors when a featureMap is updated.
+        await asyncio.sleep(2)
+        received_update = processor_client.message_queue.popleft()
+        assert isinstance(received_update, UpdateCommand)
+        assert received_update.object_id == 1
+        assert received_update.feature_map == feature_map
+
         stop_command = json.dumps({"type": "stop", "objectId": 1})
         interface_client.write_message(stop_command)
 
@@ -80,18 +91,9 @@ class TestReceivingFromOrchestrator:
         received_stop = processor_client.message_queue.popleft()
         assert isinstance(received_stop, StopCommand)
         assert received_stop.object_id == 1
-        update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": "[]"})
-        processor_client.write_message(update_command)
-
-        await asyncio.sleep(2)
-        received_update = interface_client.message_queue.popleft()
-        assert isinstance(received_update, UpdateCommand)
-        assert received_update.object_id == 1
-        assert received_update.feature_map == []
 
         processor_client.disconnect()
         interface_client.disconnect()
-        # interface_client.disconnect()
 
     @staticmethod
     async def _is_queue_empty(ws_client):

@@ -63,7 +63,6 @@ class ProcessorSocket(WebSocketHandler):
 
     # pylint: disable=broad-except
     def on_message(self, message):
-        print(message)
         """Handles a message from a processor that is received on the websocket.
 
         Method which handles messages coming in from a processor. The messages are expected in json format.
@@ -79,7 +78,6 @@ class ProcessorSocket(WebSocketHandler):
                                         see update_feature_map, for the other expected properties.
         """
         logger.log_message_receive(message, "/processor", self.request.remote_ip)
-        print(self.identifier)
 
         try:
             message_object = json.loads(message)
@@ -142,8 +140,6 @@ class ProcessorSocket(WebSocketHandler):
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
-        print(self.identifier)
-        print(str(processors))
         if self.identifier in processors:
             del processors[self.identifier]
         logger.log(f"Processor with id {self.identifier} disconnected")
