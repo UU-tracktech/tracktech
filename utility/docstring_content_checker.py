@@ -412,7 +412,7 @@ class DocstringContentChecker(BaseChecker):
             return False, "", ""
 
         # Strict argument match.
-        arg_match = re.match(r'^\s*([a-z_0-9]+)\s\(([^:{}]+)\):.*$', line)
+        arg_match = re.match(r'^\s*([*a-z_0-9]+)\s\(([^:{}]+)\):.*$', line)
 
         # Return match immediately when correctly formatted.
         if arg_match is not None:

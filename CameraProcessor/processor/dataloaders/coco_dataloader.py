@@ -39,6 +39,11 @@ class COCODataloader(IDataloader):
         return bounding_boxes_list
 
     def download_coco_image(self, image_id):
+        """Downloads a single coco image given the identifier.
+
+        Args:
+            image_id (int): Identifier of the image
+        """
         image = self.coco.loadImgs([image_id])[0]
 
         image_data = requests.get(image['coco_url']).content
@@ -80,6 +85,14 @@ class COCODataloader(IDataloader):
         return width, height
 
     def __parse_boxes(self, annotations):
+        """Parses bounding boxes.
+
+        Args:
+            annotations ([(str)]): Annotations tuples in a list.
+
+        Returns:
+            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
+        """
         counter = 0
         bounding_boxes_list = []
         current_boxes = []
@@ -104,11 +117,21 @@ class COCODataloader(IDataloader):
         return bounding_boxes_list
 
     def __get_annotations(self):
+        """Gets annotations.
+
+        Returns:
+            annotations (list): List of string annotations.
+        """
         annotations = self.__get_all_annotations()
         annotations = self.__filter_annotations(annotations)
         return annotations
 
     def __get_all_annotations(self):
+        """Retrieves all the annotations from the self.categories.
+
+        Returns:
+            [(str)]: List of all the annotations from a category.
+        """
         # Specify a list of category names of interest.
         cat_ids = self.coco.getCatIds(catNms=self.categories)
         # Get the corresponding image ids and images using loadImgs.
@@ -120,6 +143,14 @@ class COCODataloader(IDataloader):
         return anns
 
     def __filter_annotations(self, annotations):
+        """Filters the annotations.
+
+        Args:
+            annotations ([(str)]): Annotations tuples in a list.
+
+        Returns:
+            [(str)]: List of filtered annotations
+        """
         filtered_annotations = []
 
         with open(self.filter_config['targets_path']) as filter_names:
@@ -131,6 +162,14 @@ class COCODataloader(IDataloader):
         return filtered_annotations
 
     def __get_image_name(self, image_id):
+        """Gets the image name given an identifier.
+
+        Args:
+            image_id (int): Identifier of the image
+
+        Returns:
+            str: Name of the image.
+        """
         zeros = ''
         for _ in range(12 - len(str(image_id))):
             zeros += '0'
@@ -138,6 +177,14 @@ class COCODataloader(IDataloader):
         return image_name
 
     def __get_image_path(self, image_id):
+        """Gets the image path given an identifier.
+
+        Args:
+            image_id (int): Identifier of the image
+
+        Returns:
+            str: Path of the image.
+        """
         image_name = self.__get_image_name(image_id)
         this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path
