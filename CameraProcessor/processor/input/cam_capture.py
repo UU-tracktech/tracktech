@@ -19,11 +19,14 @@ class CamCapture(ICapture):
     Attributes:
         cap (cv2.VideoCapture): Capture that serves webcam frame one by one.
     """
-    def __init__(self):
+    def __init__(self, device_nr):
         """Opens capture that connects to webcam.
+
+        Args:
+            device_nr (int): Number of the device to take the recorded data from.
         """
-        logging.info('connecting to webcam')
-        self.cap = VideoCapture(0)
+        logging.info(f'Connecting to webcam on device {device_nr}')
+        self.cap = VideoCapture(device_nr)
 
     def opened(self):
         """Checks if webcam is still opened.

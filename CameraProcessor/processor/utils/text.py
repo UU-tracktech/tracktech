@@ -8,6 +8,21 @@ Utrecht University within the Software Project course.
 import json
 
 
+def feature_map_to_json(feature_map=None, object_id=None) -> json:
+    """Sends a featuremap to the orchestrator.
+
+    Args:
+        feature_map ([Float]): An array of numerical values.
+        object_id (Int): The object where the feature_map refers too.
+    """
+    # Parses a feature map into a json message.
+    return json.dumps({
+        "type": "featureMap",
+        "objectId": object_id,
+        "featureMap": feature_map
+    })
+
+
 def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
     """Converts the bounding boxes to JSON format of API call.
 
@@ -74,6 +89,6 @@ def boxes_to_txt(bounding_boxes, shape, frame_nr):
             f'{int(bounding_box.get_rectangle().get_y1() * height)},' \
             f'{int((bounding_box.get_rectangle().get_x2() - bounding_box.get_rectangle().get_x1()) * width)},' \
             f'{int((bounding_box.get_rectangle().get_y2() - bounding_box.get_rectangle().get_y1()) * height)},' \
-            f'1,1,1 \n'
+            f'1,1,{"%.2f" % round(float(bounding_box.get_certainty()), 2)} \n' # certainty rounded to 2 decimals
 
     return boxes_text_string
