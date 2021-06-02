@@ -70,7 +70,7 @@ ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
 
 
 # Docker build that works with GPU on windows (with insider edition etc.) and linux
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS wslbuild
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 AS deploy
 WORKDIR /app
 
 # Keeps Python from generating .pyc files in the container
