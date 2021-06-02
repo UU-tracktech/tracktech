@@ -8,6 +8,7 @@ Utrecht University within the Software Project course.
 import json
 from processor.utils.text import bounding_boxes_to_json, boxes_to_accuracy_json, boxes_to_txt
 from processor.data_object.bounding_boxes import BoundingBoxes
+from processor.data_object.bounding_box import BoundingBox
 
 
 class TestText:
@@ -31,7 +32,8 @@ class TestText:
                                                 bbox.get_rectangle().get_y1(),
                                                 bbox.get_rectangle().get_y2()
                                             ],
-                                            "objectType": bbox.get_classification()
+                                            "objectType": bbox.get_classification(),
+                                            "certainty": bbox.get_certainty()
                                          }
                                     ]
                                     })
@@ -47,3 +49,38 @@ class TestText:
 
         txt_string = boxes_to_txt([bbox], (img.shape[0], img.shape[1]), 1)
         assert txt_string == "1,1,60,120,60,60,1,1,0.50 \n"
+
+    def test_boxes_to_accuracy_json(self, bbox):
+        json_string = json.dumps({"type": "boundingBoxes",
+                                  "frameId": 1,
+                                  "boxes": [
+                                      {
+                                          "boxId": 1,
+                                          "rect": [
+                                              0.3,
+                                              0.6,
+                                              0.6,
+                                              0.9
+                                          ],
+                                          "objectType": bbox.get_classification(),
+                                          "certainty": bbox.get_certainty()
+                                      }
+                                  ]
+                                  })
+        json_string = boxes_to_accuracy_json(BoundingBoxes([bbox]), 1)
+        proper_string = json.dumps({"imageId": 1,
+                                    "boxes": [
+                                        {
+                                            "boxId": bbox.get_identifier(),
+                                            "rect": [
+                                                bbox.get_rectangle().get_x1(),
+                                                bbox.get_rectangle().get_x2(),
+                                                bbox.get_rectangle().get_y1(),
+                                                bbox.get_rectangle().get_y2()
+                                            ],
+                                            "objectType": bbox.get_classification(),
+                                            "certainty": 0.5
+                                         }
+                                    ]
+                                    })
+        assert json_string == proper_string
