@@ -152,12 +152,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_path_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_path_kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle an options request and set response to &quot;no content success&quot;.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            _path_args (Any): Arguments given to the path.</span>
-<span class="sd">            **_path_kwargs (Any): Any other arguments given to the method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># No body.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">204</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
@@ -376,12 +371,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_path_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_path_kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle an options request and set response to &quot;no content success&quot;.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            _path_args (Any): Arguments given to the path.</span>
-<span class="sd">            **_path_kwargs (Any): Any other arguments given to the method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># No body.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">204</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
@@ -644,28 +634,14 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_path_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_path_kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle an options request and set response to &quot;no content success&quot;.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            _path_args (Any): Arguments given to the path.</span>
-<span class="sd">            **_path_kwargs (Any): Any other arguments given to the method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># No body.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">204</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Handle an options request and set response to "no content success".</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>_path_args (Any):</strong>  Arguments given to the path.</li>
-<li><strong>**_path_kwargs (Any):</strong>  Any other arguments given to the method.</li>
-</ul>
-</div>
-
+    
 
                             </div>
                             <div id="CameraHandler.start_stream" class="classattr">
