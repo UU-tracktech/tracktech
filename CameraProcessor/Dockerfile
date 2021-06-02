@@ -38,9 +38,12 @@ COPY filter.names .
 COPY coco.names .
 COPY processor processor
 COPY data data
+COPY webpage webpage
 
 RUN ["python3.8","-m","pip", "install", "-r", "requirements-reid.txt"]
 
 WORKDIR /processor
+
+EXPOSE 9090
 
 ENTRYPOINT ["python3.8", "/app/processor/main.py"]
