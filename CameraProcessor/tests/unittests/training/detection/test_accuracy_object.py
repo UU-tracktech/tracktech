@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 """
 
 import os
-import pytest
 
 from processor.training.detection.accuracy_object import AccuracyObject
 from processor.data_object.bounding_box import BoundingBox
@@ -124,8 +123,8 @@ class TestAccuracyObject:
         """Draws the plots and checks whether files are indeed created.
 
         Args:
-            configs (dict): Config dictionary.
             accuracy_object (AccuracyObject): Accuracy object containing all the data.
+            configs (dict): Config dictionary.
         """
         plots_path = configs['Accuracy']['plots_path']
         if os.path.exists(plots_path):
