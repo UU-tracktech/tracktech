@@ -9,7 +9,6 @@ import sys
 
 from processor.data_object.reid_data import ReidData
 from processor.input.image_capture import ImageCapture
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.utils.config_parser import ConfigParser
 from processor.utils.create_runners import create_detector, create_tracker
 from processor.utils.text import boxes_to_accuracy_json, boxes_to_txt
