@@ -14,7 +14,7 @@ import React, { useRef, useEffect } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-
+import { Alert } from 'antd'
 import { size } from '../classes/size'
 import { Box } from '../classes/clientMessage'
 
@@ -112,16 +112,18 @@ export function VideoPlayer(props: VideoPlayerProps) {
               //Once it waited long enough, clear the interval and show a message to the user showing the problem
               player?.clearInterval(bufferTimer)
               bufferTimer = undefined
+              player?.pause()
 
               var modal = player?.createModal(
                 'Unable to load stream. Check your connection or the video forwarder. Close this message to attempt reloading the stream',
                 null
               )
+              //The modal overlaps the default videojs error of "the media could not be loaded"
+              //Give the modal a custom class so we can adjust it with CSS
+              //modal?.addClass('vjs-custom-modal')
 
               //Try to reload the videoplayer when the user closes the warning message
               modal?.on('modalclose', () => {
-                player?.pause()
-
                 //reset the source
                 if (props.sources && props.sources[0].type)
                   player?.src({
@@ -132,7 +134,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
                   player?.src({ src: props.sources[0].src })
 
                 player?.load()
-                //player?.play()
+                player?.play()
               })
             }
           }, delta * 1000)
