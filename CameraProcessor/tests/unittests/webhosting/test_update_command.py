@@ -15,11 +15,11 @@ class TestUpdateCommand:
 
     def setup_method(self):
         """Creates a UpdateCommand object."""
-        self.update = UpdateCommand([0] * 512, 1)
+        self.update = UpdateCommand([0.1] * 512, 1)
 
     def test_update_command(self):
         """Asserts if UpdateCommand object has been initialized correctly."""
-        assert self.update.feature_map == [0] * 512
+        assert self.update.feature_map == [0.1] * 512
         assert self.update.object_id == 1
 
 
