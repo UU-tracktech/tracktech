@@ -15,6 +15,7 @@ from processor.data_object.rectangle import Rectangle
 
 class TestAccuracyObject:
     """Test the accuracy object."""
+
     @staticmethod
     def init_correct(accuracy_object):
         """Tests if the object is initialized correctly.
@@ -29,14 +30,11 @@ class TestAccuracyObject:
         # Test if the ground truth contains an amount of frames that is strictly larger then 0.
         assert accuracy_object.frame_amount > 0
 
-
         assert len(accuracy_object.gt_format) > 0
 
         assert len(accuracy_object.plots_prefix) > 0
 
         assert len(accuracy_object.plots_path) > 0
-
-
 
     # pylint: disable=consider-iterating-dictionary
     def test_detection(self, configs):
@@ -52,7 +50,7 @@ class TestAccuracyObject:
         accuracy_object.detect()
 
         self.init_correct(accuracy_object)
-        self.draw_plots(accuracy_object,configs)
+        self.draw_plots(accuracy_object, configs)
 
         # Checking for some values in the dictionary if they are possible.
         for key in accuracy_object.results.keys():
@@ -97,27 +95,27 @@ class TestAccuracyObject:
 
         # Checking in box1 is correct.
         parsed_box = parsed_boxes[0]
-        assert parsed_box.xtl == 0.1\
+        assert parsed_box.xtl == 0.1 \
                and parsed_box.ytl == 0.1
-        assert parsed_box.xbr == 0.2\
+        assert parsed_box.xbr == 0.2 \
                and parsed_box.ybr == 0.2
         assert parsed_box.score == 0.5
         assert parsed_box.image_name == "0"
 
         # Checking in box2 is correct.
         parsed_box = parsed_boxes[1]
-        assert parsed_box.xtl == 0\
+        assert parsed_box.xtl == 0 \
                and parsed_box.ytl == 0
-        assert parsed_box.xbr == 0.3\
+        assert parsed_box.xbr == 0.3 \
                and parsed_box.ybr == 0.3
         assert parsed_box.score == 0.7
         assert parsed_box.image_name == "1"
 
         # Checking in box3 is correct.
         parsed_box = parsed_boxes[2]
-        assert parsed_box.xtl == 0.2\
+        assert parsed_box.xtl == 0.2 \
                and parsed_box.ytl == 0.2
-        assert parsed_box.xbr == 0.6\
+        assert parsed_box.xbr == 0.6 \
                and parsed_box.ybr == 0.6
         assert parsed_box.score == 0.9
         assert parsed_box.image_name == "1"
