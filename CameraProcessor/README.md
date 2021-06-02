@@ -117,17 +117,29 @@ Windows insider program slows down the speed of pc a lot.
 - GPU-enabled on Linux:
    1. You need an NVIDIA GPU that supports CUDA
    2. Check the version of the CUDA installation, change PyTorch import if needed
-   3. Make sure the Yolov5.device in configs.ini has a value of 0
-   4. Run the docker-compose.yml in the root to build the container.
+   3. Make sure the devices in configs.ini are set to 0
+   4. Run ```docker-compose up``` in the root to build the container for deployment.
 - GPU-enabled on windows (Not recommended):
    1. You need an NVIDIA GPU that supports CUDA
    2. Follow the [nvidia install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
-   3. Make sure the Yolov5.device in configs.ini has a value of 0
-   4. Run the docker-compose.yml in the root to build the container.
+   3. Make sure the devices in configs.ini are set to 0
+   4. Run ```docker-compose up``` in the root to build the container for deployment.
    5. Check the logs of your docker container in Docker Desktop to see if it is working properly.
 - GPU-disabled (can't run GPU code, only start container):
    1. In the configs.ini change the device value to CPU.
-   2. Run the docker-compose.yml in the root to build the container.
+   2. Run ```docker-compose up``` in the root to build the container for deployment.
+
+### Verifying in Docker
+
+To verify the detection/tracking/re-identifying running inside Docker it is possible to stream to the localhost.
+Add lines the following lines to the docker-compose.yml file inside the root inside the cameraprocessor service: 
+```cmd
+ports:
+    - 9090:9090
+```
+Set the PROCESSOR_MODE environment variable to: "tornado".
+
+Open the link printed in the console when running ```docker-compose up``` and the stream will get shown after a bit.
 
 ## Running the tests
 
