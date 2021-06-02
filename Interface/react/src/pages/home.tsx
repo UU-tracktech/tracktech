@@ -53,7 +53,7 @@ export function Home() {
             name: stream.Name,
             srcObject: {
               src: stream.Forwarder,
-              type: stream.Type
+              type: 'application/x-mpegURL'
             }
           }))
         )
