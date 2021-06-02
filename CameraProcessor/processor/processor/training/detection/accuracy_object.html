@@ -35,10 +35,13 @@
                                 <a class="function" href="#AccuracyObject.__init__">AccuracyObject</a>
                         </li>
                         <li>
-                                <a class="function" href="#AccuracyObject.parse_boxes">parse_boxes</a>
+                                <a class="function" href="#AccuracyObject.read_config">read_config</a>
                         </li>
                         <li>
-                                <a class="function" href="#AccuracyObject.get_dataloader">get_dataloader</a>
+                                <a class="function" href="#AccuracyObject.parse_info_file">parse_info_file</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AccuracyObject.parse_boxes">parse_boxes</a>
                         </li>
                         <li>
                                 <a class="function" href="#AccuracyObject.read_boxes">read_boxes</a>
@@ -87,13 +90,10 @@ Utrecht University within the Software Project course.
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
-
 <span class="kn">from</span> <span class="nn">podm.podm</span> <span class="kn">import</span> <span class="n">BoundingBox</span><span class="p">,</span> <span class="n">get_pascal_voc_metrics</span>
 <span class="kn">from</span> <span class="nn">podm.visualize</span> <span class="kn">import</span> <span class="n">plot_precision_recall_curve</span>
 
-<span class="kn">from</span> <span class="nn">processor.dataloaders.coco_dataloader</span> <span class="kn">import</span> <span class="n">COCODataloader</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.json_dataloader</span> <span class="kn">import</span> <span class="n">JSONDataloader</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.mot_dataloader</span> <span class="kn">import</span> <span class="n">MOTDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.training.pre_annotations</span> <span class="kn">import</span> <span class="n">PreAnnotations</span>
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 
 
@@ -101,33 +101,59 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        results (object): Results of the podm library.</span>
+<span class="sd">        results (object): Results of the</span>
+<span class="sd">        image_width (int): Width of the image.</span>
+<span class="sd">        image_height (int): Height of the image.</span>
 <span class="sd">        iou_threshold (int): Threshold from which it is counted.</span>
 <span class="sd">        frame_amount (int): Number of frames.</span>
-<span class="sd">        gt_format (str): Format of the ground truth.</span>
-<span class="sd">        plots_prefix (str): Prefix of the name of a plot.</span>
-<span class="sd">        plots_path (str): Path where to create plots.</span>
-<span class="sd">        configs (dict): The configs as a dictionary.</span>
 <span class="sd">        bounding_boxes_gt ([BoundingBox]):</span>
+<span class="sd">        yolo_config (SectionProxy)</span>
+<span class="sd">        accuracy_config (SectionProxy): Configurations of the accuracy.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (Dict): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-        <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
         <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_prefix&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Assign class variables from config.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configurations of the</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the config file, take the relevant Accuracy section.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">parse_info_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads frame height, width and the amount of frames from the info file.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det-info_path&#39;</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Determine delimiter automatically.</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Extract information from line.</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
@@ -152,67 +178,48 @@ Utrecht University within the Software Project course.
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
-                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">(),</span>
+                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span>
+                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">,</span>
+                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span>
+                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">,</span>
                     <span class="n">image_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                     <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
                 <span class="p">)</span>
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
 
-    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">COCODataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JSONDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MOTDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dataloader</span>
-
-    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_boxes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            annotation_format (str): String format of annotation.</span>
-<span class="sd">            path_location (str): Path to the file where the boxes are stored.</span>
+<span class="sd">            path_to_boxes (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">())</span>
+        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file.</span>
+        <span class="n">bounding_boxes_annotations</span> <span class="o">=</span> <span class="n">PreAnnotations</span><span class="p">(</span><span class="n">path_to_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">)</span>
+        <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
+        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">boxes</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
 
+        <span class="c1"># Get the image width, height and nr of frames.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_info_file</span><span class="p">()</span>
+
         <span class="c1"># Getting the bounding boxes from the gt file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">,</span> <span class="s1">&#39;gt_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_path&#39;</span><span class="p">])</span>
 
         <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
-        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;det_path&#39;</span><span class="p">)</span>
+        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">])</span>
 
         <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
             <span class="n">bounding_boxes_det</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span>
+            <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
         <span class="c1"># Printing a few metrics related to accuracy on the terminal.</span>
@@ -229,15 +236,15 @@ Utrecht University within the Software Project course.
 <span class="sd">            result (MetricPerClass): A MetricPerClass object from the PODM library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">plot_precision_recall_curve</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
-                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span><span class="p">,</span>
+                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span>
                                                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">-&#39;</span>
-                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-&#39;</span>
+                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-&#39;</span>
                                                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                                         <span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
@@ -273,33 +280,59 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        results (object): Results of the podm library.</span>
+<span class="sd">        results (object): Results of the</span>
+<span class="sd">        image_width (int): Width of the image.</span>
+<span class="sd">        image_height (int): Height of the image.</span>
 <span class="sd">        iou_threshold (int): Threshold from which it is counted.</span>
 <span class="sd">        frame_amount (int): Number of frames.</span>
-<span class="sd">        gt_format (str): Format of the ground truth.</span>
-<span class="sd">        plots_prefix (str): Prefix of the name of a plot.</span>
-<span class="sd">        plots_path (str): Path where to create plots.</span>
-<span class="sd">        configs (dict): The configs as a dictionary.</span>
 <span class="sd">        bounding_boxes_gt ([BoundingBox]):</span>
+<span class="sd">        yolo_config (SectionProxy)</span>
+<span class="sd">        accuracy_config (SectionProxy): Configurations of the accuracy.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (Dict): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-        <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
         <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_prefix&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Assign class variables from config.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configurations of the</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the config file, take the relevant Accuracy section.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">parse_info_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads frame height, width and the amount of frames from the info file.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det-info_path&#39;</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Determine delimiter automatically.</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Extract information from line.</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
@@ -324,67 +357,48 @@ Utrecht University within the Software Project course.
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
-                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">(),</span>
+                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span>
+                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">,</span>
+                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span>
+                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">,</span>
                     <span class="n">image_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                     <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
                 <span class="p">)</span>
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
 
-    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">COCODataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JSONDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MOTDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dataloader</span>
-
-    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_boxes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            annotation_format (str): String format of annotation.</span>
-<span class="sd">            path_location (str): Path to the file where the boxes are stored.</span>
+<span class="sd">            path_to_boxes (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">())</span>
+        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file.</span>
+        <span class="n">bounding_boxes_annotations</span> <span class="o">=</span> <span class="n">PreAnnotations</span><span class="p">(</span><span class="n">path_to_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">)</span>
+        <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
+        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">boxes</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
 
+        <span class="c1"># Get the image width, height and nr of frames.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_info_file</span><span class="p">()</span>
+
         <span class="c1"># Getting the bounding boxes from the gt file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">,</span> <span class="s1">&#39;gt_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_path&#39;</span><span class="p">])</span>
 
         <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
-        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;det_path&#39;</span><span class="p">)</span>
+        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">])</span>
 
         <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
             <span class="n">bounding_boxes_det</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span>
+            <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
         <span class="c1"># Printing a few metrics related to accuracy on the terminal.</span>
@@ -401,15 +415,15 @@ Utrecht University within the Software Project course.
 <span class="sd">            result (MetricPerClass): A MetricPerClass object from the PODM library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">plot_precision_recall_curve</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
-                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span><span class="p">,</span>
+                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span>
                                                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">-&#39;</span>
-                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-&#39;</span>
+                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-&#39;</span>
                                                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                                         <span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
@@ -424,14 +438,14 @@ Utrecht University within the Software Project course.
 <h6 id="attributes">Attributes</h6>
 
 <ul>
-<li><strong>results (object):</strong>  Results of the podm library.</li>
+<li><strong>results (object):</strong>  Results of the</li>
+<li><strong>image_width (int):</strong>  Width of the image.</li>
+<li><strong>image_height (int):</strong>  Height of the image.</li>
 <li><strong>iou_threshold (int):</strong>  Threshold from which it is counted.</li>
 <li><strong>frame_amount (int):</strong>  Number of frames.</li>
-<li><strong>gt_format (str):</strong>  Format of the ground truth.</li>
-<li><strong>plots_prefix (str):</strong>  Prefix of the name of a plot.</li>
-<li><strong>plots_path (str):</strong>  Path where to create plots.</li>
-<li><strong>configs (dict):</strong>  The configs as a dictionary.</li>
 <li><strong>bounding_boxes_gt ([BoundingBox]):</strong> </li>
+<li>yolo_config (SectionProxy)</li>
+<li><strong>accuracy_config (SectionProxy):</strong>  Configurations of the accuracy.</li>
 </ul>
 </div>
 
@@ -449,18 +463,18 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config and the ground truth file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (Dict): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">            configs (ConfigParser): Configuration parser which also contains the accuracy configurations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
-        <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
         <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_prefix&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Assign class variables from config.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 </pre></div>
 
@@ -471,8 +485,76 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (Dict):</strong>  Configuration parser which also contains the accuracy configurations.</li>
+<li><strong>configs (ConfigParser):</strong>  Configuration parser which also contains the accuracy configurations.</li>
 </ul>
+</div>
+
+
+                            </div>
+                            <div id="AccuracyObject.read_config" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#AccuracyObject.read_config">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">read_config</span><span class="signature">(self, configs)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign class variables using the Accuracy config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (ConfigParser): Configurations of the</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load the config file, take the relevant Accuracy section.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Assign class variables using the Accuracy config.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>configs (ConfigParser):</strong>  Configurations of the</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="AccuracyObject.parse_info_file" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#AccuracyObject.parse_info_file">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">parse_info_file</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_info_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads frame height, width and the amount of frames from the info file.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det-info_path&#39;</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Determine delimiter automatically.</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Extract information from line.</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Reads frame height, width and the amount of frames from the info file.</p>
 </div>
 
 
@@ -510,10 +592,10 @@ Utrecht University within the Software Project course.
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
-                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">(),</span>
+                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span>
+                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">,</span>
+                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_width</span><span class="p">,</span>
+                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_height</span><span class="p">,</span>
                     <span class="n">image_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                     <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
                 <span class="p">)</span>
@@ -540,82 +622,29 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="AccuracyObject.get_dataloader" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#AccuracyObject.get_dataloader">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">get_dataloader</span><span class="signature">(self, annotation_format, path_location)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">COCODataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JSONDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MOTDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dataloader</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Get a dataloader based on format and path_location.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>annotation_format (str):</strong>  Dataloader format to select.</li>
-<li><strong>path_location (str):</strong>  Location in config to read annotations path from.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>dataloader (IDataloader): The dataloader to use for parsing annotations.</p>
-</blockquote>
-</div>
-
-
-                            </div>
                             <div id="AccuracyObject.read_boxes" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#AccuracyObject.read_boxes">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">read_boxes</span><span class="signature">(self, annotation_format, path_location)</span>:
+            <span class="name">read_boxes</span><span class="signature">(self, path_to_boxes)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_boxes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            annotation_format (str): String format of annotation.</span>
-<span class="sd">            path_location (str): Path to the file where the boxes are stored.</span>
+<span class="sd">            path_to_boxes (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
-        <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">())</span>
+        <span class="c1"># Using the PreAnnotations class to get the bounding boxes from a file.</span>
+        <span class="n">bounding_boxes_annotations</span> <span class="o">=</span> <span class="n">PreAnnotations</span><span class="p">(</span><span class="n">path_to_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span><span class="p">)</span>
+        <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
+        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes_annotations</span><span class="o">.</span><span class="n">boxes</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
 
@@ -626,8 +655,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>annotation_format (str):</strong>  String format of annotation.</li>
-<li><strong>path_location (str):</strong>  Path to the file where the boxes are stored.</li>
+<li><strong>path_to_boxes (str):</strong>  Path to the file where the boxes are stored.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -652,17 +680,20 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
 
+        <span class="c1"># Get the image width, height and nr of frames.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_info_file</span><span class="p">()</span>
+
         <span class="c1"># Getting the bounding boxes from the gt file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">,</span> <span class="s1">&#39;gt_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_path&#39;</span><span class="p">])</span>
 
         <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
-        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;det_path&#39;</span><span class="p">)</span>
+        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_path&#39;</span><span class="p">])</span>
 
         <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
             <span class="n">bounding_boxes_det</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span>
+            <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
         <span class="c1"># Printing a few metrics related to accuracy on the terminal.</span>
@@ -697,15 +728,15 @@ Utrecht University within the Software Project course.
 <span class="sd">            result (MetricPerClass): A MetricPerClass object from the PODM library.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">plot_precision_recall_curve</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
-                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span><span class="p">,</span>
+                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">],</span>
                                                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">_%H-%M-%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">-&#39;</span>
-                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-&#39;</span>
+                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-&#39;</span>
                                                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                                         <span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s2">&quot;plots_prefix&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
