@@ -109,11 +109,14 @@ export function VideoPlayer(props: VideoPlayerProps) {
       //passing any argument suppresses a warning about accessing the tech
       let tech = playerRef.current?.tech({ randomArg: true })
       if (tech) {
-        //ensure that the current playing segment has a uri
-        if (tech.textTracks()[0].activeCues[0]['value'].uri) {
-          //console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
-          return tech.textTracks()[0].activeCues[0]['value'].uri
-        }
+        //Lovely if nesting because typescript, make sure everything is defined before accessing
+        if (tech.textTracks())
+          if (tech.textTracks()[0].activeCues[0])
+            if (tech.textTracks()[0].activeCues[0]['value'].uri) {
+              return tech.textTracks()[0].activeCues[0]['value'].uri
+            }
+        //In case something is not defined yet
+        return undefined
       }
     } catch (e) {
       console.warn(e)
