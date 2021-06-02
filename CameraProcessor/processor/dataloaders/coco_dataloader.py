@@ -87,9 +87,6 @@ class COCODataloader(IDataloader):
 
         for annotation in annotations:
             image_id = annotation['image_id']
-            this_image_path = self.__get_image_path(image_id)
-            if not path.exists(this_image_path):
-                self.download_coco_image(image_id)
             width, height = self.get_image_dimensions(image_id, "")
             if not current_image_id == image_id:
                 bounding_boxes_list.append(BoundingBoxes(current_boxes, int(self.__get_image_name(current_image_id))))
