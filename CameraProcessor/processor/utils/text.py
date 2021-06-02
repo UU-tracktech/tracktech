@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import json
+from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 def feature_map_to_json(feature_map=None, object_id=None) -> json:
