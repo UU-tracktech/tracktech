@@ -222,9 +222,11 @@ class ProcessorSocket(WebSocketHandler):
             logger.log("Unknown object id")
             return
 
+        feature_map_message = json.dumps({
+            "type": "featureMap",
+            "objectId": object_id,
+            "featureMap": feature_map
+        })
+
         for processor in processors.values():
-            processor.send_message(json.dumps({
-                "type": "featureMap",
-                "objectId": object_id,
-                "featureMap": feature_map
-            }))
+            processor.send_message(feature_map_message)
