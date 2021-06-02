@@ -157,6 +157,7 @@ export function Overlay(props: overlayProps) {
           autoplay={props.autoplay}
           controls={true}
           onPrimary={props.onPrimary}
+          controlBar={{ pictureInPictureToggle: false }}
           sources={props.sources}
         />
       </div>
