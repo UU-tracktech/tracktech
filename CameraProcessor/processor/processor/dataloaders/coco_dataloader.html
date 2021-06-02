@@ -43,6 +43,9 @@
                         <li>
                                 <a class="function" href="#COCODataloader.download_coco_images">download_coco_images</a>
                         </li>
+                        <li>
+                                <a class="function" href="#COCODataloader.get_image_dimensions">get_image_dimensions</a>
+                        </li>
                 </ul>
 
             </li>
@@ -135,6 +138,22 @@ Utrecht University within the Software Project course.
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
                 <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (integer): String with the name of the image.</span>
+<span class="sd">            this_image_path (string): Path to image file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            image.size (shape): width and height dimensions of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+
     <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -146,9 +165,9 @@ Utrecht University within the Software Project course.
             <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">download_coco_image</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">)</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
-                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">current_image_id</span><span class="p">)))</span>
+                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">current_image_id</span><span class="p">))))</span>
                 <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
             <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
@@ -264,6 +283,22 @@ Utrecht University within the Software Project course.
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
                 <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (integer): String with the name of the image.</span>
+<span class="sd">            this_image_path (string): Path to image file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            image.size (shape): width and height dimensions of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+
     <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -275,9 +310,9 @@ Utrecht University within the Software Project course.
             <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">download_coco_image</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">)</span>
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
-                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">current_image_id</span><span class="p">)))</span>
+                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">current_image_id</span><span class="p">))))</span>
                 <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
             <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
@@ -466,6 +501,53 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>amount (integer):</strong>  Amount of images to be downloaded.</li>
 </ul>
+</div>
+
+
+                            </div>
+                            <div id="COCODataloader.get_image_dimensions" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#COCODataloader.get_image_dimensions">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_image_dimensions</span><span class="signature">(self, image_id, this_image_path)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (integer): String with the name of the image.</span>
+<span class="sd">            this_image_path (string): Path to image file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            image.size (shape): width and height dimensions of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Gets the size of an image based on its name.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>image_id (integer):</strong>  String with the name of the image.</li>
+<li><strong>this_image_path (string):</strong>  Path to image file.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>image.size (shape): width and height dimensions of the image.</p>
+</blockquote>
 </div>
 
 
