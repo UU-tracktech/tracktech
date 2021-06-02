@@ -23,6 +23,7 @@ class ClientSocket(WebSocketHandler):
         identifier (int): Serves as the unique identifier to this object.
         authorized (bool): Shows whether the websocket connection is authorized.
         auth (Auth): Authorization object for the websocket handler
+        uses_images (bool): Bool indicating whether or not this client should receive images
     """
 
     def __init__(self, application, request):
@@ -35,6 +36,7 @@ class ClientSocket(WebSocketHandler):
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
         self.authorized = False
+        self.uses_images = False
 
         # Load the auth object from app settings.
         self.auth = self.application.settings.get('client_auth')
@@ -82,6 +84,8 @@ class ClientSocket(WebSocketHandler):
 
             # Switch on message type.
             actions = {
+                "setUsesImages":
+                    lambda: self.set_uses_image(message_object),
                 "start":
                     lambda: self.start_tracking(message_object),
                 "stop":
@@ -147,6 +151,17 @@ class ClientSocket(WebSocketHandler):
             self.auth.validate(message["jwt"])
             self.authorized = True
 
+    def set_uses_image(self, message):
+        """Set whether or not this client uses images
+
+        Args:
+            message (json):
+                JSON message that was received. It should contain the following property
+                    - "usesImages" | a bool indicating whether or not the client uses images
+        """
+
+        self.uses_images = message["usesImages"]
+
     @staticmethod
     def start_tracking(message):
         """Creates tracking object and sends start tracking command to specified processor.
@@ -175,7 +190,7 @@ class ClientSocket(WebSocketHandler):
             logger.log("Unknown processor")
             return
 
-        tracking_object = TrackingObject()
+        tracking_object = TrackingObject(image)
 
         logger.log(
             f"New tracking object created with id {tracking_object.identifier}, "
@@ -196,6 +211,22 @@ class ClientSocket(WebSocketHandler):
         processors[camera_id].send_message(json.dumps(
             processor_message
         ))
+
+        client_message = {
+            "type": "newObject",
+            "objectId": tracking_object.identifier
+        }
+
+        if image is not None:
+            client_message["image"] = image
+
+        # Send a message that a new object has been tracked with the given image to all clients
+        # that have specified they use images.
+        for client in clients.values():
+            if client.uses_images:
+                client.send_message(json.dumps(
+                    client_message
+                ))
 
     @staticmethod
     def stop_tracking(message):
