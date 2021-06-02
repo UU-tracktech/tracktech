@@ -109,7 +109,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       //passing any argument suppresses a warning about accessing the tech
       let tech = playerRef.current?.tech({ randomArg: true })
       if (tech) {
-        //Lovely if nesting because typescript, make sure everything is defined before accessing
+        //make sure everything is defined before accessing
         if (tech.textTracks())
           if (tech.textTracks()[0].activeCues[0])
             if (tech.textTracks()[0].activeCues[0]['value'].uri) {
