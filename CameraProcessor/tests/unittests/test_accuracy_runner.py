@@ -4,6 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+import json
 
 from processor.accuracy_runner import main
 
@@ -15,6 +16,7 @@ class TestAccuracyRunner:
     Attributes:
         config_accuracy (SectionProxy): Accuracy section of the test configurations.
     """
+
     def test_accuracy_runner(self, configs):
         """Runs the accuracy runner and gets the correct paths from the config file.
 
@@ -26,10 +28,30 @@ class TestAccuracyRunner:
 
         # Getting the config file for the accuracy.
         self.config_accuracy = configs['Accuracy']
-
         self.detection_file()
 
     def detection_file(self):
+        """Tests if the information in the detection file is correct and within the logical bounds."""
+        # Opening and reading file.
+        file = open(self.config_accuracy['det_path'], 'r')
+        lines = file.readlines()
+        file.close()
+
+        for line in lines:
+            json_line = json.loads(line)
+            assert len(json_line['imageId']) > 0
+            boxes = json_line['boxes']
+            assert len(boxes) > 0
+            for box in boxes:
+                assert int(box['boxId']) >= 0
+                assert 1 > float(box['certainty']) >= 0
+                assert len(str(box['objectType'])) > 0
+                assert 1 >= float(box['rect'][0]) >= 0
+                assert 1 >= float(box['rect'][1]) >= 0
+                assert 1 >= float(box['rect'][2]) >= 0
+                assert 1 >= float(box['rect'][3]) >= 0
+
+    def tracking_file(self):
         """Tests if the information in the detection file is correct and within the logical bounds."""
         # Opening and reading file.
         file = open(self.config_accuracy['det_path'], 'r')
