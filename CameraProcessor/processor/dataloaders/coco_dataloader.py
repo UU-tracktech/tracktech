@@ -63,6 +63,22 @@ class COCODataloader(IDataloader):
             with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
                 handler.write(image_data)
 
+    def get_image_dimensions(self, image_id, this_image_path):
+        """Gets the size of an image based on its name.
+
+        Args:
+            image_id (integer): String with the name of the image.
+            this_image_path (string): Path to image file.
+
+        Returns:
+            image.size (shape): width and height dimensions of the image.
+        """
+        image = self.coco.loadImgs([image_id])[0]
+        width = int(image['width'])
+        height = int(image['height'])
+
+        return width, height
+
     def __parse_boxes(self, annotations):
         counter = 0
         bounding_boxes_list = []
@@ -74,9 +90,9 @@ class COCODataloader(IDataloader):
             this_image_path = self.__get_image_path(image_id)
             if not path.exists(this_image_path):
                 self.download_coco_image(image_id)
-            width, height = self.get_image_dimensions(image_id, this_image_path)
+            width, height = self.get_image_dimensions(image_id, "")
             if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, self.__get_image_name(current_image_id)))
+                bounding_boxes_list.append(BoundingBoxes(current_boxes, int(self.__get_image_name(current_image_id))))
                 current_boxes = []
                 current_image_id = image_id
             current_boxes.append(BoundingBox(classification=self.coco.loadCats(annotation['category_id'])[0]['name'],
