@@ -30,6 +30,7 @@ let mockToken = {}
 /**
  * Set the values returned in keycloak.tokenParsed. At least a "name" entry is recommeded
  * @param {object} newMockToken The token contents to return
+ * @example { name: 'John Doe' }
  */
 export function __SetMockTokenParsed(newMockToken) {
   mockToken = newMockToken
