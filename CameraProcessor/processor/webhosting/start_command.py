@@ -19,14 +19,17 @@ class StartCommand(dict):
     - cutout=(np.ndarray)
     """
     def __getattr__(self, item):
+        """Retrieves dict items as properties. Returns None if it is not in the dict, so no errors thrown."""
         if item in self:
             return self[item]
         return None
 
     def __setattr__(self, key, value):
+        """Sets a key to a value, as if setting a property."""
         self[key] = value
 
     def __delattr__(self, item):
+        """Deletes an entry in the dict, as if deleting a property. Raises an error if the item is not in the dict!"""
         if item in self:
             del self[item]
         else:
