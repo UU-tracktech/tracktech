@@ -28,6 +28,7 @@ class TestScheduleNode:
 
         # Yield that all arguments are not yet set.
         def yield_node_arg():
+            """Yield all the arguments."""
             for arg in schedule_node.arguments:
                 yield arg
 
@@ -46,6 +47,7 @@ class TestScheduleNode:
 
         # The yield function has to be contained inside current function because of the yields.
         def yield_node_arg():
+            """Yield all the arguments."""
             for arg in schedule_node.arguments:
                 yield arg
 

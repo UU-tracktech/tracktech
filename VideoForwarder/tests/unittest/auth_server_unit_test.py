@@ -51,6 +51,7 @@ class TestHandler(AsyncHTTPTestCase):
 
         Args:
             url (str): extension url to fetch information from.
+            **kwargs (Any): Other arguments given to the fetch command.
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False, **kwargs)
 
