@@ -11,8 +11,8 @@ services:
       DETECTION_ALG: "yolov5"
       TRACKING_ALG: "sort"
       REID_ALG: "torchreid"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - capabilities: [gpu]
