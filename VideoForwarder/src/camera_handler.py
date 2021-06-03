@@ -63,7 +63,12 @@ class CameraHandler(StaticFileHandler):
         self.set_header('Access-Control-Allow-Headers', 'Authorization')
 
     def options(self, _path_args, **_path_kwargs):
-        # No body.
+        """Handle an options request and set response to "no content success".
+
+        Args:
+            _path_args (Any): Arguments given to the path.
+            **_path_kwargs (Any): Any other arguments given to the method.
+        """
         self.set_status(204)
         self.finish()
 

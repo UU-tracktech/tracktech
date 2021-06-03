@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from processor.utils.text import bounding_boxes_to_json, boxes_to_txt, error_to_json
+from processor.utils.text import bounding_boxes_to_json, boxes_to_accuracy_json, boxes_to_txt, error_to_json
 from processor.data_object.bounding_boxes import BoundingBoxes
 
 
@@ -31,7 +31,8 @@ class TestText:
                                                 bbox.get_rectangle().get_y1(),
                                                 bbox.get_rectangle().get_y2()
                                             ],
-                                            "objectType": bbox.get_classification()
+                                            "objectType": bbox.get_classification(),
+                                            "certainty": bbox.get_certainty()
                                          }
                                     ]
                                     })
@@ -52,3 +53,27 @@ class TestText:
         """
         error_message = error_to_json(NameError("Testing"))
         assert error_message == '''{"type": "error", "error": "NameError('Testing')"}'''
+
+    def test_boxes_to_accuracy_json(self, bbox):
+        """Tests the boxes_to_accuracy_json function.
+
+        Args:
+            bbox (BoundingBox): the bounding box fixture.
+        """
+        json_string = boxes_to_accuracy_json(BoundingBoxes([bbox]), 1)
+        proper_string = json.dumps({"imageId": 1,
+                                    "boxes": [
+                                        {
+                                            "boxId": bbox.get_identifier(),
+                                            "rect": [
+                                                bbox.get_rectangle().get_x1(),
+                                                bbox.get_rectangle().get_x2(),
+                                                bbox.get_rectangle().get_y1(),
+                                                bbox.get_rectangle().get_y2()
+                                            ],
+                                            "objectType": bbox.get_classification(),
+                                            "certainty": 0.5
+                                         }
+                                    ]
+                                    })
+        assert json_string == proper_string

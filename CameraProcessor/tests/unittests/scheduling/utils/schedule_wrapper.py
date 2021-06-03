@@ -4,14 +4,13 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-
-from processor.scheduling.scheduler import Scheduler
-from processor.scheduling.node.schedule_node import ScheduleNode
-
 from tests.unittests.scheduling.utils.input_component import InputComponent
 from tests.unittests.scheduling.utils.multiple_input_component import MultipleInputComponent
 from tests.unittests.scheduling.utils.single_output_component import SingleOutputComponent
 from tests.unittests.scheduling.utils.output_component import OutputComponent
+
+from processor.scheduling.scheduler import Scheduler
+from processor.scheduling.node.schedule_node import ScheduleNode
 
 
 # pylint: disable=unused-argument

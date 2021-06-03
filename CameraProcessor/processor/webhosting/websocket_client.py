@@ -13,6 +13,7 @@ from tornado import websocket
 
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
+from processor.webhosting.update_command import UpdateCommand
 
 
 class WebsocketClient:
@@ -188,7 +189,8 @@ class WebsocketClient:
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
-        logging.info(f'Updating object {object_id} with feature map {feature_map}')
+
+        self.message_queue.append(UpdateCommand(feature_map, object_id))
 
     def start_tracking(self, message):
         """Handler for the "start tracking" command.

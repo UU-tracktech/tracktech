@@ -5,8 +5,9 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import pytest
-from processor.scheduling.node.schedule_node import ScheduleNode
+
 from tests.unittests.scheduling.utils.input_component import InputComponent
+from processor.scheduling.node.schedule_node import ScheduleNode
 
 
 class TestScheduleNode:
@@ -27,6 +28,7 @@ class TestScheduleNode:
 
         # Yield that all arguments are not yet set.
         def yield_node_arg():
+            """Yield all the arguments."""
             for arg in schedule_node.arguments:
                 yield arg
 
@@ -45,6 +47,7 @@ class TestScheduleNode:
 
         # The yield function has to be contained inside current function because of the yields.
         def yield_node_arg():
+            """Yield all the arguments."""
             for arg in schedule_node.arguments:
                 yield arg
 

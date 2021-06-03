@@ -19,6 +19,7 @@ from processor.data_object.reid_data import ReidData
 
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
+from processor.webhosting.update_command import UpdateCommand
 
 
 async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
@@ -133,6 +134,11 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
         elif isinstance(track_elem, StopCommand):
             logging.info(f'Stop tracking object {track_elem.object_id}')
             re_id_data.remove_query(track_elem.object_id)
+
+        # Update command.
+        elif isinstance(track_elem, UpdateCommand):
+            logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
+            re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
 
 
 # pylint: disable=unused-argument

@@ -88,38 +88,20 @@ class ConfigParser:
         in order to expose more to the outside and create an easier plug-and-play environment.
         """
 
-        # Read all the environment variables.
-        orchestrator_url = os.getenv('ORCHESTRATOR_URL')
-        hls_stream_url = os.getenv('HLS_STREAM_URL')
-        running_mode = os.getenv('PROCESSOR_MODE')
-        detection_alg = os.getenv('DETECTION_ALG')
-        tracking_alg = os.getenv('TRACKING_ALG')
-        reid_alg = os.getenv('REID_ALG')
+        # Read all the environment variables and set them if they are defined.
+        self.configs['Orchestrator']['url'] = os.getenv('ORCHESTRATOR_URL') or self.configs['Orchestrator']['url']
+        self.configs['Main']['mode'] = os.getenv('PROCESSOR_MODE') or self.configs['Main']['mode']
+        self.configs['Main']['detector'] = os.getenv('DETECTION_ALG') or self.configs['Main']['detector']
+        self.configs['Main']['tracker'] = os.getenv('TRACKING_ALG') or self.configs['Main']['tracker']
+        self.configs['Main']['reid'] = os.getenv('REID_ALG') or self.configs['Main']['reid']
 
         # Replace values inside the configuration when set.
-        if orchestrator_url is not None:
-            logging.info('Environment variable: ORCHESTRATOR_URL used.')
-            self.configs['Orchestrator']['url'] = orchestrator_url
-
+        hls_stream_url = os.getenv('HLS_STREAM_URL')
         if hls_stream_url is not None:
             logging.info('Environment variable: HLS_STREAM_URL used.')
+            # Also set mode to hls to prevent running a video.
+            self.configs['Input']['type'] = 'hls'
             self.configs['Input']['hls_url'] = hls_stream_url
-
-        if running_mode is not None:
-            logging.info('Environment variable: PROCESSOR_MODE used.')
-            self.configs['Main']['mode'] = running_mode
-
-        if detection_alg is not None:
-            logging.info('Environment variable: DETECTION_ALG used.')
-            self.configs['Main']['detector'] = detection_alg
-
-        if tracking_alg is not None:
-            logging.info('Environment variable: TRACKING_ALG used.')
-            self.configs['Main']['tracker'] = tracking_alg
-
-        if reid_alg is not None:
-            logging.info('Environment variable: REID_ALG used.')
-            self.configs['Main']['reid'] = reid_alg
 
     @staticmethod
     def __parse_int_tuple(item):
