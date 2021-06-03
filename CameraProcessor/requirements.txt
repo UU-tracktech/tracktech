@@ -7,15 +7,10 @@ tornado==6.1
 # Threading / Async
 threaded==4.1.0
 asyncio==3.4.3
-kthread
+kthread==0.2.2
 
-# Testing
-pytest==6.2.3
-pytest-asyncio==0.15.0
-pytest-cov==2.11.1
-pytest-timeout==1.4.2
-coverage==5.5
-object_detection_metrics
+# Accuracy
+object_detection_metrics==0.1
 
 # Images / Video
 opencv-python-headless==4.5.1.48
@@ -23,5 +18,7 @@ opencv-python==4.5.1.48
 ffmpeg-python==0.2.0
 matplotlib
 
-pycocotools
-gdown
+pycocotools==2.0.2
+
+# Download models via the web
+gdown==3.13.0
