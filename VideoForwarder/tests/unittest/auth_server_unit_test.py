@@ -56,12 +56,12 @@ class TestHandler(AsyncHTTPTestCase):
 
     @testing.gen_test(timeout=10)
     def test_no_auth(self):
-        """Check if a 400 is returned when no authentication is provided when it is required."""
+        """Check if a 403 is returned when no authentication is provided when it is required."""
 
         # Retrieve the steam file.
         response = yield self.my_fetch('/stream.m3u8')
 
-        assert response.code == 400
+        assert response.code == 403
 
     @testing.gen_test(timeout=10)
     def test_bad_auth(self):

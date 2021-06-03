@@ -12,8 +12,7 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
-import { Button, Card } from 'antd'
-import { Layout } from 'antd'
+import { Button, Card, Layout } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { Grid } from '../components/grid'
@@ -53,7 +52,7 @@ export function Home() {
             name: stream.Name,
             srcObject: {
               src: stream.Forwarder,
-              type: stream.Type
+              type: 'application/x-mpegURL'
             }
           }))
         )

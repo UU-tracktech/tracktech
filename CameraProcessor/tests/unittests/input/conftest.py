@@ -6,11 +6,10 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
+from tests.conftest import get_test_configs
 from processor.input.hls_capture import HlsCapture
 from processor.input.video_capture import VideoCapture
 from processor.input.image_capture import ImageCapture
-
-from tests.conftest import get_test_configs
 
 
 def __get_images_dir():

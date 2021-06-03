@@ -7,10 +7,10 @@ Utrecht University within the Software Project course.
 import pytest
 import cv2
 
+from tests.unittests.utils.utils import get_sample_frame
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from tests.unittests.utils.utils import get_sample_frame
 
 
 # pylint: disable=attribute-defined-outside-init,no-member
