@@ -82,7 +82,14 @@ Utrecht University within the Software Project course.
         <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patched_expand</span>
 
     <span class="k">def</span> <span class="nf">patched_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs (Any): Other parameters given to the expand modules.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [str], [str]: Resulting files to check and the errors encountered by expanding the modules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Filter on paths.</span>
@@ -117,7 +124,14 @@ Utrecht University within the Software Project course.
         <span class="n">pylintutils</span><span class="o">.</span><span class="n">expand_modules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patched_expand</span>
 
     <span class="k">def</span> <span class="nf">patched_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs (Any): Other parameters given to the expand modules.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [str], [str]: Resulting files to check and the errors encountered by expanding the modules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Filter on paths.</span>
@@ -169,7 +183,14 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">patched_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get correct file paths for linting.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs (Any): Other parameters given to the expand modules.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [str], [str]: Resulting files to check and the errors encountered by expanding the modules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_expand_modules</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Filter on paths.</span>
@@ -184,6 +205,18 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Get correct file paths for linting.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>**kwargs (Any):</strong>  Other parameters given to the expand modules.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>[str], [str]: Resulting files to check and the errors encountered by expanding the modules.</p>
+</blockquote>
 </div>
 
 

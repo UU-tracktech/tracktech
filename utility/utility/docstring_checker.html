@@ -116,6 +116,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        second-docstring-line-must-be-empty: Second docstring line has to be empty.</span>
 <span class="sd">        docstring-last-line-empty: There should be no trailing white lines.</span>
 <span class="sd">        docstring-starts-with-space: Docstrings should start with a character.</span>
+<span class="sd">        docstring-is-empty: Docstring should not be empty.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        __implements__ (IAstroidChecker): Astroid checker interface.</span>
@@ -159,6 +160,10 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;docstring-starts-with-space&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Emitted when first character is a space&#39;</span>
                   <span class="p">),</span>
+        <span class="s1">&#39;C1228&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Docstring is missing or empty&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when first character is a space&#39;</span>
+                  <span class="p">),</span>
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -169,6 +174,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -180,6 +188,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -191,6 +202,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -354,6 +368,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        second-docstring-line-must-be-empty: Second docstring line has to be empty.</span>
 <span class="sd">        docstring-last-line-empty: There should be no trailing white lines.</span>
 <span class="sd">        docstring-starts-with-space: Docstrings should start with a character.</span>
+<span class="sd">        docstring-is-empty: Docstring should not be empty.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        __implements__ (IAstroidChecker): Astroid checker interface.</span>
@@ -397,6 +412,10 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;docstring-starts-with-space&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Emitted when first character is a space&#39;</span>
                   <span class="p">),</span>
+        <span class="s1">&#39;C1228&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Docstring is missing or empty&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when first character is a space&#39;</span>
+                  <span class="p">),</span>
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -407,6 +426,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -418,6 +440,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -429,6 +454,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -569,7 +597,8 @@ Utrecht University within the Software Project course.
     make-docstring-one-line: When docstring is able to be put in one line.
     second-docstring-line-must-be-empty: Second docstring line has to be empty.
     docstring-last-line-empty: There should be no trailing white lines.
-    docstring-starts-with-space: Docstrings should start with a character.</p>
+    docstring-starts-with-space: Docstrings should start with a character.
+    docstring-is-empty: Docstring should not be empty.</p>
 
 <h6 id="attributes">Attributes</h6>
 
@@ -593,7 +622,7 @@ Utrecht University within the Software Project course.
                             <div id="DocstringChecker.msgs" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#DocstringChecker.msgs">#&nbsp;&nbsp</a>
 
-        <span class="name">msgs</span><span class="default_value"> = {&#39;C1220&#39;: (&#39;Last docstring line should only be &#34;&#34;&#34;&#39;, &#39;last-docstring-line-contains-letters&#39;, &#39;Emitted when a docstring does not end with triple quotes&#39;), &#39;C1221&#39;: (&#39;Multiple consequent new lines in docstring&#39;, &#39;multiple-new-lines-in-docstring&#39;, &#39;Emitted when a docstring function has multiple newlines&#39;), &#39;C1222&#39;: (&#39;There should be a newline before section %s&#39;, &#39;docstring-section-not-separated&#39;, &#39;Emitted when a docstring section is started without a newline&#39;), &#39;C1223&#39;: (&#39;First line of docstring should end with a dot&#39;, &#39;first-line-in-docstring-must-end-with-dot&#39;, &#39;Emitted when a docstring first line has no dot&#39;), &#39;C1224&#39;: (&#39;Make docstring single line&#39;, &#39;make-docstring-one-line&#39;, &#39;Unnecessary multiline docstring&#39;), &#39;C1225&#39;: (&#39;Second line of docstring should be empty&#39;, &#39;second-docstring-line-must-be-empty&#39;, &#39;Second line in docstring&#39;), &#39;C1226&#39;: (&#39;Last line of docstring should not be empty&#39;, &#39;docstring-last-line-empty&#39;, &#39;Last line is empty in docstring&#39;), &#39;C1227&#39;: (&#39;Docstring should start with a character&#39;, &#39;docstring-starts-with-space&#39;, &#39;Emitted when first character is a space&#39;)}</span>
+        <span class="name">msgs</span><span class="default_value"> = {&#39;C1220&#39;: (&#39;Last docstring line should only be &#34;&#34;&#34;&#39;, &#39;last-docstring-line-contains-letters&#39;, &#39;Emitted when a docstring does not end with triple quotes&#39;), &#39;C1221&#39;: (&#39;Multiple consequent new lines in docstring&#39;, &#39;multiple-new-lines-in-docstring&#39;, &#39;Emitted when a docstring function has multiple newlines&#39;), &#39;C1222&#39;: (&#39;There should be a newline before section %s&#39;, &#39;docstring-section-not-separated&#39;, &#39;Emitted when a docstring section is started without a newline&#39;), &#39;C1223&#39;: (&#39;First line of docstring should end with a dot&#39;, &#39;first-line-in-docstring-must-end-with-dot&#39;, &#39;Emitted when a docstring first line has no dot&#39;), &#39;C1224&#39;: (&#39;Make docstring single line&#39;, &#39;make-docstring-one-line&#39;, &#39;Unnecessary multiline docstring&#39;), &#39;C1225&#39;: (&#39;Second line of docstring should be empty&#39;, &#39;second-docstring-line-must-be-empty&#39;, &#39;Second line in docstring&#39;), &#39;C1226&#39;: (&#39;Last line of docstring should not be empty&#39;, &#39;docstring-last-line-empty&#39;, &#39;Last line is empty in docstring&#39;), &#39;C1227&#39;: (&#39;Docstring should start with a character&#39;, &#39;docstring-starts-with-space&#39;, &#39;Emitted when first character is a space&#39;), &#39;C1228&#39;: (&#39;Docstring is missing or empty&#39;, &#39;docstring-is-missing&#39;, &#39;Emitted when first character is a space&#39;)}</span>
     </div>
 
     
@@ -617,6 +646,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If the function has empty body then return, missing docstring already gets emitted.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -652,6 +684,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -687,6 +722,9 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;docstring-is-missing&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span>
+                             <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>

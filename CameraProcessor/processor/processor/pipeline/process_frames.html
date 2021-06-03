@@ -88,7 +88,6 @@ Utrecht University within the Software Project course.
 
 <span class="kn">from</span> <span class="nn">processor.webhosting.start_command</span> <span class="kn">import</span> <span class="n">StartCommand</span>
 <span class="kn">from</span> <span class="nn">processor.webhosting.stop_command</span> <span class="kn">import</span> <span class="n">StopCommand</span>
-<span class="kn">from</span> <span class="nn">processor.webhosting.update_command</span> <span class="kn">import</span> <span class="n">UpdateCommand</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -185,11 +184,6 @@ Utrecht University within the Software Project course.
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StopCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stop tracking object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
-
-        <span class="c1"># Update command.</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">UpdateCommand</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Updating object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1"> with feature map </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="p">)</span>
 
 
 <span class="c1"># pylint: disable=unused-argument</span>
@@ -394,11 +388,6 @@ Sends detections to client if client is used (HlsCapture).</p>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StopCommand</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stop tracking object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
-
-        <span class="c1"># Update command.</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">UpdateCommand</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Updating object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1"> with feature map </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="p">)</span>
 </pre></div>
 
         </details>
