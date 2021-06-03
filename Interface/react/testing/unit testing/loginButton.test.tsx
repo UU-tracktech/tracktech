@@ -23,7 +23,7 @@ test('Shows skeleton while loading', () => {
   expect(screen.queryByTestId('buttonSkeleton')).toBeDefined()
 })
 
-/** Test to check if the button shows 'Login' and calls login function when not authenticated */
+//Test to check if the button shows 'Login' and calls login function when not authenticated
 test('Button to login', () => {
   require('@react-keycloak/web').__SetMockInitialized(true)
   require('@react-keycloak/web').__SetMockAuthenticated(false)
@@ -44,7 +44,7 @@ test('Button to login', () => {
   expect(mockLogin).toBeCalledTimes(1)
 })
 
-/** Test to see if the content changes if a user is logged in */
+//Test to see if the content changes if a user is logged in
 test('Button to logout', () => {
   require('@react-keycloak/web').__SetMockInitialized(true)
   require('@react-keycloak/web').__SetMockAuthenticated(true)
