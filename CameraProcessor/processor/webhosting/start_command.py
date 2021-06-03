@@ -18,7 +18,6 @@ class StartCommand(dict):
     - frame_id=(int)
     - cutout=(np.ndarray)
     """
-
     def __getattr__(self, item):
         if item in self:
             return self[item]
