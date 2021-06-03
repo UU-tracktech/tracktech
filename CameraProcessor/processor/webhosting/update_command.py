@@ -1,4 +1,4 @@
-"""Contains StopCommand class which holds information about which object should no longer be tracked.
+"""Contains Update class which holds an updated feature_map for a tracked object.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
