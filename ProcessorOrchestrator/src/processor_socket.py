@@ -142,7 +142,7 @@ class ProcessorSocket(WebSocketHandler):
         logger.log_disconnect("/processor", self.request.remote_ip)
         if self.identifier in processors:
             del processors[self.identifier]
-        logger.log(f"Processor with id {self.identifier} disconnected")
+            logger.log(f"Processor with id {self.identifier} disconnected")
 
     def data_received(self, chunk):
         """Unused method that could handle streamed request data.

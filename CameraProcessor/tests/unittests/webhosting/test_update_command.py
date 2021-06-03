@@ -1,4 +1,4 @@
-"""Tests start_command.py.
+"""Tests update_command.py.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
