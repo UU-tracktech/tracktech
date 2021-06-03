@@ -220,7 +220,7 @@ async def test_feature_map_distribution():
         "boxId": 1
     }))
 
-    # Flush start tracking message
+    # Flush start tracking message.
     _ = await processor_1.read_message()
 
     processor_2 = \
@@ -230,7 +230,7 @@ async def test_feature_map_distribution():
         "id": "processor_3"
     }))
 
-    # Flush startup message
+    # Flush startup message.
     _ = await processor_2.read_message()
 
     processor_1.write_message(json.dumps({
