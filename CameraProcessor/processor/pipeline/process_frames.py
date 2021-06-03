@@ -108,10 +108,10 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
                 try:
                     stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
                 # Frame not found in the buffer, send error to Orchestrator, log the error and move on.
-                except IndexError as e:
+                except IndexError as error:
                     feature_map = None
-                    send_error_to_orchestrator(e)
-                    logging.error(e)
+                    send_error_to_orchestrator(ws_client, error)
+                    logging.error(error)
                 # Frame found in the buffer, extract features from the discovered bounding box.
                 else:
                     feature_map = re_identifier.extract_features(stored_frame, stored_box)
