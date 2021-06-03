@@ -16,7 +16,14 @@ class PylintIgnorePaths:
         pylintutils.expand_modules = self.patched_expand
 
     def patched_expand(self, *args, **kwargs):
-        """Get correct file paths for linting."""
+        """Get correct file paths for linting.
+
+        Args:
+            **kwargs (Any): Other parameters given to the expand modules.
+
+        Returns:
+            [str], [str]: Resulting files to check and the errors encountered by expanding the modules.
+        """
         result, errors = self.original_expand_modules(*args, **kwargs)
 
         # Filter on paths.

@@ -55,6 +55,9 @@ class ClientSocket(WebSocketHandler):
 
         Method called upon the opening of the websocket. After connecting, it appends this component
         to a dict of other websockets.
+
+        Args:
+            **kwargs (Any): Other arguments given to the websocket open.
         """
         logger.log_connect("/client", self.request.remote_ip)
         logger.log(f"New client connected with id: {self.identifier}")

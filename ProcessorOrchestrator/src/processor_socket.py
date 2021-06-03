@@ -57,6 +57,9 @@ class ProcessorSocket(WebSocketHandler):
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket, will log connection.
+
+        Args:
+            **kwargs (Any): Arguments given to the open command of the socket.
         """
         logger.log_connect("/processor", self.request.remote_ip)
         logger.log("New processor connected")

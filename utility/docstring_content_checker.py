@@ -114,7 +114,7 @@ class DocstringContentChecker(BaseChecker):
         args = [arg.name for arg in node.args.args if arg.name != 'self' and arg.name != '_']
 
         if node.args.kwarg is not None:
-            args.append(node.args.kwarg)
+            args.append("**" + node.args.kwarg)
 
         # Lint the documentation inside the node.
         self.lint_docstring(node, True, args)
