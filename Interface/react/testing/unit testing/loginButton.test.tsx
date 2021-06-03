@@ -49,7 +49,7 @@ test('Button to logout', () => {
   require('@react-keycloak/web').__SetMockInitialized(true)
   require('@react-keycloak/web').__SetMockAuthenticated(true)
   let mockLogout = jest.fn()
-  require('@react-keycloak/web').__SetMockLoginFunction(mockLogout)
+  require('@react-keycloak/web').__SetMockLogoutFunction(mockLogout)
 
   render(<LoginButton />)
 
