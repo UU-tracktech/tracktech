@@ -16,6 +16,7 @@ beforeEach(async () => {
   })
 })
 
+//Simple checks to make sure every element that should be there actually is there
 describe('Checks if all components are there', () => {
   it('Shows the indicator section', () => {
     expect(screen.getByTestId('indicatorsCard')).toBeDefined
