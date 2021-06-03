@@ -6,8 +6,9 @@ Utrecht University within the Software Project course.
 """
 import random
 import numpy as np
-from processor.utils.draw import draw_bounding_boxes
+
 from tests.unittests.utils.conftest import X0, X1, Y0, Y1
+from processor.utils.draw import draw_bounding_boxes
 
 
 class TestDraw:

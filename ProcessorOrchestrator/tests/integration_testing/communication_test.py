@@ -211,12 +211,27 @@ async def test_feature_map_distribution():
         "id": "processor_2"
     }))
 
+    client = \
+        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+    client.write_message(json.dumps({
+        "type": "start",
+        "cameraId": "processor_2",
+        "frameId": 1,
+        "boxId": 1
+    }))
+
+    # Flush start tracking message.
+    _ = await processor_1.read_message()
+
     processor_2 = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     processor_2.write_message(json.dumps({
         "type": "identifier",
         "id": "processor_3"
     }))
+
+    # Flush startup message.
+    _ = await processor_2.read_message()
 
     processor_1.write_message(json.dumps({
         "type": "featureMap",

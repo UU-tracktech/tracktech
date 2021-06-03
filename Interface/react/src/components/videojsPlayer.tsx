@@ -17,6 +17,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import { Alert } from 'antd'
 import { size } from '../classes/size'
 import { Box } from '../classes/clientMessage'
+import { useKeycloak } from '@react-keycloak/web'
+import useAuthState from '../classes/useAuthState'
 
 // The properties used by the videoplayer
 export type VideoPlayerProps = {
@@ -28,6 +30,10 @@ export type VideoPlayerProps = {
 } & videojs.PlayerOptions
 
 export function VideoPlayer(props: VideoPlayerProps) {
+  //Authentication hooks
+  const { keycloak } = useKeycloak()
+  const status = useAuthState()
+
   // The DOM node to attach the videplayer to
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -53,9 +59,27 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var bufferTime //Time to wait during bufferring before giving up on the stream
 
   useEffect(() => {
+    // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests
+    // Time spend on trying to use a single way of authentication:
+    // 5hrs
+    // Please update if appropiate.
+    if (props.sources?.[0].src)
+      props.sources[0].src += `?Bearer=${keycloak.token}`
+
     // instantiate video.js
     playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
+
+      // If the user is authenticated, add xhr headers with the bearer token to authorize
+      if (status == 'authenticated') {
+        //@ts-ignore
+        videojs.Vhs.xhr.beforeRequest = function (options) {
+          //As headers might not exist yet, create them if not.
+          options.headers = options.headers || {}
+          options.headers.Authorization = `Bearer ${keycloak.token}`
+          return options
+        }
+      }
 
       //Add button to make this videoplayer the primary player at the top of the page
       player?.controlBar.addChild(
@@ -158,20 +182,9 @@ export function VideoPlayer(props: VideoPlayerProps) {
    * from the first segment in the playlist
    */
   function getURI(): string | undefined {
-    try {
-      //passing any argument suppresses a warning about accessing the tech
-      let tech = playerRef.current?.tech({ randomArg: true })
-      if (tech) {
-        //ensure that the current playing segment has a uri
-        if (tech.textTracks()[0].activeCues[0]['value'].uri) {
-          //console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
-          return tech.textTracks()[0].activeCues[0]['value'].uri
-        }
-      }
-    } catch (e) {
-      console.warn(e)
-      return undefined
-    }
+    //passing any argument suppresses a warning about accessing the tech
+    return playerRef.current?.tech({ randomArg: true })?.textTracks()?.[0]
+      ?.activeCues?.[0]?.['value']?.uri
   }
 
   /**

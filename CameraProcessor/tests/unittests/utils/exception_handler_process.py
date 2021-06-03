@@ -14,10 +14,15 @@ class EProcess(multiprocessing.Process):
     """Variation of Process that sends back exceptions.
 
     Attributes:
-        dfs
+        _pconn (Connection): One of two process connections.
+        _ccon (Connection): One of two process connections.
     """
     def __init__(self, *args, **kwargs):
-        """Runs multiprocessing.Process init with the arguments."""
+        """Runs multiprocessing.Process init with the arguments.
+
+        Args:
+            **kwargs (Any): Other arguments given to the function.
+        """
         super().__init__(*args, **kwargs)
         self._pconn, self._ccon = Pipe()
         self._exception = None
