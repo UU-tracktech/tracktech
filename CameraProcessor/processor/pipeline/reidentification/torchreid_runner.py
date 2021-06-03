@@ -11,6 +11,8 @@ from scipy.spatial.distance import euclidean
 
 import processor.utils.features as UtilsFeatures
 import processor.pipeline.reidentification.ireidentifier
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 
 
@@ -115,19 +117,22 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
         to an existing bounding box.
 
-        Note:
-            Does not return anything, just updates the existing list.
-
         Args:
             frame_obj (FrameObj): Frame object storing OpenCV frame and timestamp.
             track_obj (BoundingBoxes): List of bounding boxes from tracking stage.
                 list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same
                 way (feature vector i belongs to box i).
             re_id_data (ReidData): Data class containing data about tracked subjects.
+
+        Returns:
+            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).
         """
 
         tracked_bounding_boxes = track_obj.get_bounding_boxes()
         box_features = self.extract_features_boxes(frame_obj, track_obj)
+
+        # Turn re-identified objects into BoundingBox objects.
+        bounding_boxes = []
 
         # Loop over all objects being followed.
         for query_id in re_id_data.get_queries():
@@ -147,6 +152,18 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
                         re_id_data.add_query_box(box_id, query_id)
 
                         # Update object id of the box.
-                        tracked_bounding_boxes[i].set_object_id(query_id)
+                        bounding_boxes.append(BoundingBox(
+                            identifier=tracked_bounding_boxes[i].get_object_id,
+                            rectangle=tracked_bounding_boxes[i].get_rectangle,
+                            classification=tracked_bounding_boxes[i].get_classification,
+                            certainty=tracked_bounding_boxes[i].get_certainty,
+                            object_id=query_id
+                        ))
 
                         print(f"Re-Id of object {query_id} in box {box_id}")
+                    else:
+                        bounding_boxes.append(tracked_bounding_boxes[i])
+                else:
+                    bounding_boxes.append(tracked_bounding_boxes[i])
+
+        return BoundingBoxes(bounding_boxes)
