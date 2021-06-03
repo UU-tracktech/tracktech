@@ -38,9 +38,6 @@
                                 <a class="function" href="#TorchReIdentifier.extract_features">extract_features</a>
                         </li>
                         <li>
-                                <a class="function" href="#TorchReIdentifier.extract_features_from_cutout">extract_features_from_cutout</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#TorchReIdentifier.extract_features_boxes">extract_features_boxes</a>
                         </li>
                         <li>
@@ -88,11 +85,11 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">euclidean</span>
 
 <span class="kn">import</span> <span class="nn">processor.utils.features</span> <span class="k">as</span> <span class="nn">UtilsFeatures</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.ireidentifier</span> <span class="kn">import</span> <span class="n">IReIdentifier</span>
+<span class="kn">import</span> <span class="nn">processor.pipeline.reidentification.ireidentifier</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid.torchreid.utils</span> <span class="kn">import</span> <span class="n">FeatureExtractor</span>
 
 
-<span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">IReIdentifier</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">reidentification</span><span class="o">.</span><span class="n">ireidentifier</span><span class="o">.</span><span class="n">IReIdentifier</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Re-id class that uses torch-reid to extract and compare features.</span>
 
 <span class="sd">    Attributes:</span>
@@ -144,27 +141,13 @@ Utrecht University within the Software Project course.
 <span class="sd">             [float]: Feature vector of single bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
-        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">())</span>
+        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">feature</span>
-
-    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from a cutout.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): the cutout containing the object we want to extract features from</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [float]: Feature vector of the cutout</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Resize the cutout.</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">extract_features_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extracts features from all bounding boxes generated in the tracking stage.</span>
@@ -178,7 +161,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">:</span>
             <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_box</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">features</span>
@@ -218,7 +201,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
 
         <span class="c1"># Loop over all objects being followed.</span>
@@ -229,11 +212,11 @@ Utrecht University within the Software Project course.
             <span class="c1"># Loop over the detected features in the frame.</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_features</span><span class="p">):</span>
                 <span class="c1"># If the bounding box is already assigned to an object, don&#39;t compare it.</span>
-                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_object_id</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># Calculate the similarity value of the 2 feature vectors.</span>
                     <span class="n">similarity_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">query_feature</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">similarity_value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
-                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span>
+                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span>
 
                         <span class="c1"># Store that this box id belongs to a certain object id.</span>
                         <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
@@ -258,7 +241,7 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">IReIdentifier</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">processor</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">reidentification</span><span class="o">.</span><span class="n">ireidentifier</span><span class="o">.</span><span class="n">IReIdentifier</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Re-id class that uses torch-reid to extract and compare features.</span>
 
 <span class="sd">    Attributes:</span>
@@ -310,27 +293,13 @@ Utrecht University within the Software Project course.
 <span class="sd">             [float]: Feature vector of single bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
-        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">())</span>
+        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">feature</span>
-
-    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from a cutout.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): the cutout containing the object we want to extract features from</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [float]: Feature vector of the cutout</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Resize the cutout.</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">extract_features_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extracts features from all bounding boxes generated in the tracking stage.</span>
@@ -344,7 +313,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">:</span>
             <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_box</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">features</span>
@@ -384,7 +353,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
 
         <span class="c1"># Loop over all objects being followed.</span>
@@ -395,11 +364,11 @@ Utrecht University within the Software Project course.
             <span class="c1"># Loop over the detected features in the frame.</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_features</span><span class="p">):</span>
                 <span class="c1"># If the bounding box is already assigned to an object, don&#39;t compare it.</span>
-                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_object_id</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># Calculate the similarity value of the 2 feature vectors.</span>
                     <span class="n">similarity_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">query_feature</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">similarity_value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
-                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span>
+                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span>
 
                         <span class="c1"># Store that this box id belongs to a certain object id.</span>
                         <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
@@ -501,7 +470,7 @@ Utrecht University within the Software Project course.
 <span class="sd">             [float]: Feature vector of single bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
-        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_frame</span><span class="p">())</span>
+        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
@@ -533,50 +502,6 @@ and feeding them to the feature extractor of Torchreid.</p>
 
 
                             </div>
-                            <div id="TorchReIdentifier.extract_features_from_cutout" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#TorchReIdentifier.extract_features_from_cutout">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">extract_features_from_cutout</span><span class="signature">(self, cutout)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from a cutout.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): the cutout containing the object we want to extract features from</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [float]: Feature vector of the cutout</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Resize the cutout.</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Extracts features from a cutout.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>cutout (np.ndarray):</strong>  the cutout containing the object we want to extract features from</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>[float]: Feature vector of the cutout</p>
-</blockquote>
-</div>
-
-
-                            </div>
                             <div id="TorchReIdentifier.extract_features_boxes" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#TorchReIdentifier.extract_features_boxes">#&nbsp;&nbsp</a>
 
@@ -599,7 +524,7 @@ and feeding them to the feature extractor of Torchreid.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tracked_box</span> <span class="ow">in</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">:</span>
             <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_box</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">features</span>
@@ -708,7 +633,7 @@ and feeding them to the feature extractor of Torchreid.</p>
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">()</span>
+        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
 
         <span class="c1"># Loop over all objects being followed.</span>
@@ -719,11 +644,11 @@ and feeding them to the feature extractor of Torchreid.</p>
             <span class="c1"># Loop over the detected features in the frame.</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_features</span><span class="p">):</span>
                 <span class="c1"># If the bounding box is already assigned to an object, don&#39;t compare it.</span>
-                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_object_id</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># Calculate the similarity value of the 2 feature vectors.</span>
                     <span class="n">similarity_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">query_feature</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">similarity_value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
-                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span>
+                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span>
 
                         <span class="c1"># Store that this box id belongs to a certain object id.</span>
                         <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>

@@ -38,9 +38,6 @@
                                 <a class="function" href="#IReIdentifier.extract_features">extract_features</a>
                         </li>
                         <li>
-                                <a class="function" href="#IReIdentifier.extract_features_from_cutout">extract_features_from_cutout</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#IReIdentifier.re_identify">re_identify</a>
                         </li>
                 </ul>
@@ -93,14 +90,6 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a cutout, extracts the features from it.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): cutout of the object to extract features from</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features from cutout function not implemented&quot;</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performing re-identification using a re-idintification implementation.</span>
 
@@ -142,14 +131,6 @@ Utrecht University within the Software Project course.
 <span class="sd">            [float]: Feature vectors of the tracked objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a cutout, extracts the features from it.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): cutout of the object to extract features from</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features from cutout function not implemented&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performing re-identification using a re-idintification implementation.</span>
@@ -220,38 +201,6 @@ Utrecht University within the Software Project course.
 <blockquote>
   <p>[float]: Feature vectors of the tracked objects.</p>
 </blockquote>
-</div>
-
-
-                            </div>
-                            <div id="IReIdentifier.extract_features_from_cutout" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IReIdentifier.extract_features_from_cutout">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">extract_features_from_cutout</span><span class="signature">(self, cutout)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a cutout, extracts the features from it.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): cutout of the object to extract features from</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features from cutout function not implemented&quot;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Given a cutout, extracts the features from it.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>cutout (np.ndarray):</strong>  cutout of the object to extract features from</li>
-</ul>
 </div>
 
 

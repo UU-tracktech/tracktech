@@ -279,9 +279,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            message (Union[str, bytes]): JSON parse of the sent message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Remove the &quot;type&quot; item, because we don&#39;t need that anymore.</span>
-        <span class="k">del</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StartCommand</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StartCommand</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">stop_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handler for the &quot;stop tracking&quot; command.</span>
@@ -491,9 +493,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            message (Union[str, bytes]): JSON parse of the sent message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Remove the &quot;type&quot; item, because we don&#39;t need that anymore.</span>
-        <span class="k">del</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StartCommand</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StartCommand</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">stop_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handler for the &quot;stop tracking&quot; command.</span>
@@ -745,9 +749,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            message (Union[str, bytes]): JSON parse of the sent message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Remove the &quot;type&quot; item, because we don&#39;t need that anymore.</span>
-        <span class="k">del</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StartCommand</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StartCommand</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">))</span>
 </pre></div>
 
         </details>
