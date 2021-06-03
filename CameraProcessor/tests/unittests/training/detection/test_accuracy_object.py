@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 """
 
 import os
-import pytest
 
 from processor.training.detection.accuracy_object import AccuracyObject
 from processor.data_object.bounding_box import BoundingBox
@@ -15,6 +14,7 @@ from processor.data_object.rectangle import Rectangle
 
 class TestAccuracyObject:
     """Test the accuracy object."""
+
     @staticmethod
     def init_correct(accuracy_object):
         """Tests if the object is initialized correctly.
@@ -29,12 +29,13 @@ class TestAccuracyObject:
         # Test if the ground truth contains an amount of frames that is strictly larger then 0.
         assert accuracy_object.frame_amount > 0
 
-        # Test if the image width and height have valid values and are read correctly.
-        assert accuracy_object.image_width > 0 and accuracy_object.image_height > 0
-        assert accuracy_object.image_width < 10000 and accuracy_object.image_height < 10000
+        assert len(accuracy_object.gt_format) > 0
+
+        assert len(accuracy_object.plots_prefix) > 0
+
+        assert len(accuracy_object.plots_path) > 0
 
     # pylint: disable=consider-iterating-dictionary
-    @pytest.mark.skip("Rectangle coords should be normalized in pre_annotations.py")
     def test_detection(self, configs):
         """Tests if the detection done by the library produces possible results.
 
@@ -48,7 +49,7 @@ class TestAccuracyObject:
         accuracy_object.detect()
 
         self.init_correct(accuracy_object)
-        self.draw_plots(accuracy_object)
+        self.draw_plots(accuracy_object, configs)
 
         # Checking for some values in the dictionary if they are possible.
         for key in accuracy_object.results.keys():
@@ -88,47 +89,44 @@ class TestAccuracyObject:
         # Putting the frames into the format that we get from the preAnnotations.
         boxes = [frame1, frame2]
 
-        # Set width and height so that the output can be checked independent of the config info.
-        accuracy_object.image_width = 100
-        accuracy_object.image_height = 100
-
         # Parsing the boxes.
         parsed_boxes = accuracy_object.parse_boxes(boxes)
 
         # Checking in box1 is correct.
         parsed_box = parsed_boxes[0]
-        assert parsed_box.xtl * accuracy_object.image_width == 0.1\
-               and parsed_box.ytl * accuracy_object.image_height == 0.1
-        assert parsed_box.xbr * accuracy_object.image_width == 0.2\
-               and parsed_box.ybr * accuracy_object.image_height == 0.2
+        assert parsed_box.xtl == 0.1 \
+               and parsed_box.ytl == 0.1
+        assert parsed_box.xbr == 0.2 \
+               and parsed_box.ybr == 0.2
         assert parsed_box.score == 0.5
         assert parsed_box.image_name == "0"
 
         # Checking in box2 is correct.
         parsed_box = parsed_boxes[1]
-        assert parsed_box.xtl * accuracy_object.image_width == 0\
-               and parsed_box.ytl * accuracy_object.image_height == 0
-        assert parsed_box.xbr * accuracy_object.image_width == 0.3\
-               and parsed_box.ybr * accuracy_object.image_height == 0.3
+        assert parsed_box.xtl == 0 \
+               and parsed_box.ytl == 0
+        assert parsed_box.xbr == 0.3 \
+               and parsed_box.ybr == 0.3
         assert parsed_box.score == 0.7
         assert parsed_box.image_name == "1"
 
         # Checking in box3 is correct.
         parsed_box = parsed_boxes[2]
-        assert parsed_box.xtl * accuracy_object.image_width == 0.2\
-               and parsed_box.ytl * accuracy_object.image_height == 0.2
-        assert parsed_box.xbr * accuracy_object.image_width == 0.6\
-               and parsed_box.ybr * accuracy_object.image_height == 0.6
+        assert parsed_box.xtl == 0.2 \
+               and parsed_box.ytl == 0.2
+        assert parsed_box.xbr == 0.6 \
+               and parsed_box.ybr == 0.6
         assert parsed_box.score == 0.9
         assert parsed_box.image_name == "1"
 
-    def draw_plots(self, accuracy_object):
+    def draw_plots(self, accuracy_object, configs):
         """Draws the plots and checks whether files are indeed created.
 
         Args:
             accuracy_object (AccuracyObject): Accuracy object containing all the data.
+            configs (dict): Config dictionary.
         """
-        plots_path = accuracy_object.accuracy_config['plots_path']
+        plots_path = configs['Accuracy']['plots_path']
         if os.path.exists(plots_path):
             number_files = len(os.listdir(plots_path))
         else:

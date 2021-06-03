@@ -13,7 +13,7 @@ Utrecht University within the Software Project course.
 
 import React, { useState, useRef, useContext } from 'react'
 import { Queue } from 'queue-typescript'
-import { Modal, notification } from 'antd'
+import { Modal, notification, Typography } from 'antd'
 
 import { indicator } from '../pages/home'
 import { VideoPlayer } from './videojsPlayer'
@@ -157,6 +157,7 @@ export function Overlay(props: overlayProps) {
           autoplay={props.autoplay}
           controls={true}
           onPrimary={props.onPrimary}
+          controlBar={{ pictureInPictureToggle: false }}
           sources={props.sources}
         />
       </div>
@@ -259,6 +260,7 @@ export function Overlay(props: overlayProps) {
               size.width,
               size.height
             )
+            var color = box.objectId ? colours[box.objectId % 102] : 'green'
             return (
               <div
                 key={box.boxId}
@@ -269,10 +271,9 @@ export function Overlay(props: overlayProps) {
                   top: `${top + size.top}px`,
                   width: `${width}px`,
                   height: `${height}px`,
-                  borderColor: box.objectId
-                    ? colours[box.objectId % 102]
-                    : 'green',
+                  borderColor: color,
                   borderStyle: box.objectId ? 'solid' : 'dashed',
+                  borderWidth: '2px',
                   transitionProperty: 'all',
                   transitionDuration: '100ms',
                   transitionTimingFunction: 'linear',
@@ -284,7 +285,27 @@ export function Overlay(props: overlayProps) {
                     onTrackingStart(box, item.frameId)
                   else onTrackingStop(box.objectId)
                 }}
-              />
+              >
+                {
+                  // Add an object id label above the bounding box, using a relative position and the border color.
+                  box.objectId && (
+                    <Typography.Text
+                      style={{
+                        position: 'relative',
+                        top: '-25px',
+                        left: '-2px',
+                        border: color,
+                        borderStyle: 'solid',
+                        borderWidth: '2px',
+                        backgroundColor: 'white',
+                        color: 'black'
+                      }}
+                    >
+                      {box.objectId}
+                    </Typography.Text>
+                  )
+                }
+              </div>
             )
           })}
       </div>

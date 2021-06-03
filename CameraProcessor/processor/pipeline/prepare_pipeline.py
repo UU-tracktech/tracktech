@@ -117,7 +117,7 @@ def prepare_capture(input_config):
 
     # Switch statement creating the capture.
     if capture_type == 'webcam':
-        return CamCapture(int(input_config['webcam_device']))
+        return CamCapture(int(input_config['webcam_device_nr']))
     if capture_type == 'images':
         return ImageCapture(input_config['images_dir_path'])
     if capture_type == 'video':

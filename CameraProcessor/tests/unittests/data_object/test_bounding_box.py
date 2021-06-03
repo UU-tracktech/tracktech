@@ -143,6 +143,7 @@ class TestBoundingBox:
                     "boxes": [
                         {
                             "boxId": 1,
+                            "certainty": 0.5,
                             "rect": [0, 0, 1, 1],
                             "objectType": self.classification,
                             "objectId": 5

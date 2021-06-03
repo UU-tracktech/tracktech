@@ -8,9 +8,8 @@ Utrecht University within the Software Project course.
 import tornado.web
 from tornado.testing import AsyncHTTPTestCase
 
-from processor.webhosting.html_page_handler import HtmlPageHandler
-
 from tests.conftest import get_test_configs
+from processor.webhosting.html_page_handler import HtmlPageHandler
 
 
 class TestHtmlPageHandler(AsyncHTTPTestCase):
