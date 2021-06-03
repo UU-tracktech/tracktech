@@ -66,7 +66,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
              [float]: Feature vector of single bounding box.
         """
         # Cutout the bounding box from the frame and resize the cutout to the right size.
-        cutout = UtilsFeatures.slice_bounding_box(bbox, frame_obj.get_frame())
+        cutout = UtilsFeatures.slice_bounding_box(bbox, frame_obj.frame)
         resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
 
         # Extract the feature from the cutout and convert it to a normal float array.
@@ -86,7 +86,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         """
         features = []
 
-        for tracked_box in track_obj.get_bounding_boxes():
+        for tracked_box in track_obj.bounding_boxes:
             features.append(self.extract_features(frame_obj, tracked_box))
 
         return features
@@ -126,7 +126,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             re_id_data (ReidData): Data class containing data about tracked subjects.
         """
 
-        tracked_bounding_boxes = track_obj.get_bounding_boxes()
+        tracked_bounding_boxes = track_obj.bounding_boxes
         box_features = self.extract_features_boxes(frame_obj, track_obj)
 
         # Loop over all objects being followed.
@@ -137,11 +137,11 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             # Loop over the detected features in the frame.
             for i, feature in enumerate(box_features):
                 # If the bounding box is already assigned to an object, don't compare it.
-                if tracked_bounding_boxes[i].get_object_id() is None:
+                if tracked_bounding_boxes[i].object_id is None:
                     # Calculate the similarity value of the 2 feature vectors.
                     similarity_value = self.similarity(query_feature, feature)
                     if similarity_value < self.threshold:
-                        box_id = tracked_bounding_boxes[i].get_identifier()
+                        box_id = tracked_bounding_boxes[i].identifier
 
                         # Store that this box id belongs to a certain object id.
                         re_id_data.add_query_box(box_id, query_id)

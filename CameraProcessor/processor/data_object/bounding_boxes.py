@@ -19,7 +19,8 @@ class BoundingBoxes:
         self.__bounding_boxes = bounding_boxes
         self.__image_id = image_id
 
-    def get_bounding_boxes(self):
+    @property
+    def bounding_boxes(self):
         """Get bounding boxes.
 
         Returns:
@@ -27,7 +28,8 @@ class BoundingBoxes:
         """
         return self.__bounding_boxes
 
-    def get_image_id(self):
+    @property
+    def image_id(self):
         """Gets image id.
 
         Returns:
