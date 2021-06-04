@@ -155,9 +155,9 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
                         # Update object id of the box.
                         bounding_boxes[i] = BoundingBox(
                             identifier=box_id,
-                            rectangle=tracked_bounding_boxes[i].get_rectangle(),
-                            classification=tracked_bounding_boxes[i].get_classification(),
-                            certainty=tracked_bounding_boxes[i].get_certainty(),
+                            rectangle=tracked_bounding_boxes[i].rectangle,
+                            classification=tracked_bounding_boxes[i].classification,
+                            certainty=tracked_bounding_boxes[i].certainty,
                             object_id=query_id
                         )
 
