@@ -32,7 +32,8 @@ class Rectangle:
         self.__x2 = x2
         self.__y2 = y2
 
-    def get_x1(self):
+    @property
+    def x1(self):
         """Getter for right X coord of rectangle.
 
         Returns:
@@ -40,7 +41,8 @@ class Rectangle:
         """
         return self.__x1
 
-    def get_y1(self):
+    @property
+    def y1(self):
         """Getter for bottom Y coord of rectangle.
 
         Returns:
@@ -48,7 +50,8 @@ class Rectangle:
         """
         return self.__y1
 
-    def get_x2(self):
+    @property
+    def x2(self):
         """Getter for left X coord of rectangle.
 
         Returns:
@@ -56,7 +59,8 @@ class Rectangle:
         """
         return self.__x2
 
-    def get_y2(self):
+    @property
+    def y2(self):
         """Getter for top Y coord of rectangle.
 
         Returns:

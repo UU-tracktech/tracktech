@@ -71,12 +71,12 @@ class AccuracyObject:
                 # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(
                     label="undefined",
-                    xtl=box.get_rectangle().get_x1(),
-                    ytl=box.get_rectangle().get_y1(),
-                    xbr=box.get_rectangle().get_x2(),
-                    ybr=box.get_rectangle().get_y2(),
+                    xtl=box.rectangle.x1,
+                    ytl=box.rectangle.y1,
+                    xbr=box.rectangle.x2,
+                    ybr=box.rectangle.y2,
                     image_name=str(i[0]),
-                    score=box.get_certainty()
+                    score=box.certainty
                 )
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
@@ -115,7 +115,7 @@ class AccuracyObject:
         bounding_boxes_objects = dataloader.parse_file()
         bounding_boxes = []
         for bounding_boxes_object in bounding_boxes_objects:
-            bounding_boxes.append(bounding_boxes_object.get_bounding_boxes())
+            bounding_boxes.append(bounding_boxes_object.bounding_boxes)
         return self.parse_boxes(bounding_boxes)
 
     def detect(self):

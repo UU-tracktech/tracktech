@@ -26,13 +26,13 @@ class TestText:
                                         {
                                             "boxId": 1,
                                             "rect": [
-                                                bbox.get_rectangle().get_x1(),
-                                                bbox.get_rectangle().get_x2(),
-                                                bbox.get_rectangle().get_y1(),
-                                                bbox.get_rectangle().get_y2()
+                                                bbox.rectangle.x1,
+                                                bbox.rectangle.x2,
+                                                bbox.rectangle.y1,
+                                                bbox.rectangle.y2
                                             ],
-                                            "objectType": bbox.get_classification(),
-                                            "certainty": bbox.get_certainty()
+                                            "objectType": bbox.classification,
+                                            "certainty": bbox.certainty
                                          }
                                     ]
                                     })
@@ -59,14 +59,14 @@ class TestText:
         proper_string = json.dumps({"imageId": 1,
                                     "boxes": [
                                         {
-                                            "boxId": bbox.get_identifier(),
+                                            "boxId": bbox.identifier,
                                             "rect": [
-                                                bbox.get_rectangle().get_x1(),
-                                                bbox.get_rectangle().get_x2(),
-                                                bbox.get_rectangle().get_y1(),
-                                                bbox.get_rectangle().get_y2()
+                                                bbox.rectangle.x1,
+                                                bbox.rectangle.x2,
+                                                bbox.rectangle.y1,
+                                                bbox.rectangle.y2
                                             ],
-                                            "objectType": bbox.get_classification(),
+                                            "objectType": bbox.classification,
                                             "certainty": 0.5
                                          }
                                     ]

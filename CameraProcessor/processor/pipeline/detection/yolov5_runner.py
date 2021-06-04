@@ -110,7 +110,7 @@ class Yolov5Detector(IDetector):
         # Padded resize.
         bounding_boxes = []
 
-        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'), stride=self.stride)[0]
+        img = letterbox(frame_obj.frame, self.config.getint('img-size'), stride=self.stride)[0]
         img = self.convert_image(img, self.device, self.half)
 
         # Run inference on the converted image.
@@ -119,13 +119,13 @@ class Yolov5Detector(IDetector):
 
         # Apply secondary Classifier.
         if self.classify:
-            pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
+            pred = apply_classifier(pred, self.modelc, img, frame_obj.frame)
 
         # Create bounding boxes based on the predictions.
         self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
 
         # Print time (inference + NMS).
-        print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
+        print(f'Finished processing of frame {frame_obj.timestamp:.4f} in '
               f'({time_synchronized() - start_time:.3f}s)')
 
         return BoundingBoxes(bounding_boxes)
