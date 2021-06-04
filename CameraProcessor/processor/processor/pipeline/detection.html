@@ -93,11 +93,18 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
 <span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
+<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
+<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.utils.general</span> <span class="kn">import</span> <span class="n">non_max_suppression</span><span class="p">,</span> <span class="n">scale_coords</span>
 
 
 <span class="k">class</span> <span class="nc">IDetector</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.</span>
@@ -106,12 +113,84 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError: The function is not overridden in subclass.</span>
+<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Detect function not implemented&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            img (Tensor): Image in a tensor representation</span>
+<span class="sd">            device (device): What device to convert image on</span>
+<span class="sd">            half (bool): Whether to half the image</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: Image that is converted</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert image.</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">half</span><span class="p">()</span> <span class="k">if</span> <span class="n">half</span> <span class="k">else</span> <span class="n">img</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>  <span class="c1"># uint8 to fp16/32</span>
+        <span class="n">img</span> <span class="o">/=</span> <span class="mf">255.0</span>  <span class="c1"># 0 - 255 to 0.0 - 1.0</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            img (Tensor): 2</span>
+<span class="sd">            model (model): Model that gets used</span>
+<span class="sd">            configs (SectionProxy): Yolo section of the configuration</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tensor: Tensor containing the predictions the detection made</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Apply NMS.</span>
+        <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
+                                   <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
+                                   <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
+                                   <span class="n">agnostic</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;agnostic_nms&#39;</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
+<span class="sd">            img (Tensor): Image stored in a tensor</span>
+<span class="sd">            frame_obj (FrameObj): Object containing the frame</span>
+<span class="sd">            bounding_boxes ([BoundingBoxes]): Bounding boxes in which to store the predictions</span>
+<span class="sd">            filter_types ([str]): What detection types to filter on</span>
+<span class="sd">            names ([str]): The complete list of types that get detected</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Detections per image.</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
+                <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+
+                <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
+                <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
+                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
+                        <span class="n">bb_id</span><span class="p">,</span>
+                        <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
+                                  <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
+                        <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
+                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">classification</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
+                        <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
+                        <span class="n">bb_id</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 
         </details>
@@ -148,13 +227,13 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.models.experimental</span> <span class="kn">import</span> <span class="n">attempt_load</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.utils.datasets</span> <span class="kn">import</span> <span class="n">letterbox</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.utils.general</span> <span class="kn">import</span> <span class="n">check_img_size</span><span class="p">,</span>\
-    <span class="n">apply_classifier</span>
+    <span class="n">apply_classifier</span><span class="p">,</span><span class="n">set_logging</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.utils.torch_utils</span> <span class="kn">import</span> <span class="n">select_device</span><span class="p">,</span>\
-    <span class="n">load_classifier</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.i_yolo_detector</span> <span class="kn">import</span> <span class="n">IYoloDetector</span>
+    <span class="n">load_classifier</span><span class="p">,</span> <span class="n">time_synchronized</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.detection.idetector</span> <span class="kn">import</span> <span class="n">IDetector</span>
 
 
-<span class="k">class</span> <span class="nc">Yolov5Detector</span><span class="p">(</span><span class="n">IYoloDetector</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Yolov5Detector</span><span class="p">(</span><span class="n">IDetector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Make it inherit from a generic Detector class.</span>
 
 <span class="sd">    Attributes:</span>
@@ -183,6 +262,7 @@ Utrecht University within the Software Project course.
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
 
         <span class="c1"># Initialize.</span>
+        <span class="n">set_logging</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA unavailable&quot;</span><span class="p">)</span>
@@ -239,13 +319,14 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Padded resize.</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c1"># Resize the image and convert it.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Generate predictions and create corresponding bounding boxes.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
+
+        <span class="c1"># Run inference on the converted image.</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Apply secondary Classifier.</span>
@@ -254,6 +335,10 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Create bounding boxes based on the predictions.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="c1"># Print time (inference + NMS).</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
+              <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
@@ -289,14 +374,14 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">gdown</span>
 
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.i_yolo_detector</span> <span class="kn">import</span> <span class="n">IYoloDetector</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.detection.idetector</span> <span class="kn">import</span> <span class="n">IDetector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.utils.datasets</span> <span class="kn">import</span> <span class="n">letterbox</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.utils.general</span> <span class="kn">import</span> <span class="n">apply_classifier</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.utils.torch_utils</span> <span class="kn">import</span> <span class="n">select_device</span><span class="p">,</span> <span class="n">load_classifier</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.utils.torch_utils</span> <span class="kn">import</span> <span class="n">select_device</span><span class="p">,</span> <span class="n">load_classifier</span><span class="p">,</span> <span class="n">time_synchronized</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.models.models</span> <span class="kn">import</span> <span class="n">Darknet</span>
 
 
-<span class="k">class</span> <span class="nc">YolorDetector</span><span class="p">(</span><span class="n">IYoloDetector</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">YolorDetector</span><span class="p">(</span><span class="n">IDetector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Implementation of YOLOR repository.</span>
 
 <span class="sd">    Attributes:</span>
@@ -308,7 +393,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        names ([str]): List of names which that should get detected.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initiate the YolorDetector.</span>
+        <span class="sd">&quot;&quot;&quot;Initiate the YOLOR detector.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (ConfigParser): Configurations which also contain Yolor configurations.</span>
@@ -321,7 +406,12 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filters</span><span class="p">[</span><span class="s1">&#39;targets_path&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">filter_names</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">filter_names</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;I am filtering on the following objects: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
+
+        <span class="c1"># Set logging.</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
         <span class="c1"># Initialize.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
@@ -384,19 +474,26 @@ Utrecht University within the Software Project course.
         <span class="c1"># Resize.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span>
                         <span class="n">auto_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;stride&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Generate predictions and create corresponding bounding boxes.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
+
+        <span class="c1"># Inference.</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;converted image&#39;</span><span class="p">)</span>
         <span class="c1"># Apply secondary Classifier.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
             <span class="n">pred</span> <span class="o">=</span> <span class="n">apply_classifier</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
 
         <span class="c1"># Create bounding boxes based on the predictions.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
+        <span class="c1"># Print time (inference + NMS).</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
+              <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">boxes</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_classes</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
