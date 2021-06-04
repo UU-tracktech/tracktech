@@ -37,6 +37,9 @@
             <li>
                     <a class="function" href="#draw_tracking_boxes">draw_tracking_boxes</a>
             </li>
+            <li>
+                    <a class="function" href="#draw_re_id_tracked_boxes">draw_re_id_tracked_boxes</a>
+            </li>
     </ul>
 
 
@@ -96,13 +99,13 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Draw each box on the frame with tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">())</span>
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
 
         <span class="n">__draw_text</span><span class="p">(</span>
             <span class="n">frame</span><span class="p">,</span>
             <span class="n">bounding_box</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="n">color</span>
         <span class="p">)</span>
 
@@ -117,11 +120,23 @@ Utrecht University within the Software Project course.
     <span class="c1"># Draw each box on frame with identifier tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
         <span class="c1"># Generate random color based on identifier.</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">())</span>
 
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
 
-        <span class="n">__draw_text</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="n">__draw_text</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+
+
+<span class="c1"># pylint: disable=unnecessary-pass, unused-argument</span>
+<span class="k">def</span> <span class="nf">draw_re_id_tracked_boxes</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draws the re-id boxes on top of the frame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
+<span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">pass</span>
 
 
 <span class="k">def</span> <span class="nf">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
@@ -137,8 +152,8 @@ Utrecht University within the Software Project course.
     <span class="c1"># Draw bounding box.</span>
     <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
         <span class="n">frame</span><span class="p">,</span>
-        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span> <span class="o">*</span> <span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span> <span class="o">*</span> <span class="n">height</span><span class="p">)),</span>
-        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span> <span class="o">*</span> <span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span> <span class="o">*</span> <span class="n">height</span><span class="p">)),</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">)),</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span><span class="p">)),</span>
         <span class="n">color</span><span class="p">,</span>
         <span class="mi">2</span>
     <span class="p">)</span>
@@ -157,8 +172,8 @@ Utrecht University within the Software Project course.
     <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="c1"># Pre-scaled coordinates.</span>
-    <span class="n">scaled_x1</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span> <span class="o">*</span> <span class="n">width</span>
-    <span class="n">scaled_y1</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span> <span class="o">*</span> <span class="n">height</span>
+    <span class="n">scaled_x1</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span>
+    <span class="n">scaled_y1</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">()</span> <span class="o">*</span> <span class="n">height</span>
 
     <span class="c1"># Draw filled rectangle to place text on.</span>
     <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
@@ -255,13 +270,13 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Draw each box on the frame with tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">())</span>
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
 
         <span class="n">__draw_text</span><span class="p">(</span>
             <span class="n">frame</span><span class="p">,</span>
             <span class="n">bounding_box</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_classification</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="n">color</span>
         <span class="p">)</span>
 </pre></div>
@@ -300,16 +315,51 @@ Utrecht University within the Software Project course.
     <span class="c1"># Draw each box on frame with identifier tag.</span>
     <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">:</span>
         <span class="c1"># Generate random color based on identifier.</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">__generate_random_color</span><span class="p">(</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">())</span>
 
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
 
-        <span class="n">__draw_text</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="n">__draw_text</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Draws the tracking boxes on top of the frame using the identifier.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>frame (numpy.ndarray):</strong>  Frame the bounding boxes get drawn on.</li>
+<li><strong>bounding_boxes (List[BoundingBox]):</strong>  List of bounding boxes that get drawn.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="draw_re_id_tracked_boxes">
+                            <div class="attr function"><a class="headerlink" href="#draw_re_id_tracked_boxes">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">draw_re_id_tracked_boxes</span><span class="signature">(frame, bounding_boxes)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">draw_re_id_tracked_boxes</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draws the re-id boxes on top of the frame.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
+<span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">pass</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Draws the re-id boxes on top of the frame.</p>
 
 <h6 id="args">Args</h6>
 

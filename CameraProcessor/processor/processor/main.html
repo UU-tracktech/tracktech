@@ -122,10 +122,12 @@ Utrecht University within the Software Project course.
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed.</span>
-        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span>
+                                                                                    <span class="n">websocket_client</span><span class="p">,</span>
                                                                                     <span class="n">frame_obj</span><span class="p">,</span>
                                                                                     <span class="n">detected_boxes</span><span class="p">,</span>
-                                                                                    <span class="n">tracked_boxes</span>
+                                                                                    <span class="n">tracked_boxes</span><span class="p">,</span>
+                                                                                    <span class="n">re_id_tracked_boxes</span>
                                                                                     <span class="p">),</span>
         <span class="n">websocket_client</span>
     <span class="p">)</span>
@@ -250,10 +252,12 @@ Utrecht University within the Software Project course.
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed.</span>
-        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span><span class="n">websocket_client</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span>
+                                                                                    <span class="n">websocket_client</span><span class="p">,</span>
                                                                                     <span class="n">frame_obj</span><span class="p">,</span>
                                                                                     <span class="n">detected_boxes</span><span class="p">,</span>
-                                                                                    <span class="n">tracked_boxes</span>
+                                                                                    <span class="n">tracked_boxes</span><span class="p">,</span>
+                                                                                    <span class="n">re_id_tracked_boxes</span>
                                                                                     <span class="p">),</span>
         <span class="n">websocket_client</span>
     <span class="p">)</span>
