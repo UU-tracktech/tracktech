@@ -6,8 +6,6 @@ Utrecht University within the Software Project course.
 """
 from pylint.interfaces import IRawChecker
 from pylint.checkers import BaseChecker
-import os
-import pathlib
 
 
 class CopyrightChecker(BaseChecker):
@@ -51,12 +49,6 @@ class CopyrightChecker(BaseChecker):
         # Go through the file.
         with node.stream() as stream:
             for (_, line) in enumerate(stream):
-
-                # Break if file is an init file.
-                if pathlib.Path(os.path.join(os.getcwd()), '..').rglob('*.py') == '__init__.py':
-                    contains_copyright = True
-                    break
-
                 line = line.decode('utf-8')
 
                 # Break when there are two triple quotes passed already.
