@@ -56,6 +56,11 @@ class ClassesChecker(BaseChecker):
                              node=node)
 
     def check_file_class_names(self, node):
+        """Checks if the file name and class name correspond.
+
+        Args:
+            node (astroid.scoped_nodes.Module): Module definition astroid creates.
+        """
         class_info = [(entity, node.globals[entity][0].blockstart_tolineno) for entity in node.globals if
                       isinstance(node.globals[entity][0], ClassDef)]
         if not class_info:
@@ -89,6 +94,15 @@ class ClassesChecker(BaseChecker):
                              line=class_line)
 
     def get_expected_interface_name(self, name):
+        """If the name starts with I, make the second letter upper case, otherwise return empty string.
+
+        Args:
+            name (str): Name to turn into an interface name.
+
+        Returns:
+            expected_interface_name (str): Interface version of name.
+
+        """
         if name[0] != 'I':
             return ""
         expected_interface_name = name[0] + name[1].upper() + name[2:]
