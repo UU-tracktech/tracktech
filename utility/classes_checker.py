@@ -61,27 +61,37 @@ class ClassesChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.Module): Module definition astroid creates.
         """
+
+        # Get the (first) class name and line number where this class is defined.
         class_info = [(entity, node.globals[entity][0].blockstart_tolineno) for entity in node.globals if
                       isinstance(node.globals[entity][0], ClassDef)]
         if not class_info:
             return
         class_name, class_line = class_info[0]
-        file_name = node.name.split('.')[-1]
 
+        # Get the expected class name.
+        file_name = node.name.split('.')[-1]
         file_words = file_name.split('_')
         file_words = [file_word.capitalize() for file_word in file_words]
         expected_class_name = "".join(file_words)
+
+        # Return when the class name is correct.
         if class_name == expected_class_name:
             return
 
+        # Get the interface version of an accepted name.
         expected_interface_name = self.get_expected_interface_name(expected_class_name)
+
+        # Get the test version of an accepted interface name.
         if file_words[0] == 'Test' and file_words[1][0] == 'I':
             test_class_suffix = "".join(file_words[1:])
             expected_interface_name = "Test" + self.get_expected_interface_name(test_class_suffix)
 
+        # Return when the (interface) class name is correct.
         if class_name == expected_interface_name:
             return
 
+        # Pylint report message containing the expected class name and/or expected interface name.
         if not expected_interface_name:
             self.add_message('incorrect-class-name',
                              node=node,
