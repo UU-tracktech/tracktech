@@ -10,25 +10,6 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { Grid } from '../../src/components/grid'
 
-//mock functions and values to change the keycloak mock per test
-let mockInitialized = true
-let mockAuthenticated = false
-let mockToken = { name: 'Firstname Lastname' }
-
-//mock the keycloak implementation
-//https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
-jest.mock('@react-keycloak/web', () => {
-  return {
-    useKeycloak: () => ({
-      initialized: mockInitialized,
-      keycloak: {
-        authenticated: mockAuthenticated,
-        tokenParsed: mockToken
-      }
-    })
-  }
-})
-
 it('renders without error', () => {
   render(
     <Grid
@@ -41,7 +22,8 @@ it('renders without error', () => {
   )
 })
 
-//To stop some errors during testing, make an alert mock
+//Alerts are not implemented in the jest test environment,
+//so to stop some errors during testing, make an alert mock
 var originalAlert
 beforeAll(() => {
   //store the original alert to restore it later
@@ -57,7 +39,8 @@ afterAll(() => {
   window.alert = originalAlert
 })
 
-/** A list containing 3 made up sources to test with */
+//A list containing 3 made up sources to test with
+//The sources will cause some VideoJS errors but for these tests that is not a problem
 const mockSources = [
   {
     id: '0',
@@ -94,14 +77,14 @@ it('number of elements match number of sources', () => {
   )
 
   //The grid contains an overlay for each VideoPlayer
-  //There are 3 sources in the list, so there should be 3 overlays/videoplayers
+  //The number of overlays should match the number of sources
   expect(screen.queryAllByTestId('gridElement').length).toBe(mockSources.length)
 
   //restore the alert function
   window.alert = jsdomAlert
 })
 
-/** Test to check the setPrimary function changes which video becomes primary */
+//Test to check the setPrimary function changes which video becomes primary
 it('Calls the setPrimary function', async () => {
   jest.setTimeout(30000)
 

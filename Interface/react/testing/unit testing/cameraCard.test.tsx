@@ -44,8 +44,7 @@ test('size button calls function correctly', () => {
   expect(mockFn).toHaveBeenCalled
 })
 
-//TODO: once deleting is implemented, check if delete button removes card
-/** Check if clicking the delete button calls the deletion function */
+//Check if clicking the delete button calls the deletion function
 test('Clicking delete calls delete function', () => {
   //Right now the delete function only shows an alert saying the delete button was pressed
   //So mock the alert so we can check if it was called
