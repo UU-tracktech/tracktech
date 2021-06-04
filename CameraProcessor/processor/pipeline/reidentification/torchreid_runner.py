@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 """
 import os
 import gdown
+import copy
 
 from scipy.spatial.distance import euclidean
 
@@ -132,7 +133,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         box_features = self.extract_features_boxes(frame_obj, track_obj)
 
         # Copy the original bounding boxes to a new list.
-        bounding_boxes = tracked_bounding_boxes[:]
+        bounding_boxes = copy.copy(tracked_bounding_boxes)
 
         # Loop over all objects being followed.
         for query_id in re_id_data.get_queries():
@@ -153,7 +154,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
 
                         # Update object id of the box.
                         bounding_boxes[i] = BoundingBox(
-                            identifier=tracked_bounding_boxes[i].get_object_id(),
+                            identifier=box_id,
                             rectangle=tracked_bounding_boxes[i].get_rectangle(),
                             classification=tracked_bounding_boxes[i].get_classification(),
                             certainty=tracked_bounding_boxes[i].get_certainty(),
