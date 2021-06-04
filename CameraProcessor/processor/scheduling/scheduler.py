@@ -28,21 +28,23 @@ class Scheduler:
         self.queue = Queue()
         self.queued = set()
 
-    def schedule_graph(self, input_obj):
+    def schedule_graph(self, inputs):
         """Executes an iteration on the graph.
 
         Assigns the input object to the start node and queue start node to start iteration.
         Loops over queue as long as the queue isn't empty.
 
         Args:
-            input_obj (object): object passed to the starting node to start an iteration.
+            inputs ([object]): list of objects passed to the starting node to start an iteration.
 
         Raises:
             Exception: a node in the queue wasn't executable.
         """
         self.queued = set()
 
-        self.start_node.assign(input_obj, 0)
+        # Assign inputs to initial/start node.
+        for i in range(len(inputs)):
+            self.start_node.assign(inputs[i], i)
 
         self.push(self.start_node)
 
