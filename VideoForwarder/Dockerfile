@@ -56,7 +56,7 @@ RUN ["mkdir", "utility"]
 COPY src app/src
 COPY tests app/tests
 
-ENTRYPOINT ["pylint","app","--rcfile=.pylintrc"]
+ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
 
 
 FROM installer AS production
