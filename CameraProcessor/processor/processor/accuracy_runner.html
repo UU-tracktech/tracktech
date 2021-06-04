@@ -64,7 +64,7 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.reid_data</span> <span class="kn">import</span> <span class="n">ReidData</span>
+<span class="kn">from</span> <span class="nn">processor.data_object.reid_data</span> <span class="kn">import</span> <span class="n">ReidData</span>
 <span class="kn">from</span> <span class="nn">processor.input.image_capture</span> <span class="kn">import</span> <span class="n">ImageCapture</span>
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 <span class="kn">from</span> <span class="nn">processor.utils.create_runners</span> <span class="kn">import</span> <span class="n">create_detector</span><span class="p">,</span> <span class="n">create_tracker</span>
@@ -117,13 +117,13 @@ Utrecht University within the Software Project course.
         <span class="n">image_id</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">image_names</span><span class="p">[</span><span class="n">capture</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Convert boxes to string.</span>
-        <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">tracked_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">():</span>
-            <span class="n">tracked_boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_txt</span><span class="p">([</span><span class="n">bounding_box</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(),</span> <span class="n">image_id</span><span class="p">)</span>
-            <span class="n">track_write_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">(),</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">tracked_boxes_string</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">tracked_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">:</span>
+            <span class="n">tracked_boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_txt</span><span class="p">([</span><span class="n">bounding_box</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">image_id</span><span class="p">)</span>
+            <span class="n">track_write_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">tracked_boxes_string</span><span class="p">))</span>
 
         <span class="c1"># Convert boxes to string.</span>
         <span class="n">detected_boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">detected_boxes</span><span class="p">,</span>
-                                              <span class="n">image_id</span><span class="p">)</span>
+                                                       <span class="n">image_id</span><span class="p">)</span>
 
         <span class="c1"># Write boxes found by detection to.</span>
         <span class="k">try</span><span class="p">:</span>
@@ -199,13 +199,13 @@ Utrecht University within the Software Project course.
         <span class="n">image_id</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">image_names</span><span class="p">[</span><span class="n">capture</span><span class="o">.</span><span class="n">image_index</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Convert boxes to string.</span>
-        <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">tracked_boxes</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">():</span>
-            <span class="n">tracked_boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_txt</span><span class="p">([</span><span class="n">bounding_box</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(),</span> <span class="n">image_id</span><span class="p">)</span>
-            <span class="n">track_write_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">get_identifier</span><span class="p">(),</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">tracked_boxes_string</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">tracked_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">:</span>
+            <span class="n">tracked_boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_txt</span><span class="p">([</span><span class="n">bounding_box</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">image_id</span><span class="p">)</span>
+            <span class="n">track_write_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">tracked_boxes_string</span><span class="p">))</span>
 
         <span class="c1"># Convert boxes to string.</span>
         <span class="n">detected_boxes_string</span> <span class="o">=</span> <span class="n">boxes_to_accuracy_json</span><span class="p">(</span><span class="n">detected_boxes</span><span class="p">,</span>
-                                              <span class="n">image_id</span><span class="p">)</span>
+                                                       <span class="n">image_id</span><span class="p">)</span>
 
         <span class="c1"># Write boxes found by detection to.</span>
         <span class="k">try</span><span class="p">:</span>
