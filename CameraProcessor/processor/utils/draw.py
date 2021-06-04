@@ -61,6 +61,18 @@ def draw_tracking_boxes(frame, bounding_boxes):
         __draw_text(frame, bounding_box, f'{bounding_box.identifier}', color)
 
 
+# pylint: disable=unnecessary-pass, unused-argument
+def draw_re_id_tracked_boxes(frame, bounding_boxes):
+    """Draws the re-id boxes on top of the frame.
+
+    Args:
+        frame (numpy.ndarray): Frame the bounding boxes get drawn on.
+        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+    """
+
+    pass
+
+
 def __draw_box(frame, bounding_box, color):
     """Draws one bounding box on the frame.
 

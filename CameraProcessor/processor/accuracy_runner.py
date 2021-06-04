@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 import os
 import sys
 
-from processor.data_object.reid_data import ReidData
+from processor.pipeline.reidentification.reid_data import ReidData
 from processor.input.image_capture import ImageCapture
 from processor.utils.config_parser import ConfigParser
 from processor.utils.create_runners import create_detector, create_tracker
