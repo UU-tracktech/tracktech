@@ -14,7 +14,7 @@ def draw_bounding_boxes(frame, bounding_boxes):
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
-        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.
     """
     # Color and shape.
     red = (0, 0, 255)
@@ -49,7 +49,7 @@ def draw_tracking_boxes(frame, bounding_boxes):
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
-        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.
     """
     # Draw each box on frame with identifier tag.
     for bounding_box in bounding_boxes:
