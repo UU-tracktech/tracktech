@@ -184,14 +184,13 @@ class ProcessorSocket(WebSocketHandler):
         frame_id = message["frameId"]
         boxes = message["boxes"]
 
-        if len(client_socket.clients.values()) > 0:
-            for client in client_socket.clients.values():
-                client.send_message(json.dumps({
-                    "type": "boundingBoxes",
-                    "cameraId": self.identifier,
-                    "frameId": frame_id,
-                    "boxes": boxes
-                }))
+        for client in client_socket.clients.values():
+            client.send_message(json.dumps({
+                "type": "boundingBoxes",
+                "cameraId": self.identifier,
+                "frameId": frame_id,
+                "boxes": boxes
+            }))
 
         try:
             for box in filter(lambda x: x.keys().__contains__("objectId"), boxes):

@@ -152,7 +152,7 @@ class ClientSocket(WebSocketHandler):
             self.authorized = True
 
     def set_uses_image(self, message):
-        """Set whether or not this client uses images
+        """Set whether or not this client uses images.
 
         Args:
             message (json):
@@ -229,8 +229,7 @@ class ClientSocket(WebSocketHandler):
         if image is not None:
             client_message["image"] = image
 
-        # Send a message that a new object has been tracked with the given image to all clients
-        # that have specified they use images.
+        # Send a message that a new object has been tracked with the given image to all clients that use images.
         for client in clients.values():
             if client.uses_images:
                 client.send_message(json.dumps(
@@ -253,9 +252,15 @@ class ClientSocket(WebSocketHandler):
 
         objects[object_id][0].remove_self()
 
-        if len(processors) > 0:
-            for processor in processors.values():
-                processor.send_message(json.dumps({
+        for processor in processors.values():
+            processor.send_message(json.dumps({
+                "type": "stop",
+                "objectId": object_id
+            }))
+
+        for client in clients.values():
+            if client.uses_images is True:
+                client.send_message(json.dumps({
                     "type": "stop",
                     "objectId": object_id
                 }))

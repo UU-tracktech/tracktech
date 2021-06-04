@@ -34,7 +34,7 @@ class TrackingObject:
                 Serialised string containing the cutout image of this object.
         """
 
-        self.identifier = max(objects.keys(), default=0) + 1
+        self.identifier = max(objectHistory, default=0) + 1
         self.image = image
         self.feature_map = {}
         objects[self.identifier] = (self, datetime.now())
