@@ -131,8 +131,8 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         tracked_bounding_boxes = track_obj.get_bounding_boxes()
         box_features = self.extract_features_boxes(frame_obj, track_obj)
 
-        # Turn re-identified objects into BoundingBox objects.
-        bounding_boxes = []
+        # Copy the original bounding boxes to a new list.
+        bounding_boxes = tracked_bounding_boxes[:]
 
         # Loop over all objects being followed.
         for query_id in re_id_data.get_queries():
@@ -152,18 +152,14 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
                         re_id_data.add_query_box(box_id, query_id)
 
                         # Update object id of the box.
-                        bounding_boxes.append(BoundingBox(
-                            identifier=tracked_bounding_boxes[i].get_object_id,
-                            rectangle=tracked_bounding_boxes[i].get_rectangle,
-                            classification=tracked_bounding_boxes[i].get_classification,
-                            certainty=tracked_bounding_boxes[i].get_certainty,
+                        bounding_boxes[i] = BoundingBox(
+                            identifier=tracked_bounding_boxes[i].get_object_id(),
+                            rectangle=tracked_bounding_boxes[i].get_rectangle(),
+                            classification=tracked_bounding_boxes[i].get_classification(),
+                            certainty=tracked_bounding_boxes[i].get_certainty(),
                             object_id=query_id
-                        ))
+                        )
 
                         print(f"Re-Id of object {query_id} in box {box_id}")
-                    else:
-                        bounding_boxes.append(tracked_bounding_boxes[i])
-                else:
-                    bounding_boxes.append(tracked_bounding_boxes[i])
 
         return BoundingBoxes(bounding_boxes)
