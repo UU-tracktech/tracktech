@@ -23,9 +23,7 @@ jobs:
         run: docker cp .pylintrc video-forwarder_container:/app
       - name: Copy in utility
         run: docker cp utility/__init__.py video-forwarder_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/pylint_ignore.py video-forwarder_container:/app/utility/
-      - name: Copy in utility
+     - name: Copy in utility
         run: docker cp utility/copyright_checker.py video-forwarder_container:/app/utility/
       - name: Copy in utility
         run: docker cp utility/comment_checker.py video-forwarder_container:/app/utility/
