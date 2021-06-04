@@ -288,25 +288,11 @@ good-names=i,
            k,
            ex,
            Run,
-           _,
-           x,
-           y,
-           z,
-           x0,
-           x1,
-           x2,
-           y0,
-           y1,
-           y2,
-           z0,
-           z1,
-           z2,
-           x2,
-           y2
+           _
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
-good-names-rgxs=^[A-Za-z0-9\_]{1,2}$
+good-names-rgxs=[A-Za-z0-9\_]{1},[A-Za-z0-9\_]{2}
 
 # Include a hint for the correct naming format with invalid-name.
 include-naming-hint=no
