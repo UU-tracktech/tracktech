@@ -37,9 +37,6 @@
             <li>
                     <a class="function" href="#draw_tracking_boxes">draw_tracking_boxes</a>
             </li>
-            <li>
-                    <a class="function" href="#draw_re_id_tracked_boxes">draw_re_id_tracked_boxes</a>
-            </li>
     </ul>
 
 
@@ -125,18 +122,6 @@ Utrecht University within the Software Project course.
         <span class="n">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
 
         <span class="n">__draw_text</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
-
-
-<span class="c1"># pylint: disable=unnecessary-pass, unused-argument</span>
-<span class="k">def</span> <span class="nf">draw_re_id_tracked_boxes</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draws the re-id boxes on top of the frame.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
-<span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">pass</span>
 
 
 <span class="k">def</span> <span class="nf">__draw_box</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
@@ -325,41 +310,6 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Draws the tracking boxes on top of the frame using the identifier.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>frame (numpy.ndarray):</strong>  Frame the bounding boxes get drawn on.</li>
-<li><strong>bounding_boxes (List[BoundingBox]):</strong>  List of bounding boxes that get drawn.</li>
-</ul>
-</div>
-
-
-                </section>
-                <section id="draw_re_id_tracked_boxes">
-                            <div class="attr function"><a class="headerlink" href="#draw_re_id_tracked_boxes">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">draw_re_id_tracked_boxes</span><span class="signature">(frame, bounding_boxes)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">draw_re_id_tracked_boxes</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draws the re-id boxes on top of the frame.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        frame (numpy.ndarray): Frame the bounding boxes get drawn on.</span>
-<span class="sd">        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">pass</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Draws the re-id boxes on top of the frame.</p>
 
 <h6 id="args">Args</h6>
 
