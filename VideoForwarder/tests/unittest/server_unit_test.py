@@ -19,8 +19,8 @@ class TestHandler(AsyncHTTPTestCase):
 
     def get_app(self):
         """Creates the application to test."""
-        environ["CAMERA_URL"] = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
-        environ["CAMERA_AUDIO"] = "true"
+        environ["CAMERA_URL"] = "rtmp://localhost/stream"
+        environ["CAMERA_AUDIO"] = "false"
 
         environ["STREAM_LOW"] = 'true'
         environ["STREAM_MEDIUM"] = 'true'
