@@ -60,13 +60,13 @@ def main(configs):
         image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string.
-        for bounding_box in tracked_boxes.get_bounding_boxes():
-            tracked_boxes_string = boxes_to_txt([bounding_box], frame_obj.get_shape(), image_id)
-            track_write_list.append((bounding_box.get_identifier(), image_id, tracked_boxes_string))
+        for bounding_box in tracked_boxes.bounding_boxes:
+            tracked_boxes_string = boxes_to_txt([bounding_box], frame_obj.shape, image_id)
+            track_write_list.append((bounding_box.identifier, image_id, tracked_boxes_string))
 
         # Convert boxes to string.
         detected_boxes_string = boxes_to_accuracy_json(detected_boxes,
-                                              image_id)
+                                                       image_id)
 
         # Write boxes found by detection to.
         try:

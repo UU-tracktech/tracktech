@@ -33,6 +33,8 @@ jobs:
         run: docker cp utility/docstring_checker.py processor-orchestrator_container:/app/utility/
       - name: Copy in utility
         run: docker cp utility/docstring_content_checker.py processor-orchestrator_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/classes_checker.py processor-orchestrator_container:/app/utility/
       - name: Start
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --exit-code-from processor-orchestrator
       - name: Remove

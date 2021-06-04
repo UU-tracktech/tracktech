@@ -135,7 +135,7 @@ def send_boxes_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_box
         re_id_tracked_boxes (BoundingBoxes): Boxes where re-id is performed after tracking.
     """
     # Get message and send it through the websocket.
-    client_message = text.bounding_boxes_to_json(re_id_tracked_boxes, frame_obj.get_timestamp())
+    client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.timestamp)
     ws_client.write_message(client_message)
     logging.info(client_message)
 

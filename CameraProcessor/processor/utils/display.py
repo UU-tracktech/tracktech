@@ -26,19 +26,19 @@ def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, re_id_tracked
         numpy.ndarray: Tiled 2 by 2 image with new dimensions.
     """
     if dimensions is None:
-        dimensions = __calculate_scaled_size(frame_obj.get_frame().shape)
+        dimensions = __calculate_scaled_size(frame_obj.frame.shape)
 
     # Downscale image.
-    scaled_frame = cv2.resize(frame_obj.get_frame(), dimensions)
+    scaled_frame = cv2.resize(frame_obj.frame, dimensions)
 
     # Draw detections boxes and downscale.
-    detection_frame = frame_obj.get_frame().copy()
-    draw.draw_detection_boxes(detection_frame, detected_boxes.get_bounding_boxes())
+    detection_frame = frame_obj.frame.copy()
+    draw.draw_detection_boxes(detection_frame, detected_boxes.bounding_boxes)
     detection_frame = cv2.resize(detection_frame, dimensions)
 
     # Draw tracking boxes and downscale.
-    tracking_frame = frame_obj.get_frame().copy()
-    draw.draw_tracking_boxes(tracking_frame, tracked_boxes.get_bounding_boxes())
+    tracking_frame = frame_obj.frame.copy()
+    draw.draw_tracking_boxes(tracking_frame, tracked_boxes.bounding_boxes)
     tracking_frame = cv2.resize(tracking_frame, dimensions)
 
     # Draw re-id boxes and downscale.
