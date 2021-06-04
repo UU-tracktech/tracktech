@@ -25,15 +25,17 @@ class BoundingBox:
         self.__certainty = certainty
         self.__object_id = object_id
 
-    def get_identifier(self):
-        """Get bounding box identifier.
+    @property
+    def identifier(self):
+        """Bounding box identifier getter.
 
         Returns:
             int: identifier of bounding box.
         """
         return self.__identifier
 
-    def get_rectangle(self):
+    @property
+    def rectangle(self):
         """Get Rectangle.
 
         Returns:
@@ -41,7 +43,8 @@ class BoundingBox:
         """
         return self.__rectangle
 
-    def get_classification(self):
+    @property
+    def classification(self):
         """Get classification/tag of bounding box.
 
         Returns:
@@ -49,7 +52,8 @@ class BoundingBox:
         """
         return self.__classification
 
-    def get_certainty(self):
+    @property
+    def certainty(self):
         """Get certainty/confidence that bounding box is correctly classified.
 
         Returns:
@@ -57,24 +61,11 @@ class BoundingBox:
         """
         return self.__certainty
 
-    def get_object_id(self):
+    @property
+    def object_id(self):
         """Gets object id of tracked object depicted by the bounding box (can be None).
 
         Returns:
             int: certainty/confidence of bounding box detection.
         """
         return self.__object_id
-
-    def set_object_id(self, new_id):
-        """Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked object.
-
-        Args:
-            new_id (int): The updated object_id of the box.
-
-        Raises:
-            ValueError: if the box already was assigned to an object.
-        """
-        if self.__object_id is not None:
-            raise ValueError("Box already has an object ID")
-
-        self.__object_id = new_id

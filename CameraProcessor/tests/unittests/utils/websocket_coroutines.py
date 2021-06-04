@@ -38,6 +38,7 @@ class WebsocketCoroutines(AsyncHTTPTestCase):
 
         Args:
             path (str): Path to the websocket handler.
+            **kwargs (Any): Other parameters given tot the websocket connection.
 
         Returns:
             websocket.Connection: Websocket connection that is created by the coroutine.

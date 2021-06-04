@@ -49,6 +49,6 @@ class IDataloader:
         """Parses a file into a BoundingBoxes object.
 
         Raises:
-            NotImplementedError.
+            NotImplementedError: When the loader is not implemented.
         """
         raise NotImplementedError('parse file method not implemented')

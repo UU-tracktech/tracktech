@@ -16,6 +16,12 @@ from processor.dataloaders.idataloader import IDataloader
 class MOTDataloader(IDataloader):
     """MOT Dataloader, formats MOT Data."""
     def __init__(self, configs, path_location):
+        """Initializes the MOTDataloader.
+
+        Args:
+            configs (dict): Configurations containing settings for dataloader.
+            path_location (str): The path of the MOT data.
+        """
         super().__init__(configs, path_location)
         self.skipped_lines = []
 
@@ -45,13 +51,13 @@ class MOTDataloader(IDataloader):
         return annotations
 
     def __parse_boxes(self, annotations):
-        """Parses annotations to bounding boxes.
+        """Parses bounding boxes.
 
         Args:
-            annotations (list): List with annotations.
+            annotations ([(str)]): Annotations tuples in a list.
 
         Returns:
-            bounding_boxes_list (list): List of bounding boxes.
+            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
         """
         bounding_boxes_list = []
         current_boxes = []

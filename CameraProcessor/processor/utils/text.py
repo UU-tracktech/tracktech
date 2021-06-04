@@ -8,12 +8,15 @@ Utrecht University within the Software Project course.
 import json
 
 
-def feature_map_to_json(feature_map=None, object_id=None) -> json:
+def feature_map_to_json(feature_map=None, object_id=None):
     """Sends a featuremap to the orchestrator.
 
     Args:
         feature_map ([Float]): An array of numerical values.
         object_id (Int): The object where the feature_map refers too.
+
+    Returns:
+        json: Json message of the featuremap.
     """
     # Parses a feature map into a json message.
     return json.dumps({
@@ -23,7 +26,7 @@ def feature_map_to_json(feature_map=None, object_id=None) -> json:
     })
 
 
-def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
+def bounding_boxes_to_json(bounding_boxes, timestamp):
     """Converts the bounding boxes to JSON format of API call.
 
     Args:
@@ -33,7 +36,7 @@ def bounding_boxes_to_json(bounding_boxes, timestamp) -> json:
     Returns:
         json: JSON representation of the object.
     """
-    boxes_list = bounding_boxes.get_bounding_boxes()
+    boxes_list = bounding_boxes.bounding_boxes
 
     return json.dumps({
         "type": "boundingBoxes",
@@ -52,19 +55,19 @@ def __bounding_box_to_dict(bounding_box):
         str: JSON representation of the BoundingBox object.
     """
     res = {
-        "boxId": bounding_box.get_identifier(),
+        "boxId": bounding_box.identifier,
         "rect": [
-            bounding_box.get_rectangle().get_x1(),
-            bounding_box.get_rectangle().get_y1(),
-            bounding_box.get_rectangle().get_x2(),
-            bounding_box.get_rectangle().get_y2()
+            bounding_box.rectangle.x1,
+            bounding_box.rectangle.y1,
+            bounding_box.rectangle.x2,
+            bounding_box.rectangle.y2
         ],
-        "objectType": bounding_box.get_classification(),
-        "certainty": bounding_box.get_certainty()
+        "objectType": bounding_box.classification,
+        "certainty": bounding_box.certainty
     }
 
-    if bounding_box.get_object_id() is not None:
-        res["objectId"] = bounding_box.get_object_id()
+    if bounding_box.object_id is not None:
+        res["objectId"] = bounding_box.object_id
 
     return res
 
@@ -79,7 +82,7 @@ def boxes_to_accuracy_json(bounding_boxes, image_id):
       Returns:
           (json): JSON representation of the object.
       """
-    boxes_list = bounding_boxes.get_bounding_boxes()
+    boxes_list = bounding_boxes.bounding_boxes
 
     return json.dumps({
         "imageId": image_id,
@@ -103,11 +106,11 @@ def boxes_to_txt(bounding_boxes, shape, frame_nr):
 
     for bounding_box in bounding_boxes:
         boxes_text_string += \
-            f'{frame_nr},{bounding_box.get_identifier()},' \
-            f'{int(bounding_box.get_rectangle().get_x1() * width)},' \
-            f'{int(bounding_box.get_rectangle().get_y1() * height)},' \
-            f'{int((bounding_box.get_rectangle().get_x2() - bounding_box.get_rectangle().get_x1()) * width)},' \
-            f'{int((bounding_box.get_rectangle().get_y2() - bounding_box.get_rectangle().get_y1()) * height)},' \
-            f'1,1,{"%.2f" % round(float(bounding_box.get_certainty()), 2)} \n'  # certainty rounded to 2 decimals
+            f'{frame_nr},{bounding_box.identifier},' \
+            f'{int(bounding_box.rectangle.x1 * width)},' \
+            f'{int(bounding_box.rectangle.y1 * height)},' \
+            f'{int((bounding_box.rectangle.x2 - bounding_box.rectangle.x1) * width)},' \
+            f'{int((bounding_box.rectangle.y2 - bounding_box.rectangle.y1) * height)},' \
+            f'1,1,{"%.2f" % round(float(bounding_box.certainty), 2)} \n'  # certainty rounded to 2 decimals
 
     return boxes_text_string

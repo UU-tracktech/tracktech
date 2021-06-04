@@ -10,44 +10,25 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { LoginButton } from '../../src/components/loginButton'
 
-//mock functions and values to change the keycloak mock per test
-let mockInitialized = false
-let mockAuthenticated = false
-let mockLogin = jest.fn()
-let mockLogout = jest.fn()
-
-//mock the keycloak implementation
-//https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
-jest.mock('@react-keycloak/web', () => {
-  return {
-    useKeycloak: () => ({
-      initialized: mockInitialized,
-      keycloak: {
-        authenticated: mockAuthenticated,
-        login: mockLogin,
-        logout: mockLogout
-      }
-    })
-  }
-})
-
 //Basic test to make sure the button renders
 test('Button renders', () => {
   render(<LoginButton />)
 })
 
 test('Shows skeleton while loading', () => {
-  mockInitialized = false
+  require('@react-keycloak/web').__SetMockInitialized(false)
 
   render(<LoginButton />)
 
   expect(screen.queryByTestId('buttonSkeleton')).toBeDefined()
 })
 
-/** Test to check if the button shows 'Login' and calls login function when not authenticated */
+//Test to check if the button shows 'Login' and calls login function when not authenticated
 test('Button to login', () => {
-  mockInitialized = true
-  mockAuthenticated = false
+  require('@react-keycloak/web').__SetMockInitialized(true)
+  require('@react-keycloak/web').__SetMockAuthenticated(false)
+  let mockLogin = jest.fn()
+  require('@react-keycloak/web').__SetMockLoginFunction(mockLogin)
 
   render(<LoginButton />)
 
@@ -63,11 +44,12 @@ test('Button to login', () => {
   expect(mockLogin).toBeCalledTimes(1)
 })
 
-/** Test to see if the content changes if a user is logged in */
+//Test to see if the content changes if a user is logged in
 test('Button to logout', () => {
-  //change the mock to say we're logged in
-  mockInitialized = true
-  mockAuthenticated = true
+  require('@react-keycloak/web').__SetMockInitialized(true)
+  require('@react-keycloak/web').__SetMockAuthenticated(true)
+  let mockLogout = jest.fn()
+  require('@react-keycloak/web').__SetMockLogoutFunction(mockLogout)
 
   render(<LoginButton />)
 
