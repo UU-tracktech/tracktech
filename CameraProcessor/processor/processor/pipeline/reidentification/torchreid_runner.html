@@ -80,15 +80,12 @@ Utrecht University within the Software Project course.
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">gdown</span>
 
 <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">euclidean</span>
 
 <span class="kn">import</span> <span class="nn">processor.utils.features</span> <span class="k">as</span> <span class="nn">UtilsFeatures</span>
 <span class="kn">import</span> <span class="nn">processor.pipeline.reidentification.ireidentifier</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid.torchreid.utils</span> <span class="kn">import</span> <span class="n">FeatureExtractor</span>
 
 
@@ -193,22 +190,19 @@ Utrecht University within the Software Project course.
 <span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
 <span class="sd">        to an existing bounding box.</span>
 
+<span class="sd">        Note:</span>
+<span class="sd">            Does not return anything, just updates the existing list.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): Frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.</span>
 <span class="sd">                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
 <span class="sd">                way (feature vector i belongs to box i).</span>
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
-
-        <span class="c1"># Copy the original bounding boxes to a new list.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tracked_bounding_boxes</span><span class="p">)</span>
 
         <span class="c1"># Loop over all objects being followed.</span>
         <span class="k">for</span> <span class="n">query_id</span> <span class="ow">in</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_queries</span><span class="p">():</span>
@@ -228,17 +222,9 @@ Utrecht University within the Software Project course.
                         <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
 
                         <span class="c1"># Update object id of the box.</span>
-                        <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                            <span class="n">identifier</span><span class="o">=</span><span class="n">box_id</span><span class="p">,</span>
-                            <span class="n">rectangle</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">(),</span>
-                            <span class="n">classification</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_classification</span><span class="p">(),</span>
-                            <span class="n">certainty</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">(),</span>
-                            <span class="n">object_id</span><span class="o">=</span><span class="n">query_id</span>
-                        <span class="p">)</span>
+                        <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_object_id</span><span class="p">(</span><span class="n">query_id</span><span class="p">)</span>
 
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Re-Id of object </span><span class="si">{</span><span class="n">query_id</span><span class="si">}</span><span class="s2"> in box </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -356,22 +342,19 @@ Utrecht University within the Software Project course.
 <span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
 <span class="sd">        to an existing bounding box.</span>
 
+<span class="sd">        Note:</span>
+<span class="sd">            Does not return anything, just updates the existing list.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): Frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.</span>
 <span class="sd">                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
 <span class="sd">                way (feature vector i belongs to box i).</span>
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
-
-        <span class="c1"># Copy the original bounding boxes to a new list.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tracked_bounding_boxes</span><span class="p">)</span>
 
         <span class="c1"># Loop over all objects being followed.</span>
         <span class="k">for</span> <span class="n">query_id</span> <span class="ow">in</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_queries</span><span class="p">():</span>
@@ -391,17 +374,9 @@ Utrecht University within the Software Project course.
                         <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
 
                         <span class="c1"># Update object id of the box.</span>
-                        <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                            <span class="n">identifier</span><span class="o">=</span><span class="n">box_id</span><span class="p">,</span>
-                            <span class="n">rectangle</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">(),</span>
-                            <span class="n">classification</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_classification</span><span class="p">(),</span>
-                            <span class="n">certainty</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">(),</span>
-                            <span class="n">object_id</span><span class="o">=</span><span class="n">query_id</span>
-                        <span class="p">)</span>
+                        <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_object_id</span><span class="p">(</span><span class="n">query_id</span><span class="p">)</span>
 
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Re-Id of object </span><span class="si">{</span><span class="n">query_id</span><span class="si">}</span><span class="s2"> in box </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -647,22 +622,19 @@ and feeding them to the feature extractor of Torchreid.</p>
 <span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
 <span class="sd">        to an existing bounding box.</span>
 
+<span class="sd">        Note:</span>
+<span class="sd">            Does not return anything, just updates the existing list.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): Frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.</span>
 <span class="sd">                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
 <span class="sd">                way (feature vector i belongs to box i).</span>
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
-
-        <span class="c1"># Copy the original bounding boxes to a new list.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tracked_bounding_boxes</span><span class="p">)</span>
 
         <span class="c1"># Loop over all objects being followed.</span>
         <span class="k">for</span> <span class="n">query_id</span> <span class="ow">in</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_queries</span><span class="p">():</span>
@@ -682,17 +654,9 @@ and feeding them to the feature extractor of Torchreid.</p>
                         <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
 
                         <span class="c1"># Update object id of the box.</span>
-                        <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                            <span class="n">identifier</span><span class="o">=</span><span class="n">box_id</span><span class="p">,</span>
-                            <span class="n">rectangle</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">(),</span>
-                            <span class="n">classification</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_classification</span><span class="p">(),</span>
-                            <span class="n">certainty</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">(),</span>
-                            <span class="n">object_id</span><span class="o">=</span><span class="n">query_id</span>
-                        <span class="p">)</span>
+                        <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_object_id</span><span class="p">(</span><span class="n">query_id</span><span class="p">)</span>
 
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Re-Id of object </span><span class="si">{</span><span class="n">query_id</span><span class="si">}</span><span class="s2"> in box </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -703,6 +667,12 @@ and feeding them to the feature extractor of Torchreid.</p>
 which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
 to an existing bounding box.</p>
 
+<h6 id="note">Note</h6>
+
+<blockquote>
+  <p>Does not return anything, just updates the existing list.</p>
+</blockquote>
+
 <h6 id="args">Args</h6>
 
 <ul>
@@ -712,12 +682,6 @@ list has to be of the same length as the list of bounding boxes in track_obj, an
 way (feature vector i belongs to box i).</li>
 <li><strong>re_id_data (ReidData):</strong>  Data class containing data about tracked subjects.</li>
 </ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).</p>
-</blockquote>
 </div>
 
 
