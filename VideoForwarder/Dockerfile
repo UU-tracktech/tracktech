@@ -34,7 +34,7 @@ COPY tests/unittest tests
 # Create multiple streams folders
 RUN ["mkdir","streams1","streams2","streams3"]
 
-ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","xml","--cov-report","term-missing","--cov=src/","tests"]
+ENTRYPOINT  ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & pytest --cov-config=.coveragerc --cov-report term --cov-report xml --cov-report term-missing --cov=src/ tests"]
 
 
 # Installation

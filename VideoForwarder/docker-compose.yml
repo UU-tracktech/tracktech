@@ -3,6 +3,7 @@ version: "3.8"
 services:
   forwarder:
     build:
+      context: .
       target: development
     environment:
       CAMERA_URL: rtmp://localhost/stream
