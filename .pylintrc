@@ -46,7 +46,8 @@ limit-inference-results=100
 load-plugins=utility.copyright_checker,
              utility.docstring_checker,
              utility.docstring_content_checker,
-             utility.comment_checker
+             utility.comment_checker,
+             utility.classes_checker
 #pylint_junit
 
 # Pickle collected data for later comparisons.

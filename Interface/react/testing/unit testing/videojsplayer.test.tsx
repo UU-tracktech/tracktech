@@ -24,25 +24,6 @@ const mockOnResize = jest.fn((size: size) => {
 const mockOnPrimary = jest.fn()
 const mockOnPlayPause = jest.fn()
 
-//mock functions and values to change the keycloak mock per test
-let mockInitialized = true
-let mockAuthenticated = false
-let mockToken = { name: 'Firstname Lastname' }
-
-//mock the keycloak implementation
-//https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
-jest.mock('@react-keycloak/web', () => {
-  return {
-    useKeycloak: () => ({
-      initialized: mockInitialized,
-      keycloak: {
-        authenticated: mockAuthenticated,
-        tokenParsed: mockToken
-      }
-    })
-  }
-})
-
 beforeEach(() => {
   render(
     <VideoPlayer
