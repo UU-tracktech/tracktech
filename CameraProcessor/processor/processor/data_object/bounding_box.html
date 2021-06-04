@@ -35,19 +35,19 @@
                                 <a class="function" href="#BoundingBox.__init__">BoundingBox</a>
                         </li>
                         <li>
-                                <a class="function" href="#BoundingBox.get_identifier">get_identifier</a>
+                                <a class="variable" href="#BoundingBox.identifier">identifier</a>
                         </li>
                         <li>
-                                <a class="function" href="#BoundingBox.get_rectangle">get_rectangle</a>
+                                <a class="variable" href="#BoundingBox.rectangle">rectangle</a>
                         </li>
                         <li>
-                                <a class="function" href="#BoundingBox.get_classification">get_classification</a>
+                                <a class="variable" href="#BoundingBox.classification">classification</a>
                         </li>
                         <li>
-                                <a class="function" href="#BoundingBox.get_certainty">get_certainty</a>
+                                <a class="variable" href="#BoundingBox.certainty">certainty</a>
                         </li>
                         <li>
-                                <a class="function" href="#BoundingBox.get_object_id">get_object_id</a>
+                                <a class="variable" href="#BoundingBox.object_id">object_id</a>
                         </li>
                         <li>
                                 <a class="function" href="#BoundingBox.set_object_id">set_object_id</a>
@@ -106,15 +106,17 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span> <span class="o">=</span> <span class="n">certainty</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 
-    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bounding box identifier getter.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
 
-    <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -122,7 +124,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span>
 
-    <span class="k">def</span> <span class="nf">get_classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get classification/tag of bounding box.</span>
 
 <span class="sd">        Returns:</span>
@@ -130,7 +133,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
 
-    <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
@@ -138,7 +142,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span>
 
-    <span class="k">def</span> <span class="nf">get_object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets object id of tracked object depicted by the bounding box (can be None).</span>
 
 <span class="sd">        Returns:</span>
@@ -194,15 +199,17 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span> <span class="o">=</span> <span class="n">certainty</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 
-    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bounding box identifier getter.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: identifier of bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
 
-    <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -210,7 +217,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span>
 
-    <span class="k">def</span> <span class="nf">get_classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get classification/tag of bounding box.</span>
 
 <span class="sd">        Returns:</span>
@@ -218,7 +226,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
 
-    <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
 
 <span class="sd">        Returns:</span>
@@ -226,7 +235,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span>
 
-    <span class="k">def</span> <span class="nf">get_object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets object id of tracked object depicted by the bounding box (can be None).</span>
 
 <span class="sd">        Returns:</span>
@@ -298,28 +308,13 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="BoundingBox.get_identifier" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BoundingBox.get_identifier">#&nbsp;&nbsp</a>
+                            <div id="BoundingBox.identifier" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#BoundingBox.identifier">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_identifier</span><span class="signature">(self)</span>:
+        <span class="name">identifier</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get bounding box identifier.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            int: identifier of bounding box.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Get bounding box identifier.</p>
+            <div class="docstring"><p>Bounding box identifier getter.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -330,26 +325,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="BoundingBox.get_rectangle" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BoundingBox.get_rectangle">#&nbsp;&nbsp</a>
+                            <div id="BoundingBox.rectangle" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#BoundingBox.rectangle">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_rectangle</span><span class="signature">(self)</span>:
+        <span class="name">rectangle</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get Rectangle.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Rectangle: rectangle composed of bottom right and top left coords.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Get Rectangle.</p>
 
@@ -362,26 +342,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="BoundingBox.get_classification" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BoundingBox.get_classification">#&nbsp;&nbsp</a>
+                            <div id="BoundingBox.classification" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#BoundingBox.classification">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_classification</span><span class="signature">(self)</span>:
+        <span class="name">classification</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get classification/tag of bounding box.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: bounding box classification.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Get classification/tag of bounding box.</p>
 
@@ -394,26 +359,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="BoundingBox.get_certainty" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BoundingBox.get_certainty">#&nbsp;&nbsp</a>
+                            <div id="BoundingBox.certainty" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#BoundingBox.certainty">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_certainty</span><span class="signature">(self)</span>:
+        <span class="name">certainty</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_certainty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get certainty/confidence that bounding box is correctly classified.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: certainty/confidence of bounding box detection.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Get certainty/confidence that bounding box is correctly classified.</p>
 
@@ -426,26 +376,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="BoundingBox.get_object_id" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BoundingBox.get_object_id">#&nbsp;&nbsp</a>
+                            <div id="BoundingBox.object_id" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#BoundingBox.object_id">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_object_id</span><span class="signature">(self)</span>:
+        <span class="name">object_id</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_object_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets object id of tracked object depicted by the bounding box (can be None).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            int: certainty/confidence of bounding box detection.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Gets object id of tracked object depicted by the bounding box (can be None).</p>
 

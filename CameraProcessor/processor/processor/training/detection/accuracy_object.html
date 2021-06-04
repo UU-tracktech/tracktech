@@ -152,12 +152,12 @@ Utrecht University within the Software Project course.
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
-                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">(),</span>
+                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span>
+                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span>
+                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span>
+                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span>
                     <span class="n">image_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                    <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
+                    <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">certainty</span>
                 <span class="p">)</span>
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
@@ -196,7 +196,7 @@ Utrecht University within the Software Project course.
         <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">())</span>
+            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -324,12 +324,12 @@ Utrecht University within the Software Project course.
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
-                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">(),</span>
+                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span>
+                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span>
+                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span>
+                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span>
                     <span class="n">image_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                    <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
+                    <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">certainty</span>
                 <span class="p">)</span>
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
@@ -368,7 +368,7 @@ Utrecht University within the Software Project course.
         <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">())</span>
+            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -510,12 +510,12 @@ Utrecht University within the Software Project course.
                 <span class="c1"># The label is currently undefined because class information is not yet saved.</span>
                 <span class="n">parsed_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;undefined&quot;</span><span class="p">,</span>
-                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x1</span><span class="p">(),</span>
-                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y1</span><span class="p">(),</span>
-                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_x2</span><span class="p">(),</span>
-                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_rectangle</span><span class="p">()</span><span class="o">.</span><span class="n">get_y2</span><span class="p">(),</span>
+                    <span class="n">xtl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span>
+                    <span class="n">ytl</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span>
+                    <span class="n">xbr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span>
+                    <span class="n">ybr</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span>
                     <span class="n">image_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                    <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">get_certainty</span><span class="p">()</span>
+                    <span class="n">score</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">certainty</span>
                 <span class="p">)</span>
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
@@ -615,7 +615,7 @@ Utrecht University within the Software Project course.
         <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">get_bounding_boxes</span><span class="p">())</span>
+            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_boxes_object</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
 

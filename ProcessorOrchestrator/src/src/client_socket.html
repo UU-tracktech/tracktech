@@ -56,9 +56,6 @@
                                 <a class="function" href="#ClientSocket.authenticate">authenticate</a>
                         </li>
                         <li>
-                                <a class="function" href="#ClientSocket.set_uses_image">set_uses_image</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#ClientSocket.start_tracking">start_tracking</a>
                         </li>
                         <li>
@@ -119,7 +116,6 @@ Utrecht University within the Software Project course.
 <span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
 <span class="sd">        authorized (bool): Shows whether the websocket connection is authorized.</span>
 <span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
-<span class="sd">        uses_images (bool): Bool indicating whether or not this client should receive images</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
@@ -132,7 +128,6 @@ Utrecht University within the Software Project course.
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">clients</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Load the auth object from app settings.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;client_auth&#39;</span><span class="p">)</span>
@@ -183,8 +178,6 @@ Utrecht University within the Software Project course.
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;setUsesImages&quot;</span><span class="p">:</span>
-                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_uses_image</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;start&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
@@ -250,26 +243,6 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property</span>
-<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether or not the client uses images</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;usesImages&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
-                    <span class="p">}</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">client_message</span><span class="p">))</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">start_tracking</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates tracking object and sends start tracking command to specified processor.</span>
@@ -298,7 +271,7 @@ Utrecht University within the Software Project course.
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">()</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
@@ -320,21 +293,6 @@ Utrecht University within the Software Project course.
             <span class="n">processor_message</span>
         <span class="p">))</span>
 
-        <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">client_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
-
-        <span class="c1"># Send a message that a new object has been tracked with the given image to all clients that use images.</span>
-        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                    <span class="n">client_message</span>
-                <span class="p">))</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop_tracking</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Removes tracking object and sends stop tracking command to all processors.</span>
@@ -351,15 +309,9 @@ Utrecht University within the Software Project course.
 
         <span class="n">objects</span><span class="p">[</span><span class="n">object_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove_self</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
-            <span class="p">}))</span>
-
-        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">processors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
                     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
                 <span class="p">}))</span>
@@ -388,7 +340,6 @@ Utrecht University within the Software Project course.
 <span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
 <span class="sd">        authorized (bool): Shows whether the websocket connection is authorized.</span>
 <span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
-<span class="sd">        uses_images (bool): Bool indicating whether or not this client should receive images</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
@@ -401,7 +352,6 @@ Utrecht University within the Software Project course.
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">clients</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Load the auth object from app settings.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;client_auth&#39;</span><span class="p">)</span>
@@ -452,8 +402,6 @@ Utrecht University within the Software Project course.
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;setUsesImages&quot;</span><span class="p">:</span>
-                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_uses_image</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;start&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
@@ -519,26 +467,6 @@ Utrecht University within the Software Project course.
             <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property</span>
-<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether or not the client uses images</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;usesImages&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
-                    <span class="p">}</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">client_message</span><span class="p">))</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">start_tracking</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates tracking object and sends start tracking command to specified processor.</span>
@@ -567,7 +495,7 @@ Utrecht University within the Software Project course.
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">()</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
@@ -589,21 +517,6 @@ Utrecht University within the Software Project course.
             <span class="n">processor_message</span>
         <span class="p">))</span>
 
-        <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">client_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
-
-        <span class="c1"># Send a message that a new object has been tracked with the given image to all clients that use images.</span>
-        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                    <span class="n">client_message</span>
-                <span class="p">))</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stop_tracking</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Removes tracking object and sends stop tracking command to all processors.</span>
@@ -620,15 +533,9 @@ Utrecht University within the Software Project course.
 
         <span class="n">objects</span><span class="p">[</span><span class="n">object_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove_self</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
-            <span class="p">}))</span>
-
-        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">processors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
                     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
                 <span class="p">}))</span>
@@ -646,7 +553,6 @@ Utrecht University within the Software Project course.
 <li><strong>identifier (int):</strong>  Serves as the unique identifier to this object.</li>
 <li><strong>authorized (bool):</strong>  Shows whether the websocket connection is authorized.</li>
 <li><strong>auth (Auth):</strong>  Authorization object for the websocket handler</li>
-<li><strong>uses_images (bool):</strong>  Bool indicating whether or not this client should receive images</li>
 </ul>
 </div>
 
@@ -670,7 +576,6 @@ Utrecht University within the Software Project course.
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">clients</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Load the auth object from app settings.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;client_auth&#39;</span><span class="p">)</span>
@@ -802,8 +707,6 @@ to a dict of other websockets.</p>
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;setUsesImages&quot;</span><span class="p">:</span>
-                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_uses_image</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;start&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
                 <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
@@ -985,53 +888,6 @@ format.</p>
 
 
                             </div>
-                            <div id="ClientSocket.set_uses_image" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ClientSocket.set_uses_image">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">set_uses_image</span><span class="signature">(self, message)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            message (json):</span>
-<span class="sd">                JSON message that was received. It should contain the following property</span>
-<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether or not the client uses images</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;usesImages&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
-                    <span class="p">}</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">client_message</span><span class="p">))</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Set whether or not this client uses images.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>message (json):</strong>  JSON message that was received. It should contain the following property
-<ul>
-<li>"usesImages" | a bool indicating whether or not the client uses images</li>
-</ul></li>
-</ul>
-</div>
-
-
-                            </div>
                             <div id="ClientSocket.start_tracking" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ClientSocket.start_tracking">#&nbsp;&nbsp</a>
 
@@ -1071,7 +927,7 @@ format.</p>
             <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">()</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
@@ -1092,21 +948,6 @@ format.</p>
         <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
             <span class="n">processor_message</span>
         <span class="p">))</span>
-
-        <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">client_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
-
-        <span class="c1"># Send a message that a new object has been tracked with the given image to all clients that use images.</span>
-        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                    <span class="n">client_message</span>
-                <span class="p">))</span>
 </pre></div>
 
         </details>
@@ -1159,15 +1000,9 @@ be present, though a full combination is also possible.</li>
 
         <span class="n">objects</span><span class="p">[</span><span class="n">object_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove_self</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
-            <span class="p">}))</span>
-
-        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">processors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
                     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
                 <span class="p">}))</span>
