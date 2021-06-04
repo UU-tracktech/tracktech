@@ -142,26 +142,6 @@ Utrecht University within the Software Project course.
 <span class="sd">            (float): normalized top most Y.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y2</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Checks whether the two rectangles are equal.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            other (Rectangle): Other rectangle to compare with.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether self and other are the same.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x1</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">x2</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x2</span> <span class="ow">and</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">y1</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y2</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the rectangle object to a string.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: String representation of a Rectangle.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Rectangle(x1:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__x1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> y1:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__y1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> x2:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__x2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> y2:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__y2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
 </pre></div>
 
         </details>
@@ -239,26 +219,6 @@ Utrecht University within the Software Project course.
 <span class="sd">            (float): normalized top most Y.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y2</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Checks whether the two rectangles are equal.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            other (Rectangle): Other rectangle to compare with.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether self and other are the same.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x1</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">x2</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x2</span> <span class="ow">and</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">y1</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y2</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y2</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the rectangle object to a string.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: String representation of a Rectangle.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Rectangle(x1:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__x1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> y1:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__y1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> x2:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__x2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> y2:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__y2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
 </pre></div>
 
         </details>

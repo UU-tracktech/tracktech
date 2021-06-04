@@ -37,15 +37,6 @@
                         <li>
                                 <a class="function" href="#IDetector.detect">detect</a>
                         </li>
-                        <li>
-                                <a class="function" href="#IDetector.convert_image">convert_image</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#IDetector.generate_predictions">generate_predictions</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#IDetector.create_bounding_boxes">create_bounding_boxes</a>
-                        </li>
                 </ul>
 
             </li>
@@ -79,18 +70,11 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-
 <span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor.utils.general</span> <span class="kn">import</span> <span class="n">non_max_suppression</span><span class="p">,</span> <span class="n">scale_coords</span>
 
 
 <span class="k">class</span> <span class="nc">IDetector</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.</span>
@@ -99,84 +83,12 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects</span>
+<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: The function is not overridden in subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Detect function not implemented&quot;</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            img (Tensor): Image in a tensor representation</span>
-<span class="sd">            device (device): What device to convert image on</span>
-<span class="sd">            half (bool): Whether to half the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tensor: Image that is converted</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image.</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">half</span><span class="p">()</span> <span class="k">if</span> <span class="n">half</span> <span class="k">else</span> <span class="n">img</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>  <span class="c1"># uint8 to fp16/32</span>
-        <span class="n">img</span> <span class="o">/=</span> <span class="mf">255.0</span>  <span class="c1"># 0 - 255 to 0.0 - 1.0</span>
-        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">img</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            img (Tensor): 2</span>
-<span class="sd">            model (model): Model that gets used</span>
-<span class="sd">            configs (SectionProxy): Yolo section of the configuration</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tensor: Tensor containing the predictions the detection made</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Apply NMS.</span>
-        <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
-                                   <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
-                                   <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
-                                   <span class="n">agnostic</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;agnostic_nms&#39;</span><span class="p">))</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
-<span class="sd">            img (Tensor): Image stored in a tensor</span>
-<span class="sd">            frame_obj (FrameObj): Object containing the frame</span>
-<span class="sd">            bounding_boxes ([BoundingBoxes]): Bounding boxes in which to store the predictions</span>
-<span class="sd">            filter_types ([str]): What detection types to filter on</span>
-<span class="sd">            names ([str]): The complete list of types that get detected</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Detections per image.</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
-                <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
-
-                <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
-                <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
-                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span>
-                    <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                        <span class="n">bb_id</span><span class="p">,</span>
-                        <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                  <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                        <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
-                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">classification</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
-                        <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-                        <span class="n">bb_id</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 
         </details>
@@ -194,8 +106,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IDetector</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.</span>
@@ -204,84 +115,12 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects</span>
+<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: The function is not overridden in subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Detect function not implemented&quot;</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            img (Tensor): Image in a tensor representation</span>
-<span class="sd">            device (device): What device to convert image on</span>
-<span class="sd">            half (bool): Whether to half the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tensor: Image that is converted</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image.</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">half</span><span class="p">()</span> <span class="k">if</span> <span class="n">half</span> <span class="k">else</span> <span class="n">img</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>  <span class="c1"># uint8 to fp16/32</span>
-        <span class="n">img</span> <span class="o">/=</span> <span class="mf">255.0</span>  <span class="c1"># 0 - 255 to 0.0 - 1.0</span>
-        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">img</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            img (Tensor): 2</span>
-<span class="sd">            model (model): Model that gets used</span>
-<span class="sd">            configs (SectionProxy): Yolo section of the configuration</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tensor: Tensor containing the predictions the detection made</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Apply NMS.</span>
-        <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
-                                   <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
-                                   <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
-                                   <span class="n">agnostic</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;agnostic_nms&#39;</span><span class="p">))</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
-<span class="sd">            img (Tensor): Image stored in a tensor</span>
-<span class="sd">            frame_obj (FrameObj): Object containing the frame</span>
-<span class="sd">            bounding_boxes ([BoundingBoxes]): Bounding boxes in which to store the predictions</span>
-<span class="sd">            filter_types ([str]): What detection types to filter on</span>
-<span class="sd">            names ([str]): The complete list of types that get detected</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Detections per image.</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
-                <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
-
-                <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
-                <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
-                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span>
-                    <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                        <span class="n">bb_id</span><span class="p">,</span>
-                        <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                  <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                        <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
-                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">classification</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
-                        <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-                        <span class="n">bb_id</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 
         </details>
@@ -318,7 +157,10 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects</span>
+<span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: The function is not overridden in subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Detect function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
@@ -336,178 +178,13 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects</p>
+  <p>BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.</p>
 </blockquote>
-</div>
 
-
-                            </div>
-                            <div id="IDetector.convert_image" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDetector.convert_image">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@staticmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">convert_image</span><span class="signature">(img, device, half)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">half</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts the image to the size used for the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            img (Tensor): Image in a tensor representation</span>
-<span class="sd">            device (device): What device to convert image on</span>
-<span class="sd">            half (bool): Whether to half the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tensor: Image that is converted</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert image.</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># BGR to RGB, to 3x416x416</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">half</span><span class="p">()</span> <span class="k">if</span> <span class="n">half</span> <span class="k">else</span> <span class="n">img</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>  <span class="c1"># uint8 to fp16/32</span>
-        <span class="n">img</span> <span class="o">/=</span> <span class="mf">255.0</span>  <span class="c1"># 0 - 255 to 0.0 - 1.0</span>
-        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">img</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Converts the image to the size used for the detection.</p>
-
-<h6 id="args">Args</h6>
+<h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>img (Tensor):</strong>  Image in a tensor representation</li>
-<li><strong>device (device):</strong>  What device to convert image on</li>
-<li><strong>half (bool):</strong>  Whether to half the image</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>Tensor: Image that is converted</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="IDetector.generate_predictions" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDetector.generate_predictions">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@staticmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">generate_predictions</span><span class="signature">(img, model, configs)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates the predictions of the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            img (Tensor): 2</span>
-<span class="sd">            model (model): Model that gets used</span>
-<span class="sd">            configs (SectionProxy): Yolo section of the configuration</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tensor: Tensor containing the predictions the detection made</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">augment</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;augment&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Apply NMS.</span>
-        <span class="k">return</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;conf-thres&#39;</span><span class="p">),</span>
-                                   <span class="n">configs</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">),</span>
-                                   <span class="n">classes</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;classes&#39;</span><span class="p">],</span>
-                                   <span class="n">agnostic</span><span class="o">=</span><span class="n">configs</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;agnostic_nms&#39;</span><span class="p">))</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Generates the predictions of the detection.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>img (Tensor):</strong>  2</li>
-<li><strong>model (model):</strong>  Model that gets used</li>
-<li><strong>configs (SectionProxy):</strong>  Yolo section of the configuration</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>Tensor: Tensor containing the predictions the detection made</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="IDetector.create_bounding_boxes" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDetector.create_bounding_boxes">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@staticmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">create_bounding_boxes</span><span class="signature">(pred, img, frame_obj, bounding_boxes, filter_types, names)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">filter_types</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates the bounding boxes of the detection.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            pred ([Tensor]): List of tensors containing the predictions</span>
-<span class="sd">            img (Tensor): Image stored in a tensor</span>
-<span class="sd">            frame_obj (FrameObj): Object containing the frame</span>
-<span class="sd">            bounding_boxes ([BoundingBoxes]): Bounding boxes in which to store the predictions</span>
-<span class="sd">            filter_types ([str]): What detection types to filter on</span>
-<span class="sd">            names ([str]): The complete list of types that get detected</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Detections per image.</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Rescale boxes from img_size to im0 size.</span>
-                <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">det</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
-
-                <span class="n">bb_id</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># Get the xyxy, confidence, and class, attach them to det_obj.</span>
-                <span class="k">for</span> <span class="o">*</span><span class="n">xyxy</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">det</span><span class="p">):</span>
-                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span>
-                    <span class="n">bbox</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                        <span class="n">bb_id</span><span class="p">,</span>
-                        <span class="n">Rectangle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                  <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                        <span class="n">names</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="bp">cls</span><span class="p">)],</span>
-                        <span class="n">conf</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">bbox</span><span class="o">.</span><span class="n">classification</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filter_types</span><span class="p">):</span>
-                        <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-                        <span class="n">bb_id</span> <span class="o">+=</span> <span class="mi">1</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Creates the bounding boxes of the detection.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>pred ([Tensor]):</strong>  List of tensors containing the predictions</li>
-<li><strong>img (Tensor):</strong>  Image stored in a tensor</li>
-<li><strong>frame_obj (FrameObj):</strong>  Object containing the frame</li>
-<li><strong>bounding_boxes ([BoundingBoxes]):</strong>  Bounding boxes in which to store the predictions</li>
-<li><strong>filter_types ([str]):</strong>  What detection types to filter on</li>
-<li><strong>names ([str]):</strong>  The complete list of types that get detected</li>
+<li><strong>NotImplementedError:</strong>  The function is not overridden in subclass.</li>
 </ul>
 </div>
 
