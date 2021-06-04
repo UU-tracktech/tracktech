@@ -23,11 +23,11 @@ class TestBoundingBox:
     def setup_method(self):
         """Set ups bounding_box for unit testing."""
         self.data = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5, object_id=5)
-        self.identifier = self.data.get_identifier()
-        self.rectangle = self.data.get_rectangle()
-        self.classification = self.data.get_classification()
-        self.certainty = self.data.get_certainty()
-        self.object_id = self.data.get_object_id()
+        self.identifier = self.data.identifier
+        self.rectangle = self.data.rectangle
+        self.classification = self.data.classification
+        self.certainty = self.data.certainty
+        self.object_id = self.data.object_id
 
     # Testing typechecking.
     def test_type_identifier(self):
@@ -104,14 +104,14 @@ class TestBoundingBox:
 
     def test_value_rectangle(self):
         """Asserts if value of rectangle is correct."""
-        assert1 = (Rectangle(0, 0, 1, 1).get_x1(),
-                   Rectangle(0, 0, 1, 1).get_y1(),
-                   Rectangle(0, 0, 1, 1).get_x2(),
-                   Rectangle(0, 0, 1, 1).get_y2())
-        assert2 = (self.rectangle.get_x1(),
-                   self.rectangle.get_y1(),
-                   self.rectangle.get_x2(),
-                   self.rectangle.get_y2())
+        assert1 = (Rectangle(0, 0, 1, 1).x1,
+                   Rectangle(0, 0, 1, 1).y1,
+                   Rectangle(0, 0, 1, 1).x2,
+                   Rectangle(0, 0, 1, 1).y2)
+        assert2 = (self.rectangle.x1,
+                   self.rectangle.y1,
+                   self.rectangle.x2,
+                   self.rectangle.y2)
         assert assert1 == assert2
 
     def test_value_classification(self):

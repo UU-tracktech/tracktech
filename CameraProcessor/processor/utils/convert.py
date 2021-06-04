@@ -17,13 +17,13 @@ def to_buffer_dict(frame_obj, bounding_boxes):
         dict: dictionary containing all necessary frame and bounding boxes information for the buffer.
     """
     return {
-        "frame": frame_obj.get_frame(),
-        "frameId": frame_obj.get_timestamp(),
+        "frame": frame_obj.frame,
+        "frameId": frame_obj.timestamp,
         "boxes": [
             {
-                "boxId": bounding_box.get_identifier(),
-                "rect": bounding_box.get_rectangle()
+                "boxId": bounding_box.identifier,
+                "rect": bounding_box.rectangle
             }
-            for bounding_box in bounding_boxes.get_bounding_boxes()
+            for bounding_box in bounding_boxes.bounding_boxes
         ]
     }
