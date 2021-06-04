@@ -14,9 +14,7 @@ COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements-test.txt"]
 
 COPY src src
-COPY src app/src
 COPY tests tests
-COPY tests app/tests
 COPY .coveragerc .coveragerc
 
 COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
@@ -37,9 +35,11 @@ FROM test as test_integration
 RUN ["mkdir", "tracking_timelines"]
 
 FROM test as lint
+
+COPY src src
+COPY tests tests
 WORKDIR /
-ENV PYTHONPATH=/
-ENTRYPOINT ["pylint", "app", "--rcfile=.pylintrc"]
+ENTRYPOINT ["pylint","src","tests","--rcfile=/app/.pylintrc"]
 
 
 FROM python:3.8-slim-buster AS build
