@@ -14,7 +14,9 @@ COPY requirements-test.txt .
 RUN ["python3.8", "-m", "pip", "install", "--no-cache-dir", "-r", "requirements-test.txt"]
 
 COPY src src
+COPY src app/src
 COPY tests tests
+COPY tests app/tests
 COPY .coveragerc .coveragerc
 
 COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
@@ -37,8 +39,6 @@ RUN ["mkdir", "tracking_timelines"]
 FROM test as lint
 WORKDIR /
 ENV PYTHONPATH=/
-COPY app/utility utility
-COPY app/.pylintrc .pylintrc
 ENTRYPOINT ["pylint", "app", "--rcfile=.pylintrc"]
 
 
