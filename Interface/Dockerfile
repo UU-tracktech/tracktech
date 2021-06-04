@@ -42,6 +42,7 @@ FROM testing AS unit-testing
 WORKDIR /react
 
 COPY ["react/testing/unit testing","./testing/unit testing"]
+COPY ["react/__mocks__", "./__mocks__"]
 
 ENTRYPOINT ["npm", "test", "--", "--coverage", "testing/unit testing"]
 
@@ -50,6 +51,7 @@ FROM testing AS integration-testing
 WORKDIR /react
 
 COPY ["react/testing/integration testing","./testing/integration testing"]
+COPY ["react/__mocks__", "./__mocks__"]
 
 ENTRYPOINT ["npm", "test", "--", "--coverage", "testing/integration testing"]
 
