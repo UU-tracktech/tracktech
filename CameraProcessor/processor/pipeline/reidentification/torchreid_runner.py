@@ -5,8 +5,8 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import os
-import gdown
 import copy
+import gdown
 
 from scipy.spatial.distance import euclidean
 
@@ -143,11 +143,11 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
             # Loop over the detected features in the frame.
             for i, feature in enumerate(box_features):
                 # If the bounding box is already assigned to an object, don't compare it.
-                if tracked_bounding_boxes[i].get_object_id() is None:
+                if bounding_boxes[i].get_object_id() is None:
                     # Calculate the similarity value of the 2 feature vectors.
                     similarity_value = self.similarity(query_feature, feature)
                     if similarity_value < self.threshold:
-                        box_id = tracked_bounding_boxes[i].get_identifier()
+                        box_id = bounding_boxes[i].get_identifier()
 
                         # Store that this box id belongs to a certain object id.
                         re_id_data.add_query_box(box_id, query_id)

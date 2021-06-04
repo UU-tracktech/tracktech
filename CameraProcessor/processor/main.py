@@ -59,7 +59,8 @@ async def deploy(configs, ws_id):
         tracker,
         re_identifier,
         # Function to call when frame is processed.
-        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(websocket_client,
+        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
+                                                                                    websocket_client,
                                                                                     frame_obj,
                                                                                     detected_boxes,
                                                                                     tracked_boxes,
