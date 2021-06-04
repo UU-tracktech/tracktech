@@ -116,7 +116,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># See https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new.</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1"># Ffmpeg configurations.</span>
-        <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-loglevel&#39;</span><span class="p">,</span> <span class="s1">&#39;fatal&#39;</span><span class="p">,</span> <span class="s1">&#39;-rtsp_transport&#39;</span><span class="p">,</span> <span class="s1">&#39;tcp&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
+        <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-loglevel&#39;</span><span class="p">,</span> <span class="s1">&#39;fatal&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
         <span class="c1"># Create 3 variances of video + audio stream.</span>
         <span class="o">*</span><span class="n">maps</span><span class="p">,</span>
         <span class="s1">&#39;-profile:v&#39;</span><span class="p">,</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="s1">&#39;-crf&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span> <span class="s1">&#39;-force_key_frames&#39;</span><span class="p">,</span> <span class="s1">&#39;expr:gte(t,n_forced*2)&#39;</span><span class="p">,</span>
@@ -203,7 +203,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># See https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new.</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1"># Ffmpeg configurations.</span>
-        <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-loglevel&#39;</span><span class="p">,</span> <span class="s1">&#39;fatal&#39;</span><span class="p">,</span> <span class="s1">&#39;-rtsp_transport&#39;</span><span class="p">,</span> <span class="s1">&#39;tcp&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
+        <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;-loglevel&#39;</span><span class="p">,</span> <span class="s1">&#39;fatal&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
         <span class="c1"># Create 3 variances of video + audio stream.</span>
         <span class="o">*</span><span class="n">maps</span><span class="p">,</span>
         <span class="s1">&#39;-profile:v&#39;</span><span class="p">,</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="s1">&#39;-crf&#39;</span><span class="p">,</span> <span class="s1">&#39;24&#39;</span><span class="p">,</span> <span class="s1">&#39;-force_key_frames&#39;</span><span class="p">,</span> <span class="s1">&#39;expr:gte(t,n_forced*2)&#39;</span><span class="p">,</span>
