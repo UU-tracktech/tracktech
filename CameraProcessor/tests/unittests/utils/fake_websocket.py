@@ -15,6 +15,7 @@ class FakeWebsocket:
         message_queue (deque): deque object the messages get saved in.
     """
     def __init__(self):
+        """Create a message queue in order to save the messages."""
         self.message_queue = deque()
 
     def write_message(self, message):

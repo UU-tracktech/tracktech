@@ -1,47 +1,9 @@
 # Install these dependencies using
 # pip install -r requirements-test.txt
 
-# General imports
-tornado==6.1
-numpy>=1.16<1.19
-scipy<=1.6.1
-regex
-matplotlib
-python-time
-
-# Things YOLOv5 needs
-absl-py
-requests
-pyyaml
-matplotlib
-pandas
-numpy
-seaborn
-
 # Testing
-pytest
-pytest-asyncio
-pytest-timeout
-pytest-cov
-coverage
-
-# Images / Video
-pillow
-opencv-python-headless
-opencv-python==4.5.1.48
-ffmpeg-python
-
-# Threading / Async
-threaded
-kthread
-asyncio
-
-# XML
-lxml
-# Loading bar
-tqdm
-
-# GPU
-torch==1.8.0+cu101
-torchvision==0.9.0+cu101
--f https://download.pytorch.org/whl/torch_stable.html
+pytest==6.2.3
+pytest-asyncio==0.15.0
+pytest-cov==2.11.1
+pytest-timeout==1.4.2
+coverage==5.5

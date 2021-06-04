@@ -6,12 +6,12 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import { screen, render, getAllByTestId } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { ObjectTypeFilter } from '../../src/components/objectTypeFilter'
 
-/** Basic test to ensure the coponent renders without errors */
+//Basic test to ensure the coponent renders without errors
 test('it renders without error', () => {
   render(
     <ObjectTypeFilter
@@ -22,9 +22,9 @@ test('it renders without error', () => {
   )
 })
 
-/** Group of tests that check visual aspects */
+///Group of tests that check visual aspects
 describe('Button display', () => {
-  /** Check if the number of rendered buttons match the number of types to be filtered */
+  //Check if the number of rendered buttons match the number of types to be filtered
   it('shows the correct number of buttons', () => {
     //render with a list containing 6 types
     render(
@@ -50,7 +50,7 @@ describe('Button display', () => {
     expect(children.length).toBe(6)
   })
 
-  /** Check if the button displays the name of what it filters */
+  //Check if the button displays the name of what it filters
   test('shows the correct type name on the buttons', () => {
     //Types to render and check that they exist
     const t1 = 'car'
@@ -79,7 +79,7 @@ describe('Button display', () => {
   })
 })
 
-/** Collection of tests that check for button clicking functionality */
+//Collection of tests that check for button clicking functionality
 describe('Button clicking tests', () => {
   //Mock functions to pass to the rendered element
   const mockAdd = jest.fn()

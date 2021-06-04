@@ -6,14 +6,14 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import {
   Box,
   BoxesClientMessage,
   QueueItem
 } from '../../src/classes/clientMessage'
 
-/** Test creation of a BoxesClientMessage */
+//Test creation of a BoxesClientMessage
 test('BoxesClientMessage', () => {
   const msg = new BoxesClientMessage('camID', 786, [])
 
@@ -25,7 +25,7 @@ test('BoxesClientMessage', () => {
   expect(msg.boxes).toStrictEqual([])
 })
 
-/** Test creation of a box object */
+//Test creation of a box object
 test('Box test', () => {
   const box = new Box(8, [0, 1, 2, 3], 'person', 2346)
 
@@ -36,7 +36,7 @@ test('Box test', () => {
   expect(box.objectId).toBe(2346)
 })
 
-/** Test creation of a queueItem */
+//Test creation of a queueItem
 test('QueueItem test', () => {
   const item = new QueueItem(3487, [])
 

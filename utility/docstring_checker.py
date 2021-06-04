@@ -23,6 +23,7 @@ class DocstringChecker(BaseChecker):
         second-docstring-line-must-be-empty: Second docstring line has to be empty.
         docstring-last-line-empty: There should be no trailing white lines.
         docstring-starts-with-space: Docstrings should start with a character.
+        docstring-is-empty: Docstring should not be empty.
 
     Attributes:
         __implements__ (IAstroidChecker): Astroid checker interface.
@@ -66,6 +67,10 @@ class DocstringChecker(BaseChecker):
                   'docstring-starts-with-space',
                   'Emitted when first character is a space'
                   ),
+        'C1228': ('Docstring is missing or empty',
+                  'docstring-is-missing',
+                  'Emitted when first character is a space'
+                  ),
         }
 
     def visit_functiondef(self, node):
@@ -76,6 +81,9 @@ class DocstringChecker(BaseChecker):
         """
         # If the function has empty body then return, missing docstring already gets emitted.
         if not node.doc:
+            self.add_message('docstring-is-missing',
+                             node=node
+                             )
             return
 
         self.check_docstring(node)
@@ -87,6 +95,9 @@ class DocstringChecker(BaseChecker):
             node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.
         """
         if not node.doc:
+            self.add_message('docstring-is-missing',
+                             node=node
+                             )
             return
 
         self.check_docstring(node)
@@ -98,6 +109,9 @@ class DocstringChecker(BaseChecker):
             node (astroid.scoped_nodes.Module): Module definition astroid creates
         """
         if not node.doc:
+            self.add_message('docstring-is-missing',
+                             node=node
+                             )
             return
 
         self.check_docstring(node)

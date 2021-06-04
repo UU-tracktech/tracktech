@@ -20,7 +20,7 @@ class ImageCapture(ICapture):
     Attributes:
         images_paths (List[str]): List of paths of images in folder.
         nr_images (int): Number of images contained in folder.
-        __image_index (int): Index of current image frame.
+        image_index (int): Index of current image frame.
     """
     def __init__(self, images_dir):
         """Gets all the paths to images inside the folder and stores them in order.
@@ -32,10 +32,11 @@ class ImageCapture(ICapture):
         # Gets the number of images from the folder.
         self.images_paths = sorted([os.path.join(images_dir, image_name)
                                     for image_name in os.listdir(images_dir)])
+        self.image_names = sorted(os.listdir(images_dir))
         self.nr_images = len(self.images_paths)
 
         # Start index is -1 because we want to know the index of current after it has been incremented.
-        self.__image_index = -1
+        self.image_index = -1
         logging.info(f'Found {self.nr_images} images inside the folder')
 
     def opened(self):
@@ -44,11 +45,11 @@ class ImageCapture(ICapture):
         Returns:
             bool: Whether there are more images to iterate.
         """
-        return self.__image_index + 1 < self.nr_images
+        return self.image_index + 1 < self.nr_images
 
     def close(self):
         """Close the capture by setting the index higher than the number of images."""
-        self.__image_index = self.nr_images + 1
+        self.image_index = self.nr_images + 1
 
     def get_next_frame(self):
         """Gets the next frame from the list of images.
@@ -61,9 +62,9 @@ class ImageCapture(ICapture):
         if not self.opened():
             return False, None
 
-        self.__image_index += 1
+        self.image_index += 1
         # Get path of next frame.
-        image_path = self.images_paths[self.__image_index]
+        image_path = self.images_paths[self.image_index]
 
         # Reads the image file and returns it.
         frame = cv2.imread(image_path)
