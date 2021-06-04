@@ -69,3 +69,28 @@ class BoundingBox:
             int: certainty/confidence of bounding box detection.
         """
         return self.__object_id
+
+    def __eq__(self, other):
+        """Function that checks whether the current bounding box is the same as the given one.
+
+        Args:
+            other (BoundingBox): BoundingBox to compare with.
+
+        Returns:
+            bool: Whether the bounding boxes are the same.
+        """
+        return self.__identifier == other.identifier and \
+            self.__rectangle == other.rectangle and \
+            self.__classification == other.classification and \
+            self.__certainty == other.certainty and \
+            self.__object_id == other.object_id
+
+    def __repr__(self):
+        """Converts the bounding box object to a string.
+
+        Returns:
+            str: String representation of an bounding box.
+        """
+        return f'BoundingBox(type: "{self.__classification}" certainty: {self.__certainty} ' \
+               f'identifier: {self.__identifier} id: {self.__object_id} ' \
+               f'rectangle: {self.__rectangle})'
