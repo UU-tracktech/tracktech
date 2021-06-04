@@ -42,8 +42,8 @@ def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, re_id_tracked
     tracking_frame = cv2.resize(tracking_frame, dimensions)
 
     # Draw re-id boxes and downscale.
-    re_id_frame = frame_obj.get_frame().copy()
-    draw.draw_re_id_tracked_boxes(re_id_frame, re_id_tracked_boxes.get_bounding_boxes())
+    re_id_frame = frame_obj.frame.copy()
+    draw.draw_re_id_tracked_boxes(re_id_frame, re_id_tracked_boxes.bounding_boxes)
     re_id_frame = cv2.resize(re_id_frame, dimensions)
 
     # List representation of the images in 2D.
