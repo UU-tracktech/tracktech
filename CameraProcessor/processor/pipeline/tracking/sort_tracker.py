@@ -51,7 +51,7 @@ class SortTracker(ITracker):
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
+            detection_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
             re_id_data (ReidData): Object containing data necessary for re-identification
 
         Returns:
@@ -61,7 +61,7 @@ class SortTracker(ITracker):
 
         # Get bounding boxes into format expected by SORT tracker.
         sort_detections = []
-        
+
         for bounding_box in detection_boxes:
             sort_detections.append((np.asarray([
                 bounding_box.rectangle.x1 * width,
