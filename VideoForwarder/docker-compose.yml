@@ -2,17 +2,12 @@ version: "3.8"
 
 services:
   forwarder:
-    build: .
+    build:
+      target: development
     environment:
+      CAMERA_URL: rtmp://localhost/stream
       CAMERA_AUDIO: "false"
-      CAMERA_URL: rtsp://root:root@192.168.178.30/axis-media/media.amp
-      STREAM_FOLDER: /app/streams
-      STREAM_ENCODING: libx264
       STREAM_LOW: "true"
-      SEGMENT_SIZE: 2
-      SEGMENT_AMOUNT: 5
     ports:
       - published: 80
         target: 80
-      - published: 443
-        target: 443

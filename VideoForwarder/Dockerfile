@@ -59,6 +59,16 @@ COPY tests tests
 ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
 
 
+FROM installer AS development
+WORKDIR /app
+
+# Make sure port is available
+EXPOSE 80
+
+# Run a test stream and the server
+ENTRYPOINT ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & python -u src/main.py"]
+
+
 FROM installer AS production
 WORKDIR /app
 

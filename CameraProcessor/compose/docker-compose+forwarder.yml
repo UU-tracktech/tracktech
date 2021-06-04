@@ -13,18 +13,15 @@ services:
   forwarder-test-service:
     build:
       context: ../../VideoForwarder
+      target: development
     environment:
-      CAMERA_AUDIO: "true"
-      CAMERA_URL: rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
-      STREAM_FOLDER: /app/streams
-      STREAM_ENCODING: libx264
+      CAMERA_URL: rtmp://localhost/stream
+      CAMERA_AUDIO: "false"
       STREAM_LOW: "true"
-      SEGMENT_SIZE: 2
-      SEGMENT_AMOUNT: 5
     container_name: ext-forwarder-integration-test-container
     # Healthcheck so test doesn't start too soon and no timeout is required
     healthcheck:
-      test: curl --fail -s http://127.0.0.1:80/testvid.m3u8 || exit 1
+      test: curl --fail -s http://localhost/stream.m3u8 || exit 1
       interval: 10s
       timeout: 5s
       retries: 6
