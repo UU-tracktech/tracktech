@@ -57,21 +57,21 @@ class SortTracker(ITracker):
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).
         """
-        width, height = frame_obj.get_shape()
+        width, height = frame_obj.shape
 
         # Get bounding boxes into format expected by SORT tracker.
-        det_bounding_boxes = det_obj.get_bounding_boxes()
+        det_bounding_boxes = det_obj.bounding_boxes
         sort_detections = []
         if len(det_bounding_boxes) > 0:
             for bounding_box in det_bounding_boxes:
                 sort_detections.append((np.asarray([
-                    bounding_box.get_rectangle().get_x1() * width,
-                    bounding_box.get_rectangle().get_y1() * height,
-                    bounding_box.get_rectangle().get_x2() * width,
-                    bounding_box.get_rectangle().get_y2() * height,
-                    bounding_box.get_certainty()]),
-                    bounding_box.get_classification(),
-                    bounding_box.get_certainty()))
+                    bounding_box.rectangle.x1 * width,
+                    bounding_box.rectangle.y1 * height,
+                    bounding_box.rectangle.x2 * width,
+                    bounding_box.rectangle.y2 * height,
+                    bounding_box.certainty]),
+                    bounding_box.classification,
+                    bounding_box.certainty))
 
         # Get all tracked objects found in current frame.
         trackers = self.sort.update(sort_detections)
