@@ -78,8 +78,6 @@ Utrecht University within the Software Project course.
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">pylint.interfaces</span> <span class="kn">import</span> <span class="n">IRawChecker</span>
 <span class="kn">from</span> <span class="nn">pylint.checkers</span> <span class="kn">import</span> <span class="n">BaseChecker</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
 
 
 <span class="k">class</span> <span class="nc">CopyrightChecker</span><span class="p">(</span><span class="n">BaseChecker</span><span class="p">):</span>
@@ -123,12 +121,6 @@ Utrecht University within the Software Project course.
         <span class="c1"># Go through the file.</span>
         <span class="k">with</span> <span class="n">node</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
-
-                <span class="c1"># Break if file is an init file.</span>
-                <span class="k">if</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()),</span> <span class="s1">&#39;..&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*.py&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
-                    <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">break</span>
-
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 
                 <span class="c1"># Break when there are two triple quotes passed already.</span>
@@ -220,12 +212,6 @@ Utrecht University within the Software Project course.
         <span class="c1"># Go through the file.</span>
         <span class="k">with</span> <span class="n">node</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
-
-                <span class="c1"># Break if file is an init file.</span>
-                <span class="k">if</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()),</span> <span class="s1">&#39;..&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*.py&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
-                    <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">break</span>
-
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 
                 <span class="c1"># Break when there are two triple quotes passed already.</span>
@@ -319,12 +305,6 @@ Utrecht University within the Software Project course.
         <span class="c1"># Go through the file.</span>
         <span class="k">with</span> <span class="n">node</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
-
-                <span class="c1"># Break if file is an init file.</span>
-                <span class="k">if</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()),</span> <span class="s1">&#39;..&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*.py&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
-                    <span class="n">contains_copyright</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">break</span>
-
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 
                 <span class="c1"># Break when there are two triple quotes passed already.</span>
