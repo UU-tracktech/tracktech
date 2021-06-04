@@ -215,11 +215,6 @@ async def test_start_tracking_with_image_and_timeout():
     message_3 = await processor.read_message()
     assert assert_stop_tracking(message_3, 2)
 
-    interface.write_message(json.dumps({
-        "type": "stop",
-        "objectId": 2
-    }))
-
     interface.close()
     processor.close()
 
@@ -290,16 +285,22 @@ async def test_feature_map_distribution():
 
     processor_1.write_message(json.dumps({
         "type": "featureMap",
-        "objectId": 1,
+        "objectId": 3,
         "featureMap": {"test": "test"}
     }))
 
     processor_1_message = await processor_1.read_message()
     processor_2_message = await processor_2.read_message()
 
-    assert assert_feature_map(processor_1_message, 1)
-    assert assert_feature_map(processor_2_message, 1)
+    assert assert_feature_map(processor_1_message, 3)
+    assert assert_feature_map(processor_2_message, 3)
 
+    client.write_message(json.dumps({
+        "type": "stop",
+        "objectId": 3
+    }))
+
+    client.close()
     processor_1.close()
     processor_2.close()
 
@@ -347,8 +348,8 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
         "type": "boundingBoxes",
         "frameId": 1,
         "boxes": [
-            {"objectId": 2},
             {"objectId": 3},
+            {"objectId": 4},
             {"rect": []}
         ]
     }))
@@ -356,13 +357,13 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
     message = await interface.read_message()
     assert assert_boxes_message(message)
 
-    response = requests.get('http://processor-orchestrator-service/timelines?objectId=3').text
+    response = requests.get('http://processor-orchestrator-service/timelines?objectId=4').text
     json_response = json.loads(response)
     assert len(list(filter(lambda x: x["processorId"] == "processor_4", json_response["data"]))) > 0
 
     interface.write_message(json.dumps({
         "type": "stop",
-        "objectId": 3
+        "objectId": 4
     }))
 
     interface.close()
@@ -380,8 +381,8 @@ def assert_boxes_message(message):
     assert message_json["cameraId"] == "processor_4"
     assert message_json["frameId"] == 1
     assert message_json["boxes"] == [
-            {"objectId": 2},
             {"objectId": 3},
+            {"objectId": 4},
             {"rect": []}
         ]
     return True
@@ -433,7 +434,7 @@ async def test_object_ids_handler():
     """Test if requesting timeline data of an unknown object gives a 400 error."""
 
     response = requests.get('http://processor-orchestrator-service/objectIds')
-    assert response.text == "{\"data\":[1, 2, 3]}"
+    assert response.text == "{\"data\":[1, 2, 3, 4]}"
 
 
 @pytest.mark.asyncio
@@ -458,13 +459,13 @@ async def test_stop_tracking():
     }))
     await interface.write_message(json.dumps({
         "type": "stop",
-        "objectId": 4
+        "objectId": 5
     }))
 
     # Read start message first.
     _ = await processor.read_message()
     message = await processor.read_message()
-    assert assert_stop_tracking(message, 4)
+    assert assert_stop_tracking(message, 5)
 
     processor.close()
     interface.close()
@@ -506,7 +507,7 @@ async def test_startup_message():
 
     processor_1.write_message(json.dumps({
         "type": "featureMap",
-        "objectId": 5,
+        "objectId": 6,
         "featureMap": {"test": "test"}
     }))
 
@@ -518,7 +519,7 @@ async def test_startup_message():
     }))
 
     message = await processor_2.read_message()
-    assert assert_feature_map(message, 5)
+    assert assert_feature_map(message, 6)
 
     processor_1.close()
     processor_2.close()
