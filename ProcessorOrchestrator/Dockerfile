@@ -37,7 +37,9 @@ RUN ["mkdir", "tracking_timelines"]
 FROM test as lint
 WORKDIR /
 ENV PYTHONPATH=/
-ENTRYPOINT ["pylint", "app", "--rcfile=app/.pylintrc"]
+COPY app/utility utility
+COPY app/.pylintrc .pylintrc
+ENTRYPOINT ["pylint", "app", "--rcfile=.pylintrc"]
 
 
 FROM python:3.8-slim-buster AS build
