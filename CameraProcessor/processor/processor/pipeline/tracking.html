@@ -136,7 +136,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage</span>
+<span class="sd">            detection_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage</span>
 <span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
@@ -146,7 +146,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Get bounding boxes into format expected by SORT tracker.</span>
         <span class="n">sort_detections</span> <span class="o">=</span> <span class="p">[]</span>
-        
+
         <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">detection_boxes</span><span class="p">:</span>
             <span class="n">sort_detections</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
                 <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>

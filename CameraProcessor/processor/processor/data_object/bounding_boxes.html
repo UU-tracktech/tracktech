@@ -83,7 +83,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            bounding_boxes ([BoundingBox]): list of bounding boxes.</span>
-<span class="sd">            image_id (int): id of the image.</span>
+<span class="sd">            image_id (str): id of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span> <span class="o">=</span> <span class="n">image_id</span>
@@ -119,19 +119,23 @@ Utrecht University within the Software Project course.
                 <span class="k">for</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">other_bounding_box</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterates the bounding boxes inside the list.</span>
+        <span class="sd">&quot;&quot;&quot;String representation of the bounding boxes.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Bounding boxes inside the list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;BoundingBoxes(imageid: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_id</span><span class="si">}</span><span class="s1"> boxes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="si">}</span><span class="s1">)&#39;</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterates the bounding boxes inside the list.</span>
-<span class="sd">        </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list_iterator: Iterator for the list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of boxes stored inside the object</span>
+        <span class="sd">&quot;&quot;&quot;Number of boxes stored inside the object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Length of the number of boxes.</span>
@@ -161,7 +165,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            bounding_boxes ([BoundingBox]): list of bounding boxes.</span>
-<span class="sd">            image_id (int): id of the image.</span>
+<span class="sd">            image_id (str): id of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span> <span class="o">=</span> <span class="n">image_id</span>
@@ -197,19 +201,23 @@ Utrecht University within the Software Project course.
                 <span class="k">for</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">other_bounding_box</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Iterates the bounding boxes inside the list.</span>
+        <span class="sd">&quot;&quot;&quot;String representation of the bounding boxes.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Bounding boxes inside the list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;BoundingBoxes(imageid: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_id</span><span class="si">}</span><span class="s1"> boxes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="si">}</span><span class="s1">)&#39;</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterates the bounding boxes inside the list.</span>
-<span class="sd">        </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list_iterator: Iterator for the list of bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of boxes stored inside the object</span>
+        <span class="sd">&quot;&quot;&quot;Number of boxes stored inside the object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: Length of the number of boxes.</span>
@@ -237,7 +245,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            bounding_boxes ([BoundingBox]): list of bounding boxes.</span>
-<span class="sd">            image_id (int): id of the image.</span>
+<span class="sd">            image_id (str): id of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__image_id</span> <span class="o">=</span> <span class="n">image_id</span>
@@ -251,7 +259,7 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>bounding_boxes ([BoundingBox]):</strong>  list of bounding boxes.</li>
-<li><strong>image_id (int):</strong>  id of the image.</li>
+<li><strong>image_id (str):</strong>  id of the image.</li>
 </ul>
 </div>
 
