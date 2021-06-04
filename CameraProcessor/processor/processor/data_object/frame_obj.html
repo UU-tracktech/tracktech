@@ -35,13 +35,13 @@
                                 <a class="function" href="#FrameObj.__init__">FrameObj</a>
                         </li>
                         <li>
-                                <a class="function" href="#FrameObj.get_frame">get_frame</a>
+                                <a class="variable" href="#FrameObj.frame">frame</a>
                         </li>
                         <li>
-                                <a class="function" href="#FrameObj.get_timestamp">get_timestamp</a>
+                                <a class="variable" href="#FrameObj.timestamp">timestamp</a>
                         </li>
                         <li>
-                                <a class="function" href="#FrameObj.get_shape">get_shape</a>
+                                <a class="variable" href="#FrameObj.shape">shape</a>
                         </li>
                 </ul>
 
@@ -91,7 +91,8 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">=</span> <span class="n">frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
 
-    <span class="k">def</span> <span class="nf">get_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the frame.</span>
 
 <span class="sd">        Returns:</span>
@@ -99,7 +100,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span>
 
-    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the timestamp (in s) associated with the current frame.</span>
 
 <span class="sd">        Returns:</span>
@@ -107,7 +109,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span>
 
-    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets shape of frame.</span>
 
 <span class="sd">        Returns:</span>
@@ -143,7 +146,8 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">=</span> <span class="n">frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
 
-    <span class="k">def</span> <span class="nf">get_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the frame.</span>
 
 <span class="sd">        Returns:</span>
@@ -151,7 +155,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span>
 
-    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the timestamp (in s) associated with the current frame.</span>
 
 <span class="sd">        Returns:</span>
@@ -159,7 +164,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span>
 
-    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets shape of frame.</span>
 
 <span class="sd">        Returns:</span>
@@ -208,26 +214,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="FrameObj.get_frame" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FrameObj.get_frame">#&nbsp;&nbsp</a>
+                            <div id="FrameObj.frame" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#FrameObj.frame">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_frame</span><span class="signature">(self)</span>:
+        <span class="name">frame</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the frame.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            numpy.ndarray: the frame given when creating the object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Gets the frame.</p>
 
@@ -240,26 +231,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="FrameObj.get_timestamp" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FrameObj.get_timestamp">#&nbsp;&nbsp</a>
+                            <div id="FrameObj.timestamp" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#FrameObj.timestamp">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_timestamp</span><span class="signature">(self)</span>:
+        <span class="name">timestamp</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the timestamp (in s) associated with the current frame.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: timestamp (in s) of the frame.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Gets the timestamp (in s) associated with the current frame.</p>
 
@@ -272,26 +248,11 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="FrameObj.get_shape" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FrameObj.get_shape">#&nbsp;&nbsp</a>
+                            <div id="FrameObj.shape" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#FrameObj.shape">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">get_shape</span><span class="signature">(self)</span>:
+        <span class="name">shape</span>
     </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets shape of frame.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float, float: (width, height) of frame.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-        </details>
 
             <div class="docstring"><p>Gets shape of frame.</p>
 
