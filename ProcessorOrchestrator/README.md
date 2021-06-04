@@ -60,9 +60,13 @@ The client websocket knows the following types of messages:
   Of these properties, it is required that at least the "image" parameter, or, a combination of the "frameId" and "boxId" 
   parameters are sent.
 - "stop" | This command is used to stop the tracking of an object,
-  needs the following additional properties:
+  it needs the following additional property:
   - "objectId" | The identifier of the object which should no longer be tracked.
-    
+- "setUsesImages" | This command is used to specify whether or not this client uses images and should therefore
+receive cutouts when they are sent alongside a "start" command. It needs the following property:
+  - "usesImages" | A bool indicating whether images are used. If it set to true, then the orchestrator will
+  immediately send all the currently stored images to this client.
+
 ### Processor
 The processor websocket knows the following types of messages:
 - "identifier": This signifies a message containing the identifier by which this processor
