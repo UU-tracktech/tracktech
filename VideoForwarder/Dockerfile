@@ -48,7 +48,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install pylint
-RUN ["pip", "install", "pylint==2.6.0"]
+RUN ["pip", "install", "pylint==2.8.3"]
 
 RUN ["mkdir", "utility"]
 

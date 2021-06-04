@@ -1,5 +1,5 @@
 [MASTER]
-init-hook="import os, sys; sys.path.append(os.getcwd()); from utility.pylint_ignore import PylintIgnorePaths; PylintIgnorePaths('.git', 'CameraProcessor/processor/pipeline/detection/yolor', 'CameraProcessor/processor/pipeline/detection/yolov5', 'CameraProcessor/processor/training/detection/yolov5', '/app/.git', '/app/processor/pipeline/detection/yolor', '/app/processor/pipeline/detection/yolov5', '/app/processor/training/detection/yolov5', 'CameraProcessor/processor/pipeline/reidentification/torchreid', '/app/processor/pipeline/reidentification/torchreid')"
+init-hook="import os, sys; sys.path.append(os.getcwd());
 
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
@@ -22,11 +22,11 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,sort,yolor,torchreid
+ignore=CVS,venv,yolov5,sort,yolor,torchreid,__init__.py,/__init__.py,tests/__init__.py,src/__init__.py
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
-ignore-patterns=
+ignore-patterns=__init__.py,tests/__init__.py,src/__init__.py
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
@@ -166,7 +166,8 @@ disable=print-statement,
         logging-fstring-interpolation,
         len-as-condition,
         missing-docstring,
-        fixme
+        fixme,
+        consider-using-with
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -292,10 +293,13 @@ good-names=i,
            z,
            x0,
            x1,
+           x2,
            y0,
            y1,
+           y2,
            z0,
-           z1
+           z1,
+           z2
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
