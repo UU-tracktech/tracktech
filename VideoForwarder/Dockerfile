@@ -53,10 +53,10 @@ RUN ["pip", "install", "pylint==2.8.3"]
 RUN ["mkdir", "utility"]
 
 # Copy the actual source code
-COPY src src
-COPY tests tests
+COPY src app/src
+COPY tests app/tests
 
-ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
+ENTRYPOINT ["pylint","app","--rcfile=.pylintrc"]
 
 
 FROM installer AS production
