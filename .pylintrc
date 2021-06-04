@@ -22,11 +22,11 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,sort,yolor,torchreid,__init__
+ignore=CVS,venv,yolov5,sort,yolor,torchreid
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
-ignore-patterns=(__init__.py)
+ignore-patterns=__init__.*?py
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
@@ -167,7 +167,8 @@ disable=print-statement,
         len-as-condition,
         missing-docstring,
         fixme,
-        consider-using-with
+        consider-using-with,
+        fatal
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
