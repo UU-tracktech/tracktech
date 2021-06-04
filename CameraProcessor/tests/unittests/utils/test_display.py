@@ -25,6 +25,7 @@ def test_display_concatinates(small_frame):
     # Tile the images.
     tiled_images = display.generate_tiled_image(frame_obj,
                                                 BoundingBoxes([]),
+                                                BoundingBoxes([]),
                                                 BoundingBoxes([])
                                                 )
 
@@ -47,6 +48,7 @@ def test_display_takes_dimensions(small_frame):
     tiled_images = display.generate_tiled_image(frame_obj,
                                                 BoundingBoxes([]),
                                                 BoundingBoxes([]),
+                                                BoundingBoxes([]),
                                                 target_dimensions
                                                 )
 
@@ -67,6 +69,7 @@ def test_display_automatically_downscales(large_frame):
 
     # Generate the tiled images without specifying dimensions.
     tiled_images = display.generate_tiled_image(frame_obj,
+                                                BoundingBoxes([]),
                                                 BoundingBoxes([]),
                                                 BoundingBoxes([])
                                                 )

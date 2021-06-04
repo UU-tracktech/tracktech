@@ -138,11 +138,12 @@ class TestProcessFrames:
             detector,
             tracker,
             re_identifier,
-            lambda frame_obj, detected_boxes, tracked_boxes: send_boxes_to_orchestrator(
+            lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
                 websocket_client,
                 frame_obj,
                 detected_boxes,
-                tracked_boxes
+                tracked_boxes,
+                re_id_tracked_boxes
             ),
             websocket_client
         )
