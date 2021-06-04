@@ -35,16 +35,16 @@
                                 <a class="function" href="#Rectangle.__init__">Rectangle</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Rectangle.x1">x1</a>
+                                <a class="function" href="#Rectangle.get_x1">get_x1</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Rectangle.y1">y1</a>
+                                <a class="function" href="#Rectangle.get_y1">get_y1</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Rectangle.x2">x2</a>
+                                <a class="function" href="#Rectangle.get_x2">get_x2</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Rectangle.y2">y2</a>
+                                <a class="function" href="#Rectangle.get_y2">get_y2</a>
                         </li>
                 </ul>
 
@@ -107,8 +107,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__x2</span> <span class="o">=</span> <span class="n">x2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__y2</span> <span class="o">=</span> <span class="n">y2</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for right X coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -116,8 +115,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x1</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for bottom Y coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -125,8 +123,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y1</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for left X coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -134,8 +131,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x2</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for top Y coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -184,8 +180,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">__x2</span> <span class="o">=</span> <span class="n">x2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__y2</span> <span class="o">=</span> <span class="n">y2</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for right X coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -193,8 +188,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x1</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for bottom Y coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -202,8 +196,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y1</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for left X coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -211,8 +204,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x2</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Getter for top Y coord of rectangle.</span>
 
 <span class="sd">        Returns:</span>
@@ -277,11 +269,26 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="Rectangle.x1" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Rectangle.x1">#&nbsp;&nbsp</a>
+                            <div id="Rectangle.get_x1" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Rectangle.get_x1">#&nbsp;&nbsp</a>
 
-        <span class="name">x1</span>
+        
+            <span class="def">def</span>
+            <span class="name">get_x1</span><span class="signature">(self)</span>:
     </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getter for right X coord of rectangle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): normalized right most X.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x1</span>
+</pre></div>
+
+        </details>
 
             <div class="docstring"><p>Getter for right X coord of rectangle.</p>
 
@@ -294,11 +301,26 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="Rectangle.y1" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Rectangle.y1">#&nbsp;&nbsp</a>
+                            <div id="Rectangle.get_y1" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Rectangle.get_y1">#&nbsp;&nbsp</a>
 
-        <span class="name">y1</span>
+        
+            <span class="def">def</span>
+            <span class="name">get_y1</span><span class="signature">(self)</span>:
     </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getter for bottom Y coord of rectangle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): normalized bottom most Y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y1</span>
+</pre></div>
+
+        </details>
 
             <div class="docstring"><p>Getter for bottom Y coord of rectangle.</p>
 
@@ -311,11 +333,26 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="Rectangle.x2" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Rectangle.x2">#&nbsp;&nbsp</a>
+                            <div id="Rectangle.get_x2" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Rectangle.get_x2">#&nbsp;&nbsp</a>
 
-        <span class="name">x2</span>
+        
+            <span class="def">def</span>
+            <span class="name">get_x2</span><span class="signature">(self)</span>:
     </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getter for left X coord of rectangle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): normalized left most X.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__x2</span>
+</pre></div>
+
+        </details>
 
             <div class="docstring"><p>Getter for left X coord of rectangle.</p>
 
@@ -328,11 +365,26 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="Rectangle.y2" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Rectangle.y2">#&nbsp;&nbsp</a>
+                            <div id="Rectangle.get_y2" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Rectangle.get_y2">#&nbsp;&nbsp</a>
 
-        <span class="name">y2</span>
+        
+            <span class="def">def</span>
+            <span class="name">get_y2</span><span class="signature">(self)</span>:
     </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getter for top Y coord of rectangle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): normalized top most Y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y2</span>
+</pre></div>
+
+        </details>
 
             <div class="docstring"><p>Getter for top Y coord of rectangle.</p>
 
