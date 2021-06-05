@@ -77,20 +77,20 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
 
         return feature
 
-    def extract_features_boxes(self, frame_obj, tracked_boxes):
+    def extract_features_boxes(self, frame_obj, boxes):
         """Extracts features from all bounding boxes generated in the tracking stage.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            tracked_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+            boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
 
         Returns:
             [[float]]: Feature vectors of the tracked objects.
         """
         features = []
 
-        for tracked_box in tracked_boxes:
-            features.append(self.extract_features(frame_obj, tracked_box))
+        for box in boxes:
+            features.append(self.extract_features(frame_obj, box))
 
         return features
 
