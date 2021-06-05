@@ -125,30 +125,34 @@ export function VideoPlayer(props: VideoPlayerProps) {
 
       //When the player starts bufferring it fires the waiting event
       player?.on('waiting', () => {
-        if (!bufferTimer) {
-          //Start an interval to count down
-          bufferTime = 15 //how long to wait for
-          const delta = 0.5
+        if (!startTime) return //prevent wonkyness on firstplay when there is no timestamp yet
 
+        //Waiting may happen twice in a row, so prevent multiple timers
+        if (!bufferTimer) {
+          bufferTime = 15 //how long to wait for. TODO: make this not hardcoded
+          const delta = 0.5 //update frequency, every <delta> seconds it checks the status
+
+          //The interval will count down and show the alert if the countdown reaches 0
           bufferTimer = player?.setInterval(() => {
             bufferTime -= delta
             if (bufferTime <= 0) {
-              //Once it waited long enough, clear the interval and show a message to the user showing the problem
+              //Clear the interval and show a message to the user showing the problem
               player?.clearInterval(bufferTimer)
               bufferTimer = undefined
               player?.pause()
 
               var modal = player?.createModal(
-                'Unable to load stream. Check your connection or the video forwarder. Close this message to attempt reloading the stream',
+                'Unable to load stream. Check your connection or the video forwarder. Close this message to reload the stream.',
                 null
               )
-              //The modal overlaps the default videojs error of "the media could not be loaded"
-              //Give the modal a custom class so we can adjust it with CSS
+
+              //TODO: make the alert look better
+              //The modal may overlap the default videojs error of "the media could not be loaded"
+              //The modal can be given a custom class so we can adjust it with CSS
               //modal?.addClass('vjs-custom-modal')
 
               //Try to reload the videoplayer when the user closes the warning message
               modal?.on('modalclose', () => {
-                //reset the source
                 if (props.sources && props.sources[0].type)
                   player?.src({
                     src: props.sources[0].src,
@@ -157,23 +161,25 @@ export function VideoPlayer(props: VideoPlayerProps) {
                 else if (props.sources)
                   player?.src({ src: props.sources[0].src })
 
+                startTime = undefined
                 player?.load()
-                player?.play()
               })
             }
           }, delta * 1000)
         }
       })
 
-      //Seeked is fired when the player starts playing video again
+      //Seeked is fired when the player starts/resumes playing video
+      //It seems to happen after a waiting but no guarantee it always happens after a waiting though
+      //Use this as a signal to stop waiting for a buffer if the timer is running
       player?.on('seeked', () => {
-        //Use this as a signal to stop waiting for a buffer if the timer is running
         if (bufferTimer) {
           player?.clearInterval(bufferTimer)
           bufferTimer = undefined
         }
       })
     })
+
     return () => playerRef.current?.dispose()
   }, [])
 
