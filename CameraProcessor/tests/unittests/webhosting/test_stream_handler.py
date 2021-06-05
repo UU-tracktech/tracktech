@@ -5,7 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-import pytest
 import tornado.testing
 import tornado.web
 from tornado.testing import AsyncHTTPTestCase
