@@ -1,4 +1,4 @@
-"""Tests the coco dataloader.
+"""Tests the COCO dataloader.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -6,4 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import processor.dataloaders.coco_dataloader
+import processor.dataloaders.coco_dataloader as dl
+
+class TestCocoDataloader:
+    """Tests the COCO dataloader."""

@@ -6,4 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import processor.dataloaders.json_dataloader
+import processor.dataloaders.json_dataloader as dl
+
+class TestJsonDataloader:
+    """Tests the JSON dataloader."""
