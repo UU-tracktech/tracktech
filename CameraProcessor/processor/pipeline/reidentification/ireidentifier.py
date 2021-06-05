@@ -4,10 +4,19 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+from processor.scheduling.component.component_interface import IComponent
 
 
-class IReIdentifier():
+class IReIdentifier(IComponent):
     """Superclass for identifiers."""
+
+    def execute_component(self):
+        """Function given to scheduler so the scheduler can run the tracking stage.
+
+        Returns:
+            function: function that the scheduler can run.
+        """
+        return self.re_identify
 
     def extract_features(self, frame_obj, track_obj):
         """Given a det_obj object, extract the features of it.

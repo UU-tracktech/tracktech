@@ -88,14 +88,6 @@ class Yolov5Detector(IYoloDetector):
                 torch.zeros(1, 3, imgsz,
                             imgsz).to(self.device).type_as(next(self.model.parameters())))
 
-    def execute_component(self):
-        """Function given to scheduler so the scheduler can run the detection stage.
-
-        Returns:
-            function: function that the scheduler can run.
-        """
-        return self.detect
-
     # pylint: disable=duplicate-code
     def detect(self, frame_obj):
         """Run detection on a Detection Object.

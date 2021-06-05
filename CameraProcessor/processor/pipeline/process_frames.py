@@ -21,8 +21,8 @@ from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
 
-from processor.pipeline.prepare_pipeline import prepare_scheduler
-from processor.scheduling.plan.pipeline_plan import plan_globals
+# from processor.pipeline.prepare_pipeline import prepare_scheduler.
+# from processor.scheduling.plan.pipeline_plan import plan_globals.
 
 
 async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
@@ -40,7 +40,7 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied.
     """
     # Create Scheduler by doing the following.
-    scheduler = prepare_scheduler(detector, tracker, on_processed_frame)
+    # scheduler = prepare_scheduler(detector, tracker, re_identifier, on_processed_frame).
 
     framebuffer = FrameBuffer(300)
 
@@ -56,12 +56,18 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
             continue
 
         # Enforce keys of used plan globals.
-        globals_readonly = plan_globals
-        globals_readonly['frame_obj'] = frame_obj
-        globals_readonly['re_id_data'] = re_id_data
+        # globals_readonly = plan_globals.
+        # globals_readonly['frame_obj'] = frame_obj.
+        # globals_readonly['re_id_data'] = re_id_data.
 
         # Execute scheduler plan on current frame.
-        scheduler.schedule_graph([], globals_readonly)
+        # scheduler.schedule_graph([], globals_readonly).
+
+        # Get detections from running detection stage.
+        detected_boxes = detector.detect(frame_obj)
+
+        # Get objects tracked in current frame from tracking stage.
+        tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
 
         # Get objects where re-id is performed on the tracked objects.
         re_id_tracked_boxes = re_identifier.re_identify(frame_obj, tracked_boxes, re_id_data)
@@ -71,20 +77,6 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
 
         # Handle side effects of frame processing.
         on_processed_frame(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes)
-        # # Get detections from running detection stage.
-        # detected_boxes = detector.detect(frame_obj)
-        #
-        # # Get objects tracked in current frame from tracking stage.
-        # tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
-        #
-        # # Use the frame object and the tracked boxes for re-identification.
-        # re_identifier.re_identify(frame_obj, tracked_boxes, re_id_data)
-        #
-        # # Buffer the tracked object.
-        # framebuffer.add_frame(frame_obj, tracked_boxes)
-        #
-        # # Handle side effects of frame processing.
-        # on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         # Process the message queue if there is a websocket connection.
         if ws_client is not None:

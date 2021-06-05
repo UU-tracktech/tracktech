@@ -13,6 +13,7 @@ from processor.scheduling.component.func_call_component import FuncCallComponent
 plan_inputs = {
     'detector': None,
     'tracker': None,
+    're_identifier': None,
     'func': None
 }
 
@@ -34,18 +35,34 @@ def create_plan(plan_args):
     """
     # Final node executing a function that takes all previous component outputs as input.
     func_node = ScheduleNode(
-        3,
+        4,
         [],
         FuncCallComponent(plan_args['func']),
-        {'frame_obj': 0}
+        {
+            'frame_obj': 0
+        }
+    )
+
+    # Node that executes re-identification.
+    re_id_node = ScheduleNode(
+        3,
+        [(func_node, 3)],
+        plan_args['re_identifier'],
+        {
+            'frame_obj': 0,
+            're_id_data': 2
+        }
     )
 
     # Node that executes tracking.
     tracker_node = ScheduleNode(
         3,
-        [(func_node, 2)],
+        [(func_node, 2), (re_id_node, 1)],
         plan_args['tracker'],
-        {'frame_obj': 0, 're_id_data': 2}
+        {
+            'frame_obj': 0,
+            're_id_data': 2
+        }
     )
 
     # Node that executes detection.
@@ -53,7 +70,9 @@ def create_plan(plan_args):
         1,
         [(tracker_node, 1), (func_node, 1)],
         plan_args['detector'],
-        {'frame_obj': 0}
+        {
+            'frame_obj': 0
+        }
     )
 
     # Detection node is the starting node of the plan.

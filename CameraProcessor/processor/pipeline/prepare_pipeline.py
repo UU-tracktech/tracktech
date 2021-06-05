@@ -129,13 +129,14 @@ def prepare_capture(input_config):
     raise NameError(f'Input type "{capture_type}" is unknown')
 
 
-def prepare_scheduler(detector, tracker, on_processed_frame):
+def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame):
     """Prepare the Scheduler with a valid plan configuration.
 
     Args:
         detector (IDetector): detector performing the detections on a given frame.
         tracker (ITracker): tracker performing simple tracking of all objects using the detections.
-        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
+        re_identifier (IReIdentifier): re-identifier performing the re-identification stage.
+        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.
 
     Returns:
         Scheduler: Scheduler that has been configured with a plan.
@@ -146,6 +147,7 @@ def prepare_scheduler(detector, tracker, on_processed_frame):
     # Put configuration into args dict.
     plan_args['detector'] = detector
     plan_args['tracker'] = tracker
+    plan_args['re_identifier'] = re_identifier
     plan_args['func'] = on_processed_frame
 
     # Apply configuration to plan.

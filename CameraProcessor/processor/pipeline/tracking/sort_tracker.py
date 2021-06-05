@@ -35,14 +35,6 @@ class SortTracker(ITracker):
                          iou_threshold=config.getfloat('iou_threshold')
                          )
 
-    def execute_component(self):
-        """Function given to scheduler so the scheduler can run the tracking stage.
-
-        Returns:
-            function: function that the scheduler can run.
-        """
-        return self.track
-
     def track(self, frame_obj, det_obj, re_id_data):
         """Performing tracking using SORT tracking to get a tracking ID for all tracked detections.
 
