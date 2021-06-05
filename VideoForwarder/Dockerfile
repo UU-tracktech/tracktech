@@ -47,6 +47,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+ENV PYTHONPATH=/app
+
 # Install pylint
 RUN ["pip", "install", "pylint==2.8.3"]
 
@@ -55,9 +57,8 @@ RUN ["mkdir", "utility"]
 # Copy the actual source code
 COPY src src
 COPY tests tests
-WORKDIR /
 
-ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
+ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
 
 
 FROM installer AS development
