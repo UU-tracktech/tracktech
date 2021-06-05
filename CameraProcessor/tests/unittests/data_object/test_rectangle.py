@@ -56,13 +56,13 @@ class TestRectangle:
     def test_invalid_rectangle_values(self):
         """Tests whether an error is raised when the values in the rectangle are invalid."""
         with pytest.raises(ValueError):
-            assert all([Rectangle(-0.1, 0, 0, 0),
-                        Rectangle(0, -0.1, 0, 0),
-                        Rectangle(0, 0, 1.1, 0),
-                        Rectangle(0, 0, 0, 1.1),
-                        Rectangle(0.5, 0.5, 0.1, 0.5),
-                        Rectangle(0.5, 0.5, 0.5, 0.1),
-                        Rectangle(0.5, 0.5, 0.1, 0.1)])
+            assert Rectangle(-0.1, 0, 0, 0)
+            assert Rectangle(0, -0.1, 0, 0)
+            assert Rectangle(0, 0, 1.1, 0)
+            assert Rectangle(0, 0, 0, 1.1)
+            assert Rectangle(0.5, 0.5, 0.1, 0.5)
+            assert Rectangle(0.5, 0.5, 0.5, 0.1)
+            assert Rectangle(0.5, 0.5, 0.1, 0.1)
 
 
 if __name__ == '__main__':
