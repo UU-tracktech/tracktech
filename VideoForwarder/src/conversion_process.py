@@ -59,7 +59,7 @@ def get_conversion_process(url, audio, root, stream_options):
     # See https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new.
     command = [
         # Ffmpeg configurations.
-        'ffmpeg', '-loglevel', 'fatal', '-rtsp_transport', 'tcp', '-i', url,
+        'ffmpeg', '-loglevel', 'fatal', '-i', url,
         # Create 3 variances of video + audio stream.
         *maps,
         '-profile:v', 'main', '-crf', '24', '-force_key_frames', 'expr:gte(t,n_forced*2)',

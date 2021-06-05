@@ -19,25 +19,6 @@ import { Box, BoxesClientMessage } from '../../src/classes/clientMessage'
 
 var websocketAddress
 
-//mock functions and values to change the keycloak mock per test
-let mockInitialized = true
-let mockAuthenticated = false
-let mockToken = { name: 'Firstname Lastname' }
-
-//mock the keycloak implementation
-//https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
-jest.mock('@react-keycloak/web', () => {
-  return {
-    useKeycloak: () => ({
-      initialized: mockInitialized,
-      keycloak: {
-        authenticated: mockAuthenticated,
-        tokenParsed: mockToken
-      }
-    })
-  }
-})
-
 /**
  * Render a testing overlay which is used in all websocket tests
  */
