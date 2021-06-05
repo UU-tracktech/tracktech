@@ -56,8 +56,13 @@ class WebsocketClient:
         sleep = 1
         connected = False
 
+        #try:
+        #    auth_token = get_token(self.configs['Authentication']['auth_server_url'])
+        #except EnvironmentError:
+        auth_token = self.get_access_token()
 
-        auth_token = get_token(self.configs['Authentication']['auth_server_url'])
+        # If get_acces_token returns None and does not start with wss, we are good
+        # if it starts with wss, then we return an error since we cannot authentica
 
         # Whilst there is no connection.
         while not connected and timeout_left > 0:
@@ -71,8 +76,10 @@ class WebsocketClient:
                 if self.websocket_url.startswith('wss'):
                     auth_message = json.dumps({
                         "type": "authenticate",
-                        "jwt": utils.
+                        "jwt": auth_token
                     })
+                    logging.info('')
+                    await self.connection.write_message(auth_message)
                 # Send an identification message to the orchestrator on connect.
                 # Only do this when the websocket is a processor socket.
                 if self.identifier is not None:
@@ -101,19 +108,19 @@ class WebsocketClient:
         Returns:
             str: Access token to the authentication server.
         """
-        token = None
+        retries_left = 5
 
-        if not self.websocket_url.startswith('wss'):
-            return token
-
-        while token is None:
+        while retries_left > 0:
             try:
                 token = get_token(self.configs['Authentication']['auth_server_url'])
+                return token
             except ConnectionError:
+                retries_left -= 1
                 logging.warning('Retrieval of token failed, trying again')
                 await asyncio.sleep(2)
-
-        return token
+            except EnvironmentError:
+                logging.warning('No authentication will take place because environment variables are missing')
+                return None
 
     async def disconnect(self):
         """Disconnects the websocket."""
