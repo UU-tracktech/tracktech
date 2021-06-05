@@ -120,15 +120,7 @@ Utrecht University within the Software Project course.
                          <span class="n">iou_threshold</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou_threshold&#39;</span><span class="p">)</span>
                          <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
-
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detection_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performing tracking using SORT tracking to get a tracking ID for all tracked detections.</span>
 
 <span class="sd">        Converts detections to correct format, gets trackers from SORT tracking and converts trackers to bounding boxes.</span>
@@ -136,7 +128,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            detection_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage</span>
+<span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage</span>
 <span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
 
 <span class="sd">        Returns:</span>
@@ -145,17 +137,18 @@ Utrecht University within the Software Project course.
         <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span>
 
         <span class="c1"># Get bounding boxes into format expected by SORT tracker.</span>
+        <span class="n">det_bounding_boxes</span> <span class="o">=</span> <span class="n">det_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
         <span class="n">sort_detections</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">detection_boxes</span><span class="p">:</span>
-            <span class="n">sort_detections</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">]),</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">det_bounding_boxes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">det_bounding_boxes</span><span class="p">:</span>
+                <span class="n">sort_detections</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">]),</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span>
+                    <span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">))</span>
 
         <span class="c1"># Get all tracked objects found in current frame.</span>
         <span class="n">trackers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sort_detections</span><span class="p">)</span>
@@ -210,6 +203,14 @@ Utrecht University within the Software Project course.
 <span class="k">class</span> <span class="nc">ITracker</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            function: function that the scheduler can run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
 
     <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>

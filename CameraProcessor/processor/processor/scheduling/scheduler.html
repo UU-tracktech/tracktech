@@ -100,21 +100,25 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Executes an iteration on the graph.</span>
 
 <span class="sd">        Assigns the input object to the start node and queue start node to start iteration.</span>
 <span class="sd">        Loops over queue as long as the queue isn&#39;t empty.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            input_obj (object): object passed to the starting node to start an iteration.</span>
+<span class="sd">            inputs ([object]): list of objects passed to the starting node to start an iteration.</span>
+<span class="sd">            global_readonly (dict[str, object]): list of objects that can be used by all nodes,</span>
+<span class="sd">                should never modify (use as readonly).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: a node in the queue wasn&#39;t executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">input_obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Assign inputs to initial/start node.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="p">)</span>
 
@@ -123,7 +127,7 @@ Utrecht University within the Software Project course.
             <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">)</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Node in queue should be executable&quot;</span><span class="p">)</span>
 
@@ -182,21 +186,25 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Executes an iteration on the graph.</span>
 
 <span class="sd">        Assigns the input object to the start node and queue start node to start iteration.</span>
 <span class="sd">        Loops over queue as long as the queue isn&#39;t empty.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            input_obj (object): object passed to the starting node to start an iteration.</span>
+<span class="sd">            inputs ([object]): list of objects passed to the starting node to start an iteration.</span>
+<span class="sd">            global_readonly (dict[str, object]): list of objects that can be used by all nodes,</span>
+<span class="sd">                should never modify (use as readonly).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: a node in the queue wasn&#39;t executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">input_obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Assign inputs to initial/start node.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="p">)</span>
 
@@ -205,7 +213,7 @@ Utrecht University within the Software Project course.
             <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">)</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Node in queue should be executable&quot;</span><span class="p">)</span>
 
@@ -283,26 +291,30 @@ and other nodes are put in queue when ready.</li>
 
         
             <span class="def">def</span>
-            <span class="name">schedule_graph</span><span class="signature">(self, input_obj)</span>:
+            <span class="name">schedule_graph</span><span class="signature">(self, inputs, global_readonly)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_obj</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">schedule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Executes an iteration on the graph.</span>
 
 <span class="sd">        Assigns the input object to the start node and queue start node to start iteration.</span>
 <span class="sd">        Loops over queue as long as the queue isn&#39;t empty.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            input_obj (object): object passed to the starting node to start an iteration.</span>
+<span class="sd">            inputs ([object]): list of objects passed to the starting node to start an iteration.</span>
+<span class="sd">            global_readonly (dict[str, object]): list of objects that can be used by all nodes,</span>
+<span class="sd">                should never modify (use as readonly).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: a node in the queue wasn&#39;t executable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queued</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">input_obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Assign inputs to initial/start node.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_node</span><span class="p">)</span>
 
@@ -311,7 +323,7 @@ and other nodes are put in queue when ready.</li>
             <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">)</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Node in queue should be executable&quot;</span><span class="p">)</span>
 </pre></div>
@@ -326,7 +338,9 @@ Loops over queue as long as the queue isn't empty.</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>input_obj (object):</strong>  object passed to the starting node to start an iteration.</li>
+<li><strong>inputs ([object]):</strong>  list of objects passed to the starting node to start an iteration.</li>
+<li><strong>global_readonly (dict[str, object]):</strong>  list of objects that can be used by all nodes,
+should never modify (use as readonly).</li>
 </ul>
 
 <h6 id="raises">Raises</h6>

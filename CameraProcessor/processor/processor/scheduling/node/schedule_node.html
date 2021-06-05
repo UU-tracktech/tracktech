@@ -46,6 +46,9 @@
                         <li>
                                 <a class="function" href="#ScheduleNode.assign">assign</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#ScheduleNode.global_map">global_map</a>
+                        </li>
                 </ul>
 
             </li>
@@ -96,32 +99,38 @@ Utrecht University within the Software Project course.
 <span class="sd">        arguments (np.array): array of all arguments provided so far.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_count</span><span class="p">,</span> <span class="n">out_nodes</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_count</span><span class="p">,</span> <span class="n">out_nodes</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">global_map</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inits ScheduleNode with information about the next layer and the component to execute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            input_count (int): total amount of arguments necessary to execute the component.</span>
 <span class="sd">            out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index</span>
-<span class="sd">            to push argument to.</span>
+<span class="sd">                to push argument to.</span>
 <span class="sd">            component (IComponent): component to execute once the scheduler calls the node</span>
-<span class="sd">            (all needed arguments should be ready).</span>
+<span class="sd">                (all needed arguments should be ready).</span>
+<span class="sd">            global_map (dict[str, int]): mapping of global parameter names to parameter</span>
+<span class="sd">                position of parameters used by the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">=</span> <span class="n">input_count</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_nodes</span> <span class="o">=</span> <span class="n">out_nodes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span> <span class="o">=</span> <span class="n">global_map</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="c1"># Arguments necessary before run is input count of component work function minus available used globals.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_map</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Resets the node for the next iteration.</span>
 
 <span class="sd">        Empties arguments array and resets amount of needed arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
+        <span class="c1"># Arguments necessary before run is input count of component work function minus available used globals.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">global_map</span><span class="p">)</span>
 
         <span class="c1"># Keeping the numpy array and only emptying would be preferred.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks whether all arguments needed for execution are provided.</span>
@@ -131,7 +140,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">&lt;=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute the component and pass output to next layer.</span>
 
 <span class="sd">        Executes the component with the previously provided arguments in the arguments array.</span>
@@ -145,12 +154,18 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            notify (Callable[[List[INode]], None]): function to pass nodes to that can be</span>
 <span class="sd">                executed after the component was executed.</span>
+<span class="sd">            global_readonly (dict[str, object]): list of objects that can be used by all nodes,</span>
+<span class="sd">                should never modify (use as readonly).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: node is not ready to execute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t call function without the function&#39;s arguments being complete&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">arg_nr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">global_readonly</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">arg_nr</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_readonly</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="c1"># Fold arguments into components work function and receive component output.</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">execute_component</span><span class="p">()(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span>
@@ -194,6 +209,19 @@ Utrecht University within the Software Project course.
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Argument should only be provided once by the scheduler, &quot;</span>
                             <span class="s2">&quot;this indicates unnecessary execution by the scheduler&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">global_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all globals used by the component with the key being the name and value the position.</span>
+
+<span class="sd">        Function can be used to lookup globals used by the component, allowing an assign operation to the correct index.</span>
+
+<span class="sd">        assign(global, (global_map[&#39;global_name&#39;])</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict(str, int): mapping of global parameter names to parameter position of parameters used by the component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span>
 </pre></div>
 
         </details>
@@ -223,32 +251,38 @@ Utrecht University within the Software Project course.
 <span class="sd">        arguments (np.array): array of all arguments provided so far.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_count</span><span class="p">,</span> <span class="n">out_nodes</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_count</span><span class="p">,</span> <span class="n">out_nodes</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">global_map</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inits ScheduleNode with information about the next layer and the component to execute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            input_count (int): total amount of arguments necessary to execute the component.</span>
 <span class="sd">            out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index</span>
-<span class="sd">            to push argument to.</span>
+<span class="sd">                to push argument to.</span>
 <span class="sd">            component (IComponent): component to execute once the scheduler calls the node</span>
-<span class="sd">            (all needed arguments should be ready).</span>
+<span class="sd">                (all needed arguments should be ready).</span>
+<span class="sd">            global_map (dict[str, int]): mapping of global parameter names to parameter</span>
+<span class="sd">                position of parameters used by the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">=</span> <span class="n">input_count</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_nodes</span> <span class="o">=</span> <span class="n">out_nodes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span> <span class="o">=</span> <span class="n">global_map</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="c1"># Arguments necessary before run is input count of component work function minus available used globals.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_map</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Resets the node for the next iteration.</span>
 
 <span class="sd">        Empties arguments array and resets amount of needed arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
+        <span class="c1"># Arguments necessary before run is input count of component work function minus available used globals.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">global_map</span><span class="p">)</span>
 
         <span class="c1"># Keeping the numpy array and only emptying would be preferred.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">executable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks whether all arguments needed for execution are provided.</span>
@@ -258,7 +292,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">&lt;=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute the component and pass output to next layer.</span>
 
 <span class="sd">        Executes the component with the previously provided arguments in the arguments array.</span>
@@ -272,12 +306,18 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            notify (Callable[[List[INode]], None]): function to pass nodes to that can be</span>
 <span class="sd">                executed after the component was executed.</span>
+<span class="sd">            global_readonly (dict[str, object]): list of objects that can be used by all nodes,</span>
+<span class="sd">                should never modify (use as readonly).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: node is not ready to execute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t call function without the function&#39;s arguments being complete&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">arg_nr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">global_readonly</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">arg_nr</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_readonly</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="c1"># Fold arguments into components work function and receive component output.</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">execute_component</span><span class="p">()(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span>
@@ -321,6 +361,19 @@ Utrecht University within the Software Project course.
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Argument should only be provided once by the scheduler, &quot;</span>
                             <span class="s2">&quot;this indicates unnecessary execution by the scheduler&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">global_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all globals used by the component with the key being the name and value the position.</span>
+
+<span class="sd">        Function can be used to lookup globals used by the component, allowing an assign operation to the correct index.</span>
+
+<span class="sd">        assign(global, (global_map[&#39;global_name&#39;])</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict(str, int): mapping of global parameter names to parameter position of parameters used by the component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span>
 </pre></div>
 
         </details>
@@ -345,27 +398,32 @@ to push argument to.</li>
                                         <div class="attr function"><a class="headerlink" href="#ScheduleNode.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">ScheduleNode</span><span class="signature">(input_count, out_nodes, component)</span>
+            <span class="name">ScheduleNode</span><span class="signature">(input_count, out_nodes, component, global_map)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_count</span><span class="p">,</span> <span class="n">out_nodes</span><span class="p">,</span> <span class="n">component</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_count</span><span class="p">,</span> <span class="n">out_nodes</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">global_map</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inits ScheduleNode with information about the next layer and the component to execute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            input_count (int): total amount of arguments necessary to execute the component.</span>
 <span class="sd">            out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index</span>
-<span class="sd">            to push argument to.</span>
+<span class="sd">                to push argument to.</span>
 <span class="sd">            component (IComponent): component to execute once the scheduler calls the node</span>
-<span class="sd">            (all needed arguments should be ready).</span>
+<span class="sd">                (all needed arguments should be ready).</span>
+<span class="sd">            global_map (dict[str, int]): mapping of global parameter names to parameter</span>
+<span class="sd">                position of parameters used by the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">=</span> <span class="n">input_count</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_nodes</span> <span class="o">=</span> <span class="n">out_nodes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span> <span class="o">=</span> <span class="n">global_map</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="c1"># Arguments necessary before run is input count of component work function minus available used globals.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_map</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -376,10 +434,12 @@ to push argument to.</li>
 
 <ul>
 <li><strong>input_count (int):</strong>  total amount of arguments necessary to execute the component.</li>
-<li><strong>out_nodes ([(INode, int)]):</strong>  tuples of nodes in the next layer together with argument index</li>
-<li>to push argument to.</li>
-<li><strong>component (IComponent):</strong>  component to execute once the scheduler calls the node</li>
-<li>(all needed arguments should be ready).</li>
+<li><strong>out_nodes ([(INode, int)]):</strong>  tuples of nodes in the next layer together with argument index
+to push argument to.</li>
+<li><strong>component (IComponent):</strong>  component to execute once the scheduler calls the node
+(all needed arguments should be ready).</li>
+<li><strong>global_map (dict[str, int]):</strong>  mapping of global parameter names to parameter
+position of parameters used by the component.</li>
 </ul>
 </div>
 
@@ -400,10 +460,11 @@ to push argument to.</li>
 
 <span class="sd">        Empties arguments array and resets amount of needed arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span>
+        <span class="c1"># Arguments necessary before run is input count of component work function minus available used globals.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">global_map</span><span class="p">)</span>
 
         <span class="c1"># Keeping the numpy array and only emptying would be preferred.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">needed_args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_count</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -452,12 +513,12 @@ to push argument to.</li>
 
         
             <span class="def">def</span>
-            <span class="name">execute</span><span class="signature">(self, notify)</span>:
+            <span class="name">execute</span><span class="signature">(self, notify, global_readonly)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute the component and pass output to next layer.</span>
 
 <span class="sd">        Executes the component with the previously provided arguments in the arguments array.</span>
@@ -471,12 +532,18 @@ to push argument to.</li>
 <span class="sd">        Args:</span>
 <span class="sd">            notify (Callable[[List[INode]], None]): function to pass nodes to that can be</span>
 <span class="sd">                executed after the component was executed.</span>
+<span class="sd">            global_readonly (dict[str, object]): list of objects that can be used by all nodes,</span>
+<span class="sd">                should never modify (use as readonly).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: node is not ready to execute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t call function without the function&#39;s arguments being complete&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">arg_nr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__global_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">global_readonly</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">arg_nr</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_readonly</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="c1"># Fold arguments into components work function and receive component output.</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">execute_component</span><span class="p">()(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span>
@@ -515,6 +582,8 @@ Reset the node.</p>
 <ul>
 <li><strong>notify (Callable[[List[INode]], None]):</strong>  function to pass nodes to that can be
 executed after the component was executed.</li>
+<li><strong>global_readonly (dict[str, object]):</strong>  list of objects that can be used by all nodes,
+should never modify (use as readonly).</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
@@ -578,6 +647,27 @@ executed after the component was executed.</li>
 <li><strong>IndexError:</strong>  wrong index for the argument was given.</li>
 <li><strong>Exception:</strong>  argument is provided twice, existing argument would be overwritten.</li>
 </ul>
+</div>
+
+
+                            </div>
+                            <div id="ScheduleNode.global_map" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ScheduleNode.global_map">#&nbsp;&nbsp</a>
+
+        <span class="name">global_map</span>
+    </div>
+
+            <div class="docstring"><p>Get all globals used by the component with the key being the name and value the position.</p>
+
+<p>Function can be used to lookup globals used by the component, allowing an assign operation to the correct index.</p>
+
+<p>assign(global, (global_map['global_name'])</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>dict(str, int): mapping of global parameter names to parameter position of parameters used by the component.</p>
+</blockquote>
 </div>
 
 

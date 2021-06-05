@@ -73,18 +73,18 @@ Utrecht University within the Software Project course.
 
 
 <span class="c1"># Last node/layer.</span>
-<span class="n">schedule_output_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[],</span> <span class="n">OutputComponent</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
+<span class="n">schedule_output_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[],</span> <span class="n">OutputComponent</span><span class="p">(</span><span class="n">func</span><span class="p">),</span> <span class="p">{})</span>
 
 <span class="c1"># Intermediary layer.</span>
-<span class="n">layer2_multiple_input_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[(</span><span class="n">schedule_output_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">ExampleComponent</span><span class="p">())</span>
+<span class="n">layer2_multiple_input_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[(</span><span class="n">schedule_output_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">ExampleComponent</span><span class="p">(),</span> <span class="p">{})</span>
 
 <span class="c1"># Intermediary layer.</span>
-<span class="n">layer1_node1</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="n">layer2_multiple_input_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">InputComponent</span><span class="p">())</span>
-<span class="n">layer1_node2</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="n">layer2_multiple_input_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">InputComponent</span><span class="p">())</span>
+<span class="n">layer1_node1</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="n">layer2_multiple_input_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">InputComponent</span><span class="p">(),</span> <span class="p">{})</span>
+<span class="n">layer1_node2</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="n">layer2_multiple_input_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">InputComponent</span><span class="p">(),</span> <span class="p">{})</span>
 
 <span class="c1"># First node/layer.</span>
 <span class="c1"># Node outputs to multiple nodes.</span>
-<span class="n">schedule_input_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="n">layer1_node1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">layer1_node2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">InputComponent</span><span class="p">())</span>
+<span class="n">schedule_input_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="n">layer1_node1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">layer1_node2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">InputComponent</span><span class="p">(),</span> <span class="p">{})</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">processor.scheduling.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
@@ -92,7 +92,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Inits scheduler with starting node.</span>
     <span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">(</span><span class="n">schedule_input_node</span><span class="p">)</span>
     <span class="c1"># Runs iteration of schedule_graph.</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule_graph</span><span class="p">(</span><span class="s2">&quot;test,&quot;</span><span class="p">)</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule_graph</span><span class="p">([</span><span class="s2">&quot;test,&quot;</span><span class="p">],</span> <span class="p">{})</span>
 
     <span class="c1"># Find output in output node.</span>
     <span class="n">curr_node</span> <span class="o">=</span> <span class="n">schedule_input_node</span>

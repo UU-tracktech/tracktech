@@ -102,10 +102,12 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">        json: JSON representation of the object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span>
+
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">,</span>
         <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
-        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">],</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
     <span class="p">})</span>
 
 
@@ -146,9 +148,11 @@ Utrecht University within the Software Project course.
 <span class="sd">      Returns:</span>
 <span class="sd">          (json): JSON representation of the object.</span>
 <span class="sd">      &quot;&quot;&quot;</span>
+    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span>
+
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
         <span class="s2">&quot;imageId&quot;</span><span class="p">:</span> <span class="n">image_id</span><span class="p">,</span>
-        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">],</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
     <span class="p">})</span>
 
 
@@ -249,10 +253,12 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">        json: JSON representation of the object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span>
+
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">,</span>
         <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
-        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">],</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
     <span class="p">})</span>
 </pre></div>
 
@@ -296,9 +302,11 @@ Utrecht University within the Software Project course.
 <span class="sd">      Returns:</span>
 <span class="sd">          (json): JSON representation of the object.</span>
 <span class="sd">      &quot;&quot;&quot;</span>
+    <span class="n">boxes_list</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span>
+
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
         <span class="s2">&quot;imageId&quot;</span><span class="p">:</span> <span class="n">image_id</span><span class="p">,</span>
-        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">bounding_boxes</span><span class="p">],</span>
+        <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">__bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">boxes_list</span><span class="p">],</span>
     <span class="p">})</span>
 </pre></div>
 

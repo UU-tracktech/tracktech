@@ -35,6 +35,9 @@
                                 <a class="function" href="#ITracker.__init__">ITracker</a>
                         </li>
                         <li>
+                                <a class="function" href="#ITracker.execute_component">execute_component</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#ITracker.track">track</a>
                         </li>
                 </ul>
@@ -77,6 +80,14 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            function: function that the scheduler can run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
+
     <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
 
@@ -109,6 +120,14 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            function: function that the scheduler can run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
+
     <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
 
@@ -138,6 +157,38 @@ Utrecht University within the Software Project course.
 
         
     
+
+                            </div>
+                            <div id="ITracker.execute_component" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ITracker.execute_component">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">execute_component</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            function: function that the scheduler can run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Function given to scheduler so the scheduler can run the tracking stage.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>function: function that the scheduler can run.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div id="ITracker.track" class="classattr">
