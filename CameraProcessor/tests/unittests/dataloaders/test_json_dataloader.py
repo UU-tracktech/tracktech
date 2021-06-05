@@ -6,7 +6,32 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import processor.dataloaders.json_dataloader as dl
+import processor.dataloaders.json_dataloader as json_dataloader
+
 
 class TestJsonDataloader:
     """Tests the JSON dataloader."""
+
+    def setup_method(self):
+        """Setup method."""
+        pass
+
+    def test_parse_file(self):
+        """Tests parsing of file."""
+        pass
+
+    def test_get_image_dimensions(self):
+        """Tests the image dimensions."""
+        pass
+
+    def test_init(self):
+        """Tests the init."""
+        pass
+
+    def test_parse_boxes(self):
+        """Tests the parsing of boxes."""
+        pass
+
+    def test_get_annotations(self):
+        """Tests the get annotations functionality."""
+        pass

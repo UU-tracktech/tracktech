@@ -6,7 +6,32 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import processor.dataloaders.idataloader as dl
+import processor.dataloaders.idataloader as i_dataloader
+
 
 class TestIDataloader:
     """Tests the dataloader interface."""
+
+    def setup_method(self):
+        """Setup method."""
+        pass
+
+    def test_parse_file(self):
+        """Tests parsing of file."""
+        pass
+
+    def test_get_image_dimensions(self):
+        """Tests the image dimensions."""
+        pass
+
+    def test_init(self):
+        """Tests the init."""
+        pass
+
+    def test_parse_boxes(self):
+        """Tests the parsing of boxes."""
+        pass
+
+    def test_get_annotations(self):
+        """Tests the get annotations functionality."""
+        pass
