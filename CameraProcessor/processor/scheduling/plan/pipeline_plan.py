@@ -9,11 +9,17 @@ from processor.scheduling.node.schedule_node import ScheduleNode
 from processor.scheduling.component.pass_component import PassComponent
 from processor.scheduling.component.func_call_component import FuncCallComponent
 
-# Arguments needed to configure.
-args = {
+# Keys of inputs necessary to initialize the plan.
+plan_inputs = {
     'detector': None,
     'tracker': None,
     'func': None
+}
+
+# Keys of globals used by the plan, necessary each iteration.
+plan_globals = {
+    'frame_obj': None,
+    're_id_data': None
 }
 
 
@@ -30,28 +36,25 @@ def create_plan(plan_args):
     func_node = ScheduleNode(
         3,
         [],
-        FuncCallComponent(plan_args['func'])
+        FuncCallComponent(plan_args['func']),
+        {'frame_obj': 0}
     )
 
-    # Node that executes tracking based.
+    # Node that executes tracking.
     tracker_node = ScheduleNode(
-        2,
+        3,
         [(func_node, 2)],
-        plan_args['tracker']
+        plan_args['tracker'],
+        {'frame_obj': 0, 're_id_data': 2}
     )
 
     # Node that executes detection.
     detection_node = ScheduleNode(
         1,
         [(tracker_node, 1), (func_node, 1)],
-        plan_args['detector']
+        plan_args['detector'],
+        {'frame_obj': 0}
     )
 
-    # Input node that passes the input to all outputs as is.
-    input_node = ScheduleNode(
-        1,
-        [(detection_node, 0), (tracker_node, 0), (func_node, 0)],
-        PassComponent()
-    )
-
-    return input_node
+    # Detection node is the starting node of the plan.
+    return detection_node

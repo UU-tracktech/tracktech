@@ -141,7 +141,7 @@ def prepare_scheduler(detector, tracker, on_processed_frame):
         Scheduler: Scheduler that has been configured with a plan.
     """
     # Get args dict from used plan.
-    plan_args = pipeline_plan.args
+    plan_args = pipeline_plan.plan_inputs
 
     # Put configuration into args dict.
     plan_args['detector'] = detector

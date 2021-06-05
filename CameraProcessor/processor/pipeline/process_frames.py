@@ -21,6 +21,9 @@ from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
 
+from processor.pipeline.prepare_pipeline import prepare_scheduler
+from processor.scheduling.plan.pipeline_plan import plan_globals
+
 
 async def process_stream(capture, detector, tracker, re_identifier, on_processed_frame, ws_client=None):
     """Processes a stream of frames, outputs to frame or sends to client.
@@ -36,7 +39,8 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects.
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied.
     """
-    # Create Scheduler by doing: scheduler = prepare_scheduler(detector, tracker, on_processed_frame).
+    # Create Scheduler by doing the following.
+    scheduler = prepare_scheduler(detector, tracker, on_processed_frame)
 
     framebuffer = FrameBuffer(300)
 
@@ -51,22 +55,28 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         if not ret:
             continue
 
-        # Execute scheduler plan on current frame: scheduler.schedule_graph(frame_obj).
+        # Enforce keys of used plan globals.
+        globals_readonly = plan_globals
+        globals_readonly['frame_obj'] = frame_obj
+        globals_readonly['re_id_data'] = re_id_data
 
-        # Get detections from running detection stage.
-        detected_boxes = detector.detect(frame_obj)
+        # Execute scheduler plan on current frame.
+        scheduler.schedule_graph([], globals_readonly)
 
-        # Get objects tracked in current frame from tracking stage.
-        tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
-
-        # Use the frame object and the tracked boxes for re-identification.
-        re_identifier.re_identify(frame_obj, tracked_boxes, re_id_data)
-
-        # Buffer the tracked object.
-        framebuffer.add_frame(frame_obj, tracked_boxes)
-
-        # Handle side effects of frame processing.
-        on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
+        # # Get detections from running detection stage.
+        # detected_boxes = detector.detect(frame_obj)
+        #
+        # # Get objects tracked in current frame from tracking stage.
+        # tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
+        #
+        # # Use the frame object and the tracked boxes for re-identification.
+        # re_identifier.re_identify(frame_obj, tracked_boxes, re_id_data)
+        #
+        # # Buffer the tracked object.
+        # framebuffer.add_frame(frame_obj, tracked_boxes)
+        #
+        # # Handle side effects of frame processing.
+        # on_processed_frame(frame_obj, detected_boxes, tracked_boxes)
 
         # Process the message queue if there is a websocket connection.
         if ws_client is not None:
@@ -155,8 +165,6 @@ def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):
 # pylint: disable=unused-argument.
 def opencv_display(frame_obj, detected_boxes, tracked_boxes):
     """Displays frame in tiled mode.
-
-    Is async because the process_frames.py loop expects to get a async function it can await.
 
     Args:
         frame_obj (FrameObj): Frame object on which drawing takes place.

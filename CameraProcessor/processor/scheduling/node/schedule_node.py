@@ -21,32 +21,38 @@ class ScheduleNode(INode):
         arguments (np.array): array of all arguments provided so far.
     """
 
-    def __init__(self, input_count, out_nodes, component):
+    def __init__(self, input_count, out_nodes, component, global_map):
         """Inits ScheduleNode with information about the next layer and the component to execute.
 
         Args:
             input_count (int): total amount of arguments necessary to execute the component.
             out_nodes ([(INode, int)]): tuples of nodes in the next layer together with argument index
-            to push argument to.
+                to push argument to.
             component (IComponent): component to execute once the scheduler calls the node
-            (all needed arguments should be ready).
+                (all needed arguments should be ready).
+            global_map (dict[str, int]): mapping of global parameter names to parameter
+                position of parameters used by the component.
         """
         self.input_count = input_count
         self.out_nodes = out_nodes
         self.component = component
+        self.__global_map = global_map
 
-        self.needed_args = self.input_count
-        self.arguments = np.empty(self.needed_args, dtype=object)
+        # Arguments necessary before run is input count of component work function minus available used globals.
+        self.needed_args = self.input_count - len(global_map)
+
+        self.arguments = np.empty(self.input_count, dtype=object)
 
     def reset(self):
         """Resets the node for the next iteration.
 
         Empties arguments array and resets amount of needed arguments.
         """
-        self.needed_args = self.input_count
+        # Arguments necessary before run is input count of component work function minus available used globals.
+        self.needed_args = self.input_count - len(self.global_map)
 
         # Keeping the numpy array and only emptying would be preferred.
-        self.arguments = np.empty(self.needed_args, dtype=object)
+        self.arguments = np.empty(self.input_count, dtype=object)
 
     def executable(self):
         """Checks whether all arguments needed for execution are provided.
@@ -56,7 +62,7 @@ class ScheduleNode(INode):
         """
         return self.needed_args <= 0
 
-    def execute(self, notify):
+    def execute(self, notify, global_readonly):
         """Execute the component and pass output to next layer.
 
         Executes the component with the previously provided arguments in the arguments array.
@@ -70,12 +76,18 @@ class ScheduleNode(INode):
         Args:
             notify (Callable[[List[INode]], None]): function to pass nodes to that can be
                 executed after the component was executed.
+            global_readonly (dict[str, object]): list of objects that can be used by all nodes,
+                should never modify (use as readonly).
 
         Raises:
             Exception: node is not ready to execute.
         """
         if not self.executable():
             raise Exception("Can't call function without the function's arguments being complete")
+
+        for key, arg_nr in self.__global_map.items():
+            if key in global_readonly.keys():
+                self.arguments[arg_nr] = global_readonly[key]
 
         # Fold arguments into components work function and receive component output.
         out = self.component.execute_component()(*self.arguments)
@@ -119,3 +131,16 @@ class ScheduleNode(INode):
         else:
             raise Exception("Argument should only be provided once by the scheduler, "
                             "this indicates unnecessary execution by the scheduler")
+
+    @property
+    def global_map(self):
+        """Get all globals used by the component with the key being the name and value the position.
+
+        Function can be used to lookup globals used by the component, allowing an assign operation to the correct index.
+
+        assign(global, (global_map['global_name'])
+
+        Returns:
+            dict(str, int): mapping of global parameter names to parameter position of parameters used by the component.
+        """
+        return self.__global_map

@@ -28,7 +28,7 @@ class Scheduler:
         self.queue = Queue()
         self.queued = set()
 
-    def schedule_graph(self, inputs):
+    def schedule_graph(self, inputs, global_readonly):
         """Executes an iteration on the graph.
 
         Assigns the input object to the start node and queue start node to start iteration.
@@ -36,6 +36,8 @@ class Scheduler:
 
         Args:
             inputs ([object]): list of objects passed to the starting node to start an iteration.
+            global_readonly (dict[str, object]): list of objects that can be used by all nodes,
+                should never modify (use as readonly).
 
         Raises:
             Exception: a node in the queue wasn't executable.
@@ -53,7 +55,7 @@ class Scheduler:
             node = self.queue.get()
 
             if node.executable():
-                node.execute(self.notify)
+                node.execute(self.notify, global_readonly)
             else:
                 raise Exception("Node in queue should be executable")
 
