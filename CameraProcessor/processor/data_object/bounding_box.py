@@ -79,11 +79,13 @@ class BoundingBox:
         Returns:
             bool: Whether the bounding boxes are the same.
         """
-        return self.__identifier == other.identifier and \
-            self.__rectangle == other.rectangle and \
-            self.__classification == other.classification and \
-            self.__certainty == other.certainty and \
+        return all([
+            self.__identifier == other.identifier,
+            self.__rectangle == other.rectangle,
+            self.__classification == other.classification,
+            self.__certainty == other.certainty,
             self.__object_id == other.object_id
+        ])
 
     def __repr__(self):
         """Converts the bounding box object to a string.

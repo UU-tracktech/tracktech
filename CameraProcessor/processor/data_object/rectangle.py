@@ -77,8 +77,7 @@ class Rectangle:
         Returns:
             bool: Whether self and other are the same.
         """
-        return self.x1 == other.x1 and self.x2 == other.x2 and \
-            self.y1 == other.y1 and self.y2 == other.y2
+        return all([self.x1 == other.x1, self.x2 == other.x2, self.y1 == other.y1, self.y2 == other.y2])
 
     def __repr__(self):
         """Converts the rectangle object to a string.
