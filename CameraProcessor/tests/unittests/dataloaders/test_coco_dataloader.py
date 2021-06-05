@@ -6,7 +6,8 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import processor.dataloaders.coco_dataloader as coco_dataloader
+
+from processor.dataloaders.coco_dataloader import COCODataloader
 
 
 class TestCocoDataloader:

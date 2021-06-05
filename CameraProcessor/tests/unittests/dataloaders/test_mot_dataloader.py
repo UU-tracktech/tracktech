@@ -6,7 +6,8 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-import processor.dataloaders.mot_dataloader as mot_dataloader
+
+from processor.dataloaders.mot_dataloader import MOTDataloader
 
 
 class TestMotDataloader:
