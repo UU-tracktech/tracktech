@@ -7,10 +7,11 @@ Utrecht University within the Software Project course.
 import os
 import sys
 
+from processor.pipeline.reidentification.reid_data import ReidData
 from processor.input.image_capture import ImageCapture
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.utils.config_parser import ConfigParser
-from processor.utils.text import boxes_to_txt
+from processor.utils.create_runners import create_detector, create_tracker
+from processor.utils.text import boxes_to_accuracy_json, boxes_to_txt
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -24,15 +25,11 @@ def main(configs):
     Args:
         configs (ConfigParser): Configurations to run the accuracy with.
     """
-    # Load the config file, take the relevant Yolov5 section.
-    yolov5_config = configs['Yolov5']
     accuracy_config = configs['Accuracy']
 
     # Opening files where the information is stored that is used to determine the accuracy.
     accuracy_dest = accuracy_config['det_path']
-    accuracy_info_dest = accuracy_config['det-info_path']
     detection_file = open(accuracy_dest, 'w')
-    detection_file_info = open(accuracy_info_dest, 'w')
 
     print('I will write the detection objects to a txt file')
 
@@ -41,15 +38,16 @@ def main(configs):
 
     # Instantiate the detector.
     print("Instantiating detector...")
-    yolov5_config['device'] = "cpu"
-    detector = Yolov5Detector(yolov5_config, configs['Filter'])
+    detector = create_detector(configs['Accuracy']['detector'], configs)
+    tracker = create_tracker(configs['Accuracy']['tracker'], configs)
 
     # Frame counter starts at 0. Will probably work differently for streams.
     print("Starting video stream...")
-    counter = 0
 
-    # Using default values.
-    shape = [10000, 10000]
+    # Empty reid data.
+    reid_data = ReidData()
+    track_write_list = []
+
     while capture.opened():
         # Set the detected bounding box list to empty.
         ret, frame_obj = capture.get_next_frame()
@@ -57,27 +55,34 @@ def main(configs):
         if not ret:
             continue
 
-        bounding_boxes = detector.detect(frame_obj)
+        detected_boxes = detector.detect(frame_obj)
+        tracked_boxes = tracker.track(frame_obj, detected_boxes, reid_data)
+        image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string.
-        boxes_string = boxes_to_txt(bounding_boxes.get_bounding_boxes(), frame_obj.get_shape(), counter)
+        for bounding_box in tracked_boxes.bounding_boxes:
+            tracked_boxes_string = boxes_to_txt([bounding_box], frame_obj.shape, image_id)
+            track_write_list.append((bounding_box.identifier, image_id, tracked_boxes_string))
+
+        # Convert boxes to string.
+        detected_boxes_string = boxes_to_accuracy_json(detected_boxes,
+                                                       image_id)
 
         # Write boxes found by detection to.
         try:
-            detection_file.write(boxes_string)
+            detection_file.write(f'{detected_boxes_string}\n')
         except RuntimeError as run_error:
             print(f'Cannot write to the file with following exception: {run_error}')
 
-        # Save the shape so it can be saved in the detection-info file.
-        shape = frame_obj.get_shape()
-        counter += 1
+    # Sorting the list.
+    track_write_list.sort(key=lambda e: e[:2])
+    track_write_list = [x[2] for x in track_write_list]
+    track_write_list[len(track_write_list) - 1] = track_write_list[len(track_write_list) - 1].rstrip("\n")
 
     # Close files.
     detection_file.close()
-    detection_file_info.write(f'{counter-1},{shape[0]},{shape[1]}')
-    detection_file_info.close()
 
 
 if __name__ == '__main__':
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', True)
     main(config_parser.configs)

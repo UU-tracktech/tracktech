@@ -23,6 +23,7 @@ class ClientSocket(WebSocketHandler):
         identifier (int): Serves as the unique identifier to this object.
         authorized (bool): Shows whether the websocket connection is authorized.
         auth (Auth): Authorization object for the websocket handler
+        uses_images (bool): Bool indicating whether or not this client should receive images
     """
 
     def __init__(self, application, request):
@@ -35,6 +36,7 @@ class ClientSocket(WebSocketHandler):
         super().__init__(application, request)
         self.identifier = max(clients.keys(), default=0) + 1
         self.authorized = False
+        self.uses_images = False
 
         # Load the auth object from app settings.
         self.auth = self.application.settings.get('client_auth')
@@ -55,6 +57,9 @@ class ClientSocket(WebSocketHandler):
 
         Method called upon the opening of the websocket. After connecting, it appends this component
         to a dict of other websockets.
+
+        Args:
+            **kwargs (Any): Other arguments given to the websocket open.
         """
         logger.log_connect("/client", self.request.remote_ip)
         logger.log(f"New client connected with id: {self.identifier}")
@@ -82,6 +87,8 @@ class ClientSocket(WebSocketHandler):
 
             # Switch on message type.
             actions = {
+                "setUsesImages":
+                    lambda: self.set_uses_image(message_object),
                 "start":
                     lambda: self.start_tracking(message_object),
                 "stop":
@@ -147,6 +154,26 @@ class ClientSocket(WebSocketHandler):
             self.auth.validate(message["jwt"])
             self.authorized = True
 
+    def set_uses_image(self, message):
+        """Set whether or not this client uses images.
+
+        Args:
+            message (json):
+                JSON message that was received. It should contain the following property
+                    - "usesImages" | a bool indicating whether or not the client uses images
+        """
+
+        self.uses_images = message["usesImages"]
+        if self.uses_images is True:
+            for tracking_object in objects.values():
+                if tracking_object[0].image is not None:
+                    client_message = {
+                        "type": "newObject",
+                        "objectId": tracking_object[0].identifier,
+                        "image": tracking_object[0].image
+                    }
+                    self.send_message(json.dumps(client_message))
+
     @staticmethod
     def start_tracking(message):
         """Creates tracking object and sends start tracking command to specified processor.
@@ -175,7 +202,7 @@ class ClientSocket(WebSocketHandler):
             logger.log("Unknown processor")
             return
 
-        tracking_object = TrackingObject()
+        tracking_object = TrackingObject(image)
 
         logger.log(
             f"New tracking object created with id {tracking_object.identifier}, "
@@ -197,6 +224,21 @@ class ClientSocket(WebSocketHandler):
             processor_message
         ))
 
+        client_message = {
+            "type": "newObject",
+            "objectId": tracking_object.identifier
+        }
+
+        if image is not None:
+            client_message["image"] = image
+
+        # Send a message that a new object has been tracked with the given image to all clients that use images.
+        for client in clients.values():
+            if client.uses_images:
+                client.send_message(json.dumps(
+                    client_message
+                ))
+
     @staticmethod
     def stop_tracking(message):
         """Removes tracking object and sends stop tracking command to all processors.
@@ -213,9 +255,15 @@ class ClientSocket(WebSocketHandler):
 
         objects[object_id][0].remove_self()
 
-        if len(processors) > 0:
-            for processor in processors.values():
-                processor.send_message(json.dumps({
+        for processor in processors.values():
+            processor.send_message(json.dumps({
+                "type": "stop",
+                "objectId": object_id
+            }))
+
+        for client in clients.values():
+            if client.uses_images is True:
+                client.send_message(json.dumps({
                     "type": "stop",
                     "objectId": object_id
                 }))

@@ -57,6 +57,9 @@ class ProcessorSocket(WebSocketHandler):
         """Called upon opening of the websocket.
 
         Method called upon the opening of the websocket, will log connection.
+
+        Args:
+            **kwargs (Any): Arguments given to the open command of the socket.
         """
         logger.log_connect("/processor", self.request.remote_ip)
         logger.log("New processor connected")
@@ -140,8 +143,9 @@ class ProcessorSocket(WebSocketHandler):
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
-        del processors[self.identifier]
-        logger.log(f"Processor with id {self.identifier} disconnected")
+        if self.identifier in processors:
+            del processors[self.identifier]
+            logger.log(f"Processor with id {self.identifier} disconnected")
 
     def data_received(self, chunk):
         """Unused method that could handle streamed request data.
@@ -184,14 +188,13 @@ class ProcessorSocket(WebSocketHandler):
         frame_id = message["frameId"]
         boxes = message["boxes"]
 
-        if len(client_socket.clients.values()) > 0:
-            for client in client_socket.clients.values():
-                client.send_message(json.dumps({
-                    "type": "boundingBoxes",
-                    "cameraId": self.identifier,
-                    "frameId": frame_id,
-                    "boxes": boxes
-                }))
+        for client in client_socket.clients.values():
+            client.send_message(json.dumps({
+                "type": "boundingBoxes",
+                "cameraId": self.identifier,
+                "frameId": frame_id,
+                "boxes": boxes
+            }))
 
         try:
             for box in filter(lambda x: x.keys().__contains__("objectId"), boxes):
@@ -219,10 +222,13 @@ class ProcessorSocket(WebSocketHandler):
             objects[object_id][0].update_feature_map(feature_map)
         except KeyError:
             logger.log("Unknown object id")
+            return
+
+        feature_map_message = json.dumps({
+            "type": "featureMap",
+            "objectId": object_id,
+            "featureMap": feature_map
+        })
 
         for processor in processors.values():
-            processor.send_message(json.dumps({
-                "type": "featureMap",
-                "objectId": object_id,
-                "featureMap": feature_map
-            }))
+            processor.send_message(feature_map_message)

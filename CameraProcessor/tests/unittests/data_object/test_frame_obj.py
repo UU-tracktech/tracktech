@@ -7,8 +7,8 @@ Utrecht University within the Software Project course.
 import pytest
 import numpy
 
-from processor.data_object.frame_obj import FrameObj
 from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
+from processor.data_object.frame_obj import FrameObj
 
 
 # pylint: disable=attribute-defined-outside-init,no-member
@@ -39,17 +39,17 @@ class TestFrameObj:
     def setup_method(self):
         """Setup method."""
         self.data = FrameObj(get_sample_frame(), 1)
-        self.frame = self.data.get_frame()
-        self.timestamp = self.data.get_timestamp()
-        self.shape = self.data.get_shape()
+        self.frame = self.data.frame
+        self.timestamp = self.data.timestamp
+        self.shape = self.data.shape
 
     def test_value_frame_obj(self):
         """Asserts if value of frame is correct."""
-        assert is_same_frame_image(get_sample_frame(), self.data.get_frame())
+        assert is_same_frame_image(get_sample_frame(), self.data.frame)
 
     def test_frame(self):
         """Asserts if frame is correct."""
-        assert1 = FrameObj(get_sample_frame(), 1).get_frame()
+        assert1 = FrameObj(get_sample_frame(), 1).frame
         assert2 = self.frame
 
         # Frame is equal to the set.
@@ -58,11 +58,11 @@ class TestFrameObj:
 
     def test_timestamp(self):
         """Asserts if frame timestamp is correct."""
-        assert FrameObj(get_sample_frame(), 1).get_timestamp() == self.timestamp
+        assert FrameObj(get_sample_frame(), 1).timestamp == self.timestamp
 
     def test_shape(self):
         """Asserts if frame shape is correct."""
-        assert FrameObj(get_sample_frame(), 1).get_shape() == self.shape
+        assert FrameObj(get_sample_frame(), 1).shape == self.shape
 
 
 if __name__ == '__main__':

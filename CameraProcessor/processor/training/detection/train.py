@@ -11,7 +11,7 @@ from processor.utils.config_parser import ConfigParser
 
 if __name__ == '__main__':
     # Instantiate the training mode.
-    config_parser = ConfigParser('configs.ini')
+    config_parser = ConfigParser('configs.ini', True)
     config = config_parser.configs['Training']
     mode = config['mode']
     file = config['file']

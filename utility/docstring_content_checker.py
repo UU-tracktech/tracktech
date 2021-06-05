@@ -111,7 +111,10 @@ class DocstringContentChecker(BaseChecker):
             return
 
         # Discard the 'self' and '_' argument.
-        args = [arg for arg in node.args.args if arg.name != 'self' and arg.name != '_']
+        args = [arg.name for arg in node.args.args if arg.name != 'self' and arg.name != '_']
+
+        if node.args.kwarg is not None:
+            args.append("**" + node.args.kwarg)
 
         # Lint the documentation inside the node.
         self.lint_docstring(node, True, args)
@@ -134,7 +137,7 @@ class DocstringContentChecker(BaseChecker):
         Args:
             node (Any): Class or method definition containing the .doc property.
             is_function (bool): Whether it is called for a function.
-            args ([astroid.node_classes.AssignName]): List of arguments given to the function
+            args ([str]): List of argument names given to the function
         """
         # Get the lines of the documentation.
         doc_lines = [line.strip() for line in node.doc.split('\n') if len(line.strip()) > 0]
@@ -170,7 +173,7 @@ class DocstringContentChecker(BaseChecker):
                 line_index = self.lint_class_section(node, doc_lines, section_name, line_index)
 
         # Argument section needs to exist but is missing.
-        if args and not sections_list.__contains__('Args'):
+        if any(args) and not sections_list.__contains__('Args'):
             self.add_message('missing-args-in-docstring',
                              node=node)
 
@@ -188,7 +191,7 @@ class DocstringContentChecker(BaseChecker):
             doc_lines ([str]): Split lines of the documentation.
             section_name (str): Name of the section to be checked.
             line_index (int): Index where the section starts.
-            args ([astroid.node_classes.AssignName]): Arguments of the function.
+            args ([str]): Argument names of the function.
 
         Returns:
             int: Line number of the last line in the section.
@@ -238,14 +241,13 @@ class DocstringContentChecker(BaseChecker):
             node (Any): Only function should contain an argument section.
             doc_lines ([str]): Split lines of the documentation.
             args_section_line_index (int): Index where the args section starts.
-            args ([astroid.node_classes.AssignName]): Arguments of the function.
+            args ([str]): Arguments of the function.
 
         Returns:
             int: Line number of the last line in the Args section.
         """
-        # Puts the argument names in both a list and dictionary to enable order and fast lookup.
-        arg_list = [arg.name for arg in args]
-        arg_dict = {arg.name: False for arg in args}
+        # Puts the argument names in a dictionary to enable order and fast lookup.
+        arg_dict = {arg: False for arg in args}
 
         # Index of the argument that is being linted and the current line.
         arg_index = 0
@@ -274,7 +276,7 @@ class DocstringContentChecker(BaseChecker):
                 line_index += 1
                 continue
             # Argument is in the wrong position inside the docstring.
-            if arg_list[arg_index] != arg_name:
+            if args[arg_index] != arg_name:
                 self.add_message('argument-wrong-place-in-docstring',
                                  node=node,
                                  args=(arg_name, arg_index))
@@ -412,7 +414,7 @@ class DocstringContentChecker(BaseChecker):
             return False, "", ""
 
         # Strict argument match.
-        arg_match = re.match(r'^\s*([a-z_0-9]+)\s\(([^:{}]+)\):.*$', line)
+        arg_match = re.match(r'^\s*([*a-z_0-9]+)\s\(([^:{}]+)\):.*$', line)
 
         # Return match immediately when correctly formatted.
         if arg_match is not None:

@@ -7,10 +7,10 @@ Utrecht University within the Software Project course.
 import pytest
 import cv2
 
+from tests.unittests.utils.utils import get_sample_frame
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from tests.unittests.utils.utils import get_sample_frame
 
 
 # pylint: disable=attribute-defined-outside-init,no-member
@@ -47,8 +47,8 @@ class TestBoundingBoxes:
         self.box1 = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5)
         self.box2 = BoundingBox(2, Rectangle(0, 0, 1, 1), "person", 0.5)
         self.data = BoundingBoxes([self.box1, self.box2])
-        self.boxes = self.data.get_bounding_boxes()
-        self.frame = self.box1.get_identifier()
+        self.boxes = self.data.bounding_boxes
+        self.frame = self.box1.identifier
         self.bounding_box_value_test = BoundingBox(1, [0, 0, 1, 1], "person", 0.5)
         self.box_frame = cv2.rectangle(1, (0, 0), (1, 1), (255, 0, 0), 2)
 
@@ -77,7 +77,7 @@ class TestBoundingBoxes:
     def test_exception_bounding_boxes(self):
         """Asserts if bounding_boxes throws exception."""
         with pytest.raises(Exception):
-            assert str(self.data.get_bounding_boxes()) == 'some invalid value'
+            assert str(self.data.bounding_boxes) == 'some invalid value'
 
 
 if __name__ == '__main__':

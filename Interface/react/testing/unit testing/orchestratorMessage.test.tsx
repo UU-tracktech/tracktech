@@ -6,13 +6,13 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
+import React from 'react'
 import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
 } from '../../src/classes/orchestratorMessage'
 
-/** Test the start message that gets sent to the orchestrator */
+//Test the start message that gets sent to the orchestrator
 test('StartOrchestratorMessage', () => {
   const msg = new StartOrchestratorMessage('camID123', 3456, 2398)
 
@@ -24,7 +24,7 @@ test('StartOrchestratorMessage', () => {
   expect(msg.boxId).toBe(2398)
 })
 
-/** Test the stop message sent to the orchestrator to stop tracking */
+//Test the stop message sent to the orchestrator to stop tracking
 test('StopOrchestratorMessage', () => {
   const msg = new StopOrchestratorMessage(495)
 
