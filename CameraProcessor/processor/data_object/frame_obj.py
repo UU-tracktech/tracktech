@@ -19,7 +19,8 @@ class FrameObj:
         self.__frame = frame
         self.__timestamp = timestamp
 
-    def get_frame(self):
+    @property
+    def frame(self):
         """Gets the frame.
 
         Returns:
@@ -27,7 +28,8 @@ class FrameObj:
         """
         return self.__frame
 
-    def get_timestamp(self):
+    @property
+    def timestamp(self):
         """Gets the timestamp (in s) associated with the current frame.
 
         Returns:
@@ -35,7 +37,8 @@ class FrameObj:
         """
         return self.__timestamp
 
-    def get_shape(self):
+    @property
+    def shape(self):
         """Gets shape of frame.
 
         Returns:

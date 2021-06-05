@@ -36,10 +36,10 @@ class TestRectangle:
     def setup_method(self):
         """Setup method."""
         self.data = Rectangle(0, 0, 1, 1)
-        self.tlx1 = self.data.get_x1()
-        self.tly1 = self.data.get_y1()
-        self.brx2 = self.data.get_x2()
-        self.bry2 = self.data.get_y2()
+        self.tlx1 = self.data.x1
+        self.tly1 = self.data.y1
+        self.brx2 = self.data.x2
+        self.bry2 = self.data.y2
 
     def test_x1_value(self):
         """Tests x1 value."""
