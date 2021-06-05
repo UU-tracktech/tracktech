@@ -5,14 +5,13 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import pytest
-import cv2
 
-from tests.unittests.utils.utils import get_sample_frame
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestBoundingBoxes:
     """Tests bounding_boxes.py.
 
@@ -49,14 +48,18 @@ class TestBoundingBoxes:
     def test_iter(self):
         """Tests whether the iterator works for BoundingBoxes."""
         for box in self.boxes:
-            assert box == self.box1 or box == self.box2
+            assert box in (self.box1, self.box2)
 
     def test_eq(self):
         """Tests whether checking equality works."""
         assert self.box1 == self.box1
-        assert not self.box1 == self.box2
+        assert self.box1 != self.box2
         assert self.box1 == self.box1_duplicate
 
     def test_repr(self):
         """Tests that the string version contains."""
         assert str(self.boxes).startswith('BoundingBoxes')
+
+
+if __name__ == '__main__':
+    pytest.main(TestBoundingBoxes)
