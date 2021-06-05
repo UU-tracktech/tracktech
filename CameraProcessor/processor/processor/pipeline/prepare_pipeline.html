@@ -201,25 +201,23 @@ Utrecht University within the Software Project course.
     <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Input type &quot;</span><span class="si">{</span><span class="n">capture_type</span><span class="si">}</span><span class="s1">&quot; is unknown&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prepare the Scheduler with a valid plan configuration.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
 <span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
-<span class="sd">        re_identifier (IReIdentifier): re-identifier performing the re-identification stage.</span>
-<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
+<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Scheduler: Scheduler that has been configured with a plan.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get args dict from used plan.</span>
-    <span class="n">plan_args</span> <span class="o">=</span> <span class="n">pipeline_plan</span><span class="o">.</span><span class="n">plan_inputs</span>
+    <span class="n">plan_args</span> <span class="o">=</span> <span class="n">pipeline_plan</span><span class="o">.</span><span class="n">args</span>
 
     <span class="c1"># Put configuration into args dict.</span>
     <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detector</span>
     <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracker</span>
-    <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;re_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">re_identifier</span>
     <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">on_processed_frame</span>
 
     <span class="c1"># Apply configuration to plan.</span>
@@ -510,30 +508,28 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">def</span>
-            <span class="name">prepare_scheduler</span><span class="signature">(detector, tracker, re_identifier, on_processed_frame)</span>:
+            <span class="name">prepare_scheduler</span><span class="signature">(detector, tracker, on_processed_frame)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prepare the Scheduler with a valid plan configuration.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
 <span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
-<span class="sd">        re_identifier (IReIdentifier): re-identifier performing the re-identification stage.</span>
-<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
+<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Scheduler: Scheduler that has been configured with a plan.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get args dict from used plan.</span>
-    <span class="n">plan_args</span> <span class="o">=</span> <span class="n">pipeline_plan</span><span class="o">.</span><span class="n">plan_inputs</span>
+    <span class="n">plan_args</span> <span class="o">=</span> <span class="n">pipeline_plan</span><span class="o">.</span><span class="n">args</span>
 
     <span class="c1"># Put configuration into args dict.</span>
     <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detector</span>
     <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tracker</span>
-    <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;re_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">re_identifier</span>
     <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">on_processed_frame</span>
 
     <span class="c1"># Apply configuration to plan.</span>
@@ -552,8 +548,7 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>detector (IDetector):</strong>  detector performing the detections on a given frame.</li>
 <li><strong>tracker (ITracker):</strong>  tracker performing simple tracking of all objects using the detections.</li>
-<li><strong>re_identifier (IReIdentifier):</strong>  re-identifier performing the re-identification stage.</li>
-<li><strong>on_processed_frame (Function):</strong>  when the frame got processed. Call this function to handle effects.</li>
+<li><strong>on_processed_frame (Function):</strong>  when the frame got processed. Call this function to handle effects</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
