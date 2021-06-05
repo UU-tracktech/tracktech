@@ -13,10 +13,6 @@ from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.utils.draw import draw_tracking_boxes, draw_detection_boxes
 
-X0, X1 = 60, 120
-Y0, Y1 = 120, 180
-IMG_SIZE = 200
-
 
 @pytest.fixture
 def img():
@@ -26,7 +22,8 @@ def img():
         np.ndarray: a numpy array representing an image, in this case a blank one
     """
     # Create an empty white image.
-    image = np.zeros((IMG_SIZE, IMG_SIZE, 3), np.uint8)
+    image_size = 200
+    image = np.zeros((image_size, image_size, 3), np.uint8)
     image.fill(255)
     return image
 
@@ -60,11 +57,15 @@ def bbox():
     Returns:
         BoundingBox: A boundingbox for use in testing.
     """
+    x0, x1 = 60, 120
+    y0, y1 = 120, 180
+    image_size = 200
+
     # Create a dummy bounding box.
-    return BoundingBox(1, Rectangle(round(float(X0 / IMG_SIZE), 1),
-                                    round(float(Y0 / IMG_SIZE), 1),
-                                    round(float(X1 / IMG_SIZE), 1),
-                                    round(float(Y1 / IMG_SIZE), 1)),
+    return BoundingBox(1, Rectangle(round(float(x0 / image_size), 1),
+                                    round(float(y0 / image_size), 1),
+                                    round(float(x1 / image_size), 1),
+                                    round(float(y1 / image_size), 1)),
                        "Bob", 0.50)
 
 
