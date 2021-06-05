@@ -44,7 +44,7 @@ class TestAccuracyRunner:
             assert len(boxes) > 0
             for box in boxes:
                 assert int(box['boxId']) >= 0
-                assert 1 > float(box['certainty']) >= 0
+                assert 1 >= float(box['certainty']) >= 0
                 assert len(str(box['objectType'])) > 0
                 assert 1 >= float(box['rect'][0]) >= 0
                 assert 1 >= float(box['rect'][1]) >= 0
