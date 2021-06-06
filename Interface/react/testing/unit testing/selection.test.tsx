@@ -12,7 +12,7 @@ import { Home } from '../../src/pages/home'
 import '@testing-library/jest-dom'
 import { act } from 'react-dom/test-utils'
 
-/** Ensure the bpage renders without error and make sure the parent card is there */
+//Ensure the bpage renders without error and make sure the parent card is there
 test('The card containing the buttons is there', async () => {
   //We need to wait because otherwise there will be errors about updates still happening
   await act(async () => {
@@ -22,7 +22,7 @@ test('The card containing the buttons is there', async () => {
   expect(screen.queryByTestId('indicatorsCard')).not.toBe(null)
 })
 
-/** Check that the buttons exist and the card contains the buttons */
+//Check that the buttons exist and the card contains the buttons
 test('The buttons are there', async () => {
   //We need to wait because otherwise there will be errors about updates still happening
   await act(async () => {
@@ -46,7 +46,7 @@ test('The buttons are there', async () => {
   expect(card).toContainElement(noneBut)
 })
 
-/** Check that clicking on the buttons change the selection */
+//Check that clicking on the buttons change the selection
 test('Clicking buttons changes selection', async () => {
   //We need to wait because otherwise there will be errors about updates still happening
   await act(async () => {

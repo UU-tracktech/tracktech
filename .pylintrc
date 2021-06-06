@@ -1,5 +1,5 @@
 [MASTER]
-init-hook="import os, sys; sys.path.append(os.getcwd()); from utility.pylint_ignore import PylintIgnorePaths; PylintIgnorePaths('.git', 'CameraProcessor/processor/pipeline/detection/yolor', 'CameraProcessor/processor/pipeline/detection/yolov5', 'CameraProcessor/processor/training/detection/yolov5', '/app/.git', '/app/processor/pipeline/detection/yolor', '/app/processor/pipeline/detection/yolov5', '/app/processor/training/detection/yolov5', 'CameraProcessor/processor/pipeline/reidentification/torchreid', '/app/processor/pipeline/reidentification/torchreid')"
+init-hook="import os, sys; sys.path.append(os.getcwd());
 
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
@@ -22,7 +22,7 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,sort,yolor,torchreid
+ignore=__init__.py,CVS,venv,yolov5,sort,yolor,torchreid
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
@@ -46,7 +46,8 @@ limit-inference-results=100
 load-plugins=utility.copyright_checker,
              utility.docstring_checker,
              utility.docstring_content_checker,
-             utility.comment_checker
+             utility.comment_checker,
+             utility.classes_checker
 #pylint_junit
 
 # Pickle collected data for later comparisons.
@@ -165,7 +166,9 @@ disable=print-statement,
         logging-fstring-interpolation,
         len-as-condition,
         missing-docstring,
-        fixme
+        fixme,
+        consider-using-with,
+        fatal
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -285,20 +288,11 @@ good-names=i,
            k,
            ex,
            Run,
-           _,
-           x,
-           y,
-           z,
-           x0,
-           x1,
-           y0,
-           y1,
-           z0,
-           z1
+           _
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
-good-names-rgxs=^[A-Za-z0-9\_]{1,2}$
+good-names-rgxs=[A-Za-z0-9\_]{1},[A-Za-z0-9\_]{2}
 
 # Include a hint for the correct naming format with invalid-name.
 include-naming-hint=no

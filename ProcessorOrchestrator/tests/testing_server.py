@@ -16,6 +16,7 @@ from src.client_socket import ClientSocket
 from src.processor_socket import ProcessorSocket
 from src.timeline_handler import TimeLineHandler
 from src.object_manager import start_tracking_timeout_monitoring
+from src.object_ids_handler import ObjectIdsHandler
 
 
 @pytest.mark.asyncio
@@ -35,6 +36,7 @@ def _start_server():
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
         ('/timelines', TimeLineHandler),
+        ('/objectIds', ObjectIdsHandler),
         ('/stop', StopSocket, {'server': server_container})
     ]
 
