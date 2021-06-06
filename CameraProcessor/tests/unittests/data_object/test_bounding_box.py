@@ -4,12 +4,9 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import json
 import pytest
 from processor.data_object.bounding_box import BoundingBox
-from processor.utils.text import bounding_boxes_to_json
 from processor.data_object.rectangle import Rectangle
-from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -17,7 +14,11 @@ class TestBoundingBox:
     """Tests bounding_box.py.
 
     Attributes:
-        data
+        identifier (int): identifier of bounding box.
+        rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
+        classification (str): classification of the bounding box.
+        certainty (float): certainty/confidence of the bounding box detection.
+        object_id (int): id assigned to object depicted by the bounding box.
     """
 
     def setup_method(self):
