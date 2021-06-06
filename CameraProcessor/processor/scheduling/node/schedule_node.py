@@ -17,8 +17,6 @@ class ScheduleNode(INode):
             to push argument to.
         component (IComponent): component to execute once the scheduler calls the node
             (all needed arguments should be ready).
-        needed_args (int): amount of arguments still needed to execute the component.
-        arguments (np.array): array of all arguments provided so far.
     """
 
     def __init__(self, input_count, out_nodes, component, global_map):
@@ -39,9 +37,9 @@ class ScheduleNode(INode):
         self.__global_map = global_map
 
         # Arguments necessary before run is input count of component work function minus available used globals.
-        self.needed_args = self.input_count - len(global_map)
+        self.__needed_args = self.input_count - len(global_map)
 
-        self.arguments = np.empty(self.input_count, dtype=object)
+        self.__arguments = np.empty(self.input_count, dtype=object)
 
     def reset(self):
         """Resets the node for the next iteration.
@@ -49,10 +47,10 @@ class ScheduleNode(INode):
         Empties arguments array and resets amount of needed arguments.
         """
         # Arguments necessary before run is input count of component work function minus available used globals.
-        self.needed_args = self.input_count - len(self.global_map)
+        self.__needed_args = self.input_count - len(self.global_map)
 
         # Keeping the numpy array and only emptying would be preferred.
-        self.arguments = np.empty(self.input_count, dtype=object)
+        self.__arguments = np.empty(self.input_count, dtype=object)
 
     def executable(self):
         """Checks whether all arguments needed for execution are provided.
@@ -60,7 +58,7 @@ class ScheduleNode(INode):
         Returns:
             bool: true if all arguments have been provided, false otherwise.
         """
-        return self.needed_args <= 0
+        return self.__needed_args <= 0
 
     def execute(self, notify, global_readonly):
         """Execute the component and pass output to next layer.
@@ -87,10 +85,10 @@ class ScheduleNode(INode):
 
         for key, arg_nr in self.__global_map.items():
             if key in global_readonly.keys():
-                self.arguments[arg_nr] = global_readonly[key]
+                self.__arguments[arg_nr] = global_readonly[key]
 
         # Fold arguments into components work function and receive component output.
-        out = self.component.execute_component()(*self.arguments)
+        out = self.component.execute_component()(*self.__arguments)
 
         ready_nodes = []
 
@@ -119,15 +117,15 @@ class ScheduleNode(INode):
             IndexError: wrong index for the argument was given.
             Exception: argument is provided twice, existing argument would be overwritten.
         """
-        if len(self.arguments) <= arg_nr:
+        if len(self.__arguments) <= arg_nr:
             raise IndexError("Index %s too large for arguments array with size %x" %
-                             (arg_nr, len(self.arguments)))
+                             (arg_nr, len(self.__arguments)))
 
         # Ensure previously supplied argument isn't overwritten.
-        if self.arguments[arg_nr] is None:
-            self.arguments[arg_nr] = arg
+        if self.__arguments[arg_nr] is None:
+            self.__arguments[arg_nr] = arg
 
-            self.needed_args -= 1
+            self.__needed_args -= 1
         else:
             raise Exception("Argument should only be provided once by the scheduler, "
                             "this indicates unnecessary execution by the scheduler")

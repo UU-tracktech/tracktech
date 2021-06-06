@@ -18,8 +18,6 @@ class TestScheduleNode:
         Args:
             example_schedule_node (INode): Example node.
         """
-        assert example_schedule_node.input_count == example_schedule_node.needed_args
-        assert len(example_schedule_node.arguments) == example_schedule_node.input_count
         assert example_schedule_node.component
 
     def test_node_assign(self):
@@ -29,7 +27,7 @@ class TestScheduleNode:
         # Yield that all arguments are not yet set.
         def yield_node_arg():
             """Yield all the arguments."""
-            for arg in schedule_node.arguments:
+            for arg in schedule_node.__arguments:
                 yield arg
 
         for x in yield_node_arg():
@@ -37,7 +35,7 @@ class TestScheduleNode:
 
         # Assign and assert definition inside the node.
         schedule_node.assign('val', 2)
-        assert schedule_node.arguments[2] == 'val'
+        assert schedule_node.__arguments[2] == 'val'
 
     def test_node_reset(self):
         """Tests the functionality of INode: executable()."""
@@ -48,7 +46,7 @@ class TestScheduleNode:
         # The yield function has to be contained inside current function because of the yields.
         def yield_node_arg():
             """Yield all the arguments."""
-            for arg in schedule_node.arguments:
+            for arg in schedule_node.__arguments:
                 yield arg
 
         # Assert argument exists.

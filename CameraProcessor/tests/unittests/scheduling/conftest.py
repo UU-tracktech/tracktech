@@ -11,9 +11,9 @@ from processor.scheduling.node.schedule_node import ScheduleNode
 
 
 @pytest.fixture(params=[
-    ScheduleNode(0, [], InputComponent()),
-    ScheduleNode(1, [()], InputComponent()),
-    ScheduleNode(2, [(), ()], InputComponent())
+    ScheduleNode(0, [], InputComponent(), {}),
+    ScheduleNode(1, [()], InputComponent(), {}),
+    ScheduleNode(2, [(), ()], InputComponent(), {})
 ])
 def example_schedule_node(request):
     """Several examples of schedule nodes.
