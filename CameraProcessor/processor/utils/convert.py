@@ -24,6 +24,6 @@ def to_buffer_dict(frame_obj, bounding_boxes):
                 "boxId": bounding_box.identifier,
                 "rect": bounding_box.rectangle
             }
-            for bounding_box in bounding_boxes.bounding_boxes
+            for bounding_box in bounding_boxes
         ]
     }

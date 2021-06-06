@@ -45,3 +45,11 @@ class FrameObj:
             float, float: (width, height) of frame.
         """
         return self.__frame.shape[1], self.__frame.shape[0]
+
+    def __repr__(self):
+        """Converts the frame to a string.
+
+        Returns:
+            str: String representation of a frame.
+        """
+        return f'FrameObj(width:{self.shape[0]} height:{self.shape[1]} timestamp:{self.timestamp:.3f})'

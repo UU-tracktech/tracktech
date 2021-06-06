@@ -37,7 +37,6 @@ class TestBoundingBoxes:
         box2 (BoundingBox): A sample bounding box.
         data (BoundingBoxes): Contains both bounding boxes.
         boxes (BoundingBoxes): Bounding boxes from the data.
-        frame
     """
 
     # Setup.
