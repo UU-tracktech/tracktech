@@ -44,13 +44,12 @@ class TestBoundingBox:
 
     def test_eq(self):
         """Tests the __eq__ function."""
+        assert self.box1 != self.box2
         assert self.box1 == self.box1_duplicate
 
     def test_repr(self):
         """Tests the __repr__ function."""
-        s = 'BoundingBox(type: "person" certainty: 0.5 identifier: 1 id: 5 ' \
-            'rectangle: Rectangle(x1:0.000 y1:0.500 x2:0.750 y2:1.000))'
-        assert s == self.box1.__repr__()
+        assert str(self.box1).startswith('BoundingBox(')
 
 
 if __name__ == '__main__':

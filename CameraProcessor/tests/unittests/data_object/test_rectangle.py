@@ -34,11 +34,11 @@ class TestRectangle:
                     self.brx2 == 0.9,
                     self.bry2 == 1])
 
-    def test_rectangle(self):
+    def test_init(self):
         """Tests entire Rectangle object."""
-        assert self.data == (Rectangle(0, 0.1, 0.9, 1))
-        assert self.data != (Rectangle(0, 0.1, 0.5, 1))
-        assert Rectangle(self.tlx1, self.tly1, self.brx2, self.bry2) == (Rectangle(0, 0.1, 0.9, 1))
+        assert self.data == Rectangle(0, 0.1, 0.9, 1)
+        assert self.data != Rectangle(0, 0.1, 0.5, 1)
+        assert Rectangle(self.tlx1, self.tly1, self.brx2, self.bry2) == Rectangle(0, 0.1, 0.9, 1)
 
     def test_invalid_rectangle_values(self):
         """Tests whether an error is raised when the values in the rectangle are invalid."""

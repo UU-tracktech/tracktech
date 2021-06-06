@@ -22,6 +22,7 @@ class TestBoundingBoxes:
         boxes_id (str): Identifier of the BoundingBoxes object.
         boxes (BoundingBoxes): Bounding boxes object to test.
         boxes_duplicate (BoundingBoxes): Bounding boxes object to test.
+        boxes_eq (BoundingBoxes): Bounding boxes object to test.
     """
 
     def setup_method(self):
@@ -33,10 +34,11 @@ class TestBoundingBoxes:
 
         self.boxes = BoundingBoxes([self.box1, self.box2], self.boxes_id)
         self.boxes_duplicate = BoundingBoxes([self.box1_duplicate, self.box2], self.boxes_id)
+        self.boxes_eq = BoundingBoxes([self.box2, self.box1], self.boxes_id)
 
     def test_init(self):
         """Tests the constructor of the BoundingBoxes object."""
-        assert self.boxes_id == self.boxes_id
+        assert self.boxes.image_id == self.boxes_id
 
         boxes_list = self.boxes.bounding_boxes
         assert boxes_list[0] == self.box1
@@ -54,14 +56,12 @@ class TestBoundingBoxes:
 
     def test_eq(self):
         """Tests whether checking equality works."""
-        assert self.box1 == self.box1
-        assert self.box1 != self.box2
-        assert self.box1 == self.box1_duplicate
         assert self.boxes == self.boxes_duplicate
+        assert self.boxes != self.boxes_eq
 
     def test_repr(self):
         """Tests that the string version contains."""
-        assert str(self.boxes).startswith('BoundingBoxes')
+        assert str(self.boxes).startswith('BoundingBoxes(')
 
 
 if __name__ == '__main__':
