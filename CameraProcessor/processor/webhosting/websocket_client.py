@@ -12,6 +12,9 @@ from collections import deque
 from tornado import websocket
 
 from processor.webhosting.start_command import StartCommand
+from processor.webhosting.start_command_simple import StartCommandSimple
+from processor.webhosting.start_command_extended import StartCommandExtended
+from processor.webhosting.start_command_search import StartCommandSearch
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
 
@@ -192,6 +195,24 @@ class WebsocketClient:
 
         self.message_queue.append(UpdateCommand(feature_map, object_id))
 
+    def generate_tracking_message(self, message):
+        """Factory function that returns the correct StartCommand type.
+
+        Args:
+            message (Union[str, bytes]): JSON parse of the sent message.
+
+        Returns:
+            StartCommand: A subclass of the StartCommand superclass.
+        """
+        del message["type"]
+        if "cutout" in message.keys():
+            if all(k in message.keys() for k in {"frameId", "boxId"}):
+                return StartCommandExtended(**message)
+            else:
+                return StartCommandSimple(**message)
+        else:
+            return StartCommandSearch(**message)
+
     def start_tracking(self, message):
         """Handler for the "start tracking" command.
 
@@ -199,8 +220,7 @@ class WebsocketClient:
             message (Union[str, bytes]): JSON parse of the sent message.
         """
         # Remove the "type" item, because we don't need that anymore.
-        del message["type"]
-        self.message_queue.append(StartCommand(message))
+        self.message_queue.append(self.generate_tracking_message(message))
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.

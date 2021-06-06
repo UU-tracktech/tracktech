@@ -11,13 +11,33 @@ class StartCommand(dict):
 
     It uses the dict __init__ to add the **kwargs or dict to this class. This class is, for all intents and purposes,
     a dictionary with entries accessible like properties. Additional functionality can be added.
-
-    We expect some, but not all, of the following key-value pairs:
-    - object_id=(int)
-    - box_id=(int)
-    - frame_id=(int)
-    - cutout=(np.ndarray)
     """
+    def __init__(self, *args, **kwargs):
+        # Pylint is freaking out about *args for some reason.
+        # TODO: fix bug: pylint throws unknown-argument-in-docstring error about *args #pylint: disable=fixme.
+        # pylint: disable=unknown-argument-in-docstring
+        """Checks if we have an object id, then calls dict init.
+
+        Args:
+            *args (set): A set of keys expected in the command.
+            **kwargs (dict): dict of key-value pairs containing the start command message.
+        """
+        # pylint: enable=unknown-argument-in-docstring
+        # Add expected keywords to key_set.
+        key_set = {"objectId"}
+        key_set.update(args)
+
+        # Test if kwargs contains ONLY keys we expect.
+        diff = kwargs.keys() - key_set
+        if len(diff) > 0:
+            raise KeyError(f"Unexpected keyword or keywords {diff} in start command.")
+
+        # Test if kwargs contains ALL the keys we expect.
+        diff2 = key_set - kwargs.keys()
+        if len(diff2) > 0:
+            raise KeyError(f"Missing expected keyword or keywords {diff2} in start command.")
+        super().__init__(**kwargs)
+
     # pylint: disable=docstring-is-missing
     def __getattr__(self, item):
         if item in self:
