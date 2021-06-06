@@ -20,39 +20,6 @@ class TestScheduleNode:
         """
         assert example_schedule_node.component
 
-    def test_node_assign(self):
-        """Tests the functionality of INode: reset()."""
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent(), {})
-
-        # Yield that all arguments are not yet set.
-        def yield_node_arg():
-            """Yield all the arguments."""
-            for arg in schedule_node.__arguments:
-                yield arg
-
-        for x in yield_node_arg():
-            assert not x
-
-        # Assign and assert definition inside the node.
-        schedule_node.assign('val', 2)
-        assert schedule_node.__arguments[2] == 'val'
-
-    def test_node_reset(self):
-        """Tests the functionality of INode: executable()."""
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent(), {})
-        schedule_node.assign('val', 2)
-        schedule_node.reset()
-
-        # The yield function has to be contained inside current function because of the yields.
-        def yield_node_arg():
-            """Yield all the arguments."""
-            for arg in schedule_node.__arguments:
-                yield arg
-
-        # Assert argument exists.
-        for x in yield_node_arg():
-            assert not x
-
     def test_node_executable(self, example_schedule_node):
         """Whether the node is executable is correctly.
 
