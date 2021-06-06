@@ -11,7 +11,6 @@ import logging
 from collections import deque
 from tornado import websocket
 
-from processor.webhosting.start_command import StartCommand
 from processor.webhosting.start_command_simple import StartCommandSimple
 from processor.webhosting.start_command_extended import StartCommandExtended
 from processor.webhosting.start_command_search import StartCommandSearch
@@ -208,8 +207,7 @@ class WebsocketClient:
         if "cutout" in message.keys():
             if all(k in message.keys() for k in {"frameId", "boxId"}):
                 return StartCommandExtended(**message)
-            else:
-                return StartCommandSimple(**message)
+            return StartCommandSimple(**message)
         else:
             return StartCommandSearch(**message)
 
