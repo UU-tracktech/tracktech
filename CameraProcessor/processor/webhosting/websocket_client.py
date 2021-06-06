@@ -204,11 +204,14 @@ class WebsocketClient:
             StartCommand: A subclass of the StartCommand superclass.
         """
         del message["type"]
-        if "cutout" in message.keys():
-            if all(k in message.keys() for k in {"frameId", "boxId"}):
+        if all(k in {"frameId", "boxId"} for k in message.keys()):
+            if "cutout" in message.keys():
                 return StartCommandExtended(**message)
+            return StartCommandSearch(**message)
+        elif "cutout" in message.keys():
             return StartCommandSimple(**message)
-        return StartCommandSearch(**message)
+        else:
+            raise ValueError("Start Tracking message does not contain necessary information.")
 
     def start_tracking(self, message):
         """Handler for the "start tracking" command.
