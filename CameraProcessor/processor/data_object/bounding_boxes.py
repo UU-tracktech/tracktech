@@ -46,8 +46,7 @@ class BoundingBoxes:
         Returns:
             bool: Whether all bounding boxes are the same inside the object.
         """
-        return [bounding_box == other_bounding_box
-                for bounding_box, other_bounding_box in (self.__bounding_boxes, other.bounding_boxes)]
+        return self.bounding_boxes == other.bounding_boxes
 
     def __repr__(self):
         """String representation of the bounding boxes.
