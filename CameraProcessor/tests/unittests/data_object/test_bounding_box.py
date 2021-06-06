@@ -49,11 +49,6 @@ class TestBoundingBox:
             'rectangle: Rectangle(x1:0.000 y1:0.500 x2:0.750 y2:1.000))'
         assert s == self.box1.__repr__()
 
-    def test_range_certainty(self):
-        """Asserts if certainty is within range 0...1."""
-        assert self.certainty <= 1
-        assert self.certainty >= 0
-
 
 if __name__ == '__main__':
     pytest.main(TestBoundingBox)

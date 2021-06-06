@@ -31,6 +31,7 @@ class TestBoundingBoxes:
         self.boxes_id = 'test'
 
         self.boxes = BoundingBoxes([self.box1, self.box2], self.boxes_id)
+        self.boxes_duplicate = BoundingBoxes([self.box1_duplicate, self.box2], self.boxes_id)
 
     def test_init(self):
         """Tests the constructor of the BoundingBoxes object."""
@@ -55,6 +56,7 @@ class TestBoundingBoxes:
         assert self.box1 == self.box1
         assert self.box1 != self.box2
         assert self.box1 == self.box1_duplicate
+        assert self.boxes == self.boxes_duplicate
 
     def test_repr(self):
         """Tests that the string version contains."""

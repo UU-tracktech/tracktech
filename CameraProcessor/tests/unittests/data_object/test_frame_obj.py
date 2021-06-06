@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 import pytest
 import numpy
 
-from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
+from tests.unittests.utils.utils import get_sample_frame
 from processor.data_object.frame_obj import FrameObj
 
 
