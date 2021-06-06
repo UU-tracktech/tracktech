@@ -7,62 +7,39 @@ Utrecht University within the Software Project course.
 import pytest
 import numpy
 
-from tests.unittests.utils.utils import get_sample_frame, is_same_frame_image
+from tests.unittests.utils.utils import get_sample_frame
 from processor.data_object.frame_obj import FrameObj
 
 
 # pylint: disable=attribute-defined-outside-init,no-member
-def __eq__(self, other):
-    """Custom equalize function for a FrameObj.
-
-    Args:
-        other (FrameObj): second object to compare to.
-
-    Returns:
-        bool: Whether the frame objects are the same
-    """
-    if isinstance(self, other.__class__):
-        return self.a == other.a and self.b == other.b
-    return False
-
-
 class TestFrameObj:
-    """Tests FrameObj properties.
+    """Tests frame_obj.py.
 
     Attributes:
-        data (FrameObj): Frame object containing an example frame.
-        frame (numpy.ndarray): Frame in a numpy array.
-        timestamp (float): Timestamp of the frame.
-        shape (width, height): Shape of the frame
+        frame1 (FrameObj): sample frame for texting.
+        frame2 (FrameObj): sample frame for texting.
+        frame (numpy.ndarray): the frame from the capture given by OpenCV.
+        timestamp (float): timestamp (in s) associated with the current frame.
+        shape (int, int): width and height of frame.
     """
 
     def setup_method(self):
-        """Setup method."""
-        self.data = FrameObj(get_sample_frame(), 1)
-        self.frame = self.data.frame
-        self.timestamp = self.data.timestamp
-        self.shape = self.data.shape
+        """Sets up frame_object for unit testing."""
+        self.frame1 = FrameObj(get_sample_frame(), 1337)
+        self.frame2 = FrameObj(get_sample_frame(), 7331)
+        self.frame = get_sample_frame()
+        self.timestamp = 1337
+        self.shape = 640, 480
 
-    def test_value_frame_obj(self):
-        """Asserts if value of frame is correct."""
-        assert is_same_frame_image(get_sample_frame(), self.data.frame)
+    def test_init(self):
+        """Tests the constructor of the FrameObj object."""
+        assert numpy.all(self.frame == self.frame1.frame)
+        assert self.timestamp == self.frame1.timestamp
+        assert self.shape == self.frame1.shape
 
-    def test_frame(self):
-        """Asserts if frame is correct."""
-        assert1 = FrameObj(get_sample_frame(), 1).frame
-        assert2 = self.frame
-
-        # Frame is equal to the set.
-        assert len(assert1) == len(assert2)
-        assert numpy.testing.assert_array_equal(assert1, assert2) is None
-
-    def test_timestamp(self):
-        """Asserts if frame timestamp is correct."""
-        assert FrameObj(get_sample_frame(), 1).timestamp == self.timestamp
-
-    def test_shape(self):
-        """Asserts if frame shape is correct."""
-        assert FrameObj(get_sample_frame(), 1).shape == self.shape
+    def test_repr(self):
+        """Tests the __repr__ function."""
+        assert str(self.frame1).startswith('FrameObj(')
 
 
 if __name__ == '__main__':

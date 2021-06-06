@@ -17,7 +17,7 @@ class BoundingBox:
             rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
             classification (str): classification of the bounding box.
             certainty (float): certainty/confidence of the bounding box detection.
-            object_id (int): id assigned to object depicted by the bounding box
+            object_id (int): id assigned to object depicted by the bounding box.
         """
         self.__identifier = identifier
         self.__rectangle = rectangle
