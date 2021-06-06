@@ -35,6 +35,9 @@
                                 <a class="function" href="#FrameBuffer.__init__">FrameBuffer</a>
                         </li>
                         <li>
+                                <a class="function" href="#FrameBuffer.execute_component">execute_component</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#FrameBuffer.add_frame">add_frame</a>
                         </li>
                         <li>
@@ -83,9 +86,10 @@ Utrecht University within the Software Project course.
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
 
 
-<span class="k">class</span> <span class="nc">FrameBuffer</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">FrameBuffer</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class that handles frame buffering logic and holds the buffer.</span>
 
 <span class="sd">    The buffer maps frame_ids to a tuple of frame_obj and tracked_boxes,</span>
@@ -103,6 +107,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__buffer_size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__buffer</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_frame</span>
 
     <span class="k">def</span> <span class="nf">add_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a frame to the frame buffer.</span>
@@ -195,12 +202,12 @@ Utrecht University within the Software Project course.
 
         
         <span class="def">class</span>
-        <span class="name">FrameBuffer</span>:
+        <span class="name">FrameBuffer</span>(<span class="base"><a href="../scheduling/component/component_interface.html#IComponent">processor.scheduling.component.component_interface.IComponent</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FrameBuffer</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FrameBuffer</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class that handles frame buffering logic and holds the buffer.</span>
 
 <span class="sd">    The buffer maps frame_ids to a tuple of frame_obj and tracked_boxes,</span>
@@ -218,6 +225,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__buffer_size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__buffer</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_frame</span>
 
     <span class="k">def</span> <span class="nf">add_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a frame to the frame buffer.</span>
@@ -344,6 +354,43 @@ thus it contains frames and their tracked bounding boxes.</p>
 
 <ul>
 <li><strong>size (int):</strong>  Size of the buffer.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="FrameBuffer.execute_component" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FrameBuffer.execute_component">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">execute_component</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_frame</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Function used by INode to execute the component.</p>
+
+<p>Specifies the function that used to perform an iteration using the component.
+Function contains all inputs from input nodes as separate arguments
+(1 argument per input node).</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>func: A function that hasn't been applied containing all inputs as separate arguments.</p>
+</blockquote>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>NotImplementedError:</strong>  occurs when this method is not overridden to ensure this function is defined.</li>
 </ul>
 </div>
 
