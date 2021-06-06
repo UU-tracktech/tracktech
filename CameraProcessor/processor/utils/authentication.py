@@ -3,27 +3,28 @@ import requests
 import logging
 
 
-def get_token(url):
-    """Retrieves the client_id and client_secret from the environment and requests token from url.
+def get_token(auth_server_url):
+    """Retrieves the client_id and client_secret from the environment and requests token from authentication url.
 
     Args:
-        url (str): Url of the authentication server.
+        auth_server_url (str): Url of the authentication server to request the token from.
 
     Returns:
-        str: Access token recieved from the authentication server
+        str: Access token received from the authentication server
 
     Raises:
+        AttributeError: Authentication credentials given in the environment are invalid.
         EnvironmentError: Whenever the environment variables were not found in the environment.
         ConnectionError: No response from the authentication server.
     """
     # Get environment variables.
-    client_id = os.environ.get('client_id', None)
-    client_secret = os.environ.get('client_secret', None)
+    client_id = os.environ.get('CLIENT_ID', None)
+    client_secret = os.environ.get('CLIENT_SECRET', None)
 
     # Environment variables not found.
     if client_id is None or client_secret is None:
         logging.error(f'Retrieving token without environment variables')
-        raise EnvironmentError('client_id or client_secret not found in environment.')
+        raise EnvironmentError('CLIENT_ID or CLIENT_SECRET not found in environment.')
 
     params = {
         'grant_type': 'client_credentials',
@@ -32,7 +33,10 @@ def get_token(url):
     }
 
     # Post request given the parameters.
-    response = requests.post(url, params)
+    response = requests.post(auth_server_url, params)
+
+    if response.status_code == 401:
+        raise AttributeError('Authentication credentials are invalid.')
 
     # Authentication server gave back an error response.
     if response.status_code != 200:
