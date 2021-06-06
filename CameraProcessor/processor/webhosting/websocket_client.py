@@ -208,8 +208,7 @@ class WebsocketClient:
             if all(k in message.keys() for k in {"frameId", "boxId"}):
                 return StartCommandExtended(**message)
             return StartCommandSimple(**message)
-        else:
-            return StartCommandSearch(**message)
+        return StartCommandSearch(**message)
 
     def start_tracking(self, message):
         """Handler for the "start tracking" command.
