@@ -45,8 +45,8 @@ class Scheduler:
         self.queued = set()
 
         # Assign inputs to initial/start node.
-        for i in range(len(inputs)):
-            self.start_node.assign(inputs[i], i)
+        for i, node_input in enumerate(inputs):
+            self.start_node.assign(node_input, i)
 
         self.push(self.start_node)
 

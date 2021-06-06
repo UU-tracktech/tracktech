@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 """
 from processor.scheduling.node.schedule_node import ScheduleNode
 
-from processor.scheduling.component.pass_component import PassComponent
 from processor.scheduling.component.func_call_component import FuncCallComponent
 
 # Keys of inputs necessary to initialize the plan.
@@ -14,7 +13,8 @@ plan_inputs = {
     'detector': None,
     'tracker': None,
     're_identifier': None,
-    'func': None
+    'func': None,
+    'frame_buffer': None
 }
 
 # Keys of globals used by the plan, necessary each iteration.
@@ -43,10 +43,20 @@ def create_plan(plan_args):
         }
     )
 
+    # Frame buffer node storing frame with all information gathered from re-id stage.
+    frame_buffer_node = ScheduleNode(
+        2,
+        [],
+        plan_args['frame_buffer'],
+        {
+            'frame_obj': 0
+        }
+    )
+
     # Node that executes re-identification.
     re_id_node = ScheduleNode(
         3,
-        [(func_node, 3)],
+        [(frame_buffer_node, 1), (func_node, 3)],
         plan_args['re_identifier'],
         {
             'frame_obj': 0,

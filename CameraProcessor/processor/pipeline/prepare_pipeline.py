@@ -129,7 +129,7 @@ def prepare_capture(input_config):
     raise NameError(f'Input type "{capture_type}" is unknown')
 
 
-def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame):
+def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame, frame_buffer):
     """Prepare the Scheduler with a valid plan configuration.
 
     Args:
@@ -137,6 +137,7 @@ def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame):
         tracker (ITracker): tracker performing simple tracking of all objects using the detections.
         re_identifier (IReIdentifier): re-identifier performing the re-identification stage.
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects.
+        frame_buffer (FrameBuffer): buffer of frames and stage information associated with the frame.
 
     Returns:
         Scheduler: Scheduler that has been configured with a plan.
@@ -149,6 +150,7 @@ def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame):
     plan_args['tracker'] = tracker
     plan_args['re_identifier'] = re_identifier
     plan_args['func'] = on_processed_frame
+    plan_args['frame_buffer'] = frame_buffer
 
     # Apply configuration to plan.
     start_node = pipeline_plan.create_plan(plan_args)
