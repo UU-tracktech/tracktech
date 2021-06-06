@@ -38,7 +38,7 @@ class TestScheduler:
         scheduler = schedule_wrapper.scheduler
 
         # Executes schedule.
-        scheduler.schedule_graph("small")
+        scheduler.schedule_graph(["small"], {})
 
         # No stage inside the schedule modified the string.
         assert schedule_wrapper.schedule_output_node.component.out == "small"
@@ -56,7 +56,7 @@ class TestScheduler:
         scheduler = schedule_wrapper.scheduler
 
         # Initialize graph with a simple string.
-        scheduler.schedule_graph("big")
+        scheduler.schedule_graph(["big"], {})
 
         assert schedule_wrapper.schedule_output_node.component.out == \
                "big,start,start,first_arg,big,start,start,second_arg,merged"

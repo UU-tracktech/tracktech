@@ -22,7 +22,7 @@ class TestScheduleNode:
 
     def test_node_assign(self):
         """Tests the functionality of INode: reset()."""
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent())
+        schedule_node = ScheduleNode(3, [(), ()], InputComponent(), {})
 
         # Yield that all arguments are not yet set.
         def yield_node_arg():
@@ -39,7 +39,7 @@ class TestScheduleNode:
 
     def test_node_reset(self):
         """Tests the functionality of INode: executable()."""
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent())
+        schedule_node = ScheduleNode(3, [(), ()], InputComponent(), {})
         schedule_node.assign('val', 2)
         schedule_node.reset()
 
@@ -64,12 +64,12 @@ class TestScheduleNode:
 
     def test_non_executable_node(self):
         """Not executable node should raise an exception."""
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent())
+        schedule_node = ScheduleNode(3, [(), ()], InputComponent(), {})
         assert pytest.raises(Exception, schedule_node.execute, print)
 
     def test_fill_node_arguments(self):
         """Fill arguments of nodes and see if it becomes executable."""
-        schedule_node = ScheduleNode(3, [(), ()], InputComponent())
+        schedule_node = ScheduleNode(3, [(), ()], InputComponent(), {})
         assert not schedule_node.executable()
         schedule_node.assign('val', 0)
         schedule_node.assign('val', 1)
@@ -78,13 +78,13 @@ class TestScheduleNode:
 
     def test_override_argument_raises_error(self):
         """Tests the functionality of INode: execute()."""
-        schedule_node = ScheduleNode(3, [], InputComponent())
+        schedule_node = ScheduleNode(3, [], InputComponent(), {})
         schedule_node.assign('val', 2)
         assert pytest.raises(Exception, schedule_node.assign, 'val', 2)
 
     def test_argument_out_of_range(self):
         """Assigned argument out of range raises exception."""
-        schedule_node = ScheduleNode(1, [], InputComponent())
+        schedule_node = ScheduleNode(1, [], InputComponent(), {})
         assert pytest.raises(IndexError, schedule_node.assign, 'val', 2)
 
 

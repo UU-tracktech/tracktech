@@ -28,6 +28,11 @@ class FrameBuffer(IComponent):
         self.__buffer = OrderedDict()
 
     def execute_component(self):
+        """Function given to scheduler so the scheduler can add the frame with frame information to the frame buffer.
+
+        Returns:
+            function: function that the scheduler can run.
+        """
         return self.add_frame
 
     def add_frame(self, frame, tracked_boxes):
