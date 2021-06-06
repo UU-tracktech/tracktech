@@ -14,6 +14,9 @@ class TestBoundingBox:
     """Tests bounding_box.py.
 
     Attributes:
+        box1 (BoundingBox): A sample bounding box.
+        box1_duplicate (BoundingBox): Duplicate of box1 without a reference.
+        box2 (BoundingBox): A sample bounding box.
         identifier (int): identifier of bounding box.
         rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
         classification (str): classification of the bounding box.

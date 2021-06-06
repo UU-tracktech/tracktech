@@ -16,8 +16,11 @@ class TestFrameObj:
     """Tests bounding_box.py.
 
     Attributes:
+        frame1 (FrameObj): sample frame for texting.
+        frame2 (FrameObj): sample frame for texting.
         frame (numpy.ndarray): the frame from the capture given by OpenCV.
         timestamp (float): timestamp (in s) associated with the current frame.
+        shape (int, int): width and height of frame.
     """
 
     def setup_method(self):

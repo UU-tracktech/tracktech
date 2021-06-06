@@ -21,6 +21,7 @@ class TestBoundingBoxes:
         box2 (BoundingBox): A sample bounding box.
         boxes_id (str): Identifier of the BoundingBoxes object.
         boxes (BoundingBoxes): Bounding boxes object to test.
+        boxes_duplicate (BoundingBoxes): Bounding boxes object to test.
     """
 
     def setup_method(self):
