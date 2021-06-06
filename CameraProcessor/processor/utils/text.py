@@ -36,12 +36,10 @@ def bounding_boxes_to_json(bounding_boxes, timestamp):
     Returns:
         json: JSON representation of the object.
     """
-    boxes_list = bounding_boxes.bounding_boxes
-
     return json.dumps({
         "type": "boundingBoxes",
         "frameId": timestamp,
-        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
+        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
     })
 
 
@@ -82,11 +80,9 @@ def boxes_to_accuracy_json(bounding_boxes, image_id):
       Returns:
           (json): JSON representation of the object.
       """
-    boxes_list = bounding_boxes.bounding_boxes
-
     return json.dumps({
         "imageId": image_id,
-        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in boxes_list],
+        "boxes": [__bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
     })
 
 

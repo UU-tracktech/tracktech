@@ -67,3 +67,22 @@ class Rectangle:
             (float): normalized top most Y.
         """
         return self.__y2
+
+    def __eq__(self, other):
+        """Checks whether the two rectangles are equal.
+
+        Args:
+            other (Rectangle): Other rectangle to compare with.
+
+        Returns:
+            bool: Whether self and other are the same.
+        """
+        return all([self.x1 == other.x1, self.x2 == other.x2, self.y1 == other.y1, self.y2 == other.y2])
+
+    def __repr__(self):
+        """Converts the rectangle object to a string.
+
+        Returns:
+            str: String representation of a Rectangle.
+        """
+        return f"Rectangle(x1:{self.__x1:.3f} y1:{self.__y1:.3f} x2:{self.__x2:.3f} y2:{self.__y2:.3f})"
