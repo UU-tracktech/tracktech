@@ -26,25 +26,6 @@
 
 
 
-                    <h2>API Documentation</h2>
-                        <ul class="memberlist">
-            <li>
-                    <a class="class" href="#Yolov5Detector">Yolov5Detector</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#Yolov5Detector.__init__">Yolov5Detector</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Yolov5Detector.execute_component">execute_component</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Yolov5Detector.detect">detect</a>
-                        </li>
-                </ul>
-
-            </li>
-    </ul>
-
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -84,13 +65,13 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.models.experimental</span> <span class="kn">import</span> <span class="n">attempt_load</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.utils.datasets</span> <span class="kn">import</span> <span class="n">letterbox</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.utils.general</span> <span class="kn">import</span> <span class="n">check_img_size</span><span class="p">,</span>\
-    <span class="n">apply_classifier</span><span class="p">,</span><span class="n">set_logging</span>
+    <span class="n">apply_classifier</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5.utils.torch_utils</span> <span class="kn">import</span> <span class="n">select_device</span><span class="p">,</span>\
-    <span class="n">load_classifier</span><span class="p">,</span> <span class="n">time_synchronized</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.detection.idetector</span> <span class="kn">import</span> <span class="n">IDetector</span>
+    <span class="n">load_classifier</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.detection.i_yolo_detector</span> <span class="kn">import</span> <span class="n">IYoloDetector</span>
 
 
-<span class="k">class</span> <span class="nc">Yolov5Detector</span><span class="p">(</span><span class="n">IDetector</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Yolov5Detector</span><span class="p">(</span><span class="n">IYoloDetector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Make it inherit from a generic Detector class.</span>
 
 <span class="sd">    Attributes:</span>
@@ -119,7 +100,6 @@ Utrecht University within the Software Project course.
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
 
         <span class="c1"># Initialize.</span>
-        <span class="n">set_logging</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA unavailable&quot;</span><span class="p">)</span>
@@ -176,14 +156,13 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Padded resize.</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="c1"># Resize the image and convert it.</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
 
-        <span class="c1"># Run inference on the converted image.</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
+        <span class="c1"># Generate predictions and create corresponding bounding boxes.</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
         <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Apply secondary Classifier.</span>
@@ -192,10 +171,6 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Create bounding boxes based on the predictions.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-
-        <span class="c1"># Print time (inference + NMS).</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
-              <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
 </pre></div>
@@ -203,319 +178,6 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
-                <section id="Yolov5Detector">
-                                <div class="attr class">
-        <a class="headerlink" href="#Yolov5Detector">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Yolov5Detector</span>(<span class="base"><a href="idetector.html#IDetector">processor.pipeline.detection.idetector.IDetector</a></span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Yolov5Detector</span><span class="p">(</span><span class="n">IDetector</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make it inherit from a generic Detector class.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        config (ConfigParser): Configurations of the application.</span>
-<span class="sd">        filter ([str]): List of objects types to detect.</span>
-<span class="sd">        device (str): Device that runs the detector.</span>
-<span class="sd">        half (bool): Whether to half the model or not.</span>
-<span class="sd">        classify (bool): Whether to classify.</span>
-<span class="sd">        names ([str]): List of names which that should get detected.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Yolov5Detector.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (ConfigParser): Yolov5 config file.</span>
-<span class="sd">            filters (SectionProxy): Filter configurations for boundingBoxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">curr_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">curr_dir</span><span class="p">,</span> <span class="s1">&#39;./yolov5&#39;</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filters</span><span class="p">[</span><span class="s1">&#39;targets_path&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">filter_names</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">filter_names</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
-
-        <span class="c1"># Initialize.</span>
-        <span class="n">set_logging</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA unavailable&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">select_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span>  <span class="c1"># half precision only supported on CUDA.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using the CPU. Check CUDA version,&quot;</span>
-                         <span class="s2">&quot;or whether Pytorch is installed with CUDA support.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using GPU&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Load FP32 model.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">attempt_load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">],</span>
-                                  <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># load FP32 model.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stride</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stride</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>  <span class="c1"># model stride</span>
-        <span class="n">imgsz</span> <span class="o">=</span> <span class="n">check_img_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>  <span class="c1"># check img_size.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>  <span class="c1"># to FP16</span>
-
-        <span class="c1"># Set secondary classification, by default off.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">classify</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span> <span class="o">=</span> <span class="n">load_classifier</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;resnet101&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># initialize.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;weights/resnet101.pt&#39;</span><span class="p">,</span>
-                           <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-
-        <span class="c1"># Get names and colors.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">names</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">names</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="p">[[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">imgsz</span><span class="p">,</span>
-                            <span class="n">imgsz</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())))</span>
-
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect</span>
-
-    <span class="c1"># pylint: disable=duplicate-code</span>
-    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run detection on a Detection Object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): information object containing frame and timestamp.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Padded resize.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
-
-        <span class="c1"># Run inference on the converted image.</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-
-        <span class="c1"># Apply secondary Classifier.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
-            <span class="n">pred</span> <span class="o">=</span> <span class="n">apply_classifier</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-
-        <span class="c1"># Create bounding boxes based on the predictions.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-
-        <span class="c1"># Print time (inference + NMS).</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
-              <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Make it inherit from a generic Detector class.</p>
-
-<h6 id="attributes">Attributes</h6>
-
-<ul>
-<li><strong>config (ConfigParser):</strong>  Configurations of the application.</li>
-<li><strong>filter ([str]):</strong>  List of objects types to detect.</li>
-<li><strong>device (str):</strong>  Device that runs the detector.</li>
-<li><strong>half (bool):</strong>  Whether to half the model or not.</li>
-<li><strong>classify (bool):</strong>  Whether to classify.</li>
-<li><strong>names ([str]):</strong>  List of names which that should get detected.</li>
-</ul>
-</div>
-
-
-                            <div id="Yolov5Detector.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Yolov5Detector.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Yolov5Detector</span><span class="signature">(config, filters)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Yolov5Detector.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (ConfigParser): Yolov5 config file.</span>
-<span class="sd">            filters (SectionProxy): Filter configurations for boundingBoxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">curr_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">curr_dir</span><span class="p">,</span> <span class="s1">&#39;./yolov5&#39;</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filters</span><span class="p">[</span><span class="s1">&#39;targets_path&#39;</span><span class="p">])</span> <span class="k">as</span> <span class="n">filter_names</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">filter_names</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am filtering on the following objects: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">))</span>
-
-        <span class="c1"># Initialize.</span>
-        <span class="n">set_logging</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA unavailable&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">select_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span>  <span class="c1"># half precision only supported on CUDA.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using the CPU. Check CUDA version,&quot;</span>
-                         <span class="s2">&quot;or whether Pytorch is installed with CUDA support.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I am using GPU&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Load FP32 model.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">attempt_load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">],</span>
-                                  <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># load FP32 model.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stride</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stride</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>  <span class="c1"># model stride</span>
-        <span class="n">imgsz</span> <span class="o">=</span> <span class="n">check_img_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>  <span class="c1"># check img_size.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>  <span class="c1"># to FP16</span>
-
-        <span class="c1"># Set secondary classification, by default off.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">classify</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span> <span class="o">=</span> <span class="n">load_classifier</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;resnet101&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># initialize.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;weights/resnet101.pt&#39;</span><span class="p">,</span>
-                           <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-
-        <span class="c1"># Get names and colors.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">names</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">names</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="p">[[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">imgsz</span><span class="p">,</span>
-                            <span class="n">imgsz</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())))</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Initialize Yolov5Detector.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>config (ConfigParser):</strong>  Yolov5 config file.</li>
-<li><strong>filters (SectionProxy):</strong>  Filter configurations for boundingBoxes.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Yolov5Detector.execute_component" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Yolov5Detector.execute_component">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">execute_component</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Function given to scheduler so the scheduler can run the detection stage.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>function: function that the scheduler can run.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="Yolov5Detector.detect" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Yolov5Detector.detect">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">detect</span><span class="signature">(self, frame_obj)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run detection on a Detection Object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): information object containing frame and timestamp.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Padded resize.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">img</span> <span class="o">=</span> <span class="n">letterbox</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;img-size&#39;</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stride</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">)</span>
-
-        <span class="c1"># Run inference on the converted image.</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time_synchronized</span><span class="p">()</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_predictions</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-
-        <span class="c1"># Apply secondary Classifier.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classify</span><span class="p">:</span>
-            <span class="n">pred</span> <span class="o">=</span> <span class="n">apply_classifier</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modelc</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-
-        <span class="c1"># Create bounding boxes based on the predictions.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_bounding_boxes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-
-        <span class="c1"># Print time (inference + NMS).</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing of frame </span><span class="si">{</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1"> in &#39;</span>
-              <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">time_synchronized</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Run detection on a Detection Object.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>frame_obj (FrameObj):</strong>  information object containing frame and timestamp.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                </section>
     </main>
 </body>
 </html>

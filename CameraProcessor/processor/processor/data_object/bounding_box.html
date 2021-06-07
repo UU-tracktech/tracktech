@@ -95,7 +95,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.</span>
 <span class="sd">            classification (str): classification of the bounding box.</span>
 <span class="sd">            certainty (float): certainty/confidence of the bounding box detection.</span>
-<span class="sd">            object_id (int): id assigned to object depicted by the bounding box</span>
+<span class="sd">            object_id (int): id assigned to object depicted by the bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span> <span class="o">=</span> <span class="n">rectangle</span>
@@ -147,6 +147,33 @@ Utrecht University within the Software Project course.
 <span class="sd">            int: certainty/confidence of bounding box detection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function that checks whether the current bounding box is the same as the given one.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (BoundingBox): BoundingBox to compare with.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the bounding boxes are the same.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">rectangle</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">certainty</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
+        <span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts the bounding box object to a string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: String representation of an bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;BoundingBox(type: &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__classification</span><span class="si">}</span><span class="s1">&quot; certainty: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span><span class="si">}</span><span class="s1"> &#39;</span> \
+               <span class="sa">f</span><span class="s1">&#39;identifier: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span><span class="si">}</span><span class="s1"> id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span><span class="si">}</span><span class="s1"> &#39;</span> \
+               <span class="sa">f</span><span class="s1">&#39;rectangle: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span><span class="si">}</span><span class="s1">)&#39;</span>
 </pre></div>
 
         </details>
@@ -174,7 +201,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.</span>
 <span class="sd">            classification (str): classification of the bounding box.</span>
 <span class="sd">            certainty (float): certainty/confidence of the bounding box detection.</span>
-<span class="sd">            object_id (int): id assigned to object depicted by the bounding box</span>
+<span class="sd">            object_id (int): id assigned to object depicted by the bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span> <span class="o">=</span> <span class="n">rectangle</span>
@@ -226,6 +253,33 @@ Utrecht University within the Software Project course.
 <span class="sd">            int: certainty/confidence of bounding box detection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function that checks whether the current bounding box is the same as the given one.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (BoundingBox): BoundingBox to compare with.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether the bounding boxes are the same.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">rectangle</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__classification</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">certainty</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">object_id</span>
+        <span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts the bounding box object to a string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: String representation of an bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;BoundingBox(type: &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__classification</span><span class="si">}</span><span class="s1">&quot; certainty: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__certainty</span><span class="si">}</span><span class="s1"> &#39;</span> \
+               <span class="sa">f</span><span class="s1">&#39;identifier: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span><span class="si">}</span><span class="s1"> id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span><span class="si">}</span><span class="s1"> &#39;</span> \
+               <span class="sa">f</span><span class="s1">&#39;rectangle: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span><span class="si">}</span><span class="s1">)&#39;</span>
 </pre></div>
 
         </details>
@@ -251,7 +305,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.</span>
 <span class="sd">            classification (str): classification of the bounding box.</span>
 <span class="sd">            certainty (float): certainty/confidence of the bounding box detection.</span>
-<span class="sd">            object_id (int): id assigned to object depicted by the bounding box</span>
+<span class="sd">            object_id (int): id assigned to object depicted by the bounding box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__rectangle</span> <span class="o">=</span> <span class="n">rectangle</span>
@@ -271,7 +325,7 @@ Utrecht University within the Software Project course.
 <li><strong>rectangle (Rectangle):</strong>  coords of bounding box, contains bottom left and top right coords.</li>
 <li><strong>classification (str):</strong>  classification of the bounding box.</li>
 <li><strong>certainty (float):</strong>  certainty/confidence of the bounding box detection.</li>
-<li><strong>object_id (int):</strong>  id assigned to object depicted by the bounding box</li>
+<li><strong>object_id (int):</strong>  id assigned to object depicted by the bounding box.</li>
 </ul>
 </div>
 
