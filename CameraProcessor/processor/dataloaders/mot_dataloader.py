@@ -7,14 +7,14 @@ Utrecht University within the Software Project course.
 import logging
 from os import path
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.data_object.rectangle import Rectangle
+from PIL import Image
+
 from processor.dataloaders.idataloader import IDataloader
 
 
 class MOTDataloader(IDataloader):
     """MOT Dataloader, formats MOT Data."""
+
     def __init__(self, configs, path_location):
         """Initializes the MOTDataloader.
 
@@ -40,49 +40,11 @@ class MOTDataloader(IDataloader):
         if lines[0].__contains__(','):
             delimiter = ','
 
-        annotations = []
-        # Extract information from lines.
-        for line in lines:
-            (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = self.__parse_line(line, delimiter)
-            if image_id - 1 >= self.nr_frames:
-                self.skipped_lines = self.skipped_lines + 1
-                continue
-            annotations.append((image_id, person_id, pos_x, pos_y, pos_w, pos_h))
-        return annotations
-
-    def __parse_boxes(self, annotations):
-        """Parses bounding boxes.
-
-        Args:
-            annotations ([(str)]): Annotations tuples in a list.
-
-        Returns:
-            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
-        """
-        bounding_boxes_list = []
-        current_boxes = []
-        current_image_id = annotations[0][0]
-        # Extract information from lines.
-        for annotation in annotations:
-            (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
-            this_image_path = self.__get_image_path(image_id)
-            width, height = self.get_image_dimensions(image_id, this_image_path)
-            if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
-                current_boxes = []
-                current_image_id = image_id
-            current_boxes.append(BoundingBox(classification='person',
-                                             rectangle=Rectangle(x1=pos_x / width,
-                                                                 y1=pos_y / height,
-                                                                 x2=(pos_x + pos_w) / width,
-                                                                 y2=(pos_y + pos_h) / height),
-                                             identifier=person_id,
-                                             certainty=1))
-        return bounding_boxes_list
+        return lines, delimiter
 
     def __log_skipped(self):
         """Logs when lines skipped."""
-        if self.skipped_lines > 0:
+        if self.skipped_lines:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
     def parse_file(self):
@@ -91,9 +53,9 @@ class MOTDataloader(IDataloader):
         Returns:
             bounding_boxes_list (list): List of bounding boxes.
         """
-        annotations = self.__get_annotations()
+        annotations, delimiter = self.__get_annotations()
         self.__log_skipped()
-        bounding_boxes_list = self.__parse_boxes(annotations)
+        bounding_boxes_list = self.parse_boxes(annotations, delimiter)
         return bounding_boxes_list
 
     @staticmethod
@@ -125,8 +87,24 @@ class MOTDataloader(IDataloader):
         this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path
 
-    @staticmethod
-    def __parse_line(line, delimiter):
+    def get_image_dimensions(self, image_id):
+        """Gets the size of an image based on its name.
+
+        Args:
+            image_id (integer): String with the name of the image.
+
+        Returns:
+            (int,int): width and height dimensions of the image.
+        """
+        if image_id in self.image_dimensions:
+            return self.image_dimensions[image_id]
+        image_name = self.__get_image_name(image_id)
+        this_image_path = self.__get_image_path(image_name)
+        image = Image.open(this_image_path)
+        self.image_dimensions[image_id] = image.size
+        return image.size
+
+    def parse_line(self, line, delimiter):
         """Parse line from file given a delimiter.
 
         Args:
@@ -136,4 +114,11 @@ class MOTDataloader(IDataloader):
         Returns:
             list (list): List of integer values of line parsed and put inside string.
         """
-        return [int(i) for i in line.split(delimiter)[:6]]
+        (image_id, identifier, pos_x, pos_y, pos_w, pos_h, certainty) = [int(i) for i in line.split(delimiter)[:7]]
+        #MOT is 1 based, while this project is 0 based
+        pos_x -= 1
+        pos_y-= 1
+        width, height = self.get_image_dimensions(image_id)
+        return_values = (image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
+                         (pos_y + pos_h) / height, certainty, None, None)
+        return return_values
