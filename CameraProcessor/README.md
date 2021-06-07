@@ -6,6 +6,16 @@ The camera operators only see the detections within a frame, and the subjects th
 The tracking of subjects is performed over multiple cameras, 
 notifying the camera operator when a subject is re-identified.
 
+## How to use
+
+Run the following command to startup the compose file in the current directory with an example video
+
+```bat
+docker-compose up --build
+```
+
+The [venice.mp4](data/videos/venice.mp4) will be streamed to `http://localhost:9090`
+
 ## Architecture
 
 The inner workings of the camera processor consist of three parts. 
@@ -119,7 +129,7 @@ Windows insider program slows down the speed of pc a lot.
    2. Check the version of the CUDA installation, change PyTorch import if needed
    3. Make sure the devices in configs.ini are set to 0
    4. Run ```docker-compose up``` in the root to build the container for deployment.
-- GPU-enabled on windows (Not recommended):
+- GPU-enabled on Windows (Not recommended):
    1. You need an NVIDIA GPU that supports CUDA
    2. Follow the [nvidia install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
    3. Make sure the devices in configs.ini are set to 0
@@ -150,48 +160,3 @@ The integration tests can only be run without changing the code inside Docker.
 For Docker, the setup and commands are already included inside the Dockerfile, these do not need any tweaking.
 When running the tests locally inside PyCharm make sure the testing library has been set to Pytest for easy development.
 Create a Pytest configuration in PyCharm and test the unit tests folder.
-
-## Pylint with PyCharm
-
-We use Pylint for python code quality assurance.
-
-### Installation
-
-Input following command terminal:
-```
-pip install pylint
-```
-
-Install the PyCharm plugin:
-
-`Control+Alt+S` to open PyCharm settings.
-
-Navigate to `Settings>Plugins`.
-
-Search for `pylint`.
-
-Install Pylint plugin.
-
-#### Settings
-
-`Control+Alt+S` to open PyCharm settings.
-
-Navigate to `Settings>Other Settings>Pylint`.
-
-Set up a link to Pylint and test settings.
-
-Select the path to `.pylintrc` file (should be at the root of the project).
-
-Click apply.
-
-#### Live linting while developing
-
-Navigate to `Edtior>Inspections>Pylint`
-
-Check `Pylint real-time scan`
-
-#### Ignoring folders from linting
-
-Mark desired folder as Excluded in PyCharm (for local development).
-
-Add folder name to `ignore=` in `pylintrc` (for CI pipeline).
