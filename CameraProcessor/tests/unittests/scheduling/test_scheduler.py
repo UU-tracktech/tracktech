@@ -111,6 +111,20 @@ class TestScheduler:
         # Duplicate is not inside the queue and set.
         assert scheduler.queue_size == 1
 
+    def test_global_schedule_graph(self):
+        """Test the functionality of globals that can be used by all nodes in a readonly manner."""
+        # Create scheduler.
+        schedule_wrapper = ScheduleWrapper()
+        schedule_wrapper.prepare_global_schedule()
+        scheduler = schedule_wrapper.scheduler
+
+        global_readonly = schedule_wrapper.global_readonly
+        global_readonly['global_var'] = 'global'
+
+        scheduler.schedule_graph([], global_readonly)
+
+        assert schedule_wrapper.schedule_output_node.component.out == 'global,start'
+
 
 if __name__ == '__main__':
     pytest.main(TestScheduler)

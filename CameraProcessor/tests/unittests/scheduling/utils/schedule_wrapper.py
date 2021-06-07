@@ -31,16 +31,19 @@ class ScheduleWrapper:
         self.scheduler = None
         self.schedule_input_node = None
         self.schedule_output_node = None
+        self.global_readonly = None
 
     def prepare_invalid_schedule(self):
         """Prepare an invalid schedule."""
         self.schedule_output_node = self.schedule_input_node = ScheduleNode(3, [(), ()], OutputComponent(func), {})
         self.scheduler = Scheduler(self.schedule_output_node)
+        self.global_readonly = {}
 
     def prepare_empty_schedule(self):
         """Prepares a very small schedule."""
         self.schedule_output_node = self.schedule_input_node = ScheduleNode(1, [], OutputComponent(func), {})
         self.scheduler = Scheduler(self.schedule_output_node)
+        self.global_readonly = {}
 
     def prepare_big_schedule(self):
         """Prepares a full schedule."""
@@ -61,3 +64,32 @@ class ScheduleWrapper:
         # Node outputs to multiple nodes.
         self.schedule_input_node = ScheduleNode(1, [(layer1_node1, 0), (layer1_node2, 0)], InputComponent(), {})
         self.scheduler = Scheduler(self.schedule_input_node)
+        self.global_readonly = {}
+
+    def prepare_global_schedule(self):
+        """Prepares schedule using globals functionality."""
+        global_var_name = 'global_var'
+
+        # Final node executing a function that takes all previous component outputs as input.
+        self.schedule_output_node = ScheduleNode(
+            1,
+            [],
+            OutputComponent(func),
+            {}
+        )
+
+        # Node that executes detection.
+        self.schedule_input_node = ScheduleNode(
+            1,
+            [(self.schedule_output_node, 0)],
+            InputComponent(),
+            {
+                global_var_name: 0
+            }
+        )
+
+        self.scheduler = Scheduler(self.schedule_input_node)
+
+        self.global_readonly = {
+            global_var_name: None
+        }
