@@ -11,6 +11,6 @@
 	url = https://github.com/UU-tracktech/deep-person-reid.git
 	branch = master
 [submodule "fastreid"]
-	path = CameraProcessor/processor/pipeline/reidentification/fast_reid
-	url = https://github.com/UU-tracktech/fast_reid.git
+	path = CameraProcessor/processor/pipeline/reidentification/fastreid
+	url = https://github.com/UU-tracktech/fast-reid.git
 	branch = master
