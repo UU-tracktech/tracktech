@@ -34,7 +34,7 @@ class IDataloader:
             raise AttributeError('Cannot have negative number of frames')
         self.nr_frames = nr_frames
 
-    def parse_boxes(self, annotations, delimiter):
+    def parse_boxes(self, annotations):
         """Parses bounding boxes.
 
         Args:
@@ -46,7 +46,7 @@ class IDataloader:
         bounding_boxes_list = []
         # Extract information from lines.
         for annotation in annotations:
-            parsed_line = self.parse_line(annotation, delimiter)
+            parsed_line = self.parse_line(annotation)
             for parsed_entity in parsed_line:
                 (image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty, classification,
                  object_id) = parsed_entity
@@ -92,7 +92,7 @@ class IDataloader:
         """
         raise NotImplementedError('Get image dimensions not implemented')
 
-    def parse_line(self, line, delimiter):
+    def parse_line(self, line):
         raise NotImplementedError('Parse line not implemented')
 
     def parse_file(self):
@@ -101,9 +101,9 @@ class IDataloader:
         Returns:
             bounding_boxes_list (list): List of bounding boxes.
         """
-        annotations, delimiter = self.get_annotations()
+        annotations = self.get_annotations()
         # self.__log_skipped()
-        bounding_boxes_list = self.parse_boxes(annotations, delimiter)
+        bounding_boxes_list = self.parse_boxes(annotations)
         return bounding_boxes_list
 
     def get_annotations(self):

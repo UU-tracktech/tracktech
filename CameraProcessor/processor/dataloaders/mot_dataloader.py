@@ -24,6 +24,7 @@ class MOTDataloader(IDataloader):
         """
         super().__init__(configs, path_location)
         self.skipped_lines = []
+        self.delimiter = ' '
 
     def get_annotations(self):
         """Gets annotations.
@@ -36,11 +37,10 @@ class MOTDataloader(IDataloader):
             lines = [line.rstrip('\n') for line in file]
 
         # Determine delimiter automatically.
-        delimiter = ' '
         if lines[0].__contains__(','):
-            delimiter = ','
+            self.delimiter = ','
 
-        return lines, delimiter
+        return lines
 
     def __log_skipped(self):
         """Logs when lines skipped."""
@@ -95,7 +95,7 @@ class MOTDataloader(IDataloader):
         self.image_dimensions[image_id] = image.size
         return image.size
 
-    def parse_line(self, line, delimiter):
+    def parse_line(self, line):
         """Parse line from file given a delimiter.
 
         Args:
@@ -105,7 +105,7 @@ class MOTDataloader(IDataloader):
         Returns:
             list (list): List of integer values of line parsed and put inside string.
         """
-        (image_id, identifier, pos_x, pos_y, pos_w, pos_h, certainty) = [int(i) for i in line.split(delimiter)[:7]]
+        (image_id, identifier, pos_x, pos_y, pos_w, pos_h, certainty) = [int(i) for i in line.split(self.delimiter)[:7]]
         #MOT is 1 based, while this project is 0 based
         pos_x -= 1
         pos_y-= 1

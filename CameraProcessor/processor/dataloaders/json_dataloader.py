@@ -21,12 +21,12 @@ class JSONDataloader(IDataloader):
         # Read file.
         with open(self.file_path) as file:
             lines = [line.rstrip('\n') for line in file]
-        return lines, ""
+        return lines
 
     def get_image_dimensions(self, image_id):
         return 1, 1
 
-    def parse_line(self, line, delimiter):
+    def parse_line(self, line):
         annotations = []
         json_line = json.loads(line)
         image_id = json_line['imageId']
