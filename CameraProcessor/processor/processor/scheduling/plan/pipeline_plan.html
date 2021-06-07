@@ -63,14 +63,21 @@ Utrecht University within the Software Project course.
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.node.schedule_node</span> <span class="kn">import</span> <span class="n">ScheduleNode</span>
 
-<span class="kn">from</span> <span class="nn">processor.scheduling.component.pass_component</span> <span class="kn">import</span> <span class="n">PassComponent</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.component.func_call_component</span> <span class="kn">import</span> <span class="n">FuncCallComponent</span>
 
-<span class="c1"># Arguments needed to configure.</span>
-<span class="n">args</span> <span class="o">=</span> <span class="p">{</span>
+<span class="c1"># Keys of inputs necessary to initialize the plan.</span>
+<span class="n">plan_inputs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;detector&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="s1">&#39;tracker&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="s1">&#39;func&#39;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="s1">&#39;re_identifier&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;func&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;frame_buffer&#39;</span><span class="p">:</span> <span class="kc">None</span>
+<span class="p">}</span>
+
+<span class="c1"># Keys of globals used by the plan, necessary each iteration.</span>
+<span class="n">plan_globals</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;re_id_data&#39;</span><span class="p">:</span> <span class="kc">None</span>
 <span class="p">}</span>
 
 
@@ -85,33 +92,58 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Final node executing a function that takes all previous component outputs as input.</span>
     <span class="n">func_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
-        <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">,</span>
         <span class="p">[],</span>
-        <span class="n">FuncCallComponent</span><span class="p">(</span><span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">])</span>
+        <span class="n">FuncCallComponent</span><span class="p">(</span><span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]),</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="c1"># Node that executes tracking based.</span>
-    <span class="n">tracker_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
+    <span class="c1"># Frame buffer node storing frame with all information gathered from re-id stage.</span>
+    <span class="n">frame_buffer_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
         <span class="mi">2</span><span class="p">,</span>
-        <span class="p">[(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span>
-        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span>
+        <span class="p">[],</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;frame_buffer&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Node that executes re-identification.</span>
+    <span class="n">re_id_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">frame_buffer_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;re_identifier&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;re_id_data&#39;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Node that executes tracking.</span>
+    <span class="n">tracker_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">re_id_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;tracker&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;re_id_data&#39;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
     <span class="c1"># Node that executes detection.</span>
     <span class="n">detection_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
         <span class="mi">1</span><span class="p">,</span>
         <span class="p">[(</span><span class="n">tracker_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
-        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;detector&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="c1"># Input node that passes the input to all outputs as is.</span>
-    <span class="n">input_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="p">[(</span><span class="n">detection_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">tracker_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
-        <span class="n">PassComponent</span><span class="p">()</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">input_node</span>
+    <span class="c1"># Detection node is the starting node of the plan.</span>
+    <span class="k">return</span> <span class="n">detection_node</span>
 </pre></div>
 
         </details>
@@ -138,33 +170,58 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Final node executing a function that takes all previous component outputs as input.</span>
     <span class="n">func_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
-        <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">,</span>
         <span class="p">[],</span>
-        <span class="n">FuncCallComponent</span><span class="p">(</span><span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">])</span>
+        <span class="n">FuncCallComponent</span><span class="p">(</span><span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;func&#39;</span><span class="p">]),</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="c1"># Node that executes tracking based.</span>
-    <span class="n">tracker_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
+    <span class="c1"># Frame buffer node storing frame with all information gathered from re-id stage.</span>
+    <span class="n">frame_buffer_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
         <span class="mi">2</span><span class="p">,</span>
-        <span class="p">[(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span>
-        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;tracker&#39;</span><span class="p">]</span>
+        <span class="p">[],</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;frame_buffer&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Node that executes re-identification.</span>
+    <span class="n">re_id_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">frame_buffer_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;re_identifier&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;re_id_data&#39;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Node that executes tracking.</span>
+    <span class="n">tracker_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="p">[(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">re_id_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;tracker&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;re_id_data&#39;</span><span class="p">:</span> <span class="mi">2</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
     <span class="c1"># Node that executes detection.</span>
     <span class="n">detection_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
         <span class="mi">1</span><span class="p">,</span>
         <span class="p">[(</span><span class="n">tracker_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
-        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;detector&#39;</span><span class="p">]</span>
+        <span class="n">plan_args</span><span class="p">[</span><span class="s1">&#39;detector&#39;</span><span class="p">],</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;frame_obj&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="c1"># Input node that passes the input to all outputs as is.</span>
-    <span class="n">input_node</span> <span class="o">=</span> <span class="n">ScheduleNode</span><span class="p">(</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="p">[(</span><span class="n">detection_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">tracker_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">func_node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
-        <span class="n">PassComponent</span><span class="p">()</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">input_node</span>
+    <span class="c1"># Detection node is the starting node of the plan.</span>
+    <span class="k">return</span> <span class="n">detection_node</span>
 </pre></div>
 
         </details>
