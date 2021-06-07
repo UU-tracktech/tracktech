@@ -14,9 +14,10 @@ import React, { useRef, useEffect } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-
 import { size } from '../classes/size'
 import { Box } from '../classes/clientMessage'
+import { useKeycloak } from '@react-keycloak/web'
+import useAuthState from '../classes/useAuthState'
 
 // The properties used by the videoplayer
 export type VideoPlayerProps = {
@@ -28,6 +29,10 @@ export type VideoPlayerProps = {
 } & videojs.PlayerOptions
 
 export function VideoPlayer(props: VideoPlayerProps) {
+  //Authentication hooks
+  const { keycloak } = useKeycloak()
+  const status = useAuthState()
+
   // The DOM node to attach the videplayer to
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -49,11 +54,31 @@ export function VideoPlayer(props: VideoPlayerProps) {
   var timeStamp //The current timestamp of the stream
   var playerSwitchTime //The timestamp of when the video player switch to the second segment
   var playerStartTime //The current time of the video player when it's first being played
+  var bufferTimer //The interval that counts down while buffering
+  var bufferTime //Time to wait during bufferring before giving up on the stream
 
   useEffect(() => {
+    // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests
+    // Time spend on trying to use a single way of authentication:
+    // 5hrs
+    // Please update if appropiate.
+    if (props.sources?.[0].src)
+      props.sources[0].src += `?Bearer=${keycloak.token}`
+
     // instantiate video.js
     playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
+
+      // If the user is authenticated, add xhr headers with the bearer token to authorize
+      if (status == 'authenticated') {
+        //@ts-ignore
+        videojs.Vhs.xhr.beforeRequest = function (options) {
+          //As headers might not exist yet, create them if not.
+          options.headers = options.headers || {}
+          options.headers.Authorization = `Bearer ${keycloak.token}`
+          return options
+        }
+      }
 
       //Add button to make this videoplayer the primary player at the top of the page
       player?.controlBar.addChild(
@@ -96,7 +121,64 @@ export function VideoPlayer(props: VideoPlayerProps) {
           player?.clearInterval(updateIntervalRef.current)
         props.onPlayPause(false)
       })
+
+      //When the player starts bufferring it fires the waiting event
+      player?.on('waiting', () => {
+        if (!startTime) return //prevent wonkyness on firstplay when there is no timestamp yet
+
+        //Waiting may happen twice in a row, so prevent multiple timers
+        if (!bufferTimer) {
+          bufferTime = 15 //how long to wait for. TODO: make this not hardcoded
+          const delta = 0.5 //update frequency, every <delta> seconds it checks the status
+
+          //The interval will count down and show the alert if the countdown reaches 0
+          bufferTimer = player?.setInterval(() => {
+            bufferTime -= delta
+            if (bufferTime <= 0) {
+              //Clear the interval and show a message to the user showing the problem
+              player?.clearInterval(bufferTimer)
+              bufferTimer = undefined
+              player?.pause()
+
+              var modal = player?.createModal(
+                'Unable to load stream. Check your connection or the video forwarder. Close this message to reload the stream.',
+                null
+              )
+
+              //TODO: make the alert look better
+              //The modal may overlap the default videojs error of "the media could not be loaded"
+              //The modal can be given a custom class so we can adjust it with CSS
+              //modal?.addClass('vjs-custom-modal')
+
+              //Try to reload the videoplayer when the user closes the warning message
+              modal?.on('modalclose', () => {
+                if (props.sources && props.sources[0].type)
+                  player?.src({
+                    src: props.sources[0].src,
+                    type: props.sources[0].type
+                  })
+                else if (props.sources)
+                  player?.src({ src: props.sources[0].src })
+
+                startTime = undefined
+                player?.load()
+              })
+            }
+          }, delta * 1000)
+        }
+      })
+
+      //Seeked is fired when the player starts/resumes playing video
+      //It seems to happen after a waiting but no guarantee it always happens after a waiting though
+      //Use this as a signal to stop waiting for a buffer if the timer is running
+      player?.on('seeked', () => {
+        if (bufferTimer) {
+          player?.clearInterval(bufferTimer)
+          bufferTimer = undefined
+        }
+      })
     })
+
     return () => playerRef.current?.dispose()
   }, [])
 
@@ -105,20 +187,9 @@ export function VideoPlayer(props: VideoPlayerProps) {
    * from the first segment in the playlist
    */
   function getURI(): string | undefined {
-    try {
-      //passing any argument suppresses a warning about accessing the tech
-      let tech = playerRef.current?.tech({ randomArg: true })
-      if (tech) {
-        //ensure that the current playing segment has a uri
-        if (tech.textTracks()[0].activeCues[0]['value'].uri) {
-          //console.log('value:', tech.textTracks()[0].activeCues[0]['value'].uri)
-          return tech.textTracks()[0].activeCues[0]['value'].uri
-        }
-      }
-    } catch (e) {
-      console.warn(e)
-      return undefined
-    }
+    //passing any argument suppresses a warning about accessing the tech
+    return playerRef.current?.tech({ randomArg: true })?.textTracks()?.[0]
+      ?.activeCues?.[0]?.['value']?.uri
   }
 
   /**
@@ -131,7 +202,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     let currentUri = getURI()
     if (currentUri) {
       //if a segment name has been found, save it and start looking for an updated name
-      console.log('InitialURI: ', currentUri)
+      //console.log('InitialURI: ', currentUri)
 
       startUri = currentUri
       if (initialUriIntervalRef.current)

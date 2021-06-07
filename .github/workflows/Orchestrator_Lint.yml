@@ -24,13 +24,13 @@ jobs:
       - name: Copy in utility
         run: docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
       - name: Copy in utility
-        run: docker cp utility/pylint_ignore.py processor-orchestrator_container:/app/utility/
-      - name: Copy in utility
         run: docker cp utility/copyright_checker.py processor-orchestrator_container:/app/utility/
       - name: Copy in utility
         run: docker cp utility/comment_checker.py processor-orchestrator_container:/app/utility/
       - name: Copy in utility
         run: docker cp utility/docstring_checker.py processor-orchestrator_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/classes_checker.py processor-orchestrator_container:/app/utility/
       - name: Copy in utility
         run: docker cp utility/docstring_content_checker.py processor-orchestrator_container:/app/utility/
       - name: Start

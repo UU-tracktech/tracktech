@@ -11,12 +11,11 @@ import tornado.testing
 import tornado.web
 from tornado.websocket import WebSocketHandler
 
-from processor.webhosting.websocket_client import WebsocketClient
-
 from tests.unittests.webhosting.conftest import messages_are_equal
 from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
 from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
 from tests.unittests.utils.dummy_websocket_client import DummyWebsocketClient
+from processor.webhosting.websocket_client import WebsocketClient
 
 
 # pylint: disable=protected-access.

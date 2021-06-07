@@ -12,8 +12,7 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
-import { Button, Card } from 'antd'
-import { Layout } from 'antd'
+import { Button, Card, Layout } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { Grid } from '../components/grid'
@@ -53,7 +52,7 @@ export function Home() {
             name: stream.Name,
             srcObject: {
               src: stream.Forwarder,
-              type: stream.Type
+              type: 'application/x-mpegURL'
             }
           }))
         )
@@ -159,7 +158,7 @@ export function Home() {
           data-testid={'selectionCard'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size='small'
+          size={'small'}
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Selection</h2>
           }
@@ -180,7 +179,7 @@ export function Home() {
                 return (
                   <img
                     key={`image-${iterator++}`}
-                    alt='tracked person'
+                    alt={'tracked person'}
                     onClick={() => removeSelection(tracked.id)}
                     style={{ width: '100%', height: '100%', margin: '5px' }}
                     src={tracked.image}
@@ -195,7 +194,7 @@ export function Home() {
           data-testid={'cameraList'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size='small'
+          size={'small'}
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Cameras</h2>
           }
