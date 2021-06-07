@@ -146,7 +146,7 @@ test('Bounding box send to queue', async () => {
 /**
  * Test whether clicking on the box will result in a start command going to the processor
  */
-test('Bounding boxes start tracking', async () => {
+test('Clicking Bounding boxes starts tracking', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
@@ -211,6 +211,66 @@ test('Bounding boxes start tracking', async () => {
   expect(gotMessage).toBeTruthy()
 })
 
-test.todo('Clicking tracked object indicator stops tracking')
+test('Clicking tracked box stops tracking', async () => {
+  jest.setTimeout(30000)
+
+  const context = React.useContext(websocketContext)
+  context.send(new StartOrchestratorMessage('1', 0, 1))
+
+  // Create a new websocket that will act as if it was a processor
+  var processorSocket = new WebSocket('ws://processor-orchestrator/processor')
+  while (processorSocket.readyState != 1) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  var identifyMessage = {
+    type: 'identifier',
+    id: '1'
+  }
+  processorSocket.send(JSON.stringify(identifyMessage))
+
+  //Send a box that has an objectID to indicate it is a tracked object
+  var boxesMessage = new BoxesClientMessage('boundingBoxes', 0, [
+    new Box(1, [0.2, 0.2, 0.8, 0.8], 'testObject', 1)
+  ])
+
+  //connect
+  screen.getByTestId('button').click()
+  while (screen.getByTestId('state').textContent != 'OPEN') {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  // Send the bounding boxes
+  processorSocket.send(JSON.stringify(boxesMessage))
+  while (screen.queryByTestId('box-1') == null) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  expect(screen.getByTestId('box-1')).toBeDefined()
+
+  // Set up processor assert for when the message comes in
+  var gotMessage = false
+  processorSocket.onmessage = (ev: MessageEvent<any>) => {
+    expect(JSON.parse(ev.data)).toStrictEqual({
+      type: 'stop',
+      objectId: 1
+    })
+    gotMessage = true
+  }
+
+  //wait for the confirmation popup
+  while (screen.queryAllByText('OK').length == 0) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  //get the confirm button, make sure it exists, then press the button
+  let confirmButton = screen.getByText('OK')
+  expect(confirmButton).toBeDefined()
+  confirmButton.click()
+
+  // Wait for message on processor
+  while (!gotMessage) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  expect(gotMessage).toBeTruthy()
+})
 
 test.todo('Overlay only draws indicators specified by filters')
