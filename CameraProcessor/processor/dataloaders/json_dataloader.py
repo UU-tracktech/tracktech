@@ -24,9 +24,25 @@ class JSONDataloader(IDataloader):
         return lines
 
     def get_image_dimensions(self, image_id):
+        """Gets the image dimensions.
+
+        Args:
+            image_id (int): ID of image.
+
+        Returns:
+            (int, int): Image dimensions.
+        """
         return 1, 1
 
     def parse_line(self, line):
+        """Parses a line.
+
+        Args:
+            line (JSON): (JSON object of line to parse.
+
+        Returns:
+            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.
+        """
         annotations = []
         json_line = json.loads(line)
         image_id = json_line['imageId']

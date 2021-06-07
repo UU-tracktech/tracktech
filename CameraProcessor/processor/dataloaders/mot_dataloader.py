@@ -100,13 +100,12 @@ class MOTDataloader(IDataloader):
 
         Args:
             line (str): line in file.
-            delimiter (str): delimiter values in line are separated with.
 
         Returns:
             list (list): List of integer values of line parsed and put inside string.
         """
         (image_id, identifier, pos_x, pos_y, pos_w, pos_h, certainty) = [int(i) for i in line.split(self.delimiter)[:7]]
-        #MOT is 1 based, while this project is 0 based
+        # MOT is 1 based, while this project is 0 based.
         pos_x -= 1
         pos_y-= 1
         width, height = self.get_image_dimensions(image_id)

@@ -9,9 +9,6 @@ from os import path
 import requests
 from pycocotools.coco import COCO
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.data_object.rectangle import Rectangle
 from processor.dataloaders.idataloader import IDataloader
 
 
@@ -63,7 +60,6 @@ class COCODataloader(IDataloader):
 
         Args:
             image_id (integer): String with the name of the image.
-            this_image_path (string): Path to image file.
 
         Returns:
             image.size (shape): width and height dimensions of the image.
@@ -75,6 +71,14 @@ class COCODataloader(IDataloader):
         return width, height
 
     def parse_line(self, line):
+        """Parses a line.
+
+        Args:
+            line (JSON): JSON object with file line contents.
+
+        Returns:
+            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.
+        """
         image_id = line['image_id']
         width, height = self.get_image_dimensions(image_id)
         identifier = line['id']
@@ -85,7 +89,6 @@ class COCODataloader(IDataloader):
         y2 = (line['bbox'][1] + line['bbox'][3]) / height
         certainty = 1
         return [(image_id, identifier, x1, y1, x2, y2, certainty, classification, None)]
-
 
     def get_annotations(self):
         """Gets annotations.
