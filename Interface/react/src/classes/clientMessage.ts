@@ -30,6 +30,30 @@ export class BoxesClientMessage extends ClientMessage {
   boxes: Box[]
 }
 
+/** The newObject message is sent when a new object is beeing tracked and a cutout is available */
+export class NewObjectClientMessage extends ClientMessage {
+  constructor(objectId: number, image: string) {
+    super('newObject')
+
+    this.objectId = objectId
+    this.image = image
+  }
+
+  objectId: number
+  image: string
+}
+
+/** The stop message is sent when an object is no longer being tracked */
+export class StopClientMessage extends ClientMessage {
+  constructor(objectId: number) {
+    super('stop')
+
+    this.objectId = objectId
+  }
+
+  objectId: number
+}
+
 /** Structure that represents a bounding box */
 export class Box {
   constructor(
