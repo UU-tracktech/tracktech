@@ -28,7 +28,7 @@ export function LoggedInUser() {
     case 'loading':
       return (
         <Skeleton
-          data-testid='loadingSkeleton'
+          data-testid={'loadingSkeleton'}
           title={{ width: 150, style: { verticalAlign: 'middle' } }}
           paragraph={{
             rows: 1,
@@ -40,7 +40,7 @@ export function LoggedInUser() {
       )
     case 'unauthenticated':
       return (
-        <Typography.Text data-testid='notLoggedInDiv'>
+        <Typography.Text data-testid={'notLoggedInDiv'}>
           You are currently not logged in
         </Typography.Text>
       )
@@ -48,12 +48,15 @@ export function LoggedInUser() {
       return (
         <div style={{ display: 'grid' }}>
           <Typography.Text
-            data-testid='loggedInAsDiv'
+            data-testid={'loggedInAsDiv'}
             style={{ lineHeight: 3, color: 'rgb(153, 153, 153)' }}
           >
             Logged in as:
           </Typography.Text>
-          <Typography.Text data-testid='usernameText' style={{ lineHeight: 0 }}>
+          <Typography.Text
+            data-testid={'usernameText'}
+            style={{ lineHeight: 0 }}
+          >
             {keycloak.tokenParsed!['name']}
           </Typography.Text>
         </div>

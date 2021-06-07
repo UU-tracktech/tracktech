@@ -60,7 +60,7 @@ def main(configs):
         image_id = capture.image_names[capture.image_index].split('.')[0]
 
         # Convert boxes to string.
-        for bounding_box in tracked_boxes.bounding_boxes:
+        for bounding_box in tracked_boxes:
             tracked_boxes_string = boxes_to_txt([bounding_box], frame_obj.shape, image_id)
             track_write_list.append((bounding_box.identifier, image_id, tracked_boxes_string))
 

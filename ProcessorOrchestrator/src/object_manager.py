@@ -22,13 +22,20 @@ class TrackingObject:
 
     Attributes:
         identifier (int): Serves as the unique identifier to this object.
+        image (string): Serialised string containing the cutout image of this object.
         feature_map (json): Contains the features of this object, should be sent to all processors.
     """
 
-    def __init__(self):
-        """Appends self to objects dictionary upon creation."""
+    def __init__(self, image):
+        """Appends self to objects dictionary upon creation.
 
-        self.identifier = max(objects.keys(), default=0) + 1
+        Args:
+            image (string):
+                Serialised string containing the cutout image of this object.
+        """
+
+        self.identifier = max(objectHistory, default=0) + 1
+        self.image = image
         self.feature_map = {}
         objects[self.identifier] = (self, datetime.now())
         objectHistory.append(self.identifier)

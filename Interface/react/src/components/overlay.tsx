@@ -126,7 +126,7 @@ export function Overlay(props: overlayProps) {
 
   return (
     <div
-      data-testid='overlayDiv'
+      data-testid={'overlayDiv'}
       style={{
         position: 'relative',
         width: '100%',

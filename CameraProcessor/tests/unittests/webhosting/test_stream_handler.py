@@ -5,7 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-import pytest
 import tornado.testing
 import tornado.web
 from tornado.testing import AsyncHTTPTestCase
@@ -32,8 +31,7 @@ class TestStreamHandler(AsyncHTTPTestCase):
             (r'/video_feed', StreamHandler, dict(configs=configs))
         ])
 
-    @tornado.testing.gen_test(timeout=40)
-    @pytest.mark.skip(reason="either stream is closed or no images received, tornado page seems to work")
+    @tornado.testing.gen_test(timeout=80)
     def test_stream_handler(self):
         """Fetch the video feed and see whether the response contains images."""
         # Gets the stream from the httpserver.

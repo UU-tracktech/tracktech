@@ -17,7 +17,7 @@ class BoundingBox:
             rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
             classification (str): classification of the bounding box.
             certainty (float): certainty/confidence of the bounding box detection.
-            object_id (int): id assigned to object depicted by the bounding box
+            object_id (int): id assigned to object depicted by the bounding box.
         """
         self.__identifier = identifier
         self.__rectangle = rectangle
@@ -69,3 +69,30 @@ class BoundingBox:
             int: certainty/confidence of bounding box detection.
         """
         return self.__object_id
+
+    def __eq__(self, other):
+        """Function that checks whether the current bounding box is the same as the given one.
+
+        Args:
+            other (BoundingBox): BoundingBox to compare with.
+
+        Returns:
+            bool: Whether the bounding boxes are the same.
+        """
+        return all([
+            self.__identifier == other.identifier,
+            self.__rectangle == other.rectangle,
+            self.__classification == other.classification,
+            self.__certainty == other.certainty,
+            self.__object_id == other.object_id
+        ])
+
+    def __repr__(self):
+        """Converts the bounding box object to a string.
+
+        Returns:
+            str: String representation of an bounding box.
+        """
+        return f'BoundingBox(type: "{self.__classification}" certainty: {self.__certainty} ' \
+               f'identifier: {self.__identifier} id: {self.__object_id} ' \
+               f'rectangle: {self.__rectangle})'

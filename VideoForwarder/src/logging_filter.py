@@ -30,5 +30,5 @@ class LoggingFilter(Filter):
         Returns:
             LogRecord: Log messages that have been filtered
         """
-        # Removes logs messages that contains '200 GET'.
-        return not record.getMessage().startswith("200 GET")
+        # Removes logs messages that contains '200 GET' or '204 OPTIONS'.
+        return not record.getMessage().startswith("200 GET") and not record.getMessage().startswith("204 OPTIONS")
