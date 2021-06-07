@@ -28,16 +28,6 @@ class COCODataloader(IDataloader):
         super().__init__(configs, path_location)
         self.coco = COCO(self.file_path)
 
-    def parse_file(self):
-        """Parses an annotations file.
-
-        Returns:
-            bounding_boxes_list (list): List of bounding boxes.
-        """
-        annotations = self.__get_annotations()
-        bounding_boxes_list = self.__parse_boxes(annotations)
-        return bounding_boxes_list
-
     def download_coco_image(self, image_id):
         """Downloads a single coco image given the identifier.
 
@@ -68,7 +58,7 @@ class COCODataloader(IDataloader):
             with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
                 handler.write(image_data)
 
-    def get_image_dimensions(self, image_id, this_image_path):
+    def get_image_dimensions(self, image_id):
         """Gets the size of an image based on its name.
 
         Args:
@@ -84,39 +74,20 @@ class COCODataloader(IDataloader):
 
         return width, height
 
-    def __parse_boxes(self, annotations):
-        """Parses bounding boxes.
+    def parse_line(self, line):
+        image_id = line['image_id']
+        width, height = self.get_image_dimensions(image_id)
+        identifier = line['id']
+        classification = self.coco.loadCats(line['category_id'])[0]['name']
+        x1 = line['bbox'][0] / width
+        y1 = line['bbox'][1] / height
+        x2 = (line['bbox'][0] + line['bbox'][2]) / width
+        y2 = (line['bbox'][1] + line['bbox'][3]) / height
+        certainty = 1
+        return [(image_id, identifier, x1, y1, x2, y2, certainty, classification, None)]
 
-        Args:
-            annotations ([(str)]): Annotations tuples in a list.
 
-        Returns:
-            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
-        """
-        counter = 0
-        bounding_boxes_list = []
-        current_boxes = []
-        current_image_id = annotations[0]['image_id']
-
-        for annotation in annotations:
-            image_id = annotation['image_id']
-            width, height = self.get_image_dimensions(image_id, "")
-            if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, int(self.__get_image_name(current_image_id))))
-                current_boxes = []
-                current_image_id = image_id
-            current_boxes.append(BoundingBox(classification=self.coco.loadCats(annotation['category_id'])[0]['name'],
-                                             rectangle=Rectangle(x1=annotation['bbox'][0] / width,
-                                                                 y1=annotation['bbox'][1] / height,
-                                                                 x2=(annotation['bbox'][0] + annotation['bbox'][
-                                                                     2]) / width,
-                                                                 y2=(annotation['bbox'][1] + annotation['bbox'][
-                                                                     3]) / height),
-                                             identifier=counter,
-                                             certainty=1))
-        return bounding_boxes_list
-
-    def __get_annotations(self):
+    def get_annotations(self):
         """Gets annotations.
 
         Returns:
