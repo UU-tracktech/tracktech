@@ -1,20 +1,39 @@
 # Forwarder
 
-## Run
+This component retrieves a webstream and converts it to an HLS stream. This HLS stream can then be consumed by the interface and processors.
 
-Run the following command to startup the compose file in the current directory with an example stream
+## Quickstart
 
-```bat
-docker-compose up --build
+### Starting
+
+#### Docker
+
+Run the following command to startup the forwarder
+
+```bash
+docker run -p 80:80 --env CAMERA_URL={Stream url} --env CAMERA_AUDIO={Wether the stream contains audio} --env STREAM_LOW=true tracktech/forwarder
+```
+
+#### Local
+
+Make sure python is installed and the repository is cloned install the dependencies using
+
+```bash
+pip install -r requirements.txt
+pip install Auth-1.0.tar.gz
+```
+
+Set the CAMERA_URL, CAMERA_AUDIO, STREAM_LOW and STREAM_FOLDER environment variables to their desired values and set PYTHONPATH to the current directory.
+
+Run the program
+
+```bash
+python src/main.py
 ```
 
 The stream can then be accessed at `http://localhost/stream.m3u8`
 
-## Architecture
-
-We use ffmpeg to pull the video stream and encode it to an HLS stream. This is a http based streaming protocol that allows adaptive bitrate streaming. We use tornado to serve the files and handle authentication, to match the rest of the project.
-
-## Environment options
+## Environment variables
 
 ### Camera
 
@@ -56,19 +75,24 @@ If both are specified, ssl is enabled
 | AUDIENCE    | The id of this client the token is meant for    |
 | CLIENT_ROLE | The role to check for in the token              |
 
-## Example compose
+## Architecture
 
-```yaml
-version: "3.8"
+We use ffmpeg to pull the video stream and encode it to an HLS stream. This is a http based streaming protocol that allows adaptive bitrate streaming. We use tornado to serve the files and handle authentication, to match the rest of the project.
 
-services:
-  forwarder:
-    image: tracktech/forwarder
-    environment:
-      CAMERA_URL: // Video stream url
-      CAMERA_AUDIO: // Wether the stream has audio
-      STREAM_LOW: "true"
-    ports:
-      - published: 80
-        target: 80
-```
+## Depencencies
+
+### Software
+
+- Python 3.8
+- FFMPEG
+
+### Packages
+
+- Tornado (python)
+- The Auth module
+
+## Development
+
+### Testing
+
+In order to run the unit tests please run `docker-compose -f compose/docker-compose_test_unit.yml`

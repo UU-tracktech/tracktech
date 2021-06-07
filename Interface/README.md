@@ -2,6 +2,12 @@
 
 This component contains the web interface for the project. The interface is created with Typescript React and uses the Ant Design UI package for most of its UI components.
 
+## How to use
+
+There are two ways to run the interface:
+
+- (using docker) run `docker-compose up` in the current folder
+
 ## Architecture
 
 The architecture of the application is made up of the following main components:
@@ -16,13 +22,9 @@ The architecture of the application is made up of the following main components:
   - /react/testing/unit testing: Jest unit tests that test individual components.
   - /react/testing/integration testing: Jest tests that test integration of the interface with the orchestrator.
 
-## How to use
+## Dependencies
 
-There are two ways to run the interface:
-- int /react, run `npm install` and then `npm start` to build locally
-- (using docker) run `docker-compose up` in the current folder 
-
-### Dependencies
+### Packages
 
 All dependencies are included in the (react/package.json) and (react/package-lock.json) files and can be installed with `npm install`
 
@@ -36,4 +38,5 @@ The stages can be run as follows:
 - Integration testing: run `docker-compose -f compose/docker-compose_test_integration.yml`
 
 ## Linting
+
 The project is linted using ESLint in combination with Prettier. The config files `react/.eslintrc.json` and `react/prettierrc.json` contain the set preferences.

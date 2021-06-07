@@ -19,7 +19,7 @@ from src.camera_handler import CameraHandler
 if __name__ == "__main__":
     # Setup for logging.
     tornado.log.logging.basicConfig(
-        filename='/app/src/main.log',
+        filename='src/main.log',
         filemode='w',
         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
         level=tornado.log.logging.INFO,
