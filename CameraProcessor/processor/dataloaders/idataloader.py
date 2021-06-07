@@ -26,6 +26,8 @@ class IDataloader:
         self.categories = accuracy_config['categories']
         self.filter_config = configs['Filter']
         self.image_dimensions = {}
+        self.current_boxes = []
+        self.previous_image_id = -1
         nr_frames = int(accuracy_config['nr_frames'])
         # Cannot contain negative amount of frames.
         if nr_frames < 0:
@@ -42,22 +44,32 @@ class IDataloader:
             bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
         """
         bounding_boxes_list = []
-        current_boxes = []
-        previous_image_id = -1
         # Extract information from lines.
         for annotation in annotations:
-            (image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty, classification,
-             object_id) = self.parse_line(annotation, delimiter)
-            if not previous_image_id == image_id or previous_image_id == -1:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, previous_image_id))
-                current_boxes = []
-                previous_image_id = image_id
-            bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
-                                  pos_y1, certainty, classification, object_id)
-            current_boxes.append(bbox)
+            parsed_line = self.parse_line(annotation, delimiter)
+            for parsed_entity in parsed_line:
+                (image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty, classification,
+                 object_id) = parsed_entity
+                bounding_boxes_list = self.append_box(bounding_boxes_list, image_id, person_id, pos_x0, pos_y0, pos_x1,
+                                                      pos_y1, certainty, classification,
+                                                      object_id)
+
         return bounding_boxes_list
 
-    def parse_box(self, identifier, pos_x, pos_y, pos_x2, pos_y2, certainty=None, classification=None, object_id=None):
+    def append_box(self, bounding_boxes_list, image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty,
+                   classification,
+                   object_id):
+        if not self.previous_image_id == image_id or self.previous_image_id == -1:
+            bounding_boxes_list.append(BoundingBoxes(self.current_boxes, self.previous_image_id))
+            self.current_boxes = []
+            self.previous_image_id = image_id
+        bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
+                              pos_y1, certainty, classification, object_id)
+        self.current_boxes.append(bbox)
+        return bounding_boxes_list
+
+    @staticmethod
+    def parse_box(identifier, pos_x, pos_y, pos_x2, pos_y2, certainty=None, classification=None, object_id=None):
         bbox = BoundingBox(classification=classification,
                            rectangle=Rectangle(x1=pos_x,
                                                y1=pos_y,
@@ -80,13 +92,24 @@ class IDataloader:
         """
         raise NotImplementedError('Get image dimensions not implemented')
 
-    def parse_file(self):
-        """Parses a file into a BoundingBoxes object.
-
-        Raises:
-            NotImplementedError: When the loader is not implemented.
-        """
-        raise NotImplementedError('parse file method not implemented')
-
     def parse_line(self, line, delimiter):
-        raise NotImplementedError('parse line method not implemented')
+        raise NotImplementedError('Parse line not implemented')
+
+    def parse_file(self):
+        """Parses an annotations file.
+
+        Returns:
+            bounding_boxes_list (list): List of bounding boxes.
+        """
+        annotations, delimiter = self.get_annotations()
+        # self.__log_skipped()
+        bounding_boxes_list = self.parse_boxes(annotations, delimiter)
+        return bounding_boxes_list
+
+    def get_annotations(self):
+        """Reads the annotations from a file.
+
+                Returns:
+                    annotations ([(str)]): Annotations tuples in a list.
+                """
+        raise NotImplementedError('get annotations not implemented')

@@ -25,7 +25,7 @@ class MOTDataloader(IDataloader):
         super().__init__(configs, path_location)
         self.skipped_lines = []
 
-    def __get_annotations(self):
+    def get_annotations(self):
         """Gets annotations.
 
         Returns:
@@ -47,16 +47,7 @@ class MOTDataloader(IDataloader):
         if self.skipped_lines:
             logging.info(f'Skipped lines: {self.skipped_lines}')
 
-    def parse_file(self):
-        """Parses an annotations file.
 
-        Returns:
-            bounding_boxes_list (list): List of bounding boxes.
-        """
-        annotations, delimiter = self.__get_annotations()
-        self.__log_skipped()
-        bounding_boxes_list = self.parse_boxes(annotations, delimiter)
-        return bounding_boxes_list
 
     @staticmethod
     def __get_image_name(image_id):
@@ -121,4 +112,4 @@ class MOTDataloader(IDataloader):
         width, height = self.get_image_dimensions(image_id)
         return_values = (image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
                          (pos_y + pos_h) / height, certainty, None, None)
-        return return_values
+        return [return_values]
