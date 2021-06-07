@@ -34,8 +34,8 @@ def slice_bounding_box(bbox, img):
     """
     height, width, _ = img.shape
     return img[
-           int(bbox.get_rectangle().get_y1() * height):int(bbox.get_rectangle().get_y2() * height),
-           int(bbox.get_rectangle().get_x1() * width):int(bbox.get_rectangle().get_x2() * width)
+           int(bbox.rectangle.y1 * height):int(bbox.rectangle.y2 * height),
+           int(bbox.rectangle.x1 * width):int(bbox.rectangle.x2 * width)
            ]
 
 

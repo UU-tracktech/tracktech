@@ -8,9 +8,8 @@ Utrecht University within the Software Project course.
 import tornado.web
 from tornado.testing import AsyncHTTPTestCase
 
-from processor.webhosting.html_page_handler import HtmlPageHandler
-
 from tests.conftest import get_test_configs
+from processor.webhosting.html_page_handler import HtmlPageHandler
 
 
 class TestHtmlPageHandler(AsyncHTTPTestCase):
@@ -24,7 +23,7 @@ class TestHtmlPageHandler(AsyncHTTPTestCase):
         configs = get_test_configs()
 
         return tornado.web.Application([
-            # .html regex pattern.
+            # HTML file regex pattern.
             (r"/(.*\.html)?", HtmlPageHandler, dict(configs=configs)),
         ])
 

@@ -56,8 +56,21 @@ class CameraHandler(StaticFileHandler):
 
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching."""
-        self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Cache-control", "no-store")
+        self.set_header("Access-Control-Allow-Origin", "*")
+
+        # Allow Authorization header to keep cors preflight happy.
+        self.set_header('Access-Control-Allow-Headers', 'Authorization')
+
+    def options(self, _path_args, **_path_kwargs):
+        """Handle an options request and set response to "no content success".
+
+        Args:
+            _path_args (Any): Arguments given to the path.
+            **_path_kwargs (Any): Any other arguments given to the method.
+        """
+        self.set_status(204)
+        self.finish()
 
     def start_stream(self, root):
         """Creates stream conversion and starts the stream.
@@ -154,9 +167,19 @@ class CameraHandler(StaticFileHandler):
         """Validate and check the header token if a public key is specified."""
 
         # Validate the token and act accordingly if it is not good.
-        if self.authenticator is not None:
+        if self.authenticator is not None and self.request.method != 'OPTIONS':
             try:
-                self.authenticator.validate(self.request.headers.get("Authorization").split()[1])
+                header = self.request.headers.get('Authorization')
+                if header is not None:
+                    method, content = header.split()
+                    if method == 'Bearer':
+                        self.authenticator.validate(content)
+                    else:
+                        raise AuthenticationError('Unimplemented authorization method')
+                else:
+                    # Url parameter bc video.js does not want to send headers with the index file request.
+                    self.authenticator.validate(self.get_argument('Bearer'))
+
             except AuthenticationError as exc:
                 # Authentication (validating token) failed.
                 tornado.log.access_log.info(exc)
@@ -170,7 +193,7 @@ class CameraHandler(StaticFileHandler):
             except Exception as exc:
                 # Any other error, no token added e.g.
                 tornado.log.access_log.info(exc)
-                self.set_status(400)
+                self.set_status(403)
                 raise tornado.web.Finish() from exc
 
     def get_absolute_path(self, root, path):

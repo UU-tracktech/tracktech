@@ -6,8 +6,13 @@ Utrecht University within the Software Project course.
 
  */
 
-import * as React from 'react'
-import { TimelineData, ToDate, timelineEvents, dateRange } from '../../src/classes/timelineData'
+import React from 'react'
+import {
+  TimelineData,
+  ToDate,
+  timelineEvents,
+  dateRange
+} from '../../src/classes/timelineData'
 
 test('test ToDate', () => {
   var dateString: string = '2021/05/24 | 14:53:22'
@@ -48,13 +53,18 @@ test('test GetImportantEvents with 2 event', () => {
 
   var events: timelineEvents = timelineData.GetImportantEvents()
 
-  var firstCamEvents: dateRange[] = events["https://tracktech.ml:50008/stream.m3u8"]
+  var firstCamEvents: dateRange[] =
+    events['https://tracktech.ml:50008/stream.m3u8']
   // There should be two event
   expect(firstCamEvents.length).toBe(2)
   // The first should start at 2021/05/24 | 14:53:22 and end at 2021/05/24 | 14:53:24
-  expect(firstCamEvents[0].from).toStrictEqual(new Date(2021, 5, 24, 14, 53, 22))
+  expect(firstCamEvents[0].from).toStrictEqual(
+    new Date(2021, 5, 24, 14, 53, 22)
+  )
   expect(firstCamEvents[0].to).toStrictEqual(new Date(2021, 5, 24, 14, 53, 24))
   // The second should start at 2021/05/24 | 14:53:40 and end at 2021/05/24 | 14:53:41
-  expect(firstCamEvents[1].from).toStrictEqual(new Date(2021, 5, 24, 14, 53, 40))
+  expect(firstCamEvents[1].from).toStrictEqual(
+    new Date(2021, 5, 24, 14, 53, 40)
+  )
   expect(firstCamEvents[1].to).toStrictEqual(new Date(2021, 5, 24, 14, 53, 41))
 })

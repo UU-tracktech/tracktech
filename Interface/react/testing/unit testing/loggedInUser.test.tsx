@@ -11,41 +11,23 @@ import { render, screen } from '@testing-library/react'
 import { LoggedInUser } from '../../src/components/loggedInUser'
 import '@testing-library/jest-dom'
 
-//mock functions and values to change the keycloak mock per test
-let mockInitialized = false
-let mockAuthenticated = false
-let mockToken = { name: 'Firstname Lastname' }
-
-//mock the keycloak implementation
-//https://stackoverflow.com/questions/63627652/testing-pages-secured-by-react-keycloak
-jest.mock('@react-keycloak/web', () => {
-  return {
-    useKeycloak: () => ({
-      initialized: mockInitialized,
-      keycloak: {
-        authenticated: mockAuthenticated,
-        tokenParsed: mockToken
-      }
-    })
-  }
-})
-
-/** Most basic test, does it render at all? */
+//Most basic test, does it render at all?
 test('Renders without error', () => {
-  mockInitialized = true
   render(<LoggedInUser />)
 })
 
-/** Test that it shows a skeleton while waiting for keycloak to load */
+//Test that it shows a skeleton while waiting for keycloak to load
 test('Shows a skeleton while loading', () => {
-  mockInitialized = false
+  require('@react-keycloak/web').__SetMockInitialized(false)
+
   render(<LoggedInUser />)
   expect(screen.queryByTestId('loadingSkeleton')).toBeDefined()
 })
 
-/** Test what is rendered when not logged in */
+//Test what is rendered when not logged in
 test('render not logged in if not authenticated', () => {
-  mockInitialized = true
+  require('@react-keycloak/web').__SetMockInitialized(true)
+  require('@react-keycloak/web').__SetMockAuthenticated(false)
 
   render(<LoggedInUser />)
 
@@ -54,11 +36,12 @@ test('render not logged in if not authenticated', () => {
   expect(screen.queryByTestId('loggedInAsDiv')).toBeFalsy()
 })
 
-/** Test what is rendered if a user is logged in */
+//Test what is rendered if a user is logged in
 test('render username if authenticated', () => {
-  //Change the mock to say we're logged in
-  mockInitialized = true
-  mockAuthenticated = true
+  require('@react-keycloak/web').__SetMockInitialized(true)
+  require('@react-keycloak/web').__SetMockAuthenticated(true)
+  let testName = 'Efawadh Aladeen'
+  require('@react-keycloak/web').__SetMockTokenParsed({ name: testName })
 
   render(<LoggedInUser />)
 
@@ -69,7 +52,5 @@ test('render username if authenticated', () => {
 
   //Check if the username of the user is displayed correctly
   expect(screen.getByTestId('loggedInAsDiv').innerHTML).toMatch('Logged in as:')
-  expect(screen.getByTestId('usernameText').innerHTML).toMatch(
-    'Firstname Lastname'
-  )
+  expect(screen.getByTestId('usernameText').innerHTML).toMatch(testName)
 })

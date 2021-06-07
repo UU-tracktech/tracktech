@@ -49,7 +49,7 @@ export function Grid(props: gridProps) {
         //which includes the video player
         return (
           <div
-            data-testid='gridElement'
+            data-testid={'gridElement'}
             key={source.id}
             style={
               props.primary === source.id

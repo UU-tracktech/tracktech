@@ -4,12 +4,9 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import json
 import pytest
 from processor.data_object.bounding_box import BoundingBox
-from processor.utils.text import bounding_boxes_to_json
 from processor.data_object.rectangle import Rectangle
-from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -17,150 +14,42 @@ class TestBoundingBox:
     """Tests bounding_box.py.
 
     Attributes:
-        data
+        box1 (BoundingBox): A sample bounding box.
+        box1_duplicate (BoundingBox): Duplicate of box1 without a reference.
+        box2 (BoundingBox): A sample bounding box.
+        identifier (int): identifier of bounding box.
+        rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
+        classification (str): classification of the bounding box.
+        certainty (float): certainty/confidence of the bounding box detection.
+        object_id (int): id assigned to object depicted by the bounding box.
     """
 
     def setup_method(self):
-        """Set ups bounding_box for unit testing."""
-        self.data = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5, object_id=5)
-        self.identifier = self.data.get_identifier()
-        self.rectangle = self.data.get_rectangle()
-        self.classification = self.data.get_classification()
-        self.certainty = self.data.get_certainty()
-        self.object_id = self.data.get_object_id()
+        """Sets up bounding_box for unit testing."""
+        self.box1 = BoundingBox(1, Rectangle(0, 0.5, 0.75, 1), "person", 0.5, object_id=5)
+        self.box1_duplicate = BoundingBox(1, Rectangle(0, 0.5, 0.75, 1), "person", 0.5, object_id=5)
+        self.box2 = BoundingBox(1, Rectangle(0.1, 0.25, 0.5, 0.9), "car", 0.75, object_id=15)
+        self.identifier = 1
+        self.rectangle = Rectangle(0, 0.5, 0.75, 1)
+        self.classification = "person"
+        self.certainty = 0.5
+        self.object_id = 5
 
-    # Testing typechecking.
-    def test_type_identifier(self):
-        """Asserts if value of identifier is of correct type."""
-        assert isinstance(self.identifier,
-                          type(self.identifier))
+    def test_init(self):
+        """Tests the constructor of the BoundingBox object."""
+        assert self.identifier == self.box1.identifier
+        assert self.rectangle == self.box1.rectangle
+        assert self.classification == self.box1.classification
+        assert self.object_id == self.box1.object_id
 
-    def test_type_rectangle(self):
-        """Asserts if value of rectangle is of correct type."""
-        assert isinstance(self.rectangle,
-                          type(self.rectangle))
+    def test_eq(self):
+        """Tests the __eq__ function."""
+        assert self.box1 != self.box2
+        assert self.box1 == self.box1_duplicate
 
-    def test_type_classification(self):
-        """Asserts if value of classification is of correct type."""
-        assert isinstance(self.classification,
-                          type(self.classification))
-
-    def test_type_certainty(self):
-        """Asserts if value of certainty is of correct type."""
-        assert isinstance(self.certainty,
-                          type(self.certainty))
-
-    def test_type_object_id(self):
-        """Asserts if value of object id is of correct type."""
-        assert isinstance(self.object_id,
-                          type(self.object_id))
-
-    # Testing empty fields that can be empty.
-    def test_empty_identifier(self):
-        """Asserts if identifier is not None."""
-        assert self.identifier is not None
-
-    def test_empty_rectangle(self):
-        """Asserts if rectangle is not None."""
-        assert self.rectangle is not None
-
-    def test_empty_classification(self):
-        """Asserts if classification is not None."""
-        assert self.classification is not None
-
-    def test_empty_certainty(self):
-        """Asserts if certainty is not None."""
-        assert self.certainty is not None
-
-    def test_empty_object_id(self):
-        """Asserts if object id is not None."""
-        assert self.object_id is not None
-
-    # Testing exceptions.
-    def test_exception_identifier(self):
-        """Asserts if identifier throws exception."""
-        with pytest.raises(Exception):
-            assert str(self.identifier) == 'some invalid value'
-
-    def test_exception_rectangle(self):
-        """Asserts if rectangle throws exception."""
-        with pytest.raises(Exception):
-            assert str(self.rectangle) == 'some invalid value'
-
-    def test_exception_classification(self):
-        """Asserts if classification throws exception."""
-        with pytest.raises(Exception):
-            assert str(self.classification) == 'some invalid  value'
-
-    def test_exception_certainty(self):
-        """Asserts if certainty throws exception."""
-        with pytest.raises(Exception):
-            assert str(self.certainty) == 'some invalid value'
-
-    # Testing values.
-    def test_value_identifier(self):
-        """Asserts if value of identifier is correct."""
-        assert self.identifier == 1
-
-    def test_value_rectangle(self):
-        """Asserts if value of rectangle is correct."""
-        assert1 = (Rectangle(0, 0, 1, 1).get_x1(),
-                   Rectangle(0, 0, 1, 1).get_y1(),
-                   Rectangle(0, 0, 1, 1).get_x2(),
-                   Rectangle(0, 0, 1, 1).get_y2())
-        assert2 = (self.rectangle.get_x1(),
-                   self.rectangle.get_y1(),
-                   self.rectangle.get_x2(),
-                   self.rectangle.get_y2())
-        assert assert1 == assert2
-
-    def test_value_classification(self):
-        """Asserts if value of classification is correct."""
-        assert self.classification == "person"
-
-    def test_value_certainty(self):
-        """Asserts if value of certainty is correct."""
-        assert self.certainty == 0.5
-
-    def test_value_object_id(self):
-        """Asserts if value of object_id is correct."""
-        assert self.object_id == 5
-
-    # Testing form.
-    def test_range_certainty(self):
-        """Asserts if certainty is within range 0...1."""
-        assert self.certainty <= 1
-        assert self.certainty >= 0
-
-    def test_to_json(self):
-        """Asserts if the to_json() method works properly."""
-        assert1 = json.loads(bounding_boxes_to_json(BoundingBoxes([self.data]), 1))
-        assert2 = json.loads(
-            json.dumps(
-                {
-                    "type": "boundingBoxes",
-                    "frameId": 1,
-                    "boxes": [
-                        {
-                            "boxId": 1,
-                            "rect": [0, 0, 1, 1],
-                            "objectType": self.classification,
-                            "objectId": 5
-                        }
-                    ]
-                }
-            )
-        )
-        assert assert1 == assert2
-
-    def test_value_error(self):
-        """Tests if exceptions are thrown."""
-        with pytest.raises(ValueError):
-            assert Rectangle(1, 1, 0, 0)
-        with pytest.raises(ValueError):
-            assert Rectangle(1, 0, 0, 1)
-        with pytest.raises(ValueError):
-            assert Rectangle(0, 1, 1, 0)
+    def test_repr(self):
+        """Tests the __repr__ function."""
+        assert str(self.box1).startswith('BoundingBox(')
 
 
 if __name__ == '__main__':

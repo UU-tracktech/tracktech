@@ -57,23 +57,23 @@ export function CameraCard(props: cameraCardProps) {
         </div>
       }
       //Styling
-      size='small'
+      size={'small'}
       headStyle={{ padding: '0px 8px' }}
       bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
       <Button
         //Resize button
-        data-testid='resizeButton'
-        type='primary'
+        data-testid={'resizeButton'}
+        type={'primary'}
         onClick={() => props.setSize(props.id)}
         style={buttonStyle}
         icon={<ExpandOutlined />}
       ></Button>
       <Button
         //Delete button (TODO: implement removing a camera feed)
-        type='primary'
-        data-testid='deleteButton'
+        type={'primary'}
+        data-testid={'deleteButton'}
         danger
         onClick={() => alert('clicked on delete')}
         style={buttonStyle}

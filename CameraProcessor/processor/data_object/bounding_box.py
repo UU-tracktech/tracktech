@@ -17,7 +17,7 @@ class BoundingBox:
             rectangle (Rectangle): coords of bounding box, contains bottom left and top right coords.
             classification (str): classification of the bounding box.
             certainty (float): certainty/confidence of the bounding box detection.
-            object_id (int): id assigned to object depicted by the bounding box
+            object_id (int): id assigned to object depicted by the bounding box.
         """
         self.__identifier = identifier
         self.__rectangle = rectangle
@@ -25,15 +25,17 @@ class BoundingBox:
         self.__certainty = certainty
         self.__object_id = object_id
 
-    def get_identifier(self):
-        """Get bounding box identifier.
+    @property
+    def identifier(self):
+        """Bounding box identifier getter.
 
         Returns:
             int: identifier of bounding box.
         """
         return self.__identifier
 
-    def get_rectangle(self):
+    @property
+    def rectangle(self):
         """Get Rectangle.
 
         Returns:
@@ -41,7 +43,8 @@ class BoundingBox:
         """
         return self.__rectangle
 
-    def get_classification(self):
+    @property
+    def classification(self):
         """Get classification/tag of bounding box.
 
         Returns:
@@ -49,7 +52,8 @@ class BoundingBox:
         """
         return self.__classification
 
-    def get_certainty(self):
+    @property
+    def certainty(self):
         """Get certainty/confidence that bounding box is correctly classified.
 
         Returns:
@@ -57,7 +61,8 @@ class BoundingBox:
         """
         return self.__certainty
 
-    def get_object_id(self):
+    @property
+    def object_id(self):
         """Gets object id of tracked object depicted by the bounding box (can be None).
 
         Returns:
@@ -65,16 +70,29 @@ class BoundingBox:
         """
         return self.__object_id
 
-    def set_object_id(self, new_id):
-        """Set the object id of a bounding box. Used when a box has been re-identified to contain a tracked object.
+    def __eq__(self, other):
+        """Function that checks whether the current bounding box is the same as the given one.
 
         Args:
-            new_id (int): The updated object_id of the box.
+            other (BoundingBox): BoundingBox to compare with.
 
-        Raises:
-            ValueError: if the box already was assigned to an object.
+        Returns:
+            bool: Whether the bounding boxes are the same.
         """
-        if self.__object_id is not None:
-            raise ValueError("Box already has an object ID")
+        return all([
+            self.__identifier == other.identifier,
+            self.__rectangle == other.rectangle,
+            self.__classification == other.classification,
+            self.__certainty == other.certainty,
+            self.__object_id == other.object_id
+        ])
 
-        self.__object_id = new_id
+    def __repr__(self):
+        """Converts the bounding box object to a string.
+
+        Returns:
+            str: String representation of an bounding box.
+        """
+        return f'BoundingBox(type: "{self.__classification}" certainty: {self.__certainty} ' \
+               f'identifier: {self.__identifier} id: {self.__object_id} ' \
+               f'rectangle: {self.__rectangle})'

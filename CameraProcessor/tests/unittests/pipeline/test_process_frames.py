@@ -7,20 +7,18 @@ Utrecht University within the Software Project course.
 import asyncio
 import pytest
 
-from processor.pipeline.process_frames import send_to_orchestrator
-
-from processor.pipeline.process_frames import process_stream, prepare_stream
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.pipeline.detection.yolor_runner import YolorDetector
-from processor.input.video_capture import VideoCapture
-
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
 from tests.unittests.utils.fake_reidentifier import FakeReIdentifier
 from tests.unittests.utils.fake_websocket import FakeWebsocket
+from processor.pipeline.prepare_pipeline import prepare_objects
+from processor.pipeline.process_frames import process_stream
+from processor.pipeline.detection.yolov5_runner import Yolov5Detector
+from processor.pipeline.detection.yolor_runner import YolorDetector
+from processor.input.video_capture import VideoCapture
+from processor.pipeline.process_frames import send_boxes_to_orchestrator
 
 
-@pytest.mark.skip("Timeout errors")
 class TestProcessFrames:
     """Tests process_frames.py."""
     def __get_video(self, configs):
@@ -78,7 +76,7 @@ class TestProcessFrames:
             configs (ConfigParser): Configurations of the test
         """
         # Open video.
-        video_capture, detector, tracker, re_identifier, _ = prepare_stream(configs)
+        video_capture, detector, tracker, re_identifier, _ = prepare_objects(configs)
 
         # Process stream and close the video.
         asyncio.get_event_loop().run_until_complete(
@@ -97,7 +95,7 @@ class TestProcessFrames:
         """
         # Open video and get the runner.
         capture = self.__get_video(configs)
-        unused_capture, _, tracker, re_identifier, _ = prepare_stream(configs)
+        unused_capture, _, tracker, re_identifier, _ = prepare_objects(configs)
         unused_capture.close()
         detector = self.__get_yolorrunner(configs)
 
@@ -140,11 +138,12 @@ class TestProcessFrames:
             detector,
             tracker,
             re_identifier,
-            lambda frame_obj, detected_boxes, tracked_boxes: send_to_orchestrator(
+            lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
                 websocket_client,
                 frame_obj,
                 detected_boxes,
-                tracked_boxes
+                tracked_boxes,
+                re_id_tracked_boxes
             ),
             websocket_client
         )
