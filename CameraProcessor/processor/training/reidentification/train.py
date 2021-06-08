@@ -19,10 +19,10 @@ if __name__ == '__main__':
         root=config['root'],
         sources=config['sources'],
         targets=config['targets'],
-        height=config['height'],
-        width=config['width'],
-        batch_size_train=config['batch_size_train'],
-        batch_size_test=config['batch_size_test'],
+        height=int(config['height']),
+        width=int(config['width']),
+        batch_size_train=int(config['batch_size_train']),
+        batch_size_test=int(config['batch_size_test']),
         transforms=['random_flip', 'random_crop']
     )
 
@@ -63,8 +63,8 @@ if __name__ == '__main__':
     # Runs training.
     engine.run(
         save_dir=config['save_dir'],
-        max_epoch=config['max_epoch'],
-        eval_freq=config['eval_freq'],
-        print_freq=config['print_freq'],
+        max_epoch=int(config['max_epoch']),
+        eval_freq=int(config['eval_freq']),
+        print_freq=int(config['print_freq']),
         test_only=False
     )
