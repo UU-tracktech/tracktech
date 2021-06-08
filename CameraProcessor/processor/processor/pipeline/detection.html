@@ -72,7 +72,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;idetector&#39;</span><span class="p">,</span> <span class="s1">&#39;yolov5_runner&#39;</span><span class="p">,</span> <span class="s1">&#39;yolor_runner&#39;</span><span class="p">]</span>
@@ -100,7 +99,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.</span>
+        <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within the frame.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): object containing frame and timestamp.</span>
@@ -109,7 +108,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError: The function is not overridden in subclass.</span>
+<span class="sd">            NotImplementedError: The function is not overridden in the subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Detect function not implemented&quot;</span><span class="p">)</span>
 </pre></div>
@@ -222,7 +221,7 @@ Utrecht University within the Software Project course.
                             <span class="n">imgsz</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">type_as</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())))</span>
 
     <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
+        <span class="sd">&quot;&quot;&quot;Function given to scheduler, so the scheduler can run the detection stage.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            function: function that the scheduler can run.</span>
@@ -311,7 +310,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Initiate the YolorDetector.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config (ConfigParser): Configurations which also contain Yolor configurations.</span>
+<span class="sd">            config (ConfigParser): Configurations which also contain YOLOR configurations.</span>
 <span class="sd">            filters (SectionProxy): Filtering for boundingBoxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">curr_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
@@ -338,7 +337,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Download weights if not present.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight files for Yolor not found, downloading to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight files for YOLOR not found, downloading to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76&quot;</span>
             <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_path&#39;</span><span class="p">]</span>
             <span class="n">gdown</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -377,7 +376,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            frame_obj (FrameObj): information object containing frame and timestamp.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects.</span>
+<span class="sd">            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
 

@@ -109,7 +109,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Connects to the orchestrator and starts the process_frames loop</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): configurations for the prepare stream</span>
+<span class="sd">        configs (ConfigParser): configurations for the prepared stream</span>
 <span class="sd">        ws_id (str): Id of the camera processor for the orchestrator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_objects</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
@@ -134,7 +134,7 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.</span>
+    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.</span>
 
 <span class="sd">    Tornado uses a custom IOLoop</span>
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
@@ -239,7 +239,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Connects to the orchestrator and starts the process_frames loop</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): configurations for the prepare stream</span>
+<span class="sd">        configs (ConfigParser): configurations for the prepared stream</span>
 <span class="sd">        ws_id (str): Id of the camera processor for the orchestrator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="n">prepare_objects</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
@@ -270,7 +270,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (ConfigParser):</strong>  configurations for the prepare stream</li>
+<li><strong>configs (ConfigParser):</strong>  configurations for the prepared stream</li>
 <li><strong>ws_id (str):</strong>  Id of the camera processor for the orchestrator</li>
 </ul>
 </div>
@@ -288,7 +288,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.</span>
+    <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.</span>
 
 <span class="sd">    Tornado uses a custom IOLoop</span>
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
@@ -322,7 +322,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.</p>
+            <div class="docstring"><p>Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.</p>
 
 <p>Tornado uses a custom IOLoop
 Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</p>
