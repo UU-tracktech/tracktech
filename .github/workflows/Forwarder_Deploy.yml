@@ -1,6 +1,6 @@
-name: Forwarder Build
-"on":
-  workflow_dispatch: null
+name: Forwarder Deploy
+on:
+  workflow_dispatch:
   push:
     paths:
       - VideoForwarder/**
@@ -8,6 +8,7 @@ name: Forwarder Build
     branches:
       - develop
       - master
+      - SPC-838-Deploy-docker-images-from-github-actions-
 
 jobs:
   forwarder_deploy:
