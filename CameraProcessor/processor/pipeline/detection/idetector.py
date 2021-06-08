@@ -19,7 +19,7 @@ class IDetector(IComponent):
         return self.detect
 
     def detect(self, frame_obj):
-        """Given a frame object, run detection algorithm to find all bounding boxes of objects within frame.
+        """Given a frame object, run detection algorithm to find all bounding boxes of objects within the frame.
 
         Args:
             frame_obj (FrameObj): object containing frame and timestamp.
@@ -28,6 +28,6 @@ class IDetector(IComponent):
             BoundingBoxes: returns BoundingBoxes object containing a list of BoundingBox objects.
 
         Raises:
-            NotImplementedError: The function is not overridden in subclass.
+            NotImplementedError: The function is not overridden in the subclass.
         """
         raise NotImplementedError("Detect function not implemented")

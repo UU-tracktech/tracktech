@@ -8,7 +8,7 @@ from queue import Queue
 
 
 class Scheduler:
-    """Sequential scheduler executing a starting node and all children of said node when they are ready for execution.
+    """The sequential scheduler executing a starting node and all its children node when they are ready for execution.
 
     Attributes:
         start_node (INode): INode representing the initial input node, starting point of the graph.

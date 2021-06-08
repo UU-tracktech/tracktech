@@ -1,4 +1,4 @@
-"""Contains frame buffer class.
+"""Contains the frame buffer class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -12,7 +12,7 @@ class FrameBuffer(IComponent):
     """Class that handles frame buffering logic and holds the buffer.
 
     The buffer maps frame_ids to a tuple of frame_obj and tracked_boxes,
-    thus it contains frames and their tracked bounding boxes.
+    thus it contains frames, and their tracked bounding boxes.
 
     Attributes:
         __buffer_size (int): Size of the buffer.

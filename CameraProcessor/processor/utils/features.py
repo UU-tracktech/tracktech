@@ -20,7 +20,7 @@ def slice_bounding_box(bbox, img):
         use `del`.
 
     Args:
-        bbox (BoundingBox): A boundingbox which holds the rectangle we need
+        bbox (BoundingBox): A BoundingBox which holds the rectangle we need
         img (np.ndarray): the numpy array representing the frame/image
 
     Returns:

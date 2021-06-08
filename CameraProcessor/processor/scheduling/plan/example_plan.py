@@ -1,4 +1,4 @@
-"""Just an example of a plan that can be executed by scheduler.
+"""Just an example of a plan that can be executed by the scheduler.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

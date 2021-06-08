@@ -18,6 +18,9 @@ from processor.pipeline.framebuffer import FrameBuffer
 from processor.pipeline.reidentification.reid_data import ReidData
 
 from processor.webhosting.start_command import StartCommand
+from processor.webhosting.start_command_simple import StartCommandSimple
+from processor.webhosting.start_command_extended import StartCommandExtended
+from processor.webhosting.start_command_search import StartCommandSearch
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
 
@@ -148,33 +151,86 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
         track_elem = ws_client.message_queue.popleft()
         # Start command.
         if isinstance(track_elem, StartCommand):
-            logging.info(f'Start tracking box {track_elem.box_id} in frame_id {track_elem.frame_id} '
-                         f'with new object id {track_elem.object_id}')
-
-            # Get the feature vector of the object we want to track (query).
-            # First, get the bounding box and frame for the query.
-            stored_frame = framebuffer.get_frame(track_elem.frame_id)
-            stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
-            feature_map = re_identifier.extract_features(stored_frame, stored_box)
-
-            # Send the feature_map to the orchestrator.
-            send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
-
-            # Extract the features from this bounding box and store them in the data.
-            re_id_data.add_query_feature(track_elem.object_id, feature_map)
-
-            # Also store the map of the first box_id to the object_id.
-            re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
+            __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re_id_data)
 
         # Stop command.
         elif isinstance(track_elem, StopCommand):
-            logging.info(f'Stop tracking object {track_elem.object_id}')
-            re_id_data.remove_query(track_elem.object_id)
+            __handle_stop_command(track_elem, re_id_data)
 
         # Update command.
         elif isinstance(track_elem, UpdateCommand):
-            logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
-            re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
+            __handle_update_command(track_elem, re_id_data)
+
+
+def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re_id_data):
+    """Handles generic start command logic, as well as switch for different start commands.
+
+    Args:
+        track_elem (StartCommand): the tracking message the function processes.
+        ws_client (WebsocketClient): Websocket client to send messages to.
+        framebuffer (FrameBuffer): Frame buffer containing previous frames and bounding boxes.
+        re_identifier (IReIdentifier): re-identifier extracting features and comparing them.
+        re_id_data (ReidData): Object containing data necessary for re-identification.
+        """
+    # Initialize None variables.
+    error = None
+    feature_map = None
+    if isinstance(track_elem, StartCommandSimple):
+        # Extract features from cutout.
+        feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
+    elif isinstance(track_elem, StartCommandExtended):
+        # Extract features from cutout.
+        feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
+        # TODO: add feature_map comparison logic here # pylint: disable=fixme.
+    elif isinstance(track_elem, StartCommandSearch):
+        try:
+            # Look for the box in the buffer.
+            stored_frame = framebuffer.get_frame(track_elem.frame_id)
+            stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+        except IndexError as index_error:
+            # Frame or box not found in the buffer, log the error.
+            error = index_error
+        else:
+            feature_map = re_identifier.extract_features(stored_frame, stored_box)
+    else:
+        error = NameError("Unknown Start Command type.")
+
+    # If successfully extracted, send the feature_map to the orchestrator.
+    if feature_map is not None:
+        send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
+
+        # Extract the features from this bounding box and store them in the data.
+        re_id_data.add_query_feature(track_elem.object_id, feature_map)
+
+        # Also store the map of the first box_id to the object_id, if we have a box ID.
+        if track_elem.box_id is not None:
+            re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
+    # If we have an error, log it and send it to orchestrator.
+    elif error is not None:
+        send_error_to_orchestrator(ws_client, error)
+        logging.error(error)
+
+
+def __handle_stop_command(track_elem, re_id_data):
+    """Handles logic for the Stop Command.
+
+    Args:
+        track_elem (StopCommand): The stop command the function processes.
+        re_id_data (ReidData): Object containing data necessary for re-identification.
+    """
+    logging.info(f'Stop tracking object {track_elem.object_id}')
+    re_id_data.remove_query(track_elem.object_id)
+
+
+def __handle_update_command(track_elem, re_id_data):
+    """Handles logic for the Update Command.
+
+    Args:
+        track_elem (UpdateCommand): The update command the function processes.
+        re_id_data (ReidData): Object containing data necessary for re-identification.
+    """
+    logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
+    re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
 
 
 # pylint: disable=unused-argument
@@ -192,6 +248,17 @@ def send_boxes_to_orchestrator(ws_client, frame_obj, detected_boxes, tracked_box
     client_message = text.bounding_boxes_to_json(tracked_boxes, frame_obj.timestamp)
     ws_client.write_message(client_message)
     logging.info(client_message)
+
+
+def send_error_to_orchestrator(ws_client, error):
+    """Sends an error message to the orchestrator.
+
+    Args:
+          ws_client (WebsocketClient):  Websocket object that contains the connection.
+          error (BaseException): The error
+    """
+    client_message = text.error_to_json(error)
+    ws_client.write_message(client_message)
 
 
 def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):
