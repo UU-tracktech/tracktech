@@ -66,11 +66,11 @@ class TestReceivingFromOrchestrator:
 
         received_start = processor_client.message_queue.popleft()
         assert isinstance(received_start, StartCommand)
-        assert received_start.box_id == 5
-        assert received_start.frame_id == 1
+        assert received_start.boxId == 5
+        assert received_start.frameId == 1
 
         # Processor orchestrator determines object ID. Should be 1 if this is the first start command.
-        assert received_start.object_id == 1
+        assert received_start.objectId == 1
 
         feature_map = [0.1] * 512
         update_command = json.dumps({"type": "featureMap", "objectId": 1, "featureMap": feature_map})
