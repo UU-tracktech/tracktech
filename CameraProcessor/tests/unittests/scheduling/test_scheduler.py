@@ -19,8 +19,6 @@ class TestScheduler:
 
         # Assert scheduler node initialization properties.
         assert scheduler.start_node == schedule_wrapper.schedule_input_node
-        assert scheduler.queue.empty()
-        assert scheduler.queued.__len__() == 0
 
     def test_big_scheduler_constructor(self):
         """Tests the constructor when a big schedule is created."""
@@ -31,8 +29,6 @@ class TestScheduler:
 
         # Test properties.
         assert scheduler.start_node == schedule_wrapper.schedule_input_node
-        assert scheduler.queue.empty()
-        assert scheduler.queued.__len__() == 0
 
     def test_small_schedule_graph(self):
         """Tests whether a schedule only containing an output node gives correct output."""
@@ -42,7 +38,7 @@ class TestScheduler:
         scheduler = schedule_wrapper.scheduler
 
         # Executes schedule.
-        scheduler.schedule_graph("small")
+        scheduler.schedule_graph(["small"], {})
 
         # No stage inside the schedule modified the string.
         assert schedule_wrapper.schedule_output_node.component.out == "small"
@@ -60,7 +56,7 @@ class TestScheduler:
         scheduler = schedule_wrapper.scheduler
 
         # Initialize graph with a simple string.
-        scheduler.schedule_graph("big")
+        scheduler.schedule_graph(["big"], {})
 
         assert schedule_wrapper.schedule_output_node.component.out == \
                "big,start,start,first_arg,big,start,start,second_arg,merged"
@@ -86,8 +82,7 @@ class TestScheduler:
         scheduler.notify([schedule_wrapper.schedule_input_node, schedule_wrapper.schedule_output_node])
 
         # Asserts two nodes are added to the queue.
-        assert scheduler.queue.qsize() == 2
-        assert len(scheduler.queued) == 2
+        assert scheduler.queue_size == 2
 
     def test_push(self):
         """Tests the functionality of push()."""
@@ -100,8 +95,7 @@ class TestScheduler:
         scheduler.push(schedule_wrapper.schedule_input_node)
 
         # Node is on the scheduler queue.
-        assert scheduler.queue.qsize() == 1
-        assert len(scheduler.queued) == 1
+        assert scheduler.queue_size == 1
 
     def test_push_removes_duplicates(self):
         """Tests whether duplicates are not pushed to the queue."""
@@ -115,8 +109,21 @@ class TestScheduler:
         scheduler.push(schedule_wrapper.schedule_input_node)
 
         # Duplicate is not inside the queue and set.
-        assert scheduler.queue.qsize() == 1
-        assert len(scheduler.queued) == 1
+        assert scheduler.queue_size == 1
+
+    def test_global_schedule_graph(self):
+        """Test the functionality of globals that can be used by all nodes in a readonly manner."""
+        # Create scheduler.
+        schedule_wrapper = ScheduleWrapper()
+        schedule_wrapper.prepare_global_schedule()
+        scheduler = schedule_wrapper.scheduler
+
+        global_readonly = schedule_wrapper.global_readonly
+        global_readonly['global_var'] = 'global'
+
+        scheduler.schedule_graph([], global_readonly)
+
+        assert schedule_wrapper.schedule_output_node.component.out == 'global,start'
 
 
 if __name__ == '__main__':
