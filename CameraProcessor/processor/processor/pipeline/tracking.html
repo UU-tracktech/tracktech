@@ -68,6 +68,7 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sort_tracker&#39;</span><span class="p">,</span> <span class="s1">&#39;itracker&#39;</span><span class="p">]</span>
@@ -120,7 +121,7 @@ Utrecht University within the Software Project course.
                          <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler, so the scheduler can run the tracking stage.</span>
+        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            function: function that the scheduler can run.</span>
@@ -207,7 +208,8 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">class</span> <span class="nc">ITracker</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
