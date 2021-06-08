@@ -35,9 +35,6 @@
                                 <a class="function" href="#IDetector.__init__">IDetector</a>
                         </li>
                         <li>
-                                <a class="function" href="#IDetector.execute_component">execute_component</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#IDetector.detect">detect</a>
                         </li>
                 </ul>
@@ -79,14 +76,6 @@ Utrecht University within the Software Project course.
 <span class="k">class</span> <span class="nc">IDetector</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect</span>
-
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within the frame.</span>
 
@@ -119,14 +108,6 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IDetector</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detection runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect</span>
-
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a frame object, run detection algorithm to find all bounding boxes of objects within the frame.</span>
 
@@ -157,38 +138,6 @@ Utrecht University within the Software Project course.
 
         
     
-
-                            </div>
-                            <div id="IDetector.execute_component" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDetector.execute_component">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">execute_component</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the detection stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Function given to scheduler so the scheduler can run the detection stage.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>function: function that the scheduler can run.</p>
-</blockquote>
-</div>
-
 
                             </div>
                             <div id="IDetector.detect" class="classattr">

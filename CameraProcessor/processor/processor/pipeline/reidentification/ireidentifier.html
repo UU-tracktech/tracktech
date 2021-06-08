@@ -35,9 +35,6 @@
                                 <a class="function" href="#IReIdentifier.__init__">IReIdentifier</a>
                         </li>
                         <li>
-                                <a class="function" href="#IReIdentifier.execute_component">execute_component</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#IReIdentifier.extract_features">extract_features</a>
                         </li>
                         <li>
@@ -79,19 +76,10 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
 
 
-<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Superclass for identifiers.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_identify</span>
 
     <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a det_obj object, extract the features of it.</span>
@@ -138,21 +126,13 @@ Utrecht University within the Software Project course.
 
         
         <span class="def">class</span>
-        <span class="name">IReIdentifier</span>(<span class="base"><a href="../../scheduling/component/component_interface.html#IComponent">processor.scheduling.component.component_interface.IComponent</a></span>):
+        <span class="name">IReIdentifier</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Superclass for identifiers.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_identify</span>
 
     <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a det_obj object, extract the features of it.</span>
@@ -205,38 +185,6 @@ Utrecht University within the Software Project course.
 
         
     
-
-                            </div>
-                            <div id="IReIdentifier.execute_component" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IReIdentifier.execute_component">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">execute_component</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_identify</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Function given to scheduler so the scheduler can run the tracking stage.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>function: function that the scheduler can run.</p>
-</blockquote>
-</div>
-
 
                             </div>
                             <div id="IReIdentifier.extract_features" class="classattr">
