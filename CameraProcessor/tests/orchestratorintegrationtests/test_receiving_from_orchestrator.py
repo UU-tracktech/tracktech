@@ -1,4 +1,4 @@
-"""Tests receiving messages from orchestrator, example message pipeline with interface and processor connected.
+"""Tests receiving messages from the orchestrator, example message pipeline with the interface and processor connected.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

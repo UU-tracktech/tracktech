@@ -34,7 +34,7 @@ class YolorDetector(IYoloDetector):
         """Initiate the YolorDetector.
 
         Args:
-            config (ConfigParser): Configurations which also contain Yolor configurations.
+            config (ConfigParser): Configurations which also contain YOLOR configurations.
             filters (SectionProxy): Filtering for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -61,7 +61,7 @@ class YolorDetector(IYoloDetector):
 
         # Download weights if not present.
         if not os.path.exists(self.config['weights_path']):
-            logging.warning(f"Weight files for Yolor not found, downloading to {self.config['weights_path']}")
+            logging.warning(f"Weight files for YOLOR not found, downloading to {self.config['weights_path']}")
             url = "https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76"
             output = self.config['weights_path']
             gdown.download(url, output, quiet=False)
@@ -100,7 +100,7 @@ class YolorDetector(IYoloDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects.
+            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects.
         """
         bounding_boxes = []
 

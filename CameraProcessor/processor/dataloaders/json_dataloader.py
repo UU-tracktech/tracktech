@@ -1,4 +1,4 @@
-"""Dataloader super class.
+"""JSON dataloader class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -13,6 +13,7 @@ from processor.dataloaders.idataloader import IDataloader
 
 class JSONDataloader(IDataloader):
     """JSON Dataloader, formats MOT Data."""
+
     def parse_file(self):
         """Parses a file into a BoundingBoxes object.
 

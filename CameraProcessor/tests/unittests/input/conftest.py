@@ -13,7 +13,7 @@ from processor.input.image_capture import ImageCapture
 
 
 def __get_images_dir():
-    """Get the path to the images directory.
+    """Get the path to the images' directory.
 
     Returns:
         str: Path to the image folder.

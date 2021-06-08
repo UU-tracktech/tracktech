@@ -1,4 +1,4 @@
-"""File that displays the video stream on a localhost for testing with docker.
+"""File that displays the video stream on a localhost for testing with the docker.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -38,7 +38,7 @@ class StreamHandler(tornado.web.RequestHandler):
 
     @tornado.gen.coroutine
     def get(self):
-        """Get request handler for the webpage to show video stream."""
+        """Get request handler for the webpage to show the video stream."""
         # Sets headers of the stream handler.
         logging.info('set headers')
         self.set_header('Cache-Control',

@@ -34,11 +34,11 @@ class HlsCapture(ICapture):
         __thread_start_time (float): Start time of thread.
         __wait_ms (float): Time between frames in ms
 
-        __current_frame (numpy.ndarray): Current frame.
+        __current_frame (numpy.ndarray): The current frame.
 
         __previous_time (float): a time float to determine the time diff between frame readings.
         __timeout (int): an integer for timeout in seconds (used as float).
-        __grace_period (int): an integer denoting a grace period at the start before we check for timeout.
+        __grace_period (int): an integer denoting a grace period at the start before we check for a timeout.
         __retries (int): the number of retries before connecting is given up
 
         __thread_running (bool): bool denoting whether reading thread is active or activating.
@@ -106,7 +106,7 @@ class HlsCapture(ICapture):
         return self.__thread_running
 
     def close(self):
-        """Closes the capture object and the thread that is responsible for serving the current frame."""
+        """Closes the capture object, and the thread that is responsible for serving the current frame."""
         logging.info('HLS stream closing')
         logging.info("Joining threads")
 
@@ -156,7 +156,7 @@ class HlsCapture(ICapture):
     def __read(self, cap, hls_start_time_stamp, wait_ms):
         """Method that runs in separate thread that goes through the frames of the stream at a consistent pace.
 
-        Reads frames at frame rate of the stream and puts them in self.current_frame.
+        Read frames at frame rate of the stream and puts them in self.current_frame.
         Calculates at what time the next frame is expected and waits that long.
 
         Args:
@@ -203,7 +203,7 @@ class HlsCapture(ICapture):
         the reading and reconnection thread.
 
         Returns:
-            bool: indicating a success or failure of setting up the capture and syncing the meta data.
+            bool: indicating a success or failure of setting up the capture and syncing the metadata.
         """
         logging.info(f'Connecting to HLS stream, url: {self.hls_url}')
 
