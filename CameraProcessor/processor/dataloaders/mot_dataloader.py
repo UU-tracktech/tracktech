@@ -23,7 +23,7 @@ class MOTDataloader(IDataloader):
             path_location (str): The path of the MOT data.
         """
         super().__init__(configs, path_location)
-        self.skipped_lines = []
+        self.skipped_lines = 0
 
     def __get_annotations(self):
         """Gets annotations.
