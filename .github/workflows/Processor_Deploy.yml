@@ -8,6 +8,7 @@ name: Processor Build
     branches:
       - develop
       - master
+
 jobs:
   orchestrator_deploy:
     name: Processor Deploy

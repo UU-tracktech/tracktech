@@ -8,6 +8,7 @@ name: Interface Build
     branches:
       - develop
       - master
+
 jobs:
   interface_deploy:
     name: Interface Deploy
