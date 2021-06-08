@@ -1,25 +1,23 @@
 name: Orchestrator Build
-
-on:
-  workflow_dispatch:
+"on":
+  workflow_dispatch: null
   push:
     paths:
       - ProcessorOrchestrator/**
       - .github/workflows/Orchestrator_Deploy.yml
     branches:
-      - 'develop'
-      - 'master'
-
+      - develop
+      - master
 jobs:
   orchestrator_deploy:
     name: Orchestrator Deploy
     runs-on: self-hosted
     steps:
-     -  name: Login to DockerHub
-        uses: docker/login-action@v1 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: Build and push latest
         if: github.ref == 'refs/heads/develop'
         id: docker_build
@@ -27,7 +25,7 @@ jobs:
         with:
           context: ProcessorOrchestrator
           push: true
-          tags: tracktech/orchestrator:latest
+          tags: "tracktech/orchestrator:latest"
       - name: Build and push release
         if: github.ref == 'refs/heads/master'
         id: docker_build
@@ -35,4 +33,4 @@ jobs:
         with:
           context: ProcessorOrchestrator
           push: true
-          tags: tracktech/orchestrator:release
+          tags: "tracktech/orchestrator:release"
