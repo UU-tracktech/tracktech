@@ -18,8 +18,8 @@ class ImageCapture(ICapture):
     """Reads all images from a folder one by one.
 
     Attributes:
-        images_paths (List[str]): List of paths of images in folder.
-        nr_images (int): Number of images contained in folder.
+        images_paths (List[str]): List of paths of images in a folder.
+        nr_images (int): Number of images contained in a folder.
         image_index (int): Index of current image frame.
     """
     def __init__(self, images_dir):

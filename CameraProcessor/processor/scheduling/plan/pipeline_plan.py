@@ -24,7 +24,7 @@ def create_plan(plan_args):
         plan_args (dict[str, obj]): Dictionary containing every argument based on name.
 
     Returns:
-        ScheduleNode: starting node of the plan.
+        ScheduleNode: the starting node of the plan.
     """
     # Final node executing a function that takes all previous component outputs as input.
     func_node = ScheduleNode(

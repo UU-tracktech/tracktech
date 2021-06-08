@@ -112,7 +112,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         return euclidean_distance
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
-        """Performing re-identification using torchreid.
+        """Performing re-identification using Torchreid.
 
         This re-identification implementations couple bounding boxes to a tracked subject
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID

@@ -26,7 +26,7 @@ def create_detector(detector_name, configs):
         configs (dict): The configurations of the detector.
 
     Returns:
-        IDetector: Requested detector of the given type
+        IDetector: The requested detector of the given type
     """
     idetector = DETECTOR_SWITCH[detector_name][0]
     config_section = DETECTOR_SWITCH[detector_name][1]

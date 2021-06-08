@@ -1,4 +1,4 @@
-"""Conftest file for pipeline.
+"""The conftest file for the pipeline.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

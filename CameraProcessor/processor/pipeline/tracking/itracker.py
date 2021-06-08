@@ -8,8 +8,7 @@ from processor.scheduling.component.component_interface import IComponent
 
 
 class ITracker(IComponent):
-    """Tracker runner interface that can be run as Scheduler component.
-    """
+    """Tracker runner interface that can be run as Scheduler component."""
 
     def track(self, frame_obj, det_obj, re_id_data):
         """Performs tracking stage using the tracking object.
