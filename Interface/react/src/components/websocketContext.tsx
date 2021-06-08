@@ -105,8 +105,9 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     try {
       // Let the orchestrator know that this client should receive images of new tracking objects
       send(new SetUsesImagesMessage(true))
-    } // The first send can throw an error under testing, even though the message is sent properly
-    catch {}
+    } catch {
+      // The first send can throw an error under testing, even though the message is sent properly
+    }
   }
 
   /** Callback for when a message has been received by the websocket */
