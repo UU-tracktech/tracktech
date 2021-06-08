@@ -243,7 +243,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            [float]: Feature vector of the cutout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Resize the cutout.</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
