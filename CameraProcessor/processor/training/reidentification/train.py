@@ -8,7 +8,7 @@ import torchreid
 
 # Sets data location an properties.
 datamanager = torchreid.data.ImageDataManager(
-    root='reid-data',
+    root='../../../data/annotated',
     sources='market1501',
     targets='market1501',
     height=256,
@@ -29,18 +29,21 @@ model = torchreid.models.build_model(
 # Uses CUDA.
 model = model.cuda()
 
+# Selects optimizer to use.
 optimizer = torchreid.optim.build_optimizer(
     model,
     optim='adam',
     lr=0.0003
 )
 
+# Selects scheduler to use.
 scheduler = torchreid.optim.build_lr_scheduler(
     optimizer,
     lr_scheduler='single_step',
     stepsize=20
 )
 
+# Selects engine to use.
 engine = torchreid.engine.ImageSoftmaxEngine(
     datamanager,
     model,
