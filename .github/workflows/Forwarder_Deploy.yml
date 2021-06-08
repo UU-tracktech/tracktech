@@ -8,7 +8,7 @@ name: Forwarder Build
     branches:
       - develop
       - master
-      - origin/SPC-838-Deploy-docker-images-from-github-actions-
+      - SPC-838-Deploy-docker-images-from-github-actions-
 
 jobs:
   forwarder_deploy:
