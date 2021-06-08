@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from processor.utils.text import bounding_boxes_to_json, boxes_to_accuracy_json, boxes_to_txt
+from processor.utils.text import bounding_boxes_to_json, boxes_to_accuracy_json, boxes_to_txt, error_to_json
 from processor.data_object.bounding_boxes import BoundingBoxes
 
 
@@ -45,9 +45,14 @@ class TestText:
             bbox (BoundingBox): the bounding box fixture.
             img (np.ndarray): the image fixture.
         """
-
         txt_string = boxes_to_txt([bbox], (img.shape[0], img.shape[1]), 1)
         assert txt_string == "1,1,60,120,60,60,1,1,0.50 \n"
+
+    def test_error_to_json(self):
+        """Tests the error_to_json function.
+        """
+        error_message = error_to_json(NameError("Testing"))
+        assert error_message == '''{"type": "error", "error": "NameError('Testing')"}'''
 
     def test_boxes_to_accuracy_json(self, bbox):
         """Tests the boxes_to_accuracy_json function.
