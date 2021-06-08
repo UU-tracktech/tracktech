@@ -32,6 +32,9 @@
                     <a class="function" href="#process_stream">process_stream</a>
             </li>
             <li>
+                    <a class="function" href="#process_stream_scheduler">process_stream_scheduler</a>
+            </li>
+            <li>
                     <a class="function" href="#process_message_queue">process_message_queue</a>
             </li>
             <li>
@@ -96,6 +99,9 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.webhosting.stop_command</span> <span class="kn">import</span> <span class="n">StopCommand</span>
 <span class="kn">from</span> <span class="nn">processor.webhosting.update_command</span> <span class="kn">import</span> <span class="n">UpdateCommand</span>
 
+<span class="kn">from</span> <span class="nn">processor.pipeline.prepare_pipeline</span> <span class="kn">import</span> <span class="n">prepare_scheduler</span>
+<span class="kn">from</span> <span class="nn">processor.scheduling.plan.pipeline_plan</span> <span class="kn">import</span> <span class="n">plan_globals</span>
+
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Processes a stream of frames, outputs to frame or sends to client.</span>
@@ -111,9 +117,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Create Scheduler by doing: scheduler = prepare_scheduler(detector, tracker, on_processed_frame).</span>
-
-    <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -126,8 +131,6 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
             <span class="k">continue</span>
 
-        <span class="c1"># Execute scheduler plan on current frame: scheduler.schedule_graph(frame_obj).</span>
-
         <span class="c1"># Get detections from running detection stage.</span>
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
 
@@ -138,14 +141,68 @@ Utrecht University within the Software Project course.
         <span class="n">re_id_tracked_boxes</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">re_identify</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="c1"># Buffer the tracked object.</span>
-        <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">)</span>
+        <span class="n">frame_buffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Handle side effects of frame processing.</span>
         <span class="n">on_processed_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Process the message queue if there is a websocket connection.</span>
         <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+
+        <span class="n">frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;capture object stopped after </span><span class="si">{</span><span class="n">frame_nr</span><span class="si">}</span><span class="s1"> frames&#39;</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream_scheduler</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Processes a stream of frames using the scheduler, outputs to frame or sends to client.</span>
+
+<span class="sd">    Outputs to frame using OpenCV if not client is used.</span>
+<span class="sd">    Sends detections to client if client is used (HlsCapture).</span>
+
+<span class="sd">    The scheduler is used to run the pipeline. Initial configuration is done to initialize the nodes.</span>
+<span class="sd">    Each iteration all global variables (parameters of schedule node components which are readonly, shouldn&#39;t change</span>
+<span class="sd">    during the loop). The objects called upon by the client are modified by reference thus no return is needed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        capture (ICapture): capture object to process a stream of frames.</span>
+<span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
+<span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them.</span>
+<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
+<span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+
+    <span class="c1"># Create Scheduler by passing all information to construct the schedule nodes and its components.</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">)</span>
+
+    <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Contains re-identification data.</span>
+    <span class="n">re_id_data</span> <span class="o">=</span> <span class="n">ReidData</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
+        <span class="n">ret</span><span class="p">,</span> <span class="n">frame_obj</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">get_next_frame</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Enforce keys of used plan globals.</span>
+        <span class="n">globals_readonly</span> <span class="o">=</span> <span class="n">plan_globals</span>
+        <span class="n">globals_readonly</span><span class="p">[</span><span class="s1">&#39;frame_obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_obj</span>
+        <span class="n">globals_readonly</span><span class="p">[</span><span class="s1">&#39;re_id_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">re_id_data</span>
+
+        <span class="c1"># Execute scheduler plan on current frame.</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule_graph</span><span class="p">([],</span> <span class="n">globals_readonly</span><span class="p">)</span>
+
+        <span class="c1"># Process the message queue if there is a websocket connection.</span>
+        <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="n">frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -296,8 +353,6 @@ Utrecht University within the Software Project course.
 <span class="k">def</span> <span class="nf">opencv_display</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode.</span>
 
-<span class="sd">    Is async because the process_frames.py loop expects to get a async function it can await.</span>
-
 <span class="sd">    Args:</span>
 <span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
 <span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
@@ -355,9 +410,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Create Scheduler by doing: scheduler = prepare_scheduler(detector, tracker, on_processed_frame).</span>
-
-    <span class="n">framebuffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -370,8 +424,6 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
             <span class="k">continue</span>
 
-        <span class="c1"># Execute scheduler plan on current frame: scheduler.schedule_graph(frame_obj).</span>
-
         <span class="c1"># Get detections from running detection stage.</span>
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
 
@@ -382,14 +434,14 @@ Utrecht University within the Software Project course.
         <span class="n">re_id_tracked_boxes</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">re_identify</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="c1"># Buffer the tracked object.</span>
-        <span class="n">framebuffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">)</span>
+        <span class="n">frame_buffer</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Handle side effects of frame processing.</span>
         <span class="n">on_processed_frame</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">)</span>
 
         <span class="c1"># Process the message queue if there is a websocket connection.</span>
         <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="n">frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -404,6 +456,102 @@ Utrecht University within the Software Project course.
 
 <p>Outputs to frame using OpenCV if not client is used.
 Sends detections to client if client is used (HlsCapture).</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>capture (ICapture):</strong>  capture object to process a stream of frames.</li>
+<li><strong>detector (IDetector):</strong>  detector performing the detections on a given frame.</li>
+<li><strong>tracker (ITracker):</strong>  tracker performing simple tracking of all objects using the detections.</li>
+<li><strong>re_identifier (IReIdentifier):</strong>  re-identifier extracting features and comparing them.</li>
+<li><strong>on_processed_frame (Function):</strong>  when the frame got processed. Call this function to handle effects.</li>
+<li><strong>ws_client (WebsocketClient):</strong>  The websocket client so the message queue can be emptied.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="process_stream_scheduler">
+                            <div class="attr function"><a class="headerlink" href="#process_stream_scheduler">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">process_stream_scheduler</span><span class="signature">(
+    capture,
+    detector,
+    tracker,
+    re_identifier,
+    on_processed_frame,
+    ws_client=None
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">process_stream_scheduler</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">ws_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Processes a stream of frames using the scheduler, outputs to frame or sends to client.</span>
+
+<span class="sd">    Outputs to frame using OpenCV if not client is used.</span>
+<span class="sd">    Sends detections to client if client is used (HlsCapture).</span>
+
+<span class="sd">    The scheduler is used to run the pipeline. Initial configuration is done to initialize the nodes.</span>
+<span class="sd">    Each iteration all global variables (parameters of schedule node components which are readonly, shouldn&#39;t change</span>
+<span class="sd">    during the loop). The objects called upon by the client are modified by reference thus no return is needed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        capture (ICapture): capture object to process a stream of frames.</span>
+<span class="sd">        detector (IDetector): detector performing the detections on a given frame.</span>
+<span class="sd">        tracker (ITracker): tracker performing simple tracking of all objects using the detections.</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them.</span>
+<span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
+<span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+
+    <span class="c1"># Create Scheduler by passing all information to construct the schedule nodes and its components.</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">)</span>
+
+    <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Contains re-identification data.</span>
+    <span class="n">re_id_data</span> <span class="o">=</span> <span class="n">ReidData</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="n">capture</span><span class="o">.</span><span class="n">opened</span><span class="p">():</span>
+        <span class="n">ret</span><span class="p">,</span> <span class="n">frame_obj</span> <span class="o">=</span> <span class="n">capture</span><span class="o">.</span><span class="n">get_next_frame</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Enforce keys of used plan globals.</span>
+        <span class="n">globals_readonly</span> <span class="o">=</span> <span class="n">plan_globals</span>
+        <span class="n">globals_readonly</span><span class="p">[</span><span class="s1">&#39;frame_obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_obj</span>
+        <span class="n">globals_readonly</span><span class="p">[</span><span class="s1">&#39;re_id_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">re_id_data</span>
+
+        <span class="c1"># Execute scheduler plan on current frame.</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule_graph</span><span class="p">([],</span> <span class="n">globals_readonly</span><span class="p">)</span>
+
+        <span class="c1"># Process the message queue if there is a websocket connection.</span>
+        <span class="k">if</span> <span class="n">ws_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">process_message_queue</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+
+        <span class="n">frame_nr</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;capture object stopped after </span><span class="si">{</span><span class="n">frame_nr</span><span class="si">}</span><span class="s1"> frames&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Processes a stream of frames using the scheduler, outputs to frame or sends to client.</p>
+
+<p>Outputs to frame using OpenCV if not client is used.
+Sends detections to client if client is used (HlsCapture).</p>
+
+<p>The scheduler is used to run the pipeline. Initial configuration is done to initialize the nodes.
+Each iteration all global variables (parameters of schedule node components which are readonly, shouldn't change
+during the loop). The objects called upon by the client are modified by reference thus no return is needed.</p>
 
 <h6 id="args">Args</h6>
 
@@ -606,8 +754,6 @@ Sends detections to client if client is used (HlsCapture).</p>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">opencv_display</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode.</span>
 
-<span class="sd">    Is async because the process_frames.py loop expects to get a async function it can await.</span>
-
 <span class="sd">    Args:</span>
 <span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
 <span class="sd">        detected_boxes (BoundingBoxes): Boxes generated by the detection.</span>
@@ -634,8 +780,6 @@ Sends detections to client if client is used (HlsCapture).</p>
         </details>
 
             <div class="docstring"><p>Displays frame in tiled mode.</p>
-
-<p>Is async because the process_frames.py loop expects to get a async function it can await.</p>
 
 <h6 id="args">Args</h6>
 

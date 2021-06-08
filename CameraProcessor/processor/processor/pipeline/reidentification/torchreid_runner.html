@@ -100,24 +100,23 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        extractor (FeatureExtractor): Extractor for the feature vectors.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">        config (configparser.SectionProxy): Re-ID configuration.</span>
 <span class="sd">        threshold (float): Threshold from which a re-identification is included.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize torch re-identifier.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            model_name (string): The file name of the model weights.</span>
-<span class="sd">            configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">            config (configparser.SectionProxy): Re-ID configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># The path where the model weight file should be located.</span>
-        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">model_name</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
+        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
 
         <span class="c1"># Download the weights if it&#39;s not in the directory.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">weights_path</span><span class="p">):</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&amp;export=download&#39;</span>
@@ -126,12 +125,12 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Initialize the feature extractor of torch re-id.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">FeatureExtractor</span><span class="p">(</span>
-            <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">],</span>
             <span class="n">model_path</span><span class="o">=</span><span class="n">weights_path</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extracts features from a single bounding box.</span>
@@ -148,7 +147,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
         <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -277,24 +276,23 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        extractor (FeatureExtractor): Extractor for the feature vectors.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">        config (configparser.SectionProxy): Re-ID configuration.</span>
 <span class="sd">        threshold (float): Threshold from which a re-identification is included.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize torch re-identifier.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            model_name (string): The file name of the model weights.</span>
-<span class="sd">            configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">            config (configparser.SectionProxy): Re-ID configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># The path where the model weight file should be located.</span>
-        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">model_name</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
+        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
 
         <span class="c1"># Download the weights if it&#39;s not in the directory.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">weights_path</span><span class="p">):</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&amp;export=download&#39;</span>
@@ -303,12 +301,12 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Initialize the feature extractor of torch re-id.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">FeatureExtractor</span><span class="p">(</span>
-            <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">],</span>
             <span class="n">model_path</span><span class="o">=</span><span class="n">weights_path</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extracts features from a single bounding box.</span>
@@ -325,7 +323,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
         <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -443,7 +441,7 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>extractor (FeatureExtractor):</strong>  Extractor for the feature vectors.</li>
-<li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration.</li>
+<li><strong>config (configparser.SectionProxy):</strong>  Re-ID configuration.</li>
 <li><strong>threshold (float):</strong>  Threshold from which a re-identification is included.</li>
 </ul>
 </div>
@@ -453,25 +451,24 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#TorchReIdentifier.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">TorchReIdentifier</span><span class="signature">(model_name, configs)</span>
+            <span class="name">TorchReIdentifier</span><span class="signature">(config)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize torch re-identifier.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            model_name (string): The file name of the model weights.</span>
-<span class="sd">            configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">            config (configparser.SectionProxy): Re-ID configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># The path where the model weight file should be located.</span>
-        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">model_name</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
+        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
 
         <span class="c1"># Download the weights if it&#39;s not in the directory.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">weights_path</span><span class="p">):</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&amp;export=download&#39;</span>
@@ -480,12 +477,12 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Initialize the feature extractor of torch re-id.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">FeatureExtractor</span><span class="p">(</span>
-            <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">],</span>
             <span class="n">model_path</span><span class="o">=</span><span class="n">weights_path</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
 </pre></div>
 
         </details>
@@ -495,8 +492,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>model_name (string):</strong>  The file name of the model weights.</li>
-<li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration.</li>
+<li><strong>config (configparser.SectionProxy):</strong>  Re-ID configuration.</li>
 </ul>
 </div>
 
@@ -527,7 +523,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
         <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
