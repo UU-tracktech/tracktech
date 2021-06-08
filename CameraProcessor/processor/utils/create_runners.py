@@ -8,6 +8,8 @@ Utrecht University within the Software Project course.
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
+from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
+from processor.pipeline.reidentification.fastreid_runner import FastReIdentifier
 
 DETECTOR_SWITCH = {
     'yolov5': (Yolov5Detector, 'Yolov5'),
@@ -15,6 +17,10 @@ DETECTOR_SWITCH = {
 }
 TRACKER_SWITCH = {
     'sort': (SortTracker, 'SORT')
+}
+REID_SWITCH = {
+    'torchreid': (TorchReIdentifier, 'TorchReid'),
+    'fastreid': (FastReIdentifier, 'FastReid')
 }
 
 
@@ -42,7 +48,7 @@ def create_tracker(tracker_name, configs):
 
     Args:
         tracker_name (str): The name of the tracker we want.
-        configs (dict): The configurations of the detector.
+        configs (dict): The configurations of the tracker.
 
     Returns:
         ITracker: The requested tracker.
@@ -52,3 +58,19 @@ def create_tracker(tracker_name, configs):
     tracker_config = configs[config_section]
     tracker = itracker(tracker_config)
     return tracker
+
+def create_reidentifier(reid_name, configs):
+    """Creates and returns a re-identifier of the given type.
+
+    Args:
+        reid_name (str): the name of the re-identifier we want.
+        configs (dict): The configurations of the re-identifier.
+
+    Returns:
+        IReIdentifier: Requested re-identifier of the given type
+    """
+    ireidentifier = REID_SWITCH[reid_name][0]
+    config_section = REID_SWITCH[reid_name][1]
+    reid_config = configs[config_section]
+    reidentifier = ireidentifier(reid_config)
+    return reidentifier
