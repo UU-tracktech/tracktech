@@ -69,53 +69,19 @@ Utrecht University within the Software Project course.
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">StartCommand</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;StartCommand class that stores data regarding which object to start tracking.</span>
-
-<span class="sd">    It uses the dict __init__ to add the **kwargs or dict to this class. This class is, for all intents and purposes,</span>
-<span class="sd">    a dictionary with entries accessible like properties. Additional functionality can be added.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># Pylint is freaking out about *args for some reason.</span>
-        <span class="c1"># TODO: fix bug: pylint throws unknown-argument-in-docstring error about *args #pylint: disable=fixme.</span>
-        <span class="c1"># pylint: disable=unknown-argument-in-docstring</span>
-        <span class="sd">&quot;&quot;&quot;Checks if we have an object id, then calls dict init.</span>
+<span class="k">class</span> <span class="nc">StartCommand</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;StartCommand class that stores data regarding which object to start tracking.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor for the StartCommand class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            *args (set): A set of keys expected in the command.</span>
-<span class="sd">            **kwargs (dict): dict of key-value pairs containing the start command message.</span>
+<span class="sd">            frame_id (timestamp): Id of the frame which contains the object to be tracked.</span>
+<span class="sd">            box_id (int): Id of the box that contains the object to be tracked.</span>
+<span class="sd">            object_id (int): Identifier to track the object with.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># pylint: enable=unknown-argument-in-docstring</span>
-        <span class="c1"># Add expected keywords to key_set.</span>
-        <span class="n">key_set</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;objectId&quot;</span><span class="p">}</span>
-        <span class="n">key_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="c1"># Test if kwargs contains ONLY keys we expect.</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">key_set</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected keyword or keywords </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s2"> in start command.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Test if kwargs contains ALL the keys we expect.</span>
-        <span class="n">diff2</span> <span class="o">=</span> <span class="n">key_set</span> <span class="o">-</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing expected keyword or keywords </span><span class="si">{</span><span class="n">diff2</span><span class="si">}</span><span class="s2"> in start command.&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="c1"># pylint: disable=docstring-is-missing</span>
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No entry </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2"> in Start Command to delete&quot;</span><span class="p">)</span>
-    <span class="c1"># pylint: enable=docstring-is-missing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box_id</span> <span class="o">=</span> <span class="n">box_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 </pre></div>
 
         </details>
@@ -127,66 +93,29 @@ Utrecht University within the Software Project course.
 
         
         <span class="def">class</span>
-        <span class="name">StartCommand</span>(<span class="base">builtins.dict</span>):
+        <span class="name">StartCommand</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">StartCommand</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;StartCommand class that stores data regarding which object to start tracking.</span>
-
-<span class="sd">    It uses the dict __init__ to add the **kwargs or dict to this class. This class is, for all intents and purposes,</span>
-<span class="sd">    a dictionary with entries accessible like properties. Additional functionality can be added.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># Pylint is freaking out about *args for some reason.</span>
-        <span class="c1"># TODO: fix bug: pylint throws unknown-argument-in-docstring error about *args #pylint: disable=fixme.</span>
-        <span class="c1"># pylint: disable=unknown-argument-in-docstring</span>
-        <span class="sd">&quot;&quot;&quot;Checks if we have an object id, then calls dict init.</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">StartCommand</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;StartCommand class that stores data regarding which object to start tracking.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor for the StartCommand class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            *args (set): A set of keys expected in the command.</span>
-<span class="sd">            **kwargs (dict): dict of key-value pairs containing the start command message.</span>
+<span class="sd">            frame_id (timestamp): Id of the frame which contains the object to be tracked.</span>
+<span class="sd">            box_id (int): Id of the box that contains the object to be tracked.</span>
+<span class="sd">            object_id (int): Identifier to track the object with.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># pylint: enable=unknown-argument-in-docstring</span>
-        <span class="c1"># Add expected keywords to key_set.</span>
-        <span class="n">key_set</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;objectId&quot;</span><span class="p">}</span>
-        <span class="n">key_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="c1"># Test if kwargs contains ONLY keys we expect.</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">key_set</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected keyword or keywords </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s2"> in start command.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Test if kwargs contains ALL the keys we expect.</span>
-        <span class="n">diff2</span> <span class="o">=</span> <span class="n">key_set</span> <span class="o">-</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing expected keyword or keywords </span><span class="si">{</span><span class="n">diff2</span><span class="si">}</span><span class="s2"> in start command.&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="c1"># pylint: disable=docstring-is-missing</span>
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No entry </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2"> in Start Command to delete&quot;</span><span class="p">)</span>
-    <span class="c1"># pylint: enable=docstring-is-missing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box_id</span> <span class="o">=</span> <span class="n">box_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>StartCommand class that stores data regarding which object to start tracking.</p>
-
-<p>It uses the dict __init__ to add the **kwargs or dict to this class. This class is, for all intents and purposes,
-a dictionary with entries accessible like properties. Additional functionality can be added.</p>
 </div>
 
 
@@ -194,47 +123,34 @@ a dictionary with entries accessible like properties. Additional functionality c
                                         <div class="attr function"><a class="headerlink" href="#StartCommand.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">StartCommand</span><span class="signature">(*args, **kwargs)</span>
+            <span class="name">StartCommand</span><span class="signature">(frame_id, box_id, object_id)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># Pylint is freaking out about *args for some reason.</span>
-        <span class="c1"># TODO: fix bug: pylint throws unknown-argument-in-docstring error about *args #pylint: disable=fixme.</span>
-        <span class="c1"># pylint: disable=unknown-argument-in-docstring</span>
-        <span class="sd">&quot;&quot;&quot;Checks if we have an object id, then calls dict init.</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">,</span> <span class="n">box_id</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor for the StartCommand class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            *args (set): A set of keys expected in the command.</span>
-<span class="sd">            **kwargs (dict): dict of key-value pairs containing the start command message.</span>
+<span class="sd">            frame_id (timestamp): Id of the frame which contains the object to be tracked.</span>
+<span class="sd">            box_id (int): Id of the box that contains the object to be tracked.</span>
+<span class="sd">            object_id (int): Identifier to track the object with.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># pylint: enable=unknown-argument-in-docstring</span>
-        <span class="c1"># Add expected keywords to key_set.</span>
-        <span class="n">key_set</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;objectId&quot;</span><span class="p">}</span>
-        <span class="n">key_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="c1"># Test if kwargs contains ONLY keys we expect.</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">key_set</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected keyword or keywords </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s2"> in start command.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Test if kwargs contains ALL the keys we expect.</span>
-        <span class="n">diff2</span> <span class="o">=</span> <span class="n">key_set</span> <span class="o">-</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing expected keyword or keywords </span><span class="si">{</span><span class="n">diff2</span><span class="si">}</span><span class="s2"> in start command.&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box_id</span> <span class="o">=</span> <span class="n">box_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_id</span> <span class="o">=</span> <span class="n">object_id</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Checks if we have an object id, then calls dict init.</p>
+            <div class="docstring"><p>Constructor for the StartCommand class.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>*args (set):</strong>  A set of keys expected in the command.</li>
-<li><strong>**kwargs (dict):</strong>  dict of key-value pairs containing the start command message.</li>
+<li><strong>frame_id (timestamp):</strong>  Id of the frame which contains the object to be tracked.</li>
+<li><strong>box_id (int):</strong>  Id of the box that contains the object to be tracked.</li>
+<li><strong>object_id (int):</strong>  Identifier to track the object with.</li>
 </ul>
 </div>
 
