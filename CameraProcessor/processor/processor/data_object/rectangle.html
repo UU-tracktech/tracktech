@@ -87,10 +87,10 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Inits rectangle with bottom right and top left coords.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x1 (float): normalized left most X.</span>
-<span class="sd">            y1 (float): normalized top most Y.</span>
-<span class="sd">            x2 (float): normalized right most X.</span>
-<span class="sd">            y2 (float): normalized bottom most Y.</span>
+<span class="sd">            x1 (float): normalized top-left X.</span>
+<span class="sd">            y1 (float): normalized top-left Y.</span>
+<span class="sd">            x2 (float): normalized bottom-right X.</span>
+<span class="sd">            y2 (float): normalized bottom-right Y.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> should be smaller than or equal to x2 </span><span class="si">{</span><span class="n">x2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -98,7 +98,7 @@ Utrecht University within the Software Project course.
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be smaller than or equal to y2 </span><span class="si">{</span><span class="n">y2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">x1</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> and y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be bigger than or equal to 0&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> and y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be greater than or equal to 0&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x2</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">y2</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x2 </span><span class="si">{</span><span class="n">x2</span><span class="si">}</span><span class="s1"> and y2 </span><span class="si">{</span><span class="n">y2</span><span class="si">}</span><span class="s1"> should be smaller than or equal to 1&#39;</span><span class="p">)</span>
 
@@ -109,7 +109,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for right X coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for top-left X coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized right most X.</span>
@@ -118,7 +118,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for bottom Y coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for top-left Y coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized bottom most Y.</span>
@@ -127,7 +127,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for left X coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for bottom-right X coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized left most X.</span>
@@ -136,7 +136,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for top Y coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for bottom-right Y coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized top most Y.</span>
@@ -183,10 +183,10 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Inits rectangle with bottom right and top left coords.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x1 (float): normalized left most X.</span>
-<span class="sd">            y1 (float): normalized top most Y.</span>
-<span class="sd">            x2 (float): normalized right most X.</span>
-<span class="sd">            y2 (float): normalized bottom most Y.</span>
+<span class="sd">            x1 (float): normalized top-left X.</span>
+<span class="sd">            y1 (float): normalized top-left Y.</span>
+<span class="sd">            x2 (float): normalized bottom-right X.</span>
+<span class="sd">            y2 (float): normalized bottom-right Y.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> should be smaller than or equal to x2 </span><span class="si">{</span><span class="n">x2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -194,7 +194,7 @@ Utrecht University within the Software Project course.
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be smaller than or equal to y2 </span><span class="si">{</span><span class="n">y2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">x1</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> and y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be bigger than or equal to 0&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> and y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be greater than or equal to 0&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x2</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">y2</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x2 </span><span class="si">{</span><span class="n">x2</span><span class="si">}</span><span class="s1"> and y2 </span><span class="si">{</span><span class="n">y2</span><span class="si">}</span><span class="s1"> should be smaller than or equal to 1&#39;</span><span class="p">)</span>
 
@@ -205,7 +205,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">x1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for right X coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for top-left X coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized right most X.</span>
@@ -214,7 +214,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">y1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for bottom Y coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for top-left Y coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized bottom most Y.</span>
@@ -223,7 +223,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">x2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for left X coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for bottom-right X coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized left most X.</span>
@@ -232,7 +232,7 @@ Utrecht University within the Software Project course.
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">y2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Getter for top Y coord of rectangle.</span>
+        <span class="sd">&quot;&quot;&quot;Getter for bottom-right Y coordinate of rectangle.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): normalized top most Y.</span>
@@ -278,10 +278,10 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Inits rectangle with bottom right and top left coords.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x1 (float): normalized left most X.</span>
-<span class="sd">            y1 (float): normalized top most Y.</span>
-<span class="sd">            x2 (float): normalized right most X.</span>
-<span class="sd">            y2 (float): normalized bottom most Y.</span>
+<span class="sd">            x1 (float): normalized top-left X.</span>
+<span class="sd">            y1 (float): normalized top-left Y.</span>
+<span class="sd">            x2 (float): normalized bottom-right X.</span>
+<span class="sd">            y2 (float): normalized bottom-right Y.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> should be smaller than or equal to x2 </span><span class="si">{</span><span class="n">x2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -289,7 +289,7 @@ Utrecht University within the Software Project course.
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be smaller than or equal to y2 </span><span class="si">{</span><span class="n">y2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">x1</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> and y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be bigger than or equal to 0&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x1 </span><span class="si">{</span><span class="n">x1</span><span class="si">}</span><span class="s1"> and y1 </span><span class="si">{</span><span class="n">y1</span><span class="si">}</span><span class="s1"> should be greater than or equal to 0&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x2</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">y2</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x2 </span><span class="si">{</span><span class="n">x2</span><span class="si">}</span><span class="s1"> and y2 </span><span class="si">{</span><span class="n">y2</span><span class="si">}</span><span class="s1"> should be smaller than or equal to 1&#39;</span><span class="p">)</span>
 
@@ -306,10 +306,10 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>x1 (float):</strong>  normalized left most X.</li>
-<li><strong>y1 (float):</strong>  normalized top most Y.</li>
-<li><strong>x2 (float):</strong>  normalized right most X.</li>
-<li><strong>y2 (float):</strong>  normalized bottom most Y.</li>
+<li><strong>x1 (float):</strong>  normalized top-left X.</li>
+<li><strong>y1 (float):</strong>  normalized top-left Y.</li>
+<li><strong>x2 (float):</strong>  normalized bottom-right X.</li>
+<li><strong>y2 (float):</strong>  normalized bottom-right Y.</li>
 </ul>
 </div>
 
@@ -321,7 +321,7 @@ Utrecht University within the Software Project course.
         <span class="name">x1</span>
     </div>
 
-            <div class="docstring"><p>Getter for right X coord of rectangle.</p>
+            <div class="docstring"><p>Getter for top-left X coordinate of rectangle.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -338,7 +338,7 @@ Utrecht University within the Software Project course.
         <span class="name">y1</span>
     </div>
 
-            <div class="docstring"><p>Getter for bottom Y coord of rectangle.</p>
+            <div class="docstring"><p>Getter for top-left Y coordinate of rectangle.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -355,7 +355,7 @@ Utrecht University within the Software Project course.
         <span class="name">x2</span>
     </div>
 
-            <div class="docstring"><p>Getter for left X coord of rectangle.</p>
+            <div class="docstring"><p>Getter for bottom-right X coordinate of rectangle.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -372,7 +372,7 @@ Utrecht University within the Software Project course.
         <span class="name">y2</span>
     </div>
 
-            <div class="docstring"><p>Getter for top Y coord of rectangle.</p>
+            <div class="docstring"><p>Getter for bottom-right Y coordinate of rectangle.</p>
 
 <h6 id="returns">Returns</h6>
 

@@ -112,11 +112,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        __thread_start_time (float): Start time of thread.</span>
 <span class="sd">        __wait_ms (float): Time between frames in ms</span>
 
-<span class="sd">        __current_frame (numpy.ndarray): Current frame.</span>
+<span class="sd">        __current_frame (numpy.ndarray): The current frame.</span>
 
 <span class="sd">        __previous_time (float): a time float to determine the time diff between frame readings.</span>
 <span class="sd">        __timeout (int): an integer for timeout in seconds (used as float).</span>
-<span class="sd">        __grace_period (int): an integer denoting a grace period at the start before we check for timeout.</span>
+<span class="sd">        __grace_period (int): an integer denoting a grace period at the start before we check for a timeout.</span>
 <span class="sd">        __retries (int): the number of retries before connecting is given up</span>
 
 <span class="sd">        __thread_running (bool): bool denoting whether reading thread is active or activating.</span>
@@ -184,7 +184,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Closes the capture object and the thread that is responsible for serving the current frame.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Closes the capture object, and the thread that is responsible for serving the current frame.&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;HLS stream closing&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining threads&quot;</span><span class="p">)</span>
 
@@ -234,7 +234,7 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method that runs in separate thread that goes through the frames of the stream at a consistent pace.</span>
 
-<span class="sd">        Reads frames at frame rate of the stream and puts them in self.current_frame.</span>
+<span class="sd">        Read frames at frame rate of the stream and puts them in self.current_frame.</span>
 <span class="sd">        Calculates at what time the next frame is expected and waits that long.</span>
 
 <span class="sd">        Args:</span>
@@ -281,7 +281,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        the reading and reconnection thread.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the meta data.</span>
+<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the metadata.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -421,11 +421,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        __thread_start_time (float): Start time of thread.</span>
 <span class="sd">        __wait_ms (float): Time between frames in ms</span>
 
-<span class="sd">        __current_frame (numpy.ndarray): Current frame.</span>
+<span class="sd">        __current_frame (numpy.ndarray): The current frame.</span>
 
 <span class="sd">        __previous_time (float): a time float to determine the time diff between frame readings.</span>
 <span class="sd">        __timeout (int): an integer for timeout in seconds (used as float).</span>
-<span class="sd">        __grace_period (int): an integer denoting a grace period at the start before we check for timeout.</span>
+<span class="sd">        __grace_period (int): an integer denoting a grace period at the start before we check for a timeout.</span>
 <span class="sd">        __retries (int): the number of retries before connecting is given up</span>
 
 <span class="sd">        __thread_running (bool): bool denoting whether reading thread is active or activating.</span>
@@ -493,7 +493,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thread_running</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Closes the capture object and the thread that is responsible for serving the current frame.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Closes the capture object, and the thread that is responsible for serving the current frame.&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;HLS stream closing&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining threads&quot;</span><span class="p">)</span>
 
@@ -543,7 +543,7 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">hls_start_time_stamp</span><span class="p">,</span> <span class="n">wait_ms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method that runs in separate thread that goes through the frames of the stream at a consistent pace.</span>
 
-<span class="sd">        Reads frames at frame rate of the stream and puts them in self.current_frame.</span>
+<span class="sd">        Read frames at frame rate of the stream and puts them in self.current_frame.</span>
 <span class="sd">        Calculates at what time the next frame is expected and waits that long.</span>
 
 <span class="sd">        Args:</span>
@@ -590,7 +590,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        the reading and reconnection thread.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the meta data.</span>
+<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the metadata.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -716,10 +716,10 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 <li><strong>__hls_start_time_stamp (float):</strong>  Start time of hls stream.</li>
 <li><strong>__thread_start_time (float):</strong>  Start time of thread.</li>
 <li><strong>__wait_ms (float):</strong>  Time between frames in ms</li>
-<li><strong>__current_frame (numpy.ndarray):</strong>  Current frame.</li>
+<li><strong>__current_frame (numpy.ndarray):</strong>  The current frame.</li>
 <li><strong>__previous_time (float):</strong>  a time float to determine the time diff between frame readings.</li>
 <li><strong>__timeout (int):</strong>  an integer for timeout in seconds (used as float).</li>
-<li><strong>__grace_period (int):</strong>  an integer denoting a grace period at the start before we check for timeout.</li>
+<li><strong>__grace_period (int):</strong>  an integer denoting a grace period at the start before we check for a timeout.</li>
 <li><strong>__retries (int):</strong>  the number of retries before connecting is given up</li>
 <li><strong>__thread_running (bool):</strong>  bool denoting whether reading thread is active or activating.</li>
 <li><strong>__reading_thread (Thread):</strong>  Contains thread that reads.</li>
@@ -847,7 +847,7 @@ Another thread gets the time stamp of the stream once and going from there.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Closes the capture object and the thread that is responsible for serving the current frame.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Closes the capture object, and the thread that is responsible for serving the current frame.&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;HLS stream closing&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining threads&quot;</span><span class="p">)</span>
 
@@ -863,7 +863,7 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 
         </details>
 
-            <div class="docstring"><p>Closes the capture object and the thread that is responsible for serving the current frame.</p>
+            <div class="docstring"><p>Closes the capture object, and the thread that is responsible for serving the current frame.</p>
 </div>
 
 
@@ -944,7 +944,7 @@ Another thread gets the time stamp of the stream once and going from there.</p>
 <span class="sd">        the reading and reconnection thread.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the meta data.</span>
+<span class="sd">            bool: indicating a success or failure of setting up the capture and syncing the metadata.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connecting to HLS stream, url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hls_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -1005,7 +1005,7 @@ the reading and reconnection thread.</p>
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>bool: indicating a success or failure of setting up the capture and syncing the meta data.</p>
+  <p>bool: indicating a success or failure of setting up the capture and syncing the metadata.</p>
 </blockquote>
 </div>
 

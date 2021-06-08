@@ -68,7 +68,6 @@ Utrecht University within the Software Project course.
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ireidentifier&#39;</span><span class="p">,</span> <span class="s1">&#39;torchreid_runner&#39;</span><span class="p">]</span>
@@ -107,13 +106,13 @@ Utrecht University within the Software Project course.
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performing re-identification using a re-idintification implementation.</span>
+        <span class="sd">&quot;&quot;&quot;Performing re-identification using a re-identification implementation.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.</span>
-<span class="sd">                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
-<span class="sd">                way (feature vector i belongs to box i).</span>
+<span class="sd">                list has to be of the same length as the list of bounding boxes in the track_obj, and ordered in the</span>
+<span class="sd">                same way (feature vector i belongs to box i).</span>
 <span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
 
 <span class="sd">        Returns:</span>
@@ -253,7 +252,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">euclidean_distance</span>
 
     <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performing re-identification using torchreid.</span>
+        <span class="sd">&quot;&quot;&quot;Performing re-identification using Torchreid.</span>
 
 <span class="sd">        This re-identification implementations couple bounding boxes to a tracked subject</span>
 <span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
