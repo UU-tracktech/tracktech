@@ -6,57 +6,65 @@ Utrecht University within the Software Project course.
 """
 import torchreid
 
-# Sets data location an properties.
-datamanager = torchreid.data.ImageDataManager(
-    root='../../../data/annotated',
-    sources='market1501',
-    targets='market1501',
-    height=256,
-    width=128,
-    batch_size_train=32,
-    batch_size_test=100,
-    transforms=['random_flip', 'random_crop']
-)
+from processor.utils.config_parser import ConfigParser
 
-# Selects the model.
-model = torchreid.models.build_model(
-    name='resnet50',
-    num_classes=datamanager.num_train_pids,
-    loss='softmax',
-    pretrained=True
-)
 
-# Uses CUDA.
-model = model.cuda()
+if __name__ == '__main__':
+    # Instantiate the training.
+    config_parser = ConfigParser('configs.ini', True)
+    config = config_parser.configs['Training_Torchreid']
 
-# Selects optimizer to use.
-optimizer = torchreid.optim.build_optimizer(
-    model,
-    optim='adam',
-    lr=0.0003
-)
+    # Sets data location an properties.
+    datamanager = torchreid.data.ImageDataManager(
+        root=config['root'],
+        sources=config['sources'],
+        targets=config['targets'],
+        height=config['height'],
+        width=config['width'],
+        batch_size_train=config['batch_size_train'],
+        batch_size_test=config['batch_size_test'],
+        transforms=['random_flip', 'random_crop']
+    )
 
-# Selects scheduler to use.
-scheduler = torchreid.optim.build_lr_scheduler(
-    optimizer,
-    lr_scheduler='single_step',
-    stepsize=20
-)
+    # Selects the model.
+    model = torchreid.models.build_model(
+        name=config['model'],
+        num_classes=datamanager.num_train_pids,
+        loss='softmax',
+        pretrained=True
+    )
 
-# Selects engine to use.
-engine = torchreid.engine.ImageSoftmaxEngine(
-    datamanager,
-    model,
-    optimizer=optimizer,
-    scheduler=scheduler,
-    label_smooth=True
-)
+    # Uses CUDA.
+    model = model.cuda()
 
-# Runs training.
-engine.run(
-    save_dir='log/resnet50',
-    max_epoch=60,
-    eval_freq=10,
-    print_freq=10,
-    test_only=False
-)
+    # Selects optimizer to use.
+    optimizer = torchreid.optim.build_optimizer(
+        model,
+        optim='adam',
+        lr=0.0003
+    )
+
+    # Selects scheduler to use.
+    scheduler = torchreid.optim.build_lr_scheduler(
+        optimizer,
+        lr_scheduler='single_step',
+        stepsize=20
+    )
+
+    # Selects engine to use.
+    engine = torchreid.engine.ImageSoftmaxEngine(
+        datamanager,
+        model,
+        optimizer=optimizer,
+        scheduler=scheduler,
+        label_smooth=True
+    )
+
+    # Runs training.
+    engine.run(
+        save_dir=config['save_dir'],
+        max_epoch=config['max_epoch'],
+        eval_freq=config['eval_freq'],
+        print_freq=config['print_freq'],
+        test_only=False
+    )
