@@ -1,6 +1,6 @@
-name: Processor Build
-"on":
-  workflow_dispatch: null
+name: Processor Deploy
+on:
+  workflow_dispatch:
   push:
     paths:
       - CameraProcessor/**
@@ -8,6 +8,7 @@ name: Processor Build
     branches:
       - develop
       - master
+      - SPC-838-Deploy-docker-images-from-github-actions-
 
 jobs:
   orchestrator_deploy:

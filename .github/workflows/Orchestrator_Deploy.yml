@@ -1,6 +1,6 @@
-name: Orchestrator Build
-"on":
-  workflow_dispatch: null
+name: Orchestrator Deploy
+on:
+  workflow_dispatch:
   push:
     paths:
       - ProcessorOrchestrator/**
@@ -8,6 +8,7 @@ name: Orchestrator Build
     branches:
       - develop
       - master
+      - SPC-838-Deploy-docker-images-from-github-actions-
 
 jobs:
   orchestrator_deploy:

@@ -1,6 +1,6 @@
-name: Interface Build
-"on":
-  workflow_dispatch: null
+name: Interface Deploy
+on:
+  workflow_dispatch:
   push:
     paths:
       - Interface/**
@@ -8,6 +8,7 @@ name: Interface Build
     branches:
       - develop
       - master
+      - SPC-838-Deploy-docker-images-from-github-actions-
 
 jobs:
   interface_deploy:
