@@ -8,13 +8,15 @@ Utrecht University within the Software Project course.
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
+from processor.pipeline.tracking.sort_oh_tracker import SortOHTracker
 
 DETECTOR_SWITCH = {
     'yolov5': (Yolov5Detector, 'Yolov5'),
     'yolor': (YolorDetector, 'Yolor')
 }
 TRACKER_SWITCH = {
-    'sort': (SortTracker, 'SORT')
+    'sort': (SortTracker, 'SORT'),
+    'sort_oh': (SortOHTracker, 'SORT')
 }
 
 
