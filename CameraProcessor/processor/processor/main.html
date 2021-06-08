@@ -160,7 +160,7 @@ Utrecht University within the Software Project course.
         <span class="p">)</span>
     <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
-        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span>
+        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;camera_id&#39;</span><span class="p">]</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">websocket_id</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Mode you try to run in does not exist, did you make a typo?&quot;</span><span class="p">)</span>
@@ -314,7 +314,7 @@ Utrecht University within the Software Project course.
         <span class="p">)</span>
     <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
-        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span>
+        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;camera_id&#39;</span><span class="p">]</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">websocket_id</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Mode you try to run in does not exist, did you make a typo?&quot;</span><span class="p">)</span>
