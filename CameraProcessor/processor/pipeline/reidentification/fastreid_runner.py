@@ -4,14 +4,12 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import sys
 import os
 import argparse
 import copy
 import gdown
-
-sys.path.append(os.path.join(os.path.dirname(__file__), "fastreid"))
 import processor.utils.features as UtilsFeatures
+
 from scipy.spatial.distance import cosine
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
 from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
@@ -21,12 +19,26 @@ from processor.pipeline.reidentification.ireidentifier import IReIdentifier
 
 
 class FastReIdentifier(IReIdentifier):
+    """Re-id class that uses fast-reid to extract and compare features.
+
+    Attributes:
+        extractor (FeatureExtractionDemo): Extractor for the feature vectors.
+        config (configparser.SectionProxy): Re-ID configuration.
+        threshold (float): Threshold from which a re-identification is included.
+    """
+
     def __init__(self, config):
+        """Initialize fast re-identifier.
+
+        Args:
+            config (configparser.SectionProxy): Re-ID configuration.
+        """
+
         args = argparse.ArgumentParser(description="Feature extraction with reid models")
         args.config_file = config['config_file_path']
         args.parallel = config.getboolean('parallel')
 
-        # load config from file and command-line arguments
+        # Load config from file and command-line arguments.
         cfg = get_cfg()
         cfg.merge_from_file(args.config_file)
         cfg.freeze()
