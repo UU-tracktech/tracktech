@@ -86,7 +86,7 @@ class TorchReIdentifier(IReIdentifier):
             [float]: Feature vector of the cutout
         """
         # Resize the cutout.
-        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
         return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
