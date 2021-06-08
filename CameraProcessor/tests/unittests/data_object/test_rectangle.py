@@ -14,10 +14,10 @@ class TestRectangle:
 
     Attributes:
         data (Rectangle): Example rectangle.
-        tlx1 (float): Top left corner x coordinate.
-        tly1 (float): Top left corner y coordinate.
-        brx2 (float): Bottom right corner x coordinate.
-        brx2 (float): Bottom right corner y coordinate.
+        tlx1 (float): Top-left corner x coordinate.
+        tly1 (float): Top-left corner y coordinate.
+        brx2 (float): Bottom-right corner x coordinate.
+        brx2 (float): Bottom-right corner y coordinate.
     """
     def setup_method(self):
         """Setup method."""

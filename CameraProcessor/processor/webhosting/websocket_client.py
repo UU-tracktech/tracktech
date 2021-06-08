@@ -24,7 +24,7 @@ class WebsocketClient:
 
     Attributes:
         connection (WebsocketClient.Connection): Connection object of the websocket.
-        reconnecting (bool): Whether or not we have to reconnect.
+        reconnecting (bool): Whether we have to reconnect.
         websocket_url (str): Url of the websocket.
         write_queue ([str]): Stores messages that could not be sent due to a closed socket.
         message_queue (Queue): Stores commands sent from orchestrator.
@@ -185,7 +185,7 @@ class WebsocketClient:
         """Handler for received feature maps.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of sent message.
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
@@ -196,7 +196,7 @@ class WebsocketClient:
         """Handler for the "start tracking" command.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of sent message.
         """
         frame_id = message["frameId"]
         box_id = message["boxId"]
@@ -208,7 +208,7 @@ class WebsocketClient:
         """Handler for the "stop tracking" command.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of sent message.
         """
         object_id = message["objectId"]
 

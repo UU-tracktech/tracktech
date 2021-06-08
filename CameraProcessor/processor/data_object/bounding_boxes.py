@@ -33,7 +33,7 @@ class BoundingBoxes:
         """Gets image id.
 
         Returns:
-            __image_io (int): Id of image.
+            __image_io (int): ID of image.
         """
         return self.__image_id
 

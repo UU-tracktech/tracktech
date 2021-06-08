@@ -1,4 +1,4 @@
-"""Defines node class for scheduler with its connections to other nodes.
+"""Defines node class for the scheduler with its connections to other nodes.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

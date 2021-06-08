@@ -1,4 +1,4 @@
-"""Has functions that converts an object to a text.
+"""Has the functions that converts an object to a text.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -9,7 +9,7 @@ import json
 
 
 def feature_map_to_json(feature_map=None, object_id=None):
-    """Sends a featuremap to the orchestrator.
+    """Sends a feature_map to the orchestrator.
 
     Args:
         feature_map ([Float]): An array of numerical values.
@@ -31,7 +31,7 @@ def bounding_boxes_to_json(bounding_boxes, timestamp):
 
     Args:
         bounding_boxes (BoundingBoxes): boxes that get converted to json.
-        timestamp (Timestamp): timestamp of box used for syncing in interface.
+        timestamp (Timestamp): timestamp of box used for syncing in the interface.
 
     Returns:
         json: JSON representation of the object.
