@@ -7,8 +7,8 @@ Utrecht University within the Software Project course.
 
 
 class FrameObj:
-    """Frame object contains the frame and corresponding timestamp.
-    """
+    """Frame object contains the frame and corresponding timestamp."""
+
     def __init__(self, frame, timestamp):
         """Inits the FrameObj with frame and timestamp.
 

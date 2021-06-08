@@ -53,7 +53,7 @@ class TestTextParsing:
 
     @pytest.mark.skip("Rectangle coords should be normalized in pre_annotations.py")
     def test_line_skipping(self):
-        """Tests whether the pre annotations skips lines of frames that are beyond the number of frames given."""
+        """Tests whether the pre_annotations will skip lines of frames that are beyond the number of frames given."""
         self.short_annotations.parse_file()
         number_boxes = [len(boxes_frame) for boxes_frame in self.short_annotations.boxes]
 

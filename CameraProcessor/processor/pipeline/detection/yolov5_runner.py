@@ -89,7 +89,7 @@ class Yolov5Detector(IYoloDetector):
                             imgsz).to(self.device).type_as(next(self.model.parameters())))
 
     def execute_component(self):
-        """Function given to scheduler so the scheduler can run the detection stage.
+        """Function given to scheduler, so the scheduler can run the detection stage.
 
         Returns:
             function: function that the scheduler can run.

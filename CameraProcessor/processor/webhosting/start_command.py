@@ -14,7 +14,7 @@ class StartCommand:
         Args:
             frame_id (timestamp): Id of the frame which contains the object to be tracked.
             box_id (int): Id of the box that contains the object to be tracked.
-            object_id (int): Identifier to track the object with   .
+            object_id (int): Identifier to track the object with.
         """
         self.frame_id = frame_id
         self.box_id = box_id
