@@ -87,21 +87,21 @@ Utrecht University within the Software Project course.
     <span class="c1"># Uses CUDA.</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
-    <span class="c1"># Selects optimizer to use.</span>
+    <span class="c1"># Selects the optimizer to use.</span>
     <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">build_optimizer</span><span class="p">(</span>
         <span class="n">model</span><span class="p">,</span>
         <span class="n">optim</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
         <span class="n">lr</span><span class="o">=</span><span class="mf">0.0003</span>
     <span class="p">)</span>
 
-    <span class="c1"># Selects scheduler to use.</span>
+    <span class="c1"># Selects the scheduler to use.</span>
     <span class="n">scheduler</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">build_lr_scheduler</span><span class="p">(</span>
         <span class="n">optimizer</span><span class="p">,</span>
         <span class="n">lr_scheduler</span><span class="o">=</span><span class="s1">&#39;single_step&#39;</span><span class="p">,</span>
         <span class="n">stepsize</span><span class="o">=</span><span class="mi">20</span>
     <span class="p">)</span>
 
-    <span class="c1"># Selects engine to use.</span>
+    <span class="c1"># Selects the engine to use.</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">ImageSoftmaxEngine</span><span class="p">(</span>
         <span class="n">datamanager</span><span class="p">,</span>
         <span class="n">model</span><span class="p">,</span>
@@ -110,7 +110,7 @@ Utrecht University within the Software Project course.
         <span class="n">label_smooth</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
-    <span class="c1"># Runs training.</span>
+    <span class="c1"># Runs the training.</span>
     <span class="n">engine</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
         <span class="n">save_dir</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;save_dir&#39;</span><span class="p">],</span>
         <span class="n">max_epoch</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;max_epoch&#39;</span><span class="p">]),</span>
