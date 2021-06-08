@@ -97,7 +97,7 @@ def main():
         )
     # Deploy mode where all is sent to the orchestrator using the websocket url.
     elif configs['Main']['mode'].lower() == 'deploy':
-        websocket_id = configs['Input']['hls_url']
+        websocket_id = configs['Input']['camera_id']
         asyncio.get_event_loop().run_until_complete(deploy(configs, websocket_id))
     else:
         raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
