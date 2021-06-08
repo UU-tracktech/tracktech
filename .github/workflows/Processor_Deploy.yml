@@ -1,0 +1,38 @@
+name: Processor Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - CameraProcessor/**
+      - .github/workflows/Processor_Deploy.yml
+    branches:
+      - 'develop'
+      - 'master'
+
+jobs:
+  orchestrator_deploy:
+    name: Processor Deploy
+    runs-on: self-hosted
+    steps:
+     - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push latest
+        if: github.ref == 'refs/heads/develop'
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: CameraProcessor
+          push: true
+          tags: tracktech/processor:latest
+      - name: Build and push release
+        if: github.ref == 'refs/heads/master'
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: CameraProcessor
+          push: true
+          tags: tracktech/processor:release
