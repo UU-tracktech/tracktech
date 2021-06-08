@@ -134,7 +134,7 @@ def __generate_random_color(identifier):
     """Generate the color using the identifier as unique hash.
 
     Args:
-        identifier (int): Unique identifier on which color is generated.
+        identifier (int): A unique identifier on which color is generated.
 
     Returns:
         (int, int, int): BGR color value.
