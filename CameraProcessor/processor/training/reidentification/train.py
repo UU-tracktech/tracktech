@@ -37,21 +37,21 @@ if __name__ == '__main__':
     # Uses CUDA.
     model = model.cuda()
 
-    # Selects optimizer to use.
+    # Selects the optimizer to use.
     optimizer = torchreid.optim.build_optimizer(
         model,
         optim='adam',
         lr=0.0003
     )
 
-    # Selects scheduler to use.
+    # Selects the scheduler to use.
     scheduler = torchreid.optim.build_lr_scheduler(
         optimizer,
         lr_scheduler='single_step',
         stepsize=20
     )
 
-    # Selects engine to use.
+    # Selects the engine to use.
     engine = torchreid.engine.ImageSoftmaxEngine(
         datamanager,
         model,
@@ -60,7 +60,7 @@ if __name__ == '__main__':
         label_smooth=True
     )
 
-    # Runs training.
+    # Runs the training.
     engine.run(
         save_dir=config['save_dir'],
         max_epoch=int(config['max_epoch']),
