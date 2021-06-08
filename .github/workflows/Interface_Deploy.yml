@@ -34,3 +34,10 @@ jobs:
           context: Interface
           push: true
           tags: "tracktech/interface:release"
+      - name: Build and push test
+        if: github.ref == 'refs/heads/SPC-838-Deploy-docker-images-from-github-actions-'
+        uses: docker/build-push-action@v2
+        with:
+          context: Interface
+          push: true
+          tags: "tracktech/interface:release"
