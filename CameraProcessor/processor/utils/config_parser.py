@@ -89,8 +89,8 @@ class ConfigParser:
         """
 
         # Read all the environment variables and set them if they are defined.
-        self.configs['Orchestrator']['url'] = os.getenv('ORCHESTRATOR_URL') or self.configs['Orchestrator']['url']
-        self.configs['Input']['camera_id'] = os.getenv('CAMERA_ID') or self.configs['Camera']['Id']
+        self.configs['Orchestrator']['url'] = os.getenv('ORCHESTRATOR_URL')
+        self.configs['Input']['camera_id'] = os.getenv('CAMERA_ID')
         self.configs['Main']['mode'] = os.getenv('PROCESSOR_MODE') or self.configs['Main']['mode']
         self.configs['Main']['detector'] = os.getenv('DETECTION_ALG') or self.configs['Main']['detector']
         self.configs['Main']['tracker'] = os.getenv('TRACKING_ALG') or self.configs['Main']['tracker']
