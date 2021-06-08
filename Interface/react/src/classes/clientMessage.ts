@@ -6,6 +6,8 @@ Utrecht University within the Software Project course.
 
  */
 
+import { size } from './size'
+
 /** Incoming messages are of type ClientMessage */
 export abstract class ClientMessage {
   constructor(type: string) {
@@ -73,7 +75,7 @@ export class Box {
   objectType: string
   objectId?: number
 
-  toSize(width: number, height: number) {
+  toSize(width: number, height: number): size {
     var x1 = this.rect[0],
       y1 = this.rect[1],
       x2 = this.rect[2],

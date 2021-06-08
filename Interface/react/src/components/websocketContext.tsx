@@ -102,8 +102,11 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     console.log('connected socket')
     setConnectionState('OPEN')
 
-    // Let the orchestrator know that this client should receive images of new tracking objects
-    send(new SetUsesImagesMessage(true))
+    try {
+      // Let the orchestrator know that this client should receive images of new tracking objects
+      send(new SetUsesImagesMessage(true))
+    } // The first send can throw an error under testing, even though the message is sent properly
+    catch {}
   }
 
   /** Callback for when a message has been received by the websocket */

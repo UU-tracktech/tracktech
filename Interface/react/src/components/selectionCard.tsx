@@ -69,6 +69,7 @@ export function SelectionCard(props: selectionCardProps) {
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}
+                data-testid={'deleteSelectionButton'}
               />
             </Popconfirm>
           </span>
