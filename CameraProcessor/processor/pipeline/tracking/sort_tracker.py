@@ -36,7 +36,7 @@ class SortTracker(ITracker):
                          )
 
     def execute_component(self):
-        """Function given to scheduler so the scheduler can run the tracking stage.
+        """Function given to scheduler, so the scheduler can run the tracking stage.
 
         Returns:
             function: function that the scheduler can run.

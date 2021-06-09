@@ -11,13 +11,13 @@ import gdown
 from scipy.spatial.distance import euclidean
 
 import processor.utils.features as UtilsFeatures
-import processor.pipeline.reidentification.ireidentifier
+from processor.pipeline.reidentification.ireidentifier import IReIdentifier
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 
 
-class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIdentifier):
+class TorchReIdentifier(IReIdentifier):
     """Re-id class that uses torch-reid to extract and compare features.
 
     Attributes:
@@ -77,6 +77,20 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
 
         return feature
 
+    def extract_features_from_cutout(self, cutout):
+        """Extracts features from a cutout.
+
+        Args:
+            cutout (np.ndarray): the cutout containing the object we want to extract features from
+
+        Returns:
+            [float]: Feature vector of the cutout
+        """
+        # Resize the cutout.
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
+
+        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
+
     def extract_features_boxes(self, frame_obj, boxes):
         """Extracts features from all bounding boxes generated in the tracking stage.
 
@@ -112,7 +126,7 @@ class TorchReIdentifier(processor.pipeline.reidentification.ireidentifier.IReIde
         return euclidean_distance
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
-        """Performing re-identification using torchreid.
+        """Performing re-identification using Torchreid.
 
         This re-identification implementations couple bounding boxes to a tracked subject
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID

@@ -7,8 +7,7 @@ Utrecht University within the Software Project course.
 
 
 class IComponent:
-    """Component interface enforcing the implementation of execute_component().
-    """
+    """The component interface enforcing the implementation of execute_component()."""
 
     def execute_component(self):
         """Function used by INode to execute the component.

@@ -21,12 +21,12 @@ class IYoloDetector(IDetector):
         """Converts the image to the size used for the detection.
 
         Args:
-            img (Tensor): Image in a tensor representation
-            device (device): What device to convert image on
-            half (bool): Whether to half the image
+            img (Tensor): Image in a tensor representation.
+            device (device): What device to convert image on.
+            half (bool): Whether to half the image.
 
         Returns:
-            Tensor: Image that is converted
+            Tensor: Image that is converted.
         """
         # Convert image.
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -43,9 +43,9 @@ class IYoloDetector(IDetector):
         """Generates the predictions of the detection.
 
         Args:
-            img (Tensor): 2
-            model (model): Model that gets used
-            configs (SectionProxy): Yolo section of the configuration
+            img (Tensor): 2.
+            model (model): Model that gets used.
+            configs (SectionProxy): Yolo section of the configuration.
 
         Returns:
             Tensor: Tensor containing the predictions the detection made
@@ -63,12 +63,12 @@ class IYoloDetector(IDetector):
         """Creates the bounding boxes of the detection.
 
         Args:
-            pred ([Tensor]): List of tensors containing the predictions
-            img (Tensor): Image stored in a tensor
-            frame_obj (FrameObj): Object containing the frame
-            bounding_boxes ([BoundingBoxes]): Bounding boxes in which to store the predictions
-            filter_types ([str]): What detection types to filter on
-            names ([str]): The complete list of types that get detected
+            pred ([Tensor]): List of tensors containing the predictions.
+            img (Tensor): Image stored in a tensor.
+            frame_obj (FrameObj): Object containing the frame.
+            bounding_boxes ([BoundingBoxes]): Bounding boxes in which to store the predictions.
+            filter_types ([str]): What detection types to filter on.
+            names ([str]): The complete list of types that get detected.
         """
         # Detections per image.
         for _, det in enumerate(pred):
