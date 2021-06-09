@@ -10,3 +10,7 @@
 	path = CameraProcessor/processor/pipeline/reidentification/torchreid
 	url = https://github.com/UU-tracktech/deep-person-reid.git
 	branch = master
+[submodule "fastreid"]
+	path = CameraProcessor/processor/pipeline/reidentification/fastreid
+	url = https://github.com/UU-tracktech/fast-reid.git
+	branch = master
