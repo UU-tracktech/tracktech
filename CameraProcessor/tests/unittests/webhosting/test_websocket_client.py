@@ -16,6 +16,9 @@ from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
 from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
 from tests.unittests.utils.dummy_websocket_client import DummyWebsocketClient
 from processor.webhosting.websocket_client import WebsocketClient
+from processor.webhosting.start_command_simple import StartCommandSimple
+from processor.webhosting.start_command_extended import StartCommandExtended
+from processor.webhosting.start_command_search import StartCommandSearch
 
 
 # pylint: disable=protected-access.
@@ -165,3 +168,39 @@ class TestWebsocketClient(WebsocketCoroutines):
         """Wrong type gets handled correctly."""
         dummy_websocket = DummyWebsocketClient('')
         dummy_websocket._on_message('{"type": "yes"}')
+
+    def test_generate_tracking_message_simple(self):
+        """Test if simple tracking message gets generated correctly."""
+        dummy_websocket = DummyWebsocketClient('')
+        simple = {
+            "type": "start",
+            "objectId": 1,
+            "cutout": 1,
+        }
+        simple_msg = dummy_websocket.generate_tracking_message(simple)
+        assert isinstance(simple_msg, StartCommandSimple)
+
+    def test_generate_tracking_message_extended(self):
+        """Test if extended tracking message gets generated correctly."""
+        dummy_websocket = DummyWebsocketClient('')
+        extended = {
+            "type": "start",
+            "objectId": 1,
+            "cutout": 1,
+            "frameId": 1,
+            "boxId": 1
+        }
+        extended_msg = dummy_websocket.generate_tracking_message(extended)
+        assert isinstance(extended_msg, StartCommandExtended)
+
+    def test_generate_tracking_message_search(self):
+        """Test if search tracking message gets generated correctly."""
+        dummy_websocket = DummyWebsocketClient('')
+        search = {
+            "type": "start",
+            "objectId": 1,
+            "frameId": 1,
+            "boxId": 1
+        }
+        search_msg = dummy_websocket.generate_tracking_message(search)
+        assert isinstance(search_msg, StartCommandSearch)

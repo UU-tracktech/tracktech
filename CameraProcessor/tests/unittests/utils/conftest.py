@@ -20,7 +20,7 @@ def bbox():
     """Fixture for an example bounding box.
 
     Returns:
-        BoundingBox: A boundingbox for use in testing.
+        BoundingBox: A BoundingBox for use in testing.
     """
     # Create a dummy bounding box.
     return BoundingBox(1, Rectangle(round(float(X0 / IMG_SIZE), 1),

@@ -100,7 +100,7 @@ class PreAnnotations:
         """Parse line from file given a delimiter.
 
         First 6 values are
-        "<frameID>,<objectID>,<x1>,<y1>,<x2>,<y2>,.. jibberish"
+        "<frameID>,<objectID>,<x1>,<y1>,<x2>,<y2>,.. gibberish"
 
         Args:
             line (str): line in file.

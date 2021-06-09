@@ -1,17 +1,18 @@
-"""Contains frame buffer class.
+"""Contains the frame buffer class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 from collections import OrderedDict
+from processor.scheduling.component.component_interface import IComponent
 
 
-class FrameBuffer:
+class FrameBuffer(IComponent):
     """Class that handles frame buffering logic and holds the buffer.
 
     The buffer maps frame_ids to a tuple of frame_obj and tracked_boxes,
-    thus it contains frames and their tracked bounding boxes.
+    thus it contains frames, and their tracked bounding boxes.
 
     Attributes:
         __buffer_size (int): Size of the buffer.
@@ -25,6 +26,14 @@ class FrameBuffer:
         """
         self.__buffer_size = size
         self.__buffer = OrderedDict()
+
+    def execute_component(self):
+        """Function given to scheduler so the scheduler can add the frame with frame information to the frame buffer.
+
+        Returns:
+            function: function that the scheduler can run.
+        """
+        return self.add_frame
 
     def add_frame(self, frame, tracked_boxes):
         """Add a frame to the frame buffer.

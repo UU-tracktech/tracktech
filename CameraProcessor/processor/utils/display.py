@@ -11,7 +11,7 @@ import processor.utils.draw as draw
 
 
 def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes, dimensions=None):
-    """Generates tiled image with the following order left to right, top to bottom: raw, detection, tracking, Re-ID.
+    """Generates a tiled image with the following order left to right, top to bottom: raw, detection, tracking, Re-ID.
 
     Automatically downscales when the image is too big and there are no dimensions given.
 
