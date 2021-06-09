@@ -84,8 +84,8 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.input.image_capture</span> <span class="kn">import</span> <span class="n">ImageCapture</span>
 <span class="kn">from</span> <span class="nn">processor.input.video_capture</span> <span class="kn">import</span> <span class="n">VideoCapture</span>
 
-<span class="kn">from</span> <span class="nn">processor.utils.create_runners</span> <span class="kn">import</span> \
-    <span class="n">create_detector</span><span class="p">,</span> <span class="n">create_tracker</span><span class="p">,</span> <span class="n">create_reidentifier</span><span class="p">,</span> <span class="n">DETECTOR_SWITCH</span><span class="p">,</span> <span class="n">TRACKER_SWITCH</span><span class="p">,</span> <span class="n">REID_SWITCH</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
+<span class="kn">from</span> <span class="nn">processor.utils.create_runners</span> <span class="kn">import</span> <span class="n">create_detector</span><span class="p">,</span> <span class="n">create_tracker</span><span class="p">,</span> <span class="n">DETECTOR_SWITCH</span><span class="p">,</span> <span class="n">TRACKER_SWITCH</span>
 
 <span class="kn">import</span> <span class="nn">processor.scheduling.plan.pipeline_plan</span> <span class="k">as</span> <span class="nn">pipeline_plan</span>
 <span class="kn">from</span> <span class="nn">processor.scheduling.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
@@ -169,13 +169,8 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the re-identifier.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">REID_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect re-identifier. Re-identifier </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Create re-identifier since it exists.</span>
-    <span class="k">return</span> <span class="n">create_reidentifier</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">),</span>
-                               <span class="n">configs</span>
-                               <span class="p">)</span>
+    <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">prepare_capture</span><span class="p">(</span><span class="n">input_config</span><span class="p">):</span>
@@ -426,13 +421,8 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the re-identifier.</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">REID_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect re-identifier. Re-identifier </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Create re-identifier since it exists.</span>
-    <span class="k">return</span> <span class="n">create_reidentifier</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">),</span>
-                               <span class="n">configs</span>
-                               <span class="p">)</span>
+    <span class="n">re_identifier_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Reid&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">TorchReIdentifier</span><span class="p">(</span><span class="s1">&#39;osnet_x1_0&#39;</span><span class="p">,</span> <span class="n">re_identifier_config</span><span class="p">)</span>
 </pre></div>
 
         </details>
