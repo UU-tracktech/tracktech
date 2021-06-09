@@ -2,7 +2,7 @@
   {
     "Name": "Cam1",
     "Id": "stream 1",
-    "Forwarder": "http://192.168.178.12:50008/stream.m3u8"
+    "Forwarder": "http://tracktech.ml:50008/stream.m3u8"
   },
   {
     "Name": "Cam2",
