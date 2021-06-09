@@ -34,6 +34,9 @@
             <li>
                     <a class="function" href="#create_tracker">create_tracker</a>
             </li>
+            <li>
+                    <a class="function" href="#create_reidentifier">create_reidentifier</a>
+            </li>
     </ul>
 
 
@@ -68,6 +71,8 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor_runner</span> <span class="kn">import</span> <span class="n">YolorDetector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.fastreid_runner</span> <span class="kn">import</span> <span class="n">FastReIdentifier</span>
 
 <span class="n">DETECTOR_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;yolov5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Yolov5Detector</span><span class="p">,</span> <span class="s1">&#39;Yolov5&#39;</span><span class="p">),</span>
@@ -75,6 +80,10 @@ Utrecht University within the Software Project course.
 <span class="p">}</span>
 <span class="n">TRACKER_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SortTracker</span><span class="p">,</span> <span class="s1">&#39;SORT&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">REID_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;torchreid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">TorchReIdentifier</span><span class="p">,</span> <span class="s1">&#39;TorchReid&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;fastreid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">FastReIdentifier</span><span class="p">,</span> <span class="s1">&#39;FastReid&#39;</span><span class="p">)</span>
 <span class="p">}</span>
 
 
@@ -102,7 +111,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Args:</span>
 <span class="sd">        tracker_name (str): The name of the tracker we want.</span>
-<span class="sd">        configs (dict): The configurations of the detector.</span>
+<span class="sd">        configs (dict): The configurations of the tracker.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ITracker: The requested tracker.</span>
@@ -112,6 +121,22 @@ Utrecht University within the Software Project course.
     <span class="n">tracker_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
     <span class="n">tracker</span> <span class="o">=</span> <span class="n">itracker</span><span class="p">(</span><span class="n">tracker_config</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tracker</span>
+
+<span class="k">def</span> <span class="nf">create_reidentifier</span><span class="p">(</span><span class="n">reid_name</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a re-identifier of the given type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reid_name (str): the name of the re-identifier we want.</span>
+<span class="sd">        configs (dict): The configurations of the re-identifier.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        IReIdentifier: Requested re-identifier of the given type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ireidentifier</span> <span class="o">=</span> <span class="n">REID_SWITCH</span><span class="p">[</span><span class="n">reid_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">config_section</span> <span class="o">=</span> <span class="n">REID_SWITCH</span><span class="p">[</span><span class="n">reid_name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">reid_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
+    <span class="n">reidentifier</span> <span class="o">=</span> <span class="n">ireidentifier</span><span class="p">(</span><span class="n">reid_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reidentifier</span>
 </pre></div>
 
         </details>
@@ -181,7 +206,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Args:</span>
 <span class="sd">        tracker_name (str): The name of the tracker we want.</span>
-<span class="sd">        configs (dict): The configurations of the detector.</span>
+<span class="sd">        configs (dict): The configurations of the tracker.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ITracker: The requested tracker.</span>
@@ -201,13 +226,60 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>tracker_name (str):</strong>  The name of the tracker we want.</li>
-<li><strong>configs (dict):</strong>  The configurations of the detector.</li>
+<li><strong>configs (dict):</strong>  The configurations of the tracker.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
   <p>ITracker: The requested tracker.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="create_reidentifier">
+                            <div class="attr function"><a class="headerlink" href="#create_reidentifier">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">create_reidentifier</span><span class="signature">(reid_name, configs)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">create_reidentifier</span><span class="p">(</span><span class="n">reid_name</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns a re-identifier of the given type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reid_name (str): the name of the re-identifier we want.</span>
+<span class="sd">        configs (dict): The configurations of the re-identifier.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        IReIdentifier: Requested re-identifier of the given type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ireidentifier</span> <span class="o">=</span> <span class="n">REID_SWITCH</span><span class="p">[</span><span class="n">reid_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">config_section</span> <span class="o">=</span> <span class="n">REID_SWITCH</span><span class="p">[</span><span class="n">reid_name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">reid_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">config_section</span><span class="p">]</span>
+    <span class="n">reidentifier</span> <span class="o">=</span> <span class="n">ireidentifier</span><span class="p">(</span><span class="n">reid_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reidentifier</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Creates and returns a re-identifier of the given type.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>reid_name (str):</strong>  the name of the re-identifier we want.</li>
+<li><strong>configs (dict):</strong>  The configurations of the re-identifier.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>IReIdentifier: Requested re-identifier of the given type</p>
 </blockquote>
 </div>
 
