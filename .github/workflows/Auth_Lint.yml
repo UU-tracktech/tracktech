@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build
-        run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml up --build --no-start
+        run: docker-compose -f ../utility/Auth/compose/docker-compose_lint.yml up --build --no-start
       - name: Copy in pylintrc
         run: docker cp .pylintrc auth_container:/app
       - name: Copy in utility
@@ -34,7 +34,7 @@ jobs:
       - name: Copy in utility
         run: docker cp utility/docstring_content_checker.py auth_container:/app/utility/
       - name: Run
-        run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml up --exit-code-from auth
+        run: docker-compose -f ../utility/Auth/compose/docker-compose_lint.yml up --exit-code-from auth
       - name: Remove
-        run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml down --rmi all
+        run: docker-compose -f ../utility/Auth/compose/docker-compose_lint.yml down --rmi all
         if: ${{ always() }}
