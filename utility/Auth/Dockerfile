@@ -14,7 +14,7 @@ ENV PYTHONPATH=/app
 RUN ["pip", "install", "pylint==2.8.3"]
 
 # Copy the files
-COPY auth auth
+COPY Auth Auth
 
 WORKDIR /
 

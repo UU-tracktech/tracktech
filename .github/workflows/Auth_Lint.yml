@@ -7,7 +7,7 @@ on:
       - .github/workflows/Auth_Lint.yml
   pull_request:
     paths:
-      - utility/Auth/**
+      - utility/**
 
 jobs:
   forwarder_lint:
