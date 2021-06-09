@@ -46,7 +46,7 @@ async def deploy(configs, ws_id):
     """Connects to the orchestrator and starts the process_frames loop
 
     Args:
-        configs (ConfigParser): configurations for the prepare stream
+        configs (ConfigParser): configurations for the prepared stream
         ws_id (str): Id of the camera processor for the orchestrator
     """
     capture, detector, tracker, re_identifier, ws_url = prepare_objects(configs)
@@ -71,7 +71,7 @@ async def deploy(configs, ws_id):
 
 
 def main():
-    """Run the main loop, depending on the mode run on localhost, locally with opencv or in swarm.
+    """Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.
 
     Tornado uses a custom IOLoop
     Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop

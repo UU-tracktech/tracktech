@@ -53,3 +53,17 @@ export class StopOrchestratorMessage extends OrchestratorMessage {
 
   objectId: number
 }
+
+/**
+ * The SetUsesImagesMessage is used to specify whether this client should receive
+ * messages of newly tracked objects
+ */
+export class SetUsesImagesMessage extends OrchestratorMessage {
+  constructor(usesImages: boolean) {
+    super('setUsesImages')
+
+    this.usesImages = usesImages
+  }
+
+  usesImages: boolean
+}
