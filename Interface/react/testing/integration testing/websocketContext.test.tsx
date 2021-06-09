@@ -26,7 +26,6 @@ beforeEach(() => {
   //reset the correct link just in case a test which changes it crashes
   websocketAddress = 'ws://processor-orchestrator/client'
 
-  
   // Render a websocketprovider with an overlay to draw the bounding box.
   render(
     <WebsocketProvider>
@@ -234,7 +233,7 @@ test('Clicking Bounding boxes starts tracking', async () => {
  */
 test('Start tracking with image creates selection', async () => {
   jest.setTimeout(30000)
-  
+
   // Create a new websocket that will act as if it was a processor
   var processorSocket = new WebSocket('ws://processor-orchestrator/processor')
   while (processorSocket.readyState != 1) {
@@ -242,27 +241,24 @@ test('Start tracking with image creates selection', async () => {
   }
   var identifyMessage = {
     type: 'identifier',
-    id: '1'
+    id: '2'
   }
   processorSocket.send(JSON.stringify(identifyMessage))
-  id: '2'
-}
-processorSocket.send(JSON.stringify(identifyMessage))
 
-screen.getByTestId('button').click()
-while (screen.getByTestId('state').textContent != 'OPEN') {
-  await new Promise((r) => setTimeout(r, 500))
-}
+  screen.getByTestId('button').click()
+  while (screen.getByTestId('state').textContent != 'OPEN') {
+    await new Promise((r) => setTimeout(r, 500))
+  }
 
-// Send the start message
+  // Send the start message
   screen.getByTestId('startWithImageButton').click()
-  
+
   /* Now wait until the selection appears, the test environment maps selection 
   objects to paragraphs with a testid equal to the image value */
   while (screen.queryByTestId('testImage') == null) {
     await new Promise((r) => setTimeout(r, 500))
   }
-  
+
   expect(screen.getByTestId('testImage')).toBeDefined()
 })
 
@@ -277,8 +273,6 @@ test('Overlay only draws indicators specified by filters', async () => {
     id: '1'
   }
   processorSocket.send(JSON.stringify(identifyMessage))
-  id: '2'
-
 
   screen.getByTestId('button').click()
   while (screen.getByTestId('state').textContent != 'OPEN') {
