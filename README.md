@@ -60,7 +60,7 @@ nvidia-smi -a
 
 #### Add the resource
 
-fill in the `GPU UUID` from last step in `/etc/docker/daemon.json`. Create the file if it does not exist yet.
+Add the `GPU UUID` from last step to the [Docker engine configuration file](https://docs.docker.com/config/daemon/#configure-the-docker-daemon) typically at `/etc/docker/daemon.json`. Create the file if it does not exist yet.
 
 ```json
 {
