@@ -111,7 +111,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        last-docstring-line-contains-letters: Last line should only contain apostrophes.</span>
 <span class="sd">        multiple-new-lines-in-docstring: There should never be more than one white line.</span>
 <span class="sd">        docstring-section-not-separated: A section should be after an empty line.</span>
-<span class="sd">        first-line-in-docstring-must-end-with-period: First line must end with a period.</span>
+<span class="sd">        first-line-in-docstring-must-end-with-dot: First line must end with a dot.</span>
 <span class="sd">        make-docstring-one-line: When docstring is able to be put in one line.</span>
 <span class="sd">        second-docstring-line-must-be-empty: Second docstring line has to be empty.</span>
 <span class="sd">        docstring-last-line-empty: There should be no trailing white lines.</span>
@@ -140,9 +140,9 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;docstring-section-not-separated&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Emitted when a docstring section is started without a newline&#39;</span>
                   <span class="p">),</span>
-        <span class="s1">&#39;C1223&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;First line of docstring should end with a period&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;first-line-in-docstring-must-end-with-period&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;Emitted when a docstring first line has no period&#39;</span>
+        <span class="s1">&#39;C1223&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;First line of docstring should end with a dot&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring first line has no dot&#39;</span>
                   <span class="p">),</span>
         <span class="s1">&#39;C1224&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Make docstring single line&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
@@ -247,9 +247,6 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;last-docstring-line-contains-letters&#39;</span><span class="p">,</span>
                                  <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
-                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
             <span class="n">doc_lines</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># Return the lines in a list.</span>
@@ -263,14 +260,18 @@ Utrecht University within the Software Project course.
 <span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># First line should end with a dot.</span>
-        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\S\.($|\&quot;\&quot;\&quot;$)&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\.\s*$&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">first_line_match</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-period&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
         <span class="c1"># Return if single line.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span>
+        <span class="c1"># Second line is empty and also the last line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
         <span class="c1"># Second line contains commenting.</span>
         <span class="k">elif</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;second-docstring-line-must-be-empty&#39;</span><span class="p">,</span>
@@ -362,7 +363,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        last-docstring-line-contains-letters: Last line should only contain apostrophes.</span>
 <span class="sd">        multiple-new-lines-in-docstring: There should never be more than one white line.</span>
 <span class="sd">        docstring-section-not-separated: A section should be after an empty line.</span>
-<span class="sd">        first-line-in-docstring-must-end-with-period: First line must end with a period.</span>
+<span class="sd">        first-line-in-docstring-must-end-with-dot: First line must end with a dot.</span>
 <span class="sd">        make-docstring-one-line: When docstring is able to be put in one line.</span>
 <span class="sd">        second-docstring-line-must-be-empty: Second docstring line has to be empty.</span>
 <span class="sd">        docstring-last-line-empty: There should be no trailing white lines.</span>
@@ -391,9 +392,9 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;docstring-section-not-separated&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Emitted when a docstring section is started without a newline&#39;</span>
                   <span class="p">),</span>
-        <span class="s1">&#39;C1223&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;First line of docstring should end with a period&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;first-line-in-docstring-must-end-with-period&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;Emitted when a docstring first line has no period&#39;</span>
+        <span class="s1">&#39;C1223&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;First line of docstring should end with a dot&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a docstring first line has no dot&#39;</span>
                   <span class="p">),</span>
         <span class="s1">&#39;C1224&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Make docstring single line&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
@@ -498,9 +499,6 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;last-docstring-line-contains-letters&#39;</span><span class="p">,</span>
                                  <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
-                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
             <span class="n">doc_lines</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># Return the lines in a list.</span>
@@ -514,14 +512,18 @@ Utrecht University within the Software Project course.
 <span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># First line should end with a dot.</span>
-        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\S\.($|\&quot;\&quot;\&quot;$)&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\.\s*$&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">first_line_match</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-period&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
         <span class="c1"># Return if single line.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span>
+        <span class="c1"># Second line is empty and also the last line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
         <span class="c1"># Second line contains commenting.</span>
         <span class="k">elif</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;second-docstring-line-must-be-empty&#39;</span><span class="p">,</span>
@@ -591,7 +593,7 @@ Utrecht University within the Software Project course.
     last-docstring-line-contains-letters: Last line should only contain apostrophes.
     multiple-new-lines-in-docstring: There should never be more than one white line.
     docstring-section-not-separated: A section should be after an empty line.
-    first-line-in-docstring-must-end-with-period: First line must end with a period.
+    first-line-in-docstring-must-end-with-dot: First line must end with a dot.
     make-docstring-one-line: When docstring is able to be put in one line.
     second-docstring-line-must-be-empty: Second docstring line has to be empty.
     docstring-last-line-empty: There should be no trailing white lines.
@@ -620,7 +622,7 @@ Utrecht University within the Software Project course.
                             <div id="DocstringChecker.msgs" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#DocstringChecker.msgs">#&nbsp;&nbsp</a>
 
-        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C1220&#39;: (&#39;Last docstring line should only be &#34;&#34;&#34;&#39;, &#39;last-docstring-line-contains-letters&#39;, &#39;Emitted when a docstring does not end with triple quotes&#39;), &#39;C1221&#39;: (&#39;Multiple consequent new lines in docstring&#39;, &#39;multiple-new-lines-in-docstring&#39;, &#39;Emitted when a docstring function has multiple newlines&#39;), &#39;C1222&#39;: (&#39;There should be a newline before section %s&#39;, &#39;docstring-section-not-separated&#39;, &#39;Emitted when a docstring section is started without a newline&#39;), &#39;C1223&#39;: (&#39;First line of docstring should end with a period&#39;, &#39;first-line-in-docstring-must-end-with-period&#39;, &#39;Emitted when a docstring first line has no period&#39;), &#39;C1224&#39;: (&#39;Make docstring single line&#39;, &#39;make-docstring-one-line&#39;, &#39;Unnecessary multiline docstring&#39;), &#39;C1225&#39;: (&#39;Second line of docstring should be empty&#39;, &#39;second-docstring-line-must-be-empty&#39;, &#39;Second line in docstring&#39;), &#39;C1226&#39;: (&#39;Last line of docstring should not be empty&#39;, &#39;docstring-last-line-empty&#39;, &#39;Last line is empty in docstring&#39;), &#39;C1227&#39;: (&#39;Docstring should start with a character&#39;, &#39;docstring-starts-with-space&#39;, &#39;Emitted when first character is a space&#39;), &#39;C1228&#39;: (&#39;Docstring is missing or empty&#39;, &#39;docstring-is-missing&#39;, &#39;Emitted when first character is a space&#39;)}</span>
+        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C1220&#39;: (&#39;Last docstring line should only be &#34;&#34;&#34;&#39;, &#39;last-docstring-line-contains-letters&#39;, &#39;Emitted when a docstring does not end with triple quotes&#39;), &#39;C1221&#39;: (&#39;Multiple consequent new lines in docstring&#39;, &#39;multiple-new-lines-in-docstring&#39;, &#39;Emitted when a docstring function has multiple newlines&#39;), &#39;C1222&#39;: (&#39;There should be a newline before section %s&#39;, &#39;docstring-section-not-separated&#39;, &#39;Emitted when a docstring section is started without a newline&#39;), &#39;C1223&#39;: (&#39;First line of docstring should end with a dot&#39;, &#39;first-line-in-docstring-must-end-with-dot&#39;, &#39;Emitted when a docstring first line has no dot&#39;), &#39;C1224&#39;: (&#39;Make docstring single line&#39;, &#39;make-docstring-one-line&#39;, &#39;Unnecessary multiline docstring&#39;), &#39;C1225&#39;: (&#39;Second line of docstring should be empty&#39;, &#39;second-docstring-line-must-be-empty&#39;, &#39;Second line in docstring&#39;), &#39;C1226&#39;: (&#39;Last line of docstring should not be empty&#39;, &#39;docstring-last-line-empty&#39;, &#39;Last line is empty in docstring&#39;), &#39;C1227&#39;: (&#39;Docstring should start with a character&#39;, &#39;docstring-starts-with-space&#39;, &#39;Emitted when first character is a space&#39;), &#39;C1228&#39;: (&#39;Docstring is missing or empty&#39;, &#39;docstring-is-missing&#39;, &#39;Emitted when first character is a space&#39;)}</span>
     </div>
 
     
@@ -813,9 +815,6 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">doc_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;last-docstring-line-contains-letters&#39;</span><span class="p">,</span>
                                  <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
-                                 <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
             <span class="n">doc_lines</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># Return the lines in a list.</span>
@@ -859,14 +858,18 @@ Utrecht University within the Software Project course.
 <span class="sd">            doc_lines ([str]): List containing all the lines of the documentation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># First line should end with a dot.</span>
-        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\S\.($|\&quot;\&quot;\&quot;$)&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">first_line_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^.*\.\s*$&#39;</span><span class="p">,</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">first_line_match</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-period&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;first-line-in-docstring-must-end-with-dot&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
         <span class="c1"># Return if single line.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span>
+        <span class="c1"># Second line is empty and also the last line.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;make-docstring-one-line&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
         <span class="c1"># Second line contains commenting.</span>
         <span class="k">elif</span> <span class="n">doc_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;second-docstring-line-must-be-empty&#39;</span><span class="p">,</span>
