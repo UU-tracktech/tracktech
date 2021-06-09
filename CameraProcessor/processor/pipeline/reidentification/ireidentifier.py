@@ -18,15 +18,15 @@ class IReIdentifier(IComponent):
         """
         return self.re_identify
 
-    def extract_features(self, frame_obj, track_obj):
-        """Given a det_obj object, extract the features of it.
+    def extract_features(self, frame_obj, bbox):
+        """Extracts features from a single bounding box.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
 
         Returns:
-            [float]: Feature vectors of the tracked objects.
+            [float]: Feature vector of a single bounding box.
         """
         raise NotImplementedError("Extract features function not implemented")
 
