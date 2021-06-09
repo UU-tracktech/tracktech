@@ -1,8 +1,8 @@
 # Camera Processor
 
 The job of the camera processor is to detect all potential subjects
-and track the subjects that have been selected by the camera operators using the Interface.
-The camera operators only see the detections within a frame, and the subjects they started tracking.
+and track the subjects that have been selected by the camera operators using the interface.
+The camera operators only see the detections within a frame and the subjects they started tracking.
 The tracking of subjects is performed over multiple cameras,
 notifying the camera operator when a subject is re-identified.
 
@@ -18,9 +18,9 @@ the unaltered video stream and commands/feature maps sent by the orchestrator.
 
 #### Video stream
 
-The video stream is sent by the video forwarder. This video forwarder previously encoded the camera stream to HLS which is used by the camera processor.
-Other input methods also exist, mainly image capture and video capture, although both are only used for benchmarking/testing purposes.
-The HLS stream is wrapped together with the timestamp of the HLS segment so that time can be consistently tracked by both the camera processor and the interface,
+The video forwarder sends the video stream. This video forwarder previously encoded the camera stream to HLS, which the camera processor uses.
+Other input methods also exist, mainly image capture and video capture, although the program only uses these for benchmarking/testing purposes.
+The HLS stream is wrapped together with the timestamp of the HLS segment so that the program consistently tracks the time by both the camera processor and the interface,
 since both components utilize the same stream.
 [processor/input README](processor/input/README.md)
 
@@ -35,7 +35,7 @@ The interface is responsible for choosing an object to track, which is done base
 
 The pipeline is responsible for processing all inputs, detecting all potential subject (detection of all objects),
 and tracking the subjects selected by the camera operator.
-How these goals are achieved is explained in the [pipeline README](processor/pipeline/README.md).
+The [pipeline README](processor/pipeline/README.md) explains how the system achieves these goals. 
 
 ### Output
 
@@ -46,28 +46,28 @@ and re-identification data
 #### Detections
 
 All detections are shared with the interface to draw all trackable objects.
-Some detections might have an associated object ID, meaning these detections were already tracked.
+Some detections might have an associated object ID, meaning the system already tracked these detections.
 
 #### Re-identification
 
 All camera processors must be capable of finding the tracked subject.
 The processors need information about the subject to re-identify them.
-This information is shared amongst processors.
+The systems shares this information amongst processors.
 
 ## Running the application
 
-The camera processor can be run both locally and in Docker although the used system must comply with the set requirements.
+The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
 For differences in CUDA versions, check out the following [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one. We used the cu101 version because it was available for all of the members of the team.
 
 ### Environment variables
 
-The following environment variables can be used:
-(When these are set it overrides the configs.ini values with these)
+The system can use the following environment variables:
+(When these values are set, it overrides the configs.ini values with these)
 
 | Variable         | Config.ini value name | Description                                                                  |
 | ---------------- | --------------------- | ---------------------------------------------------------------------------- |
-| ORCHESTRATOR_URL | Orchestrator.url      | The link of the orchestrator websocket                                       |
-| HLS_STREAM_URL   | Input.hls_url         | The stream url of the video forwarder (when set it runs in Input.type "hls") |
+| ORCHESTRATOR_URL | Orchestrator.url      | The link of the orchestrator WebSocket                                       |
+| HLS_STREAM_URL   | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
 | CAMERA_ID        | Input.camera_id       | The id of the camera used to coordinate data send to the orchestrator        |
 | PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                              |
 | DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                       |
@@ -109,13 +109,13 @@ pip install -r requirements-gpu.txt
 Then, if you have [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive) (for which you have to join the
 Windows Insider if using on windows)
 When [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-update2) is installed on your computer
-(once again, NVIDIA only), you should be able to locally run main.py in the processor directory.
-This will be able to run the YOLOv5 detection algorithm.
+(once again, NVIDIA only), you should be able to run main.py in the processor directory locally.
+This setup will be able to run the YOLOv5 detection algorithm.
 
 ### Running in Docker
 
-If you want to be able to run it with GPU, it is a lot of hassle for Windows users and not recommended.
-You need to get the Windows Insider program to use CUDA in WSL2.
+If you want to run it with GPU, it is a lot of hassle for Windows users and not recommended.
+You require the Windows Insider program to use CUDA in WSL2.
 Windows insider program slows down the speed of pc a lot.
 
 - GPU-enabled on Linux:
@@ -128,33 +128,33 @@ Windows insider program slows down the speed of pc a lot.
   2.  Follow the [nvidia install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
   3.  Make sure the devices in configs.ini are set to 0
   4.  Run `docker-compose up` in the root to build the container for deployment.
-  5.  Check the logs of your docker container in Docker Desktop to see if it is working properly.
+  5.  Check the logs of your docker container in the Docker Desktop to see if it is working correctly.
 - GPU-disabled (can't run GPU code, only start container):
-  1.  In the configs.ini change the device value to CPU.
+  1.  In configs.ini, change the device value to CPU.
   2.  Run `docker-compose up` in the root to build the container for deployment.
 
 ### Verifying in Docker
 
-To verify the detection/tracking/re-identifying running inside Docker it is possible to stream to the localhost.
-Add lines the following lines to the docker-compose.yml file inside the root inside the cameraprocessor service:
+To verify the detection/tracking/re-identifying is running inside Docker, it is possible to stream to the localhost.
+Add lines the following lines to the docker-compose.yml file inside the root inside the CameraProcessor service:
 
 ```cmd
 ports:
     - 9090:9090
 ```
 
-Set the PROCESSOR_MODE environment variable to: "tornado".
+Set the PROCESSOR_MODE environment variable to "tornado".
 
-Open the link printed in the console when running `docker-compose up` and the stream will get shown after a bit.
+Open the link printed in the console when running `docker-compose up`, and the stream will get shown after a bit.
 
 ## Running the tests
 
-We use Pytest for testing the code which makes it easy to see the coverage.
+We use Pytest for testing the code, which makes it easy to see the coverage.
 We can run the unit tests locally and inside Docker.
-The integration tests can only be run without changing the code inside Docker.
+The runners can only run the integration tests without changing the code inside Docker.
 
-For Docker, the setup and commands are already included inside the Dockerfile, these do not need any tweaking.
-When running the tests locally inside PyCharm make sure the testing library has been set to Pytest for easy development.
+For Docker, the Dockerfile contains the setup and commands. These do not need any tweaking.
+When running the tests locally inside PyCharm, ensure the testing library is set to Pytest for easy development.
 Create a Pytest configuration in PyCharm and test the unit tests folder.
 
 ## Pylint with PyCharm
@@ -177,7 +177,7 @@ Navigate to `Settings>Plugins`.
 
 Search for `pylint`.
 
-Install Pylint plugin.
+Install the Pylint plugin.
 
 #### Settings
 
