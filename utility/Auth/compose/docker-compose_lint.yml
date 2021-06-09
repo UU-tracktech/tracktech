@@ -3,6 +3,6 @@ version: "3.8"
 services:
   video-forwarder:
     build:
-      context: ...
+      context: ..
       target: lint
     container_name: auth_container
