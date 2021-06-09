@@ -69,6 +69,7 @@ class TestCaptures:
         # Cannot get a next frame after closing.
         assert not self.capture.get_next_frame()[0]
 
+    @pytest.mark.skip
     @pytest.mark.timeout(60)
     def test_invalid_url(self):
         """Checks the behavior when the HlsCapture does not get a valid url."""

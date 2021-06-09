@@ -5,7 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import pytest
-import numpy
 
 from tests.unittests.utils.utils import get_sample_frame
 from processor.data_object.frame_obj import FrameObj
