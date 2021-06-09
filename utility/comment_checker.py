@@ -15,7 +15,7 @@ class CommentChecker(BaseChecker):
 
     The following linting errors get caught:
         comment-should-have-one-space: Comment should start with only one space.
-        comment-missing-dot: Comment has to end with a dot.
+        comment-missing-period: Comment has to end with a dot.
         comment-starts-with-lowercase: Comment should start with uppercase letter.
 
     Attributes:
@@ -32,9 +32,9 @@ class CommentChecker(BaseChecker):
                   'comment-should-have-one-space',
                   'Comment is missing a space'
                   ),
-        'C3121': ("Comment missing a dot",
-                  'comment-missing-dot',
-                  'Comment is missing a dot'
+        'C3121': ("Comment missing a period or has a space between period and last character",
+                  'comment-missing-period',
+                  'Comment is missing a period'
                   ),
         'C3122': ("Comment should start with capital letter",
                   'comment-starts-with-lowercase',
@@ -59,13 +59,13 @@ class CommentChecker(BaseChecker):
                     continue
 
                 # Check whether comment is correct format.
-                comment_match = re.match(r'#\s[A-Z].*\.\s*$', line)
+                comment_match = re.match(r'#\s[A-Z].*\S+\.\s*$', line)
                 if comment_match is not None:
                     continue
 
                 # See what is wrong about the comment.
                 wrong_spaces_match = re.match(r'#(?:\S|\s\s+).*', line)
-                missing_dot_match = re.match(r'#.*[^.]$', line)
+                missing_dot_match = re.match(r'#.*([^.]|\s+\.)$', line)
                 capital_letter_match = re.match(r'#\s[^A-Z].*', line)
 
                 line_start_index, line_end_index = self.get_line_indices(raw_line)
@@ -77,7 +77,7 @@ class CommentChecker(BaseChecker):
                                      col_offset=line_start_index + 1)
                 # Comment does not end with a dot.
                 if missing_dot_match is not None:
-                    self.add_message('comment-missing-dot',
+                    self.add_message('comment-missing-period',
                                      line=lineno + 1,
                                      col_offset=line_end_index + 1)
                 # Comment misses the capital letter.

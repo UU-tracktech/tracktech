@@ -8,9 +8,7 @@ from processor.scheduling.component.component_interface import IComponent
 
 
 class FuncCallComponent(IComponent):
-    """Component that holds a single function that can be run by the Scheduler.
-    """
-
+    """Component that holds a single function that can be run by the Scheduler."""
     def __init__(self, func):
         """Inits FuncCallComponent.
 

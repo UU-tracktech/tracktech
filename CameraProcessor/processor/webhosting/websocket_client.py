@@ -219,7 +219,14 @@ class WebsocketClient:
             message (Union[str, bytes]): JSON parse of sent message.
         """
         # Remove the "type" item, because we don't need that anymore.
-        self.message_queue.append(self.generate_tracking_message(message))
+        try:
+            tracking_message = self.generate_tracking_message(message)
+        except ValueError as value_error:
+            logging.info(value_error)
+        except KeyError as key_error:
+            logging.info(key_error)
+        else:
+            self.message_queue.append(tracking_message)
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.
