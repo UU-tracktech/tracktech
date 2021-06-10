@@ -16,5 +16,5 @@ class StartCommandExtended(StartCommand):
         Args:
             **kwargs (dict): dict of key-value pairs containing the start command message.
         """
-        key_set = {"cutout", "frameId", "boxId"}
+        key_set = {"image", "frameId", "boxId"}
         super().__init__(*key_set, **kwargs)

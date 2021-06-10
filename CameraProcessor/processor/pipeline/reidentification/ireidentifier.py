@@ -34,7 +34,10 @@ class IReIdentifier(IComponent):
         """Given a cutout, extracts the features from it.
 
         Args:
-            cutout (np.ndarray): cutout of the object to extract features from
+            cutout (np.ndarray): cutout of the object to extract features from.
+
+        Returns:
+            [float]: Feature vector of a single bounding box.
         """
         raise NotImplementedError("Extract features from cutout function not implemented")
 
