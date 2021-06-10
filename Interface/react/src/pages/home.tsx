@@ -53,7 +53,7 @@ export function Home() {
       text.json().then((json) => {
         setSources(
           json.map((stream) => ({
-            id: stream.Forwarder,
+            id: stream.Id,
             name: stream.Name,
             srcObject: {
               src: stream.Forwarder,
