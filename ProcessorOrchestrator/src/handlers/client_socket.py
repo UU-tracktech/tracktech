@@ -64,7 +64,10 @@ class ClientSocket(WebSocketHandler):
         """
         logger.log_connect("/client", self.request.remote_ip)
         logger.log(f"New client connected with id: {self.identifier}")
-        clients[self.identifier] = self
+
+        # Add the client directly if auth is disabled
+        if self.auth is None:
+            clients[self.identifier] = self
 
     # pylint: disable=broad-except
     def on_message(self, message):
@@ -111,6 +114,8 @@ class ClientSocket(WebSocketHandler):
             elif action_type == "authenticate":
                 self.authenticate(message_object)
             else:
+                # Close the connection
+                self.close()
                 logger.log("A client was not authenticated first")
 
         # Message was not in JSON format.
@@ -159,6 +164,7 @@ class ClientSocket(WebSocketHandler):
         if self.auth is not None:
             self.auth.validate(message["jwt"])
             self.authorized = True
+            clients[self.identifier] = self
 
     def set_uses_image(self, message):
         """Set whether or not this client uses images.
