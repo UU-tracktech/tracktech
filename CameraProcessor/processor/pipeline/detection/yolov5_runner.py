@@ -15,13 +15,13 @@ from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.detection.yolov5.models.experimental import attempt_load
 from processor.pipeline.detection.yolov5.utils.datasets import letterbox
 from processor.pipeline.detection.yolov5.utils.general import check_img_size,\
-    apply_classifier,set_logging
+    apply_classifier
 from processor.pipeline.detection.yolov5.utils.torch_utils import select_device,\
-    load_classifier, time_synchronized
-from processor.pipeline.detection.idetector import IDetector
+    load_classifier
+from processor.pipeline.detection.i_yolo_detector import IYoloDetector
 
 
-class Yolov5Detector(IDetector):
+class Yolov5Detector(IYoloDetector):
     """Make it inherit from a generic Detector class.
 
     Attributes:
@@ -50,7 +50,6 @@ class Yolov5Detector(IDetector):
         print('I am filtering on the following objects: ' + str(self.filter))
 
         # Initialize.
-        set_logging()
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
                 logging.info("CUDA unavailable")
@@ -90,7 +89,7 @@ class Yolov5Detector(IDetector):
                             imgsz).to(self.device).type_as(next(self.model.parameters())))
 
     def execute_component(self):
-        """Function given to scheduler so the scheduler can run the detection stage.
+        """Function given to scheduler, so the scheduler can run the detection stage.
 
         Returns:
             function: function that the scheduler can run.
@@ -107,25 +106,20 @@ class Yolov5Detector(IDetector):
         Returns:
             BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects
         """
-        # Padded resize.
         bounding_boxes = []
 
-        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'), stride=self.stride)[0]
-        img = self.convert_image(img, self.device, self.half)
+        # Resize the image and convert it.
+        img = letterbox(frame_obj.frame, self.config.getint('img-size'), stride=self.stride)[0]
 
-        # Run inference on the converted image.
-        start_time = time_synchronized()
+        # Generate predictions and create corresponding bounding boxes.
+        img = self.convert_image(img, self.device, self.half)
         pred = self.generate_predictions(img, self.model, self.config)
 
         # Apply secondary Classifier.
         if self.classify:
-            pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
+            pred = apply_classifier(pred, self.modelc, img, frame_obj.frame)
 
         # Create bounding boxes based on the predictions.
         self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
-
-        # Print time (inference + NMS).
-        print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
-              f'({time_synchronized() - start_time:.3f}s)')
 
         return BoundingBoxes(bounding_boxes)

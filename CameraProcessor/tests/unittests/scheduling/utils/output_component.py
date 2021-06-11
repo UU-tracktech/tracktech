@@ -10,10 +10,10 @@ from processor.scheduling.component.component_interface import IComponent
 class OutputComponent(IComponent):
     """Example output component without next layers.
 
-    Contains a function to handle the output that falls outside of the scheduler.
+    Contains a function to handle the output that falls outside the scheduler.
 
     Attributes:
-        func (func): Function to handle outputs send outside of the schedulers graph.
+        func (func): Function to handle outputs send outside the schedulers graph.
         out (object): Contains output, only here for example_plan.py to retrieve output.
     """
 
@@ -21,7 +21,7 @@ class OutputComponent(IComponent):
         """Inits IntermediaryOutputComponent with output handling function.
 
         Args:
-            func (func): function to handle outputs send outside of the schedulers graph.
+            func (func): function to handle outputs send outside the schedulers graph.
         """
         self.func = func
         self.out = None
@@ -35,7 +35,7 @@ class OutputComponent(IComponent):
             obj (object): Any object passed to function.
 
         Returns:
-            object: Resulting object from component function.
+            object: The resulting object from component function.
         """
         self.out = obj
 

@@ -29,19 +29,19 @@ export function App() {
   function body() {
     switch (status) {
       case 'loading':
-        return <div data-testid='emptyWaitDiv'></div>
+        return <div data-testid={'emptyWaitDiv'}></div>
       case 'unauthenticated':
         return <NeedLogin />
       case 'authenticated':
         return (
-          <>
+          <WebsocketProvider>
             <Route exact path='/'>
               <Home />
             </Route>
             <Route exact path='/timelines'>
               <Timelines />
             </Route>
-          </>
+          </WebsocketProvider>
         )
     }
   }
@@ -56,12 +56,10 @@ export function App() {
       }}
     >
       {/* Shows the navbar and page contents depending on user authentication */}
-      <WebsocketProvider>
-        <BrowserRouter key={1}>
-          <NavMenu key={0} />
-          {body()}
-        </BrowserRouter>
-      </WebsocketProvider>
+      <BrowserRouter key={1}>
+        <NavMenu key={0} />
+        {body()}
+      </BrowserRouter>
     </Layout>
   )
 }

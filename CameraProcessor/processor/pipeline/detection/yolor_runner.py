@@ -12,14 +12,14 @@ import torch
 import gdown
 
 from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.pipeline.detection.idetector import IDetector
+from processor.pipeline.detection.i_yolo_detector import IYoloDetector
 from processor.pipeline.detection.yolor.utils.datasets import letterbox
 from processor.pipeline.detection.yolor.utils.general import apply_classifier
-from processor.pipeline.detection.yolor.utils.torch_utils import select_device, load_classifier, time_synchronized
+from processor.pipeline.detection.yolor.utils.torch_utils import select_device, load_classifier
 from processor.pipeline.detection.yolor.models.models import Darknet
 
 
-class YolorDetector(IDetector):
+class YolorDetector(IYoloDetector):
     """Implementation of YOLOR repository.
 
     Attributes:
@@ -31,10 +31,10 @@ class YolorDetector(IDetector):
         names ([str]): List of names which that should get detected.
     """
     def __init__(self, config, filters):
-        """Initiate the YOLOR detector.
+        """Initiate the YolorDetector.
 
         Args:
-            config (ConfigParser): Configurations which also contain Yolor configurations.
+            config (ConfigParser): Configurations which also contain YOLOR configurations.
             filters (SectionProxy): Filtering for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,12 +44,7 @@ class YolorDetector(IDetector):
         self.filter = []
         with open(filters['targets_path']) as filter_names:
             self.filter = filter_names.read().splitlines()
-        print('I am filtering on the following objects: ' + str(self.filter))
-
-        # Set logging.
-        logging.basicConfig(
-            format="%(message)s",
-            level=logging.INFO)
+        logging.info(f'I am filtering on the following objects: {self.filter}')
 
         # Initialize.
         if self.config['device'] != 'cpu':
@@ -66,7 +61,7 @@ class YolorDetector(IDetector):
 
         # Download weights if not present.
         if not os.path.exists(self.config['weights_path']):
-            logging.warning(f"Weight files for Yolor not found, downloading to {self.config['weights_path']}")
+            logging.warning(f"Weight files for YOLOR not found, downloading to {self.config['weights_path']}")
             url = "https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76"
             output = self.config['weights_path']
             gdown.download(url, output, quiet=False)
@@ -105,33 +100,26 @@ class YolorDetector(IDetector):
             frame_obj (FrameObj): information object containing frame and timestamp.
 
         Returns:
-            BoundingBoxes: a BoundingBoxes object containing a list of Boundingbox objects.
+            BoundingBoxes: a BoundingBoxes object containing a list of BoundingBox objects.
         """
         bounding_boxes = []
 
         # Resize.
-        img = letterbox(frame_obj.get_frame(), self.config.getint('img-size'),
+        img = letterbox(frame_obj.frame, self.config.getint('img-size'),
                         auto_size=self.config.getint('stride'))[0]
-        img = self.convert_image(img, self.device, self.half)
 
-        # Inference.
-        start_time = time_synchronized()
+        # Generate predictions and create corresponding bounding boxes.
+        img = self.convert_image(img, self.device, self.half)
         pred = self.generate_predictions(img, self.model, self.config)
 
-        print('converted image')
         # Apply secondary Classifier.
         if self.classify:
-            pred = apply_classifier(pred, self.modelc, img, frame_obj.get_frame())
+            pred = apply_classifier(pred, self.modelc, img, frame_obj.frame)
 
         # Create bounding boxes based on the predictions.
         self.create_bounding_boxes(pred, img, frame_obj, bounding_boxes, self.filter, self.names)
-        boxes = BoundingBoxes(bounding_boxes)
 
-        # Print time (inference + NMS).
-        print(f'Finished processing of frame {frame_obj.get_timestamp():.4f} in '
-              f'({time_synchronized() - start_time:.3f}s)')
-
-        return boxes
+        return BoundingBoxes(bounding_boxes)
 
     @staticmethod
     def load_classes(path):

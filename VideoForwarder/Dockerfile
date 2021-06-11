@@ -34,7 +34,7 @@ COPY tests/unittest tests
 # Create multiple streams folders
 RUN ["mkdir","streams1","streams2","streams3"]
 
-ENTRYPOINT ["pytest","--cov-config=.coveragerc","--cov-report","term","--cov-report","xml","--cov-report","term-missing","--cov=src/","tests"]
+ENTRYPOINT  ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & pytest --cov-config=.coveragerc --cov-report term --cov-report xml --cov-report term-missing --cov=src/ tests"]
 
 
 # Installation
@@ -47,8 +47,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+ENV PYTHONPATH=/app
+
 # Install pylint
-RUN ["pip", "install", "pylint==2.6.0"]
+RUN ["pip", "install", "pylint==2.8.3"]
 
 RUN ["mkdir", "utility"]
 
@@ -56,7 +58,19 @@ RUN ["mkdir", "utility"]
 COPY src src
 COPY tests tests
 
-ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
+WORKDIR /
+
+ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
+
+
+FROM installer AS development
+WORKDIR /app
+
+# Make sure port is available
+EXPOSE 80
+
+# Run a test stream and the server
+ENTRYPOINT ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & python -u src/main.py"]
 
 
 FROM installer AS production

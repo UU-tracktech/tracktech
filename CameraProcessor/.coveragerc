@@ -9,7 +9,9 @@ omit =
     */pipeline/detection/yolov5/*
     */pipeline/detection/yolor/*
     */pipeline/tracking/sort/*
+    */pipeline/tracking/sort_oh/*
     */pipeline/reidentification/torchreid/*
+    */pipeline/reidentification/fastreid/*
     # Cannot be tested in docker
     */processor/input/cam_capture.py
     # Don't test any documentation or testing files

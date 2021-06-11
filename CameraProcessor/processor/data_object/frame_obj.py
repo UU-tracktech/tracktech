@@ -7,8 +7,8 @@ Utrecht University within the Software Project course.
 
 
 class FrameObj:
-    """Frame object contains the frame and corresponding timestamp.
-    """
+    """Frame object contains the frame and corresponding timestamp."""
+
     def __init__(self, frame, timestamp):
         """Inits the FrameObj with frame and timestamp.
 
@@ -19,7 +19,8 @@ class FrameObj:
         self.__frame = frame
         self.__timestamp = timestamp
 
-    def get_frame(self):
+    @property
+    def frame(self):
         """Gets the frame.
 
         Returns:
@@ -27,7 +28,8 @@ class FrameObj:
         """
         return self.__frame
 
-    def get_timestamp(self):
+    @property
+    def timestamp(self):
         """Gets the timestamp (in s) associated with the current frame.
 
         Returns:
@@ -35,10 +37,19 @@ class FrameObj:
         """
         return self.__timestamp
 
-    def get_shape(self):
+    @property
+    def shape(self):
         """Gets shape of frame.
 
         Returns:
             float, float: (width, height) of frame.
         """
         return self.__frame.shape[1], self.__frame.shape[0]
+
+    def __repr__(self):
+        """Converts the frame to a string.
+
+        Returns:
+            str: String representation of a frame.
+        """
+        return f'FrameObj(width:{self.shape[0]} height:{self.shape[1]} timestamp:{self.timestamp:.3f})'

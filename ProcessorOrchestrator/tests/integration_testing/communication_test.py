@@ -25,6 +25,8 @@ async def test_bad_message_interface():
         await websocket.websocket_connect("ws://processor-orchestrator-service/client")
     interface.write_message("This message is unusable for the orchestrator")
 
+    interface.close()
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(5)
@@ -38,6 +40,8 @@ async def test_incomplete_message_interface():
         "cameraId": "processor_1"
     }))
 
+    interface.close()
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(5)
@@ -49,6 +53,8 @@ async def test_unknown_action_message_interface():
     interface.write_message(json.dumps({
         "type": "unknown"
     }))
+
+    interface.close()
 
 
 @pytest.mark.asyncio
@@ -65,6 +71,8 @@ async def test_unknown_processor_message_interface():
         "boxId": 1
     }))
 
+    interface.close()
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(5)
@@ -78,6 +86,8 @@ async def test_unknown_object_message_interface():
         "objectId": "999"
     }))
 
+    interface.close()
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(5)
@@ -87,6 +97,8 @@ async def test_bad_message_processor():
     interface = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
     interface.write_message("bad message")
+
+    interface.close()
 
 
 @pytest.mark.asyncio
@@ -100,6 +112,8 @@ async def test_incomplete_message_processor():
         "type": "identifier"
     }))
 
+    interface.close()
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(5)
@@ -111,6 +125,8 @@ async def test_unknown_action_message_processor():
     interface.write_message(json.dumps({
         "type": "unknown"
     }))
+
+    interface.close()
 
 
 @pytest.mark.asyncio
@@ -140,6 +156,9 @@ async def test_start_tracking_and_timeout():
 
     message_2 = await processor.read_message()
     assert assert_stop_tracking(message_2, 1)
+
+    interface.close()
+    processor.close()
 
 
 def assert_start_tracking(message):
@@ -180,8 +199,24 @@ async def test_start_tracking_with_image_and_timeout():
     message = await processor.read_message()
     assert assert_start_tracking_with_image(message)
 
-    message_2 = await processor.read_message()
-    assert assert_stop_tracking(message_2, 1)
+    interface.write_message(json.dumps({
+        "type": "setUsesImages",
+        "usesImages": True
+    }))
+
+    message_2 = await interface.read_message()
+    assert assert_interface_image_message(message_2)
+
+    interface.write_message(json.dumps({
+        "type": "setUsesImages",
+        "usesImages": False
+    }))
+
+    message_3 = await processor.read_message()
+    assert assert_stop_tracking(message_3, 2)
+
+    interface.close()
+    processor.close()
 
 
 def assert_start_tracking_with_image(message):
@@ -195,6 +230,21 @@ def assert_start_tracking_with_image(message):
     """
     message_json = json.loads(message)
     assert message_json["type"] == "start"
+    assert message_json["image"] == "test"
+    return True
+
+
+def assert_interface_image_message(message):
+    """Help method to assert if the new object / image message is as expected.
+
+    Args:
+        message (json): json message with the interface image
+
+    Returns:
+        bool: Whether message has been correct.
+    """
+    message_json = json.loads(message)
+    assert message_json["type"] == "newObject"
     assert message_json["image"] == "test"
     return True
 
@@ -235,26 +285,36 @@ async def test_feature_map_distribution():
 
     processor_1.write_message(json.dumps({
         "type": "featureMap",
-        "objectId": 1,
+        "objectId": 3,
         "featureMap": {"test": "test"}
     }))
 
     processor_1_message = await processor_1.read_message()
     processor_2_message = await processor_2.read_message()
 
-    assert assert_feature_map(processor_1_message)
-    assert assert_feature_map(processor_2_message)
+    assert assert_feature_map(processor_1_message, 3)
+    assert assert_feature_map(processor_2_message, 3)
+
+    client.write_message(json.dumps({
+        "type": "stop",
+        "objectId": 3
+    }))
+
+    client.close()
+    processor_1.close()
+    processor_2.close()
 
 
-def assert_feature_map(message):
+def assert_feature_map(message, object_id):
     """Help method to assert if the received feature map message is as expected.
 
     Args:
         message (json): json message with bounding boxes.
+        object_id (number): the expected object id.
     """
     message_json = json.loads(message)
     assert message_json["type"] == "featureMap"
-    assert message_json["objectId"] == 1
+    assert message_json["objectId"] == object_id
     assert message_json["featureMap"] == {"test": "test"}
     return True
 
@@ -288,9 +348,8 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
         "type": "boundingBoxes",
         "frameId": 1,
         "boxes": [
-            {"objectId": 1},
-            # This next one isn't tracked so should cause a message at the processor.
-            {"objectId": 2},
+            {"objectId": 3},
+            {"objectId": 4},
             {"rect": []}
         ]
     }))
@@ -298,20 +357,17 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
     message = await interface.read_message()
     assert assert_boxes_message(message)
 
-    response = json.loads(requests.get('http://processor-orchestrator-service/timelines?objectId=1').text)
-    assert len(list(filter(lambda x: x["processorId"] == "processor_4", response["data"]))) > 0
+    response = requests.get('http://processor-orchestrator-service/timelines?objectId=4').text
+    json_response = json.loads(response)
+    assert len(list(filter(lambda x: x["processorId"] == "processor_4", json_response["data"]))) > 0
 
+    interface.write_message(json.dumps({
+        "type": "stop",
+        "objectId": 4
+    }))
+
+    interface.close()
     processor.close()
-
-    # Stop tracking both objects, as tey are no longer needed.
-    interface.write_message(json.dumps({
-        "type": "stop",
-        "objectId": 1
-    }))
-    interface.write_message(json.dumps({
-        "type": "stop",
-        "objectId": 2
-    }))
 
 
 def assert_boxes_message(message):
@@ -325,8 +381,8 @@ def assert_boxes_message(message):
     assert message_json["cameraId"] == "processor_4"
     assert message_json["frameId"] == 1
     assert message_json["boxes"] == [
-            {"objectId": 1},
-            {"objectId": 2},
+            {"objectId": 3},
+            {"objectId": 4},
             {"rect": []}
         ]
     return True
@@ -350,6 +406,8 @@ async def test_bad_bounding_boxes_message():
         "boxes": "invalid"
     }))
 
+    processor.close()
+
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
@@ -358,6 +416,25 @@ async def test_incomplete_timeline_data_request():
 
     response = requests.get('http://processor-orchestrator-service/timelines').text
     assert response == "Missing 'objectId' query parameter"
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(10)
+async def test_unknown_object_timeline_data_request():
+    """Test if requesting timeline data of an unknown object gives a 400 error."""
+
+    response = requests.get('http://processor-orchestrator-service/timelines?objectId=100')
+    assert response.text == "Object id not present in tracking history"
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+@pytest.mark.timeout(10)
+async def test_object_ids_handler():
+    """Test if requesting timeline data of an unknown object gives a 400 error."""
+
+    response = requests.get('http://processor-orchestrator-service/objectIds')
+    assert response.text == "{\"data\":[1, 2, 3, 4]}"
 
 
 @pytest.mark.asyncio
@@ -382,13 +459,16 @@ async def test_stop_tracking():
     }))
     await interface.write_message(json.dumps({
         "type": "stop",
-        "objectId": 1
+        "objectId": 5
     }))
 
     # Read start message first.
     _ = await processor.read_message()
     message = await processor.read_message()
-    assert assert_stop_tracking(message, 1)
+    assert assert_stop_tracking(message, 5)
+
+    processor.close()
+    interface.close()
 
 
 def assert_stop_tracking(message, object_id):
@@ -427,7 +507,7 @@ async def test_startup_message():
 
     processor_1.write_message(json.dumps({
         "type": "featureMap",
-        "objectId": 1,
+        "objectId": 6,
         "featureMap": {"test": "test"}
     }))
 
@@ -438,9 +518,12 @@ async def test_startup_message():
         "id": "processor_7"
     }))
 
-    # Read start message first.
     message = await processor_2.read_message()
-    assert assert_feature_map(message)
+    assert assert_feature_map(message, 6)
+
+    processor_1.close()
+    processor_2.close()
+    interface.close()
 
 
 @pytest.mark.asyncio

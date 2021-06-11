@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 from tornado.web import RequestHandler
 
-from src.object_manager import objectHistory
+from src.objects.object_management import objectHistory
 
 
 class ObjectIdsHandler(RequestHandler):

@@ -20,7 +20,7 @@ export function ObjectTypeFilter(props: ObjectTypeFilterProps) {
       //This card contains the buttons to change which boundingboxes are drawnsize="small"
       headStyle={{ padding: 0 }}
       bodyStyle={{ padding: 0 }}
-      data-testid='filterCard'
+      data-testid={'filterCard'}
       title={
         <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Object Types</h2>
       }
@@ -38,7 +38,7 @@ export function ObjectTypeFilter(props: ObjectTypeFilterProps) {
           return (
             <Button
               key={objectType}
-              data-testid='filterButton'
+              data-testid={'filterButton'}
               type={hidden ? 'default' : 'primary'}
               onClick={
                 hidden

@@ -14,7 +14,7 @@ def draw_bounding_boxes(frame, bounding_boxes):
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
-        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.
     """
     # Color and shape.
     red = (0, 0, 255)
@@ -33,13 +33,13 @@ def draw_detection_boxes(frame, bounding_boxes):
     """
     # Draw each box on the frame with tag.
     for bounding_box in bounding_boxes:
-        color = __generate_random_color(bounding_box.get_classification())
+        color = __generate_random_color(bounding_box.classification)
         __draw_box(frame, bounding_box, color)
 
         __draw_text(
             frame,
             bounding_box,
-            f'{bounding_box.get_classification()} {round(float(bounding_box.get_certainty()), 2)}',
+            f'{bounding_box.classification} {round(float(bounding_box.certainty), 2)}',
             color
         )
 
@@ -49,16 +49,28 @@ def draw_tracking_boxes(frame, bounding_boxes):
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
-        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.
     """
     # Draw each box on frame with identifier tag.
     for bounding_box in bounding_boxes:
         # Generate random color based on identifier.
-        color = __generate_random_color(bounding_box.get_identifier())
+        color = __generate_random_color(bounding_box.identifier)
 
         __draw_box(frame, bounding_box, color)
 
-        __draw_text(frame, bounding_box, f'{bounding_box.get_identifier()}', color)
+        __draw_text(frame, bounding_box, f'{bounding_box.identifier}', color)
+
+
+# pylint: disable=unnecessary-pass, unused-argument
+def draw_re_id_tracked_boxes(frame, bounding_boxes):
+    """Draws the re-id boxes on top of the frame.
+
+    Args:
+        frame (numpy.ndarray): Frame the bounding boxes get drawn on.
+        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+    """
+
+    pass
 
 
 def __draw_box(frame, bounding_box, color):
@@ -74,8 +86,8 @@ def __draw_box(frame, bounding_box, color):
     # Draw bounding box.
     cv2.rectangle(
         frame,
-        (int(bounding_box.get_rectangle().get_x1() * width), int(bounding_box.get_rectangle().get_y1() * height)),
-        (int(bounding_box.get_rectangle().get_x2() * width), int(bounding_box.get_rectangle().get_y2() * height)),
+        (int(bounding_box.rectangle.x1 * width), int(bounding_box.rectangle.y1 * height)),
+        (int(bounding_box.rectangle.x2 * width), int(bounding_box.rectangle.y2 * height)),
         color,
         2
     )
@@ -94,8 +106,8 @@ def __draw_text(frame, bounding_box, text, color):
     height, width, _ = frame.shape
 
     # Pre-scaled coordinates.
-    scaled_x1 = bounding_box.get_rectangle().get_x1() * width
-    scaled_y1 = bounding_box.get_rectangle().get_y1() * height
+    scaled_x1 = bounding_box.rectangle.x1 * width
+    scaled_y1 = bounding_box.rectangle.y1 * height
 
     # Draw filled rectangle to place text on.
     cv2.rectangle(
@@ -122,7 +134,7 @@ def __generate_random_color(identifier):
     """Generate the color using the identifier as unique hash.
 
     Args:
-        identifier (int): Unique identifier on which color is generated.
+        identifier (int): A unique identifier on which color is generated.
 
     Returns:
         (int, int, int): BGR color value.

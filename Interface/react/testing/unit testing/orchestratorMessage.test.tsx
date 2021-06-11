@@ -9,7 +9,8 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import {
   StartOrchestratorMessage,
-  StopOrchestratorMessage
+  StopOrchestratorMessage,
+  AuthenticateOrchestratorMessage
 } from '../../src/classes/orchestratorMessage'
 
 //Test the start message that gets sent to the orchestrator
@@ -32,4 +33,14 @@ test('StopOrchestratorMessage', () => {
   expect(msg.type).toBe('stop')
   //Ensure arguments are correct
   expect(msg.objectId).toBe(495)
+})
+
+//Test the authenticate message sent to the orchestrator to stop tracking
+test('AuthenticateOrchestratorMessage', () => {
+  const msg = new AuthenticateOrchestratorMessage('test')
+
+  //Ensure the 'authenticate' type gets assigned correctly
+  expect(msg.type).toBe('authenticate')
+  //Ensure arguments are correct
+  expect(msg.jwt).toBe('test')
 })
