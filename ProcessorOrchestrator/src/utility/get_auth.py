@@ -10,7 +10,7 @@ Utrecht University within the Software Project course.
 import os
 
 from auth.auth import Auth
-import src.logger as logger
+import src.utility.logger as logger
 
 
 def get_auth_params():
@@ -21,8 +21,10 @@ def get_auth_params():
     """
     public_key, audience = os.environ.get('PUBLIC_KEY'), os.environ.get('AUDIENCE')
     client_auth, processor_auth = None, None
+    # Only activate authentication if required environment variables are set.
     if public_key is not None and audience is not None:
         client_role = os.environ.get('CLIENT_ROLE')
+        # Client and Processor authentication can be used independently.
         if client_role is not None:
             logger.log("using client token validation")
             client_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
