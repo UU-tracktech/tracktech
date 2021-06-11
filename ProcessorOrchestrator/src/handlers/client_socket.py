@@ -65,7 +65,7 @@ class ClientSocket(WebSocketHandler):
         logger.log_connect("/client", self.request.remote_ip)
         logger.log(f"New client connected with id: {self.identifier}")
 
-        # Add the client directly if auth is disabled
+        # Add the client directly if auth is disabled.
         if self.auth is None:
             clients[self.identifier] = self
 
@@ -114,7 +114,7 @@ class ClientSocket(WebSocketHandler):
             elif action_type == "authenticate":
                 self.authenticate(message_object)
             else:
-                # Close the connection
+                # Close the connection.
                 self.close()
                 logger.log("A client was not authenticated first")
 
