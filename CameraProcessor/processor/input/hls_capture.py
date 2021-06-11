@@ -11,7 +11,7 @@ import kthread
 import ffmpeg
 import cv2
 
-from processor.input.icapture import ICapture
+from processor.input.i_capture import ICapture
 from processor.data_object.frame_obj import FrameObj
 
 

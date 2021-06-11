@@ -14,7 +14,7 @@ from src.camera_handler import CameraHandler
 from src.main import create_camera, create_stream_options
 
 
-class TestHandler(AsyncHTTPTestCase):
+class SlowServerUnitTest(AsyncHTTPTestCase):
     """Test the server when unable to connect to the stream quickly enough."""
 
     def get_app(self):
