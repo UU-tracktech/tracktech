@@ -11,7 +11,9 @@ import logging
 from collections import deque
 from tornado import websocket
 
-from processor.webhosting.start_command import StartCommand
+from processor.webhosting.start_command_simple import StartCommandSimple
+from processor.webhosting.start_command_extended import StartCommandExtended
+from processor.webhosting.start_command_search import StartCommandSearch
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
 
@@ -192,17 +194,32 @@ class WebsocketClient:
 
         self.message_queue.append(UpdateCommand(feature_map, object_id))
 
+    def generate_tracking_message(self, message):
+        """Factory function that returns the correct StartCommand type.
+
+        Args:
+            message (Union[str, bytes]): JSON parse of the sent message.
+
+        Returns:
+            StartCommand: A subclass of the StartCommand superclass.
+        """
+        del message["type"]
+        if all(k in message.keys() for k in {"frameId", "boxId"}):
+            if "image" in message.keys():
+                return StartCommandExtended(**message)
+            return StartCommandSearch(**message)
+        if "image" in message.keys():
+            return StartCommandSimple(**message)
+        raise ValueError("Start Tracking message does not contain necessary information.")
+
     def start_tracking(self, message):
         """Handler for the "start tracking" command.
 
         Args:
             message (Union[str, bytes]): JSON parse of sent message.
         """
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
-        object_id = message["objectId"]
-
-        self.message_queue.append(StartCommand(frame_id, box_id, object_id))
+        # Remove the "type" item, because we don't need that anymore.
+        self.message_queue.append(self.generate_tracking_message(message))
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.

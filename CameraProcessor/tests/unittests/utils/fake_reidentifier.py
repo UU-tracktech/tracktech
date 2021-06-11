@@ -9,12 +9,13 @@ from processor.data_object.bounding_boxes import BoundingBoxes
 
 class FakeReIdentifier(IReIdentifier):
     """A fake re-identifier that implements the same methods but just mocks some functionality."""
-    def extract_features(self, frame_obj, track_obj):
+
+    def extract_features(self, frame_obj, bbox):
         """Mocks feature extraction method.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
 
         Returns:
             [float]: An empty vector.

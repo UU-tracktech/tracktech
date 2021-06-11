@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import { prettyDOM, render, screen } from '@testing-library/react'
+import { prettyDOM, render, screen, act } from '@testing-library/react'
 import React from 'react'
 import {
   websocketArgs,
@@ -26,12 +26,19 @@ beforeEach(() => {
   //reset the correct link just in case a test which changes it crashes
   websocketAddress = 'ws://processor-orchestrator/client'
 
+  
   // Render a websocketprovider with an overlay to draw the bounding box.
   render(
     <WebsocketProvider>
       <div>
         <websocketContext.Consumer>
-          {({ send, setSocket, socketUrl, connectionState }: websocketArgs) => (
+          {({
+            send,
+            setSocket,
+            socketUrl,
+            connectionState,
+            objects
+          }: websocketArgs) => (
             <>
               <Overlay
                 source={{
@@ -57,6 +64,17 @@ beforeEach(() => {
                 onClick={() => setSocket(websocketAddress)}
               />
               <span data-testid='state'>{connectionState}</span>
+              <button
+                data-testid='startWithImageButton'
+                onClick={() =>
+                  send(new StartOrchestratorMessage('2', 1, 1, 'testImage'))
+                }
+              />
+              <span data-testid='selections'>
+                {objects.map((obj) => (
+                  <p data-testid={obj.image} />
+                ))}
+              </span>
             </>
           )}
         </websocketContext.Consumer>
@@ -209,6 +227,40 @@ test('Bounding boxes start tracking', async () => {
     await new Promise((r) => setTimeout(r, 500))
   }
   expect(gotMessage).toBeTruthy()
+})
+
+/**
+ * Test whether sending a start message with an image creates a selection box
+ */
+test('Start tracking with image creates selection', async () => {
+  jest.setTimeout(30000)
+
+  // Create a new websocket that will act as if it was a processor
+  var processorSocket = new WebSocket('ws://processor-orchestrator/processor')
+  while (processorSocket.readyState != 1) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  var identifyMessage = {
+    type: 'identifier',
+    id: '2'
+  }
+  processorSocket.send(JSON.stringify(identifyMessage))
+
+  screen.getByTestId('button').click()
+  while (screen.getByTestId('state').textContent != 'OPEN') {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  // Send the start message
+  screen.getByTestId('startWithImageButton').click()
+
+  /* Now wait until the selection appears, the test environment maps selection 
+  objects to paragraphs with a testid equal to the image value */
+  while (screen.queryByTestId('testImage') == null) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  expect(screen.getByTestId('testImage')).toBeDefined()
 })
 
 test.todo('Clicking tracked object indicator stops tracking')

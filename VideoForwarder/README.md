@@ -41,7 +41,7 @@ Required to specify
 
 ### SSL
 
-If both are specified, ssl is enabled
+If both are specified, https is used aswell.
 
 | Variable | Description              |
 | -------- | ------------------------ |

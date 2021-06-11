@@ -14,3 +14,7 @@
 	path = CameraProcessor/processor/pipeline/tracking/sort_oh
 	url = https://github.com/UU-tracktech/sort_oh.git
 	branch = main
+[submodule "fastreid"]
+	path = CameraProcessor/processor/pipeline/reidentification/fastreid
+	url = https://github.com/UU-tracktech/fast-reid.git
+	branch = master

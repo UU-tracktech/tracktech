@@ -1,0 +1,13 @@
+_BASE_: fastreid/configs/Base-SBS.yml
+
+MODEL:
+  WEIGHTS: ./pipeline/reidentification/fastreid/weights/market_sbs_R101-ibn.pth
+  BACKBONE:
+    DEPTH: 101x
+    WITH_IBN: True
+
+DATASETS:
+  NAMES: ("Market1501",)
+  TESTS: ("Market1501",)
+
+OUTPUT_DIR: ./pipeline/reidentification/fastreid/weights/market_sbs_R101-ibn

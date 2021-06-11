@@ -12,13 +12,16 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
-import { Button, Card, Layout } from 'antd'
+import { Button, Card, Layout, Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { Grid } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
+import { SelectionCard } from '../components/selectionCard'
 import { ObjectTypeFilter } from '../components/objectTypeFilter'
 import { stream } from '../classes/source'
+import { websocketContext } from '../components/websocketContext'
+import { StopOrchestratorMessage } from '../classes/orchestratorMessage'
 
 /** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
@@ -42,13 +45,15 @@ export function Home() {
 
   const selectionRef = React.useRef(0)
 
+  const { send, objects } = React.useContext(websocketContext)
+
   React.useEffect(() => {
-    //Read all the sources from the config file and create sources for the videoplayers
+    // Read all the sources from the config file and create sources for the videoplayers
     fetch(process.env.PUBLIC_URL + '/cameras.json').then((text) =>
       text.json().then((json) => {
         setSources(
           json.map((stream) => ({
-            id: stream.Forwarder,
+            id: stream.Id,
             name: stream.Name,
             srcObject: {
               src: stream.Forwarder,
@@ -60,10 +65,10 @@ export function Home() {
     )
   }, [])
 
-  /**Place to keep track of the possible types */
+  /** Place to keep track of the possible types */
   const [allObjectTypes, setAllObjectTypes] = React.useState<string[]>([])
 
-  /**State to keep track of the current selected objectType */
+  /** State to keep track of the current selected objectType */
   const [filteredObjectTypes, setFilteredObjectTypes] = React.useState<
     string[]
   >([])
@@ -98,7 +103,7 @@ export function Home() {
         }}
       >
         <Card
-          //This card contains the buttons to change which boundingboxes are drawn
+          // This card contains the buttons to change which boundingboxes are drawn
           data-testid='indicatorsCard'
           headStyle={{ padding: 0 }}
           bodyStyle={{ padding: 0 }}
@@ -154,7 +159,7 @@ export function Home() {
         />
 
         <Card
-          //This card contains the objects that are being tracked, TODO: implement tracking
+          // This card contains the objects that are being tracked
           data-testid={'selectionCard'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
@@ -163,34 +168,25 @@ export function Home() {
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Selection</h2>
           }
         >
-          <div>
-            <Button onClick={async () => await addSelection()}>+</Button>
-          </div>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-              gridAutoRows: '100px'
+              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))'
             }}
           >
-            {tracking &&
-              tracking.map((tracked) => {
-                var iterator = 0
-                return (
-                  <img
-                    key={`image-${iterator++}`}
-                    alt={'tracked person'}
-                    onClick={() => removeSelection(tracked.id)}
-                    style={{ width: '100%', height: '100%', margin: '5px' }}
-                    src={tracked.image}
-                  />
-                )
-              })}
+            {objects.map((tracked) => (
+              <SelectionCard
+                key={`image-${iterator++}`}
+                objectId={tracked.objectId}
+                onClick={() => removeSelection(tracked.objectId)}
+                src={tracked.image}
+              />
+            ))}
           </div>
         </Card>
 
         <Card
-          //This card contains the list of cameras that are connected
+          // This card contains the list of cameras that are connected
           data-testid={'cameraList'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
@@ -207,24 +203,22 @@ export function Home() {
             }}
           >
             {sources &&
-              sources.map((source) => {
-                return (
-                  //Create a cameracard for each stream
-                  <CameraCard
-                    key={`cameraCard-${iterator++}`}
-                    id={source.id}
-                    title={source.name}
-                    setSize={setPrimary}
-                  />
-                )
-              })}
+              sources.map((source) => (
+                // Create a cameracard for each stream
+                <CameraCard
+                  key={`cameraCard-${iterator++}`}
+                  id={source.id}
+                  title={source.name}
+                  setSize={setPrimary}
+                />
+              ))}
           </div>
         </Card>
       </div>
 
       <div style={{ overflowY: 'auto' }} data-testid={'gridDiv'}>
         {sources && (
-          //The grid contains all the videoplayers
+          // The grid contains all the videoplayers
           <Grid
             sources={sources}
             primary={primary ?? sources[0]?.id}
@@ -262,7 +256,8 @@ export function Home() {
 
   /** Placeholder to stop tracking an object, TODO: implement tracking */
   function removeSelection(id: number) {
-    setTracking(tracking.filter((tracked) => tracked.id !== id))
+    console.log('Stop tracking ', id)
+    send(new StopOrchestratorMessage(id))
   }
 
   /**

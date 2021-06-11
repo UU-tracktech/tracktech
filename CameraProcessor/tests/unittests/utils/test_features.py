@@ -46,6 +46,6 @@ class TestReidUtils:
             img (np.ndarray): Image in array form.
             configs (ConfigParser): Configparser used to determine the cutout size.
         """
-        size = configs['Reid'].gettuple('size')
+        size = configs['TorchReid'].gettuple('size')
         # Assert size is correct.
         assert size[0], size[1] == resize_cutout(img, configs).shape

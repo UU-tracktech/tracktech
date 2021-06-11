@@ -4,22 +4,42 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+from processor.scheduling.component.component_interface import IComponent
 
 
-class IReIdentifier():
+class IReIdentifier(IComponent):
     """Superclass for identifiers."""
 
-    def extract_features(self, frame_obj, track_obj):
-        """Given a det_obj object, extract the features of it.
+    def execute_component(self):
+        """Function given to scheduler so the scheduler can run the tracking stage.
+
+        Returns:
+            function: function that the scheduler can run.
+        """
+        return self.re_identify
+
+    def extract_features(self, frame_obj, bbox):
+        """Extracts features from a single bounding box.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
 
         Returns:
-            [float]: Feature vectors of the tracked objects.
+            [float]: Feature vector of a single bounding box.
         """
         raise NotImplementedError("Extract features function not implemented")
+
+    def extract_features_from_cutout(self, cutout):
+        """Given a cutout, extracts the features from it.
+
+        Args:
+            cutout (np.ndarray): cutout of the object to extract features from.
+
+        Returns:
+            [float]: Feature vector of a single bounding box.
+        """
+        raise NotImplementedError("Extract features from cutout function not implemented")
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using a re-identification implementation.
