@@ -43,6 +43,9 @@
                         <li>
                                 <a class="function" href="#ClassesChecker.check_amount_of_classes">check_amount_of_classes</a>
                         </li>
+                        <li>
+                                <a class="function" href="#ClassesChecker.check_file_class_names">check_file_class_names</a>
+                        </li>
                 </ul>
 
             </li>
@@ -79,7 +82,6 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">from</span> <span class="nn">astroid</span> <span class="kn">import</span> <span class="n">ClassDef</span>
 <span class="kn">from</span> <span class="nn">pylint.checkers</span> <span class="kn">import</span> <span class="n">BaseChecker</span>
 <span class="kn">from</span> <span class="nn">pylint.interfaces</span> <span class="kn">import</span> <span class="n">IAstroidChecker</span>
@@ -105,6 +107,10 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;multiple-class-definitions&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Emitted when a file has more than one class&#39;</span>
                   <span class="p">),</span>
+        <span class="s1">&#39;C1230&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Class name is incorrect, expected name: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a class name doesn</span><span class="se">\&#39;</span><span class="s1">t correspond to the filename (correctly)&#39;</span>
+                  <span class="p">)</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">visit_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -114,6 +120,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_amount_of_classes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_file_class_names</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">check_amount_of_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks that each file has at most one class.</span>
@@ -125,6 +132,36 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;multiple-class-definitions&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check_file_class_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if the file name and class name correspond.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the (first) class name and line number where this class is defined.</span>
+        <span class="n">class_info</span> <span class="o">=</span> <span class="p">[(</span><span class="n">entity</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">blockstart_tolineno</span><span class="p">)</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span> <span class="k">if</span>
+                      <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ClassDef</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">class_info</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">class_name</span><span class="p">,</span> <span class="n">class_line</span> <span class="o">=</span> <span class="n">class_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get the expected class name.</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">file_words</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">file_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_word</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">file_word</span> <span class="ow">in</span> <span class="n">file_words</span><span class="p">]</span>
+        <span class="n">expected_class_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_words</span><span class="p">)</span>
+
+        <span class="c1"># Return when the class name is correct.</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">expected_class_name</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Pylint report message containing the expected class name.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
+                         <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                         <span class="n">args</span><span class="o">=</span><span class="n">expected_class_name</span><span class="p">,</span>
+                         <span class="n">line</span><span class="o">=</span><span class="n">class_line</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">linter</span><span class="p">):</span>
@@ -170,6 +207,10 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;multiple-class-definitions&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Emitted when a file has more than one class&#39;</span>
                   <span class="p">),</span>
+        <span class="s1">&#39;C1230&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Class name is incorrect, expected name: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Emitted when a class name doesn</span><span class="se">\&#39;</span><span class="s1">t correspond to the filename (correctly)&#39;</span>
+                  <span class="p">)</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">visit_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -179,6 +220,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_amount_of_classes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_file_class_names</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">check_amount_of_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks that each file has at most one class.</span>
@@ -190,6 +232,36 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;multiple-class-definitions&#39;</span><span class="p">,</span>
                              <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check_file_class_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if the file name and class name correspond.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the (first) class name and line number where this class is defined.</span>
+        <span class="n">class_info</span> <span class="o">=</span> <span class="p">[(</span><span class="n">entity</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">blockstart_tolineno</span><span class="p">)</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span> <span class="k">if</span>
+                      <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ClassDef</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">class_info</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">class_name</span><span class="p">,</span> <span class="n">class_line</span> <span class="o">=</span> <span class="n">class_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get the expected class name.</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">file_words</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">file_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_word</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">file_word</span> <span class="ow">in</span> <span class="n">file_words</span><span class="p">]</span>
+        <span class="n">expected_class_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_words</span><span class="p">)</span>
+
+        <span class="c1"># Return when the class name is correct.</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">expected_class_name</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Pylint report message containing the expected class name.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
+                         <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                         <span class="n">args</span><span class="o">=</span><span class="n">expected_class_name</span><span class="p">,</span>
+                         <span class="n">line</span><span class="o">=</span><span class="n">class_line</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -221,7 +293,7 @@ Utrecht University within the Software Project course.
                             <div id="ClassesChecker.msgs" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ClassesChecker.msgs">#&nbsp;&nbsp</a>
 
-        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C1229&#39;: (&#39;File contains more than one class&#39;, &#39;multiple-class-definitions&#39;, &#39;Emitted when a file has more than one class&#39;)}</span>
+        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C1229&#39;: (&#39;File contains more than one class&#39;, &#39;multiple-class-definitions&#39;, &#39;Emitted when a file has more than one class&#39;), &#39;C1230&#39;: (&#39;Class name is incorrect, expected name: &#34;%s&#34;&#39;, &#39;incorrect-class-name&#39;, &#34;Emitted when a class name doesn&#39;t correspond to the filename (correctly)&#34;)}</span>
     </div>
 
     
@@ -244,6 +316,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_amount_of_classes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_file_class_names</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -284,6 +357,60 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Checks that each file has at most one class.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition astroid creates.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="ClassesChecker.check_file_class_names" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ClassesChecker.check_file_class_names">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">check_file_class_names</span><span class="signature">(self, node)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">check_file_class_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if the file name and class name correspond.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the (first) class name and line number where this class is defined.</span>
+        <span class="n">class_info</span> <span class="o">=</span> <span class="p">[(</span><span class="n">entity</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">blockstart_tolineno</span><span class="p">)</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span> <span class="k">if</span>
+                      <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ClassDef</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">class_info</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">class_name</span><span class="p">,</span> <span class="n">class_line</span> <span class="o">=</span> <span class="n">class_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get the expected class name.</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">file_words</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">file_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_word</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">file_word</span> <span class="ow">in</span> <span class="n">file_words</span><span class="p">]</span>
+        <span class="n">expected_class_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_words</span><span class="p">)</span>
+
+        <span class="c1"># Return when the class name is correct.</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="n">expected_class_name</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Pylint report message containing the expected class name.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
+                         <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+                         <span class="n">args</span><span class="o">=</span><span class="n">expected_class_name</span><span class="p">,</span>
+                         <span class="n">line</span><span class="o">=</span><span class="n">class_line</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Checks if the file name and class name correspond.</p>
 
 <h6 id="args">Args</h6>
 

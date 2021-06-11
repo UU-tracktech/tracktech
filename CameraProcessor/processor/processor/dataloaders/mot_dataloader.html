@@ -29,13 +29,13 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="class" href="#MOTDataloader">MOTDataloader</a>
+                    <a class="class" href="#MotDataloader">MotDataloader</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#MOTDataloader.__init__">MOTDataloader</a>
+                                <a class="function" href="#MotDataloader.__init__">MotDataloader</a>
                         </li>
                         <li>
-                                <a class="function" href="#MOTDataloader.parse_file">parse_file</a>
+                                <a class="function" href="#MotDataloader.parse_file">parse_file</a>
                         </li>
                 </ul>
 
@@ -76,10 +76,10 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
 <span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.idataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.dataloaders.i_dataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
 
 
-<span class="k">class</span> <span class="nc">MOTDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MotDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;MOT Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the MOTDataloader.</span>
@@ -208,18 +208,18 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
-                <section id="MOTDataloader">
+                <section id="MotDataloader">
                                 <div class="attr class">
-        <a class="headerlink" href="#MOTDataloader">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#MotDataloader">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">MOTDataloader</span>(<span class="base"><a href="idataloader.html#IDataloader">processor.dataloaders.idataloader.IDataloader</a></span>):
+        <span class="name">MotDataloader</span>(<span class="base"><a href="i_dataloader.html#IDataloader">processor.dataloaders.i_dataloader.IDataloader</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MOTDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MotDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;MOT Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the MOTDataloader.</span>
@@ -351,11 +351,11 @@ Utrecht University within the Software Project course.
 </div>
 
 
-                            <div id="MOTDataloader.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MOTDataloader.__init__">#&nbsp;&nbsp</a>
+                            <div id="MotDataloader.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MotDataloader.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">MOTDataloader</span><span class="signature">(configs, path_location)</span>
+            <span class="name">MotDataloader</span><span class="signature">(configs, path_location)</span>
     </div>
 
                 <details>
@@ -385,8 +385,8 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="MOTDataloader.parse_file" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MOTDataloader.parse_file">#&nbsp;&nbsp</a>
+                            <div id="MotDataloader.parse_file" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MotDataloader.parse_file">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>

@@ -25,19 +25,14 @@
 <img src="https://placedog.net/200?random" style="display: block; margin: 1em auto">
 
 
-                    <h2>Submodules</h2>
-                    <ul>
-                            <li><a href="reidentification/ireidentifier.html">processor.pipeline.reidentification.ireidentifier</a></li>
-                            <li><a href="reidentification/torchreid_runner.html">processor.pipeline.reidentification.torchreid_runner</a></li>
-                    </ul>
 
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="module" href="#ireidentifier">ireidentifier</a>
+                    <a class="variable" href="#ireidentifier">ireidentifier</a>
             </li>
             <li>
-                    <a class="module" href="#torchreid_runner">torchreid_runner</a>
+                    <a class="variable" href="#torchreid_runner">torchreid_runner</a>
             </li>
     </ul>
 
@@ -77,277 +72,21 @@ Utrecht University within the Software Project course.
 
             </section>
                 <section id="ireidentifier">
-                                <div class="attr module"><a class="headerlink" href="#ireidentifier">#&nbsp;&nbsp</a>
-<span class="name"><a href="reidentification/ireidentifier.html">processor.pipeline.reidentification.ireidentifier</a></span></div>
+                                <div class="attr variable"><a class="headerlink" href="#ireidentifier">#&nbsp;&nbsp</a>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains reidentification interface, containing the functionality required for an implementation.</span>
+        <span class="name">ireidentifier</span>
+    </div>
 
-<span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
-<span class="sd">Utrecht University within the Software Project course.</span>
-<span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
-
-
-<span class="k">class</span> <span class="nc">IReIdentifier</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Superclass for identifiers.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">re_identify</span>
-
-    <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from a single bounding box.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [float]: Feature vector of a single bounding box.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features function not implemented&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a cutout, extracts the features from it.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): cutout of the object to extract features from.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [float]: Feature vector of a single bounding box.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Extract features from cutout function not implemented&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performing re-identification using a re-identification implementation.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj):  frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.</span>
-<span class="sd">                list has to be of the same length as the list of bounding boxes in the track_obj, and ordered in the</span>
-<span class="sd">                same way (feature vector i belongs to box i).</span>
-<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Reidentification function not implemented&quot;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Contains reidentification interface, containing the functionality required for an implementation.</p>
-
-<p>This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)</p>
-</div>
-
+    
 
                 </section>
                 <section id="torchreid_runner">
-                                <div class="attr module"><a class="headerlink" href="#torchreid_runner">#&nbsp;&nbsp</a>
-<span class="name"><a href="reidentification/torchreid_runner.html">processor.pipeline.reidentification.torchreid_runner</a></span></div>
+                                <div class="attr variable"><a class="headerlink" href="#torchreid_runner">#&nbsp;&nbsp</a>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Torch reid class.</span>
+        <span class="name">torchreid_runner</span>
+    </div>
 
-<span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
-<span class="sd">Utrecht University within the Software Project course.</span>
-<span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">gdown</span>
-
-<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">euclidean</span>
-
-<span class="kn">import</span> <span class="nn">processor.utils.features</span> <span class="k">as</span> <span class="nn">UtilsFeatures</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.ireidentifier</span> <span class="kn">import</span> <span class="n">IReIdentifier</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid.torchreid.utils</span> <span class="kn">import</span> <span class="n">FeatureExtractor</span>
-
-
-<span class="k">class</span> <span class="nc">TorchReIdentifier</span><span class="p">(</span><span class="n">IReIdentifier</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Re-id class that uses torch-reid to extract and compare features.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        extractor (FeatureExtractor): Extractor for the feature vectors.</span>
-<span class="sd">        config (configparser.SectionProxy): Re-ID configuration.</span>
-<span class="sd">        threshold (float): Threshold from which a re-identification is included.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize torch re-identifier.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (configparser.SectionProxy): Re-ID configuration.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># The path where the model weight file should be located.</span>
-        <span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pth&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Download the weights if it&#39;s not in the directory.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">]):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;weights_dir_path&#39;</span><span class="p">])</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">weights_path</span><span class="p">):</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&amp;export=download&#39;</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">weights_path</span>
-            <span class="n">gdown</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="c1"># Initialize the feature extractor of torch re-id.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">FeatureExtractor</span><span class="p">(</span>
-            <span class="n">model_name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_name&#39;</span><span class="p">],</span>
-            <span class="n">model_path</span><span class="o">=</span><span class="n">weights_path</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">])</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from a single bounding box.</span>
-
-<span class="sd">        This is achieved by generating a cutout of the bounding boxes</span>
-<span class="sd">        and feeding them to the feature extractor of Torchreid.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">             [float]: Feature vector of single bounding box.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Cutout the bounding box from the frame and resize the cutout to the right size.</span>
-        <span class="n">cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">slice_bounding_box</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-
-        <span class="c1"># Extract the feature from the cutout and convert it to a normal float array.</span>
-        <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">feature</span>
-
-    <span class="k">def</span> <span class="nf">extract_features_from_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from a cutout.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            cutout (np.ndarray): the cutout containing the object we want to extract features from</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [float]: Feature vector of the cutout</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Resize the cutout.</span>
-        <span class="n">resized_cutout</span> <span class="o">=</span> <span class="n">UtilsFeatures</span><span class="o">.</span><span class="n">resize_cutout</span><span class="p">(</span><span class="n">cutout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="p">(</span><span class="n">resized_cutout</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">extract_features_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">boxes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extracts features from all bounding boxes generated in the tracking stage.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            [[float]]: Feature vectors of the tracked objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-            <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">box</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">features</span>
-
-    <span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the similarity rate between two feature vectors.</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Uses euclidean distance to determine the similarity.</span>
-<span class="sd">            An alternative would be cosine similarity.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            query_features ([float]): the feature vector of the query image.</span>
-<span class="sd">            gallery_features ([float]): the feature vector of the gallery image.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: The similarity value of two feature vectors.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">euclidean_distance</span> <span class="o">=</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">query_features</span><span class="p">,</span> <span class="n">gallery_features</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">euclidean_distance</span>
-
-    <span class="k">def</span> <span class="nf">re_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performing re-identification using Torchreid.</span>
-
-<span class="sd">        This re-identification implementations couple bounding boxes to a tracked subject</span>
-<span class="sd">        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID</span>
-<span class="sd">        to an existing bounding box.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): Frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.</span>
-<span class="sd">                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same</span>
-<span class="sd">                way (feature vector i belongs to box i).</span>
-<span class="sd">            re_id_data (ReidData): Data class containing data about tracked subjects.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">tracked_bounding_boxes</span> <span class="o">=</span> <span class="n">track_obj</span><span class="o">.</span><span class="n">bounding_boxes</span>
-        <span class="n">box_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_boxes</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">track_obj</span><span class="p">)</span>
-
-        <span class="c1"># Copy the original bounding boxes to a new list.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tracked_bounding_boxes</span><span class="p">)</span>
-
-        <span class="c1"># Loop over all objects being followed.</span>
-        <span class="k">for</span> <span class="n">query_id</span> <span class="ow">in</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_queries</span><span class="p">():</span>
-            <span class="n">query_feature</span> <span class="o">=</span> <span class="n">re_id_data</span><span class="o">.</span><span class="n">get_feature_for_query</span><span class="p">(</span><span class="n">query_id</span><span class="p">)</span>
-
-            <span class="c1"># List &#39;track_features&#39; contains feature vectors in same order as bounding boxes.</span>
-            <span class="c1"># Loop over the detected features in the frame.</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_features</span><span class="p">):</span>
-                <span class="c1"># If the bounding box is already assigned to an object, don&#39;t compare it.</span>
-                <span class="k">if</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># Calculate the similarity value of the 2 feature vectors.</span>
-                    <span class="n">similarity_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">query_feature</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">similarity_value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
-                        <span class="n">box_id</span> <span class="o">=</span> <span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span>
-
-                        <span class="c1"># Store that this box id belongs to a certain object id.</span>
-                        <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_box</span><span class="p">(</span><span class="n">box_id</span><span class="p">,</span> <span class="n">query_id</span><span class="p">)</span>
-
-                        <span class="c1"># Update object id of the box.</span>
-                        <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                            <span class="n">identifier</span><span class="o">=</span><span class="n">box_id</span><span class="p">,</span>
-                            <span class="n">rectangle</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">rectangle</span><span class="p">,</span>
-                            <span class="n">classification</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span>
-                            <span class="n">certainty</span><span class="o">=</span><span class="n">tracked_bounding_boxes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">certainty</span><span class="p">,</span>
-                            <span class="n">object_id</span><span class="o">=</span><span class="n">query_id</span>
-                        <span class="p">)</span>
-
-                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Re-Id of object </span><span class="si">{</span><span class="n">query_id</span><span class="si">}</span><span class="s2"> in box </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Torch reid class.</p>
-
-<p>This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)</p>
-</div>
-
+    
 
                 </section>
     </main>

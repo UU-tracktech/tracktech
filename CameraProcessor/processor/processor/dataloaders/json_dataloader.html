@@ -29,10 +29,10 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="class" href="#JSONDataloader">JSONDataloader</a>
+                    <a class="class" href="#JsonDataloader">JsonDataloader</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#JSONDataloader.parse_file">parse_file</a>
+                                <a class="function" href="#JsonDataloader.parse_file">parse_file</a>
                         </li>
                 </ul>
 
@@ -71,10 +71,10 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
 <span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.idataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.dataloaders.i_dataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
 
 
-<span class="k">class</span> <span class="nc">JSONDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">JsonDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -148,18 +148,18 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
-                <section id="JSONDataloader">
+                <section id="JsonDataloader">
                                 <div class="attr class">
-        <a class="headerlink" href="#JSONDataloader">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#JsonDataloader">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">JSONDataloader</span>(<span class="base"><a href="idataloader.html#IDataloader">processor.dataloaders.idataloader.IDataloader</a></span>):
+        <span class="name">JsonDataloader</span>(<span class="base"><a href="i_dataloader.html#IDataloader">processor.dataloaders.i_dataloader.IDataloader</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">JSONDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">JsonDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -236,8 +236,8 @@ Utrecht University within the Software Project course.
 </div>
 
 
-                            <div id="JSONDataloader.parse_file" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#JSONDataloader.parse_file">#&nbsp;&nbsp</a>
+                            <div id="JsonDataloader.parse_file" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JsonDataloader.parse_file">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>

@@ -29,22 +29,22 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="class" href="#COCODataloader">COCODataloader</a>
+                    <a class="class" href="#CocoDataloader">CocoDataloader</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#COCODataloader.__init__">COCODataloader</a>
+                                <a class="function" href="#CocoDataloader.__init__">CocoDataloader</a>
                         </li>
                         <li>
-                                <a class="function" href="#COCODataloader.parse_file">parse_file</a>
+                                <a class="function" href="#CocoDataloader.parse_file">parse_file</a>
                         </li>
                         <li>
-                                <a class="function" href="#COCODataloader.download_coco_image">download_coco_image</a>
+                                <a class="function" href="#CocoDataloader.download_coco_image">download_coco_image</a>
                         </li>
                         <li>
-                                <a class="function" href="#COCODataloader.download_coco_images">download_coco_images</a>
+                                <a class="function" href="#CocoDataloader.download_coco_images">download_coco_images</a>
                         </li>
                         <li>
-                                <a class="function" href="#COCODataloader.get_image_dimensions">get_image_dimensions</a>
+                                <a class="function" href="#CocoDataloader.get_image_dimensions">get_image_dimensions</a>
                         </li>
                 </ul>
 
@@ -87,10 +87,10 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
 <span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
 <span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.idataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.dataloaders.i_dataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
 
 
-<span class="k">class</span> <span class="nc">COCODataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CocoDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;COCO Dataloader, formats COCO Data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
@@ -268,18 +268,18 @@ Utrecht University within the Software Project course.
         </details>
 
             </section>
-                <section id="COCODataloader">
+                <section id="CocoDataloader">
                                 <div class="attr class">
-        <a class="headerlink" href="#COCODataloader">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#CocoDataloader">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">COCODataloader</span>(<span class="base"><a href="idataloader.html#IDataloader">processor.dataloaders.idataloader.IDataloader</a></span>):
+        <span class="name">CocoDataloader</span>(<span class="base"><a href="i_dataloader.html#IDataloader">processor.dataloaders.i_dataloader.IDataloader</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">COCODataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CocoDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;COCO Dataloader, formats COCO Data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
@@ -460,11 +460,11 @@ Utrecht University within the Software Project course.
 </div>
 
 
-                            <div id="COCODataloader.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#COCODataloader.__init__">#&nbsp;&nbsp</a>
+                            <div id="CocoDataloader.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">COCODataloader</span><span class="signature">(configs, path_location)</span>
+            <span class="name">CocoDataloader</span><span class="signature">(configs, path_location)</span>
     </div>
 
                 <details>
@@ -494,8 +494,8 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="COCODataloader.parse_file" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#COCODataloader.parse_file">#&nbsp;&nbsp</a>
+                            <div id="CocoDataloader.parse_file" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.parse_file">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
@@ -528,8 +528,8 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="COCODataloader.download_coco_image" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#COCODataloader.download_coco_image">#&nbsp;&nbsp</a>
+                            <div id="CocoDataloader.download_coco_image" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.download_coco_image">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
@@ -564,8 +564,8 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="COCODataloader.download_coco_images" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#COCODataloader.download_coco_images">#&nbsp;&nbsp</a>
+                            <div id="CocoDataloader.download_coco_images" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.download_coco_images">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
@@ -606,8 +606,8 @@ Utrecht University within the Software Project course.
 
 
                             </div>
-                            <div id="COCODataloader.get_image_dimensions" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#COCODataloader.get_image_dimensions">#&nbsp;&nbsp</a>
+                            <div id="CocoDataloader.get_image_dimensions" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.get_image_dimensions">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>

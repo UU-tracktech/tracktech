@@ -106,6 +106,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># A limitation of Pylint is that it adds the root __init__.py regardless of whether it is ignored.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
         <span class="c1"># What the copyright statement should be.</span>
         <span class="n">copyright_statement</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s1">&#39;This program has been developed by students from the bachelor Computer Science at&#39;</span><span class="p">,</span>
@@ -197,6 +201,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># A limitation of Pylint is that it adds the root __init__.py regardless of whether it is ignored.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
         <span class="c1"># What the copyright statement should be.</span>
         <span class="n">copyright_statement</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s1">&#39;This program has been developed by students from the bachelor Computer Science at&#39;</span><span class="p">,</span>
@@ -290,6 +298,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># A limitation of Pylint is that it adds the root __init__.py regardless of whether it is ignored.</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
         <span class="c1"># What the copyright statement should be.</span>
         <span class="n">copyright_statement</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s1">&#39;This program has been developed by students from the bachelor Computer Science at&#39;</span><span class="p">,</span>

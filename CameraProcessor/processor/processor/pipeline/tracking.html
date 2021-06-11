@@ -28,7 +28,6 @@
                     <h2>Submodules</h2>
                     <ul>
                             <li><a href="tracking/sort_tracker.html">processor.pipeline.tracking.sort_tracker</a></li>
-                            <li><a href="tracking/itracker.html">processor.pipeline.tracking.itracker</a></li>
                     </ul>
 
                     <h2>API Documentation</h2>
@@ -37,7 +36,7 @@
                     <a class="module" href="#sort_tracker">sort_tracker</a>
             </li>
             <li>
-                    <a class="module" href="#itracker">itracker</a>
+                    <a class="variable" href="#itracker">itracker</a>
             </li>
     </ul>
 
@@ -155,54 +154,12 @@ Utrecht University within the Software Project course.
 
                 </section>
                 <section id="itracker">
-                                <div class="attr module"><a class="headerlink" href="#itracker">#&nbsp;&nbsp</a>
-<span class="name"><a href="tracking/itracker.html">processor.pipeline.tracking.itracker</a></span></div>
+                                <div class="attr variable"><a class="headerlink" href="#itracker">#&nbsp;&nbsp</a>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains tracking interface.</span>
+        <span class="name">itracker</span>
+    </div>
 
-<span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
-<span class="sd">Utrecht University within the Software Project course.</span>
-<span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">processor.scheduling.component.component_interface</span> <span class="kn">import</span> <span class="n">IComponent</span>
-
-
-<span class="k">class</span> <span class="nc">ITracker</span><span class="p">(</span><span class="n">IComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Tracker runner interface that can be run as Scheduler component.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
-
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">det_obj</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Performs tracking stage using the tracking object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
-<span class="sd">            det_obj (BoundingBoxes): BoundingBoxes object containing detections from detection stage.</span>
-<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Tracking stage not implemented&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Contains tracking interface.</p>
-
-<p>This program has been developed by students from the bachelor Computer Science at
-Utrecht University within the Software Project course.
-© Copyright Utrecht University (Department of Information and Computing Sciences)</p>
-</div>
-
+    
 
                 </section>
     </main>

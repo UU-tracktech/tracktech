@@ -91,9 +91,9 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">podm.podm</span> <span class="kn">import</span> <span class="n">BoundingBox</span><span class="p">,</span> <span class="n">get_pascal_voc_metrics</span>
 <span class="kn">from</span> <span class="nn">podm.visualize</span> <span class="kn">import</span> <span class="n">plot_precision_recall_curve</span>
 
-<span class="kn">from</span> <span class="nn">processor.dataloaders.coco_dataloader</span> <span class="kn">import</span> <span class="n">COCODataloader</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.json_dataloader</span> <span class="kn">import</span> <span class="n">JSONDataloader</span>
-<span class="kn">from</span> <span class="nn">processor.dataloaders.mot_dataloader</span> <span class="kn">import</span> <span class="n">MOTDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.dataloaders.coco_dataloader</span> <span class="kn">import</span> <span class="n">CocoDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.dataloaders.json_dataloader</span> <span class="kn">import</span> <span class="n">JsonDataloader</span>
+<span class="kn">from</span> <span class="nn">processor.dataloaders.mot_dataloader</span> <span class="kn">import</span> <span class="n">MotDataloader</span>
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 
 
@@ -173,11 +173,11 @@ Utrecht University within the Software Project course.
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">COCODataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JSONDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MOTDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataloader</span>
@@ -345,11 +345,11 @@ Utrecht University within the Software Project course.
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">COCODataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JSONDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MOTDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataloader</span>
@@ -561,11 +561,11 @@ Utrecht University within the Software Project course.
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">COCODataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JSONDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MOTDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataloader</span>
