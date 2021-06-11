@@ -87,5 +87,3 @@ class SortOHTracker(ITracker):
             bounding_boxes.append(bounding_box)
 
         return BoundingBoxes(bounding_boxes)
-
-        return BoundingBoxes(bounding_boxes)
