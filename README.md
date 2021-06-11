@@ -30,23 +30,24 @@ pip install pylint
 #### Updating/Installing drivers
 
 Update your GPU drivers and restart the system for changes to take effect.
+Optionally use a other driver listed after running `ubuntu-drivers devices`
 
 ```bash
-sudo ubuntu-drivers autoinstall
+sudo apt install nvidia-driver-460
 sudo reboot
 ```
 
 #### Installing the container toolkit
 
 Add the distribution, update the package manager, install nvidia for docker, and restart docker for changes to take effect.
-For more information look at the [install guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#install-guide)
+For more information look at the [install guide](https://docs.nvid ia.com/datacenter/cloud-native/container-toolkit/install-guide.html#install-guide)
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
    && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
    && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-sudo apt-get update
-sudo apt-get install -y nvidia-docker2
+sudo apt update
+sudo apt install -y nvidia-docker2
 sudo systemctl restart docker
 ```
 
