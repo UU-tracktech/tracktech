@@ -145,10 +145,9 @@ class ProcessorSocket(WebSocketHandler):
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
-        if self.identifier in processors:
-            # Pop the identifier instead of del as it might be called twice.
-            processors.pop(self.identifier, None)
-            logger.log(f"Processor with id {self.identifier} disconnected")
+        # Pop the identifier instead of del as it might be called twice.
+        processors.pop(self.identifier, None)
+        logger.log(f"Processor with id {self.identifier} disconnected")
 
     def data_received(self, chunk):
         """Unused method that could handle streamed request data.
