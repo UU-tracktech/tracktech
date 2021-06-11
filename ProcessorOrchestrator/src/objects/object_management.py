@@ -13,60 +13,7 @@ import threading
 import time
 from datetime import datetime, timedelta
 
-import src.logger as logger
-from src.connections import processors
-
-
-class TrackingObject:
-    """Abstract representation of objects that are tracked in the processors.
-
-    Attributes:
-        identifier (int): Serves as the unique identifier to this object.
-        image (string): Serialised string containing the cutout image of this object.
-        feature_map (json): Contains the features of this object, should be sent to all processors.
-    """
-
-    def __init__(self, image):
-        """Appends self to objects dictionary upon creation.
-
-        Args:
-            image (string):
-                Serialised string containing the cutout image of this object.
-        """
-
-        self.identifier = max(objectHistory, default=0) + 1
-        self.image = image
-        self.feature_map = {}
-        objects[self.identifier] = (self, datetime.now())
-        objectHistory.append(self.identifier)
-
-    def update_feature_map(self, feature_map):
-        """Updates feature map of this object.
-
-        Args:
-            feature_map (json):
-                json containing the features that should become the new feature map on this object.
-        """
-        self.feature_map = feature_map
-        logger.log(f"updated feature map of object {self.identifier}")
-
-    def remove_self(self):
-        """Removes self from objects dict."""
-        del objects[self.identifier]
-
-    def log_spotting(self, processor_id):
-        """Writes a spotting of this object to a log file.
-
-        Args:
-            processor_id (int): Identifier of the processor
-        """
-        file = open(f"tracking_timelines/tracking_logs_{self.identifier}.txt", "a")
-        file.write(json.dumps({
-            "timeStamp": datetime.now().strftime("%Y/%m/%d | %H:%M:%S"),
-            "processorId": processor_id
-        }))
-        file.write(",\n")
-        file.close()
+from src.objects.connections import processors
 
 
 def start_tracking_timeout_monitoring(timeout, event_loop):
@@ -105,6 +52,7 @@ def monitor_tracking_timeout(timeout):
     timeout_border = datetime.now() - timedelta(seconds=timeout)
     delete_list = list()
 
+    # Check if all objects are not yet expired.
     for tracking_object in objects.values():
         if tracking_object[1] < timeout_border:
             for processor in processors.values():
@@ -117,8 +65,10 @@ def monitor_tracking_timeout(timeout):
     for tracking_object in delete_list:
         tracking_object.remove_self()
 
+    # Sleep so that checking only happens once every second.
     time.sleep(1)
 
+    # Check again.
     monitor_tracking_timeout(timeout)
 
 
