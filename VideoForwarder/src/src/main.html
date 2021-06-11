@@ -56,6 +56,7 @@ Utrecht University within the Software Project course.
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">info</span>
 <span class="kn">import</span> <span class="nn">tornado.httpserver</span>
 <span class="kn">import</span> <span class="nn">tornado.web</span>
 <span class="kn">import</span> <span class="nn">tornado.ioloop</span>
@@ -76,11 +77,10 @@ Utrecht University within the Software Project course.
         <span class="n">datefmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span>
     <span class="p">)</span>
 
-    <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">))</span>
     <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">))</span>
     <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">LoggingFilter</span><span class="p">())</span>
 
-    <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting server&#39;</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting server&#39;</span><span class="p">)</span>
 
     <span class="c1"># Create the web application with the camera handler and the public key.</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span>
@@ -97,13 +97,15 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Load the ssl and port options.</span>
     <span class="n">ssl_options</span> <span class="o">=</span> <span class="n">create_ssl_options</span><span class="p">()</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="mi">80</span> <span class="k">if</span> <span class="n">ssl_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">443</span>
-    <span class="n">ssl</span> <span class="o">=</span> <span class="s1">&#39;without&#39;</span> <span class="k">if</span> <span class="n">ssl_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;with&#39;</span>
+    <span class="k">if</span> <span class="n">ssl_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">https_server</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpserver</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">ssl_options</span><span class="o">=</span><span class="n">ssl_options</span><span class="p">)</span>
+        <span class="n">https_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">443</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;listening over https&#39;</span><span class="p">)</span>
 
     <span class="c1"># Start the webserver.</span>
-    <span class="n">http_server</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpserver</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">ssl_options</span><span class="o">=</span><span class="n">ssl_options</span><span class="p">)</span>
-    <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
-    <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;listening on port </span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">ssl</span><span class="si">}</span><span class="s1"> ssl&#39;</span><span class="p">)</span>
+    <span class="n">http_server</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">httpserver</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">(</span><span class="s1">&#39;listening over http&#39;</span><span class="p">)</span>
 
     <span class="c1"># Start the IO loop (used by tornado itself).</span>
     <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>

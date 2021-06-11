@@ -100,6 +100,7 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">error</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">TimeoutExpired</span>
 <span class="kn">from</span> <span class="nn">tornado.web</span> <span class="kn">import</span> <span class="n">StaticFileHandler</span>
 <span class="kn">import</span> <span class="nn">tornado</span>
@@ -170,7 +171,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
             <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
@@ -232,7 +233,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Print stopping for logging purposes.</span>
-        <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
         <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -271,17 +272,17 @@ Utrecht University within the Software Project course.
 
             <span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Authentication (validating token) failed.</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="n">AuthorizationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed).</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Any other error, no token added e.g.</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
 
@@ -394,7 +395,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
             <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
@@ -456,7 +457,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Print stopping for logging purposes.</span>
-        <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
         <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -495,17 +496,17 @@ Utrecht University within the Software Project course.
 
             <span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Authentication (validating token) failed.</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="n">AuthorizationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed).</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Any other error, no token added e.g.</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
 
@@ -687,7 +688,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
             <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
@@ -821,7 +822,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Print stopping for logging purposes.</span>
-        <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
         <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -883,17 +884,17 @@ Utrecht University within the Software Project course.
 
             <span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Authentication (validating token) failed.</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="n">AuthorizationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Authorization failed (authentication succeeded, but the action is not allowed).</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># Any other error, no token added e.g.</span>
-                <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">access_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">Finish</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">exc</span>
 </pre></div>

@@ -82,7 +82,7 @@ Utrecht University within the Software Project course.
 
 <span class="kn">import</span> <span class="nn">ssl</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
-<span class="kn">import</span> <span class="nn">tornado.web</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">info</span>
 
 <span class="kn">from</span> <span class="nn">auth.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
 <span class="kn">from</span> <span class="nn">src.camera</span> <span class="kn">import</span> <span class="n">Camera</span>
@@ -178,7 +178,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Give back the Authentication object.</span>
-    <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Auth</span><span class="p">(</span>
         <span class="n">public_key_path</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
         <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS256&#39;</span><span class="p">],</span>
@@ -427,7 +427,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Give back the Authentication object.</span>
-    <span class="n">tornado</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">gen_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Auth</span><span class="p">(</span>
         <span class="n">public_key_path</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
         <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS256&#39;</span><span class="p">],</span>
