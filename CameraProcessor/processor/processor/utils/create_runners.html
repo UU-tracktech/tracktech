@@ -71,7 +71,6 @@ Utrecht University within the Software Project course.
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolov5_runner</span> <span class="kn">import</span> <span class="n">Yolov5Detector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.detection.yolor_runner</span> <span class="kn">import</span> <span class="n">YolorDetector</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_tracker</span> <span class="kn">import</span> <span class="n">SortTracker</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort_oh_tracker</span> <span class="kn">import</span> <span class="n">SortOHTracker</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.torchreid_runner</span> <span class="kn">import</span> <span class="n">TorchReIdentifier</span>
 <span class="kn">from</span> <span class="nn">processor.pipeline.reidentification.fastreid_runner</span> <span class="kn">import</span> <span class="n">FastReIdentifier</span>
 
@@ -80,8 +79,7 @@ Utrecht University within the Software Project course.
     <span class="s1">&#39;yolor&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">YolorDetector</span><span class="p">,</span> <span class="s1">&#39;Yolor&#39;</span><span class="p">)</span>
 <span class="p">}</span>
 <span class="n">TRACKER_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SortTracker</span><span class="p">,</span> <span class="s1">&#39;SORT&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;sort_oh&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SortOHTracker</span><span class="p">,</span> <span class="s1">&#39;SORT&#39;</span><span class="p">)</span>
+    <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SortTracker</span><span class="p">,</span> <span class="s1">&#39;SORT&#39;</span><span class="p">)</span>
 <span class="p">}</span>
 <span class="n">REID_SWITCH</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;torchreid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">TorchReIdentifier</span><span class="p">,</span> <span class="s1">&#39;TorchReid&#39;</span><span class="p">),</span>
