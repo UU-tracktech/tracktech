@@ -37,5 +37,5 @@ jobs:
         run: docker-compose -f CameraProcessor/compose/docker-compose_test.yml down --rmi all
         if: ${{ always() }}
       - name: Prune images
-        run: docker image prune
+        run: docker image prune --force
         if: ${{ always() }}
