@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import pytest
-from super_websocket_client import create_dummy_client
+from websocket_client_dummy import create_dummy_client
 from utils.utils import PC_URL
 from utils.jsonloader import load_data
 

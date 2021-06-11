@@ -14,7 +14,7 @@ from tornado.websocket import WebSocketHandler
 from src.utility.http_server import create_http_servers
 from src.handlers.client_socket import ClientSocket
 from src.handlers.processor_socket import ProcessorSocket
-from src.handlers.timeline_handler import TimeLineHandler
+from src.handlers.timeline_handler import TimelineHandler
 from src.objects.object_management import start_tracking_timeout_monitoring
 from src.handlers.object_ids_handler import ObjectIdsHandler
 
@@ -35,9 +35,9 @@ def _start_server():
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
-        ('/timelines', TimeLineHandler),
+        ('/timelines', TimelineHandler),
         ('/objectIds', ObjectIdsHandler),
-        ('/stop', StopSocket, {'server': server_container})
+        ('/stop', TestingServer, {'server': server_container})
     ]
 
     # Create the server application.
@@ -62,7 +62,7 @@ def stop_server(server):
     io_loop.add_callback(io_loop.stop)
 
 
-class StopSocket(WebSocketHandler):
+class TestingServer(WebSocketHandler):
     """Websocket handler that can only be used to stop the server.
 
     Attributes:

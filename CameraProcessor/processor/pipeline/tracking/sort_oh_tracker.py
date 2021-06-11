@@ -12,7 +12,7 @@ from processor.pipeline.tracking.sort_oh.libs.tracker import Sort_OH
 from processor.pipeline.tracking.i_sort_tracker import ISortTracker
 
 
-class SortOHTracker(ISortTracker):
+class SortOhTracker(ISortTracker):
     """Tracker of SORT_OH tracking.
 
     Contains the Sort_OH tracking class and gets trackers from this class with each track() call.
@@ -22,7 +22,7 @@ class SortOHTracker(ISortTracker):
         sort_oh (Sort_OH): Sort tracking class.
     """
     def __init__(self, config):
-        """Inits SortOHTracker with SORT_OH tracker configuration.
+        """Inits SortOhTracker with SORT_OH tracker configuration.
 
         Args:
             config (configparser.SectionProxy): SORT tracker configuration.

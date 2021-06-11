@@ -9,7 +9,7 @@ import os
 from tornado.web import RequestHandler
 
 
-class TimeLineHandler(RequestHandler):
+class TimelineHandler(RequestHandler):
     """Request handler that handles get request for log file.
 
     Handler that can be used to handle a get request, it will write the log file, where newlines are replaced

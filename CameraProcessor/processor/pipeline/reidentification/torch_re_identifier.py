@@ -1,58 +1,55 @@
-"""Fast reid class.
+"""Torch reid class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import os
-import argparse
 import copy
 import gdown
-import processor.utils.features as UtilsFeatures
 
-from scipy.spatial.distance import cosine
-from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
-from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
+from scipy.spatial.distance import euclidean
+
+import processor.utils.features as UtilsFeatures
+from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.pipeline.reidentification.ireidentifier import IReIdentifier
+from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 
 
-class FastReIdentifier(IReIdentifier):
-    """Re-id class that uses fast-reid to extract and compare features.
+class TorchReIdentifier(IReIdentifier):
+    """Re-id class that uses torch-reid to extract and compare features.
 
     Attributes:
-        extractor (FeatureExtractionDemo): Extractor for the feature vectors.
+        extractor (FeatureExtractor): Extractor for the feature vectors.
         config (configparser.SectionProxy): Re-ID configuration.
         threshold (float): Threshold from which a re-identification is included.
     """
 
     def __init__(self, config):
-        """Initialize fast re-identifier.
+        """Initialize torch re-identifier.
 
         Args:
             config (configparser.SectionProxy): Re-ID configuration.
         """
 
-        args = argparse.ArgumentParser(description="Feature extraction with reid models")
-        args.config_file = config['config_file_path']
-        args.parallel = config.getboolean('parallel')
-
-        # Load config from file and command-line arguments.
-        cfg = get_cfg()
-        cfg.merge_from_file(args.config_file)
-        cfg.freeze()
+        # The path where the model weight file should be located.
+        weights_path = os.path.join(config['weights_dir_path'], config['model_name'] + '.pth')
 
         # Download the weights if it's not in the directory.
         if not os.path.exists(config['weights_dir_path']):
             os.mkdir(config['weights_dir_path'])
 
-        if not os.path.exists(cfg.MODEL.WEIGHTS):
-            url = 'https://github.com/JDAI-CV/fast-reid/releases/download/v0.1.1/market_sbs_R101-ibn.pth'
-            output = cfg.MODEL.WEIGHTS
+        if not os.path.exists(weights_path):
+            url = 'https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download'
+            output = weights_path
             gdown.download(url, output, quiet=False)
 
-        self.extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
+        # Initialize the feature extractor of torch re-id.
+        self.extractor = FeatureExtractor(
+            model_name=config['model_name'],
+            model_path=weights_path,
+            device=config['device'])
 
         self.config = config
         self.threshold = float(self.config["threshold"])
@@ -75,9 +72,23 @@ class FastReIdentifier(IReIdentifier):
         resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
         # Extract the feature from the cutout and convert it to a normal float array.
-        feature = self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()
+        feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
+
+    def extract_features_from_cutout(self, cutout):
+        """Extracts features from a cutout.
+
+        Args:
+            cutout (np.ndarray): the cutout containing the object we want to extract features from
+
+        Returns:
+            [float]: Feature vector of the cutout
+        """
+        # Resize the cutout.
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
+
+        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
     def extract_features_boxes(self, frame_obj, boxes):
         """Extracts features from all bounding boxes generated in the tracking stage.
@@ -100,8 +111,8 @@ class FastReIdentifier(IReIdentifier):
         """Calculates the similarity rate between two feature vectors.
 
         Note:
-            Uses cosine similarity to determine the similarity rate.
-            An alternative would be euclidean distance.
+            Uses euclidean distance to determine the similarity.
+            An alternative would be cosine similarity.
 
         Args:
             query_features ([float]): the feature vector of the query image.
@@ -110,11 +121,11 @@ class FastReIdentifier(IReIdentifier):
         Returns:
             float: The similarity value of two feature vectors.
         """
-        cosine_similarity = 1 - cosine(query_features, gallery_features)
-        return cosine_similarity
+        euclidean_distance = euclidean(query_features, gallery_features)
+        return euclidean_distance
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
-        """Performing re-identification using torchreid.
+        """Performing re-identification using Torchreid.
 
         This re-identification implementations couple bounding boxes to a tracked subject
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
@@ -148,7 +159,7 @@ class FastReIdentifier(IReIdentifier):
                 if tracked_bounding_boxes[i].object_id is None:
                     # Calculate the similarity value of the 2 feature vectors.
                     similarity_value = self.similarity(query_feature, feature)
-                    if similarity_value > self.threshold:
+                    if similarity_value < self.threshold:
                         box_id = tracked_bounding_boxes[i].identifier
 
                         # Store that this box id belongs to a certain object id.
