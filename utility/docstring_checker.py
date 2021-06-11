@@ -18,7 +18,7 @@ class DocstringChecker(BaseChecker):
         last-docstring-line-contains-letters: Last line should only contain apostrophes.
         multiple-new-lines-in-docstring: There should never be more than one white line.
         docstring-section-not-separated: A section should be after an empty line.
-        first-line-in-docstring-must-end-with-dot: First line must end with a dot.
+        first-line-in-docstring-must-end-with-period: First line must end with a period.
         make-docstring-one-line: When docstring is able to be put in one line.
         second-docstring-line-must-be-empty: Second docstring line has to be empty.
         docstring-last-line-empty: There should be no trailing white lines.
@@ -47,9 +47,9 @@ class DocstringChecker(BaseChecker):
                   'docstring-section-not-separated',
                   'Emitted when a docstring section is started without a newline'
                   ),
-        'C1223': ('First line of docstring should end with a dot',
-                  'first-line-in-docstring-must-end-with-dot',
-                  'Emitted when a docstring first line has no dot'
+        'C1223': ('First line of docstring should end with a period',
+                  'first-line-in-docstring-must-end-with-period',
+                  'Emitted when a docstring first line has no period'
                   ),
         'C1224': ('Make docstring single line',
                   'make-docstring-one-line',
@@ -166,10 +166,10 @@ class DocstringChecker(BaseChecker):
             node (Any): Function, class or module, definition containing the docstring.
             doc_lines ([str]): List containing all the lines of the documentation.
         """
-        # First line should end with a dot.
+        # First line should end with a period.
         first_line_match = re.match(r'^.*\.\s*$', doc_lines[0])
         if not first_line_match:
-            self.add_message('first-line-in-docstring-must-end-with-dot',
+            self.add_message('first-line-in-docstring-must-end-with-period',
                              node=node)
 
         # Return if single line.
