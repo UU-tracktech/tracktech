@@ -82,23 +82,21 @@ Utrecht University within the Software Project course.
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains main video processing pipeline function.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Contains sort tracker.</span>
+
+<span class="sd">This tracker predicts the position of a detection.</span>
+<span class="sd">Based on detection boxes it predicts the position of the tracker on the next few frames.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
 <span class="kn">from</span> <span class="nn">processor.pipeline.tracking.sort.sort</span> <span class="kn">import</span> <span class="n">Sort</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.tracking.itracker</span> <span class="kn">import</span> <span class="n">ITracker</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.tracking.i_sort_tracker</span> <span class="kn">import</span> <span class="n">ISortTracker</span>
 
 
-<span class="k">class</span> <span class="nc">SortTracker</span><span class="p">(</span><span class="n">ITracker</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SortTracker</span><span class="p">(</span><span class="n">ISortTracker</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Tracker of SORT tracking.</span>
 
 <span class="sd">    Contains the Sort tracking class and gets trackers from this class with each track() call.</span>
@@ -119,14 +117,6 @@ Utrecht University within the Software Project course.
                          <span class="n">iou_threshold</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">getfloat</span><span class="p">(</span><span class="s1">&#39;iou_threshold&#39;</span><span class="p">)</span>
                          <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">execute_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function given to scheduler, so the scheduler can run the tracking stage.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            function: function that the scheduler can run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span>
-
     <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detection_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performing tracking using SORT tracking to get a tracking ID for all tracked detections.</span>
 
@@ -141,48 +131,21 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span>
-
         <span class="c1"># Get bounding boxes into format expected by SORT tracker.</span>
-        <span class="n">sort_detections</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="n">detection_boxes</span><span class="p">:</span>
-            <span class="n">sort_detections</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x1</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y1</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">x2</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">rectangle</span><span class="o">.</span><span class="n">y2</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">]),</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">classification</span><span class="p">,</span>
-                <span class="n">bounding_box</span><span class="o">.</span><span class="n">certainty</span><span class="p">))</span>
+        <span class="n">detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_boxes_to_sort</span><span class="p">(</span><span class="n">detection_boxes</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="c1"># Get all tracked objects found in current frame.</span>
-        <span class="n">trackers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sort_detections</span><span class="p">)</span>
+        <span class="n">sort_detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">detections</span><span class="p">)</span>
 
-        <span class="c1"># Turn tracked objects into BoundingBox objects.</span>
-        <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">for</span> <span class="n">tracker</span> <span class="ow">in</span> <span class="n">trackers</span><span class="p">:</span>
-            <span class="n">bounding_box</span> <span class="o">=</span> <span class="n">BoundingBox</span><span class="p">(</span>
-                <span class="n">identifier</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]),</span>
-                <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span>
-                    <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                    <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                    <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-                    <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="p">),</span>
-                <span class="n">classification</span><span class="o">=</span><span class="n">tracker</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">certainty</span><span class="o">=</span><span class="n">tracker</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                <span class="n">object_id</span><span class="o">=</span><span class="n">re_id_data</span><span class="o">.</span><span class="n">get_object_id_for_box</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tracker</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]))</span>
-            <span class="p">)</span>
-            <span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes_from_sort</span><span class="p">(</span><span class="n">sort_detections</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Contains main video processing pipeline function.</p>
+            <div class="docstring"><p>Contains sort tracker.</p>
+
+<p>This tracker predicts the position of a detection.
+Based on detection boxes it predicts the position of the tracker on the next few frames.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
