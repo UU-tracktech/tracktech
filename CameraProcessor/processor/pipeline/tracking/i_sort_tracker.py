@@ -1,3 +1,9 @@
+"""Contains tracking interface for sort based trackers.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+"""
 import numpy as np
 
 from processor.data_object.bounding_box import BoundingBox
@@ -28,7 +34,7 @@ class ISortTracker(ITracker):
             detection_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
             re_id_data (ReidData): Object containing data necessary for re-identification
 
-        Raise:
+        Raises:
             NotImplementedError: Track function is not implemented for a generic tracker.
         """
         raise NotImplementedError("Detect function not implemented")

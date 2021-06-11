@@ -10,7 +10,6 @@ Utrecht University within the Software Project course.
 
 from processor.pipeline.tracking.sort.sort import Sort
 from processor.pipeline.tracking.i_sort_tracker import ISortTracker
-from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 class SortTracker(ISortTracker):

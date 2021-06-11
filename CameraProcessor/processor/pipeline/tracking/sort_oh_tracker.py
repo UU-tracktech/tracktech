@@ -10,7 +10,6 @@ Utrecht University within the Software Project course.
 
 from processor.pipeline.tracking.sort_oh.libs.tracker import Sort_OH
 from processor.pipeline.tracking.i_sort_tracker import ISortTracker
-from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 class SortOHTracker(ISortTracker):
@@ -24,6 +23,7 @@ class SortOHTracker(ISortTracker):
     """
     def __init__(self, config):
         """Inits SortOHTracker with SORT_OH tracker configuration.
+
         Args:
             config (configparser.SectionProxy): SORT tracker configuration.
         """
@@ -35,7 +35,7 @@ class SortOHTracker(ISortTracker):
     def track(self, frame_obj, detection_boxes, re_id_data):
         """Performing tracking using SORT tracking to get a tracking ID for all tracked detections.
 
-        Converts detections to correct format, gets trackers from SORT_OH tracking and converts trackers to bounding boxes.
+        Converts detections to correct format, gets trackers from SORT_OH tracking and converts these to bounding boxes.
         Tracker doesn't contain classifications, thus the classifications get forgotten.
 
         Args:
