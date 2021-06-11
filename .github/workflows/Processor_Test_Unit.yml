@@ -31,6 +31,9 @@ jobs:
       - name: Stop service
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}
+      - name: Prune images
+        run: docker image prune --force
+        if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2
         with:
