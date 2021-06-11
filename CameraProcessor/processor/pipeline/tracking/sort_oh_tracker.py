@@ -66,39 +66,26 @@ class SortOHTracker(ITracker):
                 bounding_box.certainty))
 
         # Get all tracked objects found in current frame.
-        matched_trackers, unmatched_trackers = self.sort.update(sort_detections, (width, height))
+        trackers = self.sort.update(sort_detections, (width, height))
 
         # Turn tracked objects into BoundingBox objects.
         bounding_boxes = []
 
-        for tracker in matched_trackers:
+        for tracker in trackers:
             bounding_box = BoundingBox(
-                identifier=int(tracker[4]),
+                identifier=int(tracker[0][4]),
                 rectangle=Rectangle(
-                    max(int(tracker[0]) / width, 0),
-                    max(int(tracker[1]) / height, 0),
-                    min(int(tracker[2]) / width, 1),
-                    min(int(tracker[3]) / height, 1),
+                    max(int(tracker[0][0]) / width, 0),
+                    max(int(tracker[0][1]) / height, 0),
+                    min(int(tracker[0][2]) / width, 1),
+                    min(int(tracker[0][3]) / height, 1),
                 ),
-                classification="tracker[1]",
-                certainty=1,
-                object_id=re_id_data.get_object_id_for_box(int(tracker[4]))
+                classification=tracker[1],
+                certainty=tracker[2],
+                object_id=re_id_data.get_object_id_for_box(int(tracker[0][4]))
             )
             bounding_boxes.append(bounding_box)
 
-        for tracker in unmatched_trackers:
-            bounding_box = BoundingBox(
-                identifier=int(tracker[4]),
-                rectangle=Rectangle(
-                    max(int(tracker[0]) / width, 0),
-                    max(int(tracker[1]) / height, 0),
-                    min(int(tracker[2]) / width, 1),
-                    min(int(tracker[3]) / height, 1),
-                ),
-                classification="tracker[1]",
-                certainty=1,
-                object_id=re_id_data.get_object_id_for_box(int(tracker[4]))
-            )
-            bounding_boxes.append(bounding_box)
+        return BoundingBoxes(bounding_boxes)
 
         return BoundingBoxes(bounding_boxes)
