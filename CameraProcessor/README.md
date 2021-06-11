@@ -145,24 +145,43 @@ This information is shared amongst processors.
 ### Software
 
 - [Python 3.8](https://www.python.org/downloads/release/python-3810/): no other Python versions have been tested.
-- [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): no other CUDA versions have been tested.
+- [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): this CUDA versions has been tested. *However, it has demonstrated to work with CUDA 11.1*
 - [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive): this cuDNN was chosen due to compatibility with CUDA 10.1.2.
 
 ### Packages
-and install the dependencies in [requirements.txt](requirements.txt) + [requirements-gpu.txt](requirements-gpu.txt).
+and install the dependencies in [requirements.txt](requirements.txt) + [requirements-gpu.txt](requirements-gpu.txt) + [requirements-reid.txt](requirements-reid.txt).
 ```cmd
 pip install -r requirements.txt
 pip install -r requirements-gpu.txt
+pip install -r requirements-reid.txt
 ```
 ## Development
 
 ### Testing
 
-We use Pytest for testing the code which makes it easy to see the coverage.
-We can run the unit tests locally and inside Docker.
-The integration tests can only be run without changing the code inside Docker.
+We use [Pytest](https://docs.pytest.org/en/stable/index.html) for testing the code which makes it easy to see the coverage.
 
-For Docker, the setup and commands are already included inside the Dockerfile, these do not need any tweaking.
+####Docker
+The setup and commands are already included inside the Dockerfile, these do not need any tweaking.
+Running unit tests:
+```
+docker-compose -f compose/docker-compose_test_unit.yml up --build
+```
+
+Integration tests:
+```cmd
+docker-compose -f compose/docker-compose+orchestrator.yml up --build
+```
+
+#### Local 
+When running the tests locally it is easiest to using the short command:
+```cmd
+pytest --cov-config=.coveragerc --cov-report term-missing --cov-report=term --cov=processor/ tests/unittests
+```
+The final argument can be extended to test folders more specifically. This one runs the entire unittest folder.
+
+To run integration tests locally websocket urls have to be altered for the orchestrator or the hls stream url for the forwarder.
+We strongly recommend using docker to run these as described above.
 
 ### Verify application in docker
 
