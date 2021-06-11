@@ -98,6 +98,7 @@ COPY requirements-reid.txt .
 COPY processor/pipeline/detection/yolov5/requirements.txt processor/pipeline/detection/yolov5/requirements.txt
 COPY processor/pipeline/detection/yolor/requirements.txt processor/pipeline/detection/yolor/requirements.txt
 COPY processor/pipeline/tracking/sort/requirements.txt processor/pipeline/tracking/sort/requirements.txt
+COPY processor/pipeline/tracking/sort_oh/requirements.txt processor/pipeline/tracking/sort_oh/requirements.txt
 COPY processor/pipeline/reidentification/torchreid/requirements.txt processor/pipeline/reidentification/torchreid/requirements.txt
 
 RUN ["python3.8","-m","pip", "install", "-r", "requirements.txt"]
