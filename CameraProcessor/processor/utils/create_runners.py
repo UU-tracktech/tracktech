@@ -8,6 +8,7 @@ Utrecht University within the Software Project course.
 from processor.pipeline.detection.yolov5_runner import Yolov5Detector
 from processor.pipeline.detection.yolor_runner import YolorDetector
 from processor.pipeline.tracking.sort_tracker import SortTracker
+from processor.pipeline.tracking.sort_oh_tracker import SortOHTracker
 from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
 from processor.pipeline.reidentification.fastreid_runner import FastReIdentifier
 
@@ -16,7 +17,8 @@ DETECTOR_SWITCH = {
     'yolor': (YolorDetector, 'Yolor')
 }
 TRACKER_SWITCH = {
-    'sort': (SortTracker, 'SORT')
+    'sort': (SortTracker, 'SORT'),
+    'sort_oh': (SortOHTracker, 'SORT')
 }
 REID_SWITCH = {
     'torchreid': (TorchReIdentifier, 'TorchReid'),
