@@ -360,7 +360,7 @@ class DocstringContentChecker(BaseChecker):
             if section:
                 break
 
-            # A double dot indicates another type definition is made.
+            # A colon indicates another type definition is made.
             if doc_line.__contains__(':'):
                 self.add_message('returns-section-has-multiple-type-definitions',
                                  node=node)
