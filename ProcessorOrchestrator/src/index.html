@@ -142,11 +142,11 @@
     <ul id="pdoc-modules">
     </ul>
     <script>
-        const modules = ["src", "src.client_socket", "src.connections", "src.get_auth", "src.http_server", "src.logger", "src.main", "src.object_ids_handler", "src.object_manager", "src.processor_socket", "src.timeline_handler"];
+        const modules = ["src", "src.handlers", "src.handlers.client_socket", "src.handlers.object_ids_handler", "src.handlers.processor_socket", "src.handlers.timeline_handler", "src.main", "src.objects", "src.objects.connections", "src.objects.object_management", "src.objects.tracking_object", "src.utility", "src.utility.get_auth", "src.utility.http_server", "src.utility.logger"];
         const module_list = document.getElementById("pdoc-modules");
         const searchbox = document.getElementById("pdoc-search")
 
-        const modulesTree = {"src": {"client_socket": {}, "connections": {}, "get_auth": {}, "http_server": {}, "logger": {}, "main": {}, "object_ids_handler": {}, "object_manager": {}, "processor_socket": {}, "timeline_handler": {}}};
+        const modulesTree = {"src": {"handlers": {"client_socket": {}, "object_ids_handler": {}, "processor_socket": {}, "timeline_handler": {}}, "main": {}, "objects": {"connections": {}, "object_management": {}, "tracking_object": {}}, "utility": {"get_auth": {}, "http_server": {}, "logger": {}}}};
 
         renderTree("");
 
