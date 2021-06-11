@@ -149,7 +149,9 @@ class ClientSocket(WebSocketHandler):
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of clients."""
         logger.log_disconnect("/client", self.request.remote_ip)
-        del clients[self.identifier]
+
+        # Pop the identifier as it might not exist if the client has not authenticated yet.
+        clients.pop(self.identifier, None)
         logger.log(f"Client with id {self.identifier} disconnected")
 
     def authenticate(self, message):
