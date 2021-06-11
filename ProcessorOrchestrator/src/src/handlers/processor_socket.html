@@ -241,9 +241,9 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">in</span> <span class="n">processors</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
+        <span class="c1"># Pop the identifier instead of del as it might be called twice.</span>
+        <span class="n">processors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
@@ -473,9 +473,9 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">in</span> <span class="n">processors</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
+        <span class="c1"># Pop the identifier instead of del as it might be called twice.</span>
+        <span class="n">processors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
@@ -870,9 +870,9 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">in</span> <span class="n">processors</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
+        <span class="c1"># Pop the identifier instead of del as it might be called twice.</span>
+        <span class="n">processors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>

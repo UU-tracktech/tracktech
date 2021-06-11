@@ -245,7 +245,9 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of clients.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
+
+        <span class="c1"># Pop the identifier as it might not exist if the client has not authenticated yet.</span>
+        <span class="n">clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -536,7 +538,9 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of clients.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
+
+        <span class="c1"># Pop the identifier as it might not exist if the client has not authenticated yet.</span>
+        <span class="n">clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -989,7 +993,9 @@ format.</p>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of clients.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
+
+        <span class="c1"># Pop the identifier as it might not exist if the client has not authenticated yet.</span>
+        <span class="n">clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 </pre></div>
 
