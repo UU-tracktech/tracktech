@@ -27,10 +27,11 @@ def create_http_servers(app):
     # Get ssl ready, if provided in the environment variables.
     cert = os.environ.get('SSL_CERT')
     key = os.environ.get('SSL_KEY')
+    use_tls = cert is not None and key is not None
 
     https_server = None
 
-    if cert is not None and key is not None:
+    if use_tls:
         # Create a ssl context.
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_ctx.load_cert_chain(cert, key)
