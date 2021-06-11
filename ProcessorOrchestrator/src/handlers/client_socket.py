@@ -11,9 +11,10 @@ import json
 
 from tornado.websocket import WebSocketHandler
 
-from src.object_manager import TrackingObject, objects
-from src.connections import processors, clients
-import src.logger as logger
+from src.objects.object_management import objects
+from src.objects.tracking_object import TrackingObject
+from src.objects.connections import processors, clients
+import src.utility.logger as logger
 
 
 class ClientSocket(WebSocketHandler):
@@ -63,7 +64,10 @@ class ClientSocket(WebSocketHandler):
         """
         logger.log_connect("/client", self.request.remote_ip)
         logger.log(f"New client connected with id: {self.identifier}")
-        clients[self.identifier] = self
+
+        # Add the client directly if auth is disabled.
+        if self.auth is None:
+            clients[self.identifier] = self
 
     # pylint: disable=broad-except
     def on_message(self, message):
@@ -83,6 +87,7 @@ class ClientSocket(WebSocketHandler):
         logger.log_message_receive(message, "/client", self.request.remote_ip)
 
         try:
+            # Message should be in JSON format.
             message_object = json.loads(message)
 
             # Switch on message type.
@@ -95,8 +100,10 @@ class ClientSocket(WebSocketHandler):
                     lambda: self.stop_tracking(message_object)
             }
 
+            # Get message type.
             action_type = message_object["type"]
 
+            # Only execute function if socket is authenticated.
             if self.authorized or self.auth is None:
                 # Execute correct function.
                 function = actions.get(action_type)
@@ -107,11 +114,15 @@ class ClientSocket(WebSocketHandler):
             elif action_type == "authenticate":
                 self.authenticate(message_object)
             else:
+                # Close the connection.
+                self.close()
                 logger.log("A client was not authenticated first")
 
+        # Message was not in JSON format.
         except ValueError as exc:
             logger.log_error("/client", "ValueError", self.request.remote_ip)
             print("Someone wrote bad json", exc)
+        # Message was in JSON format but did not contain all nececcary parameters.
         except KeyError as exc:
             logger.log_error("/client", "KeyError", self.request.remote_ip)
             print("Someone missed a property in their json", exc)
@@ -153,6 +164,7 @@ class ClientSocket(WebSocketHandler):
         if self.auth is not None:
             self.auth.validate(message["jwt"])
             self.authorized = True
+            clients[self.identifier] = self
 
     def set_uses_image(self, message):
         """Set whether or not this client uses images.
@@ -164,6 +176,8 @@ class ClientSocket(WebSocketHandler):
         """
 
         self.uses_images = message["usesImages"]
+
+        # If the client specifies it uses images, then send all the currently saved messages.
         if self.uses_images is True:
             for tracking_object in objects.values():
                 if tracking_object[0].image is not None:
@@ -191,10 +205,12 @@ class ClientSocket(WebSocketHandler):
                 be present, though a full combination is also possible.
         """
         camera_id = message["cameraId"]
+        # The following parameters are optional.
         frame_id = message.get("frameId")
         box_id = message.get("boxId")
         image = message.get("image")
 
+        # But at least some of them are required.
         if image is None and (frame_id is None or box_id is None):
             raise KeyError()
 
@@ -202,12 +218,14 @@ class ClientSocket(WebSocketHandler):
             logger.log("Unknown processor")
             return
 
+        # Create new tracking image, this also assigns an id.
         tracking_object = TrackingObject(image)
 
         logger.log(
             f"New tracking object created with id {tracking_object.identifier}, "
             f"found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}")
 
+        # Construct processor message.
         processor_message = {
             "type": "start",
             "objectId": tracking_object.identifier
@@ -220,10 +238,12 @@ class ClientSocket(WebSocketHandler):
         if image is not None:
             processor_message["image"] = image
 
+        # Send to the specified processor.
         processors[camera_id].send_message(json.dumps(
             processor_message
         ))
 
+        # Construct message for clients that use images.
         client_message = {
             "type": "newObject",
             "objectId": tracking_object.identifier
@@ -253,14 +273,17 @@ class ClientSocket(WebSocketHandler):
             logger.log("unknown object")
             return
 
+        # Let the object remove itself.
         objects[object_id][0].remove_self()
 
+        # Inform processors.
         for processor in processors.values():
             processor.send_message(json.dumps({
                 "type": "stop",
                 "objectId": object_id
             }))
 
+        # Inform clients that use images.
         for client in clients.values():
             if client.uses_images is True:
                 client.send_message(json.dumps({

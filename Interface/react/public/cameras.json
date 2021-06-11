@@ -1,14 +1,12 @@
 [
   {
     "Name": "Cam1",
-    "Forwarder": "https://tracktech.ml:50008/stream.m3u8"
+    "Id": "stream 1",
+    "Forwarder": "http://tracktech.ml:50008/stream.m3u8"
   },
   {
     "Name": "Cam2",
+    "Id": "stream 2",
     "Forwarder": "https://tracktech.ml:50012/stream.m3u8"
-  },
-  {
-    "Name": "TestVid",
-    "Forwarder": "http://sample.vodobox.com/big_buck_bunny_4k/big_buck_bunny_4k.m3u8"
   }
 ]

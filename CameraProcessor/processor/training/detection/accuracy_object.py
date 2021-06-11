@@ -31,7 +31,7 @@ class AccuracyObject:
     """
 
     def __init__(self, configs):
-        """Initialise AccuracyObject by reading the config and the ground truth file.
+        """Initialise AccuracyObject by reading the config, and the ground truth file.
 
         Args:
             configs (Dict): Configuration parser which also contains the accuracy configurations.

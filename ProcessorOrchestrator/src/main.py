@@ -12,13 +12,13 @@ import os
 from tornado.ioloop import IOLoop
 from tornado.web import Application
 
-from src.get_auth import get_auth_params
-from src.http_server import create_http_servers
-from src.client_socket import ClientSocket
-from src.object_manager import start_tracking_timeout_monitoring
-from src.processor_socket import ProcessorSocket
-from src.timeline_handler import TimeLineHandler
-from src.object_ids_handler import ObjectIdsHandler
+from src.utility.get_auth import get_auth_params
+from src.utility.http_server import create_http_servers
+from src.objects.object_management import start_tracking_timeout_monitoring
+from src.handlers.client_socket import ClientSocket
+from src.handlers.processor_socket import ProcessorSocket
+from src.handlers.timeline_handler import TimeLineHandler
+from src.handlers.object_ids_handler import ObjectIdsHandler
 
 
 def main():

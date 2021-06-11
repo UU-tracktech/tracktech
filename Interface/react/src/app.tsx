@@ -34,14 +34,14 @@ export function App() {
         return <NeedLogin />
       case 'authenticated':
         return (
-          <>
+          <WebsocketProvider>
             <Route exact path='/'>
               <Home />
             </Route>
             <Route exact path='/timelines'>
               <Timelines />
             </Route>
-          </>
+          </WebsocketProvider>
         )
     }
   }
@@ -56,12 +56,10 @@ export function App() {
       }}
     >
       {/* Shows the navbar and page contents depending on user authentication */}
-      <WebsocketProvider>
-        <BrowserRouter key={1}>
-          <NavMenu key={0} />
-          {body()}
-        </BrowserRouter>
-      </WebsocketProvider>
+      <BrowserRouter key={1}>
+        <NavMenu key={0} />
+        {body()}
+      </BrowserRouter>
     </Layout>
   )
 }

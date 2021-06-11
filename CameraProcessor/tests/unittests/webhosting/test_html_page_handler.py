@@ -13,7 +13,7 @@ from processor.webhosting.html_page_handler import HtmlPageHandler
 
 
 class TestHtmlPageHandler(AsyncHTTPTestCase):
-    """Test the html page handler whether the pages gets retrieved correctly."""
+    """Test the html page handler whether the pages get retrieved correctly."""
     def get_app(self):
         """Creates the tornado the app.
 

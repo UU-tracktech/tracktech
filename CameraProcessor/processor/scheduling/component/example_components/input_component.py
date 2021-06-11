@@ -21,10 +21,10 @@ class InputComponent(IComponent):
         """Example function with single argument that can be returned by execute_component().
 
         Args:
-            obj (object): Input object passed through by scheduler.
+            obj (object): Input object passed through by the scheduler.
 
         Returns:
-            object: Modified object used by the next layer.
+            object: A modified object used by the next layer.
         """
         return obj
 

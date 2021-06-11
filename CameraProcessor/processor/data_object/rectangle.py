@@ -12,10 +12,10 @@ class Rectangle:
         """Inits rectangle with bottom right and top left coords.
 
         Args:
-            x1 (float): normalized left most X.
-            y1 (float): normalized top most Y.
-            x2 (float): normalized right most X.
-            y2 (float): normalized bottom most Y.
+            x1 (float): normalized top-left X.
+            y1 (float): normalized top-left Y.
+            x2 (float): normalized bottom-right X.
+            y2 (float): normalized bottom-right Y.
         """
         # Rounding for float precision errors errors.
         if round(x1, 2) > round(x2, 2):
@@ -24,7 +24,7 @@ class Rectangle:
             raise ValueError(f'y1 {y1} should be smaller than or equal to y2 {y2}')
 
         if round(x1, 2) < 0 or round(y1, 2) < 0:
-            raise ValueError(f'x1 {x1} and y1 {y1} should be bigger than or equal to 0')
+            raise ValueError(f'x1 {x1} and y1 {y1} should be greater than or equal to 0')
         if round(x2, 2) > 1 or round(y2, 2) > 1:
             raise ValueError(f'x2 {x2} and y2 {y2} should be smaller than or equal to 1')
 
@@ -35,7 +35,7 @@ class Rectangle:
 
     @property
     def x1(self):
-        """Getter for right X coord of rectangle.
+        """Getter for top-left X coordinate of rectangle.
 
         Returns:
             (float): normalized right most X.
@@ -44,7 +44,7 @@ class Rectangle:
 
     @property
     def y1(self):
-        """Getter for bottom Y coord of rectangle.
+        """Getter for top-left Y coordinate of rectangle.
 
         Returns:
             (float): normalized bottom most Y.
@@ -53,7 +53,7 @@ class Rectangle:
 
     @property
     def x2(self):
-        """Getter for left X coord of rectangle.
+        """Getter for bottom-right X coordinate of rectangle.
 
         Returns:
             (float): normalized left most X.
@@ -62,7 +62,7 @@ class Rectangle:
 
     @property
     def y2(self):
-        """Getter for top Y coord of rectangle.
+        """Getter for bottom-right Y coordinate of rectangle.
 
         Returns:
             (float): normalized top most Y.
