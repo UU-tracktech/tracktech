@@ -107,6 +107,8 @@ class ProcessorSocket(WebSocketHandler):
             elif action_type == "authenticate":
                 self.authenticate(message_object)
             else:
+                # Close the connection.
+                self.close()
                 logger.log("A processor was not authenticated first")
 
         except ValueError:
