@@ -160,10 +160,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Add the client directly if auth is disabled.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="c1"># pylint: disable=broad-except</span>
     <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -210,8 +207,6 @@ Utrecht University within the Software Project course.
             <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Close the connection.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A client was not authenticated first&quot;</span><span class="p">)</span>
 
         <span class="c1"># Message was not in JSON format.</span>
@@ -260,7 +255,6 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
@@ -451,10 +445,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Add the client directly if auth is disabled.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="c1"># pylint: disable=broad-except</span>
     <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -501,8 +492,6 @@ Utrecht University within the Software Project course.
             <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Close the connection.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A client was not authenticated first&quot;</span><span class="p">)</span>
 
         <span class="c1"># Message was not in JSON format.</span>
@@ -551,7 +540,6 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
@@ -797,10 +785,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Add the client directly if auth is disabled.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 </pre></div>
 
         </details>
@@ -873,8 +858,6 @@ to a dict of other websockets.</p>
             <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Close the connection.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A client was not authenticated first&quot;</span><span class="p">)</span>
 
         <span class="c1"># Message was not in JSON format.</span>
@@ -1022,7 +1005,6 @@ format.</p>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 </pre></div>
 
         </details>
