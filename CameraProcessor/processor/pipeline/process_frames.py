@@ -13,7 +13,7 @@ import cv2
 import processor.utils.text as text
 import processor.utils.display as display
 
-from processor.pipeline.framebuffer import FrameBuffer
+from processor.pipeline.frame_buffer import FrameBuffer
 
 from processor.pipeline.reidentification.reid_data import ReidData
 

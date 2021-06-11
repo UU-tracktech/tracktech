@@ -79,13 +79,6 @@ class DocstringChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.FunctionDef): Function definition containing the .doc property.
         """
-        # If the function has empty body then return, missing docstring already gets emitted.
-        if not node.doc:
-            self.add_message('docstring-is-missing',
-                             node=node
-                             )
-            return
-
         self.check_docstring(node)
 
     def visit_classdef(self, node):
@@ -94,12 +87,6 @@ class DocstringChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.
         """
-        if not node.doc:
-            self.add_message('docstring-is-missing',
-                             node=node
-                             )
-            return
-
         self.check_docstring(node)
 
     def visit_module(self, node):
@@ -108,10 +95,8 @@ class DocstringChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.Module): Module definition astroid creates
         """
-        if not node.doc:
-            self.add_message('docstring-is-missing',
-                             node=node
-                             )
+        # A limitation of Pylint is that it adds the root __init__.py regardless of whether it is ignored.
+        if node.path[0].endswith('__init__.py'):
             return
 
         self.check_docstring(node)
@@ -122,6 +107,13 @@ class DocstringChecker(BaseChecker):
         Args:
             node (Any): Function or class definition containing the docstring.
         """
+        # Docstring is missing from the node.
+        if not node.doc:
+            self.add_message('docstring-is-missing',
+                             node=node
+                             )
+            return
+
         # Get documentation.
         doc_lines = self.get_full_docstring(node)
 

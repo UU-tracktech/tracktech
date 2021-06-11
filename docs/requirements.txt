@@ -8,4 +8,4 @@ mock
 
 # Because of being used as superclasses
 tornado==6.1
-pylint==2.8.3
+pylint==2.8.2
