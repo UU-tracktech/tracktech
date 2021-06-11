@@ -29,7 +29,7 @@ class ClassesChecker(BaseChecker):
                   'multiple-class-definitions',
                   'Emitted when a file has more than one class'
                   ),
-        'C1230': ('Class name is incorrect, expected name: "%s"%s',
+        'C1230': ('Class name is incorrect, expected name: "%s"',
                   'incorrect-class-name',
                   'Emitted when a class name doesn\'t correspond to the filename (correctly)'
                   )
@@ -79,44 +79,11 @@ class ClassesChecker(BaseChecker):
         if class_name == expected_class_name:
             return
 
-        # Get the interface version of an accepted name.
-        expected_interface_name = self.get_expected_interface_name(expected_class_name)
-
-        # Get the test version of an accepted interface name.
-        if file_words[0] == 'Test' and file_words[1][0] == 'I':
-            test_class_suffix = "".join(file_words[1:])
-            expected_interface_name = "Test" + self.get_expected_interface_name(test_class_suffix)
-
-        # Return when the (interface) class name is correct.
-        if class_name == expected_interface_name:
-            return
-
-        # Pylint report message containing the expected class name and/or expected interface name.
-        if not expected_interface_name:
-            self.add_message('incorrect-class-name',
-                             node=node,
-                             args=(expected_class_name, ""),
-                             line=class_line)
-        else:
-            self.add_message('incorrect-class-name',
-                             node=node,
-                             args=(expected_class_name, f' or "{expected_interface_name}"'),
-                             line=class_line)
-
-    def get_expected_interface_name(self, name):
-        """If the name starts with I, make the second letter upper case, otherwise return empty string.
-
-        Args:
-            name (str): Name to turn into an interface name.
-
-        Returns:
-            expected_interface_name (str): Interface version of name.
-
-        """
-        if name[0] != 'I':
-            return ""
-        expected_interface_name = name[0] + name[1].upper() + name[2:]
-        return expected_interface_name
+        # Pylint report message containing the expected class name.
+        self.add_message('incorrect-class-name',
+                         node=node,
+                         args=expected_class_name,
+                         line=class_line)
 
 
 def register(linter):
