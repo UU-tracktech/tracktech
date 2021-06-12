@@ -20,7 +20,7 @@ COPY .coveragerc .coveragerc
 COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
 RUN ["pip","install","Auth-1.0.tar.gz"]
 
-RUN ["mkdir", "utility/pylint-plugins"]
+RUN ["mkdir", "-p", "utility/pylint-plugins"]
 
 # Make sure port is available
 EXPOSE 80
