@@ -68,6 +68,7 @@ Utrecht University within the Software Project course.
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -140,7 +141,8 @@ Utrecht University within the Software Project course.
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        AttributeError: Mode in which is ran does not exist.</span>
+<span class="sd">        AttributeError: Mode in which is run does not exist.</span>
+<span class="sd">        EnvironmentError: CAMERA_ID is missing, but the application is running in deploy mode.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the config file.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
@@ -160,7 +162,11 @@ Utrecht University within the Software Project course.
         <span class="p">)</span>
     <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
-        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;camera_id&#39;</span><span class="p">]</span>
+        <span class="c1"># Make sure camera id is set to identify the processor.</span>
+        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CAMERA_ID&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">websocket_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;CAMERA_ID not set in environment.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s1">&#39;Environment variable CAMERA_ID is missing but is required during deployment.&#39;</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">websocket_id</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Mode you try to run in does not exist, did you make a typo?&quot;</span><span class="p">)</span>
@@ -294,7 +300,8 @@ Utrecht University within the Software Project course.
 <span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        AttributeError: Mode in which is ran does not exist.</span>
+<span class="sd">        AttributeError: Mode in which is run does not exist.</span>
+<span class="sd">        EnvironmentError: CAMERA_ID is missing, but the application is running in deploy mode.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Load the config file.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
@@ -314,7 +321,11 @@ Utrecht University within the Software Project course.
         <span class="p">)</span>
     <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
-        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;camera_id&#39;</span><span class="p">]</span>
+        <span class="c1"># Make sure camera id is set to identify the processor.</span>
+        <span class="n">websocket_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CAMERA_ID&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">websocket_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;CAMERA_ID not set in environment.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s1">&#39;Environment variable CAMERA_ID is missing but is required during deployment.&#39;</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">websocket_id</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Mode you try to run in does not exist, did you make a typo?&quot;</span><span class="p">)</span>
@@ -330,7 +341,8 @@ Deploy first needs to connect with the orchestrator before it is able to start t
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>AttributeError:</strong>  Mode in which is ran does not exist.</li>
+<li><strong>AttributeError:</strong>  Mode in which is run does not exist.</li>
+<li><strong>EnvironmentError:</strong>  CAMERA_ID is missing, but the application is running in deploy mode.</li>
 </ul>
 </div>
 
