@@ -199,3 +199,7 @@ For example, when using the Market1501 and COCO datasets, the folder structure m
                ├──query
                └──readme.txt
 ```
+
+#### I want to train with custom data. Is this possible?
+
+Yes, as long as the data is in similar format as one of the supported datasets.
