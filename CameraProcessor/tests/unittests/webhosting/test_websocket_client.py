@@ -15,7 +15,7 @@ from tests.unittests.webhosting.conftest import messages_are_equal
 from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
 from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
 from tests.unittests.utils.dummy_websocket_client import DummyWebsocketClient
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 from processor.webhosting.start_command_simple import StartCommandSimple
 from processor.webhosting.start_command_extended import StartCommandExtended
 from processor.webhosting.start_command_search import StartCommandSearch

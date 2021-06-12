@@ -8,7 +8,7 @@ import asyncio
 import pytest
 
 from utils.utils import PC_URL
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 
 
 # pylint: disable=attribute-defined-outside-init
