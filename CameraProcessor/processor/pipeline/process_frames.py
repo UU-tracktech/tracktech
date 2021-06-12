@@ -13,7 +13,7 @@ import cv2
 import processor.utils.text as text
 import processor.utils.display as display
 
-from processor.pipeline.framebuffer import FrameBuffer
+from processor.pipeline.frame_buffer import FrameBuffer
 
 from processor.pipeline.reidentification.reid_data import ReidData
 
@@ -177,16 +177,20 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
     feature_map = None
     if isinstance(track_elem, StartCommandSimple):
         # Extract features from cutout.
-        feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
+        stored_frame = framebuffer.get_frame(track_elem.frameId)
+        stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
+        feature_map = re_identifier.extract_features(stored_frame, stored_box)
     elif isinstance(track_elem, StartCommandExtended):
         # Extract features from cutout.
-        feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
+        stored_frame = framebuffer.get_frame(track_elem.frameId)
+        stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
+        feature_map = re_identifier.extract_features(stored_frame, stored_box)
         # TODO: add feature_map comparison logic here # pylint: disable=fixme.
     elif isinstance(track_elem, StartCommandSearch):
         try:
             # Look for the box in the buffer.
-            stored_frame = framebuffer.get_frame(track_elem.frame_id)
-            stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+            stored_frame = framebuffer.get_frame(track_elem.frameId)
+            stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
         except IndexError as index_error:
             # Frame or box not found in the buffer, log the error.
             error = index_error
@@ -197,14 +201,14 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
 
     # If successfully extracted, send the feature_map to the orchestrator.
     if feature_map is not None:
-        send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
+        send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.objectId)
 
         # Extract the features from this bounding box and store them in the data.
-        re_id_data.add_query_feature(track_elem.object_id, feature_map)
+        re_id_data.add_query_feature(track_elem.objectId, feature_map)
 
         # Also store the map of the first box_id to the object_id, if we have a box ID.
-        if track_elem.box_id is not None:
-            re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
+        if track_elem.boxId is not None:
+            re_id_data.add_query_box(track_elem.boxId, track_elem.objectId)
     # If we have an error, log it and send it to orchestrator.
     elif error is not None:
         send_error_to_orchestrator(ws_client, error)

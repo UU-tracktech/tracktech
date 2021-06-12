@@ -5,7 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import numpy as np
-from processor.scheduling.node.inode import INode
+from processor.scheduling.node.i_node import INode
 
 
 class ScheduleNode(INode):

@@ -12,7 +12,7 @@ from processor.input.hls_capture import HlsCapture
 
 
 # pylint: disable=attribute-defined-outside-init
-class TestVideoForwarder:
+class TestHlsCapture:
     """Tests the video forwarder in combination with the camera processor.
 
     Checks basic functionality of the hls capture

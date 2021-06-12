@@ -12,8 +12,8 @@ from processor.input.hls_capture import HlsCapture
 from processor.input.image_capture import ImageCapture
 from processor.input.video_capture import VideoCapture
 
-from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
-from processor.utils.create_runners import create_detector, create_tracker, DETECTOR_SWITCH, TRACKER_SWITCH
+from processor.utils.create_runners import \
+    create_detector, create_tracker, create_reidentifier, DETECTOR_SWITCH, TRACKER_SWITCH, REID_SWITCH
 
 import processor.scheduling.plan.pipeline_plan as pipeline_plan
 from processor.scheduling.scheduler import Scheduler
@@ -97,8 +97,13 @@ def prepare_reidentifier(configs):
     """
     # Instantiate the re-identifier.
     logging.info("Instantiating reidentifier...")
-    re_identifier_config = configs['Reid']
-    return TorchReIdentifier('osnet_x1_0', re_identifier_config)
+    if configs['Main'].get('reid').lower() not in REID_SWITCH:
+        raise NameError(f"Incorrect re-identifier. Re-identifier {configs['Main'].get('reid')} not found.")
+
+    # Create re-identifier since it exists.
+    return create_reidentifier(configs['Main'].get('reid'),
+                               configs
+                               )
 
 
 def prepare_capture(input_config):
