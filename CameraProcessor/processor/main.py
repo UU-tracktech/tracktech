@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
+import os
 import sys
 import logging
 import asyncio
@@ -77,7 +78,8 @@ def main():
     Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
 
     Raises:
-        AttributeError: Mode in which is ran does not exist.
+        AttributeError: Mode in which is run does not exist.
+        EnvironmentError: CAMERA_ID is missing, but the application is running in deploy mode.
     """
     # Load the config file.
     config_parser = ConfigParser('configs.ini', True)
@@ -97,7 +99,11 @@ def main():
         )
     # Deploy mode where all is sent to the orchestrator using the websocket url.
     elif configs['Main']['mode'].lower() == 'deploy':
-        websocket_id = configs['Input']['camera_id']
+        # Make sure camera id is set to identify the processor.
+        websocket_id = os.getenv('CAMERA_ID')
+        if websocket_id is None:
+            logging.error('CAMERA_ID not set in environment.')
+            raise EnvironmentError('Environment variable CAMERA_ID is missing but is required during deployment.')
         asyncio.get_event_loop().run_until_complete(deploy(configs, websocket_id))
     else:
         raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
