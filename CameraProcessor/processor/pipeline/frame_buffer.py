@@ -5,7 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 from collections import OrderedDict
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class FrameBuffer(IComponent):

@@ -38,3 +38,6 @@ jobs:
       - name: Remove
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml down --rmi all
         if: ${{ always() }}
+      - name: Prune images
+        run: docker image prune --force
+        if: ${{ always() }}

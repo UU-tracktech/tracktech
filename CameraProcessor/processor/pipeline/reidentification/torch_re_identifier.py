@@ -11,7 +11,7 @@ import gdown
 from scipy.spatial.distance import euclidean
 
 import processor.utils.features as UtilsFeatures
-from processor.pipeline.reidentification.ireidentifier import IReIdentifier
+from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
@@ -22,24 +22,23 @@ class TorchReIdentifier(IReIdentifier):
 
     Attributes:
         extractor (FeatureExtractor): Extractor for the feature vectors.
-        configs (configparser.SectionProxy): Re-ID configuration.
+        config (configparser.SectionProxy): Re-ID configuration.
         threshold (float): Threshold from which a re-identification is included.
     """
 
-    def __init__(self, model_name, configs):
+    def __init__(self, config):
         """Initialize torch re-identifier.
 
         Args:
-            model_name (string): The file name of the model weights.
-            configs (configparser.SectionProxy): Re-ID configuration.
+            config (configparser.SectionProxy): Re-ID configuration.
         """
 
         # The path where the model weight file should be located.
-        weights_path = os.path.join(configs['weights_dir_path'], model_name + '.pth')
+        weights_path = os.path.join(config['weights_dir_path'], config['model_name'] + '.pth')
 
         # Download the weights if it's not in the directory.
-        if not os.path.exists(configs['weights_dir_path']):
-            os.mkdir(configs['weights_dir_path'])
+        if not os.path.exists(config['weights_dir_path']):
+            os.mkdir(config['weights_dir_path'])
 
         if not os.path.exists(weights_path):
             url = 'https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download'
@@ -48,12 +47,12 @@ class TorchReIdentifier(IReIdentifier):
 
         # Initialize the feature extractor of torch re-id.
         self.extractor = FeatureExtractor(
-            model_name=model_name,
+            model_name=config['model_name'],
             model_path=weights_path,
-            device=configs['device'])
+            device=config['device'])
 
-        self.configs = configs
-        self.threshold = float(self.configs["threshold"])
+        self.config = config
+        self.threshold = float(self.config["threshold"])
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.
@@ -70,7 +69,7 @@ class TorchReIdentifier(IReIdentifier):
         """
         # Cutout the bounding box from the frame and resize the cutout to the right size.
         cutout = UtilsFeatures.slice_bounding_box(bbox, frame_obj.frame)
-        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
         # Extract the feature from the cutout and convert it to a normal float array.
         feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
@@ -87,7 +86,7 @@ class TorchReIdentifier(IReIdentifier):
             [float]: Feature vector of the cutout
         """
         # Resize the cutout.
-        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.configs)
+        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
         return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 

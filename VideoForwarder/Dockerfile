@@ -50,7 +50,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
 # Install pylint
-RUN ["pip", "install", "pylint==2.8.3"]
+RUN ["pip", "install", "pylint==2.8.2"]
 
 RUN ["mkdir", "utility"]
 

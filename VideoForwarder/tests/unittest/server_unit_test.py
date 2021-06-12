@@ -14,7 +14,7 @@ from src.camera_handler import CameraHandler
 from src.main import create_camera, create_stream_options, get_wait_delay, get_timeout_delay
 
 
-class TestHandler(AsyncHTTPTestCase):
+class ServerUnitTest(AsyncHTTPTestCase):
     """Test the server without authentication."""
 
     def get_app(self):
