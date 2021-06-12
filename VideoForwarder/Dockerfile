@@ -52,7 +52,7 @@ ENV PYTHONPATH=/app
 # Install pylint
 RUN ["pip", "install", "pylint==2.8.2"]
 
-RUN ["mkdir", "utility"]
+RUN ["mkdir", "utility/pylint-plugins"]
 
 # Copy the actual source code
 COPY src src

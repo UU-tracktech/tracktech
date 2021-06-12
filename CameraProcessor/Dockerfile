@@ -59,7 +59,7 @@ ENTRYPOINT  ["pytest", "tests/orchestratorintegrationtests", "--cov=processor/",
 FROM test AS lint
 RUN ["pip", "install", "pylint==2.8.2", "pylint-exit"]
 
-RUN ["mkdir", "utility"]
+RUN ["mkdir", "utility/pylint-plugins"]
 
 COPY processor processor
 COPY tests tests
