@@ -21,6 +21,8 @@ jobs:
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_lint.yml up --build --no-start
       - name: Copy in pylintrc
         run: docker cp .pylintrc processor-orchestrator_container:/app
+      - name: Copy in utility __init__
+        run: docker cp utility/__init__.py processor-orchestrator_container:/app/utility/
       - name: Copy in pylint-utility
         run: docker cp utility/pylint-plugins/ processor-orchestrator_container:/app/utility/pylint-plugins/
       - name: Start

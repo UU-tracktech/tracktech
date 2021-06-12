@@ -21,6 +21,8 @@ jobs:
         run: docker-compose -f ./CameraProcessor/compose/docker-compose_lint.yml up --build --no-start
       - name: Copy linting file into service
         run: docker cp .pylintrc camera-processor_lint_container:/app
+      - name: Copy in utility __init__
+        run: docker cp utility/__init__.py camera-processor_lint_container:/app/utility/
       - name: Copy in pylint-utility
         run: docker cp utility/pylint-plugins/ camera-processor_lint_container:/app/utility/pylint-plugins/
       - name: Start service
