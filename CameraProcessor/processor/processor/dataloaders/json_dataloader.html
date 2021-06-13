@@ -32,6 +32,9 @@
                     <a class="class" href="#JsonDataloader">JsonDataloader</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="function" href="#JsonDataloader.__init__">JsonDataloader</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#JsonDataloader.get_annotations">get_annotations</a>
                         </li>
                         <li>
@@ -80,6 +83,11 @@ Utrecht University within the Software Project course.
 
 <span class="k">class</span> <span class="nc">JsonDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
@@ -146,6 +154,11 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">JsonDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
 
@@ -200,6 +213,35 @@ Utrecht University within the Software Project course.
 </div>
 
 
+                            <div id="JsonDataloader.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JsonDataloader.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">JsonDataloader</span><span class="signature">(configs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Initialize dataloader.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>configs (dict):</strong>  A dictionary of the configs.</li>
+<li><strong>path_location (str):</strong>  String to select gt or det from the accuracy config.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="JsonDataloader.get_annotations" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#JsonDataloader.get_annotations">#&nbsp;&nbsp</a>
 

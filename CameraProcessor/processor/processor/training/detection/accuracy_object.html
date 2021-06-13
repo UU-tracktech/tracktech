@@ -119,13 +119,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+        <span class="n">coco_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;COCO&#39;</span><span class="p">]</span>
         <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">det_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
+        <span class="n">gt_dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_prefix&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">gt_dataloader_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -162,37 +165,35 @@ Utrecht University within the Software Project course.
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
 
-    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
+    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataloader</span>
 
-    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): String format of annotation.</span>
-<span class="sd">            path_location (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">)</span>
         <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
@@ -201,13 +202,17 @@ Utrecht University within the Software Project course.
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start accuracy calculations.&quot;</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing the ground truth.&quot;</span><span class="p">)</span>
         <span class="c1"># Getting the bounding boxes from the gt file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">,</span> <span class="s1">&#39;gt_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing the detections.&quot;</span><span class="p">)</span>
         <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
-        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;det_path&#39;</span><span class="p">)</span>
+        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the AP.&quot;</span><span class="p">)</span>
         <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
@@ -291,13 +296,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+        <span class="n">coco_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;COCO&#39;</span><span class="p">]</span>
         <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">det_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
+        <span class="n">gt_dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_prefix&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">gt_dataloader_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -334,37 +342,35 @@ Utrecht University within the Software Project course.
                 <span class="n">list_parsed_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
 
-    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
+    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataloader</span>
 
-    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): String format of annotation.</span>
-<span class="sd">            path_location (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">)</span>
         <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
@@ -373,13 +379,17 @@ Utrecht University within the Software Project course.
 
     <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start accuracy calculations.&quot;</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing the ground truth.&quot;</span><span class="p">)</span>
         <span class="c1"># Getting the bounding boxes from the gt file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">,</span> <span class="s1">&#39;gt_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing the detections.&quot;</span><span class="p">)</span>
         <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
-        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;det_path&#39;</span><span class="p">)</span>
+        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the AP.&quot;</span><span class="p">)</span>
         <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
@@ -453,13 +463,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+        <span class="n">coco_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;COCO&#39;</span><span class="p">]</span>
         <span class="c1"># Initializing class variables.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">yolo_config</span><span class="p">[</span><span class="s1">&#39;iou-thres&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;gt_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">det_format</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;det_format&#39;</span><span class="p">]</span>
+        <span class="n">gt_dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_prefix&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots_path</span> <span class="o">=</span> <span class="n">gt_dataloader_config</span><span class="p">[</span><span class="s1">&#39;plots_path&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 </pre></div>
@@ -545,27 +558,26 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">def</span>
-            <span class="name">get_dataloader</span><span class="signature">(self, annotation_format, path_location)</span>:
+            <span class="name">get_dataloader</span><span class="signature">(self, annotation_format)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;COCO&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">CocoDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;JSON&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">JsonDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">annotation_format</span> <span class="o">==</span> <span class="s1">&#39;MOT&#39;</span><span class="p">:</span>
-            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+            <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MotDataloader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is not a valid dataloader&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataloader</span>
@@ -573,13 +585,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Get a dataloader based on format and path_location.</p>
+            <div class="docstring"><p>Get a dataloader based on format.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
 <li><strong>annotation_format (str):</strong>  Dataloader format to select.</li>
-<li><strong>path_location (str):</strong>  Location in config to read annotations path from.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -596,22 +607,21 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">def</span>
-            <span class="name">read_boxes</span><span class="signature">(self, annotation_format, path_location)</span>:
+            <span class="name">read_boxes</span><span class="signature">(self, annotation_format)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method for reading the bounding boxes with the pre_annotations.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): String format of annotation.</span>
-<span class="sd">            path_location (str): Path to the file where the boxes are stored.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [BoundingBox]: A list of read bounding boxes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="n">dataloader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataloader</span><span class="p">(</span><span class="n">annotation_format</span><span class="p">)</span>
         <span class="n">bounding_boxes_objects</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
         <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">bounding_boxes_object</span> <span class="ow">in</span> <span class="n">bounding_boxes_objects</span><span class="p">:</span>
@@ -627,7 +637,6 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>annotation_format (str):</strong>  String format of annotation.</li>
-<li><strong>path_location (str):</strong>  Path to the file where the boxes are stored.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -651,13 +660,17 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves accuracy of detections.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start accuracy calculations.&quot;</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing the ground truth.&quot;</span><span class="p">)</span>
         <span class="c1"># Getting the bounding boxes from the gt file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">,</span> <span class="s1">&#39;gt_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gt_format</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parsing the detections.&quot;</span><span class="p">)</span>
         <span class="c1"># Getting and parsing the bounding boxes from the detection file.</span>
-        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;det_path&#39;</span><span class="p">)</span>
+        <span class="n">bounding_boxes_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_boxes</span><span class="p">(</span><span class="s1">&#39;JSON&#39;</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the AP.&quot;</span><span class="p">)</span>
         <span class="c1"># Using the podm.podm library to get the accuracy metrics.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">get_pascal_voc_metrics</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span><span class="p">,</span>
