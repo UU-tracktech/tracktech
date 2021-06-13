@@ -12,6 +12,11 @@ from processor.dataloaders.i_dataloader import IDataloader
 class JsonDataloader(IDataloader):
     """JSON Dataloader, formats MOT Data."""
 
+    def __init__(self, configs):
+        super().__init__(configs)
+        dataloader_config = configs['JSON']
+        self.file_path = dataloader_config['annotations_path']
+
     def get_annotations(self):
         """Reads the annotations from a file.
 

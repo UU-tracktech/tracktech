@@ -13,7 +13,7 @@ from processor.data_object.rectangle import Rectangle
 class IDataloader:
     """Dataloader superclass. A dataloader formats annotated data into generic BoundingBox objects."""
 
-    def __init__(self, configs, path_location):
+    def __init__(self, configs):
         """Initialize dataloader.
 
         Args:
@@ -21,8 +21,6 @@ class IDataloader:
             path_location (str): String to select gt or det from the accuracy config.
         """
         accuracy_config = configs['Accuracy']
-        self.file_path = accuracy_config[path_location]
-        self.image_path = accuracy_config['image_path']
         self.categories = accuracy_config['categories']
         self.filter_config = configs['Filter']
         self.image_dimensions = {}

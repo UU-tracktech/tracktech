@@ -38,13 +38,16 @@ class AccuracyObject:
         """
         yolo_config = configs['Yolov5']
         accuracy_config = configs['Accuracy']
+        coco_config = configs['COCO']
         # Initializing class variables.
         self.results = {}
         self.iou_threshold = float(yolo_config['iou-thres'])
         self.frame_amount = int(accuracy_config['nr_frames'])
-        self.gt_format = accuracy_config['det_format']
+        self.gt_format = accuracy_config['gt_format']
+        self.det_format = accuracy_config['det_format']
+        gt_dataloader_config = configs[self.gt_format]
         self.plots_prefix = accuracy_config['plots_prefix']
-        self.plots_path = accuracy_config['plots_path']
+        self.plots_path = gt_dataloader_config['plots_path']
         self.configs = configs
         self.bounding_boxes_gt = []
 
@@ -81,37 +84,35 @@ class AccuracyObject:
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def get_dataloader(self, annotation_format, path_location):
-        """Get a dataloader based on format and path_location.
+    def get_dataloader(self, annotation_format):
+        """Get a dataloader based on format.
 
         Args:
             annotation_format (str): Dataloader format to select.
-            path_location (str): Location in config to read annotations path from.
 
         Returns:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
         """
         if annotation_format == 'COCO':
-            dataloader = CocoDataloader(self.configs, path_location)
+            dataloader = CocoDataloader(self.configs)
         elif annotation_format == 'JSON':
-            dataloader = JsonDataloader(self.configs, path_location)
+            dataloader = JsonDataloader(self.configs)
         elif annotation_format == 'MOT':
-            dataloader = MotDataloader(self.configs, path_location)
+            dataloader = MotDataloader(self.configs)
         else:
             return ValueError("This is not a valid dataloader")
         return dataloader
 
-    def read_boxes(self, annotation_format, path_location):
+    def read_boxes(self, annotation_format):
         """A method for reading the bounding boxes with the pre_annotations.
 
         Args:
             annotation_format (str): String format of annotation.
-            path_location (str): Path to the file where the boxes are stored.
 
         Returns:
             [BoundingBox]: A list of read bounding boxes.
         """
-        dataloader = self.get_dataloader(annotation_format, path_location)
+        dataloader = self.get_dataloader(annotation_format)
         bounding_boxes_objects = dataloader.parse_file()
         bounding_boxes = []
         for bounding_boxes_object in bounding_boxes_objects:
@@ -120,13 +121,17 @@ class AccuracyObject:
 
     def detect(self):
         """Retrieves accuracy of detections."""
+        print("Start accuracy calculations.")
 
+        print("Parsing the ground truth.")
         # Getting the bounding boxes from the gt file.
-        self.bounding_boxes_gt = self.read_boxes(self.gt_format, 'gt_path')
+        self.bounding_boxes_gt = self.read_boxes(self.gt_format)
 
+        print("Parsing the detections.")
         # Getting and parsing the bounding boxes from the detection file.
-        bounding_boxes_det = self.read_boxes('JSON', 'det_path')
+        bounding_boxes_det = self.read_boxes('JSON')
 
+        print("Calculating the AP.")
         # Using the podm.podm library to get the accuracy metrics.
         self.results = get_pascal_voc_metrics(
             self.bounding_boxes_gt,

@@ -14,14 +14,17 @@ from processor.dataloaders.i_dataloader import IDataloader
 class MotDataloader(IDataloader):
     """MOT Dataloader, formats MOT Data."""
 
-    def __init__(self, configs, path_location):
+    def __init__(self, configs):
         """Initializes the MOTDataloader.
 
         Args:
             configs (dict): Configurations containing settings for dataloader.
             path_location (str): The path of the MOT data.
         """
-        super().__init__(configs, path_location)
+        super().__init__(configs)
+        dataloader_config = configs['MOT']
+        self.file_path = dataloader_config['annotations_path']
+        self.image_path = dataloader_config['image_path']
         self.skipped_lines = []
         self.delimiter = ' '
 

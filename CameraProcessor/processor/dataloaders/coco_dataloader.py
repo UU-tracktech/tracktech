@@ -15,14 +15,17 @@ from processor.dataloaders.i_dataloader import IDataloader
 class CocoDataloader(IDataloader):
     """COCO Dataloader, formats COCO Data."""
 
-    def __init__(self, configs, path_location):
+    def __init__(self, configs):
         """Initialize coco dataloader.
 
         Args:
             configs (dict): A dictionary of the configs.
             path_location (str): String to select gt or det from the accuracy config.
         """
-        super().__init__(configs, path_location)
+        super().__init__(configs)
+        dataloader_config = configs['COCO']
+        self.file_path = dataloader_config['annotations_path']
+        self.image_path = dataloader_config['image_path']
         self.coco = COCO(self.file_path)
 
     def download_coco_image(self, image_id):
