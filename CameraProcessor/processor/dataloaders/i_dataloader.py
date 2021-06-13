@@ -18,7 +18,6 @@ class IDataloader:
 
         Args:
             configs (dict): A dictionary of the configs.
-            path_location (str): String to select gt or det from the accuracy config.
         """
         accuracy_config = configs['Accuracy']
         self.categories = accuracy_config['categories']

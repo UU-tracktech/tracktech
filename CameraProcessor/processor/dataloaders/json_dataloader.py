@@ -13,6 +13,11 @@ class JsonDataloader(IDataloader):
     """JSON Dataloader, formats MOT Data."""
 
     def __init__(self, configs):
+        """Initialize json dataloader.
+
+        Args:
+            configs (dict): A dictionary of the configs.
+        """
         super().__init__(configs)
         dataloader_config = configs['JSON']
         self.file_path = dataloader_config['annotations_path']

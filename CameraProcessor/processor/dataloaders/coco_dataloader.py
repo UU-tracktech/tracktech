@@ -20,7 +20,6 @@ class CocoDataloader(IDataloader):
 
         Args:
             configs (dict): A dictionary of the configs.
-            path_location (str): String to select gt or det from the accuracy config.
         """
         super().__init__(configs)
         dataloader_config = configs['COCO']

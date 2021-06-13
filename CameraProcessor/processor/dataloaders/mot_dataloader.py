@@ -19,7 +19,6 @@ class MotDataloader(IDataloader):
 
         Args:
             configs (dict): Configurations containing settings for dataloader.
-            path_location (str): The path of the MOT data.
         """
         super().__init__(configs)
         dataloader_config = configs['MOT']

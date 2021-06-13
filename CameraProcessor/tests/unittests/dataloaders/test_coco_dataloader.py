@@ -7,9 +7,9 @@ Utrecht University within the Software Project course.
 
 import pytest
 
+from tests.conftest import get_test_configs
 from processor.dataloaders.coco_dataloader import CocoDataloader
 from processor.utils.config_parser import ConfigParser
-from tests.conftest import get_test_configs
 
 
 class TestCocoDataloader:
