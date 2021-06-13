@@ -449,6 +449,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Lines and index.</span>
         <span class="n">line_index</span> <span class="o">=</span> <span class="n">returns_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># Empty return section.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">line_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-return-type&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line_index</span>
         <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
 
         <span class="c1"># If the first line contains no type.</span>
@@ -985,6 +990,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Lines and index.</span>
         <span class="n">line_index</span> <span class="o">=</span> <span class="n">returns_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># Empty return section.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">line_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-return-type&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line_index</span>
         <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
 
         <span class="c1"># If the first line contains no type.</span>
@@ -1683,6 +1693,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Lines and index.</span>
         <span class="n">line_index</span> <span class="o">=</span> <span class="n">returns_section_line_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># Empty return section.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_lines</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">line_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;missing-return-type&#39;</span><span class="p">,</span>
+                             <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line_index</span>
         <span class="n">doc_line</span> <span class="o">=</span> <span class="n">doc_lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">]</span>
 
         <span class="c1"># If the first line contains no type.</span>
