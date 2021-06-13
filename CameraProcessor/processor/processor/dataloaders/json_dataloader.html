@@ -85,6 +85,11 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize json dataloader.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (dict): A dictionary of the configs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
@@ -155,6 +160,11 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize json dataloader.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (dict): A dictionary of the configs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
@@ -223,6 +233,11 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize json dataloader.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            configs (dict): A dictionary of the configs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
         <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
@@ -230,13 +245,12 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Initialize dataloader.</p>
+            <div class="docstring"><p>Initialize json dataloader.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
 <li><strong>configs (dict):</strong>  A dictionary of the configs.</li>
-<li><strong>path_location (str):</strong>  String to select gt or det from the accuracy config.</li>
 </ul>
 </div>
 
