@@ -23,7 +23,6 @@ class IDataloader:
         accuracy_config = configs['Accuracy']
         self.categories = accuracy_config['categories']
         self.filter_config = configs['Filter']
-        self.image_dimensions = {}
         self.current_boxes = []
         self.previous_image_id = -1
         nr_frames = int(accuracy_config['nr_frames'])
@@ -118,8 +117,8 @@ class IDataloader:
         Args:
             image_id (integer): String with the name of the image.
 
-        Returns:
-            (int,int): width and height dimensions of the image.
+        Raises:
+            NotImplementedError.
         """
         raise NotImplementedError('Get image dimensions not implemented')
 
