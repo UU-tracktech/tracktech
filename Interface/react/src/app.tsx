@@ -21,6 +21,7 @@ import { NeedLogin } from './pages/needLogin'
 import { Home } from './pages/home'
 import { Timelines } from './pages/timelines'
 import { WebsocketProvider } from './components/websocketContext'
+import { EnvironmentProvider } from './components/environmentContext'
 import useAuthState from './classes/useAuthState'
 
 export function App() {
@@ -47,19 +48,21 @@ export function App() {
   }
 
   return (
-    <Layout
-      style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'grid',
-        gridTemplateRows: 'auto 1fr'
-      }}
-    >
-      {/* Shows the navbar and page contents depending on user authentication */}
-      <BrowserRouter key={1}>
-        <NavMenu key={0} />
-        {body()}
-      </BrowserRouter>
-    </Layout>
+    <EnvironmentProvider>
+      <Layout
+        style={{
+          width: '100vw',
+          height: '100vh',
+          display: 'grid',
+          gridTemplateRows: 'auto 1fr'
+        }}
+      >
+        {/* Shows the navbar and page contents depending on user authentication */}
+        <BrowserRouter key={1}>
+          <NavMenu key={0} />
+          {body()}
+        </BrowserRouter>
+      </Layout>
+    </EnvironmentProvider>
   )
 }
