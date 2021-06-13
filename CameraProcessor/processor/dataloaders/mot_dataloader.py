@@ -25,6 +25,7 @@ class MotDataloader(IDataloader):
         dataloader_config = configs['MOT']
         self.file_path = dataloader_config['annotations_path']
         self.image_path = dataloader_config['image_path']
+        self.image_dimensions = {}
         self.skipped_lines = []
         self.delimiter = ' '
 
