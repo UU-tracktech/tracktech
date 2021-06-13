@@ -27,7 +27,7 @@ class TestMotDataloader:
 
     def test_init(self):
         """Tests the init."""
-        pass
+        assert len(self.dataloader.image_dimensions) == 0
 
     def test_parse_boxes(self):
         """Tests the parsing of boxes."""

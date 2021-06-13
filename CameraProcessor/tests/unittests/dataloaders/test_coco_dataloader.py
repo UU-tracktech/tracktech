@@ -8,6 +8,8 @@ Utrecht University within the Software Project course.
 import pytest
 
 from processor.dataloaders.coco_dataloader import CocoDataloader
+from processor.utils.config_parser import ConfigParser
+from tests.conftest import get_test_configs
 
 
 class TestCocoDataloader:
@@ -15,10 +17,7 @@ class TestCocoDataloader:
 
     def setup_method(self):
         """Setup method."""
-        pass
-
-    def test_parse_file(self):
-        """Tests parsing of file."""
+        configs = get_test_configs()
         pass
 
     def test_get_image_dimensions(self):
