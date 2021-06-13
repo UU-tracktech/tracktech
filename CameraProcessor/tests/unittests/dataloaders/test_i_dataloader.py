@@ -29,7 +29,8 @@ class TestIDataloader:
         assert pytest.raises(NotImplementedError, self.dataloader.parse_file)
 
     def test_get_image_dimensions(self):
-        assert pytest.raises(NotImplementedError, self.dataloader.get_image_dimensions(1))
+        with pytest.raises(NotImplementedError):
+            self.dataloader.get_image_dimensions(1)
 
     def test_parse_boxes(self, image_id=1):
         with pytest.raises(NotImplementedError):
@@ -73,4 +74,5 @@ class TestIDataloader:
         """Negative number of frames should raise an exception."""
         configs = get_test_configs()
         configs['Accuracy']['nr_frames'] = '-1'
-        assert pytest.raises(AttributeError, IDataloader, configs, 'det_path')
+        with pytest.raises(AttributeError):
+            IDataloader(configs)
