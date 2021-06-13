@@ -6,10 +6,8 @@ Utrecht University within the Software Project course.
 """
 import logging
 from os import path
+from PIL import Image
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.data_object.rectangle import Rectangle
 from processor.dataloaders.i_dataloader import IDataloader
 
 
@@ -47,8 +45,6 @@ class MotDataloader(IDataloader):
         """Logs when lines skipped."""
         if self.skipped_lines:
             logging.info(f'Skipped lines: {self.skipped_lines}')
-
-
 
     @staticmethod
     def __get_image_name(image_id):
@@ -108,7 +104,7 @@ class MotDataloader(IDataloader):
         (image_id, identifier, pos_x, pos_y, pos_w, pos_h, certainty) = [int(i) for i in line.split(self.delimiter)[:7]]
         # MOT is 1 based, while this project is 0 based.
         pos_x -= 1
-        pos_y-= 1
+        pos_y -= 1
         width, height = self.get_image_dimensions(image_id)
         return_values = (image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
                          (pos_y + pos_h) / height, certainty, None, None)

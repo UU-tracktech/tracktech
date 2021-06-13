@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 
 import pytest
 
-from processor.dataloaders.coco_dataloader import COCODataloader
+from processor.dataloaders.coco_dataloader import CocoDataloader
 
 
 class TestCocoDataloader:
@@ -36,3 +36,7 @@ class TestCocoDataloader:
     def test_get_annotations(self):
         """Tests the get annotations functionality."""
         pass
+
+
+if __name__ == '__main__':
+    pytest.main(TestCocoDataloader)

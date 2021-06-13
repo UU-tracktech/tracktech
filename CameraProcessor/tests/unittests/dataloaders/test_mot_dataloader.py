@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 
 import pytest
 
-from processor.dataloaders.mot_dataloader import MOTDataloader
+from processor.dataloaders.mot_dataloader import MotDataloader
 
 
 class TestMotDataloader:
@@ -36,3 +36,7 @@ class TestMotDataloader:
     def test_get_annotations(self):
         """Tests the get annotations functionality."""
         pass
+
+
+if __name__ == '__main__':
+    pytest.main(TestMotDataloader)

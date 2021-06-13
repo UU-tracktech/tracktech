@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 
 import pytest
 
-from processor.dataloaders.json_dataloader import JSONDataloader
+from processor.dataloaders.json_dataloader import JsonDataloader
 
 
 class TestJsonDataloader:
@@ -36,3 +36,7 @@ class TestJsonDataloader:
     def test_get_annotations(self):
         """Tests the get annotations functionality."""
         pass
+
+
+if __name__ == '__main__':
+    pytest.main(TestJsonDataloader)

@@ -9,7 +9,7 @@ import os
 import pytest
 
 from tests.conftest import get_test_configs
-from processor.dataloaders.idataloader import IDataloader
+from processor.dataloaders.i_dataloader import IDataloader
 
 
 class TestIDataloader:
