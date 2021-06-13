@@ -19,7 +19,7 @@ def __get_images_dir():
         str: Path to the image folder.
     """
     configs = get_test_configs()
-    return configs['Accuracy']['source_path']
+    return configs['Input']['images_dir_path']
 
 
 def __get_video_path():
