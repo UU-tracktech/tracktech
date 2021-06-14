@@ -11,7 +11,7 @@ class IDetector(IComponent):
     """Detection runner interface that can be run as Scheduler component."""
 
     def execute_component(self):
-        """Function given to scheduler so the scheduler can run the detection stage.
+        """Function given to scheduler, so the scheduler can run the detection stage.
 
         Returns:
             function: function that the scheduler can run.

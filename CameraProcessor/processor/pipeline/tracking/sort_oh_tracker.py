@@ -41,7 +41,7 @@ class SortOhTracker(ISortTracker):
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
             detection_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage
-            re_id_data (ReidData): Object containing data necessary for re-identification
+            re_id_data (ReidData): Object containing data necessary for re-identification.
 
         Returns:
             BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).

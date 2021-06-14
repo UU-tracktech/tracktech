@@ -54,7 +54,7 @@ class MotDataloader(IDataloader):
         """Get the name of an image.
 
         Args:
-            image_id (int): Id of the image.
+            image_id (int): ID of the image.
 
         Returns:
             name (string): Properly formatted image id.

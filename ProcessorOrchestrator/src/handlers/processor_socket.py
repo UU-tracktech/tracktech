@@ -23,8 +23,8 @@ class ProcessorSocket(WebSocketHandler):
 
     Attributes:
         identifier (int): Serves as the unique identifier to this object.
-        authorized (bool): Shows whether or not the connection is authorized.
-        auth (Auth): Authorization object for the websocket handler
+        authorized (bool): Shows whether the connection is authorized.
+        auth (Auth): Authorization object for the websocket handler.
     """
 
     def __init__(self, application, request):

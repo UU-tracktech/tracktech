@@ -31,7 +31,7 @@ class ClassesChecker(BaseChecker):
                   ),
         'C1230': ('Class name is incorrect, expected name: "%s"',
                   'incorrect-class-name',
-                  'Emitted when a class name doesn\'t correspond to the filename (correctly)'
+                  'Emitted when a class name does not correspond to the filename (correctly)'
                   )
     }
 
@@ -39,7 +39,7 @@ class ClassesChecker(BaseChecker):
         """Called for each module that pylint processes and perform basic checks.
 
         Args:
-            node (astroid.scoped_nodes.Module): Module definition astroid creates.
+            node (astroid.scoped_nodes.Module): Module definition Astroid creates.
         """
         self.check_amount_of_classes(node)
         self.check_file_class_names(node)
@@ -48,7 +48,7 @@ class ClassesChecker(BaseChecker):
         """Checks that each file has at most one class.
 
         Args:
-            node (astroid.scoped_nodes.Module): Module definition astroid creates.
+            node (astroid.scoped_nodes.Module): Module definition Astroid creates.
         """
         class_names = [entity for entity in node.globals if isinstance(node.globals[entity][0], ClassDef)]
         if len(class_names) > 1:
@@ -59,7 +59,7 @@ class ClassesChecker(BaseChecker):
         """Checks if the file name and class name correspond.
 
         Args:
-            node (astroid.scoped_nodes.Module): Module definition astroid creates.
+            node (astroid.scoped_nodes.Module): Module definition Astroid creates.
         """
 
         # Get the (first) class name and line number where this class is defined.

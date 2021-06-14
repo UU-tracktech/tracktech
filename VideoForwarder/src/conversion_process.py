@@ -1,4 +1,4 @@
-"""File that creates the subprocess for the ffmpeg conversion.
+"""File that creates the subprocess for the FFmpeg conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -12,10 +12,10 @@ def get_conversion_process(url, audio, root, stream_options):
     """Gets the ffmpeg conversion command for the camera stream that can be started later on.
 
     Args:
-        url (str): Url of the camera
-        audio (bool): Whether audio is included in the stream or not
-        root (str): Path to files where the camera stream should be put
-        stream_options (StreamOptions): object containing information on how to process the stream
+        url (str): Url of the camera.
+        audio (bool): Whether audio is included in the stream or not.
+        root (str): Path to files where the camera stream should be put.
+        stream_options (StreamOptions): object containing information on how to process the stream.
 
     Returns:
         SubProcess: ffmpeg subprocess with the correct parameters

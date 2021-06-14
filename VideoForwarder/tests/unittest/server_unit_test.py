@@ -1,4 +1,4 @@
-"""Unit test of the forwarder checks camera.py + json conversion.
+"""Unit test of the forwarder checks camera.py and json conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -65,7 +65,7 @@ class ServerUnitTest(AsyncHTTPTestCase):
 
     @testing.gen_test(timeout=10)
     def test_invalid_http_request(self):
-        """Checks connection between forwarder and mock client with invalid url.
+        """Checks connection between forwarder and mock client with invalid URL.
 
         Does not use pytest.raises since it cannot yield.
         """
