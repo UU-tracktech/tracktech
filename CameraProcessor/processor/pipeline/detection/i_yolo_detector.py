@@ -14,8 +14,7 @@ from processor.pipeline.detection.yolor.utils.general import non_max_suppression
 
 
 class IYoloDetector(IDetector):
-    """Detection runner interface that can be run as Scheduler component.
-    """
+    """Detection runner interface that can be run as Scheduler component."""
     @staticmethod
     def convert_image(img, device, half):
         """Converts the image to the size used for the detection.
