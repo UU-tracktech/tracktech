@@ -11,7 +11,9 @@ import logging
 from collections import deque
 from tornado import websocket
 
-from processor.webhosting.start_command import StartCommand
+from processor.webhosting.start_command_simple import StartCommandSimple
+from processor.webhosting.start_command_extended import StartCommandExtended
+from processor.webhosting.start_command_search import StartCommandSearch
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
 
@@ -24,7 +26,7 @@ class WebsocketClient:
 
     Attributes:
         connection (WebsocketClient.Connection): Connection object of the websocket.
-        reconnecting (bool): Whether or not we have to reconnect.
+        reconnecting (bool): Whether we have to reconnect.
         websocket_url (str): Url of the websocket.
         write_queue ([str]): Stores messages that could not be sent due to a closed socket.
         message_queue (Queue): Stores commands sent from orchestrator.
@@ -185,30 +187,52 @@ class WebsocketClient:
         """Handler for received feature maps.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of sent message.
         """
         object_id = message["objectId"]
         feature_map = message["featureMap"]
 
         self.message_queue.append(UpdateCommand(feature_map, object_id))
 
+    def generate_tracking_message(self, message):
+        """Factory function that returns the correct StartCommand type.
+
+        Args:
+            message (Union[str, bytes]): JSON parse of the sent message.
+
+        Returns:
+            StartCommand: A subclass of the StartCommand superclass.
+        """
+        del message["type"]
+        if all(k in message.keys() for k in {"frameId", "boxId"}):
+            if "image" in message.keys():
+                return StartCommandExtended(**message)
+            return StartCommandSearch(**message)
+        if "image" in message.keys():
+            return StartCommandSimple(**message)
+        raise ValueError("Start Tracking message does not contain necessary information.")
+
     def start_tracking(self, message):
         """Handler for the "start tracking" command.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of sent message.
         """
-        frame_id = message["frameId"]
-        box_id = message["boxId"]
-        object_id = message["objectId"]
-
-        self.message_queue.append(StartCommand(frame_id, box_id, object_id))
+        # Remove the "type" item, because we don't need that anymore.
+        try:
+            tracking_message = self.generate_tracking_message(message)
+        except ValueError as value_error:
+            logging.info(value_error)
+        except KeyError as key_error:
+            logging.info(key_error)
+        else:
+            self.message_queue.append(tracking_message)
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (Union[str, bytes]): JSON parse of sent message.
         """
         object_id = message["objectId"]
 

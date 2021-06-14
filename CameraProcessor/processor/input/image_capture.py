@@ -10,7 +10,7 @@ import time
 import logging
 import cv2
 
-from processor.input.icapture import ICapture
+from processor.input.i_capture import ICapture
 from processor.data_object.frame_obj import FrameObj
 
 
@@ -18,8 +18,8 @@ class ImageCapture(ICapture):
     """Reads all images from a folder one by one.
 
     Attributes:
-        images_paths (List[str]): List of paths of images in folder.
-        nr_images (int): Number of images contained in folder.
+        images_paths (List[str]): List of paths of images in a folder.
+        nr_images (int): Number of images contained in a folder.
         image_index (int): Index of current image frame.
     """
     def __init__(self, images_dir):

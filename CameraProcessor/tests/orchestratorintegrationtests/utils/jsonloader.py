@@ -16,7 +16,7 @@ def load_data(datatype, number=1, rng=False):
     Args:
         datatype (str): One of these options ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'].
         number (int): A number which will load 'nr' random json objects if not None.
-        rng (bool): Whether or not to load data in a random order.
+        rng (bool): Whether to load data in a random order.
 
     Returns:
         dict[str, str]: A dictionary of test data of the chosen JSON message type.

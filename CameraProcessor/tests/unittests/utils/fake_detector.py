@@ -8,7 +8,7 @@ import random
 
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.pipeline.detection.idetector import IDetector
+from processor.pipeline.detection.i_detector import IDetector
 from processor.data_object.rectangle import Rectangle
 
 

@@ -6,6 +6,8 @@ Utrecht University within the Software Project course.
 
  */
 
+import { size } from './size'
+
 /** Incoming messages are of type ClientMessage */
 export abstract class ClientMessage {
   constructor(type: string) {
@@ -30,6 +32,30 @@ export class BoxesClientMessage extends ClientMessage {
   boxes: Box[]
 }
 
+/** The newObject message is sent when a new object is beeing tracked and a cutout is available */
+export class NewObjectClientMessage extends ClientMessage {
+  constructor(objectId: number, image: string) {
+    super('newObject')
+
+    this.objectId = objectId
+    this.image = image
+  }
+
+  objectId: number
+  image: string
+}
+
+/** The stop message is sent when an object is no longer being tracked */
+export class StopClientMessage extends ClientMessage {
+  constructor(objectId: number) {
+    super('stop')
+
+    this.objectId = objectId
+  }
+
+  objectId: number
+}
+
 /** Structure that represents a bounding box */
 export class Box {
   constructor(
@@ -49,7 +75,7 @@ export class Box {
   objectType: string
   objectId?: number
 
-  toSize(width: number, height: number) {
+  toSize(width: number, height: number): size {
     var x1 = this.rect[0],
       y1 = this.rect[1],
       x2 = this.rect[2],

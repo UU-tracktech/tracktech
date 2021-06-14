@@ -14,8 +14,8 @@ class ReidData:
     of each object that we want to re-identify (we call this a query).
 
     Attributes:
-        __query_boxes (dict[int, int]): Dictionary that maps from box_id -> object_id.
-        __query_features (dict[int, [float]]): Maps from object_id -> feature vector.
+        __query_boxes (dict[int, int]): Dictionary that maps from box_id to an object_id.
+        __query_features (dict[int, [float]]): Maps from an object_id to a feature vector.
     """
     def __init__(self):
         """Initializer for the class."""

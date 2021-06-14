@@ -10,8 +10,12 @@ import React from 'react'
 import {
   Box,
   BoxesClientMessage,
-  QueueItem
+  QueueItem,
+  NewObjectClientMessage,
+  StopClientMessage
 } from '../../src/classes/clientMessage'
+
+import { size } from '../../src/classes/size'
 
 //Test creation of a BoxesClientMessage
 test('BoxesClientMessage', () => {
@@ -36,10 +40,53 @@ test('Box test', () => {
   expect(box.objectId).toBe(2346)
 })
 
+//Test toSize of a box object
+test('Box toSize test', () => {
+  const box = new Box(8, [0, 1, 2, 3], 'person', 2346)
+
+  expect(box.toSize(2, 2)).toStrictEqual({
+    left: 0,
+    top: 2,
+    width: 4,
+    height: 4
+  })
+
+  const box2 = new Box(4, [2, 4, 0, 1], 'person2', 2346)
+
+  expect(box2.toSize(2, 2)).toStrictEqual({
+    left: 0,
+    top: 2,
+    width: 4,
+    height: 6
+  })
+})
+
 //Test creation of a queueItem
 test('QueueItem test', () => {
   const item = new QueueItem(3487, [])
 
   expect(item.frameId).toBe(3487)
   expect(item.boxes).toStrictEqual([])
+})
+
+//Test creation of a NewObjectClientMessage
+test('NewObjectClientMessage test', () => {
+  const item = new NewObjectClientMessage(123, 'testImage')
+
+  expect(item.objectId).toBe(123)
+  expect(item.image).toStrictEqual('testImage')
+})
+
+//Test creation of a StopClientMessage
+test('StopClientMessage test', () => {
+  const item = new StopClientMessage(1234)
+
+  expect(item.objectId).toBe(1234)
+})
+
+//Test creation of a StopClientMessage
+test('StopClientMessage test', () => {
+  const item = new StopClientMessage(1234)
+
+  expect(item.objectId).toBe(1234)
 })
