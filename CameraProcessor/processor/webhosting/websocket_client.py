@@ -4,7 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-
+import os
 import asyncio
 import json
 import logging
@@ -16,6 +16,7 @@ from processor.webhosting.start_command_extended import StartCommandExtended
 from processor.webhosting.start_command_search import StartCommandSearch
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
+from processor.utils.authentication import get_token
 
 
 class WebsocketClient:
@@ -31,6 +32,7 @@ class WebsocketClient:
         write_queue ([str]): Stores messages that could not be sent due to a closed socket.
         message_queue (Queue): Stores commands sent from orchestrator.
         identifier (str): Identifier of the camera processor for the orchestrator.
+        configs (ConfigParser): Configurations of the application, contains the authorization url.
     """
 
     def __init__(self, websocket_url, identifier=None):
@@ -49,11 +51,27 @@ class WebsocketClient:
         self.identifier = identifier
 
     async def connect(self):
-        """Connect to the websocket url asynchronously."""
+        """Connect to the websocket url asynchronously.
+
+        Raises:
+            AttributeError: When the authentication has not been successful due to incorrect credentials.
+            EnvironmentError: Whenever the environment variables were not found in the environment.
+            ConnectionError: No response from the authentication server.
+            TimeoutError: After several retries the connection could still not be established.
+        """
+        # If we want to do authentication, try to get an access token.
+        auth_server_url = os.environ.get("AUTH_SERVER_URL")
+        auth_token = None
+        if auth_server_url:
+            auth_token = await self.get_access_token(auth_server_url)
+        else:
+            logging.info("Authentication is disabled since AUTH_SERVER_URL is not specified in environment.")
+
         timeout_left = 60
         sleep = 1
         connected = False
 
+        # Try to authenticate to the processor orchestrator.
         # Whilst there is no connection.
         while not connected and timeout_left > 0:
             # Reconnect.
@@ -63,8 +81,16 @@ class WebsocketClient:
                                                       on_message_callback=self._on_message)
                 logging.info(f'Connected to {self.websocket_url} successfully')
 
+                # Send authentication token to the orchestrator on connect (if it exists).
+                if auth_token:
+                    auth_message = json.dumps({
+                        "type": "authenticate",
+                        "jwt": auth_token
+                    })
+                    logging.info('Authentication message sent to orchestrator.')
+                    await self.connection.write_message(auth_message)
+
                 # Send an identification message to the orchestrator on connect.
-                # Only do this when the websocket is a processor socket.
                 if self.identifier is not None:
                     id_message = json.dumps({
                         "type": "identifier",
@@ -84,6 +110,42 @@ class WebsocketClient:
         if not connected:
             logging.error("Could never connect with orchestrator")
             raise TimeoutError("Never connected with orchestrator")
+
+    @staticmethod
+    async def get_access_token(auth_server_url):
+        """Retrieves the access token from the authentication server
+
+        Args:
+            auth_server_url (str): Url of the authentication server to request the token from.
+
+        Returns:
+            str: Access token to the authentication server.
+
+        Raises:
+            AttributeError:
+            EnvironmentError: Whenever the environment variables were not found in the environment.
+            ConnectionError: No response from the authentication server.
+        """
+        retries_left = 5
+
+        # While there are more.
+        while retries_left > 0:
+            try:
+                token = get_token(auth_server_url)
+                return token
+            except ConnectionError:
+                retries_left -= 1
+                logging.warning('Retrieval of token failed, trying again')
+                await asyncio.sleep(2)
+            except AttributeError as err:
+                logging.error('Authentication credentials CLIENT_ID and CLIENT_SECRET are invalid')
+                raise err
+            except EnvironmentError as err:
+                logging.error('Authentication url is set but the credentials are missing from the environment')
+                raise err
+
+        # After several retries the connection could not be established.
+        raise ConnectionError("Could not connect to the authentication server successfully.")
 
     async def disconnect(self):
         """Disconnects the websocket."""
@@ -219,7 +281,14 @@ class WebsocketClient:
             message (Union[str, bytes]): JSON parse of sent message.
         """
         # Remove the "type" item, because we don't need that anymore.
-        self.message_queue.append(self.generate_tracking_message(message))
+        try:
+            tracking_message = self.generate_tracking_message(message)
+        except ValueError as value_error:
+            logging.info(value_error)
+        except KeyError as key_error:
+            logging.info(key_error)
+        else:
+            self.message_queue.append(tracking_message)
 
     def stop_tracking(self, message):
         """Handler for the "stop tracking" command.
