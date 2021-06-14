@@ -8,7 +8,7 @@ import os
 import copy
 import gdown
 
-from scipy.spatial.distance import euclidean
+from scipy.spatial.distance import euclidean, cosine
 
 import processor.utils.features as UtilsFeatures
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
@@ -111,8 +111,7 @@ class TorchReIdentifier(IReIdentifier):
         """Calculates the similarity rate between two feature vectors.
 
         Note:
-            Uses euclidean distance to determine the similarity.
-            An alternative would be cosine similarity.
+            Uses euclidean distance or cosine similarity to determine the similarity.
 
         Args:
             query_features ([float]): the feature vector of the query image.
@@ -121,8 +120,12 @@ class TorchReIdentifier(IReIdentifier):
         Returns:
             float: The similarity value of two feature vectors.
         """
-        euclidean_distance = euclidean(query_features, gallery_features)
-        return euclidean_distance
+        if self.config.get("distance") == "euclidian":
+            return euclidean(query_features, gallery_features)
+        elif self.config.get("distance") == "cosine":
+            return 1 - cosine(query_features, gallery_features)
+        else:
+            raise ValueError(f"Distance metric {self.config.get('distance')} is not a valid distance metric.")
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using Torchreid.

@@ -8,7 +8,7 @@ import os
 import argparse
 import copy
 import gdown
-from scipy.spatial.distance import cosine
+from scipy.spatial.distance import euclidean, cosine
 
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
@@ -100,8 +100,7 @@ class FastReIdentifier(IReIdentifier):
         """Calculates the similarity rate between two feature vectors.
 
         Note:
-            Uses cosine similarity to determine the similarity rate.
-            An alternative would be euclidean distance.
+            Uses euclidean distance or cosine similarity to determine the similarity rate.
 
         Args:
             query_features ([float]): the feature vector of the query image.
@@ -110,8 +109,12 @@ class FastReIdentifier(IReIdentifier):
         Returns:
             float: The similarity value of two feature vectors.
         """
-        cosine_similarity = 1 - cosine(query_features, gallery_features)
-        return cosine_similarity
+        if self.config.get("distance") == "euclidian":
+            return euclidean(query_features, gallery_features)
+        elif self.config.get("distance") == "cosine":
+            return 1 - cosine(query_features, gallery_features)
+        else:
+            raise ValueError(f"Distance metric {self.config.get('distance')} is not a valid distance metric.")
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using torchreid.
