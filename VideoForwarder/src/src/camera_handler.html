@@ -266,6 +266,9 @@ Utrecht University within the Software Project course.
                         <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="s1">&#39;Unimplemented authorization method&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
+                    <span class="c1"># Auth from processor is next to impossible. So http requests do not need auth.</span>
+                    <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Url parameter bc video.js does not want to send headers with the index file request.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;Bearer&#39;</span><span class="p">))</span>
@@ -490,6 +493,9 @@ Utrecht University within the Software Project course.
                         <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="s1">&#39;Unimplemented authorization method&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
+                    <span class="c1"># Auth from processor is next to impossible. So http requests do not need auth.</span>
+                    <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Url parameter bc video.js does not want to send headers with the index file request.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;Bearer&#39;</span><span class="p">))</span>
@@ -878,6 +884,9 @@ Utrecht University within the Software Project course.
                         <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="s1">&#39;Unimplemented authorization method&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
+                    <span class="c1"># Auth from processor is next to impossible. So http requests do not need auth.</span>
+                    <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Url parameter bc video.js does not want to send headers with the index file request.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;Bearer&#39;</span><span class="p">))</span>

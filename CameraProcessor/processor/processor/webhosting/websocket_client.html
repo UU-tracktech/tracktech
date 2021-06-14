@@ -38,6 +38,9 @@
                                 <a class="function" href="#WebsocketClient.connect">connect</a>
                         </li>
                         <li>
+                                <a class="function" href="#WebsocketClient.get_access_token">get_access_token</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#WebsocketClient.disconnect">disconnect</a>
                         </li>
                         <li>
@@ -88,7 +91,7 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -115,13 +118,15 @@ Utrecht University within the Software Project course.
 <span class="sd">        write_queue ([str]): Stores messages that could not be sent due to a closed socket.</span>
 <span class="sd">        message_queue (Queue): Stores commands sent from orchestrator.</span>
 <span class="sd">        identifier (str): Identifier of the camera processor for the orchestrator.</span>
+<span class="sd">        configs (ConfigParser): Configurations of the application, contains the authorization url.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket_url</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket_url</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the websocket client class with relevant parameters.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            websocket_url (str): url of the websocket.</span>
+<span class="sd">            configs (ConfigParser): Configurations of the application.</span>
 <span class="sd">            identifier (str): Identifier of the camera-processor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="kc">None</span>
@@ -131,13 +136,30 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">write_queue</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connect to the websocket url asynchronously.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the websocket url asynchronously.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: When the authentication has not been successful due to incorrect credentials.</span>
+<span class="sd">            EnvironmentError: Whenever the environment variables were not found in the environment.</span>
+<span class="sd">            ConnectionError: No response from the authentication server.</span>
+<span class="sd">            TimeoutError: After several retries the connection could still not be established.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If we want to do authentication, try to get an access token</span>
+        <span class="n">auth_server_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AUTH_SERVER_URL&quot;</span><span class="p">)</span>
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">auth_server_url</span><span class="p">:</span>
+            <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Authentication is disabled since AUTH_SERVER_URL is not specified in environment.&quot;</span><span class="p">)</span>
+
         <span class="n">timeout_left</span> <span class="o">=</span> <span class="mi">60</span>
         <span class="n">sleep</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="c1"># Try to authenticate to the processor orchestrator</span>
         <span class="c1"># Whilst there is no connection.</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">timeout_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># Reconnect.</span>
@@ -147,8 +169,16 @@ Utrecht University within the Software Project course.
                                                       <span class="n">on_message_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_message</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connected to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">websocket_url</span><span class="si">}</span><span class="s1"> successfully&#39;</span><span class="p">)</span>
 
+                <span class="c1"># Send authentication token to the orchestrator on connect (if it exists)</span>
+                <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
+                    <span class="n">auth_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;jwt&quot;</span><span class="p">:</span> <span class="n">auth_token</span>
+                    <span class="p">})</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Authentication message sent to orchestrator.&#39;</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">auth_message</span><span class="p">)</span>
+
                 <span class="c1"># Send an identification message to the orchestrator on connect.</span>
-                <span class="c1"># Only do this when the websocket is a processor socket.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">id_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
                         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;identifier&quot;</span><span class="p">,</span>
@@ -168,6 +198,42 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="n">connected</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could never connect with orchestrator&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Never connected with orchestrator&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_access_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the access token from the authentication server</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            auth_server_url (str): Url of the authentication server to request the token from.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Access token to the authentication server.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError:</span>
+<span class="sd">            EnvironmentError: Whenever the environment variables were not found in the environment.</span>
+<span class="sd">            ConnectionError: No response from the authentication server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">retries_left</span> <span class="o">=</span> <span class="mi">5</span>
+
+        <span class="c1"># While there are more.</span>
+        <span class="k">while</span> <span class="n">retries_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">token</span>
+            <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
+                <span class="n">retries_left</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Retrieval of token failed, trying again&#39;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Authentication credentials CLIENT_ID and CLIENT_SECRET are invalid&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Authentication url is set but the credentials are missing from the environment&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+
+        <span class="c1"># After several retries the connection could not be established.</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Could not connect to the authentication server successfully.&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnects the websocket.&quot;&quot;&quot;</span>
@@ -344,13 +410,15 @@ Utrecht University within the Software Project course.
 <span class="sd">        write_queue ([str]): Stores messages that could not be sent due to a closed socket.</span>
 <span class="sd">        message_queue (Queue): Stores commands sent from orchestrator.</span>
 <span class="sd">        identifier (str): Identifier of the camera processor for the orchestrator.</span>
+<span class="sd">        configs (ConfigParser): Configurations of the application, contains the authorization url.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket_url</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket_url</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the websocket client class with relevant parameters.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            websocket_url (str): url of the websocket.</span>
+<span class="sd">            configs (ConfigParser): Configurations of the application.</span>
 <span class="sd">            identifier (str): Identifier of the camera-processor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="kc">None</span>
@@ -360,13 +428,30 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">write_queue</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connect to the websocket url asynchronously.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the websocket url asynchronously.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: When the authentication has not been successful due to incorrect credentials.</span>
+<span class="sd">            EnvironmentError: Whenever the environment variables were not found in the environment.</span>
+<span class="sd">            ConnectionError: No response from the authentication server.</span>
+<span class="sd">            TimeoutError: After several retries the connection could still not be established.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If we want to do authentication, try to get an access token</span>
+        <span class="n">auth_server_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AUTH_SERVER_URL&quot;</span><span class="p">)</span>
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">auth_server_url</span><span class="p">:</span>
+            <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Authentication is disabled since AUTH_SERVER_URL is not specified in environment.&quot;</span><span class="p">)</span>
+
         <span class="n">timeout_left</span> <span class="o">=</span> <span class="mi">60</span>
         <span class="n">sleep</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="c1"># Try to authenticate to the processor orchestrator</span>
         <span class="c1"># Whilst there is no connection.</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">timeout_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># Reconnect.</span>
@@ -376,8 +461,16 @@ Utrecht University within the Software Project course.
                                                       <span class="n">on_message_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_message</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connected to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">websocket_url</span><span class="si">}</span><span class="s1"> successfully&#39;</span><span class="p">)</span>
 
+                <span class="c1"># Send authentication token to the orchestrator on connect (if it exists)</span>
+                <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
+                    <span class="n">auth_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;jwt&quot;</span><span class="p">:</span> <span class="n">auth_token</span>
+                    <span class="p">})</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Authentication message sent to orchestrator.&#39;</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">auth_message</span><span class="p">)</span>
+
                 <span class="c1"># Send an identification message to the orchestrator on connect.</span>
-                <span class="c1"># Only do this when the websocket is a processor socket.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">id_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
                         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;identifier&quot;</span><span class="p">,</span>
@@ -397,6 +490,42 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="ow">not</span> <span class="n">connected</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could never connect with orchestrator&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Never connected with orchestrator&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_access_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the access token from the authentication server</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            auth_server_url (str): Url of the authentication server to request the token from.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Access token to the authentication server.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError:</span>
+<span class="sd">            EnvironmentError: Whenever the environment variables were not found in the environment.</span>
+<span class="sd">            ConnectionError: No response from the authentication server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">retries_left</span> <span class="o">=</span> <span class="mi">5</span>
+
+        <span class="c1"># While there are more.</span>
+        <span class="k">while</span> <span class="n">retries_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">token</span>
+            <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
+                <span class="n">retries_left</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Retrieval of token failed, trying again&#39;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Authentication credentials CLIENT_ID and CLIENT_SECRET are invalid&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Authentication url is set but the credentials are missing from the environment&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+
+        <span class="c1"># After several retries the connection could not be established.</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Could not connect to the authentication server successfully.&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnects the websocket.&quot;&quot;&quot;</span>
@@ -565,6 +694,7 @@ Utrecht University within the Software Project course.
 <li><strong>write_queue ([str]):</strong>  Stores messages that could not be sent due to a closed socket.</li>
 <li><strong>message_queue (Queue):</strong>  Stores commands sent from orchestrator.</li>
 <li><strong>identifier (str):</strong>  Identifier of the camera processor for the orchestrator.</li>
+<li><strong>configs (ConfigParser):</strong>  Configurations of the application, contains the authorization url.</li>
 </ul>
 </div>
 
@@ -573,16 +703,17 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#WebsocketClient.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">WebsocketClient</span><span class="signature">(websocket_url, identifier=None)</span>
+            <span class="name">WebsocketClient</span><span class="signature">(websocket_url, configs, identifier=None)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket_url</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket_url</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the websocket client class with relevant parameters.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            websocket_url (str): url of the websocket.</span>
+<span class="sd">            configs (ConfigParser): Configurations of the application.</span>
 <span class="sd">            identifier (str): Identifier of the camera-processor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="kc">None</span>
@@ -592,6 +723,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">write_queue</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">configs</span>
 </pre></div>
 
         </details>
@@ -602,6 +734,7 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>websocket_url (str):</strong>  url of the websocket.</li>
+<li><strong>configs (ConfigParser):</strong>  Configurations of the application.</li>
 <li><strong>identifier (str):</strong>  Identifier of the camera-processor.</li>
 </ul>
 </div>
@@ -619,11 +752,27 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connect to the websocket url asynchronously.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the websocket url asynchronously.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: When the authentication has not been successful due to incorrect credentials.</span>
+<span class="sd">            EnvironmentError: Whenever the environment variables were not found in the environment.</span>
+<span class="sd">            ConnectionError: No response from the authentication server.</span>
+<span class="sd">            TimeoutError: After several retries the connection could still not be established.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If we want to do authentication, try to get an access token</span>
+        <span class="n">auth_server_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AUTH_SERVER_URL&quot;</span><span class="p">)</span>
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">auth_server_url</span><span class="p">:</span>
+            <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Authentication is disabled since AUTH_SERVER_URL is not specified in environment.&quot;</span><span class="p">)</span>
+
         <span class="n">timeout_left</span> <span class="o">=</span> <span class="mi">60</span>
         <span class="n">sleep</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="c1"># Try to authenticate to the processor orchestrator</span>
         <span class="c1"># Whilst there is no connection.</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">timeout_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># Reconnect.</span>
@@ -633,8 +782,16 @@ Utrecht University within the Software Project course.
                                                       <span class="n">on_message_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_message</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connected to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">websocket_url</span><span class="si">}</span><span class="s1"> successfully&#39;</span><span class="p">)</span>
 
+                <span class="c1"># Send authentication token to the orchestrator on connect (if it exists)</span>
+                <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
+                    <span class="n">auth_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;jwt&quot;</span><span class="p">:</span> <span class="n">auth_token</span>
+                    <span class="p">})</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Authentication message sent to orchestrator.&#39;</span><span class="p">)</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">auth_message</span><span class="p">)</span>
+
                 <span class="c1"># Send an identification message to the orchestrator on connect.</span>
-                <span class="c1"># Only do this when the websocket is a processor socket.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">id_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
                         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;identifier&quot;</span><span class="p">,</span>
@@ -659,6 +816,90 @@ Utrecht University within the Software Project course.
         </details>
 
             <div class="docstring"><p>Connect to the websocket url asynchronously.</p>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>AttributeError:</strong>  When the authentication has not been successful due to incorrect credentials.</li>
+<li><strong>EnvironmentError:</strong>  Whenever the environment variables were not found in the environment.</li>
+<li><strong>ConnectionError:</strong>  No response from the authentication server.</li>
+<li><strong>TimeoutError:</strong>  After several retries the connection could still not be established.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="WebsocketClient.get_access_token" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#WebsocketClient.get_access_token">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">async def</span>
+            <span class="name">get_access_token</span><span class="signature">(auth_server_url)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_access_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves the access token from the authentication server</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            auth_server_url (str): Url of the authentication server to request the token from.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Access token to the authentication server.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError:</span>
+<span class="sd">            EnvironmentError: Whenever the environment variables were not found in the environment.</span>
+<span class="sd">            ConnectionError: No response from the authentication server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">retries_left</span> <span class="o">=</span> <span class="mi">5</span>
+
+        <span class="c1"># While there are more.</span>
+        <span class="k">while</span> <span class="n">retries_left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">token</span>
+            <span class="k">except</span> <span class="ne">ConnectionError</span><span class="p">:</span>
+                <span class="n">retries_left</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Retrieval of token failed, trying again&#39;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Authentication credentials CLIENT_ID and CLIENT_SECRET are invalid&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Authentication url is set but the credentials are missing from the environment&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+
+        <span class="c1"># After several retries the connection could not be established.</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Could not connect to the authentication server successfully.&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Retrieves the access token from the authentication server</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>auth_server_url (str):</strong>  Url of the authentication server to request the token from.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>str: Access token to the authentication server.</p>
+</blockquote>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>AttributeError:</strong> </li>
+<li><strong>EnvironmentError:</strong>  Whenever the environment variables were not found in the environment.</li>
+<li><strong>ConnectionError:</strong>  No response from the authentication server.</li>
+</ul>
 </div>
 
 
