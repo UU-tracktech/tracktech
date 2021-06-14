@@ -15,7 +15,7 @@ class CommentChecker(BaseChecker):
 
     The following linting errors get caught:
         comment-should-have-one-space: Comment should start with only one space.
-        comment-missing-period: Comment has to end with a dot.
+        comment-missing-period: Comment has to end with a period.
         comment-starts-with-lowercase: Comment should start with uppercase letter.
 
     Attributes:
