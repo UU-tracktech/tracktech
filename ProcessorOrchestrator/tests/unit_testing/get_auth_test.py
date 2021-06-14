@@ -8,7 +8,7 @@ Unit testing module that only tests tracking object class.
 """
 
 import os
-from src.get_auth import get_auth_params
+from src.utility.get_auth import get_auth_params
 
 
 def test_auth_creation_without_environment_returns_null():

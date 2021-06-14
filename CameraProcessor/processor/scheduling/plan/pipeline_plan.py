@@ -6,14 +6,21 @@ Utrecht University within the Software Project course.
 """
 from processor.scheduling.node.schedule_node import ScheduleNode
 
-from processor.scheduling.component.pass_component import PassComponent
 from processor.scheduling.component.func_call_component import FuncCallComponent
 
-# Arguments needed to configure.
-args = {
+# Keys of inputs necessary to initialize the plan.
+plan_inputs = {
     'detector': None,
     'tracker': None,
-    'func': None
+    're_identifier': None,
+    'func': None,
+    'frame_buffer': None
+}
+
+# Keys of globals used by the plan, necessary each iteration.
+plan_globals = {
+    'frame_obj': None,
+    're_id_data': None
 }
 
 
@@ -24,34 +31,59 @@ def create_plan(plan_args):
         plan_args (dict[str, obj]): Dictionary containing every argument based on name.
 
     Returns:
-        ScheduleNode: starting node of the plan.
+        ScheduleNode: the starting node of the plan.
     """
     # Final node executing a function that takes all previous component outputs as input.
     func_node = ScheduleNode(
-        3,
+        4,
         [],
-        FuncCallComponent(plan_args['func'])
+        FuncCallComponent(plan_args['func']),
+        {
+            'frame_obj': 0
+        }
     )
 
-    # Node that executes tracking based.
-    tracker_node = ScheduleNode(
+    # Frame buffer node storing frame with all information gathered from re-id stage.
+    frame_buffer_node = ScheduleNode(
         2,
-        [(func_node, 2)],
-        plan_args['tracker']
+        [],
+        plan_args['frame_buffer'],
+        {
+            'frame_obj': 0
+        }
+    )
+
+    # Node that executes re-identification.
+    re_id_node = ScheduleNode(
+        3,
+        [(frame_buffer_node, 1), (func_node, 3)],
+        plan_args['re_identifier'],
+        {
+            'frame_obj': 0,
+            're_id_data': 2
+        }
+    )
+
+    # Node that executes tracking.
+    tracker_node = ScheduleNode(
+        3,
+        [(func_node, 2), (re_id_node, 1)],
+        plan_args['tracker'],
+        {
+            'frame_obj': 0,
+            're_id_data': 2
+        }
     )
 
     # Node that executes detection.
     detection_node = ScheduleNode(
         1,
         [(tracker_node, 1), (func_node, 1)],
-        plan_args['detector']
+        plan_args['detector'],
+        {
+            'frame_obj': 0
+        }
     )
 
-    # Input node that passes the input to all outputs as is.
-    input_node = ScheduleNode(
-        1,
-        [(detection_node, 0), (tracker_node, 0), (func_node, 0)],
-        PassComponent()
-    )
-
-    return input_node
+    # Detection node is the starting node of the plan.
+    return detection_node

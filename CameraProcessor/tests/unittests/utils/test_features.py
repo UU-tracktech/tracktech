@@ -1,4 +1,4 @@
-"""Tests the reid utils.
+"""Tests the utils.features.py.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -12,7 +12,7 @@ from tests.unittests.utils.conftest import X0, X1, Y0, Y1
 from processor.utils.features import slice_bounding_box, resize_cutout
 
 
-class TestReidUtils:
+class TestFeatures:
     """Class to hold functions to test reid utils."""
     def test_slice_bounding_box(self, img, bbox):
         """Tests the slice_bounding_box method.
@@ -46,6 +46,6 @@ class TestReidUtils:
             img (np.ndarray): Image in array form.
             configs (ConfigParser): Configparser used to determine the cutout size.
         """
-        size = configs['Reid'].gettuple('size')
+        size = configs['TorchReid'].gettuple('size')
         # Assert size is correct.
         assert size[0], size[1] == resize_cutout(img, configs).shape

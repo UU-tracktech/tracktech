@@ -14,7 +14,7 @@ from processor.utils.create_runners import DETECTOR_SWITCH, TRACKER_SWITCH, crea
 class TestCreateRunners:
     """Class holding test functions for create_runners.py."""
     def test_create_detector(self, configs):
-        """Tests the create_detector with every detector in DETECTOR_SWITCH.
+        """Tests the create_detector with every detector in the DETECTOR_SWITCH.
 
         Args:
             configs (dict): the configs file with test configs appended
@@ -24,7 +24,7 @@ class TestCreateRunners:
             assert isinstance(detector, value[0])
 
     def test_create_tracker(self, configs):
-        """Tests the create_tracker with every tracker in TRACKER_SWITCH.
+        """Tests the create_tracker with every tracker in the TRACKER_SWITCH.
 
         Args:
             configs (dict): the configs file with test configs appended

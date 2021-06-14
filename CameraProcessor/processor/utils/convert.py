@@ -1,4 +1,4 @@
-"""Has functions that converts an object to a dictionary for the frame buffer.
+"""Has the functions that converts an object to a dictionary for the frame buffer.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 
 
 def to_buffer_dict(frame_obj, bounding_boxes):
-    """Turn FrameObj and BoundingBoxes into dictionary usable by frame buffer.
+    """Turn FrameObj and BoundingBoxes into a dictionary usable by frame buffer.
 
     Args:
         frame_obj (FrameObj): information object containing the OpenCV frame and timestamp.

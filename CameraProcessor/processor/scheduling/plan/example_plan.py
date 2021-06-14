@@ -1,4 +1,4 @@
-"""Just an example of a plan that can be executed by scheduler.
+"""Just an example of a plan that can be executed by the scheduler.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -16,18 +16,18 @@ def func(_):
 
 
 # Last node/layer.
-schedule_output_node = ScheduleNode(1, [], OutputComponent(func))
+schedule_output_node = ScheduleNode(1, [], OutputComponent(func), {})
 
 # Intermediary layer.
-layer2_multiple_input_node = ScheduleNode(2, [(schedule_output_node, 0)], ExampleComponent())
+layer2_multiple_input_node = ScheduleNode(2, [(schedule_output_node, 0)], ExampleComponent(), {})
 
 # Intermediary layer.
-layer1_node1 = ScheduleNode(1, [(layer2_multiple_input_node, 0)], InputComponent())
-layer1_node2 = ScheduleNode(1, [(layer2_multiple_input_node, 1)], InputComponent())
+layer1_node1 = ScheduleNode(1, [(layer2_multiple_input_node, 0)], InputComponent(), {})
+layer1_node2 = ScheduleNode(1, [(layer2_multiple_input_node, 1)], InputComponent(), {})
 
 # First node/layer.
 # Node outputs to multiple nodes.
-schedule_input_node = ScheduleNode(1, [(layer1_node1, 0), (layer1_node2, 0)], InputComponent())
+schedule_input_node = ScheduleNode(1, [(layer1_node1, 0), (layer1_node2, 0)], InputComponent(), {})
 
 if __name__ == '__main__':
     from processor.scheduling.scheduler import Scheduler
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     # Inits scheduler with starting node.
     scheduler = Scheduler(schedule_input_node)
     # Runs iteration of schedule_graph.
-    scheduler.schedule_graph("test,")
+    scheduler.schedule_graph(["test,"], {})
 
     # Find output in output node.
     curr_node = schedule_input_node

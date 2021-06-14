@@ -4,16 +4,16 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class OutputComponent(IComponent):
     """Example output component without next layers.
 
-    Contains a function to handle the output that falls outside of the scheduler.
+    Contains a function to handle the output that falls outside the scheduler.
 
     Attributes:
-        func (Function): function to handle outputs send outside of the schedulers graph.
+        func (Function): function to handle outputs send outside the schedulers graph.
         out (object): contains output, only here for example_plan.py to retrieve output.
     """
 
@@ -21,7 +21,7 @@ class OutputComponent(IComponent):
         """Inits IntermediaryOutputComponent with output handling function.
 
         Args:
-            func (Function): function to handle outputs send outside of the schedulers graph.
+            func (Function): function to handle outputs send outside the schedulers graph.
         """
         self.func = func
 

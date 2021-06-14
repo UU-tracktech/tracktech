@@ -84,12 +84,12 @@ CameraProcessor configurations inside the [configs.ini](configs.ini) file. Let's
 
 ## Architecture
 
-The inner workings of the camera processor consist of three parts. 
+The inner workings of the camera processor consist of three parts.
 The input processed by the pipeline and sent to either other camera processors or the interface.
 
 ### Input
 
-There are two inputs available to the camera processor, 
+There are two inputs available to the camera processor,
 the unaltered video stream and commands/feature maps sent by the orchestrator.
 
 #### Video stream
@@ -125,14 +125,14 @@ and re-identification data.
 
 #### Detections
 
-All detections are shared with the interface to draw all trackable objects. 
-Some detections might have an associated object ID, meaning these detections were already tracked.
+All detections are shared with the interface to draw all trackable objects.
+Some detections might have an associated object ID, meaning the system already tracked these detections.
 
 #### Re-identification
 
-All camera processors must be capable of finding the tracked subject. 
+All camera processors must be capable of finding the tracked subject.
 The processors need information about the subject to re-identify them.
-This information is shared amongst processors.
+The systems shares this information amongst processors.
 
 ## Dependencies
 
@@ -143,12 +143,35 @@ This information is shared amongst processors.
 
 ### Software
 
+The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
+For differences in CUDA versions, check out the following [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one. We used the cu101 version because it was available for all of the members of the team.
+
+### Environment variables
+
+The system can use the following environment variables:
+(When these values are set, it overrides the configs.ini values with these)
+
+| Variable         | Config.ini value name | Description                                                                  |
+| ---------------- | --------------------- | ---------------------------------------------------------------------------- |
+| ORCHESTRATOR_URL | Orchestrator.url      | The link of the orchestrator WebSocket                                       |
+| HLS_STREAM_URL   | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
+| CAMERA_ID        | Input.camera_id       | The id of the camera used to coordinate data send to the orchestrator        |
+| PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                              |
+| DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                       |
+| TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                        |
+| TRACKING_ALG     | Main.reid             | Name of the re-identification algorithm to use                               |
+
+
 - [Python 3.8](https://www.python.org/downloads/release/python-3810/): no other Python versions have been tested.
 - [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): this CUDA version has been tested. *However, it has demonstrated to work with CUDA 11.1*
 - [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive): this cuDNN was chosen due to compatibility with CUDA 10.1.2.
 
 ### Packages
-and install the dependencies in [requirements.txt](requirements.txt) + [requirements-gpu.txt](requirements-gpu.txt) + [requirements-reid.txt](requirements-reid.txt).
+
+Installing python dependencies:
+Download [Python 3.8](https://www.python.org/downloads/release/python-3810/)
+and install the dependencies in [requirements.txt](requirements.txt) + [requirements-gpu.txt](requirements-gpu.txt).
+
 ```cmd
 pip install -r requirements.txt
 pip install -r requirements-gpu.txt
@@ -160,7 +183,7 @@ pip install -r requirements-reid.txt
 
 We use [Pytest](https://docs.pytest.org/en/stable/index.html) to test the code, making it easy to see the coverage.
 
-####Docker
+#### Docker
 The setup and commands are already included inside the Dockerfile; these do not need any tweaking.
 Running unit tests:
 ```
@@ -168,19 +191,33 @@ docker-compose -f compose/docker-compose_test_unit.yml up --build
 ```
 
 Integration tests:
-```cmd
-docker-compose -f compose/docker-compose+orchestrator.yml up --build
-```
 
-#### Local 
-When running the tests locally it is easiest to using the short command:
-```cmd
-pytest --cov-config=.coveragerc --cov-report term-missing --cov-report=term --cov=processor/ tests/unittests
-```
-The final argument can be extended to test folders more specifically. This one runs the entire `unittest` folder.
+Then, if you have [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive) (for which you have to join the
+Windows Insider if using on windows)
+When [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-update2) is installed on your computer
+(once again, NVIDIA only), you should be able to run main.py in the processor directory locally.
+This setup will be able to run the YOLOv5 detection algorithm.
 
-To run integration tests locally, WebSocket URLs must be altered for the orchestrator or the HLS stream URL for the forwarder.
-We strongly recommend using Docker to run these as described above.
+### Running in Docker
+
+If you want to run it with GPU, it is a lot of hassle for Windows users and not recommended.
+You require the Windows Insider program to use CUDA in WSL2.
+Windows insider program slows down the speed of pc a lot.
+
+- GPU-enabled on Linux:
+  1.  You need an NVIDIA GPU that supports CUDA
+  2.  Check the version of the CUDA installation, change PyTorch import if needed
+  3.  Make sure the devices in configs.ini are set to 0
+  4.  Run `docker-compose up` in the root to build the container for deployment.
+- GPU-enabled on windows (Not recommended):
+  1.  You need an NVIDIA GPU that supports CUDA
+  2.  Follow the [nvidia install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
+  3.  Make sure the devices in configs.ini are set to 0
+  4.  Run `docker-compose up` in the root to build the container for deployment.
+  5.  Check the logs of your docker container in the Docker Desktop to see if it is working correctly.
+- GPU-disabled (can't run GPU code, only start container):
+  1.  In configs.ini, change the device value to CPU.
+  2.  Run `docker-compose up` in the root to build the container for deployment.
 
 ### Verify application in Docker
 
@@ -193,3 +230,56 @@ ports:
 Set the PROCESSOR_MODE environment variable to "tornado".
 
 Open the link printed in the console when running ```docker-compose up``` and the stream will get shown after a bit.
+
+#### Local 
+When running the tests locally it is easiest to using the short command:
+```cmd
+pytest --cov-config=.coveragerc --cov-report term-missing --cov-report=term --cov=processor/ tests/unittests
+```
+
+Set the PROCESSOR_MODE environment variable to "tornado".
+
+Open the link printed in the console when running `docker-compose up`, and the stream will get shown after a bit.
+
+## Running the tests
+
+We use Pytest for testing the code, which makes it easy to see the coverage.
+We can run the unit tests locally and inside Docker.
+The runners can only run the integration tests without changing the code inside Docker.
+
+For Docker, the Dockerfile contains the setup and commands. These do not need any tweaking.
+When running the tests locally inside PyCharm, ensure the testing library is set to Pytest for easy development.
+Create a Pytest configuration in PyCharm and test the unit tests folder.
+
+## Pylint with PyCharm
+
+We use Pylint for python code quality assurance.
+
+### Installation
+
+Input following command terminal:
+
+```
+pip install pylint
+```
+The final argument can be extended to test folders more specifically. This one runs the entire `unittest` folder.
+
+To run integration tests locally, WebSocket URLs must be altered for the orchestrator or the HLS stream URL for the forwarder.
+We strongly recommend using Docker to run these as described above.
+Install the PyCharm plugin:
+
+`Control+Alt+S` to open PyCharm settings.
+
+Navigate to `Settings>Plugins`.
+
+Search for `pylint`.
+
+Install the Pylint plugin.
+
+#### Settings
+
+`Control+Alt+S` to open PyCharm settings.
+
+Navigate to `Settings>Other Settings>Pylint`.
+
+Set up a link to Pylint and test settings.
