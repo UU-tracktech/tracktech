@@ -9,7 +9,8 @@ Unit testing module that only tests tracking object class.
 
 # Pytest resolves this reference internally.
 # Noinspection PyUnresolvedReferences.
-from src.object_manager import TrackingObject, objects
+from src.objects.object_management import objects
+from src.objects.tracking_object import TrackingObject
 
 
 def test_creating_object_adds_it_to_dict():

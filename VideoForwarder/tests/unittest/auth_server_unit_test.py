@@ -19,7 +19,7 @@ from src.loading import create_camera,\
     get_timeout_delay
 
 
-class TestHandler(AsyncHTTPTestCase):
+class AuthServerUnitTest(AsyncHTTPTestCase):
     """Test the server when using auth."""
 
     def get_app(self):

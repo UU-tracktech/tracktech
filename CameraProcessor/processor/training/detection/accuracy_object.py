@@ -10,9 +10,9 @@ import time
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
-from processor.dataloaders.coco_dataloader import COCODataloader
-from processor.dataloaders.json_dataloader import JSONDataloader
-from processor.dataloaders.mot_dataloader import MOTDataloader
+from processor.dataloaders.coco_dataloader import CocoDataloader
+from processor.dataloaders.json_dataloader import JsonDataloader
+from processor.dataloaders.mot_dataloader import MotDataloader
 from processor.utils.config_parser import ConfigParser
 
 
@@ -31,7 +31,7 @@ class AccuracyObject:
     """
 
     def __init__(self, configs):
-        """Initialise AccuracyObject by reading the config and the ground truth file.
+        """Initialise AccuracyObject by reading the config, and the ground truth file.
 
         Args:
             configs (Dict): Configuration parser which also contains the accuracy configurations.
@@ -92,11 +92,11 @@ class AccuracyObject:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
         """
         if annotation_format == 'COCO':
-            dataloader = COCODataloader(self.configs, path_location)
+            dataloader = CocoDataloader(self.configs, path_location)
         elif annotation_format == 'JSON':
-            dataloader = JSONDataloader(self.configs, path_location)
+            dataloader = JsonDataloader(self.configs, path_location)
         elif annotation_format == 'MOT':
-            dataloader = MOTDataloader(self.configs, path_location)
+            dataloader = MotDataloader(self.configs, path_location)
         else:
             return ValueError("This is not a valid dataloader")
         return dataloader

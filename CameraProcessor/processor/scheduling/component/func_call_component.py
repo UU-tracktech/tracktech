@@ -4,11 +4,11 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class FuncCallComponent(IComponent):
-    """Componenent that holds a single function that can be run by the Scheduler.
+    """Component that holds a single function that can be run by the Scheduler.
     """
 
     def __init__(self, func):

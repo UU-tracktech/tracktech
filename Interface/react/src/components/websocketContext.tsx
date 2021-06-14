@@ -7,9 +7,19 @@ Utrecht University within the Software Project course.
  */
 
 import React, { ReactNode } from 'react'
+import { useKeycloak } from '@react-keycloak/web'
 
-import { OrchestratorMessage } from '../classes/orchestratorMessage'
-import { Box, BoxesClientMessage } from '../classes/clientMessage'
+import {
+  OrchestratorMessage,
+  SetUsesImagesMessage,
+  AuthenticateOrchestratorMessage
+} from '../classes/orchestratorMessage'
+import {
+  Box,
+  BoxesClientMessage,
+  NewObjectClientMessage,
+  StopClientMessage
+} from '../classes/clientMessage'
 
 /** The various states the websocket can be in */
 export type connectionState =
@@ -30,7 +40,7 @@ export type websocketArgs = {
   ) => number
   removeListener: (listener: number) => void
   connectionState: connectionState
-  socketUrl: string
+  objects: NewObjectClientMessage[]
 }
 
 /** The context which can be used by other components to send/receive messages */
@@ -40,7 +50,7 @@ export const websocketContext = React.createContext<websocketArgs>({
   addListener: (_: string, _2: (boxes: Box[], frameId: number) => void) => 0,
   removeListener: (listener: number) => alert(`removing ${listener}`),
   connectionState: 'NONE',
-  socketUrl: 'NO URL'
+  objects: []
 })
 
 /** Listeners can listen for incoming messages and handle contents using the callback */
@@ -60,41 +70,71 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     'NONE'
   )
 
-  /** State keeping track of where the socket is connected to */
-  const [socketUrl, setSocketUrl] = React.useState(
-    'wss://tracktech.ml:50011/client'
-  )
+  /** State keeping track of objects that were added */
+  const [objects, setObjects] = React.useState<NewObjectClientMessage[]>([])
+
+  //
+  const { keycloak } = useKeycloak()
 
   const socketRef = React.useRef<WebSocket>()
   const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
-  React.useEffect(() => setSocket(socketUrl), [])
-
   /** Creates a socket which tries to connect to the given url */
   function setSocket(url: string) {
-    var socket = new WebSocket(url)
-    setConnectionState('CONNECTING')
-    socket.onopen = (ev: Event) => onOpen(ev)
-    socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev)
-    socket.onclose = (ev: CloseEvent) => onClose(ev)
-    socket.onerror = (ev: Event) => onError(ev)
-    setSocketUrl(url)
+    try {
+      var socket = new WebSocket(url)
+      setConnectionState('CONNECTING')
+      socket.onopen = (ev: Event) => onOpen(ev)
+      socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev)
+      socket.onclose = (ev: CloseEvent) => onClose(ev)
+      socket.onerror = (ev: Event) => onError(ev)
 
-    socketRef.current = socket
+      socketRef.current = socket
+      // Catch fail due to possible incorrect url
+    } catch {}
   }
 
   /** Callback function for when the socket has connected sucessfully */
   function onOpen(_ev: Event) {
     console.log('connected socket')
     setConnectionState('OPEN')
+
+    try {
+      // Authenticate the client
+      if (keycloak.token)
+        send(new AuthenticateOrchestratorMessage(keycloak.token))
+      // Let the orchestrator know that this client should receive images of new tracking objects
+      send(new SetUsesImagesMessage(true))
+    } catch {
+      // The first send can throw an error under testing, even though the message is sent properly
+    }
   }
 
-  /** Callback for when a message has been received by the websocket
-   *  This will pass on the message to all relevant listeners
-   */
+  /** Callback for when a message has been received by the websocket */
   function onMessage(ev: MessageEvent<any>) {
-    let object: BoxesClientMessage = JSON.parse(ev.data)
+    let data = JSON.parse(ev.data)
+    switch (data.type) {
+      case 'boundingBoxes':
+        let object: BoxesClientMessage = data
+        handleBoundingBoxesMessage(object)
+        break
+      case 'newObject':
+        let object2: NewObjectClientMessage = data
+        handleNewObjectMessage(object2)
+        break
+      case 'stop':
+        let object3: StopClientMessage = data
+        handleStopMessage(object3)
+        break
+    }
+  }
+
+  /**
+   * Handles a bounding boxes message from the orchestrator
+   * This will pass on the message to all relevant listeners
+   */
+  function handleBoundingBoxesMessage(object: BoxesClientMessage) {
     var message = new BoxesClientMessage(
       object.cameraId,
       object.frameId,
@@ -105,6 +145,33 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     listenersRef.current
       ?.filter((listener) => listener.id === message.cameraId)
       .forEach((listener) => listener.callback(message.boxes, message.frameId))
+  }
+
+  /**
+   * Handles a new Object message from the orchestrator
+   * This will set the new obect in the state
+   */
+  function handleNewObjectMessage(object: NewObjectClientMessage) {
+    var message = new NewObjectClientMessage(object.objectId, object.image)
+    setObjects((objects) => [
+      ...objects.filter(
+        (trackedObject) => trackedObject.objectId !== message.objectId
+      ),
+      message
+    ])
+  }
+
+  /**
+   * Handles a stap message from the orchestrator
+   * This will remove the object from the selection panel
+   */
+  function handleStopMessage(object: StopClientMessage) {
+    var message = new StopClientMessage(object.objectId)
+    setObjects((objects) =>
+      objects.filter(
+        (trackedObject) => trackedObject.objectId !== message.objectId
+      )
+    )
   }
 
   /** Callback for when the connection is closed */
@@ -159,7 +226,7 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
         ) => addListener(id, callback),
         removeListener: (listener: number) => removeListener(listener),
         connectionState: connectionState,
-        socketUrl: socketUrl
+        objects: objects
       }}
     >
       {props.children}

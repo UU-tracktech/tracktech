@@ -9,7 +9,7 @@ import time
 import logging
 from cv2 import VideoCapture
 
-from processor.input.icapture import ICapture
+from processor.input.i_capture import ICapture
 from processor.data_object.frame_obj import FrameObj
 
 
@@ -17,7 +17,7 @@ class CamCapture(ICapture):
     """Captures video from a webcam or other connected camera on the computer.
 
     Attributes:
-        cap (cv2.VideoCapture): Capture that serves webcam frame one by one.
+        cap (cv2.VideoCapture): Capture that serves webcam frames one by one.
     """
     def __init__(self, device_nr):
         """Opens capture that connects to webcam.

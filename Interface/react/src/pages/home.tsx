@@ -12,13 +12,17 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
-import { Button, Card, Layout } from 'antd'
+import { Button, Card, Layout, Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { Grid } from '../components/grid'
 import { CameraCard } from '../components/cameraCard'
+import { SelectionCard } from '../components/selectionCard'
 import { ObjectTypeFilter } from '../components/objectTypeFilter'
 import { stream } from '../classes/source'
+import { websocketContext } from '../components/websocketContext'
+import { environmentContext } from '../components/environmentContext'
+import { StopOrchestratorMessage } from '../classes/orchestratorMessage'
 
 /** The selection modes for the bounding boxes */
 export type indicator = 'All' | 'Selection' | 'None'
@@ -26,9 +30,6 @@ export type indicator = 'All' | 'Selection' | 'None'
 /** Data required to track an object (placeholder, TODO: implement tracking) */
 type tracked = { id: number; name: string; image: string; data: string }
 export function Home() {
-  /** State containing all the camera sources */
-  const [sources, setSources] = React.useState<stream[]>()
-
   /** State containing which boundingboxes to draw */
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
     'All'
@@ -42,39 +43,27 @@ export function Home() {
 
   const selectionRef = React.useRef(0)
 
-  React.useEffect(() => {
-    //Read all the sources from the config file and create sources for the videoplayers
-    fetch(process.env.PUBLIC_URL + '/cameras.json').then((text) =>
-      text.json().then((json) => {
-        setSources(
-          json.map((stream) => ({
-            id: stream.Forwarder,
-            name: stream.Name,
-            srcObject: {
-              src: stream.Forwarder,
-              type: 'application/x-mpegURL'
-            }
-          }))
-        )
-      })
-    )
-  }, [])
+  const { send, objects, setSocket } = React.useContext(websocketContext)
+  const { cameras, objectTypes, orchestratorUrl } = React.useContext(
+    environmentContext
+  )
 
-  /**Place to keep track of the possible types */
-  const [allObjectTypes, setAllObjectTypes] = React.useState<string[]>([])
+  const sources: stream[] = cameras.map((stream) => ({
+    id: stream.Id,
+    name: stream.Name,
+    srcObject: {
+      src: stream.Forwarder,
+      type: 'application/x-mpegURL'
+    }
+  }))
 
-  /**State to keep track of the current selected objectType */
+  /** State to keep track of the current selected objectType */
   const [filteredObjectTypes, setFilteredObjectTypes] = React.useState<
     string[]
   >([])
 
   React.useEffect(() => {
-    //Read all the object types from file and save them
-    fetch(process.env.PUBLIC_URL + '/objectTypes.json').then((text) =>
-      text.json().then((json) => {
-        setAllObjectTypes(json)
-      })
-    )
+    setSocket(orchestratorUrl)
   }, [])
 
   // Used for camera card key generation
@@ -98,7 +87,7 @@ export function Home() {
         }}
       >
         <Card
-          //This card contains the buttons to change which boundingboxes are drawn
+          // This card contains the buttons to change which boundingboxes are drawn
           data-testid='indicatorsCard'
           headStyle={{ padding: 0 }}
           bodyStyle={{ padding: 0 }}
@@ -145,7 +134,7 @@ export function Home() {
         <ObjectTypeFilter
           addHidden={(a) => addHidden(a)}
           removeHidden={(a) => removeHidden(a)}
-          objectTypes={allObjectTypes.map((objectType) => [
+          objectTypes={objectTypes.map((objectType) => [
             objectType,
             filteredObjectTypes.some(
               (filteredObjectType) => filteredObjectType === objectType
@@ -154,47 +143,38 @@ export function Home() {
         />
 
         <Card
-          //This card contains the objects that are being tracked, TODO: implement tracking
+          // This card contains the objects that are being tracked
           data-testid={'selectionCard'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size='small'
+          size={'small'}
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Selection</h2>
           }
         >
-          <div>
-            <Button onClick={async () => await addSelection()}>+</Button>
-          </div>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-              gridAutoRows: '100px'
+              gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))'
             }}
           >
-            {tracking &&
-              tracking.map((tracked) => {
-                var iterator = 0
-                return (
-                  <img
-                    key={`image-${iterator++}`}
-                    alt='tracked person'
-                    onClick={() => removeSelection(tracked.id)}
-                    style={{ width: '100%', height: '100%', margin: '5px' }}
-                    src={tracked.image}
-                  />
-                )
-              })}
+            {objects.map((tracked) => (
+              <SelectionCard
+                key={`image-${iterator++}`}
+                objectId={tracked.objectId}
+                onClick={() => removeSelection(tracked.objectId)}
+                src={tracked.image}
+              />
+            ))}
           </div>
         </Card>
 
         <Card
-          //This card contains the list of cameras that are connected
+          // This card contains the list of cameras that are connected
           data-testid={'cameraList'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
-          size='small'
+          size={'small'}
           title={
             <h2 style={{ margin: '0px 8px', fontSize: '20px' }}>Cameras</h2>
           }
@@ -207,24 +187,22 @@ export function Home() {
             }}
           >
             {sources &&
-              sources.map((source) => {
-                return (
-                  //Create a cameracard for each stream
-                  <CameraCard
-                    key={`cameraCard-${iterator++}`}
-                    id={source.id}
-                    title={source.name}
-                    setSize={setPrimary}
-                  />
-                )
-              })}
+              sources.map((source) => (
+                // Create a cameracard for each stream
+                <CameraCard
+                  key={`cameraCard-${iterator++}`}
+                  id={source.id}
+                  title={source.name}
+                  setSize={setPrimary}
+                />
+              ))}
           </div>
         </Card>
       </div>
 
       <div style={{ overflowY: 'auto' }} data-testid={'gridDiv'}>
         {sources && (
-          //The grid contains all the videoplayers
+          // The grid contains all the videoplayers
           <Grid
             sources={sources}
             primary={primary ?? sources[0]?.id}
@@ -262,7 +240,8 @@ export function Home() {
 
   /** Placeholder to stop tracking an object, TODO: implement tracking */
   function removeSelection(id: number) {
-    setTracking(tracking.filter((tracked) => tracked.id !== id))
+    console.log('Stop tracking ', id)
+    send(new StopOrchestratorMessage(id))
   }
 
   /**

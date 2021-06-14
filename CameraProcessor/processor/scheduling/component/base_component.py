@@ -1,4 +1,4 @@
-"""Simplest definition of a component.
+"""The Simplest definition of a component.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class BaseComponent(IComponent):
