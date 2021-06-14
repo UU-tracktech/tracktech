@@ -17,7 +17,7 @@ from src.utility.http_server import create_http_servers
 from src.objects.object_management import start_tracking_timeout_monitoring
 from src.handlers.client_socket import ClientSocket
 from src.handlers.processor_socket import ProcessorSocket
-from src.handlers.timeline_handler import TimeLineHandler
+from src.handlers.timeline_handler import TimelineHandler
 from src.handlers.object_ids_handler import ObjectIdsHandler
 
 
@@ -59,7 +59,7 @@ def create_app(client_auth, processor_auth):
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
-        ('/timelines', TimeLineHandler),
+        ('/timelines', TimelineHandler),
         ('/objectIds', ObjectIdsHandler)
     ]
 

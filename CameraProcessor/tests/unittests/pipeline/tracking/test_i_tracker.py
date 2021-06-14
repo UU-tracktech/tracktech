@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
-from processor.pipeline.tracking.itracker import ITracker
+from processor.pipeline.tracking.i_tracker import ITracker
 from processor.data_object.frame_obj import FrameObj
 from processor.data_object.bounding_boxes import BoundingBoxes
 

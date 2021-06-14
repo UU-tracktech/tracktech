@@ -4,7 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from processor.pipeline.reidentification.ireidentifier import IReIdentifier
+from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_boxes import BoundingBoxes
 
 class FakeReIdentifier(IReIdentifier):

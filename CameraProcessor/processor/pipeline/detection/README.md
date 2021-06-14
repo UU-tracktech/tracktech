@@ -18,7 +18,7 @@ from processor.data_object.bounding_boxes import BoundingBoxes
 The output of the detection stage is an object, [BoundingBoxes](processor.data_object.bounding_boxes.py) containing a list of [BoundingBox](processor.data_object.bounding_box.py) objects. These contain various information such as classification and certainty. The output of detection can be used directly for displaying the boxes on the image or used in subsequent processes such as tracking or re-identification.   
 ## detection.yolov5_runner  
 ```python  
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector  
+from processor.pipeline.detection.yolov5_detector import Yolov5Detector  
 ```  
   
 ### Introduction  
