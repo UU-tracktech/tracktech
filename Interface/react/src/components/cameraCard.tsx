@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 /**
   The cameracard component is used in the cameras list.
-  There is a card for each connected camera, shows an identiefier and buttons
+  There is a card for each connected camera, shows an identifier and buttons
   to enlarge, shrink or (TODO: delete) that camera's videoplayer
 */
 

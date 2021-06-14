@@ -35,7 +35,7 @@ class FakeTracker(ITracker):
 
         Args:
             bounding_boxes (BoundingBoxes): Detection boxes given to the tracker.
-            reid_data (ReidData): Object containing all the reid data .
+            reid_data (ReidData): Object containing all the reid data.
         """
         tracked_bounding_boxes = []
 

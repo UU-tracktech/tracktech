@@ -39,7 +39,7 @@ afterAll(() => {
   window.alert = originalAlert
 })
 
-//A list containing 3 made up sources to test with
+//A list containing three made up sources to test with
 //The sources will cause some VideoJS errors but for these tests that is not a problem
 const mockSources = [
   {

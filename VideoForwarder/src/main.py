@@ -46,7 +46,7 @@ if __name__ == "__main__":
         stream_options=create_stream_options()
     )
 
-    # Load the ssl and port options.
+    # Load the SSL and port options.
     ssl_options = create_ssl_options()
     if ssl_options is not None:
         https_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_options)
@@ -58,5 +58,5 @@ if __name__ == "__main__":
     http_server.listen(80)
     info('listening over http')
 
-    # Start the IO loop (used by tornado itself).
+    # Start the IO loop (used by Tornado itself).
     tornado.ioloop.IOLoop.current().start()

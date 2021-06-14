@@ -101,7 +101,7 @@ class MotDataloader(IDataloader):
         """Get the name of an image.
 
         Args:
-            image_id (int): Id of the image.
+            image_id (int): ID of the image.
 
         Returns:
             name (string): Properly formatted image id.
@@ -130,7 +130,7 @@ class MotDataloader(IDataloader):
         """Parse line from file given a delimiter.
 
         Args:
-            line (str): line in file.
+            line (str): line in a file.
             delimiter (str): delimiter values in line are separated with.
 
         Returns:

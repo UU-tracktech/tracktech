@@ -53,7 +53,7 @@ describe('callbacks', () => {
 
 describe('timestamp', () => {
   //not sure if this can ever be tested without taking these functions
-  //outside of the videoplayer class and exporting them to make them public
+  //outside the videoplayer class and exporting them to make them public
   it.todo('gets the segment name') //GetUri
   it.todo('Stores the first segment and looks for the next') //getInitialUri
   it.todo('calculates a timestamp from the 2nd segment') //LookForUriUpdate

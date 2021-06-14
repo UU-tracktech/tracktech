@@ -11,7 +11,7 @@ import { screen, render, getAllByTestId } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { ObjectTypeFilter } from '../../src/components/objectTypeFilter'
 
-//Basic test to ensure the coponent renders without errors
+//Basic test to ensure the component renders without errors
 test('it renders without error', () => {
   render(
     <ObjectTypeFilter

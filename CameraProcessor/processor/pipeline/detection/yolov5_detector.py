@@ -30,7 +30,7 @@ class Yolov5Detector(IYoloDetector):
         device (str): Device that runs the detector.
         half (bool): Whether to half the model or not.
         classify (bool): Whether to classify.
-        names ([str]): List of names which that should get detected.
+        names ([str]): List of names, which that should get detected.
     """
 
     def __init__(self, config, filters):
