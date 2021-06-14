@@ -5,8 +5,8 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import os
-import requests
 import logging
+import requests
 
 
 def get_token(auth_server_url):
@@ -16,7 +16,7 @@ def get_token(auth_server_url):
         auth_server_url (str): Url of the authentication server to request the token from.
 
     Returns:
-        str: Access token received from the authentication server
+        str: Access token received from the authentication server.
 
     Raises:
         AttributeError: Authentication credentials given in the environment are invalid.
@@ -29,7 +29,7 @@ def get_token(auth_server_url):
 
     # Environment variables not found.
     if client_id is None or client_secret is None:
-        logging.error(f'Retrieving token without environment variables')
+        logging.error('Retrieving token without environment variables')
         raise EnvironmentError('CLIENT_ID or CLIENT_SECRET not found in environment.')
 
     params = {

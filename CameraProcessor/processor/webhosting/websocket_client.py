@@ -59,7 +59,7 @@ class WebsocketClient:
             ConnectionError: No response from the authentication server.
             TimeoutError: After several retries the connection could still not be established.
         """
-        # If we want to do authentication, try to get an access token
+        # If we want to do authentication, try to get an access token.
         auth_server_url = os.environ.get("AUTH_SERVER_URL")
         auth_token = None
         if auth_server_url:
@@ -71,7 +71,7 @@ class WebsocketClient:
         sleep = 1
         connected = False
 
-        # Try to authenticate to the processor orchestrator
+        # Try to authenticate to the processor orchestrator.
         # Whilst there is no connection.
         while not connected and timeout_left > 0:
             # Reconnect.
