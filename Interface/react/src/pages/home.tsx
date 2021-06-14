@@ -21,6 +21,7 @@ import { SelectionCard } from '../components/selectionCard'
 import { ObjectTypeFilter } from '../components/objectTypeFilter'
 import { stream } from '../classes/source'
 import { websocketContext } from '../components/websocketContext'
+import { environmentContext } from '../components/environmentContext'
 import { StopOrchestratorMessage } from '../classes/orchestratorMessage'
 
 /** The selection modes for the bounding boxes */
@@ -29,9 +30,6 @@ export type indicator = 'All' | 'Selection' | 'None'
 /** Data required to track an object (placeholder, TODO: implement tracking) */
 type tracked = { id: number; name: string; image: string; data: string }
 export function Home() {
-  /** State containing all the camera sources */
-  const [sources, setSources] = React.useState<stream[]>()
-
   /** State containing which boundingboxes to draw */
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
     'All'
@@ -45,28 +43,19 @@ export function Home() {
 
   const selectionRef = React.useRef(0)
 
-  const { send, objects } = React.useContext(websocketContext)
+  const { send, objects, setSocket } = React.useContext(websocketContext)
+  const { cameras, objectTypes, orchestratorUrl } = React.useContext(
+    environmentContext
+  )
 
-  React.useEffect(() => {
-    // Read all the sources from the config file and create sources for the videoplayers
-    fetch(process.env.PUBLIC_URL + '/cameras.json').then((text) =>
-      text.json().then((json) => {
-        setSources(
-          json.map((stream) => ({
-            id: stream.Id,
-            name: stream.Name,
-            srcObject: {
-              src: stream.Forwarder,
-              type: 'application/x-mpegURL'
-            }
-          }))
-        )
-      })
-    )
-  }, [])
-
-  /** Place to keep track of the possible types */
-  const [allObjectTypes, setAllObjectTypes] = React.useState<string[]>([])
+  const sources: stream[] = cameras.map((stream) => ({
+    id: stream.Id,
+    name: stream.Name,
+    srcObject: {
+      src: stream.Forwarder,
+      type: 'application/x-mpegURL'
+    }
+  }))
 
   /** State to keep track of the current selected objectType */
   const [filteredObjectTypes, setFilteredObjectTypes] = React.useState<
@@ -74,12 +63,7 @@ export function Home() {
   >([])
 
   React.useEffect(() => {
-    //Read all the object types from file and save them
-    fetch(process.env.PUBLIC_URL + '/objectTypes.json').then((text) =>
-      text.json().then((json) => {
-        setAllObjectTypes(json)
-      })
-    )
+    setSocket(orchestratorUrl)
   }, [])
 
   // Used for camera card key generation
@@ -150,7 +134,7 @@ export function Home() {
         <ObjectTypeFilter
           addHidden={(a) => addHidden(a)}
           removeHidden={(a) => removeHidden(a)}
-          objectTypes={allObjectTypes.map((objectType) => [
+          objectTypes={objectTypes.map((objectType) => [
             objectType,
             filteredObjectTypes.some(
               (filteredObjectType) => filteredObjectType === objectType

@@ -28,7 +28,7 @@ def create_plan(plan_args):
     """Create a plan using the configuration for the entire pipeline.
 
     Args:
-        plan_args (dict[str, obj]): Dictionary containing every argument based on name.
+        plan_args (dict[str, obj]): Dictionary containing every argument based on the name.
 
     Returns:
         ScheduleNode: the starting node of the plan.

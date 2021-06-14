@@ -20,7 +20,7 @@ import { stream } from '../classes/source'
 /**
  * Properties of the grid component
  * Contains which stream is the primary stream, displayed large at the top,
- * contains a list of all video streams to display and which boundingboxes/indicators to draw
+ * contains a list of all video streams to display and, which boundingboxes/indicators to draw
  */
 export type gridProps = {
   primary?: string

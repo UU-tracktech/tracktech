@@ -1,5 +1,8 @@
 """Handles authentication and authorization of tokens.
 
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
 import jwt
@@ -12,10 +15,10 @@ class Auth:
     def __init__(self, public_key_path, algorithms, audience, role):
         """Constructor
         Args:
-            public_key_path: the path to the public key file
-            algorithms: the algorithms to use to validate the token
-            audience: the audience for the token
-            role: the role the user needs
+            public_key_path: the path to the public key file.
+            algorithms: the algorithms used to validate the token.
+            audience: the audience for the token.
+            role: the role the user needs.
         """
 
         # Read the key file
@@ -29,10 +32,10 @@ class Auth:
         self.role = role
 
     def validate(self, token) -> None:
-        """Validate the given token
+        """Validate the given token.
         
         Args:
-            token: an jwt token to validate
+            token: an jwt token to validate.
         """
 
         try:
@@ -58,16 +61,10 @@ class Auth:
 
 
 class AuthenticationError(Exception):
-    """Exception to throw when authentication fails.
-
-    """
-
+    """Exception to throw when authentication fails."""
     pass
 
 
 class AuthorizationError(Exception):
-    """Exception to throw when authorization fails.
-
-    """
-
+    """Exception to throw when authorization fails."""
     pass

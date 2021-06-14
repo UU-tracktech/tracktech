@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 /**
  * Defines the properties of a single camera feed
- * Contians an identifier, a name and the stream URL
+ * Contains an identifier, a name, and the stream URL
  */
 export type stream = {
   id: string

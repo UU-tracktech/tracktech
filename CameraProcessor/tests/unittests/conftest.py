@@ -16,7 +16,7 @@ def img():
     """Fixture for a blank image.
 
     Returns:
-        np.ndarray: a numpy array representing an image, in this case a blank one
+        np.ndarray: a numpy array representing an image, in this case a blank one.
     """
     image_size = 200
     # Create an empty white image.

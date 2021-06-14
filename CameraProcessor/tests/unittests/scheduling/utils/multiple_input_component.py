@@ -29,6 +29,6 @@ class MultipleInputComponent(IComponent):
         """Interface function to execute the component.
 
         Returns:
-            func: Work function to call when component is ran.
+            func: Work function to call when component is run.
         """
         return self.work

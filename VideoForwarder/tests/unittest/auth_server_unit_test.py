@@ -1,4 +1,4 @@
-"""Unit test of the forwarder checks camera.py + json conversion.
+"""Unit test of the forwarder checks camera.py and json conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -57,12 +57,12 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
 
     @testing.gen_test(timeout=10)
     def test_no_auth(self):
-        """Check if a 403 is returned when no authentication is provided when it is required."""
+        """Check if a 200 is returned when no authentication is provided when it is not required."""
 
         # Retrieve the steam file.
         response = yield self.my_fetch('/stream.m3u8')
 
-        assert response.code == 403
+        assert response.code == 200
 
     @testing.gen_test(timeout=10)
     def test_bad_auth(self):

@@ -23,7 +23,7 @@ def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, re_id_tracked
         dimensions (int, int): New (width, height) of the image.
 
     Returns:
-        numpy.ndarray: Tiled 2 by 2 image with new dimensions.
+        numpy.ndarray: Tiled two by two image with new dimensions.
     """
     if dimensions is None:
         dimensions = __calculate_scaled_size(frame_obj.frame.shape)

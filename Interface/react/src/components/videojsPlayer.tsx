@@ -33,7 +33,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const { keycloak } = useKeycloak()
   const status = useAuthState()
 
-  // The DOM node to attach the videplayer to
+  // The DOM node to attach the videoplayer to
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // The videoplayer object
@@ -61,7 +61,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
     // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests
     // Time spend on trying to use a single way of authentication:
     // 5hrs
-    // Please update if appropiate.
+    // Please update if appropriate.
     if (props.sources?.[0].src)
       props.sources[0].src += `?Bearer=${keycloak.token}`
 
@@ -105,7 +105,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         }, 200)
       })
 
-      //Every time the videoplayer is unpaused, go back to updating the timestamp
+      //Every time the videoplayer is resumed, go back to updating the timestamp
       player?.on('play', () => {
         updateIntervalRef.current = player?.setInterval(() => {
           updateTimestamp()
