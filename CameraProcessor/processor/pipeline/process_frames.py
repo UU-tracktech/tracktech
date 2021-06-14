@@ -235,7 +235,7 @@ def __handle_update_command(track_elem, re_identifier, re_id_data):
         re_id_data (ReidData): Object containing data necessary for re-identification.
     """
 
-    # Check if the size of the feature map corresponds with the current re-id
+    # Check if the size of the feature map corresponds with the current re-id.
     if re_identifier.feature_map_size == len(track_elem.feature_map):
         logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
         re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
