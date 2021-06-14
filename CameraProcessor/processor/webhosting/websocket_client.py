@@ -61,10 +61,10 @@ class WebsocketClient:
             TimeoutError: After several retries the connection could still not be established.
         """
         # If we want to do authentication, try to get an access token
-        auth_server_url = os.environ.get("AUTH_SERVER_URL", None)
+        auth_server_url = os.environ.get("AUTH_SERVER_URL")
         auth_token = None
         if auth_server_url:
-            auth_token = await self.get_access_token(auth_server_url)
+            auth_token = self.get_access_token(auth_server_url)
         else:
             logging.info("Authentication is disabled since AUTH_SERVER_URL is not specified in environment.")
 

@@ -1,3 +1,9 @@
+"""Gets the token given an authentication server url. Uses the client_secret OAuth2 flow.
+
+This program has been developed by students from the bachelor Computer Science at
+Utrecht University within the Software Project course.
+© Copyright Utrecht University (Department of Information and Computing Sciences)
+"""
 import os
 import requests
 import logging
