@@ -28,7 +28,7 @@ def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, re_id_tracked
     if dimensions is None:
         dimensions = __calculate_scaled_size(frame_obj.frame.shape)
 
-    # Downscale image.
+    # Downscale the image.
     scaled_frame = cv2.resize(frame_obj.frame, dimensions)
 
     # Draw detections boxes and downscale.
@@ -43,12 +43,12 @@ def generate_tiled_image(frame_obj, detected_boxes, tracked_boxes, re_id_tracked
 
     # Draw re-id boxes and downscale.
     re_id_frame = frame_obj.frame.copy()
-    draw.draw_re_id_tracked_boxes(re_id_frame, re_id_tracked_boxes.bounding_boxes)
+    draw.draw_re_identification_boxes(re_id_frame, re_id_tracked_boxes.bounding_boxes)
     re_id_frame = cv2.resize(re_id_frame, dimensions)
 
     # List representation of the images in 2D.
     list_2d = [[scaled_frame, detection_frame],
-               [tracking_frame, scaled_frame]]
+               [tracking_frame, re_id_frame]]
 
     # Return the tiled image.
     return cv2.vconcat([cv2.hconcat(list_h)
