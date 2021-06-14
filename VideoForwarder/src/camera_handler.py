@@ -11,6 +11,7 @@ import os
 import re
 import threading
 import time
+from logging import info, error
 from subprocess import TimeoutExpired
 from tornado.web import StaticFileHandler
 import tornado
@@ -81,7 +82,7 @@ class CameraHandler(StaticFileHandler):
 
         # If there is no current conversion, start one.
         if self.camera.conversion is None:
-            tornado.log.access_log.info("starting stream")
+            info("starting stream")
 
             # Configure entry conversion.
             self.camera.conversion = get_conversion_process(
@@ -143,7 +144,7 @@ class CameraHandler(StaticFileHandler):
         """
 
         # Print stopping for logging purposes.
-        tornado.log.access_log.info("stopping stream")
+        info("stopping stream")
 
         # Stopping the conversion.
         self.camera.conversion.terminate()
@@ -182,17 +183,17 @@ class CameraHandler(StaticFileHandler):
 
             except AuthenticationError as exc:
                 # Authentication (validating token) failed.
-                tornado.log.access_log.info(exc)
+                error(exc)
                 self.set_status(403)
                 raise tornado.web.Finish() from exc
             except AuthorizationError as exc:
                 # Authorization failed (authentication succeeded, but the action is not allowed).
-                tornado.log.access_log.info(exc)
+                error(exc)
                 self.set_status(401)
                 raise tornado.web.Finish() from exc
             except Exception as exc:
                 # Any other error, no token added e.g.
-                tornado.log.access_log.info(exc)
+                error(exc)
                 self.set_status(403)
                 raise tornado.web.Finish() from exc
 

@@ -65,7 +65,7 @@ class CommentChecker(BaseChecker):
 
                 # See what is wrong about the comment.
                 wrong_spaces_match = re.match(r'#(?:\S|\s\s+).*', line)
-                missing_dot_match = re.match(r'#.*([^.]|\s+\.)$', line)
+                missing_period_match = re.match(r'#.*[^.]$', line)
                 capital_letter_match = re.match(r'#\s[^A-Z].*', line)
 
                 line_start_index, line_end_index = self.get_line_indices(raw_line)
@@ -75,8 +75,8 @@ class CommentChecker(BaseChecker):
                     self.add_message('comment-should-have-one-space',
                                      line=lineno + 1,
                                      col_offset=line_start_index + 1)
-                # Comment does not end with a dot.
-                if missing_dot_match is not None:
+                # Comment does not end with a period.
+                if missing_period_match is not None:
                     self.add_message('comment-missing-period',
                                      line=lineno + 1,
                                      col_offset=line_end_index + 1)

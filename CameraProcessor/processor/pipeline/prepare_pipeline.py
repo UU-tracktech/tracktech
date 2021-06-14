@@ -12,8 +12,8 @@ from processor.input.hls_capture import HlsCapture
 from processor.input.image_capture import ImageCapture
 from processor.input.video_capture import VideoCapture
 
-from processor.pipeline.reidentification.torchreid_runner import TorchReIdentifier
-from processor.utils.create_runners import create_detector, create_tracker, DETECTOR_SWITCH, TRACKER_SWITCH
+from processor.utils.create_runners import \
+    create_detector, create_tracker, create_reidentifier, DETECTOR_SWITCH, TRACKER_SWITCH, REID_SWITCH
 
 import processor.scheduling.plan.pipeline_plan as pipeline_plan
 from processor.scheduling.scheduler import Scheduler
@@ -97,8 +97,13 @@ def prepare_reidentifier(configs):
     """
     # Instantiate the re-identifier.
     logging.info("Instantiating reidentifier...")
-    re_identifier_config = configs['Reid']
-    return TorchReIdentifier('osnet_x1_0', re_identifier_config)
+    if configs['Main'].get('reid').lower() not in REID_SWITCH:
+        raise NameError(f"Incorrect re-identifier. Re-identifier {configs['Main'].get('reid')} not found.")
+
+    # Create re-identifier since it exists.
+    return create_reidentifier(configs['Main'].get('reid'),
+                               configs
+                               )
 
 
 def prepare_capture(input_config):
@@ -129,24 +134,28 @@ def prepare_capture(input_config):
     raise NameError(f'Input type "{capture_type}" is unknown')
 
 
-def prepare_scheduler(detector, tracker, on_processed_frame):
+def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame, frame_buffer):
     """Prepare the Scheduler with a valid plan configuration.
 
     Args:
         detector (IDetector): detector performing the detections on a given frame.
         tracker (ITracker): tracker performing simple tracking of all objects using the detections.
-        on_processed_frame (Function): when the frame got processed. Call this function to handle effects
+        re_identifier (IReIdentifier): re-identifier performing the re-identification stage.
+        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.
+        frame_buffer (FrameBuffer): buffer of frames and stage information associated with the frame.
 
     Returns:
         Scheduler: Scheduler that has been configured with a plan.
     """
     # Get args dict from used plan.
-    plan_args = pipeline_plan.args
+    plan_args = pipeline_plan.plan_inputs
 
     # Put configuration into args dict.
     plan_args['detector'] = detector
     plan_args['tracker'] = tracker
+    plan_args['re_identifier'] = re_identifier
     plan_args['func'] = on_processed_frame
+    plan_args['frame_buffer'] = frame_buffer
 
     # Apply configuration to plan.
     start_node = pipeline_plan.create_plan(plan_args)

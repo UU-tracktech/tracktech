@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class BaseComponent(IComponent):

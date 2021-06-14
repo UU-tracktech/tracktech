@@ -4,17 +4,18 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from processor.pipeline.reidentification.ireidentifier import IReIdentifier
+from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_boxes import BoundingBoxes
 
 class FakeReIdentifier(IReIdentifier):
     """A fake re-identifier that implements the same methods but just mocks some functionality."""
-    def extract_features(self, frame_obj, track_obj):
+
+    def extract_features(self, frame_obj, bbox):
         """Mocks feature extraction method.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
 
         Returns:
             [float]: An empty vector.

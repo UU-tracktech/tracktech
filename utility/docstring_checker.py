@@ -79,13 +79,6 @@ class DocstringChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.FunctionDef): Function definition containing the .doc property.
         """
-        # If the function has empty body then return, missing docstring already gets emitted.
-        if not node.doc:
-            self.add_message('docstring-is-missing',
-                             node=node
-                             )
-            return
-
         self.check_docstring(node)
 
     def visit_classdef(self, node):
@@ -94,12 +87,6 @@ class DocstringChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.ClassDef): Class definition containing the .doc property.
         """
-        if not node.doc:
-            self.add_message('docstring-is-missing',
-                             node=node
-                             )
-            return
-
         self.check_docstring(node)
 
     def visit_module(self, node):
@@ -108,10 +95,8 @@ class DocstringChecker(BaseChecker):
         Args:
             node (astroid.scoped_nodes.Module): Module definition astroid creates
         """
-        if not node.doc:
-            self.add_message('docstring-is-missing',
-                             node=node
-                             )
+        # A limitation of Pylint is that it adds the root __init__.py regardless of whether it is ignored.
+        if node.path[0].endswith('__init__.py'):
             return
 
         self.check_docstring(node)
@@ -122,6 +107,13 @@ class DocstringChecker(BaseChecker):
         Args:
             node (Any): Function or class definition containing the docstring.
         """
+        # Docstring is missing from the node.
+        if not node.doc:
+            self.add_message('docstring-is-missing',
+                             node=node
+                             )
+            return
+
         # Get documentation.
         doc_lines = self.get_full_docstring(node)
 
@@ -154,9 +146,6 @@ class DocstringChecker(BaseChecker):
             if doc_lines[-1]:
                 self.add_message('last-docstring-line-contains-letters',
                                  node=node)
-            if len(doc_lines) == 2:
-                self.add_message('make-docstring-one-line',
-                                 node=node)
             doc_lines = doc_lines[:-1]
 
         # Return the lines in a list.
@@ -169,8 +158,8 @@ class DocstringChecker(BaseChecker):
             node (Any): Function, class or module, definition containing the docstring.
             doc_lines ([str]): List containing all the lines of the documentation.
         """
-        # First line should end with a dot.
-        first_line_match = re.match(r'^.*\S\.($|\"\"\"$)', doc_lines[0])
+        # First line should end with a period.
+        first_line_match = re.match(r'^.*\.\s*$', doc_lines[0])
         if not first_line_match:
             self.add_message('first-line-in-docstring-must-end-with-period',
                              node=node)
@@ -178,6 +167,10 @@ class DocstringChecker(BaseChecker):
         # Return if single line.
         if len(doc_lines) == 1:
             return
+        # Second line is empty and also the last line.
+        if len(doc_lines) == 2 and not doc_lines[1]:
+            self.add_message('make-docstring-one-line',
+                             node=node)
         # Second line contains commenting.
         elif doc_lines[1]:
             self.add_message('second-docstring-line-must-be-empty',

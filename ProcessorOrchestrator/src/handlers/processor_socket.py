@@ -12,10 +12,10 @@ import json
 
 from tornado.websocket import WebSocketHandler
 
-from src.object_manager import objects
-from src.connections import processors
-import src.client_socket as client_socket
-import src.logger as logger
+from src.objects.object_management import objects
+from src.objects.connections import processors
+import src.handlers.client_socket as client_socket
+import src.utility.logger as logger
 
 
 class ProcessorSocket(WebSocketHandler):
@@ -107,6 +107,8 @@ class ProcessorSocket(WebSocketHandler):
             elif action_type == "authenticate":
                 self.authenticate(message_object)
             else:
+                # Close the connection.
+                self.close()
                 logger.log("A processor was not authenticated first")
 
         except ValueError:
@@ -143,9 +145,9 @@ class ProcessorSocket(WebSocketHandler):
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
         logger.log_disconnect("/processor", self.request.remote_ip)
-        if self.identifier in processors:
-            del processors[self.identifier]
-            logger.log(f"Processor with id {self.identifier} disconnected")
+        # Pop the identifier instead of del as it might be called twice.
+        processors.pop(self.identifier, None)
+        logger.log(f"Processor with id {self.identifier} disconnected")
 
     def data_received(self, chunk):
         """Unused method that could handle streamed request data.

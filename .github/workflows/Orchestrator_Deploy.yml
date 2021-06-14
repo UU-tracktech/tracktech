@@ -1,6 +1,6 @@
-name: Orchestrator Build
-"on":
-  workflow_dispatch: null
+name: Orchestrator Deploy
+on:
+  workflow_dispatch:
   push:
     paths:
       - ProcessorOrchestrator/**
@@ -8,11 +8,15 @@ name: Orchestrator Build
     branches:
       - develop
       - master
+
 jobs:
   orchestrator_deploy:
     name: Orchestrator Deploy
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: recursive
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -20,7 +24,6 @@ jobs:
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: Build and push latest
         if: github.ref == 'refs/heads/develop'
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: ProcessorOrchestrator
@@ -28,7 +31,6 @@ jobs:
           tags: "tracktech/orchestrator:latest"
       - name: Build and push release
         if: github.ref == 'refs/heads/master'
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: ProcessorOrchestrator

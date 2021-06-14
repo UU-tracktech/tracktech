@@ -8,7 +8,7 @@ import asyncio
 import json
 import pytest
 
-from super_websocket_client import create_dummy_client
+from websocket_client_dummy import create_dummy_client
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand

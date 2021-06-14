@@ -205,10 +205,10 @@ class WebsocketClient:
         """
         del message["type"]
         if all(k in message.keys() for k in {"frameId", "boxId"}):
-            if "cutout" in message.keys():
+            if "image" in message.keys():
                 return StartCommandExtended(**message)
             return StartCommandSearch(**message)
-        if "cutout" in message.keys():
+        if "image" in message.keys():
             return StartCommandSimple(**message)
         raise ValueError("Start Tracking message does not contain necessary information.")
 

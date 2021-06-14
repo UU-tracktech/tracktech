@@ -4,11 +4,19 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class ITracker(IComponent):
     """Tracker runner interface that can be run as Scheduler component."""
+
+    def execute_component(self):
+        """Function given to scheduler so the scheduler can run the tracking stage.
+
+        Returns:
+            function: function that the scheduler can run.
+        """
+        return self.track
 
     def track(self, frame_obj, det_obj, re_id_data):
         """Performs tracking stage using the tracking object.

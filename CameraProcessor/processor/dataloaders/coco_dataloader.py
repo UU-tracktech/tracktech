@@ -12,10 +12,10 @@ from pycocotools.coco import COCO
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from processor.dataloaders.idataloader import IDataloader
+from processor.dataloaders.i_dataloader import IDataloader
 
 
-class COCODataloader(IDataloader):
+class CocoDataloader(IDataloader):
     """COCO Dataloader, formats COCO Data."""
 
     def __init__(self, configs, path_location):

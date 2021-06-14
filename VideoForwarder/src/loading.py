@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 
 import ssl
 from os import environ
-import tornado.web
+from logging import info
 
 from auth.auth import Auth
 from src.camera import Camera
@@ -103,7 +103,7 @@ def create_authenticator():
         return None
 
     # Give back the Authentication object.
-    tornado.log.gen_log.info("using client token validation")
+    info("using client token validation")
     return Auth(
         public_key_path=public_key,
         algorithms=['RS256'],
