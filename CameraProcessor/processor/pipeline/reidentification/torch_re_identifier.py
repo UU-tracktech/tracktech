@@ -5,13 +5,10 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import os
-import copy
 import gdown
 
 import processor.utils.features as UtilsFeatures
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 
 
@@ -87,65 +84,3 @@ class TorchReIdentifier(IReIdentifier):
         resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
         return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
-
-    def re_identify(self, frame_obj, track_obj, re_id_data):
-        """Performing re-identification using Torchreid.
-
-        This re-identification implementations couple bounding boxes to a tracked subject
-        which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
-        to an existing bounding box.
-
-        Args:
-            frame_obj (FrameObj): Frame object storing OpenCV frame and timestamp.
-            track_obj (BoundingBoxes): List of bounding boxes from tracking stage.
-                list has to be of the same length as the list of bounding boxes in track_obj, and ordered in the same
-                way (feature vector i belongs to box i).
-            re_id_data (ReidData): Data class containing data about tracked subjects.
-
-        Returns:
-            BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).
-        """
-
-        tracked_bounding_boxes = track_obj.bounding_boxes
-        box_features = self.extract_features_boxes(frame_obj, track_obj)
-
-        # Copy the original bounding boxes to a new list.
-        bounding_boxes = copy.copy(tracked_bounding_boxes)
-
-        # Loop over all objects being followed.
-        for query_id in re_id_data.get_queries():
-            query_feature = re_id_data.get_feature_for_query(query_id)
-
-            # List 'track_features' contains feature vectors in same order as bounding boxes.
-            # Loop over the detected features in the frame.
-            for i, feature in enumerate(box_features):
-                # If the bounding box is already assigned to an object, don't compare it.
-                if tracked_bounding_boxes[i].object_id is None:
-                    # Calculate the similarity value of the 2 feature vectors.
-                    similarity_value = self.similarity(query_feature, feature)
-                    if self.config.get("distance") == "euclidian":
-                        similarity_bool = similarity_value < self.threshold
-                    elif self.config.get("distance") == "cosine":
-                        similarity_bool = similarity_value > self.threshold
-                    else:
-                        similarity_bool = False
-                        raise ValueError(f"Distance metric {self.config.get('distance')} "
-                                         f"is not a valid distance metric.")
-                    if similarity_bool:
-                        box_id = tracked_bounding_boxes[i].identifier
-
-                        # Store that this box id belongs to a certain object id.
-                        re_id_data.add_query_box(box_id, query_id)
-
-                        # Update object id of the box.
-                        bounding_boxes[i] = BoundingBox(
-                            identifier=box_id,
-                            rectangle=tracked_bounding_boxes[i].rectangle,
-                            classification=tracked_bounding_boxes[i].classification,
-                            certainty=tracked_bounding_boxes[i].certainty,
-                            object_id=query_id
-                        )
-
-                        print(f"Re-Id of object {query_id} in box {box_id}")
-
-        return BoundingBoxes(bounding_boxes)
