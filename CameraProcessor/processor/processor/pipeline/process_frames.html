@@ -234,7 +234,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Update command.</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">UpdateCommand</span><span class="p">):</span>
-            <span class="n">__handle_update_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+            <span class="n">__handle_update_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">__handle_start_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">ws_client</span><span class="p">,</span> <span class="n">framebuffer</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
@@ -301,15 +301,19 @@ Utrecht University within the Software Project course.
     <span class="n">re_id_data</span><span class="o">.</span><span class="n">remove_query</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">__handle_update_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">__handle_update_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Handles logic for the Update Command.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        track_elem (UpdateCommand): The update command the function processes.</span>
+<span class="sd">        re_identifier (IReIdentifier): re-identifier extracting features and comparing them</span>
 <span class="sd">        re_id_data (ReidData): Object containing data necessary for re-identification.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Updating object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1"> with feature map </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="p">)</span>
+
+    <span class="c1"># Check if the size of the feature map corresponds with the current re-id.</span>
+    <span class="k">if</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">feature_map_size</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Updating object </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="si">}</span><span class="s1"> with feature map </span><span class="si">{</span><span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">re_id_data</span><span class="o">.</span><span class="n">add_query_feature</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">feature_map</span><span class="p">)</span>
 
 
 <span class="c1"># pylint: disable=unused-argument</span>
@@ -604,7 +608,7 @@ during the loop). The objects called upon by the client are modified by referenc
 
         <span class="c1"># Update command.</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">UpdateCommand</span><span class="p">):</span>
-            <span class="n">__handle_update_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
+            <span class="n">__handle_update_command</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 </pre></div>
 
         </details>
