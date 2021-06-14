@@ -13,6 +13,7 @@ class IReIdentifier(IComponent):
     """Superclass for identifiers."""
 
     def __init__(self, config):
+        """Init for IReidentifier which saves config."""
         self.config = config
 
     def execute_component(self):

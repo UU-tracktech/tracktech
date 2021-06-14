@@ -8,7 +8,6 @@ import os
 import argparse
 import copy
 import gdown
-from scipy.spatial.distance import euclidean, cosine
 
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
