@@ -81,7 +81,7 @@ class WebsocketClient:
                                                       on_message_callback=self._on_message)
                 logging.info(f'Connected to {self.websocket_url} successfully')
 
-                # Send authentication token to the orchestrator on connect (if it exists)
+                # Send authentication token to the orchestrator on connect (if it exists).
                 if auth_token:
                     auth_message = json.dumps({
                         "type": "authenticate",
