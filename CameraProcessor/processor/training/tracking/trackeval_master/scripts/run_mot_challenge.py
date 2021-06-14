@@ -37,11 +37,13 @@ import sys
 import os
 import argparse
 from multiprocessing import freeze_support
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import processor.training.tracking.trackeval_master.trackeval as trackeval  # noqa: E402
 
-if __name__ == '__main__':
+
+def main():
+
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
     freeze_support()
 
     # Command line interface:
@@ -89,3 +91,7 @@ if __name__ == '__main__':
     if len(metrics_list) == 0:
         raise Exception('No metrics selected for evaluation')
     evaluator.evaluate(dataset_list, metrics_list)
+
+
+if __name__ == '__main__':
+    main()
