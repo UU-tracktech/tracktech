@@ -16,6 +16,7 @@ from processor.webhosting.start_command_extended import StartCommandExtended
 from processor.webhosting.start_command_search import StartCommandSearch
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
+from processor.utils.authentication import get_token
 
 
 class WebsocketClient:
@@ -34,12 +35,11 @@ class WebsocketClient:
         configs (ConfigParser): Configurations of the application, contains the authorization url.
     """
 
-    def __init__(self, websocket_url, configs, identifier=None):
+    def __init__(self, websocket_url, identifier=None):
         """Initialize the websocket client class with relevant parameters.
 
         Args:
             websocket_url (str): url of the websocket.
-            configs (ConfigParser): Configurations of the application.
             identifier (str): Identifier of the camera-processor.
         """
         self.connection = None
@@ -49,7 +49,6 @@ class WebsocketClient:
         self.write_queue = []
         self.message_queue = deque()
         self.identifier = identifier
-        self.configs = configs
 
     async def connect(self):
         """Connect to the websocket url asynchronously.
@@ -64,7 +63,7 @@ class WebsocketClient:
         auth_server_url = os.environ.get("AUTH_SERVER_URL")
         auth_token = None
         if auth_server_url:
-            auth_token = self.get_access_token(auth_server_url)
+            auth_token = await self.get_access_token(auth_server_url)
         else:
             logging.info("Authentication is disabled since AUTH_SERVER_URL is not specified in environment.")
 
