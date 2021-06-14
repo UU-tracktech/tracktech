@@ -4,11 +4,16 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+from scipy.spatial.distance import euclidean, cosine
+
 from processor.scheduling.component.i_component import IComponent
 
 
 class IReIdentifier(IComponent):
     """Superclass for identifiers."""
+
+    def __init__(self, config):
+        self.config = config
 
     def execute_component(self):
         """Function given to scheduler so the scheduler can run the tracking stage.
@@ -55,3 +60,24 @@ class IReIdentifier(IComponent):
             BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).
         """
         raise NotImplementedError("Reidentification function not implemented")
+
+    def similarity(self, query_features, gallery_features):
+        """Calculates the similarity rate between two feature vectors.
+
+        Note:
+            Uses euclidean distance or cosine similarity to determine the similarity.
+
+        Args:
+            query_features ([float]): the feature vector of the query image.
+            gallery_features ([float]): the feature vector of the gallery image.
+
+        Returns:
+            float: The similarity value of two feature vectors.
+        """
+        # pylint: disable=no-else-return.
+        if self.config.get("distance") == "euclidian":
+            return euclidean(query_features, gallery_features)
+        elif self.config.get("distance") == "cosine":
+            return 1 - cosine(query_features, gallery_features)
+        raise ValueError(f"Distance metric {self.config.get('distance')} is not a valid distance metric.")
+        # pylint: enable=no-else-return.

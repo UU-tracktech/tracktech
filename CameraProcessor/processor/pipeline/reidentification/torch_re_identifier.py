@@ -51,7 +51,7 @@ class TorchReIdentifier(IReIdentifier):
             model_path=weights_path,
             device=config['device'])
 
-        self.config = config
+        super().__init__(config)
         self.threshold = float(self.config["threshold"])
 
     def extract_features(self, frame_obj, bbox):
@@ -106,27 +106,6 @@ class TorchReIdentifier(IReIdentifier):
             features.append(self.extract_features(frame_obj, box))
 
         return features
-
-    def similarity(self, query_features, gallery_features):
-        """Calculates the similarity rate between two feature vectors.
-
-        Note:
-            Uses euclidean distance or cosine similarity to determine the similarity.
-
-        Args:
-            query_features ([float]): the feature vector of the query image.
-            gallery_features ([float]): the feature vector of the gallery image.
-
-        Returns:
-            float: The similarity value of two feature vectors.
-        """
-        # pylint: disable=no-else-return.
-        if self.config.get("distance") == "euclidian":
-            return euclidean(query_features, gallery_features)
-        elif self.config.get("distance") == "cosine":
-            return 1 - cosine(query_features, gallery_features)
-        raise ValueError(f"Distance metric {self.config.get('distance')} is not a valid distance metric.")
-        # pylint: enable=no-else-return.
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using Torchreid.
