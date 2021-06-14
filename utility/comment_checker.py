@@ -62,8 +62,6 @@ class CommentChecker(BaseChecker):
                 if not line.startswith('#') or line.startswith('# pylint:'):
                     continue
 
-                print(line)
-
                 # Check whether comment is correct format.
                 comment_match = re.match(r'#\s[A-Z].*\S+\.\s*$', line)
                 if comment_match is not None:
