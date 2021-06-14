@@ -177,6 +177,9 @@ class CameraHandler(StaticFileHandler):
                         self.authenticator.validate(content)
                     else:
                         raise AuthenticationError('Unimplemented authorization method')
+                elif self.request.protocol == 'http':
+                    # Auth from processor is next to impossible. So http requests do not need auth.
+                    pass
                 else:
                     # Url parameter bc video.js does not want to send headers with the index file request.
                     self.authenticator.validate(self.get_argument('Bearer'))
