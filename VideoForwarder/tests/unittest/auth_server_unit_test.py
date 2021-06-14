@@ -1,4 +1,4 @@
-"""Unit test of the forwarder checks camera.py + json conversion.
+"""Unit test of the forwarder checks camera.py and json conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

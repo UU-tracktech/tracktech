@@ -27,8 +27,8 @@ def create_app(configs, port):
     """Creates a tornado app on a given port.
 
     Args:
-        configs (ConfigParser): configurations of the application
-        port (int): Port app exposes
+        configs (ConfigParser): configurations of the application.
+        port (int): Port app exposes.
     """
     print('*' * 30)
     print('*   open TORNADO stream on   *')
@@ -48,8 +48,8 @@ def enforce_deploy_environment_variables():
 
     Returns:
         str, str, str: Id of the camera processor for the orchestrator.
-                       Url of the orchestrator websocket.
-                       Url of the forwarder stream.
+                       URL of the orchestrator WebSocket.
+                       URL of the forwarder stream.
     """
     if os.getenv('ORCHESTRATOR_URL') is None or os.getenv('HLS_STREAM_URL') is None or os.getenv('CAMERA_ID') is None:
         raise EnvironmentError('Environment variable CAMERA_ID, HLS_STREAM_URL or ORCHESTRATOR_URL'
@@ -98,8 +98,8 @@ async def deploy(configs, websocket_id, websocket_url, hls_url):
 def main():
     """Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.
 
-    Tornado uses a custom IOLoop
-    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
+    Tornado uses a custom IOLoop.
+    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop.
 
     Raises:
         AttributeError: Mode in which is run does not exist.
@@ -121,7 +121,7 @@ def main():
         asyncio.get_event_loop().run_until_complete(
             process_stream(capture, detector, tracker, re_identifier, opencv_display, None)
         )
-    # Deploy mode where all is sent to the orchestrator using the websocket url.
+    # Deploy mode where all is sent to the orchestrator using the websocket URL.
     elif configs['Main']['mode'].lower() == 'deploy':
         # Make environment variables are set when running in deploy.
         ws_id, ws_url, hls_url = enforce_deploy_environment_variables()

@@ -28,18 +28,17 @@ class WebsocketClient:
     Attributes:
         connection (WebsocketClient.Connection): Connection object of the websocket.
         reconnecting (bool): Whether we have to reconnect.
-        websocket_url (str): Url of the websocket.
+        websocket_url (str): URL of the websocket.
         write_queue ([str]): Stores messages that could not be sent due to a closed socket.
         message_queue (Queue): Stores commands sent from orchestrator.
         identifier (str): Identifier of the camera processor for the orchestrator.
-        configs (ConfigParser): Configurations of the application, contains the authorization url.
     """
 
     def __init__(self, websocket_url, identifier=None):
         """Initialize the websocket client class with relevant parameters.
 
         Args:
-            websocket_url (str): url of the websocket.
+            websocket_url (str): URL of the websocket.
             identifier (str): Identifier of the camera-processor.
         """
         self.connection = None

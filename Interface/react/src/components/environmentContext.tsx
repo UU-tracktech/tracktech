@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React, { ReactNode, useState } from 'react'
 
-/** Type for one settings description of a camera */
+/** Type for one setting's description of a camera */
 export type cameraSettingsType = {
   Name: string
   Id: string

@@ -1,4 +1,4 @@
-"""Contains a general docstring checker for the pylint that checks modules, classes and functions.
+"""Contains a general docstring checker for the pylint that checks modules, classes, and functions.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
