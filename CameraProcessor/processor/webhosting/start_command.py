@@ -39,17 +39,14 @@ class StartCommand(dict):
 
     # pylint: disable=docstring-is-missing
     def __getattr__(self, item):
-        """Gets attribute."""
         if item in self:
             return self[item]
         return None
 
     def __setattr__(self, key, value):
-        """Sets attribute."""
         self[key] = value
 
     def __delattr__(self, item):
-        """Deletes attribute."""
         if item in self:
             del self[item]
         else:
