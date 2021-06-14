@@ -14,4 +14,5 @@ class StopCommand:
         Args:
             object_id (int): Identifier of the object that should not be tracked any longer.
         """
+        # Yaahaaaaa.
         self.object_id = object_id
