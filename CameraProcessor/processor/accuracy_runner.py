@@ -29,7 +29,7 @@ def main(configs):
         configs (ConfigParser): Configurations to run the accuracy with.
     """
     captures = __get_captures(configs)
-    det_boxes = __get_det_boxes()
+    # det_boxes = __get_det_boxes()
     index = 0
 
     for capture, dest in captures:
@@ -42,7 +42,7 @@ def main(configs):
 
         # Instantiate the detector.
         print("Instantiating detector...")
-        # detector = create_detector(configs['Accuracy']['detector'], configs)
+        detector = create_detector(configs['Accuracy']['detector'], configs)
         tracker = create_tracker(configs['Accuracy']['tracker'], configs)
 
         # Frame counter starts at 0. Will probably work differently for streams.
@@ -59,7 +59,8 @@ def main(configs):
             if not ret:
                 continue
             image_id = int(capture.image_names[capture.image_index].split('.')[0])
-            detected_boxes = det_boxes[index][image_id-1] # detector.detect(frame_obj)
+            # detected_boxes = det_boxes[index][image_id-1] #
+            detected_boxes = detector.detect(frame_obj)
             tracked_boxes = tracker.track(frame_obj, detected_boxes, reid_data)
 
 
