@@ -13,7 +13,11 @@ class IReIdentifier(IComponent):
     """Superclass for identifiers."""
 
     def __init__(self, config):
-        """Init for IReidentifier which saves config."""
+        """Init for IReidentifier which saves config.
+
+        Args:
+            config (configparser.SectionProxy): the re-id configuration to pass
+        """
         self.config = config
 
     def execute_component(self):
@@ -23,6 +27,23 @@ class IReIdentifier(IComponent):
             function: function that the scheduler can run.
         """
         return self.re_identify
+
+    def extract_features_boxes(self, frame_obj, boxes):
+        """Extracts features from all bounding boxes generated in the tracking stage.
+
+        Args:
+            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
+            boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
+
+        Returns:
+            [[float]]: Feature vectors of the tracked objects.
+        """
+        features = []
+
+        for box in boxes:
+            features.append(self.extract_features(frame_obj, box))
+
+        return features
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.

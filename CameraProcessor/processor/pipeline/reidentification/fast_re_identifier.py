@@ -78,23 +78,6 @@ class FastReIdentifier(IReIdentifier):
 
         return feature
 
-    def extract_features_boxes(self, frame_obj, boxes):
-        """Extracts features from all bounding boxes generated in the tracking stage.
-
-        Args:
-            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
-
-        Returns:
-            [[float]]: Feature vectors of the tracked objects.
-        """
-        features = []
-
-        for box in boxes:
-            features.append(self.extract_features(frame_obj, box))
-
-        return features
-
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using torchreid.
 
