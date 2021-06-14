@@ -137,8 +137,6 @@ Utrecht University within the Software Project course.
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;# pylint:&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
                 <span class="c1"># Check whether comment is correct format.</span>
                 <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\S+\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">comment_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -267,8 +265,6 @@ Utrecht University within the Software Project course.
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;# pylint:&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
                 <span class="c1"># Check whether comment is correct format.</span>
                 <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\S+\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">comment_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -384,8 +380,6 @@ Utrecht University within the Software Project course.
                 <span class="c1"># Ignore if its not a comment or pylint comment.</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;# pylint:&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
-
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
                 <span class="c1"># Check whether comment is correct format.</span>
                 <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\S+\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
