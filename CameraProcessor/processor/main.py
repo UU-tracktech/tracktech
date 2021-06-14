@@ -43,15 +43,39 @@ def create_app(configs, port):
     app.listen(port)
 
 
-async def deploy(configs, ws_id):
+def enforce_deploy_environment_variables():
+    """Makes sure the environment variables are set correctly when running in deploy mode.
+
+    Returns:
+        str, str, str: Id of the camera processor for the orchestrator.
+                       Url of the orchestrator websocket.
+                       Url of the forwarder stream.
+    """
+    if os.getenv('ORCHESTRATOR_URL') is None or os.getenv('HLS_STREAM_URL') is None or os.getenv('CAMERA_ID') is None:
+        raise EnvironmentError('Environment variable CAMERA_ID, HLS_STREAM_URL or ORCHESTRATOR_URL'
+                               ' is missing but is required during deployment.')
+
+    # Give back the values found in the environment.
+    return os.getenv('CAMERA_ID'), os.getenv('ORCHESTRATOR_URL'), os.getenv('HLS_STREAM_URL')
+
+
+async def deploy(configs, websocket_id, websocket_url, hls_url):
     """Connects to the orchestrator and starts the process_frames loop
 
     Args:
-        configs (ConfigParser): configurations for the prepared stream
-        ws_id (str): Id of the camera processor for the orchestrator
+        configs (configparser.ConfigParser): configurations for the prepared stream.
+        websocket_id (str): Id of the camera processor for the orchestrator.
+        websocket_url (str): Url of the orchestrator websocket.
+        hls_url (str): Url of the forwarder stream.
     """
-    capture, detector, tracker, re_identifier, ws_url = prepare_objects(configs)
-    websocket_client = WebsocketClient(ws_url, ws_id)
+    # To deploy, websocket url and forwarder url have to be set in the configurations.
+    configs['Input']['type'] = 'hls'
+    configs['Input']['hls_url'] = hls_url
+    configs['Orchestrator']['url'] = websocket_url
+
+    # Open the capture in combination with the stages and create the client.
+    capture, detector, tracker, re_identifier, websocket_url = prepare_objects(configs)
+    websocket_client = WebsocketClient(websocket_url, websocket_id)
     await websocket_client.connect()
     # Initiate the stream processing loop, giving the websocket client.
     await process_stream(
@@ -99,12 +123,9 @@ def main():
         )
     # Deploy mode where all is sent to the orchestrator using the websocket url.
     elif configs['Main']['mode'].lower() == 'deploy':
-        # Make sure camera id is set to identify the processor.
-        websocket_id = os.getenv('CAMERA_ID')
-        if websocket_id is None:
-            logging.error('CAMERA_ID not set in environment.')
-            raise EnvironmentError('Environment variable CAMERA_ID is missing but is required during deployment.')
-        asyncio.get_event_loop().run_until_complete(deploy(configs, websocket_id))
+        # Make environment variables are set when running in deploy.
+        ws_id, ws_url, hls_url = enforce_deploy_environment_variables()
+        asyncio.get_event_loop().run_until_complete(deploy(configs, ws_id, ws_url, hls_url))
     else:
         raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
 
