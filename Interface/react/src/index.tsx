@@ -16,24 +16,10 @@ import 'bootstrap/dist/css/bootstrap.css'
 import { ReactKeycloakProvider } from '@react-keycloak/web'
 import keycloak from './keycloak'
 
-/** Writes keycloak events to the console for debugging */
-const keycloakEventLogger = (event, error) => {
-  console.log('onKeycloakEvent:', event, error)
-}
-
-/** Writes received tokens to the console for debugging */
-const keycloakTokenLogger = (tokens) => {
-  console.log('onKeycloakToken:', tokens)
-}
-
 ReactDOM.render(
   <React.StrictMode>
     {/*The App has to be wrapped in <ReactKeycloakProvider in order to have any keycloak functionality */}
-    <ReactKeycloakProvider
-      authClient={keycloak}
-      onEvent={keycloakEventLogger}
-      onTokens={keycloakTokenLogger}
-    >
+    <ReactKeycloakProvider authClient={keycloak}>
       <App />
     </ReactKeycloakProvider>
   </React.StrictMode>,

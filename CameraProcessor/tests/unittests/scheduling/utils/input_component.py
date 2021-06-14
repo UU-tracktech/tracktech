@@ -17,7 +17,7 @@ class InputComponent:
         """Example function with single argument that can be returned by execute_component().
 
         Args:
-            obj (str): input object passed through by scheduler.
+            obj (str): input object passed through by the scheduler.
 
         Returns:
             str: Modified object used by the next layer.

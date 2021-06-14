@@ -53,3 +53,31 @@ export class StopOrchestratorMessage extends OrchestratorMessage {
 
   objectId: number
 }
+
+/**
+ * The SetUsesImagesMessage is used to specify whether this client should receive
+ * messages of newly tracked objects
+ */
+export class SetUsesImagesMessage extends OrchestratorMessage {
+  constructor(usesImages: boolean) {
+    super('setUsesImages')
+
+    this.usesImages = usesImages
+  }
+
+  usesImages: boolean
+}
+
+/**
+ * The AuthenticateOrchestratorMessage is used to authenticate this client with the
+ * processor orchestrator, to make sure it handles the messages.
+ */
+export class AuthenticateOrchestratorMessage extends OrchestratorMessage {
+  constructor(jwt: string) {
+    super('authenticate')
+
+    this.jwt = jwt
+  }
+
+  jwt: string
+}

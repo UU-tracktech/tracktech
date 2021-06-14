@@ -22,7 +22,7 @@ def message_type(request):
 
 @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
 def amount(request):
-    """Fixture to generate message amounts and whether or not invalid messages.
+    """Fixture to generate message amounts and whether invalid messages.
 
     Args:
         request ([object]): Number of messages and whether the messages should be valid.

@@ -1,1 +1,7 @@
+# Torchreid
 processor/pipeline/reidentification/torchreid
+
+# Fast-Reid
+termcolor
+scikit-learn
+tabulate

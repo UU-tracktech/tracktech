@@ -12,7 +12,7 @@ def is_same_frame_image(original, second):
     """Checks if two frames images are the same.
 
     Args:
-        original (Frame): Original frame.
+        original (Frame): The original frame.
         second (Frame): Frame to compare the original frame to.
 
     Returns:
