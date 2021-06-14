@@ -101,7 +101,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        results (object): Results of the podm library.</span>
+<span class="sd">        results (object): Results of the PODM library.</span>
 <span class="sd">        iou_threshold (int): Threshold from which it is counted.</span>
 <span class="sd">        frame_amount (int): Number of frames.</span>
 <span class="sd">        gt_format (str): Format of the ground truth.</span>
@@ -115,7 +115,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config, and the ground truth file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (Dict): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">            configs (Dict): Configuration parser, which also contains the accuracy configurations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
@@ -130,7 +130,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
+        <span class="sd">&quot;&quot;&quot;Parse boxes to PODM format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.</span>
@@ -163,11 +163,11 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
 
     <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
+        <span class="sd">&quot;&quot;&quot;Get a dataloader based on a format and path_location.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
+<span class="sd">            path_location (str): Location in the config to read annotations path from.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
@@ -240,7 +240,7 @@ Utrecht University within the Software Project course.
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the PODM result.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw_pr_plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
@@ -273,7 +273,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;This class is used to test the accuracy of predictions.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        results (object): Results of the podm library.</span>
+<span class="sd">        results (object): Results of the PODM library.</span>
 <span class="sd">        iou_threshold (int): Threshold from which it is counted.</span>
 <span class="sd">        frame_amount (int): Number of frames.</span>
 <span class="sd">        gt_format (str): Format of the ground truth.</span>
@@ -287,7 +287,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config, and the ground truth file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (Dict): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">            configs (Dict): Configuration parser, which also contains the accuracy configurations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
@@ -302,7 +302,7 @@ Utrecht University within the Software Project course.
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_boxes_gt</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
+        <span class="sd">&quot;&quot;&quot;Parse boxes to PODM format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.</span>
@@ -335,11 +335,11 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="n">list_parsed_boxes</span>
 
     <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
+        <span class="sd">&quot;&quot;&quot;Get a dataloader based on a format and path_location.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
+<span class="sd">            path_location (str): Location in the config to read annotations path from.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
@@ -412,7 +412,7 @@ Utrecht University within the Software Project course.
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_prefix</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">: Cannot plot&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the PODM result.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw_pr_plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
@@ -424,7 +424,7 @@ Utrecht University within the Software Project course.
 <h6 id="attributes">Attributes</h6>
 
 <ul>
-<li><strong>results (object):</strong>  Results of the podm library.</li>
+<li><strong>results (object):</strong>  Results of the PODM library.</li>
 <li><strong>iou_threshold (int):</strong>  Threshold from which it is counted.</li>
 <li><strong>frame_amount (int):</strong>  Number of frames.</li>
 <li><strong>gt_format (str):</strong>  Format of the ground truth.</li>
@@ -449,7 +449,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Initialise AccuracyObject by reading the config, and the ground truth file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (Dict): Configuration parser which also contains the accuracy configurations.</span>
+<span class="sd">            configs (Dict): Configuration parser, which also contains the accuracy configurations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">yolo_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Yolov5&#39;</span><span class="p">]</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
@@ -471,7 +471,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (Dict):</strong>  Configuration parser which also contains the accuracy configurations.</li>
+<li><strong>configs (Dict):</strong>  Configuration parser, which also contains the accuracy configurations.</li>
 </ul>
 </div>
 
@@ -488,7 +488,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes_to_parse</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses boxes to podm format.</span>
+        <span class="sd">&quot;&quot;&quot;Parse boxes to PODM format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.</span>
@@ -523,7 +523,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Parses boxes to podm format.</p>
+            <div class="docstring"><p>Parse boxes to PODM format.</p>
 
 <h6 id="args">Args</h6>
 
@@ -551,11 +551,11 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_format</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a dataloader based on format and path_location.</span>
+        <span class="sd">&quot;&quot;&quot;Get a dataloader based on a format and path_location.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation_format (str): Dataloader format to select.</span>
-<span class="sd">            path_location (str): Location in config to read annotations path from.</span>
+<span class="sd">            path_location (str): Location in the config to read annotations path from.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dataloader (IDataloader): The dataloader to use for parsing annotations.</span>
@@ -573,13 +573,13 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Get a dataloader based on format and path_location.</p>
+            <div class="docstring"><p>Get a dataloader based on a format and path_location.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
 <li><strong>annotation_format (str):</strong>  Dataloader format to select.</li>
-<li><strong>path_location (str):</strong>  Location in config to read annotations path from.</li>
+<li><strong>path_location (str):</strong>  Location in the config to read annotations path from.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -732,14 +732,14 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">draw_all_pr_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the (podm) result.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draws the pr plots for all classes in the PODM result.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw_pr_plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Draws the pr plots for all classes in the (podm) result.</p>
+            <div class="docstring"><p>Draws the pr plots for all classes in the PODM result.</p>
 </div>
 
 

@@ -109,7 +109,7 @@ Utrecht University within the Software Project course.
                   <span class="p">),</span>
         <span class="s1">&#39;C1230&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Class name is incorrect, expected name: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;Emitted when a class name doesn</span><span class="se">\&#39;</span><span class="s1">t correspond to the filename (correctly)&#39;</span>
+                  <span class="s1">&#39;Emitted when a class name does not correspond to the filename (correctly)&#39;</span>
                   <span class="p">)</span>
     <span class="p">}</span>
 
@@ -117,7 +117,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Called for each module that pylint processes and perform basic checks.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_amount_of_classes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_file_class_names</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -126,7 +126,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks that each file has at most one class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">class_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ClassDef</span><span class="p">)]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -137,7 +137,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks if the file name and class name correspond.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Get the (first) class name and line number where this class is defined.</span>
@@ -209,7 +209,7 @@ Utrecht University within the Software Project course.
                   <span class="p">),</span>
         <span class="s1">&#39;C1230&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Class name is incorrect, expected name: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;incorrect-class-name&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;Emitted when a class name doesn</span><span class="se">\&#39;</span><span class="s1">t correspond to the filename (correctly)&#39;</span>
+                  <span class="s1">&#39;Emitted when a class name does not correspond to the filename (correctly)&#39;</span>
                   <span class="p">)</span>
     <span class="p">}</span>
 
@@ -217,7 +217,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Called for each module that pylint processes and perform basic checks.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_amount_of_classes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_file_class_names</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -226,7 +226,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks that each file has at most one class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">class_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ClassDef</span><span class="p">)]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -237,7 +237,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks if the file name and class name correspond.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Get the (first) class name and line number where this class is defined.</span>
@@ -293,7 +293,7 @@ Utrecht University within the Software Project course.
                             <div id="ClassesChecker.msgs" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ClassesChecker.msgs">#&nbsp;&nbsp</a>
 
-        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C1229&#39;: (&#39;File contains more than one class&#39;, &#39;multiple-class-definitions&#39;, &#39;Emitted when a file has more than one class&#39;), &#39;C1230&#39;: (&#39;Class name is incorrect, expected name: &#34;%s&#34;&#39;, &#39;incorrect-class-name&#39;, &#34;Emitted when a class name doesn&#39;t correspond to the filename (correctly)&#34;)}</span>
+        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C1229&#39;: (&#39;File contains more than one class&#39;, &#39;multiple-class-definitions&#39;, &#39;Emitted when a file has more than one class&#39;), &#39;C1230&#39;: (&#39;Class name is incorrect, expected name: &#34;%s&#34;&#39;, &#39;incorrect-class-name&#39;, &#39;Emitted when a class name does not correspond to the filename (correctly)&#39;)}</span>
     </div>
 
     
@@ -313,7 +313,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Called for each module that pylint processes and perform basic checks.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_amount_of_classes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_file_class_names</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -326,7 +326,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition astroid creates.</li>
+<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition Astroid creates.</li>
 </ul>
 </div>
 
@@ -346,7 +346,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks that each file has at most one class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">class_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">entity</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">globals</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="n">entity</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ClassDef</span><span class="p">)]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -361,7 +361,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition astroid creates.</li>
+<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition Astroid creates.</li>
 </ul>
 </div>
 
@@ -381,7 +381,7 @@ Utrecht University within the Software Project course.
         <span class="sd">&quot;&quot;&quot;Checks if the file name and class name correspond.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            node (astroid.scoped_nodes.Module): Module definition astroid creates.</span>
+<span class="sd">            node (astroid.scoped_nodes.Module): Module definition Astroid creates.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Get the (first) class name and line number where this class is defined.</span>
@@ -415,7 +415,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition astroid creates.</li>
+<li><strong>node (astroid.scoped_nodes.Module):</strong>  Module definition Astroid creates.</li>
 </ul>
 </div>
 

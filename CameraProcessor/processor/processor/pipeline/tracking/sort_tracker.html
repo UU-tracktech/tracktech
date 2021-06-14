@@ -95,15 +95,15 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.</span>
 <span class="sd">            detection_boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of detection stage</span>
-<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification</span>
+<span class="sd">            re_id_data (ReidData): Object containing data necessary for re-identification.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            BoundingBoxes: object containing all trackers (bounding boxes of tracked objects).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get bounding boxes into format expected by SORT tracker.</span>
+        <span class="c1"># Get bounding boxes into the format expected by SORT tracker.</span>
         <span class="n">detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_boxes_to_sort</span><span class="p">(</span><span class="n">detection_boxes</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-        <span class="c1"># Get all tracked objects found in current frame.</span>
+        <span class="c1"># Get all tracked objects found in the current frame.</span>
         <span class="n">sort_detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">detections</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes_from_sort</span><span class="p">(</span><span class="n">sort_detections</span><span class="p">,</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>

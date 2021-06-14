@@ -134,7 +134,7 @@ Utrecht University within the Software Project course.
         <span class="c1"># Get detections from running detection stage.</span>
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
 
-        <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
+        <span class="c1"># Get objects tracked in the current frame from tracking stage.</span>
         <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="c1"># Get objects where re-id is performed on the tracked objects.</span>
@@ -260,7 +260,6 @@ Utrecht University within the Software Project course.
         <span class="n">stored_frame</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_frame</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frameId</span><span class="p">)</span>
         <span class="n">stored_box</span> <span class="o">=</span> <span class="n">framebuffer</span><span class="o">.</span><span class="n">get_box</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">frameId</span><span class="p">,</span> <span class="n">track_elem</span><span class="o">.</span><span class="n">boxId</span><span class="p">)</span>
         <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">stored_frame</span><span class="p">,</span> <span class="n">stored_box</span><span class="p">)</span>
-        <span class="c1"># TODO: add feature_map comparison logic here # pylint: disable=fixme.</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartCommandSearch</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Look for the box in the buffer.</span>
@@ -334,14 +333,14 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Args:</span>
 <span class="sd">          ws_client (WebsocketClient):  Websocket object that contains the connection.</span>
-<span class="sd">          error (BaseException): The error</span>
+<span class="sd">          error (BaseException): The error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">error_to_json</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
     <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">send_feature_map_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sends the feature map to the orchestrator using a Websocket client.</span>
+    <span class="sd">&quot;&quot;&quot;Sends the feature map to the orchestrator using a WebSocket client.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection.</span>
@@ -355,7 +354,7 @@ Utrecht University within the Software Project course.
 
 <span class="c1"># pylint: disable=unused-argument.</span>
 <span class="k">def</span> <span class="nf">opencv_display</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode.</span>
+    <span class="sd">&quot;&quot;&quot;Displays frame in the tiled mode.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
@@ -431,7 +430,7 @@ Utrecht University within the Software Project course.
         <span class="c1"># Get detections from running detection stage.</span>
         <span class="n">detected_boxes</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">)</span>
 
-        <span class="c1"># Get objects tracked in current frame from tracking stage.</span>
+        <span class="c1"># Get objects tracked in the current frame from tracking stage.</span>
         <span class="n">tracked_boxes</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">re_id_data</span><span class="p">)</span>
 
         <span class="c1"># Get objects where re-id is performed on the tracked objects.</span>
@@ -687,7 +686,7 @@ during the loop). The objects called upon by the client are modified by referenc
 
 <span class="sd">    Args:</span>
 <span class="sd">          ws_client (WebsocketClient):  Websocket object that contains the connection.</span>
-<span class="sd">          error (BaseException): The error</span>
+<span class="sd">          error (BaseException): The error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">client_message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">error_to_json</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
     <span class="n">ws_client</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">client_message</span><span class="p">)</span>
@@ -701,7 +700,7 @@ during the loop). The objects called upon by the client are modified by referenc
 
 <ul>
 <li><strong>ws_client (WebsocketClient):</strong>   Websocket object that contains the connection.</li>
-<li><strong>error (BaseException):</strong>  The error</li>
+<li><strong>error (BaseException):</strong>  The error.</li>
 </ul>
 </div>
 
@@ -718,7 +717,7 @@ during the loop). The objects called upon by the client are modified by referenc
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">send_feature_map_to_orchestrator</span><span class="p">(</span><span class="n">ws_client</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">,</span> <span class="n">object_id</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sends the feature map to the orchestrator using a Websocket client.</span>
+    <span class="sd">&quot;&quot;&quot;Sends the feature map to the orchestrator using a WebSocket client.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ws_client (WebsocketClient): Websocket object that contains the connection.</span>
@@ -732,7 +731,7 @@ during the loop). The objects called upon by the client are modified by referenc
 
         </details>
 
-            <div class="docstring"><p>Sends the feature map to the orchestrator using a Websocket client.</p>
+            <div class="docstring"><p>Sends the feature map to the orchestrator using a WebSocket client.</p>
 
 <h6 id="args">Args</h6>
 
@@ -756,7 +755,7 @@ during the loop). The objects called upon by the client are modified by referenc
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">opencv_display</span><span class="p">(</span><span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Displays frame in tiled mode.</span>
+    <span class="sd">&quot;&quot;&quot;Displays frame in the tiled mode.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frame_obj (FrameObj): Frame object on which drawing takes place.</span>
@@ -783,7 +782,7 @@ during the loop). The objects called upon by the client are modified by referenc
 
         </details>
 
-            <div class="docstring"><p>Displays frame in tiled mode.</p>
+            <div class="docstring"><p>Displays frame in the tiled mode.</p>
 
 <h6 id="args">Args</h6>
 

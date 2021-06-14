@@ -93,8 +93,8 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Creates a tornado app on a given port.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): configurations of the application</span>
-<span class="sd">        port (int): Port app exposes</span>
+<span class="sd">        configs (ConfigParser): configurations of the application.</span>
+<span class="sd">        port (int): Port app exposes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*   open TORNADO stream on   *&#39;</span><span class="p">)</span>
@@ -114,8 +114,8 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str, str, str: Id of the camera processor for the orchestrator.</span>
-<span class="sd">                       Url of the orchestrator websocket.</span>
-<span class="sd">                       Url of the forwarder stream.</span>
+<span class="sd">                       URL of the orchestrator WebSocket.</span>
+<span class="sd">                       URL of the forwarder stream.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CAMERA_ID&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s1">&#39;Environment variable CAMERA_ID, HLS_STREAM_URL or ORCHESTRATOR_URL&#39;</span>
@@ -164,8 +164,8 @@ Utrecht University within the Software Project course.
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.</span>
 
-<span class="sd">    Tornado uses a custom IOLoop</span>
-<span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
+<span class="sd">    Tornado uses a custom IOLoop.</span>
+<span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        AttributeError: Mode in which is run does not exist.</span>
@@ -187,7 +187,7 @@ Utrecht University within the Software Project course.
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
             <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
+    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket URL.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
         <span class="c1"># Make environment variables are set when running in deploy.</span>
         <span class="n">ws_id</span><span class="p">,</span> <span class="n">ws_url</span><span class="p">,</span> <span class="n">hls_url</span> <span class="o">=</span> <span class="n">enforce_deploy_environment_variables</span><span class="p">()</span>
@@ -225,8 +225,8 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Creates a tornado app on a given port.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        configs (ConfigParser): configurations of the application</span>
-<span class="sd">        port (int): Port app exposes</span>
+<span class="sd">        configs (ConfigParser): configurations of the application.</span>
+<span class="sd">        port (int): Port app exposes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*   open TORNADO stream on   *&#39;</span><span class="p">)</span>
@@ -248,8 +248,8 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>configs (ConfigParser):</strong>  configurations of the application</li>
-<li><strong>port (int):</strong>  Port app exposes</li>
+<li><strong>configs (ConfigParser):</strong>  configurations of the application.</li>
+<li><strong>port (int):</strong>  Port app exposes.</li>
 </ul>
 </div>
 
@@ -270,8 +270,8 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str, str, str: Id of the camera processor for the orchestrator.</span>
-<span class="sd">                       Url of the orchestrator websocket.</span>
-<span class="sd">                       Url of the forwarder stream.</span>
+<span class="sd">                       URL of the orchestrator WebSocket.</span>
+<span class="sd">                       URL of the forwarder stream.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ORCHESTRATOR_URL&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CAMERA_ID&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s1">&#39;Environment variable CAMERA_ID, HLS_STREAM_URL or ORCHESTRATOR_URL&#39;</span>
@@ -289,8 +289,8 @@ Utrecht University within the Software Project course.
 
 <blockquote>
   <p>str, str, str: Id of the camera processor for the orchestrator.
-                 Url of the orchestrator websocket.
-                 Url of the forwarder stream.</p>
+                 URL of the orchestrator WebSocket.
+                 URL of the forwarder stream.</p>
 </blockquote>
 </div>
 
@@ -371,8 +371,8 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.</span>
 
-<span class="sd">    Tornado uses a custom IOLoop</span>
-<span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</span>
+<span class="sd">    Tornado uses a custom IOLoop.</span>
+<span class="sd">    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        AttributeError: Mode in which is run does not exist.</span>
@@ -394,7 +394,7 @@ Utrecht University within the Software Project course.
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
             <span class="n">process_stream</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
-    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket url.</span>
+    <span class="c1"># Deploy mode where all is sent to the orchestrator using the websocket URL.</span>
     <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deploy&#39;</span><span class="p">:</span>
         <span class="c1"># Make environment variables are set when running in deploy.</span>
         <span class="n">ws_id</span><span class="p">,</span> <span class="n">ws_url</span><span class="p">,</span> <span class="n">hls_url</span> <span class="o">=</span> <span class="n">enforce_deploy_environment_variables</span><span class="p">()</span>
@@ -407,8 +407,8 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.</p>
 
-<p>Tornado uses a custom IOLoop
-Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop</p>
+<p>Tornado uses a custom IOLoop.
+Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop.</p>
 
 <h6 id="raises">Raises</h6>
 
