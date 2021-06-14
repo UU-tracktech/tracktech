@@ -33,9 +33,9 @@ python src/main.py
 
 The stream can then be accessed at `http://localhost/stream.m3u8`
 
-## Environment variables
+### Environment variables
 
-### Camera
+#### Camera
 
 Required to specify
 
@@ -44,7 +44,7 @@ Required to specify
 | CAMERA_URL   | The video stream url of the camera                 |
 | CAMERA_AUDIO | Whether the camera stream contains an audio stream |
 
-### Streaming
+#### Streaming
 
 | Variable        | Description                                                             | Default      |
 | --------------- | ----------------------------------------------------------------------- | ------------ |
@@ -58,7 +58,7 @@ Required to specify
 | STREAM_MEDIUM   | use 'true' to enable a medium quality stream                            | false        |
 | STREAM_HIGH     | use 'true' to enable a high quality stream                              | false        |
 
-### SSL
+#### SSL
 
 If both are specified, ssl is enabled
 
@@ -67,7 +67,7 @@ If both are specified, ssl is enabled
 | SSL_CERT | The ssl certificate path |
 | SSL_KEY  | The ssl key path         |
 
-### Authentication
+#### Authentication
 
 | Variable    | Description                                     |
 | ----------- | ----------------------------------------------- |

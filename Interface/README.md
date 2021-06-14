@@ -2,11 +2,50 @@
 
 This component contains the web interface for the project. The interface is created with Typescript React and uses the Ant Design UI package for most of its UI components.
 
-## How to use
+## Quickstart
+
+### Starting
 
 There are two ways to run the interface:
 
-- (using docker) run `docker-compose up` in the current folder
+#### Docker
+
+run
+
+```bash
+docker-compose up
+```
+
+in the current folder
+
+#### Local
+
+Make sure you have npm installed and run
+
+```bash
+npm start
+```
+
+to start the interface
+
+### Settings
+
+React uses the local environment during building and therefore should be configured using an settings file instead of environment variables.
+The settings (places in public in react) should look like this
+
+```json
+{
+  "cameras": [
+    {
+      "Name": "The name of a camera",
+      "Id": "The id of the camera (corresponding to the one set in the processor)",
+      "Forwarder": "The url of the actual video stream"
+    }
+  ],
+  "objectTypes": ["object types, like person or bicycle"],
+  "orchestratorUrl": "The url to the orchestrator"
+}
+```
 
 ## Architecture
 
