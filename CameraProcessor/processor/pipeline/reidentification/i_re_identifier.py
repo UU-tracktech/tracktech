@@ -18,6 +18,15 @@ class IReIdentifier(IComponent):
         """
         return self.re_identify
 
+    @property
+    def feature_map_size(self):
+        """Feature map size getter.
+
+        Returns:
+            int: Size of the feature map.
+        """
+        raise NotImplementedError("Feature map size getter not implemented")
+
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.
 
