@@ -13,9 +13,9 @@ def clients(request):
     """Fixture for a couple of clients.
 
     Args:
-        request ([FakeWebsocket]): Fake websocket implementation.
+        request ([FakeWebsocket]): Fake WebSocket implementation.
 
     Returns:
-        FakeWebsocket: A fake websocket client.
+        FakeWebsocket: A fake WebSocket client.
     """
     return request.param

@@ -24,7 +24,7 @@ class ClientSocket(WebSocketHandler):
         identifier (int): Serves as the unique identifier to this object.
         authorized (bool): Shows whether the websocket connection is authorized.
         auth (Auth): Authorization object for the websocket handler
-        uses_images (bool): Bool indicating whether or not this client should receive images
+        uses_images (bool): Bool indicating whether this client should receive images
     """
 
     def __init__(self, application, request):
@@ -169,12 +169,12 @@ class ClientSocket(WebSocketHandler):
             clients[self.identifier] = self
 
     def set_uses_image(self, message):
-        """Set whether or not this client uses images.
+        """Set whether this client uses images.
 
         Args:
             message (json):
                 JSON message that was received. It should contain the following property
-                    - "usesImages" | a bool indicating whether or not the client uses images
+                    - "usesImages" | a bool indicating whether the client uses images
         """
 
         self.uses_images = message["usesImages"]

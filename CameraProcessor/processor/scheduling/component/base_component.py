@@ -10,9 +10,7 @@ from processor.scheduling.component.i_component import IComponent
 
 
 class BaseComponent(IComponent):
-    """Base of every component containing only the minimal required functionality.
-    """
-
+    """Base of every component containing only the minimal required functionality."""
     def work(self):
         """Example function that can be returned by execute_component().
 

@@ -15,7 +15,7 @@ export type authenticationState =
   | 'authenticated'
 
 export default function useAuthState(): authenticationState {
-  //Obtain keycloak so we can check for login info
+  //Obtain keycloak, so we can check for login info
   const { keycloak, initialized } = useKeycloak()
 
   //Return the current authentication state

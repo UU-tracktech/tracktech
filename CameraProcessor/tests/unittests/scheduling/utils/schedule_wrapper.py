@@ -50,13 +50,13 @@ class ScheduleWrapper:
         # Last node/layer.
         self.schedule_output_node = ScheduleNode(1, [], OutputComponent(func), {})
 
-        # Merges layers back together.
+        # Merge layers back together.
         layer3_single_output_node = ScheduleNode(1, [(self.schedule_output_node, 0)], SingleOutputComponent(), {})
 
-        # Intermediary layer.
+        # The intermediary layer.
         layer2_multiple_input_node = ScheduleNode(2, [(layer3_single_output_node, 0)], MultipleInputComponent(), {})
 
-        # Intermediary layer.
+        # The intermediary layer.
         layer1_node1 = ScheduleNode(1, [(layer2_multiple_input_node, 0)], InputComponent(), {})
         layer1_node2 = ScheduleNode(1, [(layer2_multiple_input_node, 1)], InputComponent(), {})
 
@@ -70,7 +70,7 @@ class ScheduleWrapper:
         """Prepares schedule using globals functionality."""
         global_var_name = 'global_var'
 
-        # Final node executing a function that takes all previous component outputs as input.
+        # The final node executing a function that takes all previous component outputs as input.
         self.schedule_output_node = ScheduleNode(
             1,
             [],

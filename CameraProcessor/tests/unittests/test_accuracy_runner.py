@@ -65,7 +65,7 @@ class TestAccuracyRunner:
         image_width = int(line_info.split(",")[1])
         image_height = int(line_info.split(",")[2])
 
-        # Checking if the information in every line is in line with the guidelines for the first 6 values.
+        # Checking if the information in every line is in line with the guidelines for the first six values.
         # These are defined in https://motchallenge.net/instructions/.
         previous_frame_nr = 0
         previous_id = 0
