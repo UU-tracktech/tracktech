@@ -13,7 +13,7 @@ if __name__ == '__main__':
     # Instantiate the training mode.
     config_parser = ConfigParser('configs.ini', True)
     config = config_parser.configs['Training']
-    mode = config['mode']
+    mode = config['mode_det']
     file = config['file']
     if mode == 'yolov5':
         # Run the training of Yolov5.

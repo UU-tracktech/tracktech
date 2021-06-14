@@ -101,7 +101,13 @@ print_freq = 10                 # Print frequency.
 
 #### Training Fastreid
 
-Fastreid uses environment variables.
+```
+[Training_Fastreid]
+num_gpus = 1                                        # Number of gpus to use.
+config_file = /configs/Market1501/bagtricks_R50.yml # Config file inside FastReid
+model_device = cuda                                 # Type of gpu
+device_number = 0                                   # Device number.
+```
 
 ## Running the training
 
