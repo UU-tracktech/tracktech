@@ -183,9 +183,11 @@ def __get_captures(configs):
             captures.append((capture, path))
         return captures
     else:
-        print(1 / 0)
+        raise UnkownFormatException
 
-    return captures
+
+class UnkownFormatException(Exception):
+    pass
 
 
 if __name__ == '__main__':
