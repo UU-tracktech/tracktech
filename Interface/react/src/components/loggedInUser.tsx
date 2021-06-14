@@ -28,7 +28,6 @@ export function LoggedInUser() {
     case 'loading':
       return (
         <Skeleton
-          data-testid={'loadingSkeleton'}
           title={{ width: 150, style: { verticalAlign: 'middle' } }}
           paragraph={{
             rows: 1,

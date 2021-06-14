@@ -35,6 +35,7 @@ export function SelectionCard(props: selectionCardProps) {
       }}
       cover={
         <img
+          data-testid={`image-${props.src}`}
           src={props.src}
           style={{ display: 'block', height: 100, objectFit: 'contain' }}
         />

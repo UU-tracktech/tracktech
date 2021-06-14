@@ -202,7 +202,8 @@ test('Clicking Bounding boxes starts tracking', async () => {
       type: 'start',
       objectId: 1,
       frameId: 0,
-      boxId: 1
+      boxId: 1,
+      image: 'data:image/png;base64,00'
     })
     gotMessage = true
   }
