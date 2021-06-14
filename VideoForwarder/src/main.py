@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 import sys
 import os
-from logging import info
+from logging import info, getLogger, StreamHandler
 import tornado.httpserver
 import tornado.web
 import tornado.ioloop
@@ -29,6 +29,7 @@ if __name__ == "__main__":
 
     tornado.log.access_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
     tornado.log.access_log.addFilter(LoggingFilter())
+    getLogger().addHandler(StreamHandler(sys.stdout))
 
     info('starting server')
 
