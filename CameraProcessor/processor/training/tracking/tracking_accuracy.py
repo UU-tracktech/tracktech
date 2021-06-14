@@ -6,10 +6,8 @@ Utrecht University within the Software Project course.
 """
 
 from processor.utils.config_parser import ConfigParser
-import sys
 import os
-import argparse
-from subprocess import call
+from processor.training.tracking.trackeval_master.scripts.run_mot_challenge import main as mot_challenge
 
 
 def main(configs):
@@ -23,14 +21,17 @@ def main(configs):
     benchmark = 'MOT20'
     metric = 'CLEAR'
     parallel = 'False'
-    parser_config = {"--METRICS": metric,
-                     "--USE_PARALLEL": parallel,
-                     "--BENCHMARK": benchmark,
-                     "--GT_FOLDER": gt_folder,
-                     "--TRACKERS_FOLDER": det_folder}
-    script_path = os.path.realpath('../../../processor/training/tracking/trackeval_master/scripts/run_mot_challenge.py')
-    cmd = f"""python {script_path} --USE_PARALLEL {parallel} --METRICS {metric} --BENCHMARK {benchmark} --GT_FOLDER {gt_folder} --TRACKERS_FOLDER {det_folder}"""
-    os.system(cmd)
+    config = {"METRICS": metric,
+              "USE_PARALLEL": parallel,
+              "BENCHMARK": benchmark,
+              "GT_FOLDER": gt_folder,
+              "TRACKERS_FOLDER": det_folder}
+    mot_challenge(config)
+
+
+    # script_path = os.path.realpath('../../../processor/training/tracking/trackeval_master/scripts/run_mot_challenge.py')
+    # cmd = f"""python {script_path} --USE_PARALLEL {parallel} --METRICS {metric} --BENCHMARK {benchmark} --GT_FOLDER {gt_folder} --TRACKERS_FOLDER {det_folder}"""
+    # os.system(cmd)
 
 
 if __name__ == '__main__':

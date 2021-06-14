@@ -40,7 +40,7 @@ from multiprocessing import freeze_support
 import processor.training.tracking.trackeval_master.trackeval as trackeval  # noqa: E402
 
 
-def main():
+def main(tracking_config):
 
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -59,6 +59,7 @@ def main():
         else:
             parser.add_argument("--" + setting)
     args = parser.parse_args().__dict__
+    args = mergeDicts(tracking_config, args)
     for setting in args.keys():
         if args[setting] is not None:
             if type(config[setting]) == type(True):
@@ -91,6 +92,16 @@ def main():
     if len(metrics_list) == 0:
         raise Exception('No metrics selected for evaluation')
     evaluator.evaluate(dataset_list, metrics_list)
+
+
+def mergeDicts(d1, d2):
+    """Puts all values from d1 in d2 if the keys match
+
+    """
+    for k in d1.keys():
+        if k in d2.keys():
+            d2[k] = d1[k]
+    return d2
 
 
 if __name__ == '__main__':

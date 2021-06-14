@@ -54,7 +54,6 @@ class MotChallenge2DBox(_BaseDataset):
             split_fol = ''
         self.gt_fol = os.path.join(self.config['GT_FOLDER'], split_fol)
         self.tracker_fol = os.path.join(self.config['TRACKERS_FOLDER'], split_fol)
-        print(self.tracker_fol)
         self.should_classes_combine = False
         self.use_super_categories = False
         self.data_is_zipped = self.config['INPUT_AS_ZIP']
@@ -97,7 +96,6 @@ class MotChallenge2DBox(_BaseDataset):
                 raise TrackEvalException('GT file not found: ' + os.path.basename(curr_file))
 
         # Get trackers to eval
-        print(self.config)
         if self.config['TRACKERS_TO_EVAL'] is None:
             self.tracker_list = os.listdir(self.tracker_fol)
         else:
@@ -119,9 +117,6 @@ class MotChallenge2DBox(_BaseDataset):
                     raise TrackEvalException('Tracker file not found: ' + tracker + '/' + os.path.basename(curr_file))
             else:
                 for seq in self.seq_list:
-                    print(self.tracker_sub_fol)
-                    print(self.tracker_sub_fol)
-                    print(self.tracker_sub_fol)
                     curr_file = os.path.join(self.tracker_fol, tracker, self.tracker_sub_fol, seq + '.txt')
                     if not os.path.isfile(curr_file):
                         print('Tracker file not found: ' + curr_file)
