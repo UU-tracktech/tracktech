@@ -85,7 +85,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dimensions</span> <span class="o">=</span> <span class="n">__calculate_scaled_size</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-    <span class="c1"># Downscale image.</span>
+    <span class="c1"># Downscale the image.</span>
     <span class="n">scaled_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)</span>
 
     <span class="c1"># Draw detections boxes and downscale.</span>
@@ -100,12 +100,12 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Draw re-id boxes and downscale.</span>
     <span class="n">re_id_frame</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">draw</span><span class="o">.</span><span class="n">draw_re_id_tracked_boxes</span><span class="p">(</span><span class="n">re_id_frame</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">draw_re_identification_boxes</span><span class="p">(</span><span class="n">re_id_frame</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
     <span class="n">re_id_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">re_id_frame</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)</span>
 
     <span class="c1"># List representation of the images in 2D.</span>
     <span class="n">list_2d</span> <span class="o">=</span> <span class="p">[[</span><span class="n">scaled_frame</span><span class="p">,</span> <span class="n">detection_frame</span><span class="p">],</span>
-               <span class="p">[</span><span class="n">tracking_frame</span><span class="p">,</span> <span class="n">scaled_frame</span><span class="p">]]</span>
+               <span class="p">[</span><span class="n">tracking_frame</span><span class="p">,</span> <span class="n">re_id_frame</span><span class="p">]]</span>
 
     <span class="c1"># Return the tiled image.</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">vconcat</span><span class="p">([</span><span class="n">cv2</span><span class="o">.</span><span class="n">hconcat</span><span class="p">(</span><span class="n">list_h</span><span class="p">)</span>
@@ -176,7 +176,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dimensions</span> <span class="o">=</span> <span class="n">__calculate_scaled_size</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-    <span class="c1"># Downscale image.</span>
+    <span class="c1"># Downscale the image.</span>
     <span class="n">scaled_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)</span>
 
     <span class="c1"># Draw detections boxes and downscale.</span>
@@ -191,12 +191,12 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Draw re-id boxes and downscale.</span>
     <span class="n">re_id_frame</span> <span class="o">=</span> <span class="n">frame_obj</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">draw</span><span class="o">.</span><span class="n">draw_re_id_tracked_boxes</span><span class="p">(</span><span class="n">re_id_frame</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">draw_re_identification_boxes</span><span class="p">(</span><span class="n">re_id_frame</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="p">)</span>
     <span class="n">re_id_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">re_id_frame</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)</span>
 
     <span class="c1"># List representation of the images in 2D.</span>
     <span class="n">list_2d</span> <span class="o">=</span> <span class="p">[[</span><span class="n">scaled_frame</span><span class="p">,</span> <span class="n">detection_frame</span><span class="p">],</span>
-               <span class="p">[</span><span class="n">tracking_frame</span><span class="p">,</span> <span class="n">scaled_frame</span><span class="p">]]</span>
+               <span class="p">[</span><span class="n">tracking_frame</span><span class="p">,</span> <span class="n">re_id_frame</span><span class="p">]]</span>
 
     <span class="c1"># Return the tiled image.</span>
     <span class="k">return</span> <span class="n">cv2</span><span class="o">.</span><span class="n">vconcat</span><span class="p">([</span><span class="n">cv2</span><span class="o">.</span><span class="n">hconcat</span><span class="p">(</span><span class="n">list_h</span><span class="p">)</span>
