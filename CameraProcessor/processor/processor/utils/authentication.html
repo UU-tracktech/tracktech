@@ -62,8 +62,8 @@ Utrecht University within the Software Project course.
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 
 
 <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="n">auth_server_url</span><span class="p">):</span>
@@ -73,7 +73,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        auth_server_url (str): Url of the authentication server to request the token from.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: Access token received from the authentication server</span>
+<span class="sd">        str: Access token received from the authentication server.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        AttributeError: Authentication credentials given in the environment are invalid.</span>
@@ -86,7 +86,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Environment variables not found.</span>
     <span class="k">if</span> <span class="n">client_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">client_secret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Retrieving token without environment variables&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Retrieving token without environment variables&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s1">&#39;CLIENT_ID or CLIENT_SECRET not found in environment.&#39;</span><span class="p">)</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
@@ -130,7 +130,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        auth_server_url (str): Url of the authentication server to request the token from.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: Access token received from the authentication server</span>
+<span class="sd">        str: Access token received from the authentication server.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        AttributeError: Authentication credentials given in the environment are invalid.</span>
@@ -143,7 +143,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Environment variables not found.</span>
     <span class="k">if</span> <span class="n">client_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">client_secret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Retrieving token without environment variables&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Retrieving token without environment variables&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s1">&#39;CLIENT_ID or CLIENT_SECRET not found in environment.&#39;</span><span class="p">)</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
@@ -180,7 +180,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>str: Access token received from the authentication server</p>
+  <p>str: Access token received from the authentication server.</p>
 </blockquote>
 
 <h6 id="raises">Raises</h6>
