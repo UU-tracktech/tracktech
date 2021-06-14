@@ -47,7 +47,6 @@ class TorchReIdentifier(IReIdentifier):
             device=config['device'])
 
         super().__init__(config)
-        self.threshold = float(self.config["threshold"])
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.

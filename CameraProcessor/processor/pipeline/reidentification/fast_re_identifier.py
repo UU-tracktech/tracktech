@@ -51,7 +51,6 @@ class FastReIdentifier(IReIdentifier):
         self.extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
 
         super().__init__(config)
-        self.threshold = float(self.config["threshold"])
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.

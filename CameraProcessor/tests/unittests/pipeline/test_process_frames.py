@@ -115,7 +115,7 @@ class TestProcessFrames:
         # Get fake implementations.
         detector = FakeDetector()
         tracker = FakeTracker()
-        re_identifier = FakeReIdentifier(configs)
+        re_identifier = FakeReIdentifier(configs["Yolov5"])
 
         # Process the stream and close the capture.
         asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker, re_identifier))
