@@ -64,9 +64,7 @@ RUN ["mkdir", "-p", "utility/pylint-plugins"]
 COPY processor processor
 COPY tests tests
 
-WORKDIR /
-
-ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
+ENTRYPOINT ["pylint","processor","tests","--rcfile=.pylintrc"]
 
 
 # Docker build that works with GPU on windows (with insider edition etc.) and linux
