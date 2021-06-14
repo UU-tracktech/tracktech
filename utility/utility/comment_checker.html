@@ -90,7 +90,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    The following linting errors get caught:</span>
 <span class="sd">        comment-should-have-one-space: Comment should start with only one space.</span>
-<span class="sd">        comment-missing-period: Comment has to end with a dot.</span>
+<span class="sd">        comment-missing-period: Comment has to end with a period.</span>
 <span class="sd">        comment-starts-with-lowercase: Comment should start with uppercase letter.</span>
 
 <span class="sd">    Attributes:</span>
@@ -107,7 +107,7 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;comment-should-have-one-space&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Comment is missing a space&#39;</span>
                   <span class="p">),</span>
-        <span class="s1">&#39;C3121&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Comment missing a period or has a space between period and last character&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;C3121&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Comment missing a period&quot;</span><span class="p">,</span>
                   <span class="s1">&#39;comment-missing-period&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Comment is missing a period&#39;</span>
                   <span class="p">),</span>
@@ -115,10 +115,6 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;comment-starts-with-lowercase&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Comment is wrongly formatted&#39;</span>
                   <span class="p">),</span>
-        <span class="s1">&#39;C3123&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Comment should not have a space between end period and last character&quot;</span><span class="p">,</span>
-                  <span class="s1">&#39;comment-has-space-before-period&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;Comment has a space before the period&#39;</span>
-                 <span class="p">)</span>
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">process_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -137,16 +133,13 @@ Utrecht University within the Software Project course.
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;# pylint:&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
                 <span class="c1"># Check whether comment is correct format.</span>
-                <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\S+\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">comment_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># See what is wrong about the comment.</span>
                 <span class="n">wrong_spaces_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#(?:\S|\s\s+).*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-                <span class="n">wrong_end_space_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s.*\s+\.$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">missing_period_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#.*[^.]$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">capital_letter_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[^A-Z].*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
@@ -157,11 +150,6 @@ Utrecht University within the Software Project course.
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-should-have-one-space&#39;</span><span class="p">,</span>
                                      <span class="n">line</span><span class="o">=</span><span class="n">lineno</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                      <span class="n">col_offset</span><span class="o">=</span><span class="n">line_start_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="c1"># Space at the end befor the period.</span>
-                <span class="k">if</span> <span class="n">wrong_end_space_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-has-space-before-period&#39;</span><span class="p">,</span>
-                                     <span class="n">line</span><span class="o">=</span><span class="n">lineno</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                     <span class="n">col_offset</span><span class="o">=</span><span class="n">line_end_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="c1"># Comment does not end with a period.</span>
                 <span class="k">if</span> <span class="n">missing_period_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-missing-period&#39;</span><span class="p">,</span>
@@ -220,7 +208,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    The following linting errors get caught:</span>
 <span class="sd">        comment-should-have-one-space: Comment should start with only one space.</span>
-<span class="sd">        comment-missing-period: Comment has to end with a dot.</span>
+<span class="sd">        comment-missing-period: Comment has to end with a period.</span>
 <span class="sd">        comment-starts-with-lowercase: Comment should start with uppercase letter.</span>
 
 <span class="sd">    Attributes:</span>
@@ -237,7 +225,7 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;comment-should-have-one-space&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Comment is missing a space&#39;</span>
                   <span class="p">),</span>
-        <span class="s1">&#39;C3121&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Comment missing a period or has a space between period and last character&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;C3121&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Comment missing a period&quot;</span><span class="p">,</span>
                   <span class="s1">&#39;comment-missing-period&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Comment is missing a period&#39;</span>
                   <span class="p">),</span>
@@ -245,10 +233,6 @@ Utrecht University within the Software Project course.
                   <span class="s1">&#39;comment-starts-with-lowercase&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Comment is wrongly formatted&#39;</span>
                   <span class="p">),</span>
-        <span class="s1">&#39;C3123&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Comment should not have a space between end period and last character&quot;</span><span class="p">,</span>
-                  <span class="s1">&#39;comment-has-space-before-period&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;Comment has a space before the period&#39;</span>
-                 <span class="p">)</span>
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">process_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -267,16 +251,13 @@ Utrecht University within the Software Project course.
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;# pylint:&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
                 <span class="c1"># Check whether comment is correct format.</span>
-                <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\S+\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">comment_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># See what is wrong about the comment.</span>
                 <span class="n">wrong_spaces_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#(?:\S|\s\s+).*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-                <span class="n">wrong_end_space_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s.*\s+\.$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">missing_period_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#.*[^.]$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">capital_letter_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[^A-Z].*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
@@ -287,11 +268,6 @@ Utrecht University within the Software Project course.
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-should-have-one-space&#39;</span><span class="p">,</span>
                                      <span class="n">line</span><span class="o">=</span><span class="n">lineno</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                      <span class="n">col_offset</span><span class="o">=</span><span class="n">line_start_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="c1"># Space at the end befor the period.</span>
-                <span class="k">if</span> <span class="n">wrong_end_space_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-has-space-before-period&#39;</span><span class="p">,</span>
-                                     <span class="n">line</span><span class="o">=</span><span class="n">lineno</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                     <span class="n">col_offset</span><span class="o">=</span><span class="n">line_end_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="c1"># Comment does not end with a period.</span>
                 <span class="k">if</span> <span class="n">missing_period_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-missing-period&#39;</span><span class="p">,</span>
@@ -328,7 +304,7 @@ Utrecht University within the Software Project course.
 
 <p>The following linting errors get caught:
     comment-should-have-one-space: Comment should start with only one space.
-    comment-missing-period: Comment has to end with a dot.
+    comment-missing-period: Comment has to end with a period.
     comment-starts-with-lowercase: Comment should start with uppercase letter.</p>
 
 <h6 id="attributes">Attributes</h6>
@@ -353,7 +329,7 @@ Utrecht University within the Software Project course.
                             <div id="CommentChecker.msgs" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#CommentChecker.msgs">#&nbsp;&nbsp</a>
 
-        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C3120&#39;: (&#39;Start comment with one space&#39;, &#39;comment-should-have-one-space&#39;, &#39;Comment is missing a space&#39;), &#39;C3121&#39;: (&#39;Comment missing a period or has a space between period and last character&#39;, &#39;comment-missing-period&#39;, &#39;Comment is missing a period&#39;), &#39;C3122&#39;: (&#39;Comment should start with capital letter&#39;, &#39;comment-starts-with-lowercase&#39;, &#39;Comment is wrongly formatted&#39;), &#39;C3123&#39;: (&#39;Comment should not have a space between end period and last character&#39;, &#39;comment-has-space-before-period&#39;, &#39;Comment has a space before the period&#39;)}</span>
+        <span class="name">msgs</span><span class="annotation">: Any</span><span class="default_value"> = {&#39;C3120&#39;: (&#39;Start comment with one space&#39;, &#39;comment-should-have-one-space&#39;, &#39;Comment is missing a space&#39;), &#39;C3121&#39;: (&#39;Comment missing a period&#39;, &#39;comment-missing-period&#39;, &#39;Comment is missing a period&#39;), &#39;C3122&#39;: (&#39;Comment should start with capital letter&#39;, &#39;comment-starts-with-lowercase&#39;, &#39;Comment is wrongly formatted&#39;)}</span>
     </div>
 
     
@@ -385,16 +361,13 @@ Utrecht University within the Software Project course.
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;# pylint:&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
                 <span class="c1"># Check whether comment is correct format.</span>
-                <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\S+\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="n">comment_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[A-Z].*\.\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">comment_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># See what is wrong about the comment.</span>
                 <span class="n">wrong_spaces_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#(?:\S|\s\s+).*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-                <span class="n">wrong_end_space_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s.*\s+\.$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">missing_period_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#.*[^.]$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="n">capital_letter_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#\s[^A-Z].*&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
@@ -405,11 +378,6 @@ Utrecht University within the Software Project course.
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-should-have-one-space&#39;</span><span class="p">,</span>
                                      <span class="n">line</span><span class="o">=</span><span class="n">lineno</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                      <span class="n">col_offset</span><span class="o">=</span><span class="n">line_start_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="c1"># Space at the end befor the period.</span>
-                <span class="k">if</span> <span class="n">wrong_end_space_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-has-space-before-period&#39;</span><span class="p">,</span>
-                                     <span class="n">line</span><span class="o">=</span><span class="n">lineno</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                     <span class="n">col_offset</span><span class="o">=</span><span class="n">line_end_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="c1"># Comment does not end with a period.</span>
                 <span class="k">if</span> <span class="n">missing_period_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;comment-missing-period&#39;</span><span class="p">,</span>
