@@ -151,7 +151,15 @@ class FastReIdentifier(IReIdentifier):
                 if tracked_bounding_boxes[i].object_id is None:
                     # Calculate the similarity value of the 2 feature vectors.
                     similarity_value = self.similarity(query_feature, feature)
-                    if similarity_value > self.threshold:
+                    if self.config.get("distance") == "euclidian":
+                        similarity_bool = similarity_value < self.threshold
+                    elif self.config.get("distance") == "cosine":
+                        similarity_bool = similarity_value > self.threshold
+                    else:
+                        similarity_bool = False
+                        raise ValueError(f"Distance metric {self.config.get('distance')} "
+                                         f"is not a valid distance metric.")
+                    if similarity_bool:
                         box_id = tracked_bounding_boxes[i].identifier
 
                         # Store that this box id belongs to a certain object id.
