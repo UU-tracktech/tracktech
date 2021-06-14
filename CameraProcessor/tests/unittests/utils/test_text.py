@@ -72,8 +72,7 @@ class TestText:
         assert txt_string == "1,1,60,120,60,60,1,1,0.50 \n"
 
     def test_error_to_json(self):
-        """Tests the error_to_json function.
-        """
+        """Tests the error_to_json function."""
         error_message = error_to_json(NameError("Testing"))
         assert error_message == '{"type": "error", "error": "NameError(\'Testing\')"}'
 
