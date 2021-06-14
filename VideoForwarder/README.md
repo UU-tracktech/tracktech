@@ -1,6 +1,6 @@
 # Forwarder
 
-This component retrieves a webstream and converts it to an HLS stream. This HLS stream can then be consumed by the interface and processors.
+This component retrieves a web stream and converts it to an HLS stream. The interface and processors can then consume this HLS stream.
 
 ## Quickstart
 
@@ -16,7 +16,7 @@ docker run -p 80:80 --env CAMERA_URL={Stream url} --env CAMERA_AUDIO={Wether the
 
 #### Local
 
-Make sure python is installed and the repository is cloned install the dependencies using
+Make sure python is installed and the repository is cloned. Install the dependencies using.
 
 ```bash
 pip install -r requirements.txt
@@ -41,7 +41,7 @@ Required to specify
 
 | Variable     | Description                                        |
 | ------------ | -------------------------------------------------- |
-| CAMERA_URL   | The video stream url of the camera                 |
+| CAMERA_URL   | The video stream URL of the camera                 |
 | CAMERA_AUDIO | Whether the camera stream contains an audio stream |
 
 #### Streaming
@@ -49,23 +49,23 @@ Required to specify
 | Variable        | Description                                                             | Default      |
 | --------------- | ----------------------------------------------------------------------- | ------------ |
 | SEGMENT_SIZE    | The size of a single segment in seconds                                 | 2            |
-| SEGMENT_AMOUNT  | The amount of segments stored at once for a single stream               | 5            |
-| REMOVE_DELAY    | The amount of seconds of inactivity before a stream is closed           | 60           |
-| TIMEOUT_DELAY   | The amount of seconds to wait for a stream to open and produce segments | 30           |
+| SEGMENT_AMOUNT  | The number of segments stored at once for a single stream               | 5            |
+| REMOVE_DELAY    | The number of seconds of inactivity before a stream is closed           | 60           |
+| TIMEOUT_DELAY   | The number of seconds to wait for a stream to open and produce segments | 30           |
 | STREAM_ENCODING | The encoder used to encode the stream                                   | libx264      |
-| STREAM_FOLDER   | The folder in which the hls stream files are stored                     | /app/streams |
-| STREAM_LOW      | use 'true' to enable a low quality stream                               | false        |
+| STREAM_FOLDER   | The folder in which the HLS stream files are stored                     | /app/streams |
+| STREAM_LOW      | use 'true' to enable a low-quality stream                               | false        |
 | STREAM_MEDIUM   | use 'true' to enable a medium quality stream                            | false        |
-| STREAM_HIGH     | use 'true' to enable a high quality stream                              | false        |
+| STREAM_HIGH     | use 'true' to enable a high-quality stream                              | false        |
 
 #### SSL
 
-If both are specified, ssl is enabled
+If both are specified, SSL is enabled
 
 | Variable | Description              |
 | -------- | ------------------------ |
-| SSL_CERT | The ssl certificate path |
-| SSL_KEY  | The ssl key path         |
+| SSL_CERT | The SSL certificate path |
+| SSL_KEY  | The SSL key path         |
 
 #### Authentication
 
@@ -77,7 +77,7 @@ If both are specified, ssl is enabled
 
 ## Architecture
 
-We use ffmpeg to pull the video stream and encode it to an HLS stream. This is a http based streaming protocol that allows adaptive bitrate streaming. We use tornado to serve the files and handle authentication, to match the rest of the project.
+We use FFmpeg to pull the video stream and encode it to an HLS stream. FFmpeg is an HTTP based streaming protocol that allows adaptive bitrate streaming. We use tornado to serve the files and handle authentication, to match the rest of the project.
 
 ## Depencencies
 
@@ -95,4 +95,4 @@ We use ffmpeg to pull the video stream and encode it to an HLS stream. This is a
 
 ### Testing
 
-In order to run the unit tests please run `docker-compose -f compose/docker-compose_test_unit.yml`
+In order to run the unit tests, please run `docker-compose -f compose/docker-compose_test_unit.yml`

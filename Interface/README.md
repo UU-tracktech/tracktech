@@ -30,8 +30,8 @@ to start the interface
 
 ### Settings
 
-React uses the local environment during building and therefore should be configured using an settings file instead of environment variables.
-The settings (places in public in react) should look like this
+React uses the local environment during building and should be configured using a settings file instead of environment variables.
+The settings (places in public in react) should look like this.
 
 ```json
 {
@@ -49,23 +49,23 @@ The settings (places in public in react) should look like this
 
 ## Architecture
 
-The architecture of the application is made up of the following main components:
+The architecture of the application consists of the following main components:
 
-- /react: This folder contains many config files as well as folders containing the actual source code.
-- /react/public: Includes an index.html, as well as static files that are publicically visible.
+- /react: This folder contains many config files and folders containing the actual source code.
+- /react/public: Includes an index.html and static files that are publicly visible.
 - /react/src: The source code for the interface, which consists of:
   - /react/src/pages: The main pages of the application.
-  - /react/src/components: The custom react components used throughout the application.
+  - /react/src/components: The custom React components used throughout the application.
   - /react/src/classes: pure typescript classes.
 - /react/testing: Folder containing testing files, divided into:
-  - /react/testing/unit testing: Jest unit tests that test individual components.
-  - /react/testing/integration testing: Jest tests that test integration of the interface with the orchestrator.
+  - /react/testing/unit testing: Jest unit tests that tests individual components.
+  - /react/testing/integration testing: Jest tests that test the integration of the interface with the orchestrator.
 
 ## Dependencies
 
 ### Packages
 
-All dependencies are included in the (react/package.json) and (react/package-lock.json) files and can be installed with `npm install`
+All dependencies are included in the (react/package.json) and (react/package-lock.json) files and installed with `npm install`.
 
 ## Running tests
 

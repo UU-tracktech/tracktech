@@ -11,7 +11,7 @@ This project is part of the 2021 spring bachelor final project of the Bachelor o
 The team did this project at a request from ATOE, a part of the Dutch National Police.
 The team that worked on the project consists of eleven students from the Bachelor of Computer Science and Bachelor of Game Technology.
 This project has been done for educational purposes.
-All code is open source, and proper credit is given to respective parties.
+All code is open-source, and proper credit is given to respective parties.
 
 ## Pylint
 
@@ -25,12 +25,12 @@ Input following command terminal:
 pip install pylint
 ```
 
-### Gpu support
+### GPU support
 
 #### Updating/Installing drivers
 
-Update your GPU drivers and restart the system for changes to take effect.
-Optionally use a other driver listed after running `ubuntu-drivers devices`
+Update the GPU drivers and restart the system for changes to take effect.
+Optionally, use a different driver listed after running `ubuntu-drivers devices`
 
 ```bash
 sudo apt install nvidia-driver-460
@@ -39,8 +39,8 @@ sudo reboot
 
 #### Installing the container toolkit
 
-Add the distribution, update the package manager, install nvidia for docker, and restart docker for changes to take effect.
-For more information look at the [install guide](https://docs.nvid ia.com/datacenter/cloud-native/container-toolkit/install-guide.html#install-guide)
+Add the distribution, update the package manager, install NVIDIA for Docker, and restart Docker for changes to take effect.
+For more information, look at the [install guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#install-guide)
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -51,7 +51,7 @@ sudo apt install -y nvidia-docker2
 sudo systemctl restart docker
 ```
 
-#### Acquire the gpu id
+#### Acquire the GPU ID
 
 According to [this](https://gist.github.com/tomlankhorst/33da3c4b9edbde5c83fc1244f010815c) read the `GPU UUID` like GPU-a1b2c3d (just the first part) from
 
@@ -61,7 +61,7 @@ nvidia-smi -a
 
 #### Add the resource
 
-Add the `GPU UUID` from last step to the [Docker engine configuration file](https://docs.docker.com/config/daemon/#configure-the-docker-daemon) typically at `/etc/docker/daemon.json`. Create the file if it does not exist yet.
+Add the `GPU UUID` from the last step to the [Docker engine configuration file](https://docs.docker.com/config/daemon/#configure-the-docker-daemon) typically at `/etc/docker/daemon.json`. Create the file if it does not exist yet.
 
 ```json
 {
@@ -78,24 +78,24 @@ Add the `GPU UUID` from last step to the [Docker engine configuration file](http
 
 ### Run
 
-The Pylint linting should be run from the root with a specified Python module (sub system).
+The Pylint linting should be run from the root with a specified Python module (subsystem).
 The command is as follows:
 
-`pylint <Sub system> --rcfile=.pylintrc --reports=n`
+`pylint <Subsystem> --rcfile=.pylintrc --reports=n`
 
 `<Sub system>` is the Python module to run.
 Pylint needs an `__init__.py` file in the root to parse all folders to lint.
-This must be one of the sub systems since the root doesn't contain an `__init__.py` file.
+This run must be one of the subsystems since the root does not contain an `__init__.py` file.
 
 `--rcfile` is the linting specification used by Pylint.
 
 `--reports` sets whether the full report should be displayed or not.
-Our recommendation would be `n` since this only displays linting errors/warnings, and the eventual score reached.
+Our recommendation would be `n` since this only displays linting errors/warnings, and the eventual score.
 
 ### Ignoring folders from linting
 
 Some folders should be excluded from linting.
 This could be for multiple reasons like,
-the symlinked algorithms in camera processor,
+the symlinked algorithms in the CameraProcessor folder,
 the Python virtual environment folder, etc.
 Add folder name to `ignore=` in `.pylintrc`.
