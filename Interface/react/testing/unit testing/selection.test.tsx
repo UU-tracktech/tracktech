@@ -58,7 +58,7 @@ test('Clicking buttons changes selection', async () => {
   const noneBut = screen.getByTestId('NoneButton')
 
   //There is no support for checking state directly, so check for changes
-  //using the button classes which also change based on which is selected
+  //using the button classes, which also change based on which is selected
   //'ant-btn-primary' means that button is selected, while 'ant-btn-default' is not
 
   //by default, the 'all' button is primary, and the others are default

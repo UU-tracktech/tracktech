@@ -6,13 +6,13 @@ Utrecht University within the Software Project course.
 """
 
 processors = dict()
-"""Dictionary which matches processor id to the corresponding websocket
+"""Dictionary which matches processor id to the corresponding WebSocket
 
 type: Dict[str, ProcessorSocket]
 """
 
 clients = dict()
-"""Dictionary which matches client id to the corresponding websocket
+"""Dictionary, which matches client id to the corresponding WebSocket
 
 type: Dict[str, ClientSocket]
 """

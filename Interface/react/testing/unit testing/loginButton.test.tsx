@@ -53,7 +53,7 @@ test('Button to logout', () => {
 
   render(<LoginButton />)
 
-  //We are logged in so we expect there to be a button which says 'Logout' and not one saying 'Login'
+  //We are logged in so we expect there to be a button, which says 'Logout' and not one saying 'Login'
   expect(screen.queryByText('Login')).toBeFalsy()
   expect(screen.queryByText('Logout')).toBeDefined()
 

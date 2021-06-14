@@ -12,12 +12,12 @@ class ICapture:
         """Returns whether the capture object still opened.
 
         Returns:
-            bool: Boolean which indicates whether stream is still opened
+            bool: Boolean, which indicates whether stream is still opened
         """
         raise NotImplementedError('stopped method not implemented')
 
     def close(self):
-        """Closes capture object which prevents getting more frames."""
+        """Closes capture object, which prevents getting more frames."""
         raise NotImplementedError('No close defined for the capture')
 
     def get_next_frame(self):

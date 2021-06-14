@@ -84,7 +84,7 @@ beforeEach(() => {
 })
 
 /**
- * Test whether or not the interface is able to connect to the orchestrator using the websocket context provider.
+ * Test whether the interface is able to connect to the orchestrator using the websocket context provider.
  */
 test('Websocket connects', async () => {
   jest.setTimeout(30000)
@@ -125,7 +125,7 @@ test('Websocket handles error and closes', async () => {
 })
 
 /**
- * Test whether or not an incoming bounding box is send to the queue and drawn.
+ * Test whether an incoming bounding box is send to the queue and drawn.
  */
 test('Bounding box send to queue', async () => {
   jest.setTimeout(30000)
