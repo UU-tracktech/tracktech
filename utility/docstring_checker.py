@@ -163,7 +163,6 @@ class DocstringChecker(BaseChecker):
         if not first_line_match:
             self.add_message('first-line-in-docstring-must-end-with-period',
                              node=node)
-
         # Return if single line.
         if len(doc_lines) == 1:
             return
