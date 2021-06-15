@@ -59,7 +59,7 @@ class IDataloader:
         """Appends boxes.
 
         Args:
-            bounding_boxes_list ([BoundingBox]): Bounding box object.
+            bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes object.
             image_id (int): ID of image.
             person_id (int): ID of person
             pos_x0 (int): Top-left x value.
@@ -71,10 +71,10 @@ class IDataloader:
             object_id (int): ID of object.
 
         Returns:
-            bounding_boxes_list ([BoundingBox]): List of BoundingBoxes.
+            bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.
         """
         if not self.previous_image_id == image_id or self.previous_image_id == -1:
-            bounding_boxes_list.append(BoundingBoxes(self.current_boxes, self.previous_image_id))
+            bounding_boxes_list.append(BoundingBoxes(self.current_boxes, str(self.previous_image_id)))
             self.current_boxes = []
             self.previous_image_id = image_id
         bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
@@ -99,7 +99,7 @@ class IDataloader:
         Returns:
             bbox (BoundingBox): Bounding box object.
         """
-        bbox = BoundingBox(classification=classification,
+        return BoundingBox(classification=classification,
                            rectangle=Rectangle(x1=pos_x,
                                                y1=pos_y,
                                                x2=pos_x2,
@@ -108,7 +108,6 @@ class IDataloader:
                            certainty=certainty,
                            object_id=object_id
                            )
-        return bbox
 
     def get_image_dimensions(self, image_id):
         """Gets the size of an image based on its name.
