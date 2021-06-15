@@ -20,7 +20,7 @@ class SlowServerUnitTest(AsyncHTTPTestCase):
     def get_app(self):
         """Creates the application to test."""
         environ["CAMERA_URL"] = "rtmp://localhost/stream"
-        environ["CAMERA_AUDIO"] = "true"
+        environ["CAMERA_AUDIO"] = "false"
 
         environ["STREAM_LOW"] = 'false'
         environ["STREAM_MEDIUM"] = 'false'
