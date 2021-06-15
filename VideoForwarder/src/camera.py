@@ -11,7 +11,7 @@ class Camera:
 
     Attributes:
         url (str): Address of the camera.
-        conversion (str): Conversion used to encode camera.
+        conversion (str): Conversion used to encode the camera.
         callback (func): Callback function to stop running after a delay.
         audio (bool): Does camera contain audio.
     """

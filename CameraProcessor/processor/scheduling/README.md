@@ -101,7 +101,7 @@ The ScheduleNode is initialized using the following parameters:
 (nodes that have the current node as input)
 - `component`: the component to run once all necessary arguments have been collected
 
-### scheduling.node.inode
+### scheduling.node.i_node
 
 The interface node [INode](node/inode.py) is a superclass used as an interface.
 It contains four functions that must be implemented by any subclass.
@@ -146,7 +146,7 @@ The base component [BaseComponent](component/base_component.py) contains the bas
 any component should have.
 Example components can be found in [component/example_components](component/example_components).
 
-### scheduling.component.component_interface
+### scheduling.component.i_component
 
 The component interface [component_interface.py](component/component_interface.py) 
 replicates an interface in Python.
@@ -175,7 +175,7 @@ containing all necessary information otherwise.
 ### Output component
 
 The output component [output_component.py](component/example_components/output_component.py) 
-or [intermediary_output_component.py](component/example_components/intermedairy_output_component.py)
+or [intermediary_output_component.py](component/example_components/intermediary_output_component.py)
 has no extra restrictions.
 The only thing that needs to be mentioned is that any output component is responsible for
 sending output to objects outside of the scheduler flow.

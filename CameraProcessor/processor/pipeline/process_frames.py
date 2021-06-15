@@ -13,7 +13,7 @@ import cv2
 import processor.utils.text as text
 import processor.utils.display as display
 
-from processor.pipeline.framebuffer import FrameBuffer
+from processor.pipeline.frame_buffer import FrameBuffer
 
 from processor.pipeline.reidentification.reid_data import ReidData
 
@@ -59,7 +59,7 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         # Get detections from running detection stage.
         detected_boxes = detector.detect(frame_obj)
 
-        # Get objects tracked in current frame from tracking stage.
+        # Get objects tracked in the current frame from tracking stage.
         tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
 
         # Get objects where re-id is performed on the tracked objects.
@@ -159,7 +159,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
         # Update command.
         elif isinstance(track_elem, UpdateCommand):
-            __handle_update_command(track_elem, re_id_data)
+            __handle_update_command(track_elem, re_identifier, re_id_data)
 
 
 def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re_id_data):
@@ -177,16 +177,19 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
     feature_map = None
     if isinstance(track_elem, StartCommandSimple):
         # Extract features from cutout.
-        feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
+        stored_frame = framebuffer.get_frame(track_elem.frameId)
+        stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
+        feature_map = re_identifier.extract_features(stored_frame, stored_box)
     elif isinstance(track_elem, StartCommandExtended):
         # Extract features from cutout.
-        feature_map = re_identifier.extract_features_from_cutout(track_elem.cutout)
-        # TODO: add feature_map comparison logic here # pylint: disable=fixme.
+        stored_frame = framebuffer.get_frame(track_elem.frameId)
+        stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
+        feature_map = re_identifier.extract_features(stored_frame, stored_box)
     elif isinstance(track_elem, StartCommandSearch):
         try:
             # Look for the box in the buffer.
-            stored_frame = framebuffer.get_frame(track_elem.frame_id)
-            stored_box = framebuffer.get_box(track_elem.frame_id, track_elem.box_id)
+            stored_frame = framebuffer.get_frame(track_elem.frameId)
+            stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
         except IndexError as index_error:
             # Frame or box not found in the buffer, log the error.
             error = index_error
@@ -197,14 +200,14 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
 
     # If successfully extracted, send the feature_map to the orchestrator.
     if feature_map is not None:
-        send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.object_id)
+        send_feature_map_to_orchestrator(ws_client, feature_map, track_elem.objectId)
 
         # Extract the features from this bounding box and store them in the data.
-        re_id_data.add_query_feature(track_elem.object_id, feature_map)
+        re_id_data.add_query_feature(track_elem.objectId, feature_map)
 
         # Also store the map of the first box_id to the object_id, if we have a box ID.
-        if track_elem.box_id is not None:
-            re_id_data.add_query_box(track_elem.box_id, track_elem.object_id)
+        if track_elem.boxId is not None:
+            re_id_data.add_query_box(track_elem.boxId, track_elem.objectId)
     # If we have an error, log it and send it to orchestrator.
     elif error is not None:
         send_error_to_orchestrator(ws_client, error)
@@ -222,15 +225,19 @@ def __handle_stop_command(track_elem, re_id_data):
     re_id_data.remove_query(track_elem.object_id)
 
 
-def __handle_update_command(track_elem, re_id_data):
+def __handle_update_command(track_elem, re_identifier, re_id_data):
     """Handles logic for the Update Command.
 
     Args:
         track_elem (UpdateCommand): The update command the function processes.
+        re_identifier (IReIdentifier): re-identifier extracting features and comparing them
         re_id_data (ReidData): Object containing data necessary for re-identification.
     """
-    logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
-    re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
+
+    # Check if the size of the feature map corresponds with the current re-id.
+    if re_identifier.feature_map_size == len(track_elem.feature_map):
+        logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
+        re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
 
 
 # pylint: disable=unused-argument
@@ -255,14 +262,14 @@ def send_error_to_orchestrator(ws_client, error):
 
     Args:
           ws_client (WebsocketClient):  Websocket object that contains the connection.
-          error (BaseException): The error
+          error (BaseException): The error.
     """
     client_message = text.error_to_json(error)
     ws_client.write_message(client_message)
 
 
 def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):
-    """Sends the feature map to the orchestrator using a Websocket client.
+    """Sends the feature map to the orchestrator using a WebSocket client.
 
     Args:
         ws_client (WebsocketClient): Websocket object that contains the connection.
@@ -276,7 +283,7 @@ def send_feature_map_to_orchestrator(ws_client, feature_map, object_id):
 
 # pylint: disable=unused-argument.
 def opencv_display(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes):
-    """Displays frame in tiled mode.
+    """Displays frame in the tiled mode.
 
     Args:
         frame_obj (FrameObj): Frame object on which drawing takes place.

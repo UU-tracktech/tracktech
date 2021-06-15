@@ -1,4 +1,4 @@
-"""Contains StartCommand class which holds information about which object should be tracked.
+"""Contains StartCommand class, which holds information about which object should be tracked.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -14,7 +14,6 @@ class StartCommand(dict):
     """
     def __init__(self, *args, **kwargs):
         # Pylint is freaking out about *args for some reason.
-        # TODO: fix bug: pylint throws unknown-argument-in-docstring error about *args #pylint: disable=fixme.
         # pylint: disable=unknown-argument-in-docstring
         """Checks if we have an object id, then calls dict init.
 

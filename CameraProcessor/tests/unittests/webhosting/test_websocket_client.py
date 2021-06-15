@@ -63,7 +63,7 @@ class TestWebsocketClient(WebsocketCoroutines):
     @tornado.testing.gen_test(timeout=10)
     def test_connect_with_identifier(self):
         """Test whether websocket is able to connect with an identifier and checks properties."""
-        # Connect with identifier.
+        # Connect with the identifier.
         identifier = 'mock_id'
         dummy_websocket = yield self.dummy_ws_connect("/", identifier)
 
@@ -175,7 +175,7 @@ class TestWebsocketClient(WebsocketCoroutines):
         simple = {
             "type": "start",
             "objectId": 1,
-            "cutout": 1,
+            "image": 1,
         }
         simple_msg = dummy_websocket.generate_tracking_message(simple)
         assert isinstance(simple_msg, StartCommandSimple)
@@ -186,7 +186,7 @@ class TestWebsocketClient(WebsocketCoroutines):
         extended = {
             "type": "start",
             "objectId": 1,
-            "cutout": 1,
+            "image": 1,
             "frameId": 1,
             "boxId": 1
         }

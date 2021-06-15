@@ -21,5 +21,8 @@ seaborn
 # SORT tracking
 -r processor/pipeline/tracking/sort/requirements.txt
 
+# SORT_OH tracking
+-r processor/pipeline/tracking/sort_oh/requirements.txt
+
 # ReID
 -r processor/pipeline/reidentification/torchreid/requirements.txt

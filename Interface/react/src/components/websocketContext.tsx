@@ -7,10 +7,12 @@ Utrecht University within the Software Project course.
  */
 
 import React, { ReactNode } from 'react'
+import { useKeycloak } from '@react-keycloak/web'
 
 import {
   OrchestratorMessage,
-  SetUsesImagesMessage
+  SetUsesImagesMessage,
+  AuthenticateOrchestratorMessage
 } from '../classes/orchestratorMessage'
 import {
   Box,
@@ -38,7 +40,6 @@ export type websocketArgs = {
   ) => number
   removeListener: (listener: number) => void
   connectionState: connectionState
-  socketUrl: string
   objects: NewObjectClientMessage[]
 }
 
@@ -49,7 +50,6 @@ export const websocketContext = React.createContext<websocketArgs>({
   addListener: (_: string, _2: (boxes: Box[], frameId: number) => void) => 0,
   removeListener: (listener: number) => alert(`removing ${listener}`),
   connectionState: 'NONE',
-  socketUrl: 'NO URL',
   objects: []
 })
 
@@ -70,31 +70,29 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     'NONE'
   )
 
-  /** State keeping track of where the socket is connected to */
-  const [socketUrl, setSocketUrl] = React.useState(
-    'wss://tracktech.ml:50011/client'
-  )
-
   /** State keeping track of objects that were added */
   const [objects, setObjects] = React.useState<NewObjectClientMessage[]>([])
+
+  //
+  const { keycloak } = useKeycloak()
 
   const socketRef = React.useRef<WebSocket>()
   const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
-  React.useEffect(() => setSocket(socketUrl), [])
-
   /** Creates a socket which tries to connect to the given url */
   function setSocket(url: string) {
-    var socket = new WebSocket(url)
-    setConnectionState('CONNECTING')
-    socket.onopen = (ev: Event) => onOpen(ev)
-    socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev)
-    socket.onclose = (ev: CloseEvent) => onClose(ev)
-    socket.onerror = (ev: Event) => onError(ev)
-    setSocketUrl(url)
+    try {
+      var socket = new WebSocket(url)
+      setConnectionState('CONNECTING')
+      socket.onopen = (ev: Event) => onOpen(ev)
+      socket.onmessage = (ev: MessageEvent<any>) => onMessage(ev)
+      socket.onclose = (ev: CloseEvent) => onClose(ev)
+      socket.onerror = (ev: Event) => onError(ev)
 
-    socketRef.current = socket
+      socketRef.current = socket
+      // Catch fail due to possible incorrect url
+    } catch {}
   }
 
   /** Callback function for when the socket has connected sucessfully */
@@ -103,6 +101,9 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     setConnectionState('OPEN')
 
     try {
+      // Authenticate the client
+      if (keycloak.token)
+        send(new AuthenticateOrchestratorMessage(keycloak.token))
       // Let the orchestrator know that this client should receive images of new tracking objects
       send(new SetUsesImagesMessage(true))
     } catch {
@@ -225,7 +226,6 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
         ) => addListener(id, callback),
         removeListener: (listener: number) => removeListener(listener),
         connectionState: connectionState,
-        socketUrl: socketUrl,
         objects: objects
       }}
     >

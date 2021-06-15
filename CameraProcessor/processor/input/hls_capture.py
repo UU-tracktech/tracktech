@@ -11,7 +11,7 @@ import kthread
 import ffmpeg
 import cv2
 
-from processor.input.icapture import ICapture
+from processor.input.i_capture import ICapture
 from processor.data_object.frame_obj import FrameObj
 
 
@@ -24,7 +24,7 @@ class HlsCapture(ICapture):
 
     Attributes:
         hls_url (str): Url of hls stream.
-        fps (int): FPS of the stream
+        fps (int): FPS of the stream.
 
         __start_time_stamp (float): Start time of capture object.
         __frame_time_stamp (float): Time stamp of current frame.
@@ -47,7 +47,7 @@ class HlsCapture(ICapture):
         __reconnect_thread (Thread): Contains thread that attempts to reconnect if connection was closed unexpectedly
 
         __reconnecting (bool): Boolean indicating reconnect procedure must be started
-        __drop_reconnect (bool): Boolean indicating the reconnect thread can be closed
+        __drop_reconnect (bool): Boolean indicating the reconnect-thread can be closed
         __found_stream (bool): Boolean indicating whether stream was found.
     """
     def __init__(self, hls_url='http://81.83.10.9:8001/mjpg/video.mjpg', retries=10):

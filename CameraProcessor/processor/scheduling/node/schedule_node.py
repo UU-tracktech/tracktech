@@ -5,7 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import numpy as np
-from processor.scheduling.node.inode import INode
+from processor.scheduling.node.i_node import INode
 
 
 class ScheduleNode(INode):
@@ -20,7 +20,7 @@ class ScheduleNode(INode):
     """
 
     def __init__(self, input_count, out_nodes, component, global_map):
-        """Inits ScheduleNode with information about the next layer and the component to execute.
+        """Inits ScheduleNode with information about the next layer, and the component to execute.
 
         Args:
             input_count (int): total amount of arguments necessary to execute the component.

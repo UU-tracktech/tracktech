@@ -16,14 +16,14 @@ from processor.webhosting.stream_handler import StreamHandler
 class TestStreamHandler(AsyncHTTPTestCase):
     """Tests the stream handler using an asyncHTTPTestCase superclass.
 
-    Used async since we deal with a tornado.gen.coroutine which yields to give
+    Used async since we deal with a tornado.gen.coroutine, which yields to give
     preemptive returns so the get request.
     """
     def get_app(self):
         """Creates an app only containing the stream handler.
 
         Returns:
-            (tornado.web.Application): The streamhandler used to push to localhost
+            (tornado.web.Application): The stream_handler used to push to localhost.
         """
         configs = get_test_configs()
 

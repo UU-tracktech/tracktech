@@ -8,7 +8,7 @@ import asyncio
 import json
 import pytest
 
-from super_websocket_client import create_dummy_client
+from websocket_client_dummy import create_dummy_client
 from processor.webhosting.start_command import StartCommand
 from processor.webhosting.stop_command import StopCommand
 from processor.webhosting.update_command import UpdateCommand
@@ -37,7 +37,7 @@ class TestReceivingFromOrchestrator:
 
     @pytest.fixture(params=[(1, True), (10, True), (999, False)], ids=["1, True", "10, True", "999, False"])
     def amount(self, request):
-        """Fixture to generate message amounts and whether or not invalid messages.
+        """Fixture to generate message amounts and whether invalid messages.
 
         Args:
             request (int, bool): Number of messages to send and whether it should be valid data
@@ -47,7 +47,7 @@ class TestReceivingFromOrchestrator:
     @pytest.mark.asyncio
     @pytest.mark.timeout(60)
     async def test_retrieve_start_stop_update(self):
-        """Mock interface client sends a start, stop and update command to the processor
+        """Mock interface client sends a start, stop, and update command to the processor
 
         Check if camera processor handles the start commands properly.
         Then send a stop command. Check if camera processor also handles this stop.
@@ -100,7 +100,7 @@ class TestReceivingFromOrchestrator:
         """A coroutine used for waiting until the message queue is empty.
 
         Args:
-            ws_client (WebsocketClient): Websocket to check whether the queue is empty.
+            ws_client (WebsocketClient): WebSocket to check whether the queue is empty.
         """
         while True:
             if not ws_client.write_queue:
@@ -111,7 +111,7 @@ class TestReceivingFromOrchestrator:
         """Coroutine to wait until the connection is closed.
 
         Args:
-            ws_client (WebsocketClient): Websocket to check whether the queue is empty.
+            ws_client (WebsocketClient): WebSocket to check whether the queue is empty.
         """
         while ws_client.connection is not None:
             pass

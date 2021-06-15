@@ -10,10 +10,10 @@ from os import path
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from processor.dataloaders.idataloader import IDataloader
+from processor.dataloaders.i_dataloader import IDataloader
 
 
-class MOTDataloader(IDataloader):
+class MotDataloader(IDataloader):
     """MOT Dataloader, formats MOT Data."""
     def __init__(self, configs, path_location):
         """Initializes the MOTDataloader.
@@ -101,7 +101,7 @@ class MOTDataloader(IDataloader):
         """Get the name of an image.
 
         Args:
-            image_id (int): Id of the image.
+            image_id (int): ID of the image.
 
         Returns:
             name (string): Properly formatted image id.
@@ -130,7 +130,7 @@ class MOTDataloader(IDataloader):
         """Parse line from file given a delimiter.
 
         Args:
-            line (str): line in file.
+            line (str): line in a file.
             delimiter (str): delimiter values in line are separated with.
 
         Returns:

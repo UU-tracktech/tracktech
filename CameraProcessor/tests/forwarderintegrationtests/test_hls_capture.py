@@ -12,7 +12,7 @@ from processor.input.hls_capture import HlsCapture
 
 
 # pylint: disable=attribute-defined-outside-init
-class TestVideoForwarder:
+class TestHlsCapture:
     """Tests the video forwarder in combination with the camera processor.
 
     Checks basic functionality of the hls capture
@@ -67,7 +67,7 @@ class TestVideoForwarder:
 
     @pytest.mark.timeout(60)
     def test_format_data(self):
-        """Tests if the meta data that we get from ffprobe function, contains the same url as our predefined url."""
+        """Tests if the metadata that we get from ffprobe function, contains the same url as our predefined URL."""
         # Probes meta data from hls stream.
         meta_data = ffmpeg.probe(self.hls_url)
 

@@ -9,12 +9,12 @@ import pytest
 
 from tests.unittests.utils.fake_detector import FakeDetector
 from tests.unittests.utils.fake_tracker import FakeTracker
-from tests.unittests.utils.fake_reidentifier import FakeReIdentifier
+from tests.unittests.utils.fake_re_identifier import FakeReIdentifier
 from tests.unittests.utils.fake_websocket import FakeWebsocket
 from processor.pipeline.prepare_pipeline import prepare_objects
 from processor.pipeline.process_frames import process_stream
-from processor.pipeline.detection.yolov5_runner import Yolov5Detector
-from processor.pipeline.detection.yolor_runner import YolorDetector
+from processor.pipeline.detection.yolov5_detector import Yolov5Detector
+from processor.pipeline.detection.yolor_detector import YolorDetector
 from processor.input.video_capture import VideoCapture
 from processor.pipeline.process_frames import send_boxes_to_orchestrator
 
@@ -51,7 +51,7 @@ class TestProcessFrames:
             configs (ConfigParser): Configurations of the test.
 
         Returns:
-            YolorDetector: Detection object of yolor.
+            YolorDetector: Detection object of YOLOR.
         """
         return YolorDetector(configs['Yolor'], configs['Filter'])
 
@@ -88,7 +88,7 @@ class TestProcessFrames:
         """Tests process_stream function with YOLOR.
 
         Note:
-            Not parametrizing Yolor for the same reason as previous function.
+            Not parametrizing YOLOR for the same reason as previous function.
 
         Args:
             configs (ConfigParser): Configuration parser containing the configurations.
@@ -129,7 +129,7 @@ class TestProcessFrames:
             detector (IDetector): Detection class.
             tracker (ITracker): Tracking class.
         """
-        # Create fake websocket.
+        # Create fake WebSocket.
         websocket_client = FakeWebsocket()
 
         # Process the stream.
