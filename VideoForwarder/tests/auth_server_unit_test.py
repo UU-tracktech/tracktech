@@ -5,46 +5,19 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-from os import environ
-from tornado.testing import AsyncHTTPTestCase
-from tornado.web import Application
+from tornado.testing import AsyncHTTPSTestCase
 from tornado import testing
 import jwt
 
-from src.camera_handler import CameraHandler
-from src.loading import create_camera,\
-    create_stream_options,\
-    create_authenticator,\
-    get_wait_delay,\
-    get_timeout_delay
+from tests.auth_setup import auth_setup
 
 
-class AuthServerUnitTest(AsyncHTTPTestCase):
+class AuthServerUnitTest(AsyncHTTPSTestCase):
     """Test the server when using auth."""
 
     def get_app(self):
         """Creates the application to test."""
-        environ["CAMERA_URL"] = "rtmp://localhost/stream1"
-        environ["CAMERA_AUDIO"] = "false"
-
-        environ["STREAM_LOW"] = 'true'
-        environ["STREAM_HIGH"] = 'true'
-
-        environ["PUBLIC_KEY"] = "/app/tests/files/public_key.pem"
-        environ["AUDIENCE"] = "aud"
-        environ["CLIENT_ROLE"] = "role"
-
-        return Application(
-            [
-                (r'/(.*)', CameraHandler, {'path': '/app/streams3'})
-            ],
-            camera=create_camera(),
-            stream_options=create_stream_options(),
-            authenticator=create_authenticator(),
-            remove_delay=1.0,
-            timeout_delay=get_timeout_delay(),
-            wait_delay=get_wait_delay()
-        )
+        return auth_setup()
 
     def my_fetch(self, url, **kwargs):
         """Do a custom fetch, as the default one crashes.
@@ -55,20 +28,20 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False, **kwargs)
 
-    @testing.gen_test(timeout=20)
+    @testing.gen_test(timeout=10)
     def test_no_auth(self):
-        """Check if a 200 is returned when no authentication is provided when it is not required."""
+        """Check if a 403 is returned when no authentication is provided"""
 
-        # Retrieve the steam file.
+        # Retrieve the stream file.
         response = yield self.my_fetch('/stream.m3u8')
 
-        assert response.code == 200
+        assert response.code == 403
 
-    @testing.gen_test(timeout=20)
+    @testing.gen_test(timeout=10)
     def test_bad_auth(self):
         """Check if a 403 is returned when improper authentication is provided when required."""
 
-        # Retrieve the steam file.
+        # Retrieve the stream file.
         response = yield self.my_fetch(
             '/stream.m3u8',
             **{'headers': {'Authorization': 'Bearer RealFakeToken'}}
@@ -76,7 +49,31 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
 
         assert response.code == 403
 
-    @testing.gen_test(timeout=20)
+    @testing.gen_test(timeout=10)
+    def test_unimplemented_auth(self):
+        """Check if a 403 is returned when improper authentication is provided when required."""
+
+        # Retrieve the stream file.
+        response = yield self.my_fetch(
+            '/stream.m3u8',
+            **{'headers': {'Authorization': 'someprotocol RealFakeToken'}}
+        )
+
+        assert response.code == 403
+
+    @testing.gen_test(timeout=10)
+    def test_missing_auth(self):
+        """Check if a 403 is returned when a single value is provided"""
+
+        # Retrieve the stream file.
+        response = yield self.my_fetch(
+            '/stream.m3u8',
+            **{'headers': {'Authorization': 'nospaceinhere'}}
+        )
+
+        assert response.code == 403
+
+    @testing.gen_test(timeout=10)
     def test_auth(self):
         """Test if a 200 is returned with a completely valid token."""
         with open('/app/tests/files/private_key.pem', 'r') as file:
@@ -103,7 +100,12 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
 
         assert response.code == 200
 
-    @testing.gen_test(timeout=20)
+        #alternatively, as query param
+        response2 = yield self.my_fetch(f'/stream.m3u8?Bearer={token}')
+
+        assert response2.code == 200
+
+    @testing.gen_test(timeout=10)
     def test_no_permission(self):
         """Test if a 401 is returned with a valid token but not the right role."""
         with open('/app/tests/files/private_key.pem', 'r') as file:

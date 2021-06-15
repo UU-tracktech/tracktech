@@ -19,7 +19,7 @@ class SlowServerUnitTest(AsyncHTTPTestCase):
 
     def get_app(self):
         """Creates the application to test."""
-        environ["CAMERA_URL"] = "rtmp://localhost/stream3"
+        environ["CAMERA_URL"] = "rtmp://localhost:1933/stream"
         environ["CAMERA_AUDIO"] = "false"
 
         environ["STREAM_LOW"] = 'false'
@@ -27,7 +27,7 @@ class SlowServerUnitTest(AsyncHTTPTestCase):
 
         return Application(
             [
-                (r'/(.*)', CameraHandler, {'path': '/app/streams2'})
+                (r'/(.*)', CameraHandler, {'path': '/app/streams3'})
             ],
             camera=create_camera(),
             stream_options=create_stream_options(),
@@ -44,7 +44,7 @@ class SlowServerUnitTest(AsyncHTTPTestCase):
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False)
 
-    @testing.gen_test(timeout=20)
+    @testing.gen_test(timeout=10)
     def test_timeout(self):
         """Check not found is returned when the stream cannot be started within the timeout."""
 
