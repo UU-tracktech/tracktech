@@ -79,17 +79,3 @@ class TorchReIdentifier(PytorchReIdentifier):
         feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
-
-    def extract_features_from_cutout(self, cutout):
-        """Extracts features from a cutout.
-
-        Args:
-            cutout (np.ndarray): the cutout containing the object we want to extract features from
-
-        Returns:
-            [float]: Feature vector of the cutout
-        """
-        # Resize the cutout.
-        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
-
-        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
