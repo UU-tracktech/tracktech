@@ -8,9 +8,9 @@ Utrecht University within the Software Project course.
 import sys
 import logging
 import asyncio
+import base64
 import cv2
 import numpy as np
-import base64
 
 import processor.utils.text as text
 import processor.utils.display as display
