@@ -55,7 +55,7 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False, **kwargs)
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_no_auth(self):
         """Check if a 200 is returned when no authentication is provided when it is not required."""
 
@@ -64,7 +64,7 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
 
         assert response.code == 200
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_bad_auth(self):
         """Check if a 403 is returned when improper authentication is provided when required."""
 
@@ -103,7 +103,7 @@ class AuthServerUnitTest(AsyncHTTPTestCase):
 
         assert response.code == 200
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_no_permission(self):
         """Test if a 401 is returned with a valid token but not the right role."""
         with open('/app/tests/files/private_key.pem', 'r') as file:

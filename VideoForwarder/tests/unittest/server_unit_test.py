@@ -45,7 +45,7 @@ class ServerUnitTest(AsyncHTTPTestCase):
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False)
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_headers(self):
         """Tests hls stream header on certain properties."""
 
@@ -53,7 +53,7 @@ class ServerUnitTest(AsyncHTTPTestCase):
         assert response.headers["Cache-control"] == "no-store"
         assert response.headers["Access-Control-Allow-Origin"] == "*"
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_valid_http_request(self):
         """Check if a stream can be requested."""
 
@@ -63,7 +63,7 @@ class ServerUnitTest(AsyncHTTPTestCase):
         # Check if the response is okay.
         assert response.code == 200
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_invalid_http_request(self):
         """Checks connection between forwarder and mock client with invalid URL.
 
@@ -76,7 +76,7 @@ class ServerUnitTest(AsyncHTTPTestCase):
         # Check if the request fails.
         assert response.code == 404
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_generate_multiple_video_outputs(self):
         """Tests whether the stream generates several headers."""
         # Create a connection.

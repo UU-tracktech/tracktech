@@ -44,7 +44,7 @@ class SlowServerUnitTest(AsyncHTTPTestCase):
         """
         return self.http_client.fetch(self.get_url(url), raise_error=False)
 
-    @testing.gen_test(timeout=10)
+    @testing.gen_test(timeout=20)
     def test_timeout(self):
         """Check not found is returned when the stream cannot be started within the timeout."""
 
