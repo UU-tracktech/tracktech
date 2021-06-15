@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
+from data_object.bounding_boxes import BoundingBoxes
 from tests.conftest import get_test_configs
 from processor.dataloaders.i_dataloader import IDataloader
 
@@ -44,18 +45,17 @@ class TestIDataloader:
         with pytest.raises(NotImplementedError):
             self.dataloader.parse_boxes([(None, None, None, None, None, None, None, None, None)])
 
-    def test_append_box(self, bboxes):
+    def test_append_box(self, bboxes, bounding_boxes_object_list):
         """Tests the append_box function.
 
         Args:
             bboxes (BoundingBoxes): BoundingBoxes object.
         """
         image_id = bboxes.image_id
-        expected_box_list = bboxes.bounding_boxes
-        bounding_box_list = bboxes.bounding_boxes[:2]
-        bbox = bboxes.bounding_boxes[2]
-
-        returned_box_list = self.dataloader.append_box(bounding_box_list, image_id, bbox.identifier, bbox.rectangle.x1,
+        bbox = bboxes.bounding_boxes[0]
+        fake_bboxes = BoundingBoxes([bbox], image_id)
+        expected_box_list = bounding_boxes_object_list.append(fake_bboxes)
+        returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, image_id, bbox.identifier, bbox.rectangle.x1,
                                                        bbox.rectangle.y1, bbox.rectangle.x2, bbox.rectangle.y2,
                                                        bbox.certainty, bbox.classification, bbox.object_id)
         assert expected_box_list == returned_box_list

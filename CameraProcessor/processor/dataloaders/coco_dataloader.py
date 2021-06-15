@@ -5,7 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import os
-from os import path
+from pathlib import Path
 
 import requests
 from pycocotools.coco import COCO
@@ -26,6 +26,9 @@ class CocoDataloader(IDataloader):
         dataloader_config = configs['COCO']
         self.file_path = dataloader_config['annotations_path']
         self.image_path = dataloader_config['image_path']
+
+        # Create image path if it does not yet exist.
+        Path(self.image_path).mkdir(parents=True, exist_ok=True)
         self.coco = COCO(self.file_path)
 
     def download_coco_image(self, image_id):
@@ -37,6 +40,7 @@ class CocoDataloader(IDataloader):
         image = self.coco.loadImgs([image_id])[0]
 
         image_data = requests.get(image['coco_url']).content
+
         with open(os.path.join(self.image_path, image['file_name']), 'wb') as handler:
             handler.write(image_data)
 
@@ -55,7 +59,7 @@ class CocoDataloader(IDataloader):
 
         for image in images:
             image_data = requests.get(image['coco_url']).content
-            with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
+            with open(os.path.join(self.image_path, image['file_name']), 'wb') as handler:
                 handler.write(image_data)
 
     def get_image_dimensions(self, image_id):
@@ -163,5 +167,5 @@ class CocoDataloader(IDataloader):
             str: Path of the image.
         """
         image_name = self.__get_image_name(image_id)
-        this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
+        this_image_path = os.path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path

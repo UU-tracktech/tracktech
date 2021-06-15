@@ -40,9 +40,27 @@ def bboxes():
         (BoundingBoxes): BoundingBoxes object.
     """
     box1 = BoundingBox(1, Rectangle(0, 0.5, 0.75, 1), "person", 0.5, object_id=5)
-    box2 = BoundingBox(1, Rectangle(0.1, 0.25, 0.5, 0.9), "car", 0.75, object_id=15)
+    box2 = BoundingBox(4, Rectangle(0.1, 0.25, 0.5, 0.9), "car", 0.75, object_id=15)
     box3 = BoundingBox(2, Rectangle(0.2, 0.3, 0.6, 0.8), "person", 0.8, object_id=10)
     return BoundingBoxes([box1, box2, box3], '12')
+
+@pytest.fixture
+def bounding_boxes_object_list():
+    """Fixture for an example BoundingBoxes list.
+
+    Returns:
+        ([BoundingBoxes]): list of BoundingBoxes objects.
+    """
+    box1 = BoundingBox(6, Rectangle(0, 0.6, 0.45, 1), "person", 0.5, object_id=6)
+    box2 = BoundingBox(78, Rectangle(0.1, 0.23, 0.5, 0.4), "car", 0.75, object_id=18)
+    box3 = BoundingBox(678, Rectangle(0.2, 0.6, 0.7, 0.8), "person", 0.8, object_id=19)
+    box4 = BoundingBox(979, Rectangle(0.22, 0.34, 0.62, 0.85), "horse", 0.8, object_id=100)
+
+    bounding_boxes_object = BoundingBoxes([box1], '12')
+    bounding_boxes_object2 = BoundingBoxes([box2, box3, box4], '13')
+
+    return [bounding_boxes_object, bounding_boxes_object2]
+
 
 
 @pytest.fixture

@@ -28,13 +28,16 @@ class TestCocoDataloader:
 
     def test_download_coco_image(self):
         """Download a coco image from the dataset and verify it is loaded."""
+
         # Expected image path.
-        image_name = self.dataloader.coco.loadImgs([100])['0']['file_name']
+        image_name = self.dataloader.coco.loadImgs([463730])[0]['file_name']
         expected_image_path = os.path.join(self.dataloader.image_path, image_name)
 
+        if os.path.exists(expected_image_path):
+            os.remove(expected_image_path)
+
         # Assert that image exists AFTER download.
-        assert not os.path.exists(expected_image_path)
-        self.dataloader.download_coco_image(100)
+        self.dataloader.download_coco_image(463730)
         assert os.path.exists(expected_image_path)
 
     def test_download_coco_images(self):
@@ -50,18 +53,27 @@ class TestCocoDataloader:
 
     def test_get_image_dimensions(self):
         """Tests the image dimensions."""
-        pass
+        image_json = self.dataloader.coco.loadImgs([463730])[0]
+        expected_width, expected_height = int(image_json['width']), int(image_json['height'])
+
+        actual_width, actual_height = self.dataloader.get_image_dimensions(463730)
+        assert expected_width == actual_width
+        assert expected_height == actual_height
 
     def test_parse_boxes(self):
         """Tests the parsing of boxes."""
-        pass
+        image_json = self.dataloader.coco.loadImgs([463730])[0]
+        boxes = self.dataloader.parse_boxes([image_json])
+        print(boxes)
 
     def test_parse_line(self):
+
         pass
 
     def test_get_annotations(self):
         """Tests the get annotations functionality."""
         annotations = self.dataloader.get_annotations()
+        print(annotations)
         assert True
 
 
