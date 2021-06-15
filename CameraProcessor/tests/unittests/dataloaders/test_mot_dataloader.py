@@ -8,7 +8,7 @@ import os
 import pytest
 
 
-from tests.conftest import get_test_configs, root_path
+from tests.conftest import get_test_configs
 from processor.dataloaders.mot_dataloader import MotDataloader
 
 
@@ -35,9 +35,9 @@ class TestMotDataloader:
         assert self.skipped_lines == []
         assert self.delimiter == ' '
 
-    def test_parse_file(self):
-        """Tests parsing of file."""
-        pass
+    def test_get_annotations(self):
+        """Tests the get annotations functionality."""
+        assert self.dataloader.get_annotations()[0] == '1,1,17,150,77,191,1,1,1'
 
     def test_get_image_dimensions(self):
         """Tests the image dimensions."""
@@ -53,13 +53,18 @@ class TestMotDataloader:
         repeated_dimensions = self.dataloader.get_image_dimensions(2)
         assert repeated_dimensions == dimensions
 
-    def test_parse_boxes(self):
-        """Tests the parsing of boxes."""
-        pass
-
-    def test_get_annotations(self):
-        """Tests the get annotations functionality."""
-        pass
+    def test_parse_line(self):
+        """Tests the parsing of line."""
+        json_parse = [(1,
+                       1,
+                       0.025,
+                       0.3104166666666667,
+                       0.1453125,
+                       0.7083333333333334,
+                       1,
+                       None,
+                       None)]
+        assert self.dataloader.parse_line(self.dataloader.get_annotations()[0]) == json_parse
 
 
 if __name__ == '__main__':

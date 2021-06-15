@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
-from data_object.bounding_boxes import BoundingBoxes
+from processor.data_object.bounding_boxes import BoundingBoxes
 from tests.conftest import get_test_configs
 from processor.dataloaders.i_dataloader import IDataloader
 
@@ -54,7 +54,7 @@ class TestIDataloader:
         image_id = bboxes.image_id
         bbox = bboxes.bounding_boxes[0]
         fake_bboxes = BoundingBoxes([bbox], image_id)
-        expected_box_list = bounding_boxes_object_list.append(fake_bboxes)
+        expected_box_list = bounding_boxes_object_list + [fake_bboxes]
         returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, image_id, bbox.identifier, bbox.rectangle.x1,
                                                        bbox.rectangle.y1, bbox.rectangle.x2, bbox.rectangle.y2,
                                                        bbox.certainty, bbox.classification, bbox.object_id)
