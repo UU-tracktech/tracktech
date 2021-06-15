@@ -4,13 +4,8 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import copy
-
-from scipy.spatial.distance import euclidean, cosine
 
 from processor.scheduling.component.i_component import IComponent
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
 
 
 class IReIdentifier(IComponent):
