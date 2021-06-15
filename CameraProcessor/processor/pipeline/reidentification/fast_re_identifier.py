@@ -10,11 +10,11 @@ import gdown
 
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
 from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
-from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
+from processor.pipeline.reidentification.pytorch_re_identifier import PytorchReIdentifier
 import processor.utils.features as UtilsFeatures
 
 
-class FastReIdentifier(IReIdentifier):
+class FastReIdentifier(PytorchReIdentifier):
     """Re-id class that uses fast-reid to extract and compare features.
 
     Attributes:

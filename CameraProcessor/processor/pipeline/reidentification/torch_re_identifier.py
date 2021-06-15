@@ -8,11 +8,11 @@ import os
 import gdown
 
 import processor.utils.features as UtilsFeatures
-from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
+from processor.pipeline.reidentification.pytorch_re_identifier import PytorchReIdentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 
 
-class TorchReIdentifier(IReIdentifier):
+class TorchReIdentifier(PytorchReIdentifier):
     """Re-id class that uses torch-reid to extract and compare features.
 
     Attributes:
