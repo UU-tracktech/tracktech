@@ -51,7 +51,7 @@ class TestProcessFrames:
             configs (ConfigParser): Configurations of the test.
 
         Returns:
-            YolorDetector: Detection object of yolor.
+            YolorDetector: Detection object of YOLOR.
         """
         return YolorDetector(configs['Yolor'], configs['Filter'])
 
@@ -88,7 +88,7 @@ class TestProcessFrames:
         """Tests process_stream function with YOLOR.
 
         Note:
-            Not parametrizing Yolor for the same reason as previous function.
+            Not parametrizing YOLOR for the same reason as previous function.
 
         Args:
             configs (ConfigParser): Configuration parser containing the configurations.
@@ -129,7 +129,7 @@ class TestProcessFrames:
             detector (IDetector): Detection class.
             tracker (ITracker): Tracking class.
         """
-        # Create fake websocket.
+        # Create fake WebSocket.
         websocket_client = FakeWebsocket()
 
         # Process the stream.

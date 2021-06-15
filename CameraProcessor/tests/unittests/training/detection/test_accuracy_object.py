@@ -1,4 +1,4 @@
-"""Test accuracy object to the extend that it is possible.
+"""Test accuracy object to the extent that it is possible.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

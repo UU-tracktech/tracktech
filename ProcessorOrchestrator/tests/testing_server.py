@@ -54,7 +54,7 @@ def stop_server(server):
     """Stops the server.
 
     Args:
-        server (HTTPServer): Server the of the test that should be stopped
+        server (HTTPServer): Server the of the test that should be stopped.
     """
 
     server.stop()
@@ -73,7 +73,7 @@ class TestingServer(WebSocketHandler):
         """Sets server.
 
         Args:
-            server (HTTPServer): Server on which the test is ran.
+            server (HTTPServer): Server on which the test is run.
         """
         # Noinspection PyAttributeOutsideInit | In tornado, the init function should be replaced with initialize.
         # pylint: disable=attribute-defined-outside-init

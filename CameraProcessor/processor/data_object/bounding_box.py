@@ -91,7 +91,7 @@ class BoundingBox:
         """Converts the bounding box object to a string.
 
         Returns:
-            str: String representation of an bounding box.
+            str: String representation of a bounding box.
         """
         return f'BoundingBox(type: "{self.__classification}" certainty: {self.__certainty} ' \
                f'identifier: {self.__identifier} id: {self.__object_id} ' \

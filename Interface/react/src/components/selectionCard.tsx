@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 /**
   The selection card component is used in the select list.
-  There is a card for every tracked object, it contains a button to stop tracking
+  There is a card for every tracked object, it contains a button to stop tracking.
 */
 
 import React from 'react'
@@ -35,6 +35,7 @@ export function SelectionCard(props: selectionCardProps) {
       }}
       cover={
         <img
+          data-testid={`image-${props.src}`}
           src={props.src}
           style={{ display: 'block', height: 100, objectFit: 'contain' }}
         />

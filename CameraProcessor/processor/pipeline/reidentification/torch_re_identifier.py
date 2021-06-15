@@ -46,10 +46,20 @@ class TorchReIdentifier(IReIdentifier):
             model_path=weights_path,
             device=config['device'])
 
+        self.__feature_map_size = 512
         super().__init__(config)
 
+    @property
+    def feature_map_size(self):
+        """Feature map size getter.
+
+        Returns:
+            int: size of the feature map.
+        """
+        return self.__feature_map_size
+
     def extract_features(self, frame_obj, bbox):
-        """Extracts features from a single bounding box.
+        """Extract features from a single bounding box.
 
         This is achieved by generating a cutout of the bounding boxes
         and feeding them to the feature extractor of Torchreid.

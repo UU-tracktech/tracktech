@@ -9,7 +9,7 @@ Utrecht University within the Software Project course.
 //Custom functions that the tests can use to set certain values of the mock
 //initialized
 let mockInitialized = false
-/** Set the value returned in the { initialized } by useKeycloak
+/** Set the value returned to the { initialized } by useKeycloak
  * @param {boolean} newMockval The boolean value to return
  */
 export function __SetMockInitialized(newMockval) {
@@ -28,7 +28,7 @@ export function __SetMockAuthenticated(newMockval) {
 //token
 let mockToken = {}
 /**
- * Set the values returned in keycloak.tokenParsed. At least a "name" entry is recommeded
+ * Set the values returned in keycloak.tokenParsed. At least a "name" entry is recommended
  * @param {object} newMockToken The token contents to return
  * @example { name: 'John Doe' }
  */

@@ -107,7 +107,7 @@ def boxes_to_txt(bounding_boxes, shape, frame_nr):
             f'{int(bounding_box.rectangle.y1 * height)},' \
             f'{int((bounding_box.rectangle.x2 - bounding_box.rectangle.x1) * width)},' \
             f'{int((bounding_box.rectangle.y2 - bounding_box.rectangle.y1) * height)},' \
-            f'1,1,{"%.2f" % round(float(bounding_box.certainty), 2)} \n'  # certainty rounded to 2 decimals
+            f'1,1,{"%.2f" % round(float(bounding_box.certainty), 2)} \n'  # certainty rounded to two decimals
 
     return boxes_text_string
 

@@ -1,4 +1,4 @@
-"""Fast reid class.
+"""Fastreid class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -50,7 +50,17 @@ class FastReIdentifier(IReIdentifier):
 
         self.extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
 
+        self.__feature_map_size = 2048
         super().__init__(config)
+
+    @property
+    def feature_map_size(self):
+        """Feature map size getter.
+
+        Returns:
+            int: size of the feature map.
+        """
+        return self.__feature_map_size
 
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.
@@ -70,6 +80,6 @@ class FastReIdentifier(IReIdentifier):
         resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
         # Extract the feature from the cutout and convert it to a normal float array.
-        feature = self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()
+        feature = self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
