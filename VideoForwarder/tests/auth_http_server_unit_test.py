@@ -29,10 +29,9 @@ class AuthHttpServerUnitTest(AsyncHTTPTestCase):
 
     @testing.gen_test(timeout=10)
     def test_no_auth(self):
-        """Check if a 200 is returned when no authentication is provided and not needed (for local only)"""
+        """Check if a 200 is returned when no authentication is provided and not needed (for local only)."""
 
         # Retrieve the stream file.
         response = yield self.my_fetch('/stream.m3u8')
 
         assert response.code == 200
-

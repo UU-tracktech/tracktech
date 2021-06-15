@@ -30,7 +30,7 @@ class AuthServerUnitTest(AsyncHTTPSTestCase):
 
     @testing.gen_test(timeout=10)
     def test_no_auth(self):
-        """Check if a 403 is returned when no authentication is provided"""
+        """Check if a 403 is returned when no authentication is provided."""
 
         # Retrieve the stream file.
         response = yield self.my_fetch('/stream.m3u8')
@@ -63,7 +63,7 @@ class AuthServerUnitTest(AsyncHTTPSTestCase):
 
     @testing.gen_test(timeout=10)
     def test_missing_auth(self):
-        """Check if a 403 is returned when a single value is provided"""
+        """Check if a 403 is returned when a single value is provided."""
 
         # Retrieve the stream file.
         response = yield self.my_fetch(
@@ -100,7 +100,7 @@ class AuthServerUnitTest(AsyncHTTPSTestCase):
 
         assert response.code == 200
 
-        #alternatively, as query param
+        # Alternatively, as query param.
         response2 = yield self.my_fetch(f'/stream.m3u8?Bearer={token}')
 
         assert response2.code == 200
