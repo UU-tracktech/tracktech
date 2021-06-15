@@ -9,9 +9,9 @@ import pytest
 
 from tests.conftest import get_test_configs
 from processor.dataloaders.coco_dataloader import CocoDataloader
-from processor.utils.config_parser import ConfigParser
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestCocoDataloader:
     """Tests the COCO dataloader."""
 
@@ -42,7 +42,7 @@ class TestCocoDataloader:
 
     def test_download_coco_images(self):
         """Download several coco images from the dataset and verify it is downloaded."""
-        # Folder name
+        # The folder name.
         image_dir = self.dataloader.image_path
         nr_images = 5
 
@@ -67,8 +67,8 @@ class TestCocoDataloader:
         print(boxes)
 
     def test_parse_line(self):
-
-        pass
+        """Tests the parse_line function."""
+        assert True
 
     def test_get_annotations(self):
         """Tests the get annotations functionality."""

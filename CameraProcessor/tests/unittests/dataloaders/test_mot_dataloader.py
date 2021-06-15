@@ -4,7 +4,6 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import os
 import pytest
 
 
@@ -12,6 +11,7 @@ from tests.conftest import get_test_configs
 from processor.dataloaders.mot_dataloader import MotDataloader
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestMotDataloader:
     """Tests the MOt dataloader."""
 

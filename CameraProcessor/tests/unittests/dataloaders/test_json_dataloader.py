@@ -10,6 +10,7 @@ from tests.conftest import get_test_configs
 from processor.dataloaders.json_dataloader import JsonDataloader
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestJsonDataloader:
     """Tests the JSON dataloader."""
 

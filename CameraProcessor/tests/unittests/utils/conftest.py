@@ -6,8 +6,6 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.rectangle import Rectangle
 from processor.utils.draw import draw_tracking_boxes, draw_detection_boxes
 
 

@@ -6,11 +6,12 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
-from processor.data_object.bounding_boxes import BoundingBoxes
 from tests.conftest import get_test_configs
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.dataloaders.i_dataloader import IDataloader
 
 
+# pylint: disable=attribute-defined-outside-init
 class TestIDataloader:
     """Tests the dataloader interface.
 
@@ -50,14 +51,16 @@ class TestIDataloader:
 
         Args:
             bboxes (BoundingBoxes): BoundingBoxes object.
+            bounding_boxes_object_list (BoundingBoxes): BoundingBoxes object.
         """
         image_id = bboxes.image_id
         bbox = bboxes.bounding_boxes[0]
         fake_bboxes = BoundingBoxes([bbox], image_id)
         expected_box_list = bounding_boxes_object_list + [fake_bboxes]
-        returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, image_id, bbox.identifier, bbox.rectangle.x1,
-                                                       bbox.rectangle.y1, bbox.rectangle.x2, bbox.rectangle.y2,
-                                                       bbox.certainty, bbox.classification, bbox.object_id)
+        returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, image_id, bbox.identifier,
+                                                       bbox.rectangle.x1, bbox.rectangle.y1, bbox.rectangle.x2,
+                                                       bbox.rectangle.y2, bbox.certainty, bbox.classification,
+                                                       bbox.object_id)
         assert expected_box_list == returned_box_list
 
     def test_parse_box(self, bbox):

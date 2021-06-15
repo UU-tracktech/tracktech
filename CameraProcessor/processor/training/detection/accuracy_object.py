@@ -38,7 +38,7 @@ class AccuracyObject:
         """
         yolo_config = configs['Yolov5']
         accuracy_config = configs['Accuracy']
-        coco_config = configs['COCO']
+        # Currently unused: coco_config = configs['COCO'].
         # Initializing class variables.
         self.results = {}
         self.iou_threshold = float(yolo_config['iou-thres'])
