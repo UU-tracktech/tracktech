@@ -13,6 +13,9 @@ ENV PYTHONPATH=/app
 # Install pylint
 RUN ["pip", "install", "pylint==2.8.3"]
 
+# Create an utility folder, to copy in the utility files.
+RUN ["mkdir", "utility"]
+
 # Copy the files
 COPY auth auth
 
