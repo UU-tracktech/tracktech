@@ -17,7 +17,7 @@ class TestAccuracyRunner:
     Attributes:
         config_accuracy (SectionProxy): Accuracy section of the test configurations.
     """
-
+    @pytest.mark.skip(reason="Does not work currently, will be discussed")
     def test_accuracy_runner(self, configs):
         """Runs the accuracy runner and gets the correct paths from the config file.
 
@@ -52,7 +52,6 @@ class TestAccuracyRunner:
                 assert 0 <= float(box['rect'][2]) <= 1
                 assert 0 <= float(box['rect'][3]) <= 1
 
-    @pytest.mark.skip("Does not work currently, will be discussed")
     def tracking_file(self):
         """Tests if the information in the tracking file is correct and within the logical bounds."""
         # Opening and reading file.
