@@ -66,7 +66,7 @@ class IDataloader:
             pos_y0 (int): Top-left y vclue.
             pos_x1 (int): Bottom-right x value.
             pos_y1 (int): Bottom-right y value.
-            certainty (float): Certainnty.
+            certainty (float): Certainty.
             classification (string): Classification.
             object_id (int): ID of object.
 
@@ -89,7 +89,7 @@ class IDataloader:
         Args:
             identifier (int): ID.
             pos_x (float): Top-left x value.
-            pos_y (flaot): Top-left y value.
+            pos_y (float): Top-left y value.
             pos_x2 (float): Bottum-right x value.
             pos_y2 (float): Bottom-right y value.
             certainty (float): Certainty.
@@ -125,7 +125,7 @@ class IDataloader:
         """Base functions of parse_line.
 
         Args:
-            line (line): Line.
+            line (str): Line.
 
         Raises:
             NotImplementedError.
