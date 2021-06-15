@@ -28,6 +28,18 @@ class IReIdentifier(IComponent):
         """
         raise NotImplementedError("Feature map size getter not implemented")
 
+    def extract_features(self, frame_obj, bbox):
+        """Extract features from a single bounding box.
+
+        Args:
+            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
+            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
+
+        Returns:
+            [float]: Feature vector of a single bounding box.
+        """
+        raise NotImplementedError("Extract features function not implemented")
+
     def extract_features_from_cutout(self, cutout):
         """Given a cutout, extracts the features from it.
 

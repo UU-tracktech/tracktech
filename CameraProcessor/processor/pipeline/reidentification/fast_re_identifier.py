@@ -62,6 +62,7 @@ class FastReIdentifier(PytorchReIdentifier):
         """
         return self.__feature_map_size
 
+
     def extract_features(self, frame_obj, bbox):
         """Extracts features from a single bounding box.
 
