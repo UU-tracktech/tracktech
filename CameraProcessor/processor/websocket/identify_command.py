@@ -33,6 +33,6 @@ class IdentifyCommand:
     def __eq__(self, other):
         return self.__identifier == other.identifier
 
-    def __repr(self):
+    def __repr__(self):
         return f"IdentifyCommand(id: {self.__identifier})"
 

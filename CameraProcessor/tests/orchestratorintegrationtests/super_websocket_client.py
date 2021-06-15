@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 
 
 async def create_dummy_client(url, identifier=None):

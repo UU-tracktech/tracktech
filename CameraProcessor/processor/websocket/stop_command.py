@@ -20,7 +20,7 @@ class StopCommand:
         self.__object_id = object_id
 
     @staticmethod
-    def from_json(message):
+    def from_message(message):
         if "objectId" not in message.keys():
             raise KeyError("objectId missing")
 
@@ -34,6 +34,6 @@ class StopCommand:
     def __eq__(self, other):
         return self.__object_id == other.object_id
 
-    def __repr(self):
+    def __repr__(self):
         return f"StopCommand(object id: {self.__object_id})"
 

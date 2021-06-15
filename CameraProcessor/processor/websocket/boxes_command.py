@@ -42,6 +42,6 @@ class BoxesCommand:
     def __eq__(self, other):
         return self.__frame_id == other.frame_id and self.__bounding_boxes == other.bounding_boxes
 
-    def __repr(self):
+    def __repr__(self):
         return f"BoxesCommand(frame id: {self.__frame_id} boxes: {self.__bounding_boxes})"
 
