@@ -22,6 +22,7 @@ class PytorchReIdentifier(IReIdentifier):
 
         Args:
             config (configparser.SectionProxy): the re-id configuration to pass
+            extractor (FeatureExtractor): The feature extractor used by the re-identifier
         """
         self.config = config
         self.extractor = extractor
