@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
+import os
 import pytest
 
 from tests.conftest import get_test_configs
@@ -17,15 +18,23 @@ class TestCocoDataloader:
 
     def setup_method(self):
         """Setup method."""
-        configs = get_test_configs()
-        pass
-
-    def test_get_image_dimensions(self):
-        """Tests the image dimensions."""
-        pass
+        self.configs = get_test_configs()
+        self.dataloader = CocoDataloader(self.configs)
 
     def test_init(self):
         """Tests the init."""
+        assert self.dataloader.file_path == self.configs['COCO']['annotations_path']
+        assert self.dataloader.image_path == self.configs['COCO']['image_path']
+        assert self.dataloader.coco is not None
+
+    def test_download_coco_image(self):
+        """Download a coco image from the dataset and verify it is loaded."""
+        self.dataloader.download_coco_image(100)
+
+        images
+
+    def test_get_image_dimensions(self):
+        """Tests the image dimensions."""
         pass
 
     def test_parse_boxes(self):

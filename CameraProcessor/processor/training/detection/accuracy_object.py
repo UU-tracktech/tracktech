@@ -55,7 +55,7 @@ class AccuracyObject:
         """Parse boxes to PODM format.
 
         Args:
-            boxes_to_parse ([bounding_box]): A list of list of bounding boxes.
+            boxes_to_parse ([BoundingBoxes]): A list of list of BoundingBoxes objects.
 
         Returns:
             [BoundingBox]: A list of bounding boxes as specified by the podm.podm library.
