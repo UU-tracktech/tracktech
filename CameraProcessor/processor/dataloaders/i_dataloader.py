@@ -73,7 +73,11 @@ class IDataloader:
         """
         bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
                               pos_y1, certainty, classification, object_id)
-        if bounding_boxes_list[-1].image_id == str(image_id):
+
+        # List is still empty.
+        if len(bounding_boxes_list) == 0:
+            bounding_boxes_list = [BoundingBoxes([bbox], str(image_id))]
+        elif bounding_boxes_list[-1].image_id == str(image_id):
             bounding_boxes_list[-1].bounding_boxes.append(bbox)
         else:
             bounding_boxes_object = BoundingBoxes([bbox], str(image_id))

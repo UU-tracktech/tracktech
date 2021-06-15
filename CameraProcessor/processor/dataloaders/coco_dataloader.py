@@ -141,31 +141,3 @@ class CocoDataloader(IDataloader):
             if self.coco.loadCats(ann['category_id'])[0]['name'] in filters:
                 filtered_annotations.append(ann)
         return filtered_annotations
-
-    def __get_image_name(self, image_id):
-        """Gets the image name given an identifier.
-
-        Args:
-            image_id (int): Identifier of the image
-
-        Returns:
-            str: Name of the image.
-        """
-        zeros = ''
-        for _ in range(12 - len(str(image_id))):
-            zeros += '0'
-        image_name = zeros + str(image_id)
-        return image_name
-
-    def __get_image_path(self, image_id):
-        """Gets the image path given an identifier.
-
-        Args:
-            image_id (int): Identifier of the image
-
-        Returns:
-            str: Path of the image.
-        """
-        image_name = self.__get_image_name(image_id)
-        this_image_path = os.path.abspath(f'{self.image_path}/{image_name}.jpg')
-        return this_image_path

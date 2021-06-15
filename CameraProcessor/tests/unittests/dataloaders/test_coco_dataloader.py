@@ -41,40 +41,68 @@ class TestCocoDataloader:
         assert os.path.exists(expected_image_path)
 
     def test_download_coco_images(self):
-        """Download several coco images from the dataset and verify it is downloaded."""
-        # The folder name.
-        image_dir = self.dataloader.image_path
+        """Download several coco images from the dataset and verify it is downloaded.
+
+        Also contains logic to get the image names before actually downloading them.
+        Then the test is able to run repeatedly without failing because the files already exist.
+        """
+        # Number of images to download.
         nr_images = 5
 
-        # Assert that image exists AFTER download.
-        nr_of_existing_files = len(os.listdir(image_dir))
+        # Specify a list of category names of interest.
+        cat_ids = self.dataloader.coco.getCatIds(catNms=['person'])
+
+        # Get the corresponding image ids and images using loadImgs.
+        img_ids = self.dataloader.coco.getImgIds(catIds=cat_ids)[:nr_images]
+        image_paths = [os.path.join(self.dataloader.image_path, image['file_name'])
+                       for image in self.dataloader.coco.loadImgs(img_ids)]
+
+        # Remove the images if they already exist.
+        for image_path in image_paths:
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+        # Assert that images exist AFTER download.
+        nr_of_existing_files = len(os.listdir(self.dataloader.image_path))
         self.dataloader.download_coco_images(nr_images)
-        assert len(os.listdir(image_dir)) == nr_of_existing_files + nr_images
+        assert len(os.listdir(self.dataloader.image_path)) == nr_of_existing_files + nr_images
 
     def test_get_image_dimensions(self):
         """Tests the image dimensions."""
-        image_json = self.dataloader.coco.loadImgs([463730])[0]
-        expected_width, expected_height = int(image_json['width']), int(image_json['height'])
+        width, height = self.dataloader.get_image_dimensions(463730)
 
-        actual_width, actual_height = self.dataloader.get_image_dimensions(463730)
-        assert expected_width == actual_width
-        assert expected_height == actual_height
+        # Compares the width and height with the expected values.
+        assert width == 640
+        assert height == 427
 
     def test_parse_boxes(self):
         """Tests the parsing of boxes."""
-        image_json = self.dataloader.coco.loadImgs([463730])[0]
-        boxes = self.dataloader.parse_boxes([image_json])
-        print(boxes)
+        annotations = self.dataloader.get_annotations()
+        boxes = self.dataloader.parse_boxes(annotations)
+
+        # Correct number of bounding boxes are created.
+        assert len(boxes) == self.dataloader.nr_frames
 
     def test_parse_line(self):
         """Tests the parse_line function."""
-        assert True
+        # Gets the first line of the annotations.
+        annotations = self.dataloader.get_annotations()
+        line = self.dataloader.parse_line(annotations[0])
+
+        # First line of the dataloader should contain the following information.
+        assert line ==\
+               [(458755, 186574, 0.10785937500000001, 0.07864583333333333, 0.9016875000000001, 0.9865208333333333,
+                 1, 'person', None)]
 
     def test_get_annotations(self):
         """Tests the get annotations functionality."""
         annotations = self.dataloader.get_annotations()
-        print(annotations)
-        assert True
+
+        # Assert some properties.
+        assert len(annotations) > 0
+        assert len(annotations[0]['bbox']) == 4
+        assert annotations[0]['image_id'] > 0
+        assert annotations[0].__contains__('id')
 
 
 if __name__ == '__main__':
