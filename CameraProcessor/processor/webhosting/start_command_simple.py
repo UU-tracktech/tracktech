@@ -11,7 +11,7 @@ from processor.webhosting.start_command import StartCommand
 class StartCommandSimple(StartCommand):
     """Represents a StartCommand with a cutout."""
     def __init__(self, **kwargs):
-        """Adds cutout to expected key set, then calls parent init.
+        """Adds a cutout to expected key set, then calls parent init.
 
         Args:
             **kwargs (dict): dict of key-value pairs containing the start command message.

@@ -20,7 +20,7 @@ class ScheduleNode(INode):
     """
 
     def __init__(self, input_count, out_nodes, component, global_map):
-        """Inits ScheduleNode with information about the next layer and the component to execute.
+        """Inits ScheduleNode with information about the next layer, and the component to execute.
 
         Args:
             input_count (int): total amount of arguments necessary to execute the component.

@@ -17,7 +17,7 @@ class TestTextParsing:
 
     Attributes:
         annotations (PreAnnotations): Annotations of the video.
-        short_annotation (PreAnnotations): Annotations of the short video
+        short_annotation (PreAnnotations): Annotations of the short video.
     """
     def setup_method(self):
         """Creates pre annotations object that contains information for 5 frames."""

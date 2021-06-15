@@ -16,7 +16,7 @@ class CommentChecker(BaseChecker):
     The following linting errors get caught:
         comment-should-have-one-space: Comment should start with only one space.
         comment-missing-period: Comment has to end with a period.
-        comment-starts-with-lowercase: Comment should start with uppercase letter.
+        comment-starts-with-lowercase: Comment should start with an uppercase letter.
 
     Attributes:
         __implements__ (IRawChecker): Raw checker in order to enumerate through the lines.
@@ -62,8 +62,6 @@ class CommentChecker(BaseChecker):
                 if not line.startswith('#') or line.startswith('# pylint:'):
                     continue
 
-                print(line)
-
                 # Check whether comment is correct format.
                 comment_match = re.match(r'#\s[A-Z].*\S+\.\s*$', line)
                 if comment_match is not None:
@@ -82,7 +80,7 @@ class CommentChecker(BaseChecker):
                     self.add_message('comment-should-have-one-space',
                                      line=lineno + 1,
                                      col_offset=line_start_index + 1)
-                # Space at the end befor the period.
+                # Space at the end before the period.
                 if wrong_end_space_match is not None:
                     self.add_message('comment-has-space-before-period',
                                      line=lineno + 1,
