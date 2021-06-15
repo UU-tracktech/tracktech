@@ -17,13 +17,14 @@ from processor.data_object.bounding_boxes import BoundingBoxes
 class PytorchReIdentifier(IReIdentifier):
     """Superclass for identifiers."""
 
-    def __init__(self, config):
+    def __init__(self, config, extractor):
         """Init for Pytorch Re-identifier which saves config.
 
         Args:
             config (configparser.SectionProxy): the re-id configuration to pass
         """
         self.config = config
+        self.extractor = extractor
         self.threshold = float(self.config["threshold"])
 
     def execute_component(self):

@@ -41,13 +41,13 @@ class TorchReIdentifier(PytorchReIdentifier):
             gdown.download(url, output, quiet=False)
 
         # Initialize the feature extractor of torch re-id.
-        self.extractor = FeatureExtractor(
+        extractor = FeatureExtractor(
             model_name=config['model_name'],
             model_path=weights_path,
             device=config['device'])
 
         self.__feature_map_size = 512
-        super().__init__(config)
+        super().__init__(config, extractor)
 
     @property
     def feature_map_size(self):

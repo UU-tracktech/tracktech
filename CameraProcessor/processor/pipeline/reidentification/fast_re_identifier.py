@@ -48,10 +48,10 @@ class FastReIdentifier(PytorchReIdentifier):
             output = cfg.MODEL.WEIGHTS
             gdown.download(url, output, quiet=False)
 
-        self.extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
+        extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
 
         self.__feature_map_size = 2048
-        super().__init__(config)
+        super().__init__(config, extractor)
 
     @property
     def feature_map_size(self):
