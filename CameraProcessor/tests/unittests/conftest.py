@@ -42,7 +42,7 @@ def bboxes():
     box1 = BoundingBox(1, Rectangle(0, 0.5, 0.75, 1), "person", 0.5, object_id=5)
     box2 = BoundingBox(1, Rectangle(0.1, 0.25, 0.5, 0.9), "car", 0.75, object_id=15)
     box3 = BoundingBox(2, Rectangle(0.2, 0.3, 0.6, 0.8), "person", 0.8, object_id=10)
-    return BoundingBoxes([box1, box2, box3])
+    return BoundingBoxes([box1, box2, box3], '12')
 
 
 @pytest.fixture

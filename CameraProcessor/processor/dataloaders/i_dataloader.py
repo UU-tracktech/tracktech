@@ -22,8 +22,6 @@ class IDataloader:
         accuracy_config = configs['Accuracy']
         self.categories = accuracy_config['categories']
         self.filter_config = configs['Filter']
-        self.current_boxes = []
-        self.previous_image_id = -1
         nr_frames = int(accuracy_config['nr_frames'])
         # Cannot contain negative amount of frames.
         if nr_frames < 0:
@@ -73,13 +71,13 @@ class IDataloader:
         Returns:
             bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.
         """
-        if not self.previous_image_id == image_id or self.previous_image_id == -1:
-            bounding_boxes_list.append(BoundingBoxes(self.current_boxes, str(self.previous_image_id)))
-            self.current_boxes = []
-            self.previous_image_id = image_id
         bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
                               pos_y1, certainty, classification, object_id)
-        self.current_boxes.append(bbox)
+        if bounding_boxes_list[-1].image_id == str(image_id):
+            bounding_boxes_list.bounding_boxes.append(bbox)
+        else:
+            bounding_boxes_object = BoundingBoxes([bbox], str(image_id))
+            bounding_boxes_list.append(bounding_boxes_object)
         return bounding_boxes_list
 
     @staticmethod

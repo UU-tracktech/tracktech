@@ -27,10 +27,6 @@ class TestIDataloader:
         configs = get_test_configs()
         accuracy_config = configs['Accuracy']
 
-        # Default values from init.
-        assert len(self.dataloader.current_boxes) == 0
-        assert self.dataloader.previous_image_id == -1
-
         # Check whether properties are set correctly.
         assert self.dataloader.categories == accuracy_config['categories']
         assert self.dataloader.filter_config == configs['Filter']
