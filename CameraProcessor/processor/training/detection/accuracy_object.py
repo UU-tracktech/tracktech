@@ -65,11 +65,10 @@ class AccuracyObject:
 
             # Getting the bounding boxes that are detected in frame i.
             image_id = bounding_boxes_object.image_id
-            boxes = bounding_boxes_object.bounding_boxes
 
             # Parse every bounding box into a bounding box from the podm.podm library.
 
-            for box in boxes:
+            for box in bounding_boxes_object:
                 # Parse a single box and append it to the list of already parsed boxes.
                 # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(
