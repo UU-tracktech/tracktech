@@ -70,7 +70,11 @@ WORKDIR /app
 EXPOSE 80
 
 # Run a test stream and the server
-ENTRYPOINT ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & python -u src/main.py"]
+ENTRYPOINT ["bash","-c",\
+            "ffmpeg -f lavfi -loglevel debug -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream1 & \
+             ffmpeg -f lavfi -loglevel debug -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream2 & \
+             ffmpeg -f lavfi -loglevel debug -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream3 & \
+             python -u src/main.py"]
 
 
 FROM installer AS production
