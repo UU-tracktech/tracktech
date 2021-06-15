@@ -1,22 +1,20 @@
 # Processor Orchestrator
 
-This component is responsible for managing communications between camera processor
-and interfaces using websockets.
+This component is responsible for managing communications between camera processor and interfaces using WebSockets.
 
 ## Architecture
 The architecture of the application is made up of the following main components:
 - main.py: starts the server and handles routing to handlers.
-- client_socket.py: contains the websocket handler for clients.
-- processor_socket.py: contains the websocket handler for processors.
-- object_manager.py: contains a class for tracking objects that contains the identifier, feature map, and functionality 
-  for automatic stopping of tracking.
+- client_socket.py: contains the WebSocket handler for clients.
+- processor_socket.py: contains the WebSocket handler for processors.
+- object_manager.py: contains a class for tracking objects that contains the identifier, feature map, and functionality for automatic stopping of tracking.
 - connections.py: contains dictionaries for the currently connected sockets.
-- logger.py: contains methods for standardized logging.
+- logger.py: contains methods for standardised logging.
 - timeline_handler.py: contains HTTP Handler that serves timeline tracking info of a specified object.
 
 ## How to use
 There are two ways to start the server:
-- run "python src/main.py" with the current folder as the python root path and after installing the packages in requirements.txt
+- run "python src/main.py" with the current folder as the python root path, and after installing the packages in requirements.txt
 - (using docker) run "docker-compose up"
 
 ### Dependencies
@@ -29,7 +27,7 @@ The following environment variables can be used:
 
 | Variable         | Description                                                                                |
 | ---------------- | ------------------------------------------------------------------------------------------ |
-| SSL_CERT         | A SSL certificate that should be used to create secure websockets.                         |
+| SSL_CERT         | A SSL certificate that should be used to create secure WebSockets.                         |
 | SSL_KEY:         | The private key for the given SSL certificate.                                             |
 | PUBLIC_KEY       | The public key used for authentication.                                                    |
 | AUDIENCE         | The token audience.                                                                        |
@@ -38,37 +36,32 @@ The following environment variables can be used:
 | TRACKING_TIMEOUT | The optional time in seconds after which an object should automatically stop being tracked |
 
 ## Communications
-Communication with the orchestrator can be done over 2 websocket handlers channels:
+Communication with the orchestrator can be done over two WebSocket handlers channels:
 - ws(s)://HOST/client
 - ws(s)://HOST/processor
 
-Both sockets expect messages in json format. A message should contain at least a 
-"type" property, which specifies the type of the message. The server does not respond if the 
-type is unknown.
+Both sockets expect messages in JSON format. A message should contain at least a 
+"type" property, which specifies the message type. The server does not respond if the type is unknown.
 
 ### Client
-The client websocket knows the following types of messages:
+The client WebSocket knows the following types of messages:
 - "start": This command is used to start the tracking of an object in the specified frame,
   needs the following additional properties:
-  - "cameraId": The identifier of the processor on which the bounding box of the object to be tracked
-    was computed.
-  - "frameId": The identifier of the frame on which the bounding box of the object to be tracked
-    was computed.
+  - "cameraId": The identifier of the processor on which the bounding box of the object to be tracked was computed.
+  - "frameId": The identifier of the frame on which the bounding box of the object to be tracked was computed.
   - "boxId": The identifier of the bounding box computed for the object to be tracked.
-  - "image": A serialised image that can be used by the processor for re-identification.
+  - "image": A serialised image that the processor can use for re-identification.
 
-  Of these properties, it is required that at least the "image" parameter, or, a combination of the "frameId" and "boxId" 
-  parameters are sent.
+  Of these properties, at least either "image" parameter or "frameId" and "boxId" parameters,  are required to be sent.
 - "stop" | This command is used to stop the tracking of an object,
   it needs the following additional property:
   - "objectId" | The identifier of the object which should no longer be tracked.
 - "setUsesImages" | This command is used to specify whether or not this client uses images and should therefore
 receive cutouts when they are sent alongside a "start" command. It needs the following property:
-  - "usesImages" | A bool indicating whether images are used. If it set to true, then the orchestrator will
-  immediately send all the currently stored images to this client.
+  - "usesImages" | A bool indicating whether images are used. If it set to true, then the orchestrator will immediately send all the currently stored images to this client.
 
 ### Processor
-The processor websocket knows the following types of messages:
+The processor WebSocket knows the following types of messages:
 - "identifier": This signifies a message containing the identifier by which this processor
   should be identified, needs the following additional properties:
   - "id" | The identifier of the processor under which this socket should be registered.
@@ -82,18 +75,16 @@ The processor websocket knows the following types of messages:
   - "featureMap" | An object containing the new feature map that was computed.
   
 ### Tracking Timelines
-Finally, there is also a http handler that serves logging data of a given object.
+Finally, there is also an HTTP handler that serves to log the data of a given object.
 This data is located at 
 - http(s)://HOST/timelines?object_id=ID
 
-where ID is the id of the object of which the timeline is required.  
-Timeline tracking data is returned as a json with one property "data" that contains
-an array of objects with a "timeStamp" property, and a "processorId" property containing the id of the
-processor on which the object was detected.
+Where ID is the id of the object of which the timeline is required.  
+Timeline tracking data is returned as a JSON with one property, "data" that contains an array of objects with a "timeStamp" property and a "processorId" property containing the id of the processor on which the object was detected.
 
 ## Running tests
 The project contains two testing stages, unit testing and integration testing.
-Tests should be run through docker compose, as they may rely on other services which are handled in the compose file.
+Tests should be run through docker compose, as they may rely on other services handled in the compose file.
 The stages can be run as follows:
 - Unit testing: run "docker-compose -f compose/docker-compose_test_unit.yml"
 - Integration testing: run "docker-compose -f compose/docker-compose_test_integration.yml"
