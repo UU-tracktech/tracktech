@@ -75,6 +75,12 @@ export class Box {
   objectType: string
   objectId?: number
 
+  /**
+   * Transform tha coordinates that are in between 0 and 1 to coordinates relative to the width and height of the display
+   * @param width Width of the display
+   * @param height Height of the display
+   * @returns A size object containing the relative offset, widht and height
+   */
   toSize(width: number, height: number): size {
     var x1 = this.rect[0],
       y1 = this.rect[1],

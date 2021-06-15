@@ -9,17 +9,21 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { useKeycloak } from '@react-keycloak/web'
 
+/** Type enumerating the possible authentication states */
 export type authenticationState =
   | 'loading'
   | 'unauthenticated'
   | 'authenticated'
 
+/**
+ * Custom hook that wrappes the useKeyCloak hook
+ * @returns The current authentication state
+ */
 export default function useAuthState(): authenticationState {
-  //Obtain keycloak, so we can check for login info
+  // Obtain keycloak, to check for login info
   const { keycloak, initialized } = useKeycloak()
 
-  //Return the current authentication state
-  //return 'loading'
+  // Return the current authentication state
   return !initialized
     ? 'loading'
     : keycloak.authenticated

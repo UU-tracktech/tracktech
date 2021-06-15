@@ -12,12 +12,17 @@ timeline logs.
 
 */
 
+/** Tracking log type, matching a processor with a timestamp when an object was spotted */
 export type trackingLog = { timeStamp: string; processorId: string }
+/** Tracking log type, with Date type instead of string */
 type datedTrackingLog = { timeStamp: Date; processorId: string }
 
+/** A range from and to a Date */
 export type dateRange = { from: Date; to: Date }
+/** Dictionary matching camera processor ids to a timeline of events */
 export type timelineEvents = { [cameraId: string]: dateRange[] }
 
+/** Object containing a summary of timeline data logs */
 export class TimelineData {
   private data: datedTrackingLog[]
 
@@ -28,7 +33,10 @@ export class TimelineData {
     }))
   }
 
-  // Create a timeline of important events, which in this case are the moments a camera finds and loses an object
+  /**
+   * Create a timeline of important events, which in this case are the moments a camera finds and loses an object
+   * @returns The timeline of events for this camera
+   */
   GetImportantEvents(): timelineEvents {
     var spottedOn: { [camera: string]: dateRange } = {}
     var events: timelineEvents = {}
@@ -81,7 +89,11 @@ export class TimelineData {
   }
 }
 
-// Convert a string from the server to a date
+/**
+ * Convert a string from the server to a date
+ * @param logString Logging string from the processor orchestrator
+ * @returns
+ */
 export function ToDate(logString: string): Date {
   var split = logString.split(' | ')
   var ymd = split[0].split('/')

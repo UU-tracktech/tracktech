@@ -6,5 +6,5 @@ Utrecht University within the Software Project course.
 
  */
 
-// The size of the overlay, used to scale the drawing of the bounding boxes
+/** The size of the overlay, used to scale the drawing of the bounding boxes */
 export type size = { left: number; top: number; width: number; height: number }

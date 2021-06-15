@@ -6,11 +6,6 @@ Utrecht University within the Software Project course.
 
  */
 
-/**
-  The grid component creates a videoplayer and overlay for drawing on that player
-  for each camera source defined in the config file, which are passed in through the props
-*/
-
 import React from 'react'
 
 import { Overlay } from './overlay'
@@ -30,6 +25,12 @@ export type gridProps = {
   hiddenObjectTypes: string[]
 }
 
+/**
+ * Component that creates a videoplayer and overlay for drawing on that player
+ * for each camera source defined in the config file
+ * @param props props containing streams and filters
+ * @returns A grid of camera streams with corresponding overlay
+ */
 export function Grid(props: gridProps) {
   return (
     <div
@@ -45,8 +46,8 @@ export function Grid(props: gridProps) {
       }}
     >
       {props.sources.map((source) => {
-        //The map goes through every source and creates an overlay component,
-        //which includes the video player
+        // The map goes through every source and creates an overlay component,
+        // which includes the video player
         return (
           <div
             data-testid={'gridElement'}

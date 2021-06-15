@@ -6,10 +6,6 @@ Utrecht University within the Software Project course.
 
  */
 
-/**
-  This component shows the navigation bar at the top of the page  
-*/
-
 import React from 'react'
 import { Menu, Layout } from 'antd'
 import { Link } from 'react-router-dom'
@@ -17,6 +13,10 @@ import { Link } from 'react-router-dom'
 import { LoginButton } from './loginButton'
 import { LoggedInUser } from './loggedInUser'
 
+/**
+ * Navigation bar at the top of the page
+ * @returns The antd Navbar containing a logo, page navigation, and login info
+ */
 export function NavMenu() {
   return (
     <Layout.Header
@@ -51,7 +51,7 @@ export function NavMenu() {
         </Menu.Item>
       </Menu>
 
-      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
+      {/*/ The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
       <div style={{ gridColumnStart: '4' }}>
         <LoggedInUser />
       </div>

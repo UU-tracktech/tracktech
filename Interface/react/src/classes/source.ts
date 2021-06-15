@@ -16,4 +16,5 @@ export type stream = {
   srcObject: source
 }
 
+/** Defines the properties of a single stream URL */
 export type source = { src: string; type: string }

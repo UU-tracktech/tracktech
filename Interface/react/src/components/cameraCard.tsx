@@ -6,12 +6,6 @@ Utrecht University within the Software Project course.
 
  */
 
-/**
-  The cameracard component is used in the cameras list.
-  There is a card for each connected camera, shows an identifier and buttons
-  to enlarge, shrink or (TODO: delete) that camera's videoplayer
-*/
-
 import React from 'react'
 import CSS from 'csstype'
 import { Button, Card } from 'antd'
@@ -22,15 +16,19 @@ import {
   CloseOutlined
 } from '@ant-design/icons'
 
-// The properties each card has
 type cameraCardProps = {
-  id: string //An identifier so we know what camera it belongs to
-  title: string //The name of the camera
-  setSize: (sourceId: string) => void //callback function for the resize button
+  id: string
+  title: string
+  setSize: (sourceId: string) => void
 }
 
+/**
+ * Component used in the cameras list. There is a card for each connected camera, which shows an identifier and buttons
+ * to enlarge or shrink that camera's videoplayer
+ * @param props Properties of the card
+ * @returns An antd card with camera info
+ */
 export function CameraCard(props: cameraCardProps) {
-  //Style property so it can be reused to prevent duplicate code
   var buttonStyle: CSS.Properties = {
     margin: '8px 4px 8px 0px',
     padding: '2px',
@@ -51,12 +49,6 @@ export function CameraCard(props: cameraCardProps) {
           {props.title}
         </div>
       }
-      //The settings icon (TODO: implement camera settings)
-      extra={
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <SettingOutlined />
-        </div>
-      }
       //Styling
       size={'small'}
       headStyle={{ padding: '0px 8px' }}
@@ -70,15 +62,6 @@ export function CameraCard(props: cameraCardProps) {
         onClick={() => props.setSize(props.id)}
         style={buttonStyle}
         icon={<ExpandOutlined />}
-      ></Button>
-      <Button
-        //Delete button (TODO: implement removing a camera feed)
-        type={'primary'}
-        data-testid={'deleteButton'}
-        danger
-        onClick={() => alert('clicked on delete')}
-        style={buttonStyle}
-        icon={<CloseOutlined />}
       ></Button>
     </Card>
   )
