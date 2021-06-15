@@ -51,12 +51,47 @@ class TestIDataloader:
 
         Args:
             bboxes (BoundingBoxes): BoundingBoxes object.
-            bounding_boxes_object_list (BoundingBoxes): BoundingBoxes object.
+            bounding_boxes_object_list ([BoundingBoxes]): BoundingBoxes object.
         """
         image_id = bboxes.image_id
         bbox = bboxes.bounding_boxes[0]
-        fake_bboxes = BoundingBoxes([bbox], image_id)
-        expected_box_list = bounding_boxes_object_list + [fake_bboxes]
+        expected_result = bounding_boxes_object_list + [BoundingBoxes([bbox], image_id)]
+
+        returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, image_id, bbox.identifier,
+                                                       bbox.rectangle.x1, bbox.rectangle.y1, bbox.rectangle.x2,
+                                                       bbox.rectangle.y2, bbox.certainty, bbox.classification,
+                                                       bbox.object_id)
+        assert returned_box_list == expected_result
+
+    def test_append_box_empty_list(self, bboxes):
+        """Tests the append_box function when the bounding_boxes_object_list is empty.
+
+        Args:
+            bboxes (BoundingBoxes): BoundingBoxes object.
+        """
+        image_id = bboxes.image_id
+        bbox = bboxes.bounding_boxes[0]
+        expected_box_list = [BoundingBoxes([bbox], image_id)]
+        returned_box_list = self.dataloader.append_box([], image_id, bbox.identifier,
+                                                       bbox.rectangle.x1, bbox.rectangle.y1, bbox.rectangle.x2,
+                                                       bbox.rectangle.y2, bbox.certainty, bbox.classification,
+                                                       bbox.object_id)
+        assert expected_box_list == returned_box_list
+
+    def test_append_box_same_id(self, bboxes, bounding_boxes_object_list):
+        """Tests the append_box function.
+
+        Args:
+            bboxes (BoundingBoxes): BoundingBoxes object.
+            bounding_boxes_object_list ([BoundingBoxes]): BoundingBoxes object.
+        """
+        bounding_boxes_object_list.reverse()
+
+        image_id = bboxes.image_id
+        bbox = bboxes.bounding_boxes[0]
+
+        expected_box_list = bounding_boxes_object_list.copy()
+        expected_box_list[-1].bounding_boxes.append(bbox)
         returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, image_id, bbox.identifier,
                                                        bbox.rectangle.x1, bbox.rectangle.y1, bbox.rectangle.x2,
                                                        bbox.rectangle.y2, bbox.certainty, bbox.classification,

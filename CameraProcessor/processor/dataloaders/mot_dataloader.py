@@ -93,9 +93,11 @@ class MotDataloader(IDataloader):
         image_name = self.__get_image_name(image_id)
         this_image_path = self.__get_image_path(image_name)
 
+        # File did not exist.
         if not os.path.exists(this_image_path):
             return None, None
 
+        # Open image and return its size.
         image = Image.open(this_image_path)
         self.image_dimensions[image_id] = image.size
         return image.size
@@ -119,5 +121,11 @@ class MotDataloader(IDataloader):
         if width is None or height is None:
             return []
 
-        return [(image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
-                (pos_y + pos_h) / height, certainty, None, None)]
+        # Make sure values are between the frame borders.
+        pos_x1 = max(pos_x, 0)
+        pos_y1 = max(pos_y, 0)
+        box_x2 = min(pos_x + pos_w, width)
+        box_y2 = min(pos_y + pos_h, height)
+
+        return [(image_id, identifier, pos_x1 / width, pos_y1 / height, box_x2 / width,
+                box_y2 / height, certainty, '', None)]

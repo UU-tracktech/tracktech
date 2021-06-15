@@ -85,7 +85,7 @@ class IDataloader:
         return bounding_boxes_list
 
     @staticmethod
-    def parse_box(identifier, pos_x, pos_y, pos_x2, pos_y2, certainty=None, classification=None, object_id=None):
+    def parse_box(identifier, pos_x, pos_y, pos_x2, pos_y2, certainty=None, classification='', object_id=None):
         """Parses a box.
 
         Args:

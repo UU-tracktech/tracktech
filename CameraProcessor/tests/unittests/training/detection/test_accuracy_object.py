@@ -150,8 +150,8 @@ class TestAccuracyObject:
         # Read first box from COCO loader and test some properties.
         first_coco_box = accuracy_object.read_boxes('COCO')[0]
         assert first_coco_box.label == 'person'
-        assert first_coco_box.xbr == 0.902
-        assert first_coco_box.ytl == 0.079
+        assert round(first_coco_box.xbr, 3) == 0.902
+        assert round(first_coco_box.ytl, 3) == 0.079
 
     def test_read_json_boxes(self, configs):
         """Tests reading boxes in JSON format.
@@ -164,8 +164,8 @@ class TestAccuracyObject:
         # Read first box from JSON loader and test some properties.
         first_json_box = accuracy_object.read_boxes('JSON')[0]
         assert first_json_box.label == 'car'
-        assert first_json_box.xbr == 0.422
-        assert first_json_box.xtl == 0.158
+        assert round(first_json_box.xbr, 3) == 0.422
+        assert round(first_json_box.xtl, 3) == 0.158
 
     def test_read_mot_boxes(self, configs):
         """Tests reading boxes in MOT format.
@@ -177,7 +177,9 @@ class TestAccuracyObject:
 
         # Read first box from JSON loader and test some properties.
         first_mot_box = accuracy_object.read_boxes('MOT')[0]
-
+        assert first_mot_box.label == ''
+        assert round(first_mot_box.xbr, 3) == 0.145
+        assert round(first_mot_box.ytl, 3) == 0.310
 
     def test_read_boxes_invalid_loader(self, configs):
         """Tests loading in an invalid loader.
