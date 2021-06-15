@@ -126,7 +126,6 @@ class TestAccuracyObject:
 
         Args:
             accuracy_object (AccuracyObject): Accuracy object containing all the data.
-            configs (dict): Config dictionary.
         """
         plots_path = accuracy_object.plots_path
         if os.path.exists(plots_path):
