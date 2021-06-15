@@ -33,17 +33,6 @@ class JsonDataloader(IDataloader):
             lines = [line.rstrip('\n') for line in file]
         return lines
 
-    def get_image_dimensions(self, image_id):
-        """Gets the image dimensions.
-
-        Args:
-            image_id (int): ID of image.
-
-        Returns:
-            (int, int): Image dimensions.
-        """
-        return 1, 1
-
     def parse_line(self, line):
         """Parses a line.
 
