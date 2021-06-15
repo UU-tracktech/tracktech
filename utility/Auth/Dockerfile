@@ -14,8 +14,6 @@ ENV PYTHONPATH=/app
 RUN ["pip", "install", "pylint==2.8.3"]
 
 # Copy the files
-COPY utility/Auth utility/Auth
+COPY auth auth
 
-WORKDIR /
-
-ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
+ENTRYPOINT ["pylint","auth","--rcfile=.pylintrc"]
