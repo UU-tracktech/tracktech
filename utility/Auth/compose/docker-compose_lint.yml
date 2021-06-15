@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  video-forwarder:
+  auth:
     build:
       context: ..
       target: lint
