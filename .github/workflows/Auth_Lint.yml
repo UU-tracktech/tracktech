@@ -26,7 +26,7 @@ jobs:
       - name: Copy in utility
         run: docker cp utility/copyright_checker.py auth_container:/app/utility/
       - name: Copy in utility
-        run: docker cp tility/comment_checker.py auth_container:/app/utility/
+        run: docker cp utility/comment_checker.py auth_container:/app/utility/
       - name: Copy in utility
         run: docker cp utility/docstring_checker.py auth_container:/app/utility/
       - name: Copy in utility
