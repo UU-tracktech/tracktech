@@ -4,6 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+import os
 from os import path
 
 import requests
@@ -36,7 +37,7 @@ class CocoDataloader(IDataloader):
         image = self.coco.loadImgs([image_id])[0]
 
         image_data = requests.get(image['coco_url']).content
-        with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
+        with open(os.path.join(self.image_path, image['file_name']), 'wb') as handler:
             handler.write(image_data)
 
     def download_coco_images(self, amount):
