@@ -109,14 +109,11 @@ class AccuracyObject:
             annotation_format (str): String format of annotation.
 
         Returns:
-            [BoundingBox]: A list of read bounding boxes.
+            [BoundingBoxes]: A list of read bounding boxes.
         """
         dataloader = self.get_dataloader(annotation_format)
         bounding_boxes_objects = dataloader.parse_file()
-        bounding_boxes = []
-        for bounding_boxes_object in bounding_boxes_objects:
-            bounding_boxes.append(bounding_boxes_object.bounding_boxes)
-        return self.parse_boxes(bounding_boxes)
+        return self.parse_boxes(bounding_boxes_objects)
 
     def detect(self):
         """Retrieves accuracy of detections."""
@@ -140,10 +137,10 @@ class AccuracyObject:
 
         # Printing a few metrics related to accuracy on the terminal.
         # Labels are undefined because the det and gt files currently don't save the classes of detected objects.
-        print("tp (only undefined): " + str(self.results['undefined'].tp))
-        print("fp: " + str(self.results['undefined'].fp))
-        print("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp))
-        print("mAP: " + str(self.results['undefined'].get_mAP(self.results)))
+        # print("tp (only undefined): " + str(self.results['undefined'].tp))
+        # print("fp: " + str(self.results['undefined'].fp))
+        # print("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp))
+        # print("mAP: " + str(self.results['undefined'].get_mAP(self.results)))
 
     def draw_pr_plot(self, result):
         """Draw a pr plot of a class and saves it to a file.

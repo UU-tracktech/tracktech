@@ -109,6 +109,5 @@ class MotDataloader(IDataloader):
         pos_x -= 1
         pos_y -= 1
         width, height = self.get_image_dimensions(image_id)
-        return_values = (image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
-                         (pos_y + pos_h) / height, certainty, None, None)
-        return [return_values]
+        return [(image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
+                (pos_y + pos_h) / height, certainty, None, None)]
