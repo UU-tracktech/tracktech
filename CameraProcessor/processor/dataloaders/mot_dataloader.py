@@ -4,6 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+import os
 import logging
 from os import path
 from PIL import Image
@@ -91,6 +92,10 @@ class MotDataloader(IDataloader):
             return self.image_dimensions[image_id]
         image_name = self.__get_image_name(image_id)
         this_image_path = self.__get_image_path(image_name)
+
+        if not os.path.exists(this_image_path):
+            return None, None
+
         image = Image.open(this_image_path)
         self.image_dimensions[image_id] = image.size
         return image.size
@@ -109,5 +114,10 @@ class MotDataloader(IDataloader):
         pos_x -= 1
         pos_y -= 1
         width, height = self.get_image_dimensions(image_id)
+
+        # Image did not exist.
+        if width is None or height is None:
+            return []
+
         return [(image_id, identifier, pos_x / width, pos_y / height, (pos_x + pos_w) / width,
                 (pos_y + pos_h) / height, certainty, None, None)]

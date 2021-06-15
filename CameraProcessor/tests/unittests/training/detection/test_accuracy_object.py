@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 """
 
 import os
+import pytest
 
 from processor.training.detection.accuracy_object import AccuracyObject
 from processor.data_object.bounding_boxes import BoundingBoxes
@@ -50,7 +51,7 @@ class TestAccuracyObject:
         accuracy_object.detect()
 
         self.init_correct(accuracy_object)
-        self.draw_plots(accuracy_object, configs)
+        self.draw_plots(accuracy_object)
 
         # Checking for some values in the dictionary if they are possible.
         for key in accuracy_object.results.keys():
@@ -120,14 +121,14 @@ class TestAccuracyObject:
         assert parsed_box.score == 0.9
         assert parsed_box.image_name == ""
 
-    def draw_plots(self, accuracy_object, configs):
+    def draw_plots(self, accuracy_object):
         """Draws the plots and checks whether files are indeed created.
 
         Args:
             accuracy_object (AccuracyObject): Accuracy object containing all the data.
             configs (dict): Config dictionary.
         """
-        plots_path = configs['Accuracy']['plots_path']
+        plots_path = accuracy_object.plots_path
         if os.path.exists(plots_path):
             number_files = len(os.listdir(plots_path))
         else:
@@ -137,3 +138,54 @@ class TestAccuracyObject:
         accuracy_object.draw_all_pr_plots()
 
         assert len(os.listdir(plots_path)) > number_files
+
+    def test_read_coco_boxes(self, configs):
+        """Tests reading boxes in COCO format.
+
+        Args:
+            configs (dict): Config dictionary.
+        """
+        accuracy_object = AccuracyObject(configs)
+
+        # Read first box from COCO loader and test some properties.
+        first_coco_box = accuracy_object.read_boxes('COCO')[0]
+        assert first_coco_box.label == 'person'
+        assert first_coco_box.xbr == 0.902
+        assert first_coco_box.ytl == 0.079
+
+    def test_read_json_boxes(self, configs):
+        """Tests reading boxes in JSON format.
+
+        Args:
+            configs (dict): Config dictionary.
+        """
+        accuracy_object = AccuracyObject(configs)
+
+        # Read first box from JSON loader and test some properties.
+        first_json_box = accuracy_object.read_boxes('JSON')[0]
+        assert first_json_box.label == 'car'
+        assert first_json_box.xbr == 0.422
+        assert first_json_box.xtl == 0.158
+
+    def test_read_mot_boxes(self, configs):
+        """Tests reading boxes in MOT format.
+
+        Args:
+            configs (dict): Config dictionary.
+        """
+        accuracy_object = AccuracyObject(configs)
+
+        # Read first box from JSON loader and test some properties.
+        first_mot_box = accuracy_object.read_boxes('MOT')[0]
+
+
+    def test_read_boxes_invalid_loader(self, configs):
+        """Tests loading in an invalid loader.
+
+        Args:
+            configs (dict): Config dictionary.
+        """
+        accuracy_object = AccuracyObject(configs)
+
+        # Invalid accuracy loader should raise an exception.
+        assert pytest.raises(ValueError, accuracy_object.read_boxes, 'InvalidDataLoader')

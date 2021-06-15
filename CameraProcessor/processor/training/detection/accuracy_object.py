@@ -83,7 +83,7 @@ class AccuracyObject:
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def get_dataloader(self, annotation_format):
+    def __get_dataloader(self, annotation_format):
         """Get a dataloader based on format.
 
         Args:
@@ -91,6 +91,9 @@ class AccuracyObject:
 
         Returns:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
+
+        Raises:
+            ValueError: Dataloader name is unrecognised.
         """
         if annotation_format == 'COCO':
             dataloader = CocoDataloader(self.configs)
@@ -99,7 +102,7 @@ class AccuracyObject:
         elif annotation_format == 'MOT':
             dataloader = MotDataloader(self.configs)
         else:
-            return ValueError("This is not a valid dataloader")
+            raise ValueError("This is not a valid dataloader")
         return dataloader
 
     def read_boxes(self, annotation_format):
@@ -111,7 +114,7 @@ class AccuracyObject:
         Returns:
             [BoundingBoxes]: A list of read bounding boxes.
         """
-        dataloader = self.get_dataloader(annotation_format)
+        dataloader = self.__get_dataloader(annotation_format)
         bounding_boxes_objects = dataloader.parse_file()
         return self.parse_boxes(bounding_boxes_objects)
 
@@ -137,10 +140,10 @@ class AccuracyObject:
 
         # Printing a few metrics related to accuracy on the terminal.
         # Labels are undefined because the det and gt files currently don't save the classes of detected objects.
-        # print("tp (only undefined): " + str(self.results['undefined'].tp))
-        # print("fp: " + str(self.results['undefined'].fp))
-        # print("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp))
-        # print("mAP: " + str(self.results['undefined'].get_mAP(self.results)))
+        # Pprint("tp (only undefined): " + str(self.results['undefined'].tp)).
+        # Pprint("fp: " + str(self.results['undefined'].fp)).
+        # Pprint("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp)).
+        # Pprint("mAP: " + str(self.results['undefined'].get_mAP(self.results))).
 
     def draw_pr_plot(self, result):
         """Draw a pr plot of a class and saves it to a file.
@@ -162,7 +165,8 @@ class AccuracyObject:
     def draw_all_pr_plots(self):
         """Draws the pr plots for all classes in the PODM result."""
         for result in self.results.items():
-            self.draw_pr_plot(result[1])
+            if result[1].num_detection != 0:
+                self.draw_pr_plot(result[1])
 
 
 if __name__ == "__main__":
