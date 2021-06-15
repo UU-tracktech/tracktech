@@ -65,7 +65,7 @@ class TorchReIdentifier(IReIdentifier):
         return self.__feature_map_size
 
     def extract_features(self, frame_obj, bbox):
-        """Extracts features from a single bounding box.
+        """Extract features from a single bounding box.
 
         This is achieved by generating a cutout of the bounding boxes
         and feeding them to the feature extractor of Torchreid.
@@ -137,7 +137,7 @@ class TorchReIdentifier(IReIdentifier):
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using Torchreid.
 
-        This re-identification implementations couple bounding boxes to a tracked subject
+        This re-identification implementations couple bounding boxes to a tracked subject,
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
         to an existing bounding box.
 

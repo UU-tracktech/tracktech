@@ -1,4 +1,4 @@
-"""Tests the scheduler node class which implements the INode interface.
+"""Tests the scheduler node class, which implements the INode interface.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -21,7 +21,7 @@ class TestScheduleNode:
         assert example_schedule_node.component
 
     def test_node_executable(self, example_schedule_node):
-        """Whether the node is executable is correctly.
+        """Checks whether the node is executable is correctly.
 
         Args:
             example_schedule_node (INode): Example node and see whether it can be executed straight away.

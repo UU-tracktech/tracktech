@@ -1,4 +1,4 @@
-"""Contains a docstring content checker for the pylint that checks modules, classes and functions docstrings.
+"""Contains a docstring content checker for the pylint that checks modules, classes, and functions docstrings.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -497,7 +497,7 @@ class DocstringContentChecker(BaseChecker):
                                  args=incorrect_section_match.group(1))
                 break
 
-        # No section match.
+        # No section matches.
         return False, ''
 
     def check_type_definition(self, node, type_str, enclosing_parenthesis):

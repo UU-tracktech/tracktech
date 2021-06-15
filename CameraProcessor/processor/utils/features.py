@@ -20,7 +20,7 @@ def slice_bounding_box(bbox, img):
         use `del`.
 
     Args:
-        bbox (BoundingBox): A BoundingBox which holds the rectangle we need
+        bbox (BoundingBox): A BoundingBox, which holds the rectangle we need
         img (np.ndarray): the numpy array representing the frame/image
 
     Returns:
@@ -30,7 +30,7 @@ def slice_bounding_box(bbox, img):
         a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice
         img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!
         a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up
-                   the memory
+                   the memory!
     """
     height, width, _ = img.shape
     return img[
@@ -45,7 +45,7 @@ def resize_cutout(cutout, configs):
     Args:
         cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a
             reference to the original image.
-        configs (configparser.SectionProxy): Re-ID configuration
+        configs (configparser.SectionProxy): Re-ID configuration.
 
     Returns:
          np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original

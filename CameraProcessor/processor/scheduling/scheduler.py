@@ -15,7 +15,7 @@ class Scheduler:
     """
 
     def __init__(self, start_node):
-        """Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.
+        """Inits Scheduler with a starting node that contains the graph, and a queue to determine execution order.
 
         Args:
             start_node (INode): INode representing the initial input node, starting point of the graph.

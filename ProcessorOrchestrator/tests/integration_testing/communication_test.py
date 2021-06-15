@@ -324,7 +324,7 @@ def assert_feature_map(message, object_id):
 async def test_bounding_boxes_distribution_and_timeline_logging():
     """Test if a processor can send a bounding box message and if it is correctly received by the interface.
 
-    Also test if the timeline is logged properly and the serving handler is available.
+    Also test if the timeline is logged properly, and the serving handler is available.
     """
 
     processor = \
@@ -529,7 +529,7 @@ async def test_startup_message():
 @pytest.mark.asyncio
 @pytest.mark.timeout(10)
 async def test_stop_server():
-    """Sends message to test server so it can be stopped."""
+    """Sends message to test server, so it can be stopped."""
     socket = \
         await websocket.websocket_connect("ws://processor-orchestrator-service/stop")
     await socket.write_message("stop")

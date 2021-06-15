@@ -1,4 +1,4 @@
-"""Fast reid class.
+"""Fastreid class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -90,7 +90,7 @@ class FastReIdentifier(IReIdentifier):
         return feature
 
     def extract_features_boxes(self, frame_obj, boxes):
-        """Extracts features from all bounding boxes generated in the tracking stage.
+        """Extract features from all bounding boxes generated in the tracking stage.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
@@ -124,9 +124,9 @@ class FastReIdentifier(IReIdentifier):
         return cosine_similarity
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
-        """Performing re-identification using torchreid.
+        """Performing re-identification using Torchreid.
 
-        This re-identification implementations couple bounding boxes to a tracked subject
+        This re-identification implementations couple bounding boxes to a tracked subject,
         which is not currently detected on the camera. Updates list of bounding box by possibly assigning an object ID
         to an existing bounding box.
 

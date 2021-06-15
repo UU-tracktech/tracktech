@@ -1,4 +1,4 @@
-"""Contains the main methods for running YOLOR object detection on a frame.
+"""Contains the main methods for running the YOLOR object detection on a frame.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -28,13 +28,13 @@ class YolorDetector(IYoloDetector):
         device (str): Device that runs the detector.
         half (bool): Whether to half the model or not.
         classify (bool): Whether to classify.
-        names ([str]): List of names which that should get detected.
+        names ([str]): List of names, which that should get detected.
     """
     def __init__(self, config, filters):
         """Initiate the YolorDetector.
 
         Args:
-            config (ConfigParser): Configurations which also contain YOLOR configurations.
+            config (ConfigParser): Configurations, which also contain YOLOR configurations.
             filters (SectionProxy): Filtering for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -112,7 +112,7 @@ class YolorDetector(IYoloDetector):
         img = self.convert_image(img, self.device, self.half)
         pred = self.generate_predictions(img, self.model, self.config)
 
-        # Apply secondary Classifier.
+        # Apply a secondary Classifier.
         if self.classify:
             pred = apply_classifier(pred, self.modelc, img, frame_obj.frame)
 

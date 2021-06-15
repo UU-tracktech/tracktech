@@ -83,7 +83,7 @@ test('redirects to login when closing notification', async () => {
 
 //Test to check if the page shows home when the user is authenticated
 test('shows home if authenticated', async () => {
-  //Again, don't rely on values still being there, reset all required onces
+  //Again, don't rely on values still being there, reset all required ones
   require('@react-keycloak/web').__SetMockInitialized(true)
   require('@react-keycloak/web').__SetMockAuthenticated(true)
 

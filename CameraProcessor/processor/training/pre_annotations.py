@@ -17,10 +17,10 @@ class PreAnnotations:
     """Class that loads the ground truth and converts it to a list of bounding boxes.
 
     Attributes:
-        file_path (str): Path to file that contains annotations
-        skipped_lines (int): How many lines are not readable in file
-        nr_frames (int): Number of frames read by PreAnnotations
-        boxes (List[List[BoundingBox]]): List of boxes for each frame
+        file_path (str): Path to file that contains annotations.
+        skipped_lines (int): How many lines are not readable in file.
+        nr_frames (int): Number of frames read by PreAnnotations.
+        boxes (List[List[BoundingBox]]): List of boxes for each frame.
     """
     def __init__(self, file_path, nr_frames):
         """Constructor for the preAnnotations object.
