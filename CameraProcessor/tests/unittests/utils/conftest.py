@@ -10,25 +10,6 @@ from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.utils.draw import draw_tracking_boxes, draw_detection_boxes
 
-X0, X1 = 60, 120
-Y0, Y1 = 120, 180
-IMG_SIZE = 200
-
-
-@pytest.fixture
-def bbox():
-    """Fixture for an example bounding box.
-
-    Returns:
-        BoundingBox: A BoundingBox for use in testing.
-    """
-    # Create a dummy bounding box.
-    return BoundingBox(1, Rectangle(round(float(X0 / IMG_SIZE), 1),
-                                    round(float(Y0 / IMG_SIZE), 1),
-                                    round(float(X1 / IMG_SIZE), 1),
-                                    round(float(Y1 / IMG_SIZE), 1)),
-                       "Bob", 0.50)
-
 
 @pytest.fixture(params=[
     {"func": draw_detection_boxes,

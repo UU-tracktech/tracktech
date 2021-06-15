@@ -9,6 +9,40 @@ import numpy as np
 import cv2
 
 from tests.conftest import root_path
+from processor.data_object.rectangle import Rectangle
+from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
+
+
+@pytest.fixture
+def bbox():
+    """Fixture for an example bounding box.
+
+    Returns:
+        BoundingBox: A BoundingBox for use in testing.
+    """
+    img_size = 200
+    x0, x1 = 60, 120
+    y0, y1 = 120, 180
+    # Create a dummy bounding box.
+    return BoundingBox(1, Rectangle(round(float(x0 / img_size), 1),
+                                    round(float(y0 / img_size), 1),
+                                    round(float(x1 / img_size), 1),
+                                    round(float(y1 / img_size), 1)),
+                       "Bob", 0.50)
+
+
+@pytest.fixture
+def bboxes():
+    """Fixture for an example BoundingBoxes object.
+
+    Returns:
+        (BoundingBoxes): BoundingBoxes object.
+    """
+    box1 = BoundingBox(1, Rectangle(0, 0.5, 0.75, 1), "person", 0.5, object_id=5)
+    box2 = BoundingBox(1, Rectangle(0.1, 0.25, 0.5, 0.9), "car", 0.75, object_id=15)
+    box3 = BoundingBox(2, Rectangle(0.2, 0.3, 0.6, 0.8), "person", 0.8, object_id=10)
+    return BoundingBoxes([box1, box2, box3])
 
 
 @pytest.fixture
