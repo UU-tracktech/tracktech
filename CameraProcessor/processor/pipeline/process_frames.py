@@ -159,7 +159,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
         # Update command.
         elif isinstance(track_elem, UpdateCommand):
-            __handle_update_command(track_elem, re_id_data)
+            __handle_update_command(track_elem, re_identifier, re_id_data)
 
 
 def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re_id_data):
@@ -225,15 +225,19 @@ def __handle_stop_command(track_elem, re_id_data):
     re_id_data.remove_query(track_elem.object_id)
 
 
-def __handle_update_command(track_elem, re_id_data):
+def __handle_update_command(track_elem, re_identifier, re_id_data):
     """Handles logic for the Update Command.
 
     Args:
         track_elem (UpdateCommand): The update command the function processes.
+        re_identifier (IReIdentifier): re-identifier extracting features and comparing them
         re_id_data (ReidData): Object containing data necessary for re-identification.
     """
-    logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
-    re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
+
+    # Check if the size of the feature map corresponds with the current re-id.
+    if re_identifier.feature_map_size == len(track_elem.feature_map):
+        logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
+        re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
 
 
 # pylint: disable=unused-argument

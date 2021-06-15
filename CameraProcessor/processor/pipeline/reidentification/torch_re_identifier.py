@@ -53,6 +53,16 @@ class TorchReIdentifier(IReIdentifier):
 
         self.config = config
         self.threshold = float(self.config["threshold"])
+        self.__feature_map_size = 512
+
+    @property
+    def feature_map_size(self):
+        """Feature map size getter.
+
+        Returns:
+            int: size of the feature map.
+        """
+        return self.__feature_map_size
 
     def extract_features(self, frame_obj, bbox):
         """Extract features from a single bounding box.
