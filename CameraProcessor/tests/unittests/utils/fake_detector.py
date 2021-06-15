@@ -13,7 +13,7 @@ from processor.data_object.rectangle import Rectangle
 
 
 class FakeDetector(IDetector):
-    """A fake detector which does nonsense detections."""
+    """A fake detector, which does nonsense detections."""
     def detect(self, _):
         """Appends a couple random bounding boxes.
 

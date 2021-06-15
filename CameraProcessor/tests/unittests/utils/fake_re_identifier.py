@@ -7,6 +7,7 @@ Utrecht University within the Software Project course.
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_boxes import BoundingBoxes
 
+
 class FakeReIdentifier(IReIdentifier):
     """A fake re-identifier that implements the same methods but just mocks some functionality."""
 

@@ -63,7 +63,7 @@ class TestWebsocketClient(WebsocketCoroutines):
     @tornado.testing.gen_test(timeout=10)
     def test_connect_with_identifier(self):
         """Test whether websocket is able to connect with an identifier and checks properties."""
-        # Connect with identifier.
+        # Connect with the identifier.
         identifier = 'mock_id'
         dummy_websocket = yield self.dummy_ws_connect("/", identifier)
 

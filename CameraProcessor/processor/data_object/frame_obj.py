@@ -1,4 +1,4 @@
-"""Contains FrameObj class which holds information.
+"""Contains FrameObj class, which holds information.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.

@@ -29,12 +29,17 @@ COPY .coveragerc .
 COPY requirements-test.txt requirements-test.txt
 RUN ["pip","install","--no-cache-dir","-r","requirements-test.txt"]
 
-COPY tests/unittest tests
+COPY tests tests
 
 # Create multiple streams folders
-RUN ["mkdir","streams1","streams2","streams3"]
+RUN ["mkdir","streams0","streams1","streams2","streams3"]
 
-ENTRYPOINT  ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & pytest --cov-config=.coveragerc --cov-report term --cov-report xml --cov-report term-missing --cov=src/ tests"]
+ENTRYPOINT  ["bash","-c", \
+             "ffmpeg -loglevel fatal -f lavfi -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost:1930/stream & \
+              ffmpeg -loglevel fatal -f lavfi -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost:1931/stream & \
+              ffmpeg -loglevel fatal -f lavfi -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost:1932/stream & \
+              ffmpeg -loglevel fatal -f lavfi -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost:1933/stream & \
+              pytest --cov-config=.coveragerc --cov-report term --cov-report xml --cov-report term-missing --cov=src/ tests"]
 
 
 # Installation
@@ -70,7 +75,7 @@ WORKDIR /app
 EXPOSE 80
 
 # Run a test stream and the server
-ENTRYPOINT ["bash","-c", "ffmpeg -f lavfi  -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & python -u src/main.py"]
+ENTRYPOINT ["bash","-c", "ffmpeg -f lavfi -re -i testsrc -vcodec libx264 -listen 1 -profile:v baseline -pix_fmt yuv420p -f flv rtmp://localhost/stream & python -u src/main.py"]
 
 
 FROM installer AS production

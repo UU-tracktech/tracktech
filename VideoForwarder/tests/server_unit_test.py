@@ -1,10 +1,11 @@
-"""Unit test of the forwarder checks camera.py + json conversion.
+"""Unit test of the forwarder checks camera.py and json conversion.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
+from time import sleep
 from os import environ
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
@@ -19,7 +20,7 @@ class ServerUnitTest(AsyncHTTPTestCase):
 
     def get_app(self):
         """Creates the application to test."""
-        environ["CAMERA_URL"] = "rtmp://localhost/stream"
+        environ["CAMERA_URL"] = "rtmp://localhost:1932/stream"
         environ["CAMERA_AUDIO"] = "false"
 
         environ["STREAM_LOW"] = 'true'
@@ -28,11 +29,11 @@ class ServerUnitTest(AsyncHTTPTestCase):
 
         return Application(
             [
-                (r'/(.*)', CameraHandler, {'path': '/app/streams1'})
+                (r'/(.*)', CameraHandler, {'path': '/app/streams2'})
             ],
             camera=create_camera(),
             stream_options=create_stream_options(),
-            remove_delay=1.0,
+            remove_delay=10.0,
             timeout_delay=get_timeout_delay(),
             wait_delay=get_wait_delay()
         )
@@ -64,8 +65,21 @@ class ServerUnitTest(AsyncHTTPTestCase):
         assert response.code == 200
 
     @testing.gen_test(timeout=10)
+    def test_stop_callback(self):
+        """Check if the cancel callback gets stopped."""
+
+        # Retrieve the steam file.
+        response1 = yield self.my_fetch('/stream.m3u8')
+        sleep(5)
+        response2 = yield self.my_fetch('/stream.m3u8')
+
+        # Check if the response is okay.
+        assert response1.code == 200
+        assert response2.code == 200
+
+    @testing.gen_test(timeout=10)
     def test_invalid_http_request(self):
-        """Checks connection between forwarder and mock client with invalid url.
+        """Checks connection between forwarder and mock client with invalid URL.
 
         Does not use pytest.raises since it cannot yield.
         """
@@ -90,3 +104,12 @@ class ServerUnitTest(AsyncHTTPTestCase):
 
         # Assert the response is Not Found.
         assert response_high_res.code == 404
+
+    @testing.gen_test(timeout=10)
+    def test_options(self):
+        """Tests whether 204 is returned when using options instead of get (for preflight checks)."""
+        # Create a connection.
+        response = yield self.http_client.fetch(self.get_url('/stream.m3u8'), method='OPTIONS', raise_error=False)
+
+        # Assert the response is empty.
+        assert response.code == 204

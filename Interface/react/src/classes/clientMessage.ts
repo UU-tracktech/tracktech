@@ -32,7 +32,7 @@ export class BoxesClientMessage extends ClientMessage {
   boxes: Box[]
 }
 
-/** The newObject message is sent when a new object is beeing tracked and a cutout is available */
+/** The newObject message is sent when a new object is being tracked, and a cutout is available */
 export class NewObjectClientMessage extends ClientMessage {
   constructor(objectId: number, image: string) {
     super('newObject')
