@@ -9,7 +9,6 @@ import copy
 from scipy.spatial.distance import euclidean, cosine
 
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
-from processor.utils.features import resize_cutout
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 
@@ -52,19 +51,6 @@ class PytorchReIdentifier(IReIdentifier):
             features.append(self.extract_features(frame_obj, box))
 
         return features
-
-    def extract_features_from_cutout(self, cutout):
-        """Given a cutout, extracts the features from it.
-
-        Args:
-            cutout (np.ndarray): cutout of the object to extract features from.
-
-        Returns:
-            [float]: Feature vector of a single bounding box.
-        """
-        resized_cutout = resize_cutout(cutout, self.config)
-
-        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using a re-identification implementation.

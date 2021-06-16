@@ -11,6 +11,7 @@ import gdown
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
 from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
 from processor.pipeline.reidentification.pytorch_re_identifier import PytorchReIdentifier
+from processor.utils.features import resize_cutout
 import processor.utils.features as UtilsFeatures
 
 
@@ -84,3 +85,16 @@ class FastReIdentifier(PytorchReIdentifier):
         feature = self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
+
+    def extract_features_from_cutout(self, cutout):
+        """Given a cutout, extracts the features from it.
+
+        Args:
+            cutout (np.ndarray): cutout of the object to extract features from.
+
+        Returns:
+            [float]: Feature vector of a single bounding box.
+        """
+        resized_cutout = resize_cutout(cutout, self.config)
+
+        return self.extractor(resized_cutout).cpu().numpy().tolist()

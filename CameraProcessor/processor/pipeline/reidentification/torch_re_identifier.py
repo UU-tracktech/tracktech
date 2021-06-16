@@ -10,6 +10,7 @@ import gdown
 import processor.utils.features as UtilsFeatures
 from processor.pipeline.reidentification.pytorch_re_identifier import PytorchReIdentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
+from processor.utils.features import resize_cutout
 
 
 class TorchReIdentifier(PytorchReIdentifier):
@@ -79,3 +80,16 @@ class TorchReIdentifier(PytorchReIdentifier):
         feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
 
         return feature
+
+    def extract_features_from_cutout(self, cutout):
+        """Given a cutout, extracts the features from it.
+
+        Args:
+            cutout (np.ndarray): cutout of the object to extract features from.
+
+        Returns:
+            [float]: Feature vector of a single bounding box.
+        """
+        resized_cutout = resize_cutout(cutout, self.config)
+
+        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
