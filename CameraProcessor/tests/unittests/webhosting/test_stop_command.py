@@ -1,4 +1,4 @@
-"""Tests stop_command.py.
+"""Tests stop_message.py.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -13,11 +13,11 @@ from processor.webhosting.stop_command import StopCommand
 class TestStopCommand:
     """Tests the stop command."""
     def setup_method(self):
-        """Creates a StopCommand object."""
+        """Creates a StopMessage object."""
         self.start = StopCommand(1)
 
     def test_stop_command(self):
-        """Asserts if StopCommand object has been initialized correctly."""
+        """Asserts if StopMessage object has been initialized correctly."""
         assert self.start.object_id == 1
 
 

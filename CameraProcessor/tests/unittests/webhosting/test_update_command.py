@@ -1,4 +1,4 @@
-"""Tests update_command.py.
+"""Tests update_message.py.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -14,11 +14,11 @@ class TestUpdateCommand:
     """Tests the update command."""
 
     def setup_method(self):
-        """Creates a UpdateCommand object."""
+        """Creates a UpdateMessage object."""
         self.update = UpdateCommand([0.1] * 512, 1)
 
     def test_update_command(self):
-        """Asserts if UpdateCommand object has been initialized correctly."""
+        """Asserts if UpdateMessage object has been initialized correctly."""
         assert self.update.feature_map == [0.1] * 512
         assert self.update.object_id == 1
 
