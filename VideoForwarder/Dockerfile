@@ -1,7 +1,7 @@
 # Installation using gpu support
-FROM nvidia/cuda:11.0-cudnn8-runtime-ubuntu18.04-rc as gpu
+FROM nvidia/cuda:11.2.2-runtime-ubuntu20.04 as gpu
 WORKDIR /app
-ENV PYTHONPATH=/app
+ENV PYTHONPATH /app
 
 # Install python and ffmpeg (noninteractive)
 ENV DEBIAN_FRONTEND=noninteractive
@@ -13,10 +13,10 @@ RUN ["mkdir","streams"]
 
 # Install python dependencies
 COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
-RUN ["pip","install","--no-cache-dir","Auth-1.0.tar.gz"]
+RUN ["python3.8","-m","pip","install","--no-cache-dir","Auth-1.0.tar.gz"]
 
 COPY requirements.txt requirements.txt
-RUN ["pip","install","--no-cache-dir","-r","requirements.txt"]
+RUN ["python3.8","-m","pip","install","--no-cache-dir","-r","requirements.txt"]
 
 # Copy the actual source code
 COPY src src
@@ -26,9 +26,9 @@ EXPOSE 80
 EXPOSE 443
 
 # Set the encoding in the environment, as we are using a gpu
-ENV STREAM_ENCODING=h264_nvenc
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES video,compute,utility
+ENV STREAM_ENCODING h264_nvenc
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES video
 
 # Run server
 ENTRYPOINT ["python3.8","-u","src/main.py"]
@@ -37,7 +37,7 @@ ENTRYPOINT ["python3.8","-u","src/main.py"]
 # Installation
 FROM python:3.8-slim-buster as installer
 WORKDIR /app
-ENV PYTHONPATH=/app
+ENV PYTHONPATH /app
 
 # Install ffmpeg
 RUN ["apt","update"]
@@ -83,12 +83,12 @@ FROM python:3.8-slim-buster as lint
 WORKDIR /app
 
 # Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONDONTWRITEBYTECODE 1
 
 # Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED 1
 
-ENV PYTHONPATH=/app
+ENV PYTHONPATH /app
 
 # Install pylint
 RUN ["pip", "install", "pylint==2.8.2"]
