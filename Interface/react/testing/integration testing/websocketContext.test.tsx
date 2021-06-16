@@ -12,10 +12,11 @@ import {
   websocketArgs,
   websocketContext,
   WebsocketProvider
-} from '../../src/components/websocketContext'
-import { Overlay } from '../../src/components/overlay'
-import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
-import { Box, BoxesClientMessage } from '../../src/classes/clientMessage'
+} from 'components/websocketContext'
+import { Overlay } from 'components/overlay'
+import { StartOrchestratorMessage } from 'classes/orchestratorMessage'
+import { BoxesClientMessage } from 'classes/clientMessage'
+import { Box } from 'classes/box'
 
 var websocketAddress
 
@@ -34,7 +35,6 @@ beforeEach(() => {
           {({
             send,
             setSocket,
-            socketUrl,
             connectionState,
             objects
           }: websocketArgs) => (

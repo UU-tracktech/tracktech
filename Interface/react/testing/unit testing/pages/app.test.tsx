@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { App } from '../../../src/app'
+import { App } from 'app'
 import { act } from 'react-dom/test-utils'
 
 // Tests to see if App displays the correct content based on keycloak status

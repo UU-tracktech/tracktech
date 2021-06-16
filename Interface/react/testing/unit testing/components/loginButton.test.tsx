@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { screen, render } from '@testing-library/react'
-import { LoginButton } from '../../../src/components/loginButton'
+import { LoginButton } from 'components/loginButton'
 
 describe('Tests for the login button', () => {
   it('Shows skeleton while loading', () => {

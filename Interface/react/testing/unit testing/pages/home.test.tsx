@@ -8,9 +8,9 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { getByText, queryByText, render, screen } from '@testing-library/react'
-import { Home } from '../../../src/pages/home'
+import { Home } from 'pages/home'
 import '@testing-library/jest-dom'
-import { environmentContext } from '../../../src/components/environmentContext'
+import { environmentContext } from 'components/environmentContext'
 
 // Test environment doesn't have an alert implementation
 // Give it a temporary implementation to prevent warning during tests

@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
-import useAuthState from '../../../src/classes/useAuthState'
+import useAuthState from 'classes/useAuthState'
 
 // Collection of tests that check each state individually and then combined
 describe('Authentication state tests', () => {
