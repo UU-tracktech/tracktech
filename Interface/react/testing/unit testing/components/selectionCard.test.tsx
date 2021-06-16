@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { SelectionCard } from 'components/selectionCard'
+import { SelectionCard } from '../../../src/components/selectionCard'
 
 describe('Tests the properties of the selectionCard component', () => {
   // Test if the card gets the correct title and renders this title

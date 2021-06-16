@@ -12,8 +12,8 @@ import {
   GetSegmentStarttime,
   PrintTimestamp,
   VideoPlayer
-} from 'components/videojsPlayer'
-import { Box } from 'classes/box'
+} from '../../../src/components/videojsPlayer'
+import { Box } from '../../../src/classes/box'
 
 let mockSnapCallback = jest.fn()
 let mockOnTimestamp = jest.fn()

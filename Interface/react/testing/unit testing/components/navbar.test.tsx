@@ -9,7 +9,7 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { screen, render } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { NavMenu } from 'components/navbar'
+import { NavMenu } from '../../../src/components/navbar'
 
 // Keycloak mock setup
 beforeAll(() => {

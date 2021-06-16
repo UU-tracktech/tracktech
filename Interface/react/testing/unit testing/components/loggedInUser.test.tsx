@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { screen, render } from '@testing-library/react'
-import { LoggedInUser } from 'components/loggedInUser'
+import { LoggedInUser } from '../../../src/components/loggedInUser'
 
 // Collection of tests to see if the component shows the correct thing based on the state
 describe('State tests', () => {

@@ -10,7 +10,7 @@ import React from 'react'
 import { getByText, queryByText, render, screen } from '@testing-library/react'
 import { Home } from 'pages/home'
 import '@testing-library/jest-dom'
-import { environmentContext } from 'components/environmentContext'
+import { environmentContext } from '../../../src/components/environmentContext'
 
 // Test environment doesn't have an alert implementation
 // Give it a temporary implementation to prevent warning during tests

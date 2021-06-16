@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { NeedLogin } from 'pages/needLogin'
+import { NeedLogin } from '../../../src/pages/needLogin'
 
 // Test if the login alert renders correctly
 test('should show the login alert', () => {
