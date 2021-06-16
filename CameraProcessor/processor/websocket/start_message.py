@@ -17,8 +17,9 @@ class StartMessage(IMessage):
     """StartMessage class that stores data regarding which object to stop tracking."""
 
     def __init__(self, object_id, image=None, frame_id=None, box_id=None):
-        """Constructor for the StopMessage class. A start command either contains a cutout,
-           a combination of frame_id and box_id, or both.
+        """Constructor for the StopMessage class.
+
+        A start command either contains a cutout, a combination of frame_id and box_id, or both.
 
         Args:
             object_id (int): Identifier of the object to be followed.
@@ -35,7 +36,7 @@ class StartMessage(IMessage):
         if box_id is not None and not isinstance(box_id, int):
             raise TypeError("Box id should be an integer")
 
-        # Set the cutout to none
+        # Set the cutout to none.
         self.__cutout = None
 
         # Convert the cutout (if it exist), to an openCV image, rather than a base 64 encoded image.
@@ -62,14 +63,14 @@ class StartMessage(IMessage):
         if "objectId" not in message.keys():
             raise KeyError("objectId missing")
 
-        # The start command should at least contain either a cutout, or a box_id and frame_id
-        # Otherwise, there is not enough data to generate a cutout
+        # The start command should at least contain either a cutout, or a box_id and frame_id.from.
+        # Otherwise, there is not enough data to generate a cutout.
         if "image" not in message.keys() and ("boxId" not in message.keys() or "frameId" not in message.keys()):
             raise KeyError("Not enough data for cutout in message")
 
         object_id = message["objectId"]
 
-        # These could all possibly none
+        # These could all possibly be none.
         image = message.get("image", None)
         box_id = message.get("boxId", None)
         frame_id = message.get("frameId", None)
@@ -93,14 +94,17 @@ class StartMessage(IMessage):
         return message
 
     def get_cutout(self, framebuffer):
-        """ Tries to get the cutout from the information in the StartMessage, either from the frame buffer
-        if that is possible, otherwise directly from the sent image if that is possible, and otherwise
-        raise an error and don't follow the subject.
+        """Tries to get the cutout from the information in the StartMessage.
+
+        The cutout is retrieved either from the frame buffer if that is possible.
+        Otherwise directly from the sent image if that is possible.
+        Otherwise raise an error and don't follow the subject.
 
         Args:
-            framebuffer (FrameBuffer) frame buffer object that contains
+            framebuffer (FrameBuffer) frame buffer object that contains the different frames.
 
         Returns:
+            (np.ndarray): OpenCV-readable cutout of the subject to be followed.
         """
         # Try to find the frame in the frame buffer if it was not already found before.
         error = None
@@ -132,9 +136,10 @@ class StartMessage(IMessage):
         """ Converts the base64 encoded image from the websocket to a np array usable by OpenCV.
 
         Args:
-            cutout (string): a string of the image in base64 png format
+            image(string): a string of the image in base64 png format.
 
         Returns:
+            (np.ndarray): the image in OpenCV-readable format.
         """
         # Extract features from image.
         encoded_data = base64.b64decode(image.split(',')[1])
@@ -163,7 +168,7 @@ class StartMessage(IMessage):
         """Get frame id.
 
         Returns:
-            (float): Identifier of the frame that contains the
+            (float): Identifier of the frame that contains the object to be followed.
         """
         return self.__frame_id
 

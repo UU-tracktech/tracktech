@@ -8,11 +8,8 @@ Utrecht University within the Software Project course.
 import sys
 import logging
 import asyncio
-import base64
 import cv2
-import numpy as np
 
-import processor.utils.text as text
 import processor.utils.display as display
 
 from processor.pipeline.frame_buffer import FrameBuffer
@@ -154,7 +151,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
                 feature_map = re_identifier.extract_features_from_cutout(track_elem.get_cutout(framebuffer))
 
                 # Sends the feature map to the orchestrator using a Websocket client.
-                ws_client.send_command(UpdateMessage(track_elem.object_id, feature_map))
+                ws_client.send_message(UpdateMessage(track_elem.object_id, feature_map))
 
                 # Extract the features from this bounding box and store them in the data.
                 re_id_data.add_query_feature(track_elem.object_id, feature_map)
@@ -166,10 +163,8 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
             # If the image could not be found, an error is raised.
             except IndexError as index_err:
                 logging.error(index_err)
-                # send_error_to_orchestrator(ws_client, error)
             except ValueError as value_err:
                 logging.error(value_err)
-                # send_error_to_orchestrator(ws_client, error)
 
         # Stop command.
         elif isinstance(track_elem, StopMessage):

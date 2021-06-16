@@ -4,7 +4,6 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import json
 from collections import deque
 
 
@@ -18,5 +17,13 @@ class FakeWebsocket:
         """Create a message queue in order to save the messages."""
         self.message_queue = deque()
 
-    def send_command(self, command):
-        return command
+    def send_message(self, message):
+        """Sends mock message.
+
+        Args:
+            message (IMessage): message to "send".
+
+        Returns:
+            (IMessage): The message itself.
+        """
+        return message

@@ -139,7 +139,7 @@ class TestProcessFrames:
             tracker,
             re_identifier,
             lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
-            websocket_client.send_command(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
+            websocket_client.send_message(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
             websocket_client
         )
 
