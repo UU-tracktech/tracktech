@@ -14,5 +14,5 @@ module.exports = {
     "setupFiles": [
       "<rootDir>/setupJest.js"
     ],
-    "modulePaths": ["<rootDir>/react/src"]
+    "modulePaths": ["<rootDir>/src"]
   }
