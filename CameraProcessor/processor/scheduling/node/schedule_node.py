@@ -118,7 +118,7 @@ class ScheduleNode(INode):
             Exception: argument is provided twice, existing argument would be overwritten.
         """
         if len(self.__arguments) <= arg_nr:
-            raise IndexError("Index %s too large for arguments array with size %x" %
+            raise IndexError('Index %s too large for arguments array with size %x' %
                              (arg_nr, len(self.__arguments)))
 
         # Ensure previously supplied argument isn't overwritten.
@@ -127,8 +127,8 @@ class ScheduleNode(INode):
 
             self.__needed_args -= 1
         else:
-            raise Exception("Argument should only be provided once by the scheduler, "
-                            "this indicates unnecessary execution by the scheduler")
+            raise Exception('Argument should only be provided once by the scheduler, '
+                            'this indicates unnecessary execution by the scheduler.')
 
     @property
     def global_map(self):

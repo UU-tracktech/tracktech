@@ -167,15 +167,15 @@ class TestWebsocketClient(WebsocketCoroutines):
     def test_wrong_type(self):
         """Wrong type gets handled correctly."""
         dummy_websocket = DummyWebsocketClient('')
-        dummy_websocket._on_message('{"type": "yes"}')
+        dummy_websocket._on_message("{'type': 'yes'}")
 
     def test_generate_tracking_message_simple(self):
         """Test if simple tracking message gets generated correctly."""
         dummy_websocket = DummyWebsocketClient('')
         simple = {
-            "type": "start",
-            "objectId": 1,
-            "image": 1,
+            'type': 'start',
+            'objectId': 1,
+            'imag': 1,
         }
         simple_msg = dummy_websocket.generate_tracking_message(simple)
         assert isinstance(simple_msg, StartCommandSimple)
@@ -184,11 +184,11 @@ class TestWebsocketClient(WebsocketCoroutines):
         """Test if extended tracking message gets generated correctly."""
         dummy_websocket = DummyWebsocketClient('')
         extended = {
-            "type": "start",
-            "objectId": 1,
-            "image": 1,
-            "frameId": 1,
-            "boxId": 1
+            'type': 'start',
+            'objectId': 1,
+            'image': 1,
+            'frameId': 1,
+            'boxId': 1
         }
         extended_msg = dummy_websocket.generate_tracking_message(extended)
         assert isinstance(extended_msg, StartCommandExtended)
@@ -197,10 +197,10 @@ class TestWebsocketClient(WebsocketCoroutines):
         """Test if search tracking message gets generated correctly."""
         dummy_websocket = DummyWebsocketClient('')
         search = {
-            "type": "start",
-            "objectId": 1,
-            "frameId": 1,
-            "boxId": 1
+            'type': 'start',
+            'objectId': 1,
+            'frameId': 1,
+            'boxId': 1
         }
         search_msg = dummy_websocket.generate_tracking_message(search)
         assert isinstance(search_msg, StartCommandSearch)

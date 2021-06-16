@@ -61,6 +61,7 @@ def create_tracker(tracker_name, configs):
     tracker = itracker(tracker_config)
     return tracker
 
+
 def create_reidentifier(reid_name, configs):
     """Creates and returns a re-identifier of the given type.
 

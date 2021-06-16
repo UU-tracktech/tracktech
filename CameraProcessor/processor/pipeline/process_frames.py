@@ -196,7 +196,7 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
         else:
             feature_map = re_identifier.extract_features(stored_frame, stored_box)
     else:
-        error = NameError("Unknown Start Command type.")
+        error = NameError('Unknown Start Command type.')
 
     # If successfully extracted, send the feature_map to the orchestrator.
     if feature_map is not None:
@@ -296,10 +296,10 @@ def opencv_display(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes
 
     # Play the video in a window called "Output Video".
     try:
-        cv2.imshow("Output Video", tiled_image)
+        cv2.imshow('Output Video', tiled_image)
     except OSError as err:
         # Figure out how to get Docker to use GUI.
-        raise OSError("Error displaying video. Are you running this in Docker perhaps?") \
+        raise OSError('Error displaying video. Are you running this in Docker perhaps?') \
             from err
 
     # This next line is **ESSENTIAL** for the video to actually play.

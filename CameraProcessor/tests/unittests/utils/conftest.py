@@ -27,19 +27,19 @@ def bbox():
                                     round(float(Y0 / IMG_SIZE), 1),
                                     round(float(X1 / IMG_SIZE), 1),
                                     round(float(Y1 / IMG_SIZE), 1)),
-                       "Bob", 0.50)
+                       'Bob', 0.50)
 
 
 @pytest.fixture(params=[
-    {"func": draw_detection_boxes,
-     "text": f'Bob {round(float(0.50), 2)}',
-     "seed": "Bob"
+    {'func': draw_detection_boxes,
+     'text': f'Bob {round(float(0.50), 2)}',
+     'seed': "Bob"
      },
-    {"func": draw_tracking_boxes,
-     "text": "1",
-     "seed": 1
+    {'func': draw_tracking_boxes,
+     'text': "1",
+     'seed': 1
      }],
-    ids=["Detection", "Tracking"])
+    ids=['Detection', 'Tracking'])
 def func_text_seed(request):
     """Fixture for the function, text, and seed.
 

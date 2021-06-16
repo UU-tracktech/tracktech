@@ -26,7 +26,7 @@ class WebsocketCoroutines(AsyncHTTPTestCase):
         Returns:
             DummyWebsocketClient: A dummy websocket client used for testing.
         """
-        ws_url = "ws://127.0.0.1:%d%s" % (self.get_http_port(), path)
+        ws_url = 'ws://127.0.0.1:%d%s' % (self.get_http_port(), path)
         dummy_websocket = DummyWebsocketClient(ws_url, identifier)
         # Connect websocket.
         await dummy_websocket.connect()
@@ -44,6 +44,6 @@ class WebsocketCoroutines(AsyncHTTPTestCase):
             websocket.Connection: Websocket connection that is created by the coroutine.
         """
         websocket_connection = yield websocket_connect(
-            "ws://127.0.0.1:%d%s" % (self.get_http_port(), path), **kwargs
+            'ws://127.0.0.1:%d%s' % (self.get_http_port(), path), **kwargs
         )
         raise tornado.gen.Return(websocket_connection)

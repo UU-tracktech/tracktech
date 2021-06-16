@@ -24,6 +24,6 @@ class FakeDetector(IDetector):
 
         # Append random boxes for detection.
         for i in range(random.randrange(5)):
-            bounding_boxes.append(BoundingBox(i, Rectangle(0, 0, 1, 1), "fake class", 0.5))
+            bounding_boxes.append(BoundingBox(i, Rectangle(0, 0, 1, 1), 'fake class', 0.5))
 
         return BoundingBoxes(bounding_boxes)

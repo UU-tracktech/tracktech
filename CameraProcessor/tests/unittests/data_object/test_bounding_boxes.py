@@ -27,9 +27,9 @@ class TestBoundingBoxes:
 
     def setup_method(self):
         """Sets up BoundingBoxes for unit testing."""
-        self.box1 = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5)
-        self.box1_duplicate = BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5)
-        self.box2 = BoundingBox(2, Rectangle(0, 0, 1, 1), "person", 0.5)
+        self.box1 = BoundingBox(1, Rectangle(0, 0, 1, 1), 'person', 0.5)
+        self.box1_duplicate = BoundingBox(1, Rectangle(0, 0, 1, 1), 'person', 0.5)
+        self.box2 = BoundingBox(2, Rectangle(0, 0, 1, 1), 'person', 0.5)
         self.boxes_id = 'test'
 
         self.boxes = BoundingBoxes([self.box1, self.box2], self.boxes_id)
