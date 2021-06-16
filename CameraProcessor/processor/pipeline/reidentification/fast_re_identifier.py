@@ -50,7 +50,6 @@ class FastReIdentifier(PytorchReIdentifier):
 
         extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
 
-        self.__feature_map_size = 2048
         super().__init__(config, extractor)
 
     @property

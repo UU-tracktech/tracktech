@@ -46,7 +46,6 @@ class TorchReIdentifier(PytorchReIdentifier):
             model_path=weights_path,
             device=config['device'])
 
-        self.__feature_map_size = 512
         super().__init__(config, extractor)
 
     @property

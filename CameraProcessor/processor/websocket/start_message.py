@@ -123,6 +123,7 @@ class StartMessage(IMessage):
             # We can still get the data from the image.
             if self.__image is not None:
                 self.__cutout = self.__image
+                return self.__cutout
             # There is no way to get the image. Log this and don't use the tracking data.
             if error is not None:
                 raise error
