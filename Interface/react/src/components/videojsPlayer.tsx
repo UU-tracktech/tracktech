@@ -240,6 +240,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
   /** Calls the onResize callback function in order to let the overlay know the exact screen dimensions to scale to. */
   function onResize() {
     if (playerRef.current && props.onResize) {
+      // Get the dimensions of the video player.
       var player = playerRef.current.currentDimensions()
 
       var playerWidth = player.width
@@ -250,8 +251,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
       var videoHeight = playerRef.current.videoHeight()
       var videoAspect = videoWidth / videoHeight
 
+      // If video aspect can't be gotten, use default 16:9.
       if (isNaN(videoAspect)) {
         videoAspect = 16 / 9
+        // Set the video width to match ratio.
         if (playerAspect < videoAspect) {
           videoWidth = playerWidth
           videoHeight = (playerWidth / 16) * 9
@@ -261,6 +264,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         }
       }
 
+      // Stretch video to match width.
       if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
@@ -270,6 +274,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
           left: 0,
           top: (playerHeight - actualVideoHeight) / 2
         })
+      // Stretch video to match height.
       } else {
         var heightRatio = playerHeight / videoHeight
         var actualVideoWidth = heightRatio * videoWidth
@@ -290,15 +295,18 @@ export function VideoPlayer(props: VideoPlayerProps) {
    */
   function takeSnapshot(box: Box) {
     if (videoRef.current) {
+      // Create size relative to videoplayer.
       var { left, top, width, height } = box.toSize(
         videoRef.current.videoWidth,
         videoRef.current.videoHeight
       )
+      // Create new canvas of correct size.
       var canvas = document.createElement('canvas')
       canvas.width = width
       canvas.height = height
       var context = canvas.getContext('2d')
       if (context) {
+        // Create the cutout from the video
         context.drawImage(
           videoRef.current,
           left,
