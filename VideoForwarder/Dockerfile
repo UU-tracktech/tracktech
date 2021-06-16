@@ -1,11 +1,42 @@
+# Installation using gpu support
+FROM nvidia/cuda:11.3.1-base-ubuntu20.04 as gpu
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+# Install python and ffmpeg (noninteractive)
+ENV DEBIAN_FRONTEND=noninteractive
+RUN ["apt","update"]
+RUN ["apt","install","-y","python3.8","python3-pip","ffmpeg"]
+
+# Create a streams folder
+RUN ["mkdir","streams"]
+
+# Install python dependencies
+COPY "Auth-1.0.tar.gz" "Auth-1.0.tar.gz"
+RUN ["pip","install","--no-cache-dir","Auth-1.0.tar.gz"]
+
+COPY requirements.txt requirements.txt
+RUN ["pip","install","--no-cache-dir","-r","requirements.txt"]
+
+# Copy the actual source code
+COPY src src
+
+# Make sure port is available
+EXPOSE 80
+EXPOSE 443
+
+# Run server
+ENTRYPOINT ["python3.8","-u","src/main.py"]
+
+
 # Installation
 FROM python:3.8-slim-buster as installer
 WORKDIR /app
 ENV PYTHONPATH=/app
 
 # Install ffmpeg
-RUN apt update
-RUN apt install -y ffmpeg
+RUN ["apt","update"]
+RUN ["apt","install","-y","ffmpeg"]
 
 # Create a streams folder
 RUN ["mkdir","streams"]
