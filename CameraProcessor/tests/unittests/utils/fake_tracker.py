@@ -41,8 +41,8 @@ class FakeTracker(ITracker):
 
         # Append some tracked boxes.
         for i in range(random.randrange(5)):
-            bbox = BoundingBox(i, Rectangle(0, 0, 1, 1), "fake class", 0.5)
+            bbox = BoundingBox(i, Rectangle(0, 0, 1, 1), 'fake class', 0.5)
             tracked_bounding_boxes.append(bbox)
 
-        logging.info("Finished processing frame %placeholder%")
+        logging.info('Finished processing frame %placeholder%.')
         return BoundingBoxes(tracked_bounding_boxes)

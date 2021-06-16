@@ -99,7 +99,7 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.2 \
                and parsed_box.ybr == 0.2
         assert parsed_box.score == 0.5
-        assert parsed_box.image_name == "0"
+        assert parsed_box.image_name == '0'
 
         # Checking in box2 is correct.
         parsed_box = parsed_boxes[1]
@@ -108,7 +108,7 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.3 \
                and parsed_box.ybr == 0.3
         assert parsed_box.score == 0.7
-        assert parsed_box.image_name == "1"
+        assert parsed_box.image_name == '1'
 
         # Checking in box3 is correct.
         parsed_box = parsed_boxes[2]
@@ -117,7 +117,7 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.6 \
                and parsed_box.ybr == 0.6
         assert parsed_box.score == 0.9
-        assert parsed_box.image_name == "1"
+        assert parsed_box.image_name == '1'
 
     def draw_plots(self, accuracy_object, configs):
         """Draws the plots and checks whether files are indeed created.

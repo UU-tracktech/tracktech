@@ -49,24 +49,24 @@ class YolorDetector(IYoloDetector):
         # Initialize.
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
-                logging.info("CUDA unavailable")
+                logging.info('CUDA unavailable')
                 self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA.
         if self.device.type == 'cpu':
-            logging.info("I am using the CPU. Check CUDA version,"
-                         "or whether Pytorch is installed with CUDA support.")
+            logging.info('I am using the CPU. Check CUDA version,'
+                         'or whether Pytorch is installed with CUDA support.')
         else:
             logging.info("I am using GPU")
 
         # Download weights if not present.
         if not os.path.exists(self.config['weights_path']):
-            logging.warning(f"Weight files for YOLOR not found, downloading to {self.config['weights_path']}")
-            url = "https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76"
+            logging.warning(f'Weight files for YOLOR not found, downloading to {self.config["weights_path"]}')
+            url = 'https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76'
             output = self.config['weights_path']
             gdown.download(url, output, quiet=False)
         else:
-            logging.info(f"Yolor weights found at {self.config['weights_path']}")
+            logging.info(f'Yolor weights found at {self.config["weights_path"]}')
 
         # Load model.
         if self.device.type == 'cpu':

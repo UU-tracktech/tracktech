@@ -70,7 +70,7 @@ class AccuracyObject:
                 # Parse a single box and append it to the list of already parsed boxes.
                 # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(
-                    label="undefined",
+                    label='undefined',
                     xtl=box.rectangle.x1,
                     ytl=box.rectangle.y1,
                     xbr=box.rectangle.x2,
@@ -98,7 +98,7 @@ class AccuracyObject:
         elif annotation_format == 'MOT':
             dataloader = MotDataloader(self.configs, path_location)
         else:
-            return ValueError("This is not a valid dataloader")
+            return ValueError('This is not a valid dataloader')
         return dataloader
 
     def read_boxes(self, annotation_format, path_location):
@@ -164,7 +164,7 @@ class AccuracyObject:
             self.draw_pr_plot(result[1])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Run accuracy.
     config_parser = ConfigParser('configs.ini', True)
     test_object = AccuracyObject(config_parser.configs)

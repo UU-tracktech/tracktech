@@ -37,12 +37,12 @@ def main(configs):
     capture = ImageCapture(accuracy_config['source_path'])
 
     # Instantiate the detector.
-    print("Instantiating detector...")
+    print('Instantiating detector...')
     detector = create_detector(configs['Accuracy']['detector'], configs)
     tracker = create_tracker(configs['Accuracy']['tracker'], configs)
 
     # Frame counter starts at 0. Will probably work differently for streams.
-    print("Starting video stream...")
+    print('Starting video stream...')
 
     # Empty reid data.
     reid_data = ReidData()

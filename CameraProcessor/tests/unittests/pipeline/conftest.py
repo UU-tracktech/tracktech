@@ -8,7 +8,7 @@ import pytest
 from tests.unittests.utils.fake_websocket import FakeWebsocket
 
 
-@pytest.fixture(params=[FakeWebsocket()], ids=["Fake Client"])
+@pytest.fixture(params=[FakeWebsocket()], ids=['Fake Client'])
 def clients(request):
     """Fixture for a couple of clients.
 
