@@ -17,9 +17,9 @@ from processor.pipeline.framebuffer import FrameBuffer
 
 from processor.pipeline.reidentification.reid_data import ReidData
 
-from processor.websocket.start_command import StartCommand
-from processor.websocket.stop_command import StopCommand
-from processor.websocket.update_command import UpdateCommand
+from processor.websocket.start_message import StartMessage
+from processor.websocket.stop_message import StopMessage
+from processor.websocket.update_message import UpdateMessage
 
 from processor.pipeline.prepare_pipeline import prepare_scheduler
 from processor.scheduling.plan.pipeline_plan import plan_globals
@@ -147,12 +147,12 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
         logging.info(ws_client.message_queue)
         track_elem = ws_client.message_queue.popleft()
         # Start command.
-        if isinstance(track_elem, StartCommand):
+        if isinstance(track_elem, StartMessage):
             try:
                 feature_map = re_identifier.extract_features_from_cutout(track_elem.get_cutout(framebuffer))
 
                 # Sends the feature map to the orchestrator using a Websocket client.
-                ws_client.send_command(UpdateCommand(track_elem.object_id, feature_map))
+                ws_client.send_command(UpdateMessage(track_elem.object_id, feature_map))
 
                 # Extract the features from this bounding box and store them in the data.
                 re_id_data.add_query_feature(track_elem.object_id, feature_map)
@@ -170,25 +170,14 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
                 # send_error_to_orchestrator(ws_client, error)
 
         # Stop command.
-        elif isinstance(track_elem, StopCommand):
+        elif isinstance(track_elem, StopMessage):
             logging.info(f'Stop tracking object {track_elem.object_id}')
             re_id_data.remove_query(track_elem.object_id)
 
         # Update command.
-        elif isinstance(track_elem, UpdateCommand):
+        elif isinstance(track_elem, UpdateMessage):
             logging.info(f'Updating object {track_elem.object_id} with feature map {track_elem.feature_map}')
             re_id_data.add_query_feature(track_elem.object_id, track_elem.feature_map)
-
-
-def send_error_to_orchestrator(ws_client, error):
-    """Sends an error message to the orchestrator.
-
-    Args:
-          ws_client (WebsocketClient):  Websocket object that contains the connection.
-          error (BaseException): The error
-    """
-    client_message = text.error_to_json(error)
-    ws_client.write_message(client_message)
 
 
 # pylint: disable=unused-argument.

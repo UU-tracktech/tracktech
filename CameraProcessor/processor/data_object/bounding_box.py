@@ -27,7 +27,7 @@ class BoundingBox:
 
     @property
     def identifier(self):
-        """Bounding box identifier getter.
+        """Get bounding box identifier.
 
         Returns:
             int: identifier of bounding box.

@@ -1,4 +1,4 @@
-"""Contains StartCommand class which holds information to start tracking.
+"""Contains StartMessage class which holds information to start tracking.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -10,27 +10,29 @@ import cv2
 import numpy as np
 
 from processor.utils.features import slice_bounding_box
+from processor.websocket.i_message import IMessage
 
 
-class StartCommand():
-    """StartCommand class that stores data regarding which object to start tracking"""
+class StartMessage(IMessage):
+    """StartMessage class that stores data regarding which object to stop tracking."""
+
     def __init__(self, object_id, image=None, frame_id=None, box_id=None):
-        """Constructor for the StopCommand class. A start command either contains a cutout,
+        """Constructor for the StopMessage class. A start command either contains a cutout,
            a combination of frame_id and box_id, or both.
 
         Args:
             object_id (int): Identifier of the object to be followed.
-            image (image): URL encoded cutout of the object to be followed.
-            frame_id (int): The id of the frame in the frame buffer
-            box_id (int): the id of the box in the frame defined by the frame buffer
+            image (image/None): URL encoded cutout of the object to be followed.
+            frame_id (int/None): The id of the frame in the frame buffer
+            box_id (int/None): the id of the box in the frame defined by the frame buffer
         """
         if not isinstance(object_id, int):
             raise TypeError("Object id should be an integer")
 
-        if not isinstance(frame_id, float):
+        if frame_id is not None and not isinstance(frame_id, float):
             raise TypeError("Frame id should be a float")
 
-        if not isinstance(box_id, int):
+        if box_id is not None and not isinstance(box_id, int):
             raise TypeError("Box id should be an integer")
 
         # Set the cutout to none
@@ -46,8 +48,54 @@ class StartCommand():
         self.__box_id = box_id
         self.__frame_id = frame_id
 
+    @staticmethod
+    def from_message(message):
+        """Converts a python dict representation of the message to a StartCommand.
+
+        Args:
+            message (dict): Python dict representation of an incoming JSON message.
+
+        Returns:
+            (StartMessage): StartCommand constructed from the dict.
+        """
+        if "objectId" not in message.keys():
+            raise KeyError("objectId missing")
+
+        # The start command should at least contain either a cutout, or a box_id and frame_id
+        # Otherwise, there is not enough data to generate a cutout
+        if "image" not in message.keys() and ("boxId" not in message.keys() or "frameId" not in message.keys()):
+            raise KeyError("Not enough data for cutout in message")
+
+        object_id = message["objectId"]
+
+        # These could all possibly none
+        image = message.get("image", None)
+        box_id = message.get("boxId", None)
+        frame_id = message.get("frameId", None)
+        return StartMessage(object_id, image, frame_id, box_id)
+
+    def to_message(self):
+        """Converts the StartMessage to a dict representation.
+
+        Returns:
+            (dict): Python dict representation of the message.
+        """
+        message = {"objectId": self.__object_id}
+        if self.__box_id:
+            message["boxId"] = self.__box_id
+        if self.__frame_id:
+            message["frameId"] = self.__frame_id
+        if self.__image is not None:
+            # Encode the image back to base64.
+            encoded_image = base64.b64encode(
+                cv2.imencode('.png',
+                             cv2.cvtColor(self.__image, cv2.COLOR_RGB2RGBA))[1])
+            message["image"] = "data:image/png;base64," + str(encoded_image)
+
+        return message
+
     def get_cutout(self, framebuffer):
-        """ Tries to get the cutout from the information in the StartCommand, either from the frame buffer
+        """ Tries to get the cutout from the information in the StartMessage, either from the frame buffer
         if that is possible, otherwise directly from the sent image if that is possible, and otherwise
         raise an error and don't follow the subject.
 
@@ -55,7 +103,6 @@ class StartCommand():
             framebuffer (FrameBuffer) frame buffer object that contains
 
         Returns:
-
         """
         # Try to find the frame in the frame buffer if it was not already found before.
         error = None
@@ -90,56 +137,72 @@ class StartCommand():
             cutout (string): a string of the image in base64 png format
 
         Returns:
-
         """
         # Extract features from image.
         encoded_data = base64.b64decode(image.split(',')[1])
+        img_array = np.fromstring(encoded_data, np.uint8)
         decoded_image = cv2.imdecode(np.fromstring(encoded_data, np.uint8), cv2.IMREAD_COLOR)
-        return cv2.cvtColor(decoded_image, cv2.COLOR_RGBA2RGB)
-
-    @staticmethod
-    def from_message(message):
-        if "objectId" not in message.keys():
-            raise KeyError("objectId missing")
-
-        # The start command should at least contain either a cutout, or a box_id and frame_id
-        # Otherwise, there is not enough data to generate a cutout
-        if "image" not in message.keys() and ("boxId" not in message.keys() or "frameId" not in message.keys()):
-            raise KeyError("Not enough data for cutout in message")
-
-        object_id = message["objectId"]
-
-        # These could all possibly none
-        image = message.get("image", None)
-        box_id = message.get("boxId", None)
-        frame_id = message.get("frameId", None)
-        return StartCommand(object_id, image, frame_id, box_id)
+        print("DECODED IMAGE:\n")
+        print(decoded_image)
+        return decoded_image
 
     @property
     def object_id(self):
+        """Get object id.
+
+        Returns:
+            (int) Identifier of the object to stop following.
+        """
         return self.__object_id
 
     @property
     def image(self):
+        """Get image.
+
+        Returns:
+            (np.ndarray/None): OpenCV readable image.
+        """
         return self.__image
 
     @property
-    def box_id(self):
-        return self.__box_id
-
-    @property
     def frame_id(self):
+        """Get frame id.
+
+        Returns:
+            (float): Identifier of the frame that contains the
+        """
         return self.__frame_id
 
+    @property
+    def box_id(self):
+        """Get box id.
+
+        Returns:
+            (int) Identifier of the box that contains the object to be followed.
+        """
+        return self.__box_id
+
     def __eq__(self, other):
+        """Function that checks whether the current StartCommand is the same as the given one.
+
+        Args:
+            other (StartMessage): StartCommand to compare with.
+
+        Returns:
+            bool: Whether the messages are the same.
+        """
         return [self.__object_id == other.object_id,
                 self.__image == other.image,
                 self.box_id == other.box_id,
                 self.frame_id == other.frame_id]
 
     def __repr__(self):
-        return f"StartCommand(object id: {self.__object_id} image: " \
+        """Converts the StartMessage to a string.
+
+        Returns:
+            str: String representation of a StartMessage.
+        """
+        return f"StartMessage(object id: {self.__object_id} image: " \
                f"{self.__image if self.__image is not None else 'None'} " \
                f"box id: {self.__box_id if self.__box_id is not None else 'None'} " \
                f"frame id: {self.__frame_id if self.frame_id is not None else 'None'})"
-

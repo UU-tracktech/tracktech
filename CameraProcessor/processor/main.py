@@ -21,7 +21,7 @@ from processor.websocket.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler
 from processor.webhosting.stream_handler import StreamHandler
 
-from processor.websocket.boxes_command import BoxesCommand
+from processor.websocket.boxes_message import BoxesMessage
 
 
 def create_app(configs, port):
@@ -63,7 +63,7 @@ async def deploy(configs, ws_id):
         # Function to call when frame is processed.
         lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
         # Sends the bounding boxes to the orchestrator using a websocket client.
-        websocket_client.send_command(BoxesCommand(frame_obj.timestamp, tracked_boxes)),
+        websocket_client.send_command(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
         websocket_client
     )
 

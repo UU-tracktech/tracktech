@@ -11,10 +11,10 @@ import logging
 from collections import deque
 from tornado import websocket
 
-from processor.websocket.start_command import StartCommand
-from processor.websocket.identify_command import IdentifyCommand
-from processor.websocket.stop_command import StopCommand
-from processor.websocket.update_command import UpdateCommand
+from processor.websocket.start_message import StartMessage
+from processor.websocket.identify_message import IdentifyMessage
+from processor.websocket.stop_message import StopMessage
+from processor.websocket.update_message import UpdateMessage
 
 
 class WebsocketClient:
@@ -65,7 +65,7 @@ class WebsocketClient:
                 # Send an identification message to the orchestrator on connect.
                 # Only do this when the websocket is a processor socket.
                 if self.identifier is not None:
-                    self.send_command(IdentifyCommand(self.identifier))
+                    self.send_command(IdentifyMessage(self.identifier))
 
                 connected = True
             # Reconnect failed.
@@ -143,9 +143,9 @@ class WebsocketClient:
             message_object = json.loads(message)
 
             class_dict = {
-                "start": StartCommand,
-                "stop": StopCommand,
-                "featureMap": UpdateCommand
+                "start": StartMessage,
+                "stop": StopMessage,
+                "featureMap": UpdateMessage
             }
 
             if "type" not in message_object.keys():
@@ -159,7 +159,7 @@ class WebsocketClient:
             command = class_dict[msg_type].from_message(message_object)
 
             self.message_queue.append(command)
-            logging.info(f"Received command: {str(command)}")
+            logging.info(f"Received message: {str(command)}")
 
         except ValueError as value_error:
             logging.warning(f'Someone wrote bad json: {message}.\nWith error: {value_error}.')
@@ -170,7 +170,8 @@ class WebsocketClient:
 
     def send_command(self, command):
         try:
-            asyncio.get_running_loop().create_task(self.__write_message(command.to_json()))
+            json_message = json.dumps(command.to_message())
+            asyncio.get_running_loop().create_task(self.__write_message(json_message))
         except RuntimeError:
             return
 
