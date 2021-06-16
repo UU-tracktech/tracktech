@@ -22,9 +22,6 @@ class BoxesMessage(IMessage):
         if not isinstance(frame_id, float):
             raise TypeError("Frame id should be a float.")
 
-        if not isinstance(bounding_boxes, BoundingBoxes):
-            raise TypeError("Bounding boxes should be of type BoundingBoxes")
-
         self.__frame_id = frame_id
         self.__bounding_boxes = bounding_boxes
 

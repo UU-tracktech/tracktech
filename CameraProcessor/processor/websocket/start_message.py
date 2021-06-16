@@ -40,6 +40,7 @@ class StartMessage(IMessage):
 
         # Convert the cutout (if it exist), to an openCV image, rather than a base 64 encoded image.
         if image is not None:
+            self.__original_image = image
             self.__image = self.__convert_base64_image_to_np_array(image)
         else:
             self.__image = None
@@ -85,12 +86,9 @@ class StartMessage(IMessage):
             message["boxId"] = self.__box_id
         if self.__frame_id:
             message["frameId"] = self.__frame_id
-        if self.__image is not None:
+        if self.__original_image is not None:
             # Encode the image back to base64.
-            encoded_image = base64.b64encode(
-                cv2.imencode('.png',
-                             cv2.cvtColor(self.__image, cv2.COLOR_RGB2RGBA))[1])
-            message["image"] = "data:image/png;base64," + str(encoded_image)
+            message["image"] = self.__original_image
 
         return message
 
@@ -140,11 +138,7 @@ class StartMessage(IMessage):
         """
         # Extract features from image.
         encoded_data = base64.b64decode(image.split(',')[1])
-        img_array = np.fromstring(encoded_data, np.uint8)
-        decoded_image = cv2.imdecode(np.fromstring(encoded_data, np.uint8), cv2.IMREAD_COLOR)
-        print("DECODED IMAGE:\n")
-        print(decoded_image)
-        return decoded_image
+        return cv2.imdecode(np.frombuffer(encoded_data, np.uint8), cv2.IMREAD_UNCHANGED)
 
     @property
     def object_id(self):
