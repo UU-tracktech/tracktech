@@ -74,7 +74,7 @@ class TestText:
     def test_error_to_json(self):
         """Tests the error_to_json function."""
         error_message = error_to_json(NameError("Testing"))
-        assert error_message == "{'type': 'error', 'error': 'NameError(\'Testing\')'}"
+        assert error_message == '{"type": "error", "error": "NameError(\'Testing\')"}'
 
     def test_boxes_to_accuracy_json(self, bbox):
         """Tests the boxes_to_accuracy_json function.
