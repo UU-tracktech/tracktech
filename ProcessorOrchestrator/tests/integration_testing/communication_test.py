@@ -434,7 +434,7 @@ async def test_object_ids_handler():
     """Test if requesting timeline data of an unknown object gives a 400 error."""
 
     response = requests.get('http://processor-orchestrator-service/objectIds')
-    assert response.text == '{\'data\':[1, 2, 3, 4]}'
+    assert response.text == '{\"data\":[1, 2, 3, 4]}'
 
 
 @pytest.mark.asyncio
