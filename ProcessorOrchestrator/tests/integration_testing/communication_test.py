@@ -296,7 +296,7 @@ async def test_feature_map_distribution():
     assert assert_feature_map(processor_2_message, 3)
 
     client.write_message(json.dumps({
-        type: 'stop',
+        'type': 'stop',
         'objectId': 3
     }))
 
@@ -415,7 +415,7 @@ async def test_incomplete_timeline_data_request():
     """Test if requesting timeline data without objectId parameter gives the correct response."""
 
     response = requests.get('http://processor-orchestrator-service/timelines').text
-    assert response == 'Missing \'objectId\' query parameter'
+    assert response == 'Missing "objectId" query parameter'
 
 
 @pytest.mark.asyncio
