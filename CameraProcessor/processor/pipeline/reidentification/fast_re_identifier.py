@@ -97,4 +97,4 @@ class FastReIdentifier(PytorchReIdentifier):
         """
         resized_cutout = resize_cutout(cutout, self.config)
 
-        return self.extractor(resized_cutout).cpu().numpy().tolist()
+        return self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()[0]
