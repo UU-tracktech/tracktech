@@ -101,7 +101,7 @@ class StartMessage(IMessage):
         Otherwise raise an error and don't follow the subject.
 
         Args:
-            framebuffer (FrameBuffer) frame buffer object that contains the different frames.
+            framebuffer (FrameBuffer): frame buffer object that contains the different frames.
 
         Returns:
             (np.ndarray): OpenCV-readable cutout of the subject to be followed.
