@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 
 import ssl
 from os import environ
-import tornado.web
+from logging import info
 
 from auth.auth import Auth
 from src.camera import Camera
@@ -18,7 +18,7 @@ def create_camera():
     """Creat the camera using the URL and whether the camera has audio.
 
     Returns:
-        Camera: A camera object containing the camera url and if it has any audio
+        Camera: A camera object containing the camera url and if it has any audio.
     """
     return Camera(environ["CAMERA_URL"], environ["CAMERA_AUDIO"] == "true")
 
@@ -27,7 +27,7 @@ def create_stream_options():
     """Create the stream options for the camera.
 
     Returns:
-        StreamOptions: Load the stream options used for the conversion
+        StreamOptions: Load the stream options used for the conversion.
     """
     return StreamOptions(
         environ.get("SEGMENT_SIZE") or "2",
@@ -43,7 +43,7 @@ def get_remove_delay():
     """Get the delay after which conversion process is stopped.
 
     Returns:
-        float: How long the stream has no requests before stopping the conversion in seconds
+        float: How long the stream has no requests before stopping the conversion in seconds.
     """
     return float(environ.get('REMOVE_DELAY') or '60.0')
 
@@ -52,7 +52,7 @@ def get_timeout_delay():
     """Get the delay before the stream will become inactive.
 
     Returns:
-        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion
+        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion.
     """
     return int(environ.get('TIMEOUT_DELAY') or '30')
 
@@ -103,7 +103,7 @@ def create_authenticator():
         return None
 
     # Give back the Authentication object.
-    tornado.log.gen_log.info("using client token validation")
+    info("using client token validation")
     return Auth(
         public_key_path=public_key,
         algorithms=['RS256'],

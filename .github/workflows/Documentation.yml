@@ -3,12 +3,8 @@ name: Documentation
 on:
   workflow_dispatch:
   push:
-    paths:
-      - .github/workflows/Documentation.yml
-  pull_request:
     branches:
       - master
-      - develop
   # Also trigger on page_build, as well as release created events
   page_build:
     release:
@@ -30,6 +26,9 @@ jobs:
       - name: Stop service
         run: docker-compose down --rmi all
         if: ${{ always() }}
+      - name: Prune images
+        run: docker image prune --force --filter "until=168h"
+        if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2
         with:
@@ -46,15 +45,14 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: documentation
-      
+
       - name: Install rsync 📚
         run: |
           apt-get update && apt-get install -y rsync
-      
 
       - name: Deploy 🚀
         uses: UU-tracktech/github-pages-deploy-action@4.1.3
         with:
           # token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          folder: 'documentation' # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.
+          folder: "documentation" # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.

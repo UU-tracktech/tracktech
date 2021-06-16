@@ -10,7 +10,7 @@ import random
 from processor.data_object.rectangle import Rectangle
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.pipeline.tracking.itracker import ITracker
+from processor.pipeline.tracking.i_tracker import ITracker
 
 
 class FakeTracker(ITracker):
@@ -35,7 +35,7 @@ class FakeTracker(ITracker):
 
         Args:
             bounding_boxes (BoundingBoxes): Detection boxes given to the tracker.
-            reid_data (ReidData): Object containing all the reid data .
+            reid_data (ReidData): Object containing all the reid data.
         """
         tracked_bounding_boxes = []
 

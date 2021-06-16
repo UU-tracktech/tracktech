@@ -4,7 +4,7 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from processor.scheduling.component.component_interface import IComponent
+from processor.scheduling.component.i_component import IComponent
 
 
 class OutputComponent(IComponent):
@@ -45,6 +45,6 @@ class OutputComponent(IComponent):
         """See base class.
 
         Returns:
-            func: Work function to call when component is ran.
+            func: Work function to call when component is run.
         """
         return self.work

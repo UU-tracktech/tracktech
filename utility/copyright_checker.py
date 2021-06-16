@@ -15,7 +15,7 @@ class CopyrightChecker(BaseChecker):
         file-no-copyright: File contains no copyright message.
 
     Attributes:
-        __implements__ (IRawChecker): Raw checker in order to enumerate the lines
+        __implements__ (IRawChecker): Raw checker in order to enumerate the lines.
         name (str): Name of the checker.
         msgs (dict[str, (str, str, str)]): Dictionary with error codes and pylint messages.
     """
@@ -32,8 +32,12 @@ class CopyrightChecker(BaseChecker):
         """Process a module and checks whether the docstring contains the correct copyright notice.
 
         Args:
-            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file
+            node (astroid.scoped_nodes.Module): Module definition containing the raw content of the file.
         """
+        # A limitation of Pylint is that it adds the root __init__.py regardless of whether it is ignored.
+        if node.path[0].endswith('__init__.py'):
+            return
+
         # What the copyright statement should be.
         copyright_statement = [
             'This program has been developed by students from the bachelor Computer Science at',

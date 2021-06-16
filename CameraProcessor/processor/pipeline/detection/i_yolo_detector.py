@@ -7,15 +7,14 @@ Utrecht University within the Software Project course.
 import numpy as np
 import torch
 
-from processor.pipeline.detection.idetector import IDetector
+from processor.pipeline.detection.i_detector import IDetector
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from processor.pipeline.detection.yolor.utils.general import non_max_suppression, scale_coords
 
 
 class IYoloDetector(IDetector):
-    """Detection runner interface that can be run as Scheduler component.
-    """
+    """Detection runner interface that can be run as Scheduler component."""
     @staticmethod
     def convert_image(img, device, half):
         """Converts the image to the size used for the detection.

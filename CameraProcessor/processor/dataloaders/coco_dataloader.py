@@ -1,4 +1,4 @@
-"""COCO datalaoder class.
+"""COCO dataloader class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -12,14 +12,14 @@ from pycocotools.coco import COCO
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.rectangle import Rectangle
-from processor.dataloaders.idataloader import IDataloader
+from processor.dataloaders.i_dataloader import IDataloader
 
 
-class COCODataloader(IDataloader):
+class CocoDataloader(IDataloader):
     """COCO Dataloader, formats COCO Data."""
 
     def __init__(self, configs, path_location):
-        """Initialize coco dataloader.
+        """Initialize the coco dataloader.
 
         Args:
             configs (dict): A dictionary of the configs.

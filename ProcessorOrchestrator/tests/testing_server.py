@@ -11,12 +11,12 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application
 from tornado.websocket import WebSocketHandler
 
-from src.http_server import create_http_servers
-from src.client_socket import ClientSocket
-from src.processor_socket import ProcessorSocket
-from src.timeline_handler import TimeLineHandler
-from src.object_manager import start_tracking_timeout_monitoring
-from src.object_ids_handler import ObjectIdsHandler
+from src.utility.http_server import create_http_servers
+from src.handlers.client_socket import ClientSocket
+from src.handlers.processor_socket import ProcessorSocket
+from src.handlers.timeline_handler import TimelineHandler
+from src.objects.object_management import start_tracking_timeout_monitoring
+from src.handlers.object_ids_handler import ObjectIdsHandler
 
 
 @pytest.mark.asyncio
@@ -35,9 +35,9 @@ def _start_server():
     handlers = [
         ('/client', ClientSocket),
         ('/processor', ProcessorSocket),
-        ('/timelines', TimeLineHandler),
+        ('/timelines', TimelineHandler),
         ('/objectIds', ObjectIdsHandler),
-        ('/stop', StopSocket, {'server': server_container})
+        ('/stop', TestingServer, {'server': server_container})
     ]
 
     # Create the server application.
@@ -54,7 +54,7 @@ def stop_server(server):
     """Stops the server.
 
     Args:
-        server (HTTPServer): Server the of the test that should be stopped
+        server (HTTPServer): Server the of the test that should be stopped.
     """
 
     server.stop()
@@ -62,7 +62,7 @@ def stop_server(server):
     io_loop.add_callback(io_loop.stop)
 
 
-class StopSocket(WebSocketHandler):
+class TestingServer(WebSocketHandler):
     """Websocket handler that can only be used to stop the server.
 
     Attributes:
@@ -73,7 +73,7 @@ class StopSocket(WebSocketHandler):
         """Sets server.
 
         Args:
-            server (HTTPServer): Server on which the test is ran.
+            server (HTTPServer): Server on which the test is run.
         """
         # Noinspection PyAttributeOutsideInit | In tornado, the init function should be replaced with initialize.
         # pylint: disable=attribute-defined-outside-init

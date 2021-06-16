@@ -67,3 +67,17 @@ export class SetUsesImagesMessage extends OrchestratorMessage {
 
   usesImages: boolean
 }
+
+/**
+ * The AuthenticateOrchestratorMessage is used to authenticate this client with the
+ * processor orchestrator, to make sure it handles the messages.
+ */
+export class AuthenticateOrchestratorMessage extends OrchestratorMessage {
+  constructor(jwt: string) {
+    super('authenticate')
+
+    this.jwt = jwt
+  }
+
+  jwt: string
+}

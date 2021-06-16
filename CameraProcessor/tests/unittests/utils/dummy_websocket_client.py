@@ -19,7 +19,7 @@ class DummyWebsocketClient(WebsocketClient):
         """Initialized the dummy websocket, extending the properties.
 
         Args:
-            websocket_url (str): Url of the websocket server.
+            websocket_url (str): URL of the WebSocket server.
             identifier (str): Identifier of the processor with which to connect.
         """
         super().__init__(websocket_url, identifier)
@@ -39,7 +39,7 @@ class DummyWebsocketClient(WebsocketClient):
         """Override for the start_tracking method that saves the message.
 
         Args:
-            message (str): Message gotten from websocket to start tracking.
+            message (str): Message gotten from WebSocket to start tracking.
         """
         self.last_message_type = 'start'
         self.last_message = message
@@ -48,7 +48,7 @@ class DummyWebsocketClient(WebsocketClient):
         """Override for the stop_tracking method that saves the message.
 
         Args:
-            message (str): Message gotten from the websocket to stop tracking.
+            message (str): Message gotten from the WebSocket to stop tracking.
         """
         self.last_message_type = 'stop'
         self.last_message = message

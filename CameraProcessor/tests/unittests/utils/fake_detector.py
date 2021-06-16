@@ -8,12 +8,12 @@ import random
 
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.pipeline.detection.idetector import IDetector
+from processor.pipeline.detection.i_detector import IDetector
 from processor.data_object.rectangle import Rectangle
 
 
 class FakeDetector(IDetector):
-    """A fake detector which does nonsense detections."""
+    """A fake detector, which does nonsense detections."""
     def detect(self, _):
         """Appends a couple random bounding boxes.
 

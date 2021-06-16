@@ -22,6 +22,7 @@ export function ObjectCard(props: objectCardProps) {
     <Card
       //camera identifier
       key={props.id}
+      data-testid={`object-${props.id}`}
       //The camera icon and the name next to it
       title={
         <div style={{ display: 'inline-flex', alignItems: 'center' }}>

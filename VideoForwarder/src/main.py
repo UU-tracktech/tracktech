@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 """
 import sys
 import os
+from logging import info, getLogger, StreamHandler
 import tornado.httpserver
 import tornado.web
 import tornado.ioloop
@@ -19,18 +20,18 @@ from src.camera_handler import CameraHandler
 if __name__ == "__main__":
     # Setup for logging.
     tornado.log.logging.basicConfig(
-        filename='/app/src/main.log',
+        filename='src/main.log',
         filemode='w',
         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
         level=tornado.log.logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    tornado.log.gen_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
     tornado.log.access_log.addHandler(tornado.log.logging.StreamHandler(sys.stdout))
     tornado.log.access_log.addFilter(LoggingFilter())
+    getLogger().addHandler(StreamHandler(sys.stdout))
 
-    tornado.log.gen_log.info('starting server')
+    info('starting server')
 
     # Create the web application with the camera handler and the public key.
     app = tornado.web.Application(
@@ -45,15 +46,17 @@ if __name__ == "__main__":
         stream_options=create_stream_options()
     )
 
-    # Load the ssl and port options.
+    # Load the SSL and port options.
     ssl_options = create_ssl_options()
-    port = 80 if ssl_options is None else 443
-    ssl = 'without' if ssl_options is None else 'with'
+    if ssl_options is not None:
+        https_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_options)
+        https_server.listen(443)
+        info('listening over https')
 
     # Start the webserver.
-    http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_options)
-    http_server.listen(port)
-    tornado.log.gen_log.info(f'listening on port {port}, {ssl} ssl')
+    http_server = tornado.httpserver.HTTPServer(app)
+    http_server.listen(80)
+    info('listening over http')
 
-    # Start the IO loop (used by tornado itself).
+    # Start the IO loop (used by Tornado itself).
     tornado.ioloop.IOLoop.current().start()

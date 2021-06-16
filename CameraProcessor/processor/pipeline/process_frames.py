@@ -13,7 +13,7 @@ import cv2
 import processor.utils.text as text
 import processor.utils.display as display
 
-from processor.pipeline.framebuffer import FrameBuffer
+from processor.pipeline.frame_buffer import FrameBuffer
 
 from processor.pipeline.reidentification.reid_data import ReidData
 
@@ -56,7 +56,7 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         # Get detections from running detection stage.
         detected_boxes = detector.detect(frame_obj)
 
-        # Get objects tracked in current frame from tracking stage.
+        # Get objects tracked in the current frame from tracking stage.
         tracked_boxes = tracker.track(frame_obj, detected_boxes, re_id_data)
 
         # Get objects where re-id is performed on the tracked objects.
@@ -182,7 +182,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
 
 # pylint: disable=unused-argument.
 def opencv_display(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes):
-    """Displays frame in tiled mode.
+    """Displays frame in the tiled mode.
 
     Args:
         frame_obj (FrameObj): Frame object on which drawing takes place.

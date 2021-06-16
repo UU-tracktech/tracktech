@@ -6,6 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
+import 'jest-canvas-mock'
 import { enableFetchMocks } from 'jest-fetch-mock'
 enableFetchMocks()
 fetch.mockResponse(JSON.stringify([]))
