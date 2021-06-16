@@ -27,7 +27,7 @@ def test_start_testing_server():
 
 def _start_server():
     """Creates handlers and starts the IO loop."""
-    print("Starting setup server")
+    print('Starting setup server.')
 
     server_container = []
 
@@ -103,5 +103,5 @@ class TestingServer(WebSocketHandler):
         Args:
             message (string): String that should contain the string 'stop', which will stop the server.
         """
-        if message == "stop":
+        if message == 'stop':
             stop_server(self.server[0])
