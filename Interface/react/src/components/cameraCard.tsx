@@ -16,6 +16,7 @@ import {
   CloseOutlined
 } from '@ant-design/icons'
 
+/** Proerties of the cameraCard component, containing camera id, title and a callback to set the camera as main view. */
 type cameraCardProps = {
   id: string
   title: string
@@ -23,10 +24,10 @@ type cameraCardProps = {
 }
 
 /**
- * Component used in the cameras list. There is a card for each connected camera, which shows an identifier and buttons
- * to enlarge or shrink that camera's videoplayer
- * @param props Properties of the card
- * @returns An antd card with camera info
+ * Component used in the cameras list. There is a card for each connected camera, which shows an identifier and buttons.
+ * to enlarge or shrink that camera's videoplayer.
+ * @param props Properties of the card.
+ * @returns An antd card with camera info.
  */
 export function CameraCard(props: cameraCardProps) {
   var buttonStyle: CSS.Properties = {
@@ -39,24 +40,24 @@ export function CameraCard(props: cameraCardProps) {
 
   return (
     <Card
-      //camera identifier
+      // Camera identifier.
       key={props.id}
       data-testid={`camCard-${props.id}`}
-      //The camera icon and the name next to it
+      // The camera icon and the name next to it.
       title={
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <VideoCameraOutlined style={{ padding: '0px 4px' }} />
           {props.title}
         </div>
       }
-      //Styling
+      // Styling.
       size={'small'}
       headStyle={{ padding: '0px 8px' }}
       bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
       <Button
-        //Resize button
+        // Resize button.
         data-testid={'resizeButton'}
         type={'primary'}
         onClick={() => props.setSize(props.id)}

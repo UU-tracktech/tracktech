@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import { size } from './size'
 
-/** Incoming messages are of type ClientMessage */
+/** Incoming messages are of type ClientMessage. */
 export abstract class ClientMessage {
   constructor(type: string) {
     this.type = type
@@ -17,7 +17,7 @@ export abstract class ClientMessage {
   type: string
 }
 
-/** The BoxesClientMessage is created when bounding box data is received */
+/** The BoxesClientMessage is created when bounding box data is received. */
 export class BoxesClientMessage extends ClientMessage {
   constructor(cameraId: string, frameId: number, boxes: Box[]) {
     super('boundingBoxes')
@@ -32,7 +32,7 @@ export class BoxesClientMessage extends ClientMessage {
   boxes: Box[]
 }
 
-/** The newObject message is sent when a new object is being tracked, and a cutout is available */
+/** The newObject message is sent when a new object is being tracked, and a cutout is available. */
 export class NewObjectClientMessage extends ClientMessage {
   constructor(objectId: number, image: string) {
     super('newObject')
@@ -45,7 +45,7 @@ export class NewObjectClientMessage extends ClientMessage {
   image: string
 }
 
-/** The stop message is sent when an object is no longer being tracked */
+/** The stop message is sent when an object is no longer being tracked. */
 export class StopClientMessage extends ClientMessage {
   constructor(objectId: number) {
     super('stop')
@@ -56,7 +56,7 @@ export class StopClientMessage extends ClientMessage {
   objectId: number
 }
 
-/** Structure that represents a bounding box */
+/** Structure that represents a bounding box. */
 export class Box {
   constructor(
     boxId: number,
@@ -76,10 +76,10 @@ export class Box {
   objectId?: number
 
   /**
-   * Transform tha coordinates that are in between 0 and 1 to coordinates relative to the width and height of the display
-   * @param width Width of the display
-   * @param height Height of the display
-   * @returns A size object containing the relative offset, widht and height
+   * Transform tha coordinates that are in between 0 and 1 to coordinates relative to the width and height of the display.
+   * @param width Width of the display.
+   * @param height Height of the display.
+   * @returns A size object containing the relative offset, widht and height.
    */
   toSize(width: number, height: number): size {
     var x1 = this.rect[0],
@@ -87,7 +87,7 @@ export class Box {
       x2 = this.rect[2],
       y2 = this.rect[3]
 
-    //Flip x/y to get the top left corner
+    // Flip x/y to get the top left corner.
     if (x1 > x2) [x1, x2] = [x2, x1]
     if (y1 > y2) [y1, y2] = [y2, y1]
 
@@ -100,7 +100,7 @@ export class Box {
   }
 }
 
-/** Used by the overlay to store bounding boxes alongside their frameID */
+/** Used by the overlay to store bounding boxes alongside their frameID. */
 export class QueueItem {
   constructor(frameId: number, boxes: Box[]) {
     this.frameId = frameId

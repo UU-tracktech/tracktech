@@ -5,12 +5,6 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 
  */
-/*
-
-This class is used to generate the most interesting events from a long list of tracking
-timeline logs.
-
-*/
 
 /** Tracking log type, matching a processor with a timestamp when an object was spotted */
 export type trackingLog = { timeStamp: string; processorId: string }
@@ -22,7 +16,7 @@ export type dateRange = { from: Date; to: Date }
 /** Dictionary matching camera processor ids to a timeline of events */
 export type timelineEvents = { [cameraId: string]: dateRange[] }
 
-/** Object containing a summary of timeline data logs */
+/** Class used to generate the most interesting events from a long list of tracking timeline logs. */
 export class TimelineData {
   private data: datedTrackingLog[]
 
@@ -34,29 +28,29 @@ export class TimelineData {
   }
 
   /**
-   * Create a timeline of important events, which in this case are the moments a camera finds and loses an object
-   * @returns The timeline of events for this camera
+   * Create a timeline of important events, which in this case are the moments a camera finds and loses an object.
+   * @returns The timeline of events for this camera.
    */
   GetImportantEvents(): timelineEvents {
     var spottedOn: { [camera: string]: dateRange } = {}
     var events: timelineEvents = {}
 
     this.data.forEach((logEvent) => {
-      // Never seen before
+      // Never seen before.
       if (spottedOn[logEvent.processorId] == undefined) {
         spottedOn[logEvent.processorId] = {
           from: logEvent.timeStamp,
           to: logEvent.timeStamp
         }
       }
-      // Have seen before
+      // Have seen before.
       else {
         var previousRange: dateRange = spottedOn[logEvent.processorId]
         var lastSpotted: Date = previousRange.to
         var trackingThreshold: Date = new Date(
           logEvent.timeStamp.getTime() - 3000
         )
-        // Lost sight for a bit
+        // Lost sight for a bit.
         if (lastSpotted < trackingThreshold) {
           spottedOn[logEvent.processorId] = {
             from: logEvent.timeStamp,
@@ -68,14 +62,14 @@ export class TimelineData {
             events[logEvent.processorId].push(previousRange)
           }
         }
-        // Did not lose sight for a bit, update to
+        // Did not lose sight for a bit, update to.
         else {
           spottedOn[logEvent.processorId].to = logEvent.timeStamp
         }
       }
     })
 
-    // Clean up the last timelines that have not yet been closed
+    // Clean up the last timelines that have not yet been closed.
     for (let cameraId in spottedOn) {
       let range: dateRange = spottedOn[cameraId]
       if (events[cameraId] == undefined) {
@@ -90,9 +84,9 @@ export class TimelineData {
 }
 
 /**
- * Convert a string from the server to a date
- * @param logString Logging string from the processor orchestrator
- * @returns
+ * Convert a string from the server to a date.
+ * @param logString Logging string from the processor orchestrator.
+ * @returns Date object corresponding to the given string.
  */
 export function ToDate(logString: string): Date {
   var split = logString.split(' | ')

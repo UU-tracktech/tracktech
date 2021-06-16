@@ -6,11 +6,6 @@ Utrecht University within the Software Project course.
 
  */
 
-/*
-  This component is the homepage of the website, which contains all the videoplayers,
-  the option to select what bounding boxes to draw, a list of the cameras, and TODO: a list of tracked suspects
-*/
-
 import React from 'react'
 import { Button, Card, Layout, Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -24,24 +19,24 @@ import { websocketContext } from '../components/websocketContext'
 import { environmentContext } from '../components/environmentContext'
 import { StopOrchestratorMessage } from '../classes/orchestratorMessage'
 
-/** The selection modes for the bounding boxes */
+/** The selection modes for the bounding boxes. */
 export type indicator = 'All' | 'Selection' | 'None'
 
-/** Data required to track an object (placeholder, TODO: implement tracking) */
+/** Data required to track an object. */
 type tracked = { id: number; name: string; image: string; data: string }
+
+/**
+ * Home container component containing video streams and control panel.
+ * @returns The Home component.
+ */
 export function Home() {
-  /** State containing which boundingboxes to draw */
+  /** State containing which boundingboxes to draw. */
   const [currentIndicator, setCurrentIndicator] = React.useState<indicator>(
     'All'
   )
 
-  /** State containing the tracked objects */
-  const [tracking, setTracking] = React.useState<tracked[]>([])
-
-  /** State containing which camera currently is the primary camera */
+  /** State containing which camera currently is the primary camera. */
   const [primary, setPrimary] = React.useState<string>()
-
-  const selectionRef = React.useRef(0)
 
   const { send, objects, setSocket } = React.useContext(websocketContext)
   const { cameras, objectTypes, orchestratorUrl } = React.useContext(
@@ -57,7 +52,7 @@ export function Home() {
     }
   }))
 
-  /** State to keep track of the current selected objectType */
+  /** State to keep track of the current selected objectType. */
   const [filteredObjectTypes, setFilteredObjectTypes] = React.useState<
     string[]
   >([])
@@ -66,7 +61,7 @@ export function Home() {
     setSocket(orchestratorUrl)
   }, [])
 
-  // Used for camera card key generation
+  // Used for camera card key generation.
   var iterator = 0
 
   return (
@@ -87,7 +82,7 @@ export function Home() {
         }}
       >
         <Card
-          // This card contains the buttons to change which boundingboxes are drawn
+          // This card contains the buttons to change which boundingboxes are drawn.
           data-testid='indicatorsCard'
           headStyle={{ padding: 0 }}
           bodyStyle={{ padding: 0 }}
@@ -143,7 +138,7 @@ export function Home() {
         />
 
         <Card
-          // This card contains the objects that are being tracked
+          // This card contains the objects that are being tracked.
           data-testid={'selectionCard'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
@@ -170,7 +165,7 @@ export function Home() {
         </Card>
 
         <Card
-          // This card contains the list of cameras that are connected
+          // This card contains the list of cameras that are connected.
           data-testid={'cameraList'}
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
@@ -188,7 +183,7 @@ export function Home() {
           >
             {sources &&
               sources.map((source) => (
-                // Create a cameracard for each stream
+                // Create a cameracard for each stream.
                 <CameraCard
                   key={`cameraCard-${iterator++}`}
                   id={source.id}
@@ -202,7 +197,7 @@ export function Home() {
 
       <div style={{ overflowY: 'auto' }} data-testid={'gridDiv'}>
         {sources && (
-          // The grid contains all the videoplayers
+          // The grid contains all the videoplayers.
           <Grid
             sources={sources}
             primary={primary ?? sources[0]?.id}
@@ -215,38 +210,17 @@ export function Home() {
     </Layout.Content>
   )
 
-  /** Placeholder to start tracking something. TODO: implement tracking */
-  async function addSelection() {
-    const pictures = ['car', 'guy', 'garden']
-    const picture = pictures[Math.floor(Math.random() * pictures.length)]
-
-    var result = await fetch(process.env.PUBLIC_URL + `/${picture}.png`)
-    var blob = await result.blob()
-    var reader = new FileReader()
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        setTracking(
-          tracking.concat({
-            id: selectionRef.current++,
-            name: 'abc',
-            image: reader.result,
-            data: ''
-          })
-        )
-      }
-    }
-    reader.readAsDataURL(blob)
-  }
-
-  /** Placeholder to stop tracking an object, TODO: implement tracking */
+  /**
+   * Stop tracking an object.
+   * @param id Stop tracking a selected object.
+   */
   function removeSelection(id: number) {
-    console.log('Stop tracking ', id)
     send(new StopOrchestratorMessage(id))
   }
 
   /**
-   * adds a filtered object type to the list of filtered types
-   * @param objectType the object type to add
+   * Adds a filtered object type to the list of filtered types
+   * @param objectType The object type to add.
    */
   function addHidden(objectType: string) {
     setFilteredObjectTypes(
@@ -257,8 +231,8 @@ export function Home() {
   }
 
   /**
-   * removes a filtered object type to the list of filtered types
-   * @param objectType The object type to remove
+   * Removes a filtered object type to the list of filtered types.
+   * @param objectType The object type to remove.
    */
   function removeHidden(objectType: string) {
     setFilteredObjectTypes([...filteredObjectTypes, objectType])

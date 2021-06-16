@@ -12,16 +12,15 @@ import { useKeycloak } from '@react-keycloak/web'
 import useAuthState from '../classes/useAuthState'
 
 /**
- * Button allowing the user to log in or out, depending on authentication status
- * @returns The login button
+ * Button allowing the user to log in or out, depending on authentication status.
+ * @returns The login button.
  */
 export function LoginButton() {
-  // Obtain keycloak to look for login info
+  // Obtain keycloak to look for login info.
   const { keycloak } = useKeycloak()
   const status = useAuthState()
 
-  // If the user is logged in, return a logout button
-  // Otherwise return a login button
+  // If the user is logged in, return a logout button, otherwise return a login button.
   switch (status) {
     case 'loading':
       return <Skeleton.Button active style={{ verticalAlign: 'middle' }} />

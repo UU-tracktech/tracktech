@@ -12,16 +12,16 @@ import { useKeycloak } from '@react-keycloak/web'
 import useAuthState from '../classes/useAuthState'
 
 /**
- * Component displaying the login status
- * @returns A text element displaying login status
+ * Component displaying the login status.
+ * @returns A text element displaying login status.
  */
 export function LoggedInUser() {
-  // Obtain keycloak, to check for login info
+  // Obtain keycloak, to check for login info.
   const { keycloak } = useKeycloak()
 
   const status = useAuthState()
 
-  // If the user is logged in, obtain the username from the token and display it
+  // If the user is logged in, obtain the username from the token and display it.
   switch (status) {
     case 'loading':
       return (

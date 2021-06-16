@@ -13,9 +13,9 @@ import { indicator } from '../pages/home'
 import { stream } from '../classes/source'
 
 /**
- * Properties of the grid component
+ * Properties of the grid component.
  * Contains which stream is the primary stream, displayed large at the top,
- * contains a list of all video streams to display and, which boundingboxes/indicators to draw
+ * contains a list of all video streams to display, and which boundingboxes/indicators to draw.
  */
 export type gridProps = {
   primary?: string
@@ -27,9 +27,9 @@ export type gridProps = {
 
 /**
  * Component that creates a videoplayer and overlay for drawing on that player
- * for each camera source defined in the config file
- * @param props props containing streams and filters
- * @returns A grid of camera streams with corresponding overlay
+ * for each camera source defined in the config file.
+ * @param props Properties containing streams and filters.
+ * @returns A grid of camera streams with corresponding overlay.
  */
 export function Grid(props: gridProps) {
   return (
@@ -46,8 +46,7 @@ export function Grid(props: gridProps) {
       }}
     >
       {props.sources.map((source) => {
-        // The map goes through every source and creates an overlay component,
-        // which includes the video player
+        // The map goes through every source and creates an overlay component, which includes the video player.
         return (
           <div
             data-testid={'gridElement'}

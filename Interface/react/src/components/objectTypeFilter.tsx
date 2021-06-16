@@ -9,15 +9,22 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { Button, Card } from 'antd'
 
+/** Properties of the ObjectTypeFilter component, containing possible types, and callbacks to add or remove filters. */
 export type ObjectTypeFilterProps = {
   objectTypes: [string, boolean][]
   addHidden: (filteredObjectType: string) => void
   removeHidden: (filteredObjectType: string) => void
 }
+
+/**
+ * Compontent to display the available filters for tracked objects.
+ * @param props Properties for the component including filter types and callbacks.
+ * @returns An antd card containing the filters for the object types.
+ */
 export function ObjectTypeFilter(props: ObjectTypeFilterProps) {
   return (
     <Card
-      //This card contains the buttons to change which boundingboxes are drawnsize="small"
+      // This card contains the buttons to change which boundingboxes are drawnsize="small".
       headStyle={{ padding: 0 }}
       bodyStyle={{ padding: 0 }}
       data-testid={'filterCard'}
