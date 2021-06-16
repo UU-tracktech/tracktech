@@ -34,7 +34,7 @@ async def test_incomplete_message_interface():
     """Test if the interface can send an incomplete message without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect(''ws://processor-orchestrator-service/client')
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
         'type': 'start',
         'cameraId': 'processor_1'
