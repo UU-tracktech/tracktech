@@ -25,7 +25,7 @@ import { colours } from 'utilities/colours'
  * Defines the properties of a single camera feed.
  * Contains an identifier, a name, and the stream URL.
  */
- export type stream = {
+export type stream = {
   id: string
   name: string
   srcObject: source
