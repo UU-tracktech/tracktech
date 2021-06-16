@@ -18,11 +18,13 @@ class FakeWebsocket:
         """Create a message queue in order to save the messages."""
         self.message_queue = deque()
 
-    def write_message(self, message):
-        """Takes a message and asserts if it has the correct type property.
-
-        Args:
-            message (str): a JSON object in string format.
-        """
-        msg = json.loads(message)
-        assert msg['type'] == 'boundingBoxes'
+    # def write_message(self, message):
+    #     """Takes a message and asserts if it has the correct type property.
+    #
+    #     Args:
+    #         message (str): a JSON object in string format.
+    #     """
+    #     msg = json.loads(message)
+    #     assert msg['type'] == 'boundingBoxes'
+    def send_command(self, command):
+        return command

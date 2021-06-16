@@ -12,9 +12,9 @@ from collections import deque
 from tornado import websocket
 
 from processor.websocket.start_message import StartMessage
-from processor.websocket.identify_message import IdentifyMessage
 from processor.websocket.stop_message import StopMessage
 from processor.websocket.update_message import UpdateMessage
+from processor.utils.authentication import get_token
 
 
 class WebsocketClient:
@@ -89,7 +89,13 @@ class WebsocketClient:
 
                 # Send an identification message to the orchestrator on connect.
                 if self.identifier is not None:
-                    self.send_command(IdentifyMessage(self.identifier))
+                    id_message = json.dumps({
+                        'type': 'identifier',
+                        'id': self.identifier
+                    })
+                    logging.info(f'Identified with: {id_message}')
+                    await self.connection.write_message(id_message)
+
 
                 connected = True
             # Reconnect failed.
