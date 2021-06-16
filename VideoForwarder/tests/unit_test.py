@@ -29,11 +29,11 @@ def test_camera_properties():
 
 def test_camera_environment_1():
     """Test if the camera object gets constructed properly from the environment."""
-    os.environ["CAMERA_URL"] = "camera url"
-    os.environ["CAMERA_AUDIO"] = "true"
+    os.environ['CAMERA_URL'] = 'camera url'
+    os.environ['CAMERA_AUDIO'] = 'true'
 
     camera = create_camera()
-    assert camera.url == "camera url"
+    assert camera.url == 'camera url'
     assert camera.audio
 
     del os.environ['CAMERA_URL']
@@ -88,7 +88,7 @@ def test_stream_options_2():
 
 def test_remove_delay_1():
     """Check if the remove delay gets read properly."""
-    os.environ["REMOVE_DELAY"] = "10"
+    os.environ['REMOVE_DELAY'] = '10'
     delay = get_remove_delay()
 
     assert delay == 10.0
@@ -104,7 +104,7 @@ def test_remove_delay_2():
 
 def test_timeout_delay_1():
     """Check if the timout delay gets read properly."""
-    os.environ["TIMEOUT_DELAY"] = "10"
+    os.environ['TIMEOUT_DELAY'] = '10'
     delay = get_timeout_delay()
 
     assert delay == 10.0
@@ -161,18 +161,18 @@ def test_ssl_4():
 
 def test_authenticator_1():
     """Check if the authenticator is not None if all properties are specified."""
-    os.environ["PUBLIC_KEY"] = "/app/tests/files/key.pem"
-    os.environ["AUDIENCE"] = "aud"
-    os.environ["CLIENT_ROLE"] = "role"
+    os.environ['PUBLIC_KEY'] = '/app/tests/files/key.pem'
+    os.environ['AUDIENCE'] = 'aud'
+    os.environ['CLIENT_ROLE'] = 'role'
 
     authenticator = create_authenticator()
 
-    assert authenticator.audience == "aud"
-    assert authenticator.role == "role"
+    assert authenticator.audience == 'aud'
+    assert authenticator.role == 'role'
 
-    del os.environ["PUBLIC_KEY"]
-    del os.environ["AUDIENCE"]
-    del os.environ["CLIENT_ROLE"]
+    del os.environ['PUBLIC_KEY']
+    del os.environ['AUDIENCE']
+    del os.environ['CLIENT_ROLE']
 
 
 def test_authenticator_2():

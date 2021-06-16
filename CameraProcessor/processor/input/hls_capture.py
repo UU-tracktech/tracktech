@@ -117,7 +117,7 @@ class HlsCapture(ICapture):
         # Join the reconnecting thread.
         self.__drop_reconnect = True
         self.__reconnect_thread.join()
-        logging.info("Threads joined")
+        logging.info('Threads joined')
 
     def get_next_frame(self):
         """Gets the next frame from the hls stream.
@@ -145,7 +145,7 @@ class HlsCapture(ICapture):
                     self.__reconnecting = True
                     self.__timeout = 5
                     self.__grace_period = 10
-                    logging.info("Connection timed out")
+                    logging.info('Connection timed out')
             return False, None
 
         self.__timeout = 5
@@ -173,8 +173,8 @@ class HlsCapture(ICapture):
             try:
                 ret, self.__current_frame = cap.read()
             except SystemExit as error:
-                logging.warning("Capture read has been blocked")
-                raise TimeoutError("Capture read has been blocked.") from error
+                logging.warning('Capture read has been blocked')
+                raise TimeoutError('Capture read has been blocked.') from error
 
             # If frame was not yet ready.
             if not ret:
@@ -243,13 +243,13 @@ class HlsCapture(ICapture):
         self.__thread_running = True
         self.__previous_time = time.time()
         self.__reading_thread.start()
-        logging.info("Reading thread started successfully!")
+        logging.info('Reading thread started successfully!')
 
         # Start the reconnect thread.
         self.__reconnect_thread = kthread.KThread(target=self.reconnect)
         self.__reconnect_thread.daemon = True
         self.__reconnect_thread.start()
-        logging.info("Reconnecting thread started successfully!")
+        logging.info('Reconnecting thread started successfully!')
 
         return True
 
@@ -257,12 +257,12 @@ class HlsCapture(ICapture):
         """Method to loop and check if we need to reconnect."""
         while not self.__reconnecting:
             if self.__drop_reconnect:
-                logging.info("Shutting down reconnection thread.")
+                logging.info('Shutting down reconnection thread.')
                 break
             time.sleep(1)
         # Connection is not established.
         else:
-            logging.info("Connection lost unexpectedly. Starting connection process")
+            logging.info('Connection lost unexpectedly. Starting connection process')
             if self.__reading_thread.is_alive():
                 self.__reading_thread.kill()
             self.__reading_thread.join()
@@ -297,7 +297,7 @@ class HlsCapture(ICapture):
 
         # Sleep is essential so processor has a prepared self.cap.
         while tries_left > 0:
-            logging.info(f"Attempting to connect. Attempts left: {tries_left}")
+            logging.info(f'Attempting to connect. Attempts left: {tries_left}')
             if self.sync():
                 break
             time.sleep(1)
@@ -306,5 +306,5 @@ class HlsCapture(ICapture):
         # Raise error when capture is never created in other thread.
         if not self.__found_stream:
             self.__thread_running = False
-            logging.error("cv2.VideoCapture probably raised exception")
-            raise TimeoutError("HLS Capture never opened")
+            logging.error('cv2.VideoCapture probably raised exception')
+            raise TimeoutError('HLS Capture never opened')

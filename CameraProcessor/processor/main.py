@@ -127,7 +127,7 @@ def main():
         ws_id, ws_url, hls_url = enforce_deploy_environment_variables()
         asyncio.get_event_loop().run_until_complete(deploy(configs, ws_id, ws_url, hls_url))
     else:
-        raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
+        raise AttributeError('Mode you try to run in does not exist, did you make a typo?')
 
 
 if __name__ == '__main__':

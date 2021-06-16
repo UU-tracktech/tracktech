@@ -37,16 +37,16 @@ class TestDraw:
             func_text_seed (dict[str, func]): Dictionary containing all the information for generating a color.
         """
         # Color depends on the seed.
-        color = self.__get_random_color(func_text_seed["seed"])
+        color = self.__get_random_color(func_text_seed['seed'])
 
         # Run the given function.
-        func_text_seed["func"](img, [bbox])
+        func_text_seed['func'](img, [bbox])
 
         # Assert the rectangle is correct.
         self.__assert_rectangle(img, color, bbox)
 
         # Extract the text box from the image.
-        sliced_img = self.__extract_text_box(img, func_text_seed["text"], bbox)
+        sliced_img = self.__extract_text_box(img, func_text_seed['text'], bbox)
 
         # Assert the text box is correct.
         self.__assert_text_box(sliced_img, color)

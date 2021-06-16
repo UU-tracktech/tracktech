@@ -26,12 +26,12 @@ def get_auth_params():
         client_role = os.environ.get('CLIENT_ROLE')
         # Client and Processor authentication can be used independently.
         if client_role is not None:
-            logger.log("using client token validation")
+            logger.log('using client token validation.')
             client_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
                                audience=audience, role=client_role)
         processor_role = os.environ.get('PROCESSOR_ROLE')
         if processor_role is not None:
-            logger.log("using processor token validation")
+            logger.log('using processor token validation.')
             processor_auth = Auth(public_key_path=public_key, algorithms=['RS256'],
                                   audience=audience, role=processor_role)
 

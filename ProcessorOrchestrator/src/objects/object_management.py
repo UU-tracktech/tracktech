@@ -57,8 +57,8 @@ def monitor_tracking_timeout(timeout):
         if tracking_object[1] < timeout_border:
             for processor in processors.values():
                 processor.send_message(json.dumps({
-                    "type": "stop",
-                    "objectId": tracking_object[0].identifier
+                    'type': 'stop',
+                    'objectId': tracking_object[0].identifier
                 }))
             delete_list.append(tracking_object[0])
 

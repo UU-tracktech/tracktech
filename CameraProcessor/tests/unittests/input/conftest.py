@@ -33,14 +33,14 @@ def __get_video_path():
 
 
 # pylint: disable=unnecessary-lambda
-@pytest.fixture(scope="class",
+@pytest.fixture(scope='class',
                 params=[lambda: ImageCapture(__get_images_dir()),
                         lambda: VideoCapture(__get_video_path()),
                         lambda: HlsCapture()
                         ],
-                ids=["Image",
-                     "video",
-                     "HLS Stream"
+                ids=['Image',
+                     'video',
+                     'HLS Stream'
                      ],
                 )
 def capture_implementation(request):

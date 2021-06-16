@@ -21,8 +21,8 @@ class MultipleInputComponent(IComponent):
         Returns:
             [str]: A list of both inputs for the next layer.
         """
-        first_arg = first_arg.__add__(",first_arg")
-        second_arg = second_arg.__add__(",second_arg")
+        first_arg = first_arg.__add__(',first_arg')
+        second_arg = second_arg.__add__(',second_arg')
         return [first_arg, second_arg]
 
     def execute_component(self):

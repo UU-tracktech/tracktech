@@ -17,10 +17,10 @@ from src.logging_filter import LoggingFilter
 from src.camera_handler import CameraHandler
 
 # pylint: disable=invalid-name
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Setup for logging.
     tornado.log.logging.basicConfig(
-        filename='/app/src/main.log',
+        filename='src/main.log',
         filemode='w',
         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
         level=tornado.log.logging.INFO,
@@ -51,12 +51,12 @@ if __name__ == "__main__":
     if ssl_options is not None:
         https_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_options)
         https_server.listen(443)
-        info('listening over https')
+        info('listening over https.')
 
     # Start the webserver.
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(80)
-    info('listening over http')
+    info('listening over http.')
 
     # Start the IO loop (used by Tornado itself).
     tornado.ioloop.IOLoop.current().start()

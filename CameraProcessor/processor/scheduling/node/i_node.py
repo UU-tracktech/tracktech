@@ -19,8 +19,8 @@ class INode:
             NotImplementedError: occurs when this method is not overridden
                 to ensure this function is defined.
         """
-        raise NotImplementedError("Function to prepare the node for the next iteration, "
-                                  "should also call on children/out nodes if applicable")
+        raise NotImplementedError('Function to prepare the node for the next iteration, '
+                                  'should also call on children/out nodes if applicable')
 
     def executable(self):
         """Checks if the node is executable in its current state.
@@ -32,7 +32,7 @@ class INode:
             NotImplementedError: occurs when this method is not overridden
                 to ensure this function is defined.
         """
-        raise NotImplementedError("Function to indicate if the node can be run isn't implemented")
+        raise NotImplementedError('Function to indicate if the node can be run is not implemented.')
 
     def execute(self, notify, global_readonly):
         """Execute the component and pass output to next layer.
@@ -52,7 +52,7 @@ class INode:
             NotImplementedError: occurs when this method is not overridden
                 to ensure this function is defined.
         """
-        raise NotImplementedError("Function should execute the associated internal component")
+        raise NotImplementedError('Function should execute the associated internal component.')
 
     def assign(self, arg, arg_nr):
         """Store argument for later component execution.
@@ -65,7 +65,7 @@ class INode:
             NotImplementedError: occurs when this method is not overridden
                 to ensure this function is defined.
         """
-        raise NotImplementedError("Function to assign an input to a node as argument not implemented")
+        raise NotImplementedError('Function to assign an input to a node as argument not implemented.')
 
     @property
     def global_map(self):
@@ -75,4 +75,4 @@ class INode:
             NotImplementedError: occurs when this method is not overridden
                 to ensure this function is defined.
         """
-        raise NotImplementedError("Function to return map of all globals necessary to run component not implemented")
+        raise NotImplementedError('Function to return map of all globals necessary to run component not implemented.')

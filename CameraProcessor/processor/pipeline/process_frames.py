@@ -8,7 +8,9 @@ Utrecht University within the Software Project course.
 import sys
 import logging
 import asyncio
+import base64
 import cv2
+import numpy as np
 
 import processor.utils.text as text
 import processor.utils.display as display
@@ -176,15 +178,26 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
     error = None
     feature_map = None
     if isinstance(track_elem, StartCommandSimple):
-        # Extract features from cutout.
-        stored_frame = framebuffer.get_frame(track_elem.frameId)
-        stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
-        feature_map = re_identifier.extract_features(stored_frame, stored_box)
+        # Extract features from image.
+        encoded_data = base64.b64decode(track_elem.image.split(',')[1])
+        decoded_image = cv2.imdecode(np.fromstring(encoded_data, np.uint8), cv2.IMREAD_COLOR)
+        converted_image = cv2.cvtColor(decoded_image, cv2.COLOR_RGBA2RGB)
+        feature_map = re_identifier.extract_features_from_cutout(converted_image)
     elif isinstance(track_elem, StartCommandExtended):
-        # Extract features from cutout.
-        stored_frame = framebuffer.get_frame(track_elem.frameId)
-        stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
-        feature_map = re_identifier.extract_features(stored_frame, stored_box)
+        try:
+            # Look for the box in the buffer.
+            stored_frame = framebuffer.get_frame(track_elem.frameId)
+            stored_box = framebuffer.get_box(track_elem.frameId, track_elem.boxId)
+        except IndexError as index_error:
+            # Frame or box not found in the buffer, use the image send from the interface.
+            error = index_error
+            encoded_data = base64.b64decode(track_elem.image.split(',')[1])
+            decoded_image = cv2.imdecode(np.fromstring(encoded_data, np.uint8), cv2.IMREAD_COLOR)
+            converted_image = cv2.cvtColor(decoded_image, cv2.COLOR_RGBA2RGB)
+            feature_map = re_identifier.extract_features_from_cutout(converted_image)
+        else:
+            feature_map = re_identifier.extract_features(stored_frame, stored_box)
+
     elif isinstance(track_elem, StartCommandSearch):
         try:
             # Look for the box in the buffer.
@@ -196,7 +209,7 @@ def __handle_start_command(track_elem, ws_client, framebuffer, re_identifier, re
         else:
             feature_map = re_identifier.extract_features(stored_frame, stored_box)
     else:
-        error = NameError("Unknown Start Command type.")
+        error = NameError('Unknown Start Command type.')
 
     # If successfully extracted, send the feature_map to the orchestrator.
     if feature_map is not None:
@@ -296,10 +309,10 @@ def opencv_display(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes
 
     # Play the video in a window called "Output Video".
     try:
-        cv2.imshow("Output Video", tiled_image)
+        cv2.imshow('Output Video', tiled_image)
     except OSError as err:
         # Figure out how to get Docker to use GUI.
-        raise OSError("Error displaying video. Are you running this in Docker perhaps?") \
+        raise OSError('Error displaying video. Are you running this in Docker perhaps?') \
             from err
 
     # This next line is **ESSENTIAL** for the video to actually play.

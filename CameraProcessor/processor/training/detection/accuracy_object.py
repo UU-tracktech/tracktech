@@ -169,7 +169,7 @@ class AccuracyObject:
                 self.draw_pr_plot(result[1])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Run accuracy.
     config_parser = ConfigParser('configs.ini', True)
     test_object = AccuracyObject(config_parser.configs)

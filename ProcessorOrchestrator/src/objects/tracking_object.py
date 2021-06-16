@@ -47,7 +47,7 @@ class TrackingObject:
                 json containing the features that should become the new feature map on this object.
         """
         self.feature_map = feature_map
-        logger.log(f"updated feature map of object {self.identifier}")
+        logger.log(f'updated feature map of object {self.identifier}')
 
     def remove_self(self):
         """Removes self from objects dict."""
@@ -59,10 +59,10 @@ class TrackingObject:
         Args:
             processor_id (int): Identifier of the processor
         """
-        file = open(f"tracking_timelines/tracking_logs_{self.identifier}.txt", "a")
+        file = open(f'tracking_timelines/tracking_logs_{self.identifier}.txt', 'a')
         file.write(json.dumps({
-            "timeStamp": datetime.now().strftime("%Y/%m/%d | %H:%M:%S"),
-            "processorId": processor_id
+            'timeStamp': datetime.now().strftime('%Y/%m/%d | %H:%M:%S'),
+            'processorId': processor_id
         }))
         file.write(",\n")
         file.close()

@@ -63,15 +63,15 @@ class TestAccuracyRunner:
         file_info = open(self.config_accuracy['det-info_path'], 'r')
         line_info = file_info.readline()
         file_info.close()
-        image_width = int(line_info.split(",")[1])
-        image_height = int(line_info.split(",")[2])
+        image_width = int(line_info.split(',')[1])
+        image_height = int(line_info.split(',')[2])
 
         # Checking if the information in every line is in line with the guidelines for the first six values.
         # These are defined in https://motchallenge.net/instructions/.
         previous_frame_nr = 0
         previous_id = 0
         for line in lines:
-            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = line.split(",")[:6]
+            (frame_nr, person_id, pos_x, pos_y, pos_w, pos_h) = line.split(',')[:6]
             assert int(frame_nr) >= previous_frame_nr
             assert int(person_id) > previous_id or int(person_id) == 0
             assert 0 <= int(pos_x) <= int(pos_x) + int(pos_w) <= image_width

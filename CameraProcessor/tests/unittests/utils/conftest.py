@@ -10,15 +10,15 @@ from processor.utils.draw import draw_tracking_boxes, draw_detection_boxes
 
 
 @pytest.fixture(params=[
-    {"func": draw_detection_boxes,
-     "text": f'Bob {round(float(0.50), 2)}',
-     "seed": "Bob"
+    {'func': draw_detection_boxes,
+     'text': f'Bob {round(float(0.50), 2)}',
+     'seed': "Bob"
      },
-    {"func": draw_tracking_boxes,
-     "text": "1",
-     "seed": 1
+    {'func': draw_tracking_boxes,
+     'text': "1",
+     'seed': 1
      }],
-    ids=["Detection", "Tracking"])
+    ids=['Detection', 'Tracking'])
 def func_text_seed(request):
     """Fixture for the function, text, and seed.
 
