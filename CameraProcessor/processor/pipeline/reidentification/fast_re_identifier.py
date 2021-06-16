@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 import os
 import argparse
 import copy
-import gdown
+import requests
 from scipy.spatial.distance import cosine
 
 from processor.data_object.bounding_box import BoundingBox
@@ -49,8 +49,13 @@ class FastReIdentifier(IReIdentifier):
 
         if not os.path.exists(cfg.MODEL.WEIGHTS):
             url = 'https://github.com/JDAI-CV/fast-reid/releases/download/v0.1.1/market_sbs_R101-ibn.pth'
+            response = requests.get(url, stream=True)
             output = cfg.MODEL.WEIGHTS
-            gdown.download(url, output, quiet=False)
+            weight_file = open(output, "wb")
+            for chunk in response.iter_content(chunk_size=1024):
+                weight_file.write(chunk)
+
+            weight_file.close()
 
         self.extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
 
