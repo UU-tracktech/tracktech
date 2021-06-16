@@ -229,7 +229,7 @@ def assert_start_tracking_with_image(message):
         bool: Whether message has been correct.
     """
     message_json = json.loads(message)
-    assert message_json[type] == 'start'
+    assert message_json['type'] == 'start'
     assert message_json['image'] == 'test'
     return True
 
