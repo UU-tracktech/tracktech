@@ -6,9 +6,9 @@ Utrecht University within the Software Project course.
 
  */
 
-import { size } from './size'
+import { Box } from 'classes/box'
 
-/** Incoming messages are of type ClientMessage. */
+/** Abstract class for messages received from the processor orchestrator. */
 export abstract class ClientMessage {
   constructor(type: string) {
     this.type = type
@@ -54,59 +54,4 @@ export class StopClientMessage extends ClientMessage {
   }
 
   objectId: number
-}
-
-/** Structure that represents a bounding box. */
-export class Box {
-  constructor(
-    boxId: number,
-    rect: [number, number, number, number],
-    objectType: string,
-    objectId?: number
-  ) {
-    this.boxId = boxId
-    this.rect = rect
-    this.objectType = objectType
-    this.objectId = objectId
-  }
-
-  boxId: number
-  rect: [number, number, number, number]
-  objectType: string
-  objectId?: number
-
-  /**
-   * Transform tha coordinates that are in between 0 and 1 to coordinates relative to the width and height of the display.
-   * @param width Width of the display.
-   * @param height Height of the display.
-   * @returns A size object containing the relative offset, widht and height.
-   */
-  toSize(width: number, height: number): size {
-    var x1 = this.rect[0],
-      y1 = this.rect[1],
-      x2 = this.rect[2],
-      y2 = this.rect[3]
-
-    // Flip x/y to get the top left corner.
-    if (x1 > x2) [x1, x2] = [x2, x1]
-    if (y1 > y2) [y1, y2] = [y2, y1]
-
-    return {
-      left: x1 * width,
-      top: y1 * height,
-      width: (x2 - x1) * width,
-      height: (y2 - y1) * height
-    }
-  }
-}
-
-/** Used by the overlay to store bounding boxes alongside their frameID. */
-export class QueueItem {
-  constructor(frameId: number, boxes: Box[]) {
-    this.frameId = frameId
-    this.boxes = boxes
-  }
-
-  frameId: number
-  boxes: Box[]
 }

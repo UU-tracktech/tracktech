@@ -7,23 +7,20 @@ Utrecht University within the Software Project course.
  */
 
 import React from 'react'
-import { Button, Card, Layout, Modal } from 'antd'
+import { Button, Card, Layout } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-import { Grid } from '../components/grid'
-import { CameraCard } from '../components/cameraCard'
-import { SelectionCard } from '../components/selectionCard'
-import { ObjectTypeFilter } from '../components/objectTypeFilter'
-import { stream } from '../classes/source'
-import { websocketContext } from '../components/websocketContext'
-import { environmentContext } from '../components/environmentContext'
-import { StopOrchestratorMessage } from '../classes/orchestratorMessage'
+import { Grid } from 'components/grid'
+import { CameraCard } from 'components/cameraCard'
+import { SelectionCard } from 'components/selectionCard'
+import { ObjectTypeFilter } from 'components/objectTypeFilter'
+import { stream } from 'components/overlay'
+import { websocketContext } from 'components/websocketContext'
+import { environmentContext } from 'components/environmentContext'
+import { StopOrchestratorMessage } from 'classes/orchestratorMessage'
 
 /** The selection modes for the bounding boxes. */
 export type indicator = 'All' | 'Selection' | 'None'
-
-/** Data required to track an object. */
-type tracked = { id: number; name: string; image: string; data: string }
 
 /**
  * Home container component containing video streams and control panel.

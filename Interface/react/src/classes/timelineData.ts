@@ -13,6 +13,7 @@ type datedTrackingLog = { timeStamp: Date; processorId: string }
 
 /** A range from and to a Date */
 export type dateRange = { from: Date; to: Date }
+
 /** Dictionary matching camera processor ids to a timeline of events */
 export type timelineEvents = { [cameraId: string]: dateRange[] }
 

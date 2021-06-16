@@ -9,7 +9,7 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { Skeleton, Typography } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
-import useAuthState from '../classes/useAuthState'
+import useAuthState from 'classes/useAuthState'
 
 /**
  * Component displaying the login status.

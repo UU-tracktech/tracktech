@@ -10,10 +10,10 @@ import React, { useRef, useEffect } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { size } from '../classes/size'
-import { Box } from '../classes/clientMessage'
 import { useKeycloak } from '@react-keycloak/web'
-import useAuthState from '../classes/useAuthState'
+
+import { Box, size } from 'classes/box'
+import useAuthState from 'classes/useAuthState'
 
 /** Properties for the VideoPlayer component, including all callbacks that can be called with the player buttons,
  * as well as default videojs properties. */

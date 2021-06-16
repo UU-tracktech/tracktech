@@ -8,9 +8,8 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 
-import { Overlay } from './overlay'
-import { indicator } from '../pages/home'
-import { stream } from '../classes/source'
+import { Overlay, stream } from 'components/overlay'
+import { indicator } from 'pages/home'
 
 /**
  * Properties of the grid component.

@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-/** Any message going to the orchestrator needs to be of type OrchestratorMessage. */
+/** Abstract class for messages sent to the processor orchestrator. */
 export abstract class OrchestratorMessage {
   constructor(type: string) {
     this.type = type

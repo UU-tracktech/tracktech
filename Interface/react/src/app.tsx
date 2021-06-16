@@ -11,13 +11,13 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import { Layout } from 'antd'
 import './app.less'
 
-import { NavMenu } from './components/navbar'
-import { NeedLogin } from './pages/needLogin'
-import { Home } from './pages/home'
-import { Timelines } from './pages/timelines'
-import { WebsocketProvider } from './components/websocketContext'
-import { EnvironmentProvider } from './components/environmentContext'
-import useAuthState from './classes/useAuthState'
+import { NavMenu } from 'components/navbar'
+import { NeedLogin } from 'pages/needLogin'
+import { Home } from 'pages/home'
+import { Timelines } from 'pages/timelines'
+import { WebsocketProvider } from 'components/websocketContext'
+import { EnvironmentProvider } from 'components/environmentContext'
+import useAuthState from 'classes/useAuthState'
 
 /**
  * Starting point of the React app, gets inserted into the DOM by index.tsx.

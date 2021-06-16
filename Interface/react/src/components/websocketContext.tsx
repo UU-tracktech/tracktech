@@ -13,13 +13,13 @@ import {
   OrchestratorMessage,
   SetUsesImagesMessage,
   AuthenticateOrchestratorMessage
-} from '../classes/orchestratorMessage'
+} from 'classes/orchestratorMessage'
 import {
-  Box,
   BoxesClientMessage,
   NewObjectClientMessage,
   StopClientMessage
-} from '../classes/clientMessage'
+} from 'classes/clientMessage'
+import { Box } from 'classes/box'
 
 /** The various states the websocket can be in. */
 export type connectionState =

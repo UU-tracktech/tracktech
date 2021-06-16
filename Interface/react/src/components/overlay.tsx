@@ -10,17 +10,29 @@ import React, { useState, useRef, useContext } from 'react'
 import { Queue } from 'queue-typescript'
 import { Modal, notification, Typography } from 'antd'
 
-import { indicator } from '../pages/home'
-import { VideoPlayer } from './videojsPlayer'
-import { Box, QueueItem } from '../classes/clientMessage'
-import { websocketContext } from './websocketContext'
+import { indicator } from 'pages/home'
+import { VideoPlayer } from 'components/videojsPlayer'
+import { Box, size } from 'classes/box'
+import { QueueItem } from 'classes/queueItem'
+import { websocketContext } from 'components/websocketContext'
 import {
   StartOrchestratorMessage,
   StopOrchestratorMessage
-} from '../classes/orchestratorMessage'
-import { stream, source } from '../classes/source'
-import { size } from '../classes/size'
-import { colours } from '../utilities/colours'
+} from 'classes/orchestratorMessage'
+import { colours } from 'utilities/colours'
+
+/**
+ * Defines the properties of a single camera feed.
+ * Contains an identifier, a name, and the stream URL.
+ */
+ export type stream = {
+  id: string
+  name: string
+  srcObject: source
+}
+
+/** Defines the properties of a single stream URL. */
+export type source = { src: string; type: string }
 
 /** Props for the overlay component, containing info on what camera feed the overlay belongs to and wether to draw boxes. */
 export type overlayProps = {

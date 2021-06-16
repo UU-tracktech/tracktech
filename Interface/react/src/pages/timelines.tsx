@@ -10,9 +10,9 @@ import React from 'react'
 import { Layout, Card, Timeline, Divider } from 'antd'
 import { Typography } from 'antd'
 
-import { ObjectCard } from '../components/objectCard'
-import { TimelineCard } from '../components/timelineCard'
-import { TimelineData, dateRange } from '../classes/timelineData'
+import { ObjectCard } from 'components/objectCard'
+import { TimelineCard } from 'components/timelineCard'
+import { TimelineData, dateRange } from 'classes/timelineData'
 
 const { Title } = Typography
 

@@ -9,7 +9,7 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { Button, Skeleton } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
-import useAuthState from '../classes/useAuthState'
+import useAuthState from 'classes/useAuthState'
 
 /**
  * Button allowing the user to log in or out, depending on authentication status.

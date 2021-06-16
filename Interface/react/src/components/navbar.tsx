@@ -10,8 +10,8 @@ import React from 'react'
 import { Menu, Layout } from 'antd'
 import { Link } from 'react-router-dom'
 
-import { LoginButton } from './loginButton'
-import { LoggedInUser } from './loggedInUser'
+import { LoginButton } from 'components/loginButton'
+import { LoggedInUser } from 'components/loggedInUser'
 
 /**
  * Navigation bar at the top of the page.
