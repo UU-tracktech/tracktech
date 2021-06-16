@@ -1,5 +1,5 @@
 # Installation using gpu support
-FROM nvidia/cuda:11.3.1-base-ubuntu20.04 as gpu
+FROM nvidia/cuda:11.0-cudnn8-runtime-ubuntu18.04-rc as gpu
 WORKDIR /app
 ENV PYTHONPATH=/app
 
@@ -24,6 +24,11 @@ COPY src src
 # Make sure port is available
 EXPOSE 80
 EXPOSE 443
+
+# Set the encoding in the environment, as we are using a gpu
+ENV STREAM_ENCODING=h264_nvenc
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES video,compute,utility
 
 # Run server
 ENTRYPOINT ["python3.8","-u","src/main.py"]

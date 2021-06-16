@@ -3,5 +3,5 @@ version: "3.8"
 services:
   forwarder:
     build:
-      context: .
+      context: ..
       target: development
