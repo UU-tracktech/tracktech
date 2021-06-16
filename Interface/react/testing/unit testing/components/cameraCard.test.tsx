@@ -29,15 +29,4 @@ describe('Collection of tests for the CameraCard', () => {
     expect(sizeFunc).toBeCalled()
     expect(sizeFunc).toBeCalledWith('someID')
   })
-
-  it('Calls the delete function correctly', () => {
-    jest.spyOn(window, 'alert').mockImplementation(() => {})
-    render(<CameraCard id={'someID'} title={'cardTitle'} setSize={jest.fn()} />)
-
-    expect(screen.queryByTestId('deleteButton')).toBeDefined()
-    screen.getByTestId('deleteButton').click()
-
-    expect(window.alert).toBeCalled()
-    expect(window.alert).toBeCalledWith('clicked on delete')
-  })
 })
