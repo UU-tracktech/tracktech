@@ -83,7 +83,7 @@ async def test_unknown_object_message_interface():
         await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
         'type': 'stop',
-        'objectId': '999''
+        'objectId': '999'
     }))
 
     interface.close()
