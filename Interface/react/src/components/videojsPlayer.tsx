@@ -274,7 +274,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
           left: 0,
           top: (playerHeight - actualVideoHeight) / 2
         })
-      // Stretch video to match height.
+        // Stretch video to match height.
       } else {
         var heightRatio = playerHeight / videoHeight
         var actualVideoWidth = heightRatio * videoWidth
