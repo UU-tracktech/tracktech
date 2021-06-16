@@ -46,17 +46,17 @@ Required to specify
 
 #### Streaming
 
-| Variable        | Description                                                             | Default      |
-| --------------- | ----------------------------------------------------------------------- | ------------ |
-| SEGMENT_SIZE    | The size of a single segment in seconds                                 | 2            |
-| SEGMENT_AMOUNT  | The number of segments stored at once for a single stream               | 5            |
-| REMOVE_DELAY    | The number of seconds of inactivity before a stream is closed           | 60           |
-| TIMEOUT_DELAY   | The number of seconds to wait for a stream to open and produce segments | 30           |
-| STREAM_ENCODING | The encoder used to encode the stream                                   | libx264      |
-| STREAM_FOLDER   | The folder in which the HLS stream files are stored                     | /app/streams |
-| STREAM_LOW      | use 'true' to enable a low-quality stream                               | false        |
-| STREAM_MEDIUM   | use 'true' to enable a medium quality stream                            | false        |
-| STREAM_HIGH     | use 'true' to enable a high-quality stream                              | false        |
+| Variable        | Description                                                             | Default            |
+| --------------- | ----------------------------------------------------------------------- | ------------------ |
+| SEGMENT_SIZE    | The size of a single segment in seconds                                 | 2                  |
+| SEGMENT_AMOUNT  | The number of segments stored at once for a single stream               | 5                  |
+| REMOVE_DELAY    | The number of seconds of inactivity before a stream is closed           | 60                 |
+| TIMEOUT_DELAY   | The number of seconds to wait for a stream to open and produce segments | 30                 |
+| STREAM_ENCODING | The encoder used to encode the stream                                   | libx264/h264_nvenc |
+| STREAM_FOLDER   | The folder in which the HLS stream files are stored                     | /app/streams       |
+| STREAM_LOW      | use 'true' to enable a low-quality stream                               | false              |
+| STREAM_MEDIUM   | use 'true' to enable a medium quality stream                            | false              |
+| STREAM_HIGH     | use 'true' to enable a high-quality stream                              | false              |
 
 #### SSL
 

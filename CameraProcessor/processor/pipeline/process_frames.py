@@ -8,7 +8,9 @@ Utrecht University within the Software Project course.
 import sys
 import logging
 import asyncio
+import base64
 import cv2
+import numpy as np
 
 import processor.utils.text as text
 import processor.utils.display as display
@@ -195,10 +197,10 @@ def opencv_display(frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes
 
     # Play the video in a window called "Output Video".
     try:
-        cv2.imshow("Output Video", tiled_image)
+        cv2.imshow('Output Video', tiled_image)
     except OSError as err:
         # Figure out how to get Docker to use GUI.
-        raise OSError("Error displaying video. Are you running this in Docker perhaps?") \
+        raise OSError('Error displaying video. Are you running this in Docker perhaps?') \
             from err
 
     # This next line is **ESSENTIAL** for the video to actually play.

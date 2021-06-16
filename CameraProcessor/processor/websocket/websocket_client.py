@@ -62,7 +62,7 @@ class WebsocketClient:
         if auth_server_url:
             auth_token = await self.get_access_token(auth_server_url)
         else:
-            logging.info("Authentication is disabled since AUTH_SERVER_URL is not specified in environment.")
+            logging.info('Authentication is disabled since AUTH_SERVER_URL is not specified in environment.')
 
         timeout_left = 60
         sleep = 1
@@ -76,13 +76,13 @@ class WebsocketClient:
                 self.connection =\
                     await websocket.websocket_connect(self.websocket_url,
                                                       on_message_callback=self.__on_message)
-                logging.info(f'Connected to {self.websocket_url} successfully')
+                logging.info(f'Connected to {self.websocket_url} successfully.')
 
                 # Send authentication token to the orchestrator on connect (if it exists).
                 if auth_token:
                     auth_message = json.dumps({
-                        "type": "authenticate",
-                        "jwt": auth_token
+                        'type': 'authenticate',
+                        'jwt': auth_token
                     })
                     logging.info('Authentication message sent to orchestrator.')
                     await self.connection.write_message(auth_message)
@@ -94,14 +94,14 @@ class WebsocketClient:
                 connected = True
             # Reconnect failed.
             except ConnectionRefusedError:
-                logging.warning(f"Could not connect to {self.websocket_url}, trying again in 1 second...")
+                logging.warning(f'Could not connect to {self.websocket_url}, trying again in 1 second...')
                 await asyncio.sleep(sleep)
                 timeout_left -= sleep
 
         # If timeout was reached without connection.
         if not connected:
-            logging.error("Could never connect with orchestrator")
-            raise TimeoutError("Never connected with orchestrator")
+            logging.error('Could never connect with orchestrator.')
+            raise TimeoutError('Never connected with orchestrator.')
 
     @staticmethod
     async def get_access_token(auth_server_url):
@@ -137,7 +137,7 @@ class WebsocketClient:
                 raise err
 
         # After several retries the connection could not be established.
-        raise ConnectionError("Could not connect to the authentication server successfully.")
+        raise ConnectionError('Could not connect to the authentication server successfully.')
 
     async def disconnect(self):
         """Disconnects the websocket."""
@@ -196,7 +196,7 @@ class WebsocketClient:
         """
         # Websocket closed, reconnect is handled by write_message.
         if not message:
-            logging.error("The websocket connection was closed")
+            logging.error('The websocket connection was closed')
             return
 
         try:

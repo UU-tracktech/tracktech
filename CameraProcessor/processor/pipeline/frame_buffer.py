@@ -62,7 +62,7 @@ class FrameBuffer(IComponent):
         if frame_id in self.__buffer:
             return self.__buffer[frame_id]
 
-        raise IndexError("Frame not in buffer. Consider increasing the buffer size.")
+        raise IndexError('Frame not in buffer. Consider increasing the buffer size.')
 
     def get_frame(self, frame_id):
         """Returns the frame object for a given timestamp.
@@ -105,7 +105,7 @@ class FrameBuffer(IComponent):
             if box.identifier == box_id:
                 return box
 
-        raise ValueError("Box id was not found in the boxes list")
+        raise ValueError('Box id was not found in the boxes list.')
 
     @property
     def buffer(self):
