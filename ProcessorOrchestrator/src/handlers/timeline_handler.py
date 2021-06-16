@@ -18,7 +18,7 @@ class TimelineHandler(RequestHandler):
 
     def set_default_headers(self):
         """Sets the default request headers for the request."""
-        self.set_header('Access-Control-Allow-Origin', ''*'')
+        self.set_header('Access-Control-Allow-Origin', '*')
 
     def get(self):
         """Gets log file contents.
