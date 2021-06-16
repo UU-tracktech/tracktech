@@ -175,7 +175,7 @@ class TestWebsocketClient(WebsocketCoroutines):
         simple = {
             'type': 'start',
             'objectId': 1,
-            'imag': 1,
+            'image': 1,
         }
         simple_msg = dummy_websocket.generate_tracking_message(simple)
         assert isinstance(simple_msg, StartCommandSimple)
