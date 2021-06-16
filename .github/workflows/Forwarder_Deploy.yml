@@ -36,3 +36,21 @@ jobs:
           context: VideoForwarder
           push: true
           tags: 'tracktech/forwarder:release'
+
+      - name: Build and push latest gpu
+        if: github.ref == 'refs/heads/develop'
+        uses: docker/build-push-action@v2
+        with:
+          context: VideoForwarder
+          target: gpu
+          push: true
+          tags: 'tracktech/forwarder:gpu-latest'
+      - name: Build and push release  gpu
+        if: github.ref == 'refs/heads/master'
+        uses: docker/build-push-action@v2
+        with:
+          context: VideoForwarder
+          target: gpu
+          push: true
+          tags: 'tracktech/forwarder:gpu-release'
+          tags: 'tracktech/forwarder:release'
