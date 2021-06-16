@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   interface:
@@ -13,8 +13,8 @@ services:
     ports:
       - published: 50008
         target: 8080
-        mode: "host"
-    command: ["rtsp://root:root@192.168.178.30/axis-media/media.amp;cam1"]
+        mode: 'host'
+    command: ['rtsp://root:root@192.168.178.30/axis-media/media.amp;cam1']
 
 configs:
   NetworkConfig:

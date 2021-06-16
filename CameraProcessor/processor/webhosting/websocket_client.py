@@ -64,7 +64,7 @@ class WebsocketClient:
         if auth_server_url:
             auth_token = await self.get_access_token(auth_server_url)
         else:
-            logging.info("Authentication is disabled since AUTH_SERVER_URL is not specified in environment.")
+            logging.info('Authentication is disabled since AUTH_SERVER_URL is not specified in environment.')
 
         timeout_left = 60
         sleep = 1
@@ -78,13 +78,13 @@ class WebsocketClient:
                 self.connection =\
                     await websocket.websocket_connect(self.websocket_url,
                                                       on_message_callback=self._on_message)
-                logging.info(f'Connected to {self.websocket_url} successfully')
+                logging.info(f'Connected to {self.websocket_url} successfully.')
 
                 # Send authentication token to the orchestrator on connect (if it exists).
                 if auth_token:
                     auth_message = json.dumps({
-                        "type": "authenticate",
-                        "jwt": auth_token
+                        'type': 'authenticate',
+                        'jwt': auth_token
                     })
                     logging.info('Authentication message sent to orchestrator.')
                     await self.connection.write_message(auth_message)
@@ -92,8 +92,8 @@ class WebsocketClient:
                 # Send an identification message to the orchestrator on connect.
                 if self.identifier is not None:
                     id_message = json.dumps({
-                        "type": "identifier",
-                        "id": self.identifier
+                        'type': 'identifier',
+                        'id': self.identifier
                     })
                     logging.info(f'Identified with: {id_message}')
                     await self.connection.write_message(id_message)
@@ -101,14 +101,14 @@ class WebsocketClient:
                 connected = True
             # Reconnect failed.
             except ConnectionRefusedError:
-                logging.warning(f"Could not connect to {self.websocket_url}, trying again in 1 second...")
+                logging.warning(f'Could not connect to {self.websocket_url}, trying again in 1 second...')
                 await asyncio.sleep(sleep)
                 timeout_left -= sleep
 
         # If timeout was reached without connection.
         if not connected:
-            logging.error("Could never connect with orchestrator")
-            raise TimeoutError("Never connected with orchestrator")
+            logging.error('Could never connect with orchestrator.')
+            raise TimeoutError('Never connected with orchestrator.')
 
     @staticmethod
     async def get_access_token(auth_server_url):
@@ -144,7 +144,7 @@ class WebsocketClient:
                 raise err
 
         # After several retries the connection could not be established.
-        raise ConnectionError("Could not connect to the authentication server successfully.")
+        raise ConnectionError('Could not connect to the authentication server successfully.')
 
     async def disconnect(self):
         """Disconnects the websocket."""
@@ -214,7 +214,7 @@ class WebsocketClient:
         """
         # Websocket closed, reconnect is handled by write_message.
         if not message:
-            logging.error("The websocket connection was closed")
+            logging.error('The websocket connection was closed')
             return
 
         try:
@@ -222,11 +222,11 @@ class WebsocketClient:
 
             # Switch on message type.
             actions = {
-                "featureMap":
+                'featureMap':
                     lambda: self.update_feature_map(message_object),
-                "start":
+                'start':
                     lambda: self.start_tracking(message_object),
-                "stop":
+                'stop':
                     lambda: self.stop_tracking(message_object)
             }
 
@@ -264,14 +264,14 @@ class WebsocketClient:
         Returns:
             StartCommand: A subclass of the StartCommand superclass.
         """
-        del message["type"]
-        if all(k in message.keys() for k in {"frameId", "boxId"}):
+        del message['type']
+        if all(k in message.keys() for k in {'frameId', 'boxId'}):
             if "image" in message.keys():
                 return StartCommandExtended(**message)
             return StartCommandSearch(**message)
         if "image" in message.keys():
             return StartCommandSimple(**message)
-        raise ValueError("Start Tracking message does not contain necessary information.")
+        raise ValueError('Start Tracking message does not contain necessary information.')
 
     def start_tracking(self, message):
         """Handler for the "start tracking" command.
@@ -295,7 +295,7 @@ class WebsocketClient:
         Args:
             message (Union[str, bytes]): JSON parse of sent message.
         """
-        object_id = message["objectId"]
+        object_id = message['objectId']
 
         self.message_queue.append(StopCommand(object_id))
     # pylint: enable=R0201

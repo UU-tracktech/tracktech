@@ -29,11 +29,11 @@ def test_deleting_object_removes_it_from_dict():
 def test_updating_feature_map_replaces_internal_feature_map():
     """Tests whether feature maps are updated internally when the corresponding function is called."""
     tracking_object = TrackingObject(None)
-    tracking_object.update_feature_map({"type": "testFeatureMap"})
-    assert tracking_object.feature_map == {"type": "testFeatureMap"}
+    tracking_object.update_feature_map({'type': 'testFeatureMap'})
+    assert tracking_object.feature_map == {'type': 'testFeatureMap'}
 
 
 def test_image_properly_set():
     """Test whether the image given in an object constructor is made available."""
-    tracking_object = TrackingObject("test")
-    assert tracking_object.image == "test"
+    tracking_object = TrackingObject('test')
+    assert tracking_object.image == 'test'

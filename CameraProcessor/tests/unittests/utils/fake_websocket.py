@@ -25,4 +25,4 @@ class FakeWebsocket:
             message (str): a JSON object in string format.
         """
         msg = json.loads(message)
-        assert msg["type"] == 'boundingBoxes'
+        assert msg['type'] == 'boundingBoxes'

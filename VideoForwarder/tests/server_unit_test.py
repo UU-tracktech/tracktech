@@ -20,12 +20,12 @@ class ServerUnitTest(AsyncHTTPTestCase):
 
     def get_app(self):
         """Creates the application to test."""
-        environ["CAMERA_URL"] = "rtmp://localhost:1932/stream"
-        environ["CAMERA_AUDIO"] = "false"
+        environ['CAMERA_URL'] = 'rtmp://localhost:1932/stream'
+        environ['CAMERA_AUDIO'] = 'false'
 
-        environ["STREAM_LOW"] = 'true'
-        environ["STREAM_MEDIUM"] = 'true'
-        environ["STREAM_HIGH"] = 'false'
+        environ['STREAM_LOW'] = 'true'
+        environ['STREAM_MEDIUM'] = 'true'
+        environ['STREAM_HIGH'] = 'false'
 
         return Application(
             [
@@ -51,8 +51,8 @@ class ServerUnitTest(AsyncHTTPTestCase):
         """Tests hls stream header on certain properties."""
 
         response = yield self.my_fetch('/')
-        assert response.headers["Cache-control"] == "no-store"
-        assert response.headers["Access-Control-Allow-Origin"] == "*"
+        assert response.headers['Cache-control'] == 'no-store'
+        assert response.headers['Access-Control-Allow-Origin'] == '*'
 
     @testing.gen_test(timeout=10)
     def test_valid_http_request(self):

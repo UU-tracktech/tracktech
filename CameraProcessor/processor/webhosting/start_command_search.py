@@ -16,5 +16,5 @@ class StartCommandSearch(StartCommand):
         Args:
             **kwargs (dict): dict of key-value pairs containing the start command message.
         """
-        key_set = {"frameId", "boxId"}
+        key_set = {'frameId', 'boxId'}
         super().__init__(*key_set, **kwargs)

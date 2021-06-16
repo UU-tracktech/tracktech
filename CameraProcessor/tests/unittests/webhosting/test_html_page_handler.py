@@ -24,7 +24,7 @@ class TestHtmlPageHandler(AsyncHTTPTestCase):
 
         return tornado.web.Application([
             # HTML file regex pattern.
-            (r"/(.*\.html)?", HtmlPageHandler, dict(configs=configs)),
+            (r'/(.*\.html)?', HtmlPageHandler, dict(configs=configs)),
         ])
 
     def test_default_html_file(self):
@@ -44,4 +44,4 @@ class TestHtmlPageHandler(AsyncHTTPTestCase):
         response = self.fetch('/test.html')
         # Error page gets rendered.
         self.assertEqual(response.code, 200)
-        self.assertIn("404", str(response.body))
+        self.assertIn('404', str(response.body))
