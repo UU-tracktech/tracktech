@@ -4,4 +4,4 @@ services:
   forwarder:
     build:
       context: ..
-      target: development
+      target: gpu
