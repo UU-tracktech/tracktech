@@ -127,16 +127,15 @@ class StartMessage(IMessage):
             if error is not None:
                 raise error
 
-        # If the cutout was already found in the frame buffer before (or not found and taken from image),
-        # don't try to find it again.
+        # If the cutout was already found before, don't try to find it again.
         return self.__cutout
 
     @staticmethod
     def __convert_base64_image_to_np_array(image):
-        """ Converts the base64 encoded image from the websocket to a np array usable by OpenCV.
+        """Converts the base64 encoded image from the websocket to a np array usable by OpenCV.
 
         Args:
-            image(string): a string of the image in base64 png format.
+            image (string): a string of the image in base64 png format.
 
         Returns:
             (np.ndarray): the image in OpenCV-readable format.
@@ -150,7 +149,7 @@ class StartMessage(IMessage):
         """Get object id.
 
         Returns:
-            (int) Identifier of the object to stop following.
+            (int): Identifier of the object to stop following.
         """
         return self.__object_id
 
@@ -177,7 +176,7 @@ class StartMessage(IMessage):
         """Get box id.
 
         Returns:
-            (int) Identifier of the box that contains the object to be followed.
+            (int): Identifier of the box that contains the object to be followed.
         """
         return self.__box_id
 

@@ -5,19 +5,18 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.utils.text import bounding_box_to_dict
 from processor.websocket.i_message import IMessage
 
 
 class BoxesMessage(IMessage):
-    """ Message that contains the bounding boxes in the current frame."""
+    """Message that contains the bounding boxes in the current frame."""
     def __init__(self, frame_id, bounding_boxes):
         """Constructor for the BoxesMessage class.
 
         Args:
             frame_id (float): identifier of the frame.
-            bounding_boxes (BoundingBoxes: bounding boxes in the frame.
+            bounding_boxes (BoundingBoxes): bounding boxes in the frame.
         """
         if not isinstance(frame_id, float):
             raise TypeError("Frame id should be a float.")
@@ -94,4 +93,3 @@ class BoxesMessage(IMessage):
             str: String representation of a BoxesMessage.
         """
         return f"BoxesMessage(frame id: {self.__frame_id} boxes: {self.__bounding_boxes})"
-

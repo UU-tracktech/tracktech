@@ -11,7 +11,14 @@ class IMessage:
 
     @staticmethod
     def from_message(message):
-        """Converts a python dict representation of the message to a message class instantiation."""
+        """Converts a python dict representation of the message to an IMessage.
+
+        Args:
+            message (dict): Python dict representation of an incoming JSON message.
+
+        Returns:
+            (IMessage): IMessage constructed from the dict.
+        """
         raise NotImplementedError("Expected function from_message not implemented.")
 
     def to_message(self):

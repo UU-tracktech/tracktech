@@ -20,8 +20,6 @@ class UpdateMessage(IMessage):
         if not isinstance(object_id, int):
             raise TypeError("Object id should be an integer")
 
-        # TODO: Type checking of the feature map
-
         self.__object_id = object_id
         self.__feature_map = feature_map
 
@@ -60,7 +58,7 @@ class UpdateMessage(IMessage):
 
     @property
     def object_id(self):
-        """ Get object identifier.
+        """Get object identifier.
 
         Returns:
             (int): Id of the object.

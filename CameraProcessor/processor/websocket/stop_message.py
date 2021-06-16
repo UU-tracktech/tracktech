@@ -53,7 +53,7 @@ class StopMessage(IMessage):
         """Get object id.
 
         Returns:
-            (int) Identifier of the object to stop following.
+            (int): Identifier of the object to stop following.
         """
         return self.__object_id
 
@@ -75,4 +75,3 @@ class StopMessage(IMessage):
             str: String representation of a StopMessage.
         """
         return f"StopMessage(object id: {self.__object_id})"
-

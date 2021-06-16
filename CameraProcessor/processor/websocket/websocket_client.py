@@ -234,10 +234,17 @@ class WebsocketClient:
         except TypeError as type_error:
             logging.warning(f'One or more keys is of the wrong type: {message}.\nWith error: {type_error}.')
 
-    def send_message(self, command):
+    def send_message(self, message):
+        """Sends the given message.
+
+        Args:
+            message (IMessage): Message to be sent.
+
+        Returns:
+            (None): Returns from the function when we cannot send the message.
+        """
         try:
-            json_message = json.dumps(command.to_message())
+            json_message = json.dumps(message.to_message())
             asyncio.get_running_loop().create_task(self.__write_message(json_message))
         except RuntimeError:
             return
-
