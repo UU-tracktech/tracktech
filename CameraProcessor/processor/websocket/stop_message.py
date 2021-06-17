@@ -31,7 +31,7 @@ class StopMessage(IMessage):
         Returns:
             (StopMessage): StopCommand constructed from the dict.
         """
-        if "objectId" not in message.keys():
+        if 'objectId' not in message.keys():
             raise KeyError('objectId missing')
 
         object_id = message['objectId']

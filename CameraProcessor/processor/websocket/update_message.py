@@ -14,7 +14,7 @@ class UpdateMessage(IMessage):
         """Constructor for the UpdateMessage class.
 
         Args:
-            object_id (int): Identifier of the object that should be followed."
+            object_id (int): Identifier of the object that should be followed.
             feature_map ([float]): Feature map of the object that should be followed.
         """
         if not isinstance(object_id, int):
@@ -33,10 +33,10 @@ class UpdateMessage(IMessage):
         Returns:
             (BoxesMessage): UpdateMessage constructed from the dict.
         """
-        if "featureMap" not in message.keys():
+        if 'featureMap' not in message.keys():
             raise KeyError('featureMap missing')
 
-        if "objectId" not in message.keys():
+        if 'objectId' not in message.keys():
             raise KeyError('objectId missing')
 
         object_id = message['objectId']
