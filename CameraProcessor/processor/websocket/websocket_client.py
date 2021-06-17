@@ -66,13 +66,12 @@ class WebsocketClient:
         else:
             logging.info('Authentication is disabled since AUTH_SERVER_URL is not specified in environment.')
 
-        timeout_left = 60
-        sleep = 1
+        tries_left = 10
         connected = False
 
         # Try to authenticate to the processor orchestrator.
         # Whilst there is no connection.
-        while not connected and timeout_left > 0:
+        while not connected and tries_left > 0:
             # Reconnect.
             try:
                 self.connection =\
@@ -85,8 +84,8 @@ class WebsocketClient:
             # Reconnect failed.
             except ConnectionRefusedError:
                 logging.warning(f'Could not connect to {self.websocket_url}, trying again in 1 second...')
-                await asyncio.sleep(sleep)
-                timeout_left -= sleep
+                await asyncio.sleep(1)
+                tries_left -= 1
             # Connected with an url that connect be found.
             except HTTPClientError as err:
                 logging.error(f'Wrong url after websocket: {self.websocket_url}')
@@ -182,7 +181,7 @@ class WebsocketClient:
         """Internal write message that also writes all messages on the write queue if possible.
 
         Args:
-            message: the message to write.
+            message (IMessage): the message to write.
         """
         try:
             if self.connection is None:

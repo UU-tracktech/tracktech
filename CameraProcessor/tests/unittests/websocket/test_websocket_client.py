@@ -15,6 +15,7 @@ from tornado.websocket import WebSocketHandler
 
 from processor.websocket.websocket_client import WebsocketClient
 from processor.websocket.start_message import StartMessage
+from processor.websocket.stop_message import StopMessage
 from processor.websocket.update_message import UpdateMessage
 from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
 from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
@@ -25,12 +26,12 @@ class TestWebsocketClient(WebsocketCoroutines):
     """Tests the websocket client using different coroutines to create a websocket connection.
 
     Attributes:
-        start_message (str): Start message in json format.
-        stop_message (str): Stop message in json format.
-        feature_map_message (str): Feature map json message.
+        start_message (StartMessage): Start message in json format.
+        stop_message (StopMessage): Stop message in json format.
+        feature_map_message (UpdateMessage): Feature map json message.
     """
-    start_message = '{"type": "start", "objectId": 1, "frameId": 1, "boxId": 1}'
-    stop_message = '{"type": "stop", "objectId": 1}'
+    start_message = StartMessage.from_message({'type': 'start', 'objectId': 1, 'frameId': 1.0, 'boxId': 1})
+    stop_message = StopMessage.from_message({'type': 'stop', 'objectId': 1})
     feature_map_message = UpdateMessage.from_message({'objectId': 1, 'featureMap': [1.1]})
 
     def get_app(self):
@@ -44,7 +45,7 @@ class TestWebsocketClient(WebsocketCoroutines):
             (r'/echo', EchoWebsocketHandler)
         ])
 
-    def test_constructor(self):
+    def test_init(self):
         """Tests the constructor whether the url gets saved correctly."""
         ws_url = 'ws://localhost:80'
         identifier = 'test stream 1'
@@ -62,10 +63,33 @@ class TestWebsocketClient(WebsocketCoroutines):
         assert dummy_websocket.connection.protocol
 
     @tornado.testing.gen_test(timeout=10)
+    def test_reconnect(self):
+        """Writes message after disconnecting."""
+        dummy_websocket = yield self.dummy_ws_connect('/')
+        dummy_websocket.connection = None
+        dummy_websocket.reconnecting = False
+        dummy_websocket.send_message(self.feature_map_message)
+
+        # Give the event loop the control to send the message.
+        yield asyncio.sleep(0)
+
+        # Connection object is regenerated and message is inside the write_queue.
+        assert len(dummy_websocket.write_queue) == 0
+
+    @tornado.testing.gen_test(timeout=10)
     def test_connect_invalid_extension(self):
         """Test handeling wrong websocket url."""
         with pytest.raises(HTTPClientError):
-            dummy_websocket = yield self.dummy_ws_connect('/invalid')
+            yield self.dummy_ws_connect('/invalid')
+
+    @tornado.testing.gen_test(timeout=50)
+    def test_connect_with_invalid_url(self):
+        """Test whether websocket is able to connect with an identifier and checks properties."""
+        ws_url = 'ws://localhost:12345/'
+        dummy_websocket = WebsocketClient(ws_url, 'test stream 1')
+        # Connect websocket throws TimeoutError.
+        with pytest.raises(TimeoutError):
+            yield dummy_websocket.connect()
 
     @tornado.testing.gen_test(timeout=10)
     def test_connect_with_identifier(self):
@@ -81,14 +105,44 @@ class TestWebsocketClient(WebsocketCoroutines):
         # Check whether connecting was successful.
         assert dummy_websocket.connection.protocol
 
-    @tornado.testing.gen_test(timeout=10)
+    @tornado.testing.gen_test(timeout=40)
     def test_write_message_after_disconnect(self):
-        """Writes message after disconnecting."""
+        """Writes a message after disconnecting."""
         dummy_websocket = yield self.dummy_ws_connect('/', 'mock_id')
         dummy_websocket.connection = None
         dummy_websocket.reconnecting = True
         dummy_websocket.send_message(self.feature_map_message)
+
+        # Give the event loop the control to send the message.
+        yield asyncio.sleep(0)
+
+        # Message was still appended to the write queue.
         assert len(dummy_websocket.write_queue) == 1
+
+    @tornado.testing.gen_test(timeout=10)
+    def test_write_message(self):
+        """Writes message after disconnecting."""
+        dummy_websocket = yield self.dummy_ws_connect('/', 'mock_id')
+        dummy_websocket.send_message(self.feature_map_message)
+
+        # Give the eventloop the control to send the message.
+        yield asyncio.sleep(0)
+        assert len(dummy_websocket.write_queue) == 0
+
+    # @tornado.testing.gen_test(timeout=30)
+    # def test_write_message_queue(self):
+    #     """Writes message after disconnecting."""
+    #     dummy_websocket = yield self.dummy_ws_connect('/', 'mock_id')
+    #     dummy_websocket.write_queue = [self.feature_map_message, self.start_message, self.stop_message]
+    #     assert len(dummy_websocket.write_queue) == 3
+    #     print(dummy_websocket.write_queue)
+    #
+    #     dummy_websocket.send_message(self.stop_message)
+    #     yield asyncio.sleep(0)
+    #     print(dummy_websocket.write_queue)
+    #
+    #     while len(dummy_websocket.write_queue) > 0:
+    #         yield asyncio.sleep(0)
 
 # """Test the websocket client for what is possible with unit testing.
 # This program has been developed by students from the bachelor Computer Science at
