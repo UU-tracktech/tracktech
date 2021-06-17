@@ -26,6 +26,9 @@ class StartMessage(IMessage):
             image (image/None): URL encoded cutout of the object to be followed.
             frame_id (int/None): The id of the frame in the frame buffer
             box_id (int/None): the id of the box in the frame defined by the frame buffer
+
+        Raises:
+            TypeError: One of the attributes given is of the wrong type.
         """
         if not isinstance(object_id, int):
             raise TypeError('Object id should be an integer')
@@ -63,6 +66,9 @@ class StartMessage(IMessage):
 
         Returns:
             (StartMessage): StartCommand constructed from the dict.
+
+        Raises:
+            KeyError: One or more of the expected keys needed for the start message is missing
         """
         if 'objectId' not in message.keys():
             raise KeyError('objectId missing')

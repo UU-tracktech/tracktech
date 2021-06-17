@@ -10,7 +10,7 @@ import tornado.gen
 from tornado.websocket import websocket_connect
 from tornado.testing import AsyncHTTPTestCase
 
-from tests.unittests.utils.dummy_websocket_client import DummyWebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 
 
 class WebsocketCoroutines(AsyncHTTPTestCase):
@@ -27,7 +27,7 @@ class WebsocketCoroutines(AsyncHTTPTestCase):
             DummyWebsocketClient: A dummy websocket client used for testing.
         """
         ws_url = 'ws://127.0.0.1:%d%s' % (self.get_http_port(), path)
-        dummy_websocket = DummyWebsocketClient(ws_url, identifier)
+        dummy_websocket = WebsocketClient(ws_url, identifier)
         # Connect websocket.
         await dummy_websocket.connect()
         return dummy_websocket

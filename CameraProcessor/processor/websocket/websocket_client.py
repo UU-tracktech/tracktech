@@ -93,6 +93,7 @@ class WebsocketClient:
                         'type': 'identifier',
                         'id': self.identifier
                     })
+
                     logging.info(f'Identified with: {id_message}')
                     await self.connection.write_message(id_message)
 

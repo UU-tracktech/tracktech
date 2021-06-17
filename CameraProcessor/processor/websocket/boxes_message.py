@@ -18,6 +18,9 @@ class BoxesMessage(IMessage):
         Args:
             frame_id (float): identifier of the frame.
             bounding_boxes (BoundingBoxes): bounding boxes in the frame.
+
+        Raises:
+            TypeError: One or more of the attributes given has the wrong type
         """
         if not isinstance(frame_id, float):
             raise TypeError('Frame id should be a float.')
@@ -36,6 +39,9 @@ class BoxesMessage(IMessage):
 
         Returns:
             (BoxesMessage): BoxesCommand constructed from the dict.
+
+        Raises:
+            KeyError: One or more of the expected keys needed for the boxes message is missing.
         """
         if 'frameId' not in message.keys():
             raise KeyError('frameId missing')

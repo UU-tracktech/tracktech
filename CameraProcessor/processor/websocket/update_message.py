@@ -43,6 +43,9 @@ class UpdateMessage(IMessage):
 
         Returns:
             (BoxesMessage): UpdateMessage constructed from the dict.
+
+        Raises:
+            KeyError: One or more of the expected keys needed for the update message is missing
         """
         if 'featureMap' not in message.keys():
             raise KeyError('featureMap missing')

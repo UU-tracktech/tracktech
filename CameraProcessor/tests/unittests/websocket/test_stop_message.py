@@ -59,9 +59,9 @@ class TestStopMessage:
 
         This method tests both the from_message and to_message functionality of the class.
         """
-        json_message = {'type': 'stop', 'objectId': self.object_id}
-        message = StopMessage.from_message(json_message)
-        assert message.to_message() == json_message
+        dict_message = {'type': 'stop', 'objectId': self.object_id}
+        message = StopMessage.from_message(dict_message)
+        assert message.to_message() == dict_message
 
 
 if __name__ == '__main__':

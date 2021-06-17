@@ -18,6 +18,7 @@ from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.rectangle import Rectangle
 from tests.conftest import root_path
 
+
 # pylint: disable=attribute-defined-outside-init,no-member
 class TestStartMessage:
     """Testing StartMessage.
@@ -94,28 +95,28 @@ class TestStartMessage:
         This method tests both the from_message and to_message functionality of the class.
         """
         # Full message.
-        json_message = {'type': 'start',
+        dict_message = {'type': 'start',
                         'objectId': self.object_id,
                         'frameId': self.frame_id,
                         'boxId': self.box_id,
                         'image': self.base64_image}
-        message = StartMessage.from_message(json_message)
-        assert message.to_message() == json_message
+        message = StartMessage.from_message(dict_message)
+        assert message.to_message() == dict_message
 
         # No image specified.
-        json_message = {'type': 'start',
+        dict_message = {'type': 'start',
                         'objectId': self.object_id,
                         'frameId': self.frame_id,
                         'boxId': self.box_id}
-        message = StartMessage.from_message(json_message)
-        assert message.to_message() == json_message
+        message = StartMessage.from_message(dict_message)
+        assert message.to_message() == dict_message
 
         # No box_id and frame_id specified.
-        json_message = {'type': 'start',
+        dict_message = {'type': 'start',
                         'objectId': self.object_id,
                         'image': self.base64_image}
-        message = StartMessage.from_message(json_message)
-        assert message.to_message() == json_message
+        message = StartMessage.from_message(dict_message)
+        assert message.to_message() == dict_message
 
     def test_invalid_from_message(self):
         """Test that invalid message types raise a KeyError."""
@@ -166,7 +167,7 @@ class TestStartMessage:
         cutout_by_message = self.data.get_cutout(fake_framebuffer)
         assert np.all(cutout_by_message == get_small_frame())
 
-    def test_invalid_get_cotout(self):
+    def test_invalid_get_cutout(self):
         """Tests that the get_cutout function raises an error when there is no image and the framebuffer is invalid."""
         fake_framebuffer = FrameBuffer(1)  # Fake frame buffer.
         message_without_image = StartMessage(self.object_id, frame_id=self.frame_id, box_id=self.box_id)
@@ -183,6 +184,7 @@ class TestStartMessage:
 
         with pytest.raises(ValueError):
             message_without_image.get_cutout(fake_framebuffer)
+
 
 if __name__ == '__main__':
     pytest.main(TestStartMessage)
