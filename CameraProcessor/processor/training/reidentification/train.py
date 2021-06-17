@@ -90,5 +90,9 @@ if __name__ == '__main__':
         device_number = config['device_number']
         # Start training.
         os.chdir(path)
-        os.system(f'python "{path}/tools/train_net.py" --config-file "{path}{config_file}" '
-                  f'MODEL.DEVICE {model_device}:{device_number}')
+        if model_device == 'cpu':
+            os.system(f'python "{path}/tools/train_net.py" --config-file "{path}{config_file}" '
+                      f'MODEL.DEVICE {model_device}')
+        else:
+            os.system(f'python "{path}/tools/train_net.py" --config-file "{path}{config_file}" '
+                      f'MODEL.DEVICE {model_device}:{device_number}')
