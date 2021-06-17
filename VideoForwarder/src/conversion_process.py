@@ -30,7 +30,7 @@ def get_conversion_process(url, audio, root, stream_options):
     if stream_options.low:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
-            f'-vf:v:{index}', "scale='if(lt(iw,ih),-2,480)':'if(lt(iw,ih),480,-2)'",
+            f'-filter:v:{index}', "scale='if(lt(iw,ih),-2,480)':'if(lt(iw,ih),480,-2)'",
             f'-c:v:{index}', stream_options.encoding,
             f'-b:v:{index}', '800k', '-maxrate', '900k', '-bufsize', '1200k'
         ])  # 360p - Low bit-rate Stream
@@ -41,7 +41,7 @@ def get_conversion_process(url, audio, root, stream_options):
     if stream_options.medium:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
-            f'-vf:v:{index}', "scale='if(lt(iw,ih),-2,858)':'if(lt(iw,ih),858,-2)'",
+            f'-filter:v:{index}', "scale='if(lt(iw,ih),-2,858)':'if(lt(iw,ih),858,-2)'",
             f'-c:v:{index}', stream_options.encoding,
             f'-b:v:{index}', '1425k', '-maxrate', '1600k', '-bufsize', '2138k'
         ])  # 420p - Medium bit-rate Stream
@@ -52,7 +52,7 @@ def get_conversion_process(url, audio, root, stream_options):
     if stream_options.high:
         maps.extend(['-map', '0:0', '-map', '0:1'] if audio else ['-map', '0:0'])
         conversions.extend([
-            f'-vf:v:{index}', "scale='if(lt(iw,ih),-2,1280'):'if(lt(iw,ih),1280,-2)'",
+            f'-filter:v:{index}', "scale='if(lt(iw,ih),-2,1280'):'if(lt(iw,ih),1280,-2)'",
             f'-c:v:{index}', stream_options.encoding,
             f'-b:v:{index}', '2850k', '-maxrate', '3200k', '-bufsize', '4275k'
         ])  # 720p - High bit-rate Stream
