@@ -4,7 +4,6 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import json
 from collections import deque
 
 
@@ -18,11 +17,13 @@ class FakeWebsocket:
         """Create a message queue in order to save the messages."""
         self.message_queue = deque()
 
-    def write_message(self, message):
-        """Takes a message and asserts if it has the correct type property.
+    def send_message(self, message):
+        """Sends mock message.
 
         Args:
-            message (str): a JSON object in string format.
+            message (IMessage): message to "send".
+
+        Returns:
+            (IMessage): The message itself.
         """
-        msg = json.loads(message)
-        assert msg['type'] == 'boundingBoxes'
+        return message

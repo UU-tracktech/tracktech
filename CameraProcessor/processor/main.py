@@ -16,11 +16,13 @@ import tornado.web
 from processor.utils.config_parser import ConfigParser
 
 from processor.pipeline.prepare_pipeline import prepare_objects
-from processor.pipeline.process_frames import process_stream, opencv_display, send_boxes_to_orchestrator
+from processor.pipeline.process_frames import process_stream, opencv_display
 
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler
 from processor.webhosting.stream_handler import StreamHandler
+
+from processor.websocket.boxes_message import BoxesMessage
 
 
 def create_app(configs, port):
@@ -84,13 +86,9 @@ async def deploy(configs, websocket_id, websocket_url, hls_url):
         tracker,
         re_identifier,
         # Function to call when frame is processed.
-        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
-                                                                                    websocket_client,
-                                                                                    frame_obj,
-                                                                                    detected_boxes,
-                                                                                    tracked_boxes,
-                                                                                    re_id_tracked_boxes
-                                                                                    ),
+        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
+        # Sends the bounding boxes to the orchestrator using a websocket client.
+        websocket_client.send_message(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
         websocket_client
     )
 
