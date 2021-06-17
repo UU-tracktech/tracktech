@@ -62,3 +62,7 @@ ENV/
 
 # Weight files
 *.pt
+
+# COCO images that get loaded in
+data/tests/unittests/cocotest/images/
+data/annotated/COCO/images/
