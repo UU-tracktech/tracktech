@@ -36,8 +36,6 @@ RUN ["mkdir", "tracking_timelines"]
 
 FROM test as lint
 
-RUN ["mkdir", "utility"]
-
 COPY src src
 COPY tests tests
 

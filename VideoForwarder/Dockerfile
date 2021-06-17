@@ -99,8 +99,6 @@ RUN ["mkdir", "-p", "utility/pylint-plugins"]
 COPY src src
 COPY tests tests
 
-RUN ["mkdir", "utility"]
-
 ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
 
 
