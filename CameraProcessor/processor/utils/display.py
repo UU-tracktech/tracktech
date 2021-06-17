@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
+import sys
 import cv2
 
 import processor.utils.draw as draw
