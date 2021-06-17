@@ -106,6 +106,7 @@ class TestCocoDataloader:
         assert len(annotations[0]['bbox']) == 4
         assert annotations[0]['image_id'] > 0
         assert annotations[0].__contains__('id')
+        assert annotations[0].__contains__('category_id')
 
 
 if __name__ == '__main__':
