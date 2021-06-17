@@ -20,7 +20,7 @@ class TestCocoDataloader:
         self.configs = get_test_configs()
         self.dataloader = CocoDataloader(self.configs)
 
-        #A specific image id to run tests over.
+        # A specific image id to run tests over.
         self.coco_image_id = 463730
 
     def test_init(self):

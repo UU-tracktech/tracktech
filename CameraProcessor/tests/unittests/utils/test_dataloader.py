@@ -7,15 +7,15 @@ Utrecht University within the Software Project course.
 
 import pytest
 
-from processor.utils.dataloader import get_dataloader
 from tests.conftest import get_test_configs
+from processor.utils.dataloader import get_dataloader
 from processor.dataloaders.coco_dataloader import CocoDataloader
 from processor.dataloaders.json_dataloader import JsonDataloader
 from processor.dataloaders.mot_dataloader import MotDataloader
 
-
+# pylint: disable=attribute-defined-outside-init,no-member
 class TestDataloader:
-    """Class for testing the functions contained in processor.utils.dataloader.py"""
+    """Class for testing the functions contained in processor.utils.dataloader.py."""
     def setup_method(self):
         """Setup method for getting the configs."""
         self.configs = get_test_configs()
