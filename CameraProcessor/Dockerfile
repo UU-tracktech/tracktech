@@ -66,6 +66,8 @@ COPY tests tests
 
 WORKDIR /
 
+RUN ["mkdir", "utility"]
+
 ENTRYPOINT ["pylint", "app", "--rcfile=/app/.pylintrc"]
 
 
