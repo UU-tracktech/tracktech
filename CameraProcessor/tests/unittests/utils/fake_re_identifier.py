@@ -7,9 +7,11 @@ Utrecht University within the Software Project course.
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_boxes import BoundingBoxes
 
+
 class FakeReIdentifier(IReIdentifier):
     """A fake re-identifier that implements the same methods but just mocks some functionality."""
 
+    # pylint: disable=unused-argument
     def extract_features(self, frame_obj, bbox):
         """Mocks feature extraction method.
 
@@ -21,6 +23,7 @@ class FakeReIdentifier(IReIdentifier):
             [float]: An empty vector.
         """
         return []
+    # pylint: enable=unused-argument
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Mocks re_identify function.

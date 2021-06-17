@@ -6,14 +6,14 @@ Utrecht University within the Software Project course.
 """
 
 import json
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 
 
 async def create_dummy_client(url, identifier=None):
-    """Method used to create a dummy websocket client object.
+    """Method used to create a dummy WebSocket client object.
 
     Args:
-        url (str): Websocket url to connect to
+        url (str): WebSocket URL to connect to
         identifier (str): Identifier of the websocket. If the websocket is not used as a processor socket,
                           set id to None. Otherwise, set to an identifier.
 
@@ -33,7 +33,7 @@ class WebsocketClientDummy(WebsocketClient):
     """
 
     def __init__(self, url, identifier):
-        """Initialises a websocket for testing purposes.
+        """Initialises a WebSocket for testing purposes.
 
         Args:
             url (str): Websocket url to connect to.
@@ -51,7 +51,7 @@ class WebsocketClientDummy(WebsocketClient):
             message (Union[str, bytes]): the raw message posted on the websocket.
         """
 
-        # Websocket closed, reconnect is handled by write_message.
+        # WebSocket closed, reconnect is handled by write_message.
         if message:
             message_json = json.loads(message)
             self.message_list.append(message_json)

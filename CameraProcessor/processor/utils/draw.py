@@ -25,7 +25,7 @@ def draw_bounding_boxes(frame, bounding_boxes):
 
 
 def draw_detection_boxes(frame, bounding_boxes):
-    """Draws the detection boxes on top of the frame displaying the classification and certainty.
+    """Draws the boxes on top of the frame displaying the classification and certainty.
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
@@ -36,6 +36,7 @@ def draw_detection_boxes(frame, bounding_boxes):
         color = __generate_random_color(bounding_box.classification)
         __draw_box(frame, bounding_box, color)
 
+        # Specify certainty and classification.
         __draw_text(
             frame,
             bounding_box,
@@ -45,7 +46,7 @@ def draw_detection_boxes(frame, bounding_boxes):
 
 
 def draw_tracking_boxes(frame, bounding_boxes):
-    """Draws the tracking boxes on top of the frame using the identifier.
+    """Draws the tracking and boxes on top of the frame using the identifier.
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
@@ -53,24 +54,33 @@ def draw_tracking_boxes(frame, bounding_boxes):
     """
     # Draw each box on frame with identifier tag.
     for bounding_box in bounding_boxes:
-        # Generate random color based on identifier.
+        # Generate random color based on an identifier.
         color = __generate_random_color(bounding_box.identifier)
-
         __draw_box(frame, bounding_box, color)
 
+        # Put identifier on the frame.
         __draw_text(frame, bounding_box, f'{bounding_box.identifier}', color)
 
 
-# pylint: disable=unnecessary-pass, unused-argument
-def draw_re_id_tracked_boxes(frame, bounding_boxes):
-    """Draws the re-id boxes on top of the frame.
+def draw_re_identification_boxes(frame, bounding_boxes):
+    """Draws the re-id boxes on top of the frame using the object_id.
 
     Args:
         frame (numpy.ndarray): Frame the bounding boxes get drawn on.
-        bounding_boxes (List[BoundingBox]): List of bounding boxes that get drawn.
+        bounding_boxes ([BoundingBox]): List of bounding boxes that get drawn.
     """
+    # Draw each box on the frame with object id.
+    for bounding_box in bounding_boxes:
+        # Not re-identified.
+        if bounding_box.object_id is None:
+            continue
 
-    pass
+        # Generate random color based on an identifier.
+        color = __generate_random_color(bounding_box.object_id)
+        __draw_box(frame, bounding_box, color)
+
+        # Put identifier on the frame.
+        __draw_text(frame, bounding_box, f'{bounding_box.object_id}', color)
 
 
 def __draw_box(frame, bounding_box, color):
