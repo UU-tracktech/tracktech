@@ -44,43 +44,29 @@ class IDataloader:
             for parsed_entity in parsed_line:
                 (image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty, classification,
                  object_id) = parsed_entity
-                bounding_boxes_list = self.append_box(bounding_boxes_list, image_id, person_id, pos_x0, pos_y0, pos_x1,
-                                                      pos_y1, certainty, classification,
-                                                      object_id)
+                bbox = self.parse_box(image_id, person_id, pos_x0, pos_y0, pos_x1,
+                                      pos_y1, certainty, classification, object_id)
+                bounding_boxes_list = self.append_box(bounding_boxes_list, bbox)
 
         return bounding_boxes_list
 
-    def append_box(self,
-                   bounding_boxes_list, image_id, person_id,
-                   pos_x0, pos_y0, pos_x1, pos_y1,
-                   certainty, classification, object_id):
+    def append_box(self, bounding_boxes_list, bbox):
         """Appends boxes.
 
         Args:
             bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes object.
-            image_id (int): ID of image.
-            person_id (int): ID of person
-            pos_x0 (int): Top-left x value.
-            pos_y0 (int): Top-left y vclue.
-            pos_x1 (int): Bottom-right x value.
-            pos_y1 (int): Bottom-right y value.
-            certainty (float): Certainty.
-            classification (string): Classification.
-            object_id (int): ID of object.
+            bbox (BoundingbBox): BoundingBox object.
 
         Returns:
             bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.
         """
-        bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
-                              pos_y1, certainty, classification, object_id)
-
         # List is still empty.
         if len(bounding_boxes_list) == 0:
-            bounding_boxes_list = [BoundingBoxes([bbox], str(image_id))]
-        elif bounding_boxes_list[-1].image_id == str(image_id):
+            bounding_boxes_list = [BoundingBoxes([bbox], str(bbox['image_id']))]
+        elif bounding_boxes_list[-1].image_id == str(bbox['image_id']):
             bounding_boxes_list[-1].bounding_boxes.append(bbox)
         else:
-            bounding_boxes_object = BoundingBoxes([bbox], str(image_id))
+            bounding_boxes_object = BoundingBoxes([bbox], str(bbox['image_id']))
             bounding_boxes_list.append(bounding_boxes_object)
         return bounding_boxes_list
 
