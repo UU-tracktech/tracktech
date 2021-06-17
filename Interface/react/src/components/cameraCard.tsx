@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 /**
   The cameracard component is used in the cameras list.
-  There is a card for each connected camera, shows an identiefier and buttons
+  There is a card for each connected camera, shows an identifier and buttons
   to enlarge, shrink or (TODO: delete) that camera's videoplayer
 */
 
@@ -43,6 +43,7 @@ export function CameraCard(props: cameraCardProps) {
     <Card
       //camera identifier
       key={props.id}
+      data-testid={`camCard-${props.id}`}
       //The camera icon and the name next to it
       title={
         <div style={{ display: 'flex', alignItems: 'center' }}>

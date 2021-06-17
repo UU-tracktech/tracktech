@@ -20,7 +20,7 @@ class AccuracyObject:
     """This class is used to test the accuracy of predictions.
 
     Attributes:
-        results (object): Results of the podm library.
+        results (object): Results of the PODM library.
         iou_threshold (int): Threshold from which it is counted.
         frame_amount (int): Number of frames.
         gt_format (str): Format of the ground truth.
@@ -34,7 +34,7 @@ class AccuracyObject:
         """Initialise AccuracyObject by reading the config, and the ground truth file.
 
         Args:
-            configs (Dict): Configuration parser which also contains the accuracy configurations.
+            configs (Dict): Configuration parser, which also contains the accuracy configurations.
         """
         yolo_config = configs['Yolov5']
         accuracy_config = configs['Accuracy']
@@ -49,7 +49,7 @@ class AccuracyObject:
         self.bounding_boxes_gt = []
 
     def parse_boxes(self, boxes_to_parse):
-        """Parses boxes to podm format.
+        """Parse boxes to PODM format.
 
         Args:
             boxes_to_parse ([bounding_box]): A list of list of bounding boxes.
@@ -70,7 +70,7 @@ class AccuracyObject:
                 # Parse a single box and append it to the list of already parsed boxes.
                 # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(
-                    label="undefined",
+                    label='undefined',
                     xtl=box.rectangle.x1,
                     ytl=box.rectangle.y1,
                     xbr=box.rectangle.x2,
@@ -82,11 +82,11 @@ class AccuracyObject:
         return list_parsed_boxes
 
     def get_dataloader(self, annotation_format, path_location):
-        """Get a dataloader based on format and path_location.
+        """Get a dataloader based on a format and path_location.
 
         Args:
             annotation_format (str): Dataloader format to select.
-            path_location (str): Location in config to read annotations path from.
+            path_location (str): Location in the config to read annotations path from.
 
         Returns:
             dataloader (IDataloader): The dataloader to use for parsing annotations.
@@ -98,7 +98,7 @@ class AccuracyObject:
         elif annotation_format == 'MOT':
             dataloader = MotDataloader(self.configs, path_location)
         else:
-            return ValueError("This is not a valid dataloader")
+            return ValueError('This is not a valid dataloader')
         return dataloader
 
     def read_boxes(self, annotation_format, path_location):
@@ -159,12 +159,12 @@ class AccuracyObject:
             print(f'{self.plots_prefix}-{result.label}: Cannot plot')
 
     def draw_all_pr_plots(self):
-        """Draws the pr plots for all classes in the (podm) result."""
+        """Draws the pr plots for all classes in the PODM result."""
         for result in self.results.items():
             self.draw_pr_plot(result[1])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Run accuracy.
     config_parser = ConfigParser('configs.ini', True)
     test_object = AccuracyObject(config_parser.configs)

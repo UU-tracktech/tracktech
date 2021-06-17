@@ -23,7 +23,7 @@ class TestHlsCapture:
     """
     def setup_method(self):
         """Setup method that has url of the video forwarder."""
-        self.hls_url = "http://forwarder-test-service:80/stream.m3u8"
+        self.hls_url = 'http://forwarder-test-service:80/stream.m3u8'
 
     @pytest.fixture
     def hls_capture(self):
@@ -67,7 +67,7 @@ class TestHlsCapture:
 
     @pytest.mark.timeout(60)
     def test_format_data(self):
-        """Tests if the meta data that we get from ffprobe function, contains the same url as our predefined url."""
+        """Tests if the metadata that we get from ffprobe function, contains the same url as our predefined URL."""
         # Probes meta data from hls stream.
         meta_data = ffmpeg.probe(self.hls_url)
 

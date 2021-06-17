@@ -20,7 +20,7 @@ services:
     deploy:
       placement:
         constraints:
-          - "node.labels.keycloak==true"
+          - 'node.labels.keycloak==true'
 
 volumes:
   Keycloak:

@@ -1,4 +1,4 @@
-"""COCO datalaoder class.
+"""COCO dataloader class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -19,7 +19,7 @@ class CocoDataloader(IDataloader):
     """COCO Dataloader, formats COCO Data."""
 
     def __init__(self, configs, path_location):
-        """Initialize coco dataloader.
+        """Initialize the coco dataloader.
 
         Args:
             configs (dict): A dictionary of the configs.
@@ -100,7 +100,7 @@ class CocoDataloader(IDataloader):
 
         for annotation in annotations:
             image_id = annotation['image_id']
-            width, height = self.get_image_dimensions(image_id, "")
+            width, height = self.get_image_dimensions(image_id, '')
             if not current_image_id == image_id:
                 bounding_boxes_list.append(BoundingBoxes(current_boxes, int(self.__get_image_name(current_image_id))))
                 current_boxes = []

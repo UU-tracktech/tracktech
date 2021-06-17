@@ -24,9 +24,9 @@ coverage:
           - Processor
 
 flags:
-  # filter the folder(s) you wish to measure by that flag
+  # filter the folder(s) you wish to measure by that flag.
   Forwarder:
-    # only include files in the backend folder
+    # only include files in the backend folder.
     paths:
       -  VideoForwarder/src
   Interface:

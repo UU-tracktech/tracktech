@@ -16,19 +16,21 @@ import tornado.web
 from processor.utils.config_parser import ConfigParser
 
 from processor.pipeline.prepare_pipeline import prepare_objects
-from processor.pipeline.process_frames import process_stream, opencv_display, send_boxes_to_orchestrator
+from processor.pipeline.process_frames import process_stream, opencv_display
 
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler
 from processor.webhosting.stream_handler import StreamHandler
+
+from processor.websocket.boxes_message import BoxesMessage
 
 
 def create_app(configs, port):
     """Creates a tornado app on a given port.
 
     Args:
-        configs (ConfigParser): configurations of the application
-        port (int): Port app exposes
+        configs (ConfigParser): configurations of the application.
+        port (int): Port app exposes.
     """
     print('*' * 30)
     print('*   open TORNADO stream on   *')
@@ -48,8 +50,8 @@ def enforce_deploy_environment_variables():
 
     Returns:
         str, str, str: Id of the camera processor for the orchestrator.
-                       Url of the orchestrator websocket.
-                       Url of the forwarder stream.
+                       URL of the orchestrator WebSocket.
+                       URL of the forwarder stream.
     """
     if os.getenv('ORCHESTRATOR_URL') is None or os.getenv('HLS_STREAM_URL') is None or os.getenv('CAMERA_ID') is None:
         raise EnvironmentError('Environment variable CAMERA_ID, HLS_STREAM_URL or ORCHESTRATOR_URL'
@@ -84,13 +86,9 @@ async def deploy(configs, websocket_id, websocket_url, hls_url):
         tracker,
         re_identifier,
         # Function to call when frame is processed.
-        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
-                                                                                    websocket_client,
-                                                                                    frame_obj,
-                                                                                    detected_boxes,
-                                                                                    tracked_boxes,
-                                                                                    re_id_tracked_boxes
-                                                                                    ),
+        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
+        # Sends the bounding boxes to the orchestrator using a websocket client.
+        websocket_client.send_message(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
         websocket_client
     )
 
@@ -98,8 +96,8 @@ async def deploy(configs, websocket_id, websocket_url, hls_url):
 def main():
     """Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.
 
-    Tornado uses a custom IOLoop
-    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
+    Tornado uses a custom IOLoop.
+    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop.
 
     Raises:
         AttributeError: Mode in which is run does not exist.
@@ -121,13 +119,13 @@ def main():
         asyncio.get_event_loop().run_until_complete(
             process_stream(capture, detector, tracker, re_identifier, opencv_display, None)
         )
-    # Deploy mode where all is sent to the orchestrator using the websocket url.
+    # Deploy mode where all is sent to the orchestrator using the websocket URL.
     elif configs['Main']['mode'].lower() == 'deploy':
         # Make environment variables are set when running in deploy.
         ws_id, ws_url, hls_url = enforce_deploy_environment_variables()
         asyncio.get_event_loop().run_until_complete(deploy(configs, ws_id, ws_url, hls_url))
     else:
-        raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
+        raise AttributeError('Mode you try to run in does not exist, did you make a typo?')
 
 
 if __name__ == '__main__':

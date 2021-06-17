@@ -16,14 +16,14 @@ class ConfigParser:
     Attributes:
         root_path (str): path to root
         config_path (str): path to config file
-        configs (configparser.ConfigParser): config parser containing keys and values
+        configs (configparser.ConfigParser): config parser containing keys and values.
     """
     def __init__(self, config_name, use_environment_vars):
         """Creates the config and reads the values, converts paths to absolute.
 
         Args:
             config_name (str): name of the config file.
-            use_environment_vars (bool): Use environment variables
+            use_environment_vars (bool): Use environment variables.
 
         Raises:
             FileNotFoundError: The configuration file name searched for does not exist.
@@ -84,7 +84,7 @@ class ConfigParser:
     def read_environment_variables(self):
         """Override configurations using environment variables.
 
-        These properties can be changed within the docker-compose file
+        These properties can be changed within the docker-compose file.
         in order to expose more to the outside and create an easier plug-and-play environment.
         """
 

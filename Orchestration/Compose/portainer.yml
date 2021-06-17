@@ -17,8 +17,8 @@ services:
     image: portainer/portainer-ce
     command: -H tcp://tasks.agent:9001 --tlsskipverify --ssl --sslcert /run/secrets/tracktech.ml-cert.pem --sslkey /run/secrets/tracktech.ml-privkey.pem
     ports:
-      - "50003:9000"
-      - "50004:8000"
+      - '50003:9000'
+      - '50004:8000'
     volumes:
       - portainer_data:/data
     networks:

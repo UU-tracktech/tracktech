@@ -43,22 +43,22 @@ class CameraHandler(StaticFileHandler):
         super().initialize(path, default_filename)
 
         # Set properties of the handler.
-        self.remove_delay = self.application.settings.get("remove_delay")
-        self.timeout_delay = self.application.settings.get("timeout_delay")
-        self.wait_delay = self.application.settings.get("wait_delay")
+        self.remove_delay = self.application.settings.get('remove_delay')
+        self.timeout_delay = self.application.settings.get('timeout_delay')
+        self.wait_delay = self.application.settings.get('wait_delay')
 
-        self.stream_options = self.application.settings.get("stream_options")
+        self.stream_options = self.application.settings.get('stream_options')
 
         # Load the public key from application settings.
-        self.authenticator = self.application.settings.get("authenticator")
+        self.authenticator = self.application.settings.get('authenticator')
 
         # Load the camera object from application settings.
-        self.camera = self.application.settings.get("camera")
+        self.camera = self.application.settings.get('camera')
 
     def set_default_headers(self):
         """Set the headers to allow cors and disable caching."""
-        self.set_header("Cache-control", "no-store")
-        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header('Cache-control', 'no-store')
+        self.set_header('Access-Control-Allow-Origin', '*')
 
         # Allow Authorization header to keep cors preflight happy.
         self.set_header('Access-Control-Allow-Headers', 'Authorization')
@@ -82,7 +82,7 @@ class CameraHandler(StaticFileHandler):
 
         # If there is no current conversion, start one.
         if self.camera.conversion is None:
-            info("starting stream")
+            info('starting stream.')
 
             # Configure entry conversion.
             self.camera.conversion = get_conversion_process(
@@ -104,7 +104,7 @@ class CameraHandler(StaticFileHandler):
              root (path): path of the folder that contains the stream segments and index files.
         """
 
-        index_file_path = os.path.join(root, "stream.m3u8")
+        index_file_path = os.path.join(root, 'stream.m3u8')
 
         for _ in range(0, self.timeout_delay):
 
@@ -144,7 +144,7 @@ class CameraHandler(StaticFileHandler):
         """
 
         # Print stopping for logging purposes.
-        info("stopping stream")
+        info('stopping stream.')
 
         # Stopping the conversion.
         self.camera.conversion.terminate()

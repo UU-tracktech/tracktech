@@ -24,7 +24,7 @@ class ClientSocket(WebSocketHandler):
         identifier (int): Serves as the unique identifier to this object.
         authorized (bool): Shows whether the websocket connection is authorized.
         auth (Auth): Authorization object for the websocket handler
-        uses_images (bool): Bool indicating whether or not this client should receive images
+        uses_images (bool): Bool indicating whether this client should receive images
     """
 
     def __init__(self, application, request):
@@ -62,8 +62,8 @@ class ClientSocket(WebSocketHandler):
         Args:
             **kwargs (Any): Other arguments given to the websocket open.
         """
-        logger.log_connect("/client", self.request.remote_ip)
-        logger.log(f"New client connected with id: {self.identifier}")
+        logger.log_connect('/client', self.request.remote_ip)
+        logger.log(f'New client connected with id: {self.identifier}.')
 
         # Add the client directly if auth is disabled.
         if self.auth is None:
@@ -84,7 +84,7 @@ class ClientSocket(WebSocketHandler):
                     - "stop"  | This command is used to stop the tracking of an object,
                                 see stop_tracking, for the other expected properties.
         """
-        logger.log_message_receive(message, "/client", self.request.remote_ip)
+        logger.log_message_receive(message, '/client', self.request.remote_ip)
 
         try:
             # Message should be in JSON format.
@@ -92,43 +92,43 @@ class ClientSocket(WebSocketHandler):
 
             # Switch on message type.
             actions = {
-                "setUsesImages":
+                'setUsesImages':
                     lambda: self.set_uses_image(message_object),
-                "start":
+                'start':
                     lambda: self.start_tracking(message_object),
-                "stop":
+                'stop':
                     lambda: self.stop_tracking(message_object)
             }
 
             # Get message type.
-            action_type = message_object["type"]
+            action_type = message_object['type']
 
             # Only execute function if socket is authenticated.
             if self.authorized or self.auth is None:
                 # Execute correct function.
                 function = actions.get(action_type)
                 if function is None:
-                    logger.log("Someone gave an unknown command")
+                    logger.log('Someone gave an unknown command.')
                 else:
                     function()
-            elif action_type == "authenticate":
+            elif action_type == 'authenticate':
                 self.authenticate(message_object)
             else:
                 # Close the connection.
                 self.close()
-                logger.log("A client was not authenticated first")
+                logger.log('A client was not authenticated first')
 
         # Message was not in JSON format.
         except ValueError as exc:
-            logger.log_error("/client", "ValueError", self.request.remote_ip)
-            print("Someone wrote bad json", exc)
+            logger.log_error('/client', 'ValueError', self.request.remote_ip)
+            print('Someone wrote bad json', exc)
         # Message was in JSON format but did not contain all nececcary parameters.
         except KeyError as exc:
-            logger.log_error("/client", "KeyError", self.request.remote_ip)
-            print("Someone missed a property in their json", exc)
+            logger.log_error('/client', 'KeyError', self.request.remote_ip)
+            print('Someone missed a property in their json', exc)
         except Exception as exc:
             print(exc)
-            logger.log("Someone wrote bad json")
+            logger.log('Someone wrote bad json.')
 
     def send_message(self, message):
         """Sends a message over the websocket and logs it.
@@ -136,7 +136,7 @@ class ClientSocket(WebSocketHandler):
         Args:
             message (string): string which should be send over this websocket.
         """
-        logger.log_message_send(message, "/client", self.request.remote_ip)
+        logger.log_message_send(message, '/client', self.request.remote_ip)
         self.write_message(message)
 
     def data_received(self, chunk):
@@ -148,11 +148,11 @@ class ClientSocket(WebSocketHandler):
 
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of clients."""
-        logger.log_disconnect("/client", self.request.remote_ip)
+        logger.log_disconnect('/client', self.request.remote_ip)
 
         # Pop the identifier as it might not exist if the client has not authenticated yet.
         clients.pop(self.identifier, None)
-        logger.log(f"Client with id {self.identifier} disconnected")
+        logger.log(f'Client with id {self.identifier} disconnected.')
 
     def authenticate(self, message):
         """Authenticates a client.
@@ -164,29 +164,29 @@ class ClientSocket(WebSocketHandler):
         """
 
         if self.auth is not None:
-            self.auth.validate(message["jwt"])
+            self.auth.validate(message['jwt'])
             self.authorized = True
             clients[self.identifier] = self
 
     def set_uses_image(self, message):
-        """Set whether or not this client uses images.
+        """Set whether this client uses images.
 
         Args:
             message (json):
                 JSON message that was received. It should contain the following property
-                    - "usesImages" | a bool indicating whether or not the client uses images
+                    - "usesImages" | a bool indicating whether the client uses images
         """
 
-        self.uses_images = message["usesImages"]
+        self.uses_images = message['usesImages']
 
         # If the client specifies it uses images, then send all the currently saved messages.
         if self.uses_images is True:
             for tracking_object in objects.values():
                 if tracking_object[0].image is not None:
                     client_message = {
-                        "type": "newObject",
-                        "objectId": tracking_object[0].identifier,
-                        "image": tracking_object[0].image
+                        'type': 'newObject',
+                        'objectId': tracking_object[0].identifier,
+                        'image': tracking_object[0].image
                     }
                     self.send_message(json.dumps(client_message))
 
@@ -206,39 +206,39 @@ class ClientSocket(WebSocketHandler):
                 Of these parameters, at least "image", or the combination of "frameId" and "boxId" should
                 be present, though a full combination is also possible.
         """
-        camera_id = message["cameraId"]
+        camera_id = message['cameraId']
         # The following parameters are optional.
-        frame_id = message.get("frameId")
-        box_id = message.get("boxId")
-        image = message.get("image")
+        frame_id = message.get('frameId')
+        box_id = message.get('boxId')
+        image = message.get('image')
 
         # But at least some of them are required.
         if image is None and (frame_id is None or box_id is None):
             raise KeyError()
 
         if camera_id not in processors.keys():
-            logger.log("Unknown processor")
+            logger.log('Unknown processor')
             return
 
         # Create new tracking image, this also assigns an id.
         tracking_object = TrackingObject(image)
 
         logger.log(
-            f"New tracking object created with id {tracking_object.identifier}, "
-            f"found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}")
+            f'New tracking object created with id {tracking_object.identifier}, '
+            f'found at bounding box with Id {box_id} on frame {frame_id} of camera {camera_id}')
 
         # Construct processor message.
         processor_message = {
-            "type": "start",
-            "objectId": tracking_object.identifier
+            'type': 'start',
+            'objectId': tracking_object.identifier
         }
 
         if frame_id is not None:
-            processor_message["frameId"] = frame_id
+            processor_message['frameId'] = frame_id
         if box_id is not None:
-            processor_message["boxId"] = box_id
+            processor_message['boxId'] = box_id
         if image is not None:
-            processor_message["image"] = image
+            processor_message['image'] = image
 
         # Send to the specified processor.
         processors[camera_id].send_message(json.dumps(
@@ -247,12 +247,12 @@ class ClientSocket(WebSocketHandler):
 
         # Construct message for clients that use images.
         client_message = {
-            "type": "newObject",
-            "objectId": tracking_object.identifier
+            'type': 'newObject',
+            'objectId': tracking_object.identifier
         }
 
         if image is not None:
-            client_message["image"] = image
+            client_message['image'] = image
 
         # Send a message that a new object has been tracked with the given image to all clients that use images.
         for client in clients.values():
@@ -270,9 +270,9 @@ class ClientSocket(WebSocketHandler):
                 JSON message that was received. It should contain the following properties
                     - "objectId" | The identifier of the object which should no longer be tracked.
         """
-        object_id = message["objectId"]
+        object_id = message['objectId']
         if object_id not in objects.keys():
-            logger.log("unknown object")
+            logger.log('unknown object')
             return
 
         # Let the object remove itself.
@@ -281,16 +281,16 @@ class ClientSocket(WebSocketHandler):
         # Inform processors.
         for processor in processors.values():
             processor.send_message(json.dumps({
-                "type": "stop",
-                "objectId": object_id
+                'type': 'stop',
+                'objectId': object_id
             }))
 
         # Inform clients that use images.
         for client in clients.values():
             if client.uses_images is True:
                 client.send_message(json.dumps({
-                    "type": "stop",
-                    "objectId": object_id
+                    'type': 'stop',
+                    'objectId': object_id
                 }))
 
-        logger.log(f"stopped tracking of object with id {object_id}")
+        logger.log(f'stopped tracking of object with id {object_id}')
