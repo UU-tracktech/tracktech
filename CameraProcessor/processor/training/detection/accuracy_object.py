@@ -10,9 +10,7 @@ import time
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
 
-from processor.dataloaders.coco_dataloader import CocoDataloader
-from processor.dataloaders.json_dataloader import JsonDataloader
-from processor.dataloaders.mot_dataloader import MotDataloader
+from processor.utils.dataloader import get_dataloader
 from processor.utils.config_parser import ConfigParser
 
 
@@ -83,28 +81,6 @@ class AccuracyObject:
                 list_parsed_boxes.append(parsed_box)
         return list_parsed_boxes
 
-    def __get_dataloader(self, annotation_format):
-        """Get a dataloader based on format.
-
-        Args:
-            annotation_format (str): Dataloader format to select.
-
-        Returns:
-            dataloader (IDataloader): The dataloader to use for parsing annotations.
-
-        Raises:
-            ValueError: Dataloader name is unrecognised.
-        """
-        if annotation_format == 'COCO':
-            dataloader = CocoDataloader(self.configs)
-        elif annotation_format == 'JSON':
-            dataloader = JsonDataloader(self.configs)
-        elif annotation_format == 'MOT':
-            dataloader = MotDataloader(self.configs)
-        else:
-            raise ValueError("This is not a valid dataloader")
-        return dataloader
-
     def read_boxes(self, annotation_format):
         """A method for reading the bounding boxes with the pre_annotations.
 
@@ -114,7 +90,7 @@ class AccuracyObject:
         Returns:
             [BoundingBoxes]: A list of read bounding boxes.
         """
-        dataloader = self.__get_dataloader(annotation_format)
+        dataloader = get_dataloader(self.configs, annotation_format)
         bounding_boxes_objects = dataloader.parse_file()
         return self.parse_boxes(bounding_boxes_objects)
 
