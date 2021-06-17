@@ -5,20 +5,14 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-import asyncio
 import tornado
 import tornado.testing
 import tornado.web
 from tornado.websocket import WebSocketHandler
 
-from tests.unittests.webhosting.conftest import messages_are_equal
 from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
 from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
 from tests.unittests.utils.dummy_websocket_client import DummyWebsocketClient
-from processor.webhosting.websocket_client import WebsocketClient
-from processor.webhosting.start_command_simple import StartCommandSimple
-from processor.webhosting.start_command_extended import StartCommandExtended
-from processor.webhosting.start_command_search import StartCommandSearch
 
 
 # pylint: disable=protected-access.
@@ -73,134 +67,3 @@ class TestWebsocketClient(WebsocketCoroutines):
 
         # Check whether connecting was successful.
         assert dummy_websocket.connection.protocol
-
-    @tornado.testing.gen_test(timeout=10)
-    def test_write_message_after_disconnect(self):
-        """Writes message after disconnecting."""
-        dummy_websocket = yield self.dummy_ws_connect("/")
-        dummy_websocket.connection = None
-        yield dummy_websocket._write_message(self.feature_map_message)
-        assert len(dummy_websocket.write_queue) == 1
-
-    @tornado.testing.gen_test(timeout=10)
-    def test_write_message_queue_away(self):
-        """Fills up the message queue and checks whether a new write empties the queue."""
-        # Fill up message queue.
-        dummy_websocket = yield self.dummy_ws_connect("/")
-        dummy_websocket.write_queue = [self.feature_map_message, self.stop_message, self.start_message]
-        assert len(dummy_websocket.write_queue) == 3
-
-        yield dummy_websocket._write_message(self.feature_map_message)
-
-        # Wait until message queue is empty.
-        while len(dummy_websocket.write_queue) != 0:
-            yield asyncio.sleep(0)
-
-    @tornado.testing.gen_test(timeout=10)
-    def test_websocket_send_featuremap(self):
-        """Send a featuremap in echo handler and checks whether correct handler is used."""
-        # Connect and write.
-        dummy_websocket = DummyWebsocketClient('')
-        dummy_websocket_connection = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
-        yield dummy_websocket_connection.write_message(self.feature_map_message)
-
-        # Wait for the message to be received.
-        while dummy_websocket.last_message is None:
-            yield asyncio.sleep(0)
-
-        # Assert the json is received by the correct handler.
-        assert dummy_websocket.last_message_type == 'featureMap'
-        assert messages_are_equal(self.feature_map_message, dummy_websocket.last_message)
-
-    @tornado.testing.gen_test(timeout=10)
-    def test_websocket_send_start(self):
-        """Send a start command in echo handler and checks whether correct handler is used."""
-        # Connect and write.
-        dummy_websocket = DummyWebsocketClient('')
-        dummy_websocket_connection = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
-        yield dummy_websocket_connection.write_message(self.start_message)
-
-        # Wait for the message to be received.
-        while dummy_websocket.last_message is None:
-            yield asyncio.sleep(0)
-
-        # Assert the json is received by the correct handler.
-        assert dummy_websocket.last_message_type == 'start'
-        assert messages_are_equal(self.start_message, dummy_websocket.last_message)
-
-    @tornado.testing.gen_test(timeout=10)
-    def test_websocket_send_stop(self):
-        """Send a stop command in echo handler and checks whether correct handler is used."""
-        # Connect and write.
-        dummy_websocket = DummyWebsocketClient('')
-        dummy_websocket_connection = yield self.ws_connect('/echo', on_message_callback=dummy_websocket._on_message)
-        yield dummy_websocket_connection.write_message(self.stop_message)
-
-        # Wait for the message to be received.
-        while dummy_websocket.last_message is None:
-            yield asyncio.sleep(0)
-
-        # Assert the json is received by the correct handler.
-        assert dummy_websocket.last_message_type == 'stop'
-        assert messages_are_equal(self.stop_message, dummy_websocket.last_message)
-
-    def test_empty_message(self):
-        """Tests whether empty message is handled correctly."""
-        dummy_websocket = DummyWebsocketClient('')
-        dummy_websocket._on_message('')
-
-    def test_receive_featuremap(self):
-        """Tests receiving a featuremap."""
-        websocket = WebsocketClient('')
-        websocket._on_message(self.feature_map_message)
-
-    def test_start_tracking(self):
-        """Tests start tracking command."""
-        websocket = WebsocketClient('')
-        websocket._on_message(self.start_message)
-
-    def test_stop_tracking(self):
-        """Tests stop tracking command."""
-        websocket = WebsocketClient('')
-        websocket._on_message(self.stop_message)
-
-    def test_wrong_type(self):
-        """Wrong type gets handled correctly."""
-        dummy_websocket = DummyWebsocketClient('')
-        dummy_websocket._on_message("{'type': 'yes'}")
-
-    def test_generate_tracking_message_simple(self):
-        """Test if simple tracking message gets generated correctly."""
-        dummy_websocket = DummyWebsocketClient('')
-        simple = {
-            'type': 'start',
-            'objectId': 1,
-            'image': 1,
-        }
-        simple_msg = dummy_websocket.generate_tracking_message(simple)
-        assert isinstance(simple_msg, StartCommandSimple)
-
-    def test_generate_tracking_message_extended(self):
-        """Test if extended tracking message gets generated correctly."""
-        dummy_websocket = DummyWebsocketClient('')
-        extended = {
-            'type': 'start',
-            'objectId': 1,
-            'image': 1,
-            'frameId': 1,
-            'boxId': 1
-        }
-        extended_msg = dummy_websocket.generate_tracking_message(extended)
-        assert isinstance(extended_msg, StartCommandExtended)
-
-    def test_generate_tracking_message_search(self):
-        """Test if search tracking message gets generated correctly."""
-        dummy_websocket = DummyWebsocketClient('')
-        search = {
-            'type': 'start',
-            'objectId': 1,
-            'frameId': 1,
-            'boxId': 1
-        }
-        search_msg = dummy_websocket.generate_tracking_message(search)
-        assert isinstance(search_msg, StartCommandSearch)

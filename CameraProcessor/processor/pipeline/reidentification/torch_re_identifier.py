@@ -46,17 +46,7 @@ class TorchReIdentifier(PytorchReIdentifier):
             model_path=weights_path,
             device=config['device'])
 
-        self.__feature_map_size = 512
         super().__init__(config, extractor)
-
-    @property
-    def feature_map_size(self):
-        """Feature map size getter.
-
-        Returns:
-            int: size of the feature map.
-        """
-        return self.__feature_map_size
 
     def extract_features(self, frame_obj, bbox):
         """Extract features from a single bounding box.
