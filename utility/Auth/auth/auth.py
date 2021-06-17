@@ -8,6 +8,8 @@ Utrecht University within the Software Project course.
 
 import jwt
 
+from AuthenticationError import AuthenticationError
+from AuthorizationError import AuthorizationError
 
 class Auth:
     """Keeps track of authentication options in order to validate tokens. """
@@ -59,11 +61,3 @@ class Auth:
 
         print("Authed")
 
-
-class AuthenticationError(Exception):
-    """Exception to throw when authentication fails."""
-
-
-class AuthorizationError(Exception):
-    """Exception to throw when authorization fails."""
-# pylint: enable=multiple-class-definitions.
