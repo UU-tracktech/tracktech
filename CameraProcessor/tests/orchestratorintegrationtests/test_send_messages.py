@@ -46,7 +46,7 @@ class TestSendMessages:
         # Send invalid messages
         ws_client.send_message(StartMessage(1, box_id=1, frame_id=1.))
         ws_client.send_message(StopMessage(1))
-        ws_client.send_message(UpdateMessage(1, [0]))
+        ws_client.send_message(UpdateMessage(1, [0.]))
 
         #  Disconnect.
         await ws_client.disconnect()
