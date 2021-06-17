@@ -20,6 +20,9 @@ class TestCocoDataloader:
         self.configs = get_test_configs()
         self.dataloader = CocoDataloader(self.configs)
 
+        #A specific image id to run tests over.
+        self.coco_image_id = 463730
+
     def test_init(self):
         """Tests the init."""
         assert self.dataloader.file_path == self.configs['COCO']['annotations_path']
@@ -29,15 +32,15 @@ class TestCocoDataloader:
     def test_download_coco_image(self):
         """Download a coco image from the dataset and verify it is loaded."""
 
-        # Expected image path.
-        image_name = self.dataloader.coco.loadImgs([463730])[0]['file_name']
+        # Expected image path with fixed COCO image.
+        image_name = self.dataloader.coco.loadImgs([self.coco_image_id])[0]['file_name']
         expected_image_path = os.path.join(self.dataloader.image_path, image_name)
 
         if os.path.exists(expected_image_path):
             os.remove(expected_image_path)
 
-        # Assert that image exists AFTER download.
-        self.dataloader.download_coco_image(463730)
+        # Assert that fixed image exists AFTER download.
+        self.dataloader.download_coco_image(self.coco_image_id)
         assert os.path.exists(expected_image_path)
 
     def test_download_coco_images(self):
@@ -69,7 +72,7 @@ class TestCocoDataloader:
 
     def test_get_image_dimensions(self):
         """Tests the image dimensions."""
-        width, height = self.dataloader.get_image_dimensions(463730)
+        width, height = self.dataloader.get_image_dimensions(self.coco_image_id)
 
         # Compares the width and height with the expected values.
         assert width == 640
