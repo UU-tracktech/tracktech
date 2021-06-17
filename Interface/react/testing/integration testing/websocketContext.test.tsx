@@ -12,10 +12,11 @@ import {
   websocketArgs,
   websocketContext,
   WebsocketProvider
-} from '../../src/components/websocketContext'
-import { Overlay } from '../../src/components/overlay'
-import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
-import { Box, BoxesClientMessage } from '../../src/classes/clientMessage'
+} from 'components/websocketContext'
+import { Overlay } from 'components/overlay'
+import { StartOrchestratorMessage } from 'classes/orchestratorMessage'
+import { BoxesClientMessage } from 'classes/clientMessage'
+import { Box } from 'classes/box'
 
 var websocketAddress
 
@@ -31,13 +32,7 @@ beforeEach(() => {
     <WebsocketProvider>
       <div>
         <websocketContext.Consumer>
-          {({
-            send,
-            setSocket,
-            socketUrl,
-            connectionState,
-            objects
-          }: websocketArgs) => (
+          {({ send, setSocket, connectionState, objects }: websocketArgs) => (
             <>
               <Overlay
                 source={{
@@ -99,7 +94,6 @@ test('Websocket connects', async () => {
 /** Test whether the websocket correctly handles a wrong url */
 test('Websocket handles error and closes', async () => {
   jest.setTimeout(30000)
-  const msgSpy = jest.spyOn(global.console, 'log')
 
   //set up a wrong socket url
   const originalAddress = websocketAddress
@@ -111,12 +105,7 @@ test('Websocket handles error and closes', async () => {
     await new Promise((r) => setTimeout(r, 500))
   }
 
-  //since the state changes quickly I rely on a message in the console to confirm
-  //the websocket went through the error function
-  expect(msgSpy).toBeCalledWith('socket error')
-
-  //Confirm the socket is closed
-  expect(msgSpy).toBeCalledWith('closed socket')
+  //Check that the socket remains closed because it can't connect.
   expect(screen.getByTestId('state').textContent).toBe('CLOSED')
 
   //restore the original address for future tests

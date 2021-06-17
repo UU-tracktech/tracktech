@@ -6,9 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-/*
-  File containing rgb codes for the bounding boxes
-*/
+/** Array containing rgb codes for the bounding boxes */
 export const colours: string[] = [
   'rgb(1,85,206)',
   'rgb(32,225,54)',
