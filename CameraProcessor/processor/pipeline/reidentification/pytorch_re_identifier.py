@@ -25,7 +25,7 @@ class PytorchReIdentifier(IReIdentifier):
         """
         self.config = config
         self.extractor = extractor
-        self.threshold = float(self.config["threshold"])
+        self.threshold = float(self.config['threshold'])
 
     def execute_component(self):
         """Function given to scheduler, so the scheduler can run the tracking stage.
@@ -82,14 +82,14 @@ class PytorchReIdentifier(IReIdentifier):
                 if tracked_bounding_boxes[i].object_id is None:
                     # Calculate the similarity value of the 2 feature vectors.
                     similarity_value = self.similarity(query_feature, feature)
-                    if self.config.get("distance") == "euclidean":
+                    if self.config.get('distance') == 'euclidean':
                         similarity_bool = similarity_value < self.threshold
-                    elif self.config.get("distance") == "cosine":
+                    elif self.config.get('distance') == 'cosine':
                         similarity_bool = similarity_value > self.threshold
                     else:
                         similarity_bool = False
-                        raise ValueError(f"Distance metric {self.config.get('distance')} "
-                                         f"is not a valid distance metric.")
+                        raise ValueError(f'Distance metric {self.config.get("distance")} '
+                                         f'is not a valid distance metric.')
                     if similarity_bool:
                         box_id = tracked_bounding_boxes[i].identifier
 
@@ -105,7 +105,7 @@ class PytorchReIdentifier(IReIdentifier):
                             object_id=query_id
                         )
 
-                        print(f"Re-Id of object {query_id} in box {box_id}")
+                        print(f'Re-Id of object {query_id} in box {box_id}')
 
         return BoundingBoxes(bounding_boxes)
 
@@ -123,9 +123,9 @@ class PytorchReIdentifier(IReIdentifier):
             float: The similarity value of two feature vectors.
         """
         # pylint: disable=no-else-return.
-        if self.config.get("distance") == "euclidean":
+        if self.config.get('distance') == 'euclidean':
             return euclidean(query_features, gallery_features)
-        elif self.config.get("distance") == "cosine":
+        elif self.config.get('distance') == 'cosine':
             return 1 - cosine(query_features, gallery_features)
-        raise ValueError(f"Distance metric {self.config.get('distance')} is not a valid distance metric.")
+        raise ValueError(f'Distance metric {self.config.get("distance")} is not a valid distance metric.')
         # pylint: enable=no-else-return.

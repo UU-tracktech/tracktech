@@ -22,8 +22,8 @@ async def test_bad_message_interface():
     time.sleep(5)
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
-    interface.write_message("This message is unusable for the orchestrator")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
+    interface.write_message('This message is unusable for the orchestrator')
 
     interface.close()
 
@@ -34,10 +34,10 @@ async def test_incomplete_message_interface():
     """Test if the interface can send an incomplete message without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_1"
+        'type': 'start',
+        'cameraId': 'processor_1'
     }))
 
     interface.close()
@@ -49,9 +49,9 @@ async def test_unknown_action_message_interface():
     """Test if the interface can send a message of unknown type without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
-        "type": "unknown"
+        'type': 'unknown'
     }))
 
     interface.close()
@@ -63,12 +63,12 @@ async def test_unknown_processor_message_interface():
     """Test if the interface can send an incomplete message without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "unknown",
-        "frameId": 1,
-        "boxId": 1
+        'type': 'start',
+        'cameraId': 'unknown',
+        'frameId': 1,
+        'boxId': 1
     }))
 
     interface.close()
@@ -80,10 +80,10 @@ async def test_unknown_object_message_interface():
     """Test if the interface can send an incomplete message without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
-        "type": "stop",
-        "objectId": "999"
+        'type': 'stop',
+        'objectId': '999'
     }))
 
     interface.close()
@@ -95,8 +95,8 @@ async def test_bad_message_processor():
     """Test if the processor can send a bad message without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
-    interface.write_message("bad message")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
+    interface.write_message('bad message')
 
     interface.close()
 
@@ -107,9 +107,9 @@ async def test_incomplete_message_processor():
     """Test if the processor can send an incomplete message without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     interface.write_message(json.dumps({
-        "type": "identifier"
+        'type': 'identifier'
     }))
 
     interface.close()
@@ -121,9 +121,9 @@ async def test_unknown_action_message_processor():
     """Test if the processor can send a message of unknown type without crashing the server."""
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     interface.write_message(json.dumps({
-        "type": "unknown"
+        'type': 'unknown'
     }))
 
     interface.close()
@@ -136,19 +136,19 @@ async def test_start_tracking_and_timeout():
     Also test if after a few seconds the object is automatically no longer tracked."""
 
     processor = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     processor.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_1"
+        'type': 'identifier',
+        'id': 'processor_1'
     }))
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_1",
-        "frameId": 1,
-        "boxId": 1
+        'type': 'start',
+        'cameraId': 'processor_1',
+        'frameId': 1,
+        'boxId': 1
     }))
 
     message = await processor.read_message()
@@ -168,9 +168,9 @@ def assert_start_tracking(message):
         message (json): json message with start tracking command.
     """
     message_json = json.loads(message)
-    assert message_json["type"] == "start"
-    assert message_json["frameId"] == 1
-    assert message_json["boxId"] == 1
+    assert message_json['type'] == 'start'
+    assert message_json['frameId'] == 1
+    assert message_json['boxId'] == 1
     return True
 
 
@@ -182,34 +182,34 @@ async def test_start_tracking_with_image_and_timeout():
     Also test if after a few seconds the object is automatically no longer tracked."""
 
     processor = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     processor.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_1b"
+        'type': 'identifier',
+        'id': 'processor_1b'
     }))
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_1b",
-        "image": "test"
+        'type': 'start',
+        'cameraId': 'processor_1b',
+        'image': 'test'
     }))
 
     message = await processor.read_message()
     assert assert_start_tracking_with_image(message)
 
     interface.write_message(json.dumps({
-        "type": "setUsesImages",
-        "usesImages": True
+        'type': 'setUsesImages',
+        'usesImages': True
     }))
 
     message_2 = await interface.read_message()
     assert assert_interface_image_message(message_2)
 
     interface.write_message(json.dumps({
-        "type": "setUsesImages",
-        "usesImages": False
+        'type': 'setUsesImages',
+        'usesImages': False
     }))
 
     message_3 = await processor.read_message()
@@ -229,8 +229,8 @@ def assert_start_tracking_with_image(message):
         bool: Whether message has been correct.
     """
     message_json = json.loads(message)
-    assert message_json["type"] == "start"
-    assert message_json["image"] == "test"
+    assert message_json['type'] == 'start'
+    assert message_json['image'] == 'test'
     return True
 
 
@@ -244,8 +244,8 @@ def assert_interface_image_message(message):
         bool: Whether message has been correct.
     """
     message_json = json.loads(message)
-    assert message_json["type"] == "newObject"
-    assert message_json["image"] == "test"
+    assert message_json['type'] == 'newObject'
+    assert message_json['image'] == 'test'
     return True
 
 
@@ -255,38 +255,38 @@ async def test_feature_map_distribution():
     """Test if a processor can send a feature map and if it is correctly distributed among the processors."""
 
     processor_1 = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     processor_1.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_2"
+        'type': 'identifier',
+        'id': 'processor_2'
     }))
 
     client = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     client.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_2",
-        "frameId": 1,
-        "boxId": 1
+        'type': 'start',
+        'cameraId': 'processor_2',
+        'frameId': 1,
+        'boxId': 1
     }))
 
     # Flush start tracking message.
     _ = await processor_1.read_message()
 
     processor_2 = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     processor_2.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_3"
+        'type': 'identifier',
+        'id': 'processor_3'
     }))
 
     # Flush startup message.
     _ = await processor_2.read_message()
 
     processor_1.write_message(json.dumps({
-        "type": "featureMap",
-        "objectId": 3,
-        "featureMap": {"test": "test"}
+        'type': 'featureMap',
+        'objectId': 3,
+        'featureMap': {'test': 'test'}
     }))
 
     processor_1_message = await processor_1.read_message()
@@ -296,8 +296,8 @@ async def test_feature_map_distribution():
     assert assert_feature_map(processor_2_message, 3)
 
     client.write_message(json.dumps({
-        "type": "stop",
-        "objectId": 3
+        'type': 'stop',
+        'objectId': 3
     }))
 
     client.close()
@@ -313,9 +313,9 @@ def assert_feature_map(message, object_id):
         object_id (number): the expected object id.
     """
     message_json = json.loads(message)
-    assert message_json["type"] == "featureMap"
-    assert message_json["objectId"] == object_id
-    assert message_json["featureMap"] == {"test": "test"}
+    assert message_json['type'] == 'featureMap'
+    assert message_json['objectId'] == object_id
+    assert message_json['featureMap'] == {'test': 'test'}
     return True
 
 
@@ -328,29 +328,29 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
     """
 
     processor = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     processor.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_4"
+        'type': 'identifier',
+        'id': 'processor_4'
     }))
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
 
     interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_4",
-        "frameId": 1,
-        "boxId": 1
+        'type': 'start',
+        'cameraId': 'processor_4',
+        'frameId': 1,
+        'boxId': 1
     }))
 
     processor.write_message(json.dumps({
-        "type": "boundingBoxes",
-        "frameId": 1,
-        "boxes": [
-            {"objectId": 3},
-            {"objectId": 4},
-            {"rect": []}
+        'type': 'boundingBoxes',
+        'frameId': 1,
+        'boxes': [
+            {'objectId': 3},
+            {'objectId': 4},
+            {'rect': []}
         ]
     }))
 
@@ -359,11 +359,11 @@ async def test_bounding_boxes_distribution_and_timeline_logging():
 
     response = requests.get('http://processor-orchestrator-service/timelines?objectId=4').text
     json_response = json.loads(response)
-    assert len(list(filter(lambda x: x["processorId"] == "processor_4", json_response["data"]))) > 0
+    assert len(list(filter(lambda x: x['processorId'] == 'processor_4', json_response['data']))) > 0
 
     interface.write_message(json.dumps({
-        "type": "stop",
-        "objectId": 4
+        'type': 'stop',
+        'objectId': 4
     }))
 
     interface.close()
@@ -377,13 +377,13 @@ def assert_boxes_message(message):
         message (json): json message with bounding boxes.
     """
     message_json = json.loads(message)
-    assert message_json["type"] == "boundingBoxes"
-    assert message_json["cameraId"] == "processor_4"
-    assert message_json["frameId"] == 1
-    assert message_json["boxes"] == [
-            {"objectId": 3},
-            {"objectId": 4},
-            {"rect": []}
+    assert message_json['type'] == 'boundingBoxes'
+    assert message_json['cameraId'] == 'processor_4'
+    assert message_json['frameId'] == 1
+    assert message_json['boxes'] == [
+            {'objectId': 3},
+            {'objectId': 4},
+            {'rect': []}
         ]
     return True
 
@@ -394,16 +394,16 @@ async def test_bad_bounding_boxes_message():
     """Test if sending a bad bounding boxes message does not crash the server."""
 
     processor = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     processor.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_4"
+        'type': 'identifier',
+        'id': 'processor_4'
     }))
 
     processor.write_message(json.dumps({
-        "type": "boundingBoxes",
-        "frameId": 1,
-        "boxes": "invalid"
+        'type': 'boundingBoxes',
+        'frameId': 1,
+        'boxes': 'invalid'
     }))
 
     processor.close()
@@ -415,7 +415,7 @@ async def test_incomplete_timeline_data_request():
     """Test if requesting timeline data without objectId parameter gives the correct response."""
 
     response = requests.get('http://processor-orchestrator-service/timelines').text
-    assert response == "Missing 'objectId' query parameter"
+    assert response == 'Missing "objectId" query parameter'
 
 
 @pytest.mark.asyncio
@@ -424,7 +424,7 @@ async def test_unknown_object_timeline_data_request():
     """Test if requesting timeline data of an unknown object gives a 400 error."""
 
     response = requests.get('http://processor-orchestrator-service/timelines?objectId=100')
-    assert response.text == "Object id not present in tracking history"
+    assert response.text == 'Object id not present in tracking history'
     assert response.status_code == 400
 
 
@@ -434,7 +434,7 @@ async def test_object_ids_handler():
     """Test if requesting timeline data of an unknown object gives a 400 error."""
 
     response = requests.get('http://processor-orchestrator-service/objectIds')
-    assert response.text == "{\"data\":[1, 2, 3, 4]}"
+    assert response.text == '{\"data\":[1, 2, 3, 4]}'
 
 
 @pytest.mark.asyncio
@@ -443,23 +443,23 @@ async def test_stop_tracking():
     """Test if an interface can send a stop tracking message and if it is correctly received by the processor."""
 
     processor = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     await processor.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_5"
+        'type': 'identifier',
+        'id': 'processor_5'
     }))
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     await interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_5",
-        "frameId": 1,
-        "boxId": 1,
+        'type': 'start',
+        'cameraId': 'processor_5',
+        'frameId': 1,
+        'boxId': 1,
     }))
     await interface.write_message(json.dumps({
-        "type": "stop",
-        "objectId": 5
+        'type': 'stop',
+        'objectId': 5
     }))
 
     # Read start message first.
@@ -479,8 +479,8 @@ def assert_stop_tracking(message, object_id):
         object_id (int): integer containing the object id.
     """
     message_json = json.loads(message)
-    assert message_json["type"] == "stop"
-    assert message_json["objectId"] == object_id
+    assert message_json['type'] == 'stop'
+    assert message_json['objectId'] == object_id
     return True
 
 
@@ -490,32 +490,32 @@ async def test_startup_message():
     """Test if a processor gets the currently tracked feature maps."""
 
     processor_1 = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     await processor_1.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_6"
+        'type': 'identifier',
+        'id': 'processor_6'
     }))
 
     interface = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/client")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/client')
     await interface.write_message(json.dumps({
-        "type": "start",
-        "cameraId": "processor_6",
-        "frameId": 1,
-        "boxId": 1,
+        'type': 'start',
+        'cameraId': 'processor_6',
+        'frameId': 1,
+        'boxId': 1,
     }))
 
     processor_1.write_message(json.dumps({
-        "type": "featureMap",
-        "objectId": 6,
-        "featureMap": {"test": "test"}
+        'type': 'featureMap',
+        'objectId': 6,
+        'featureMap': {'test': 'test'}
     }))
 
     processor_2 = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/processor")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/processor')
     await processor_2.write_message(json.dumps({
-        "type": "identifier",
-        "id": "processor_7"
+        'type': 'identifier',
+        'id': 'processor_7'
     }))
 
     message = await processor_2.read_message()
@@ -531,5 +531,5 @@ async def test_startup_message():
 async def test_stop_server():
     """Sends message to test server, so it can be stopped."""
     socket = \
-        await websocket.websocket_connect("ws://processor-orchestrator-service/stop")
-    await socket.write_message("stop")
+        await websocket.websocket_connect('ws://processor-orchestrator-service/stop')
+    await socket.write_message('stop')

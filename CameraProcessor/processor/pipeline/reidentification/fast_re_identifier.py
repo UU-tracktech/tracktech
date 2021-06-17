@@ -31,7 +31,7 @@ class FastReIdentifier(PytorchReIdentifier):
             config (configparser.SectionProxy): Re-ID configuration.
         """
 
-        args = argparse.ArgumentParser(description="Feature extraction with reid models")
+        args = argparse.ArgumentParser(description='Feature extraction with reid models')
         args.config_file = config['config_file_path']
         args.parallel = config.getboolean('parallel')
 

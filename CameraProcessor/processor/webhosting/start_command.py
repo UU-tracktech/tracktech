@@ -23,18 +23,18 @@ class StartCommand(dict):
         """
         # pylint: enable=unknown-argument-in-docstring
         # Add expected keywords to key_set.
-        key_set = {"objectId"}
+        key_set = {'objectId'}
         key_set.update(args)
 
         # Test if kwargs contains ONLY keys we expect.
         diff = kwargs.keys() - key_set
         if len(diff) > 0:
-            raise KeyError(f"Unexpected keyword or keywords {diff} in start command.")
+            raise KeyError(f'Unexpected keyword or keywords {diff} in start command.')
 
         # Test if kwargs contains ALL the keys we expect.
         diff2 = key_set - kwargs.keys()
         if len(diff2) > 0:
-            raise KeyError(f"Missing expected keyword or keywords {diff2} in start command.")
+            raise KeyError(f'Missing expected keyword or keywords {diff2} in start command.')
         super().__init__(**kwargs)
 
     # pylint: disable=docstring-is-missing
@@ -50,5 +50,5 @@ class StartCommand(dict):
         if item in self:
             del self[item]
         else:
-            raise AttributeError(f"No entry {item} in Start Command to delete")
+            raise AttributeError(f'No entry {item} in Start Command to delete')
     # pylint: enable=docstring-is-missing
