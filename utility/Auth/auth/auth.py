@@ -1,4 +1,3 @@
-# pylint: disable=multiple-class-definitions.
 """Handles authentication and authorization of tokens.
 
 This program has been developed by students from the bachelor Computer Science at
@@ -34,7 +33,7 @@ class Auth:
         self.role = role
 
     def validate(self, token) -> None:
-        """Validate the given token
+        """Validate the given token.
 
         Args:
             token (str): an jwt token to validate
