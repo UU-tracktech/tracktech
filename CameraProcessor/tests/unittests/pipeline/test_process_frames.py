@@ -16,7 +16,7 @@ from processor.pipeline.process_frames import process_stream
 from processor.pipeline.detection.yolov5_detector import Yolov5Detector
 from processor.pipeline.detection.yolor_detector import YolorDetector
 from processor.input.video_capture import VideoCapture
-from processor.pipeline.process_frames import send_boxes_to_orchestrator
+from processor.websocket.boxes_message import BoxesMessage
 
 
 class TestProcessFrames:
@@ -138,13 +138,8 @@ class TestProcessFrames:
             detector,
             tracker,
             re_identifier,
-            lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
-                websocket_client,
-                frame_obj,
-                detected_boxes,
-                tracked_boxes,
-                re_id_tracked_boxes
-            ),
+            lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
+            websocket_client.send_message(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
             websocket_client
         )
 

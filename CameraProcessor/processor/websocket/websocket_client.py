@@ -11,11 +11,9 @@ import logging
 from collections import deque
 from tornado import websocket
 
-from processor.webhosting.start_command_simple import StartCommandSimple
-from processor.webhosting.start_command_extended import StartCommandExtended
-from processor.webhosting.start_command_search import StartCommandSearch
-from processor.webhosting.stop_command import StopCommand
-from processor.webhosting.update_command import UpdateCommand
+from processor.websocket.start_message import StartMessage
+from processor.websocket.stop_message import StopMessage
+from processor.websocket.update_message import UpdateMessage
 from processor.utils.authentication import get_token
 
 
@@ -77,7 +75,7 @@ class WebsocketClient:
             try:
                 self.connection =\
                     await websocket.websocket_connect(self.websocket_url,
-                                                      on_message_callback=self._on_message)
+                                                      on_message_callback=self.__on_message)
                 logging.info(f'Connected to {self.websocket_url} successfully.')
 
                 # Send authentication token to the orchestrator on connect (if it exists).
@@ -97,6 +95,7 @@ class WebsocketClient:
                     })
                     logging.info(f'Identified with: {id_message}')
                     await self.connection.write_message(id_message)
+
 
                 connected = True
             # Reconnect failed.
@@ -163,18 +162,7 @@ class WebsocketClient:
         # Close connection.
         self.connection.close()
 
-    def write_message(self, message):
-        """Write a message on the websocket asynchronously.
-
-        Args:
-            message (str): the message to write.
-        """
-        try:
-            asyncio.get_running_loop().create_task(self._write_message(message))
-        except RuntimeError:
-            return
-
-    async def _write_message(self, message):
+    async def __write_message(self, message):
         """Internal write message that also writes all messages on the write queue if possible.
 
         Args:
@@ -206,7 +194,7 @@ class WebsocketClient:
             logging.info(f'Appending to message queue: {message}')
             self.write_queue.append(message)
 
-    def _on_message(self, message):
+    def __on_message(self, message):
         """On message callback function.
 
         Args:
@@ -220,82 +208,43 @@ class WebsocketClient:
         try:
             message_object = json.loads(message)
 
-            # Switch on message type.
-            actions = {
-                'featureMap':
-                    lambda: self.update_feature_map(message_object),
-                'start':
-                    lambda: self.start_tracking(message_object),
-                'stop':
-                    lambda: self.stop_tracking(message_object)
+            class_dict = {
+                'start': StartMessage,
+                'stop': StopMessage,
+                'featureMap': UpdateMessage
             }
 
-            # Execute correct function.
-            function = actions.get(message_object["type"])
-            if function is None:
-                logging.warning(f'Someone gave an unknown command: {message}')
-            else:
-                function()
+            if 'type' not in message_object.keys():
+                raise KeyError('type missing')
 
-        except ValueError:
-            logging.warning(f'Someone wrote bad json: {message}')
-        except KeyError:
-            logging.warning(f'Someone missed a property in their json: {message}')
+            msg_type = message_object['type']
 
-    # Mock methods on received commands.
-    # pylint: disable=R0201
-    def update_feature_map(self, message):
-        """Handler for received feature maps.
+            if msg_type not in class_dict.keys():
+                raise ValueError('Invalid message type')
 
-        Args:
-            message (Union[str, bytes]): JSON parse of sent message.
-        """
-        object_id = message["objectId"]
-        feature_map = message["featureMap"]
+            command = class_dict[msg_type].from_message(message_object)
 
-        self.message_queue.append(UpdateCommand(feature_map, object_id))
+            self.message_queue.append(command)
+            logging.info(f'Received message: {str(command)}')
 
-    def generate_tracking_message(self, message):
-        """Factory function that returns the correct StartCommand type.
+        except ValueError as value_error:
+            logging.warning(f'Someone wrote bad json: {message}.\nWith error: {value_error}.')
+        except KeyError as key_error:
+            logging.warning(f'Someone missed a property in their json: {message}.\nWith error: {key_error}.')
+        except TypeError as type_error:
+            logging.warning(f'One or more keys is of the wrong type: {message}.\nWith error: {type_error}.')
+
+    def send_message(self, message):
+        """Sends the given message.
 
         Args:
-            message (Union[str, bytes]): JSON parse of the sent message.
+            message (IMessage): Message to be sent.
 
         Returns:
-            StartCommand: A subclass of the StartCommand superclass.
+            (None): Returns from the function when we cannot send the message.
         """
-        del message['type']
-        if all(k in message.keys() for k in {'frameId', 'boxId'}):
-            if "image" in message.keys():
-                return StartCommandExtended(**message)
-            return StartCommandSearch(**message)
-        if "image" in message.keys():
-            return StartCommandSimple(**message)
-        raise ValueError('Start Tracking message does not contain necessary information.')
-
-    def start_tracking(self, message):
-        """Handler for the "start tracking" command.
-
-        Args:
-            message (Union[str, bytes]): JSON parse of sent message.
-        """
-        # Remove the "type" item, because we don't need that anymore.
         try:
-            tracking_message = self.generate_tracking_message(message)
-        except ValueError as value_error:
-            logging.info(value_error)
-        except KeyError as key_error:
-            logging.info(key_error)
-        else:
-            self.message_queue.append(tracking_message)
-
-    def stop_tracking(self, message):
-        """Handler for the "stop tracking" command.
-
-        Args:
-            message (Union[str, bytes]): JSON parse of sent message.
-        """
-        object_id = message['objectId']
-
-        self.message_queue.append(StopCommand(object_id))
-    # pylint: enable=R0201
+            json_message = json.dumps(message.to_message())
+            asyncio.get_running_loop().create_task(self.__write_message(json_message))
+        except RuntimeError:
+            return
