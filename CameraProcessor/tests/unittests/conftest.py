@@ -32,12 +32,31 @@ def small_frame():
     Returns:
         np.ndarray: Opencv frame from test data.
     """
-    __image_name = f'{root_path}/data/tests/unittests/small_image.jpg'
-    return cv2.imread(__image_name)
+    return get_small_frame()
 
 
 @pytest.fixture
 def large_frame():
+    """Fixture that gets a big frame loaded with opencv.
+
+    Returns:
+        np.ndarray: Opencv frame from test data.
+    """
+    __image_name = f'{root_path}/data/tests/unittests/big_image.jpg'
+    return get_large_frame()
+
+
+def get_small_frame():
+    """Fixture for a small frame loaded with opencv.
+
+    Returns:
+        np.ndarray: Opencv frame from test data.
+    """
+    __image_name = f'{root_path}/data/tests/unittests/small_image.jpg'
+    return cv2.imread(__image_name)
+
+
+def get_large_frame():
     """Fixture that gets a big frame loaded with opencv.
 
     Returns:
