@@ -25,7 +25,7 @@ class MotDataloader(IDataloader):
         dataloader_config = configs['MOT']
         self.file_path = dataloader_config['annotations_path']
         self.image_path = dataloader_config['image_path']
-        self.image_dimensions = {}
+        self.image_dimensions = (-1, -1)
         self.skipped_lines = []
         self.delimiter = ' '
 
@@ -88,7 +88,7 @@ class MotDataloader(IDataloader):
         Returns:
             (int,int): width and height dimensions of the image.
         """
-        if image_id in self.image_dimensions:
+        if self.image_dimensions >= (0, 0):
             return self.image_dimensions[image_id]
         image_name = self.__get_image_name(image_id)
         this_image_path = self.__get_image_path(image_name)
@@ -99,7 +99,7 @@ class MotDataloader(IDataloader):
 
         # Open image and return its size.
         image = Image.open(this_image_path)
-        self.image_dimensions[image_id] = image.size
+        self.image_dimensions = image.size
         return image.size
 
     def parse_line(self, line):
