@@ -38,8 +38,8 @@ FROM test as lint
 
 COPY src src
 COPY tests tests
-
-ENTRYPOINT ["pylint","src","tests","--rcfile=.pylintrc"]
+WORKDIR /
+ENTRYPOINT ["pylint","app","--rcfile=/app/.pylintrc"]
 
 
 FROM python:3.8-slim-buster AS build
