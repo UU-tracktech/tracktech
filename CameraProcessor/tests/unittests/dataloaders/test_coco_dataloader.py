@@ -25,8 +25,9 @@ class TestCocoDataloader:
 
     def test_init(self):
         """Tests the init."""
-        assert self.dataloader.file_path == self.configs['COCO']['annotations_path']
-        assert self.dataloader.image_path == self.configs['COCO']['image_path']
+        configs = get_test_configs()
+        assert self.dataloader.file_path == configs['COCO']['annotations_path']
+        assert self.dataloader.image_path == configs['COCO']['image_path']
         assert self.dataloader.coco is not None
 
     def test_download_coco_image(self):

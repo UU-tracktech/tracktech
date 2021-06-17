@@ -21,7 +21,8 @@ class TestJsonDataloader:
 
     def test_init(self):
         """Tests the init."""
-        assert self.dataloader.file_path == self.configs['JSON']['annotations_path']
+        configs = get_test_configs()
+        assert self.dataloader.file_path == configs['JSON']['annotations_path']
 
     def test_get_annotations(self):
         """Tests getting json annotations."""

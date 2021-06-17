@@ -27,10 +27,11 @@ class TestMotDataloader:
 
     def test_init(self):
         """Tests the init."""
+        configs = get_test_configs()
         assert len(self.dataloader.image_dimensions) == 0
 
-        assert self.file_path == self.configs['MOT']['annotations_path']
-        assert self.image_path == self.configs['MOT']['image_path']
+        assert self.file_path == configs['MOT']['annotations_path']
+        assert self.image_path == configs['MOT']['image_path']
         assert self.image_dimensions == {}
         assert self.skipped_lines == []
         assert self.delimiter == ' '
