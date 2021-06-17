@@ -53,20 +53,20 @@ class AccuracyObject:
         """Parse boxes to PODM format.
 
         Args:
-            boxes_to_parse ([BoundingBoxes]): A list of BoundingBoxes objects.
+            boxes_to_parse (Dict): A dict of BoundingBoxes objects with image ids as keys.
 
         Returns:
             [BoundingBox]: A list of bounding boxes as specified by the podm.podm library.
         """
         list_parsed_boxes = []
-        for bounding_boxes_object in boxes_to_parse:
+        for bounding_boxes_object in boxes_to_parse.values():
 
             # Getting the bounding boxes that are detected in frame i.
             image_id = bounding_boxes_object.image_id
 
             # Parse every bounding box into a bounding box from the podm.podm library.
 
-            for box in bounding_boxes_object:
+            for box in bounding_boxes_object.bounding_boxes:
                 # Parse a single box and append it to the list of already parsed boxes.
                 # The label is currently undefined because class information is not yet saved.
                 parsed_box = BoundingBox(

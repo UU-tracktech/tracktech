@@ -85,11 +85,11 @@ class TestAccuracyObject:
         box3 = BoundingBox(-1, rectangle3, '', 0.9)
 
         # Putting the boxes into frames.
-        frame1 = BoundingBoxes([box1])
-        frame2 = BoundingBoxes([box2, box3])
+        frame1 = BoundingBoxes([box1], 1)
+        frame2 = BoundingBoxes([box2, box3], 2)
 
         # Putting the frames into the format that we get from the preAnnotations.
-        boxes = [frame1, frame2]
+        boxes = {frame1.image_id: frame1, frame2.image_id: frame2}
 
         # Parsing the boxes.
         parsed_boxes = accuracy_object.parse_boxes(boxes)
@@ -101,7 +101,7 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.2 \
                and parsed_box.ybr == 0.2
         assert parsed_box.score == 0.5
-        assert parsed_box.image_name == ''
+        assert parsed_box.image_name == '1'
 
         # Checking in box2 is correct.
         parsed_box = parsed_boxes[1]
@@ -110,7 +110,7 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.3 \
                and parsed_box.ybr == 0.3
         assert parsed_box.score == 0.7
-        assert parsed_box.image_name == ''
+        assert parsed_box.image_name == '2'
 
         # Checking in box3 is correct.
         parsed_box = parsed_boxes[2]
@@ -119,7 +119,7 @@ class TestAccuracyObject:
         assert parsed_box.xbr == 0.6 \
                and parsed_box.ybr == 0.6
         assert parsed_box.score == 0.9
-        assert parsed_box.image_name == ''
+        assert parsed_box.image_name == '2'
 
     def draw_plots(self, accuracy_object):
         """Draws the plots and checks whether files are indeed created.

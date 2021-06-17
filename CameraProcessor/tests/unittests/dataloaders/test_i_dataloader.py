@@ -46,20 +46,6 @@ class TestIDataloader:
         with pytest.raises(NotImplementedError):
             self.dataloader.parse_boxes([(None, None, None, None, None, None, None, None, None)])
 
-    def test_append_box(self, bboxes, bounding_boxes_object_list):
-        """Tests the append_box function.
-
-        Args:
-            bboxes (BoundingBoxes): BoundingBoxes object.
-            bounding_boxes_object_list ([BoundingBoxes]): BoundingBoxes object.
-        """
-        image_id = bboxes.image_id
-        bbox = bboxes.bounding_boxes[0]
-        expected_result = bounding_boxes_object_list + [BoundingBoxes([bbox], image_id)]
-
-        returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, bbox)
-        assert returned_box_list == expected_result
-
     def test_append_box_empty_dict(self, bboxes):
         """Tests the append_box function when the bounding_boxes_object_list is empty.
 
@@ -69,25 +55,23 @@ class TestIDataloader:
         image_id = bboxes.image_id
         bbox = bboxes.bounding_boxes[0]
         expected_box_dict = {image_id: BoundingBoxes([bbox], image_id)}
-        returned_box_dict = self.dataloader.append_box({}, bbox)
+        returned_box_dict = self.dataloader.append_box({}, image_id, bbox)
         assert expected_box_dict == returned_box_dict
 
-    def test_append_box_same_id(self, bboxes, bounding_boxes_object_list):
+    def test_append_box_same_id(self, bboxes, bounding_boxes_object_dict):
         """Tests the append_box function.
 
         Args:
             bboxes (BoundingBoxes): BoundingBoxes object.
-            bounding_boxes_object_list ([BoundingBoxes]): BoundingBoxes object.
+            bounding_boxes_object_dict (Dict): Dictionary of BoundingBoxes with image id as key.
         """
-        bounding_boxes_object_list.reverse()
-
         image_id = bboxes.image_id
         bbox = bboxes.bounding_boxes[0]
 
-        expected_box_list = bounding_boxes_object_list.copy()
-        expected_box_list[-1].bounding_boxes.append(bbox)
-        returned_box_list = self.dataloader.append_box(bounding_boxes_object_list, bbox)
-        assert expected_box_list == returned_box_list
+        expected_box_dict = bounding_boxes_object_dict.copy()
+        expected_box_dict[image_id].bounding_boxes.append(bbox)
+        returned_box_dict = self.dataloader.append_box(bounding_boxes_object_dict, image_id, bbox)
+        assert expected_box_dict == returned_box_dict
 
     def test_parse_box(self, bbox):
         """Tests the pares_box function.
@@ -95,7 +79,20 @@ class TestIDataloader:
         Args:
             bbox (BoundingBox): BoundingBox object.
         """
-        constructed_bbox = self.dataloader.parse_box(bbox)
+        identifier = bbox.identifier
+        pos_x1 = bbox.rectangle.x1
+        pos_y1 = bbox.rectangle.y1
+        pos_x2 = bbox.rectangle.x2
+        pos_y2 = bbox.rectangle.y2
+        certainty = bbox.certainty
+        classification = bbox.classification
+        object_id = bbox.object_id
+
+        constructed_bbox = self.dataloader.parse_box(identifier,
+                                                     pos_x1, pos_y1, pos_x2, pos_y2,
+                                                     certainty,
+                                                     classification,
+                                                     object_id)
         assert constructed_bbox == bbox
 
     def test_get_image_dimensions(self):

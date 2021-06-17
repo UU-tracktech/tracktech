@@ -44,26 +44,26 @@ class IDataloader:
             for parsed_entity in parsed_line:
                 (image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty, classification,
                  object_id) = parsed_entity
-                bbox = self.parse_box(image_id, person_id, pos_x0, pos_y0, pos_x1,
+                bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
                                       pos_y1, certainty, classification, object_id)
-                bounding_boxes_dict = self.append_box(bounding_boxes_dict, bbox)
+                bounding_boxes_dict = self.append_box(bounding_boxes_dict, int(image_id), bbox)
 
         return bounding_boxes_dict
 
-    def append_box(self, bounding_boxes_dict, bbox):
+    def append_box(self, bounding_boxes_dict, image_id, bbox):
         """Appends boxes.
 
         Args:
             bounding_boxes_dict (Dict): Dict of which contains a BoundingBoxes object for every encountered image_id.
+            image_id (int): Id of the image the box belongs to.
             bbox (BoundingbBox): BoundingBox object.
 
         Returns:
             bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.
         """
         # No entry for image ID in dict.
-        image_id = bbox.identifier
         if image_id not in bounding_boxes_dict.keys():
-            bounding_boxes_dict[image_id] = BoundingBoxes(bbox, image_id)
+            bounding_boxes_dict[image_id] = BoundingBoxes([bbox], image_id)
         else:
             bounding_boxes_dict[image_id].bounding_boxes.append(bbox)
         return bounding_boxes_dict

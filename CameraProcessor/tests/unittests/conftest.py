@@ -45,7 +45,7 @@ def bboxes():
     return BoundingBoxes([box1, box2, box3], '12')
 
 @pytest.fixture
-def bounding_boxes_object_list():
+def bounding_boxes_object_dict():
     """Fixture for an example BoundingBoxes list.
 
     Returns:
@@ -56,10 +56,11 @@ def bounding_boxes_object_list():
     box3 = BoundingBox(678, Rectangle(0.2, 0.6, 0.7, 0.8), "person", 0.8, object_id=19)
     box4 = BoundingBox(979, Rectangle(0.22, 0.34, 0.62, 0.85), "horse", 0.8, object_id=100)
 
-    bounding_boxes_object = BoundingBoxes([box1], '12')
-    bounding_boxes_object2 = BoundingBoxes([box2, box3, box4], '13')
+    bounding_boxes_object = BoundingBoxes([box2, box3, box4], '13')
+    bounding_boxes_object2 = BoundingBoxes([box1], '12')
 
-    return [bounding_boxes_object, bounding_boxes_object2]
+    return {bounding_boxes_object.image_id: bounding_boxes_object,
+            bounding_boxes_object2.image_id: bounding_boxes_object2}
 
 
 
