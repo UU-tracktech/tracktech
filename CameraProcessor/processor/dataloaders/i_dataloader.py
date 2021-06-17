@@ -23,12 +23,10 @@ class IDataloader:
         self.categories = accuracy_config['categories']
         self.filter_config = configs['Filter']
         nr_frames = int(accuracy_config['nr_frames'])
-        nr_boxes = int(accuracy_config['nr_boxes'])
         # Cannot contain negative amount of frames.
         if nr_frames < 0:
             raise AttributeError('Cannot have negative number of frames')
         self.nr_frames = nr_frames
-        self.nr_boxes = nr_boxes
 
     def parse_boxes(self, annotations):
         """Parses bounding boxes.
@@ -46,7 +44,7 @@ class IDataloader:
             for parsed_entity in parsed_line:
                 (image_id, person_id, pos_x0, pos_y0, pos_x1, pos_y1, certainty, classification,
                  object_id) = parsed_entity
-                bbox = self.parse_box(person_id, pos_x0, pos_y0, pos_x1,
+                bbox = self.parse_box(image_id, person_id, pos_x0, pos_y0, pos_x1,
                                       pos_y1, certainty, classification, object_id)
                 bounding_boxes_dict = self.append_box(bounding_boxes_dict, bbox)
 
@@ -65,9 +63,9 @@ class IDataloader:
         # No entry for image ID in dict.
         image_id = bbox.identifier
         if image_id not in bounding_boxes_dict.keys():
-            bounding_boxes_dict[str(image_id)] = BoundingBoxes(bbox, image_id)
+            bounding_boxes_dict[image_id] = BoundingBoxes(bbox, image_id)
         else:
-            bounding_boxes_dict[str(image_id)].bounding_boxes.append(bbox)
+            bounding_boxes_dict[image_id].bounding_boxes.append(bbox)
         return bounding_boxes_dict
 
     @staticmethod

@@ -89,7 +89,7 @@ class MotDataloader(IDataloader):
             (int,int): width and height dimensions of the image.
         """
         if self.image_dimensions >= (0, 0):
-            return self.image_dimensions
+            return self.image_dimensions[image_id]
         image_name = self.__get_image_name(image_id)
         this_image_path = self.__get_image_path(image_name)
 
