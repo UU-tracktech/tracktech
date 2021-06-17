@@ -56,8 +56,8 @@ class TestMotDataloader:
 
     def test_parse_line(self):
         """Tests the parsing of line."""
-        json_parse = [(1, 1, 0.025, 0.3104166666666667, 0.1453125, 0.7083333333333334, 1, '', None)]
-        assert self.dataloader.parse_line(self.dataloader.get_annotations()[0]) == json_parse
+        parsed_line = [(1, 1, 0.025, 0.3104166666666667, 0.1453125, 0.7083333333333334, 1, '', None)]
+        assert self.dataloader.parse_line(self.dataloader.get_annotations()[0]) == parsed_line
 
 
 if __name__ == '__main__':
