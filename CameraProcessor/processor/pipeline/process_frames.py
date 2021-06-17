@@ -7,9 +7,6 @@ Utrecht University within the Software Project course.
 
 import logging
 import asyncio
-import cv2
-
-import processor.utils.display as display
 
 from processor.pipeline.frame_buffer import FrameBuffer
 
