@@ -32,6 +32,15 @@ def small_frame():
     Returns:
         np.ndarray: Opencv frame from test data.
     """
+    return get_small_frame()
+
+
+def get_small_frame():
+    """Get a small sample frame loaded with OpenCV.
+
+        Returns:
+            np.ndarray: Opencv frame from test data.
+        """
     __image_name = f'{root_path}/data/tests/unittests/small_image.jpg'
     return cv2.imread(__image_name)
 

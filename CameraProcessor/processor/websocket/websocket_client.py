@@ -96,7 +96,6 @@ class WebsocketClient:
                     logging.info(f'Identified with: {id_message}')
                     await self.connection.write_message(id_message)
 
-
                 connected = True
             # Reconnect failed.
             except ConnectionRefusedError:

@@ -16,9 +16,20 @@ class UpdateMessage(IMessage):
         Args:
             object_id (int): Identifier of the object that should be followed.
             feature_map ([float]): Feature map of the object that should be followed.
+
+        Raises:
+            TypeError: object_id is not an integer.
+                       feature_map should be a list of floats.
+            AttributeError: feature_map does not contain elements.
         """
         if not isinstance(object_id, int):
             raise TypeError('Object id should be an integer')
+        if not isinstance(feature_map, list):
+            raise TypeError(f'feature_map is not a list but {type(feature_map)}')
+        if not feature_map:
+            raise AttributeError('feature_map list is empty')
+        if not isinstance(feature_map[-1], float):
+            raise TypeError(f'feature_map contains other than a float, namely: {type(feature_map[-1])}')
 
         self.__object_id = object_id
         self.__feature_map = feature_map
