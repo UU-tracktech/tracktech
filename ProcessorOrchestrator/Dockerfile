@@ -34,8 +34,8 @@ RUN ["mkdir", "tracking_timelines"]
 
 FROM test as lint
 
-COPY src src
-COPY tests tests
+COPY src/ src
+COPY tests/ tests
 
 RUN ["mkdir", "-p", "utility/pylint-plugins"]
 

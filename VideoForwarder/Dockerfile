@@ -96,8 +96,8 @@ RUN ["pip", "install", "pylint==2.8.2"]
 RUN ["mkdir", "-p", "utility/pylint-plugins"]
 
 # Copy the actual source code
-COPY src src
-COPY tests tests
+COPY src/ src
+COPY tests/ tests
 
 WORKDIR /
 
