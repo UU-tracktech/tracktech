@@ -5,7 +5,9 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 import os
+import sys
 import time
+import logging
 
 from podm.podm import BoundingBox, get_pascal_voc_metrics
 from podm.visualize import plot_precision_recall_curve
@@ -96,30 +98,23 @@ class AccuracyObject:
 
     def detect(self):
         """Retrieves accuracy of detections."""
-        print("Start accuracy calculations.")
+        print('Start accuracy calculations.')
 
-        print("Parsing the ground truth.")
+        print('Parsing the ground truth.')
         # Getting the bounding boxes from the gt file.
         self.bounding_boxes_gt = self.read_boxes(self.gt_format)
 
-        print("Parsing the detections.")
+        print('Parsing the detections.')
         # Getting and parsing the bounding boxes from the detection file.
         bounding_boxes_det = self.read_boxes('JSON')
 
-        print("Calculating the AP.")
+        print('Calculating the AP.')
         # Using the podm.podm library to get the accuracy metrics.
         self.results = get_pascal_voc_metrics(
             self.bounding_boxes_gt,
             bounding_boxes_det,
             self.iou_threshold
         )
-
-        # Printing a few metrics related to accuracy on the terminal.
-        # Labels are undefined because the det and gt files currently don't save the classes of detected objects.
-        # Pprint("tp (only undefined): " + str(self.results['undefined'].tp)).
-        # Pprint("fp: " + str(self.results['undefined'].fp)).
-        # Pprint("fns:" + str(len(self.bounding_boxes_gt) - self.results['undefined'].tp)).
-        # Pprint("mAP: " + str(self.results['undefined'].get_mAP(self.results))).
 
     def draw_pr_plot(self, result):
         """Draw a pr plot of a class and saves it to a file.
@@ -146,6 +141,13 @@ class AccuracyObject:
 
 
 if __name__ == '__main__':
+    # Configure the logger.
+    logging.basicConfig(filename='accuracy.log', filemode='w',
+                        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
+                        level=logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+
     # Run accuracy.
     config_parser = ConfigParser('configs.ini', True)
     test_object = AccuracyObject(config_parser.configs)
