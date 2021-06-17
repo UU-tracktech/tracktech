@@ -6,21 +6,21 @@ Utrecht University within the Software Project course.
 
  */
 
-/**
-  This component shows the navigation bar at the top of the page  
-*/
-
 import React from 'react'
 import { Menu, Layout } from 'antd'
 import { Link } from 'react-router-dom'
 
-import { LoginButton } from './loginButton'
-import { LoggedInUser } from './loggedInUser'
+import { LoginButton } from 'components/loginButton'
+import { LoggedInUser } from 'components/loggedInUser'
 
+/**
+ * Navigation bar at the top of the page.
+ * @returns The antd Navbar containing a logo, page navigation, and login info.
+ */
 export function NavMenu() {
   return (
     <Layout.Header
-      //Navbar styling
+      // Navbar styling.
       style={{
         background: '#fff',
         paddingLeft: '10px',
@@ -34,14 +34,14 @@ export function NavMenu() {
       }}
     >
       <img
-        //The Tracktech logo at the left of the navbar
+        // The Tracktech logo at the left of the navbar.
         style={{ maxHeight: '100px', maxWidth: '100px', alignSelf: 'center' }}
         src={
           'https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif'
         }
         alt={'logo'}
       />
-      {/* Links to the pages in the navbar */}
+      {/* Links to the pages in the navbar. */}
       <Menu mode={'horizontal'}>
         <Menu.Item>
           <Link to={'/'}>Home</Link>
@@ -51,7 +51,7 @@ export function NavMenu() {
         </Menu.Item>
       </Menu>
 
-      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling */}
+      {/*/ The login buttons on the right of the navbar. Has to come before the pages to not break styling. */}
       <div style={{ gridColumnStart: '4' }}>
         <LoggedInUser />
       </div>
