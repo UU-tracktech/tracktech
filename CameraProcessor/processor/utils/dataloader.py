@@ -14,8 +14,8 @@ def get_dataloader(configs, annotation_format):
     """Get a dataloader based on format.
 
     Args:
-        annotation_format (str): Dataloader format to select.
         configs (Dict): Configuration parser, which contains the information required to make a dataloader.
+        annotation_format (str): Dataloader format to select.
 
     Returns:
         dataloader (IDataloader): The dataloader to use for parsing annotations.

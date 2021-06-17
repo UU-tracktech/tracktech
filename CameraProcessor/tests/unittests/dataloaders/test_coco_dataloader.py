@@ -20,7 +20,7 @@ class TestCocoDataloader:
         self.configs = get_test_configs()
         self.dataloader = CocoDataloader(self.configs)
 
-        #A specific image id to run tests over.
+        # A specific image id to run tests over.
         self.coco_image_id = 463730
 
     def test_init(self):
@@ -85,7 +85,7 @@ class TestCocoDataloader:
         boxes = self.dataloader.parse_boxes(annotations)
 
         # Correct number of bounding boxes are created.
-        assert len(boxes) == self.dataloader.nr_frames
+        assert len(boxes) == self.dataloader.nr_boxes
 
     def test_parse_line(self):
         """Tests the parse_line function."""
