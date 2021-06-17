@@ -9,6 +9,7 @@ import asyncio
 import json
 import logging
 from collections import deque
+from tornado.httpclient import HTTPClientError
 from tornado import websocket
 
 from processor.websocket.start_message import StartMessage
@@ -55,6 +56,7 @@ class WebsocketClient:
             EnvironmentError: Whenever the environment variables were not found in the environment.
             ConnectionError: No response from the authentication server.
             TimeoutError: After several retries the connection could still not be established.
+            HTTPClientError: Server threw error, client has wrong url.
         """
         # If we want to do authentication, try to get an access token.
         auth_server_url = os.environ.get("AUTH_SERVER_URL")
@@ -76,33 +78,19 @@ class WebsocketClient:
                 self.connection =\
                     await websocket.websocket_connect(self.websocket_url,
                                                       on_message_callback=self.__on_message)
+
+                await self.__initialize_connection(auth_token)
                 logging.info(f'Connected to {self.websocket_url} successfully.')
-
-                # Send authentication token to the orchestrator on connect (if it exists).
-                if auth_token:
-                    auth_message = json.dumps({
-                        'type': 'authenticate',
-                        'jwt': auth_token
-                    })
-                    logging.info('Authentication message sent to orchestrator.')
-                    await self.connection.write_message(auth_message)
-
-                # Send an identification message to the orchestrator on connect.
-                if self.identifier is not None:
-                    id_message = json.dumps({
-                        'type': 'identifier',
-                        'id': self.identifier
-                    })
-
-                    logging.info(f'Identified with: {id_message}')
-                    await self.connection.write_message(id_message)
-
                 connected = True
             # Reconnect failed.
             except ConnectionRefusedError:
                 logging.warning(f'Could not connect to {self.websocket_url}, trying again in 1 second...')
                 await asyncio.sleep(sleep)
                 timeout_left -= sleep
+            # Connected with an url that connect be found.
+            except HTTPClientError as err:
+                logging.error(f'Wrong url after websocket: {self.websocket_url}')
+                raise err
 
         # If timeout was reached without connection.
         if not connected:
@@ -120,7 +108,7 @@ class WebsocketClient:
             str: Access token to the authentication server.
 
         Raises:
-            AttributeError:
+            AttributeError: Invalid credentials are inside the environment.
             EnvironmentError: Whenever the environment variables were not found in the environment.
             ConnectionError: No response from the authentication server.
         """
@@ -144,6 +132,34 @@ class WebsocketClient:
 
         # After several retries the connection could not be established.
         raise ConnectionError('Could not connect to the authentication server successfully.')
+
+    async def __initialize_connection(self, auth_token):
+        """Initiate connection with an authorization token and identify the current websocket.
+
+        Args:
+            auth_token (str): Authorization token to use to establish connection.
+
+        Raises:
+            ConnectionRefusedError: Connection was lost during authentication or identification.
+        """
+        # Send authentication token to the orchestrator on connect (if it exists).
+        if auth_token:
+            auth_message = json.dumps({
+                'type': 'authenticate',
+                'jwt': auth_token
+            })
+            logging.info('Authentication message sent to orchestrator.')
+            await self.connection.write_message(auth_message)
+
+        # Send an identification message to the orchestrator on connect.
+        if self.identifier is not None:
+            id_message = json.dumps({
+                'type': 'identifier',
+                'id': self.identifier
+            })
+
+            logging.info(f'Identified with: {id_message}')
+            await self.connection.write_message(id_message)
 
     async def disconnect(self):
         """Disconnects the websocket."""
@@ -199,34 +215,46 @@ class WebsocketClient:
 
         Args:
             message (Union[str, bytes]): the raw message posted on the websocket.
+
+        Raises:
+            ValueError: The JSON is invalid.
+            KeyError: A key was missing from the json string.
+            TypeError: Typing of keys in messages are wrong.
         """
         # Websocket closed, reconnect is handled by write_message.
         if not message:
             logging.error('The websocket connection was closed')
             return
 
+        # Try to load the message into a json object.
         try:
             message_object = json.loads(message)
 
+            # Messages supported by the WebSocketClient.
             class_dict = {
                 'start': StartMessage,
                 'stop': StopMessage,
                 'featureMap': UpdateMessage
             }
 
+            # Each API message must contain a type.
             if 'type' not in message_object.keys():
                 raise KeyError('type missing')
 
             msg_type = message_object['type']
 
+            # Type of message is not known.
             if msg_type not in class_dict.keys():
                 raise ValueError('Invalid message type')
 
+            # Create command from websocket message.
             command = class_dict[msg_type].from_message(message_object)
 
+            # Append it to the message queue.
             self.message_queue.append(command)
             logging.info(f'Received message: {str(command)}')
 
+        # Catch exceptions that can occur whilst converting message to an object.
         except ValueError as value_error:
             logging.warning(f'Someone wrote bad json: {message}.\nWith error: {value_error}.')
         except KeyError as key_error:
@@ -242,6 +270,9 @@ class WebsocketClient:
 
         Returns:
             (None): Returns from the function when we cannot send the message.
+
+        Raises:
+            RunTimeError: Connection was completely lost during sending the message.
         """
         try:
             json_message = json.dumps(message.to_message())

@@ -6,9 +6,11 @@ Utrecht University within the Software Project course.
 """
 
 import asyncio
+import pytest
 import tornado
 import tornado.testing
 import tornado.web
+from tornado.httpclient import HTTPClientError
 from tornado.websocket import WebSocketHandler
 
 from processor.websocket.websocket_client import WebsocketClient
@@ -45,8 +47,10 @@ class TestWebsocketClient(WebsocketCoroutines):
     def test_constructor(self):
         """Tests the constructor whether the url gets saved correctly."""
         ws_url = 'ws://localhost:80'
-        dummy_websocket = WebsocketClient(ws_url)
+        identifier = 'test stream 1'
+        dummy_websocket = WebsocketClient(ws_url, identifier)
         assert dummy_websocket.websocket_url == ws_url
+        assert dummy_websocket.identifier == identifier
 
     @tornado.testing.gen_test(timeout=10)
     def test_connect(self):
@@ -58,11 +62,17 @@ class TestWebsocketClient(WebsocketCoroutines):
         assert dummy_websocket.connection.protocol
 
     @tornado.testing.gen_test(timeout=10)
+    def test_connect_invalid_extension(self):
+        """Test handeling wrong websocket url."""
+        with pytest.raises(HTTPClientError):
+            dummy_websocket = yield self.dummy_ws_connect('/invalid')
+
+    @tornado.testing.gen_test(timeout=10)
     def test_connect_with_identifier(self):
         """Test whether websocket is able to connect with an identifier and checks properties."""
         # Connect with the identifier.
         identifier = 'mock_id'
-        dummy_websocket = yield self.dummy_ws_connect('/' , identifier)
+        dummy_websocket = yield self.dummy_ws_connect('/', identifier)
 
         assert dummy_websocket.identifier == identifier
         assert dummy_websocket.connection is not None
