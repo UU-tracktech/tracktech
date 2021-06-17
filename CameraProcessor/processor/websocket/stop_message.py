@@ -17,7 +17,7 @@ class StopMessage(IMessage):
             object_id (int): Identifier of the object that should not be tracked any longer.
         """
         if not isinstance(object_id, int):
-            raise TypeError("Object id should be an integer")
+            raise TypeError('Object id should be an integer')
 
         self.__object_id = object_id
 
@@ -32,9 +32,9 @@ class StopMessage(IMessage):
             (StopMessage): StopCommand constructed from the dict.
         """
         if "objectId" not in message.keys():
-            raise KeyError("objectId missing")
+            raise KeyError('objectId missing')
 
-        object_id = message["objectId"]
+        object_id = message['objectId']
         return StopMessage(object_id)
 
     def to_message(self):
@@ -44,8 +44,8 @@ class StopMessage(IMessage):
             (dict): Python dict representation of the message.
         """
         return {
-            "type": "stop",
-            "objectId": self.__object_id
+            'type': 'stop',
+            'objectId': self.__object_id
         }
 
     @property
@@ -74,4 +74,4 @@ class StopMessage(IMessage):
         Returns:
             str: String representation of a StopMessage.
         """
-        return f"StopMessage(object id: {self.__object_id})"
+        return f'StopMessage(object id: {self.__object_id})'

@@ -209,23 +209,23 @@ class WebsocketClient:
             message_object = json.loads(message)
 
             class_dict = {
-                "start": StartMessage,
-                "stop": StopMessage,
-                "featureMap": UpdateMessage
+                'start': StartMessage,
+                'stop': StopMessage,
+                'featureMap': UpdateMessage
             }
 
-            if "type" not in message_object.keys():
-                raise KeyError("type missing")
+            if 'type' not in message_object.keys():
+                raise KeyError('type missing')
 
-            msg_type = message_object["type"]
+            msg_type = message_object['type']
 
             if msg_type not in class_dict.keys():
-                raise ValueError("Invalid message type")
+                raise ValueError('Invalid message type')
 
             command = class_dict[msg_type].from_message(message_object)
 
             self.message_queue.append(command)
-            logging.info(f"Received message: {str(command)}")
+            logging.info(f'Received message: {str(command)}')
 
         except ValueError as value_error:
             logging.warning(f'Someone wrote bad json: {message}.\nWith error: {value_error}.')

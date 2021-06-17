@@ -19,8 +19,8 @@ class IMessage:
         Returns:
             (IMessage): IMessage constructed from the dict.
         """
-        raise NotImplementedError("Expected function from_message not implemented.")
+        raise NotImplementedError('Expected function from_message not implemented.')
 
     def to_message(self):
         """Converts a message object to a dict representation."""
-        raise NotImplementedError("Expected function to_message not implemented.")
+        raise NotImplementedError('Expected function to_message not implemented.')

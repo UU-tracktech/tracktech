@@ -22,7 +22,7 @@ class TestSendToOrchestrator:
         assert ws_client.connection is not None
 
     @pytest.mark.asyncio
-    @pytest.mark.skip("Refactored commands")
+    @pytest.mark.skip('Refactored commands')
     async def test_send_message(self, message_type, amount):
         """"Sends a message with different message types and in different amounts.
 

@@ -28,13 +28,13 @@ class StartMessage(IMessage):
             box_id (int/None): the id of the box in the frame defined by the frame buffer
         """
         if not isinstance(object_id, int):
-            raise TypeError("Object id should be an integer")
+            raise TypeError('Object id should be an integer')
 
         if frame_id is not None and not isinstance(frame_id, float):
-            raise TypeError("Frame id should be a float")
+            raise TypeError('Frame id should be a float')
 
         if box_id is not None and not isinstance(box_id, int):
-            raise TypeError("Box id should be an integer")
+            raise TypeError('Box id should be an integer')
 
         # Set the cutout to none.
         self.__cutout = None
@@ -60,20 +60,20 @@ class StartMessage(IMessage):
         Returns:
             (StartMessage): StartCommand constructed from the dict.
         """
-        if "objectId" not in message.keys():
-            raise KeyError("objectId missing")
+        if 'objectId' not in message.keys():
+            raise KeyError('objectId missing')
 
         # The start command should at least contain either a cutout, or a box_id and frame_id.from.
         # Otherwise, there is not enough data to generate a cutout.
-        if "image" not in message.keys() and ("boxId" not in message.keys() or "frameId" not in message.keys()):
-            raise KeyError("Not enough data for cutout in message")
+        if 'image' not in message.keys() and ('boxId' not in message.keys() or 'frameId' not in message.keys()):
+            raise KeyError('Not enough data for cutout in message')
 
-        object_id = message["objectId"]
+        object_id = message['objectId']
 
         # These could all possibly be none.
-        image = message.get("image", None)
-        box_id = message.get("boxId", None)
-        frame_id = message.get("frameId", None)
+        image = message.get('image', None)
+        box_id = message.get('boxId', None)
+        frame_id = message.get('frameId', None)
         return StartMessage(object_id, image, frame_id, box_id)
 
     def to_message(self):
@@ -82,14 +82,14 @@ class StartMessage(IMessage):
         Returns:
             (dict): Python dict representation of the message.
         """
-        message = {"objectId": self.__object_id}
+        message = {'objectId': self.__object_id}
         if self.__box_id:
-            message["boxId"] = self.__box_id
+            message['boxId'] = self.__box_id
         if self.__frame_id:
-            message["frameId"] = self.__frame_id
+            message['frameId'] = self.__frame_id
         if self.__original_image is not None:
             # Encode the image back to base64.
-            message["image"] = self.__original_image
+            message['image'] = self.__original_image
 
         return message
 
@@ -201,7 +201,7 @@ class StartMessage(IMessage):
         Returns:
             str: String representation of a StartMessage.
         """
-        return f"StartMessage(object id: {self.__object_id} image: " \
-               f"{self.__image if self.__image is not None else 'None'} " \
-               f"box id: {self.__box_id if self.__box_id is not None else 'None'} " \
-               f"frame id: {self.__frame_id if self.frame_id is not None else 'None'})"
+        return f'StartMessage(object id: {self.__object_id} image: ' \
+               f'{self.__image if self.__image is not None else "None"} ' \
+               f'box id: {self.__box_id if self.__box_id is not None else "None"} ' \
+               f'frame id: {self.__frame_id if self.frame_id is not None else "None"})'

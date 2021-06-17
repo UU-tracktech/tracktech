@@ -18,7 +18,7 @@ class UpdateMessage(IMessage):
             feature_map ([float]): Feature map of the object that should be followed.
         """
         if not isinstance(object_id, int):
-            raise TypeError("Object id should be an integer")
+            raise TypeError('Object id should be an integer')
 
         self.__object_id = object_id
         self.__feature_map = feature_map
@@ -34,13 +34,13 @@ class UpdateMessage(IMessage):
             (BoxesMessage): UpdateMessage constructed from the dict.
         """
         if "featureMap" not in message.keys():
-            raise KeyError("featureMap missing")
+            raise KeyError('featureMap missing')
 
         if "objectId" not in message.keys():
-            raise KeyError("objectId missing")
+            raise KeyError('objectId missing')
 
-        object_id = message["objectId"]
-        feature_map = message["featureMap"]
+        object_id = message['objectId']
+        feature_map = message['featureMap']
 
         return UpdateMessage(object_id, feature_map)
 
@@ -51,9 +51,9 @@ class UpdateMessage(IMessage):
             (dict): Python dict representation of the message.
         """
         return {
-            "type": "featureMap",
-            "objectId": self.__object_id,
-            "featureMap": self.__feature_map
+            'type': 'featureMap',
+            'objectId': self.__object_id,
+            'featureMap': self.__feature_map
         }
 
     @property

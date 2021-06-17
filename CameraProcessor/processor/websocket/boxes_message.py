@@ -19,7 +19,7 @@ class BoxesMessage(IMessage):
             bounding_boxes (BoundingBoxes): bounding boxes in the frame.
         """
         if not isinstance(frame_id, float):
-            raise TypeError("Frame id should be a float.")
+            raise TypeError('Frame id should be a float.')
 
         self.__frame_id = frame_id
         self.__bounding_boxes = bounding_boxes
@@ -34,14 +34,14 @@ class BoxesMessage(IMessage):
         Returns:
             (BoxesMessage): BoxesCommand constructed from the dict.
         """
-        if "frameId" not in message.keys():
-            raise KeyError("frameId missing")
+        if 'frameId' not in message.keys():
+            raise KeyError('frameId missing')
 
-        if "boxes" not in message.keys():
-            raise KeyError("objectId missing")
+        if 'boxes' not in message.keys():
+            raise KeyError('objectId missing')
 
-        frame_id = message["frameId"]
-        boxes = message["boxes"]
+        frame_id = message['frameId']
+        boxes = message['boxes']
 
         return BoxesMessage(frame_id, boxes)
 
@@ -52,9 +52,9 @@ class BoxesMessage(IMessage):
             (dict): Python dict representation of the message.
         """
         return {
-            "type": "boundingBoxes",
-            "frameId": self.__frame_id,
-            "boxes": [bounding_box_to_dict(bounding_box) for bounding_box in self.__bounding_boxes],
+            'type': 'boundingBoxes',
+            'frameId': self.__frame_id,
+            'boxes': [bounding_box_to_dict(bounding_box) for bounding_box in self.__bounding_boxes],
         }
 
     @property
@@ -92,4 +92,4 @@ class BoxesMessage(IMessage):
         Returns:
             str: String representation of a BoxesMessage.
         """
-        return f"BoxesMessage(frame id: {self.__frame_id} boxes: {self.__bounding_boxes})"
+        return f'BoxesMessage(frame id: {self.__frame_id} boxes: {self.__bounding_boxes})'
