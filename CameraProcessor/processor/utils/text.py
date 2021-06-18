@@ -37,9 +37,9 @@ def bounding_boxes_to_json(bounding_boxes, timestamp):
         json: JSON representation of the object.
     """
     return json.dumps({
-        "type": "boundingBoxes",
-        "frameId": timestamp,
-        "boxes": [bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
+        'type': 'boundingBoxes',
+        'frameId': timestamp,
+        'boxes': [bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
     })
 
 
@@ -53,19 +53,19 @@ def bounding_box_to_dict(bounding_box):
         str: JSON representation of the BoundingBox object.
     """
     res = {
-        "boxId": bounding_box.identifier,
-        "rect": [
+        'boxId': bounding_box.identifier,
+        'rect': [
             bounding_box.rectangle.x1,
             bounding_box.rectangle.y1,
             bounding_box.rectangle.x2,
             bounding_box.rectangle.y2
         ],
-        "objectType": bounding_box.classification,
-        "certainty": bounding_box.certainty
+        'objectType': bounding_box.classification,
+        'certainty': bounding_box.certainty
     }
 
     if bounding_box.object_id is not None:
-        res["objectId"] = bounding_box.object_id
+        res['objectId'] = bounding_box.object_id
 
     return res
 
@@ -81,8 +81,8 @@ def boxes_to_accuracy_json(bounding_boxes, image_id):
           (json): JSON representation of the object.
       """
     return json.dumps({
-        "imageId": image_id,
-        "boxes": [bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
+        'imageId': image_id,
+        'boxes': [bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
     })
 
 
@@ -122,6 +122,6 @@ def error_to_json(error):
         str: The error message in a JSON string
     """
     return json.dumps({
-        "type": "error",
-        "error": repr(error)
+        'type': 'error',
+        'error': repr(error)
     })

@@ -28,14 +28,14 @@ class VideoCapture(ICapture):
             path (str): path to the video.
         """
         # Open VideoCapture.
-        logging.info(f"Opening video from path: {path}")
+        logging.info(f'Opening video from path: {path}')
         self.cap = cv2.VideoCapture(path)
-        logging.info("Successfully opened video file")
+        logging.info('Successfully opened video file')
 
         # Frame counter to stop at last frame.
         self.__nr_frames = self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
         self.__current_frame_nr = 0
-        logging.info(f"Video has {self.__nr_frames} frames")
+        logging.info(f'Video has {self.__nr_frames} frames')
 
     def opened(self):
         """Check if the video is still opened.

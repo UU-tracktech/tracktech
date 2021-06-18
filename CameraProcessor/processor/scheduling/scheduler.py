@@ -54,7 +54,7 @@ class Scheduler:
             if node.executable():
                 node.execute(self.notify, global_readonly)
             else:
-                raise Exception("Node in queue should be executable")
+                raise Exception('Node in queue should be executable.')
 
     def notify(self, ready_nodes):
         """Queues nodes that are ready to be executed.

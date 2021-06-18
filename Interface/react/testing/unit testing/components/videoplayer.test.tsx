@@ -13,7 +13,7 @@ import {
   PrintTimestamp,
   VideoPlayer
 } from '../../../src/components/videojsPlayer'
-import { Box } from '../../../src/classes/clientMessage'
+import { Box } from '../../../src/classes/box'
 
 let mockSnapCallback = jest.fn()
 let mockOnTimestamp = jest.fn()

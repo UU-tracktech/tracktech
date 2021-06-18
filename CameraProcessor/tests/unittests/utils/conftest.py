@@ -6,40 +6,19 @@ Utrecht University within the Software Project course.
 """
 import pytest
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.rectangle import Rectangle
 from processor.utils.draw import draw_tracking_boxes, draw_detection_boxes
-
-X0, X1 = 60, 120
-Y0, Y1 = 120, 180
-IMG_SIZE = 200
-
-
-@pytest.fixture
-def bbox():
-    """Fixture for an example bounding box.
-
-    Returns:
-        BoundingBox: A BoundingBox for use in testing.
-    """
-    # Create a dummy bounding box.
-    return BoundingBox(1, Rectangle(round(float(X0 / IMG_SIZE), 1),
-                                    round(float(Y0 / IMG_SIZE), 1),
-                                    round(float(X1 / IMG_SIZE), 1),
-                                    round(float(Y1 / IMG_SIZE), 1)),
-                       "Bob", 0.50)
 
 
 @pytest.fixture(params=[
-    {"func": draw_detection_boxes,
-     "text": f'Bob {round(float(0.50), 2)}',
-     "seed": "Bob"
+    {'func': draw_detection_boxes,
+     'text': f'Bob {round(float(0.50), 2)}',
+     'seed': "Bob"
      },
-    {"func": draw_tracking_boxes,
-     "text": "1",
-     "seed": 1
+    {'func': draw_tracking_boxes,
+     'text': "1",
+     'seed': 1
      }],
-    ids=["Detection", "Tracking"])
+    ids=['Detection', 'Tracking'])
 def func_text_seed(request):
     """Fixture for the function, text, and seed.
 

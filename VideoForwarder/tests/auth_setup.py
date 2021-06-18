@@ -21,15 +21,15 @@ def auth_setup():
     Returns:
         Application: The application that can be used for authenticated server tests.
     """
-    environ["CAMERA_URL"] = "rtmp://localhost:1931/stream"
-    environ["CAMERA_AUDIO"] = "false"
+    environ['CAMERA_URL'] = 'rtmp://localhost:1931/stream'
+    environ['CAMERA_AUDIO'] = 'false'
 
-    environ["STREAM_LOW"] = 'true'
-    environ["STREAM_HIGH"] = 'true'
+    environ['STREAM_LOW'] = 'true'
+    environ['STREAM_HIGH'] = 'true'
 
-    environ["PUBLIC_KEY"] = "/app/tests/files/public_key.pem"
-    environ["AUDIENCE"] = "aud"
-    environ["CLIENT_ROLE"] = "role"
+    environ['PUBLIC_KEY'] = '/app/tests/files/public_key.pem'
+    environ['AUDIENCE'] = 'aud'
+    environ['CLIENT_ROLE'] = 'role'
 
     return Application(
         [

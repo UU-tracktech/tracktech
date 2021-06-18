@@ -22,7 +22,7 @@ class IComponent:
         Raises:
             NotImplementedError: occurs when this method is not overridden to ensure this function is defined.
         """
-        raise NotImplementedError("Execute has to return a function, which"
-                                  "the scheduler can run. \n "
-                                  "The inputs of this function must contain"
-                                  "all inputs to the node.")
+        raise NotImplementedError('Execute has to return a function, which'
+                                  'the scheduler can run. \n '
+                                  'The inputs of this function must contain'
+                                  'all inputs to the node.')

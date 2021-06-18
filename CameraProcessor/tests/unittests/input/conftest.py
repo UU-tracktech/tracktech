@@ -19,7 +19,7 @@ def __get_images_dir():
         str: Path to the image folder.
     """
     configs = get_test_configs()
-    return configs['Accuracy']['source_path']
+    return configs['Input']['images_dir_path']
 
 
 def __get_video_path():
@@ -33,14 +33,14 @@ def __get_video_path():
 
 
 # pylint: disable=unnecessary-lambda
-@pytest.fixture(scope="class",
+@pytest.fixture(scope='class',
                 params=[lambda: ImageCapture(__get_images_dir()),
                         lambda: VideoCapture(__get_video_path()),
                         lambda: HlsCapture()
                         ],
-                ids=["Image",
-                     "video",
-                     "HLS Stream"
+                ids=['Image',
+                     'video',
+                     'HLS Stream'
                      ],
                 )
 def capture_implementation(request):

@@ -22,7 +22,7 @@ class InputComponent:
         Returns:
             str: The modified object used by the next layer.
         """
-        obj = obj.__add__(",start")
+        obj = obj.__add__(',start')
         return obj
 
     def execute_component(self):

@@ -338,6 +338,11 @@ class DocstringContentChecker(BaseChecker):
         """
         # Lines and index.
         line_index = returns_section_line_index + 1
+        # Empty return section.
+        if len(doc_lines) <= line_index:
+            self.add_message('missing-return-type',
+                             node=node)
+            return line_index
         doc_line = doc_lines[line_index]
 
         # If the first line contains no type.
