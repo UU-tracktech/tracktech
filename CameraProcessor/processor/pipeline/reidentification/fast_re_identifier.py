@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 """
 import os
 import argparse
-import copy
 import requests
 
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
