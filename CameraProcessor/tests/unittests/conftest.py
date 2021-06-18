@@ -88,18 +88,28 @@ def small_frame():
     return get_small_frame()
 
 
-def get_small_frame():
-    """Get a small sample frame loaded with OpenCV.
+@pytest.fixture
+def large_frame():
+    """Fixture that gets a big frame loaded with opencv.
 
-        Returns:
-            np.ndarray: Opencv frame from test data.
-        """
+    Returns:
+        np.ndarray: Opencv frame from test data.
+    """
+    __image_name = f'{root_path}/data/tests/unittests/big_image.jpg'
+    return get_large_frame()
+
+
+def get_small_frame():
+    """Fixture for a small frame loaded with opencv.
+
+    Returns:
+        np.ndarray: Opencv frame from test data.
+    """
     __image_name = f'{root_path}/data/tests/unittests/small_image.jpg'
     return cv2.imread(__image_name)
 
 
-@pytest.fixture
-def large_frame():
+def get_large_frame():
     """Fixture that gets a big frame loaded with opencv.
 
     Returns:
