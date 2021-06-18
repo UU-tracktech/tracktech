@@ -4,19 +4,18 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import pytest
-import base64
-import numpy as np
 import os
+import pytest
+import numpy as np
 
+from tests.conftest import root_path
 from tests.unittests.conftest import get_small_frame
 from processor.websocket.start_message import StartMessage
 from processor.pipeline.frame_buffer import FrameBuffer
-from processor.data_object.frame_obj import FrameObj
-from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.bounding_box import BoundingBox
+from processor.data_object.bounding_boxes import BoundingBoxes
+from processor.data_object.frame_obj import FrameObj
 from processor.data_object.rectangle import Rectangle
-from tests.conftest import root_path
 
 
 # pylint: disable=attribute-defined-outside-init,no-member
@@ -36,10 +35,10 @@ class TestStartMessage:
         self.object_id = 1
         self.frame_id = 2.  # Should be a float.
         self.box_id = 3
-        # Hardcoded value for the small_frame image in data/unittets. Base64 encoding in Python does not return
+        # Hardcoded value for the small_frame image in data/unittets. Base64 encoding in Python does not return.
         with open(os.path.join(root_path, 'data/tests/unittests/base64_image.txt')) as file:
             self.base64_image = file.read()
-        # the same result as the orchestrator would send/the method expects.
+        # The same result as the orchestrator would send/the method expects.
         self.data = StartMessage(self.object_id,
                                  image=self.base64_image,
                                  frame_id=self.frame_id,
@@ -176,7 +175,7 @@ class TestStartMessage:
         with pytest.raises(IndexError):
             message_without_image.get_cutout(fake_framebuffer)
 
-        # Add a frame to the buffer, but with the wrong box id
+        # Add a frame to the buffer, but with the wrong box id.
         fake_frame = FrameObj(get_small_frame(), self.frame_id)  # Fake frame that is the same frame as used for data.
         fake_rect = Rectangle(0., 0., 1., 1.)  # Fake rectangle that covers entire screen.
         fake_bounding_boxes = BoundingBoxes([BoundingBox(self.box_id + 1, fake_rect, '', 1)])  # Wrong BoundingBoxes.

@@ -13,7 +13,9 @@ import tornado.web
 from tornado.httpclient import HTTPClientError
 from tornado.websocket import WebSocketHandler
 
+from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.websocket.websocket_client import WebsocketClient
+from processor.websocket.boxes_message import BoxesMessage
 from processor.websocket.start_message import StartMessage
 from processor.websocket.stop_message import StopMessage
 from processor.websocket.update_message import UpdateMessage
@@ -33,6 +35,7 @@ class TestWebsocketClient(WebsocketCoroutines):
     start_message = StartMessage.from_message({'type': 'start', 'objectId': 1, 'frameId': 1.0, 'boxId': 1})
     stop_message = StopMessage.from_message({'type': 'stop', 'objectId': 1})
     feature_map_message = UpdateMessage.from_message({'objectId': 1, 'featureMap': [1.1]})
+    boxes_message = BoxesMessage(1., BoundingBoxes([]))
 
     def get_app(self):
         """Tornado testing creates the application and starts it in the background.
@@ -165,6 +168,4 @@ class TestWebsocketClient(WebsocketCoroutines):
         # Give the event loop the control to send the message.
         yield asyncio.sleep(4)
 
-        assert dummy_websocket.message_queue.popleft() == self.boxes_message
-
-
+        assert len(dummy_websocket.message_queue) == 0

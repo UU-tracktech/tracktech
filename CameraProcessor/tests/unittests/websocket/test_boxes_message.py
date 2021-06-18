@@ -23,13 +23,16 @@ class TestBoxesMessage:
         bounding_boxes (BoundingBoxes): BoundingBoxes object with a single bounding box.
         example_boxes_msg (dict): Example dictionary from bounding boxes.
     """
+
     def setup_method(self):
         """Setup method."""
         self.frame_id = 1.0
         self.empty_bounding_boxes = BoundingBoxes([])
         bounding_box = BoundingBox(1, Rectangle(.1, .2, .3, .4), 'car', 0.5)
         self.bounding_boxes = BoundingBoxes([bounding_box])
-        self.example_boxes_msg = {'type': 'boundingBoxes', 'frameId': self.frame_id, 'boxes': BoundingBoxes([bounding_box])}
+        self.example_boxes_msg = {'type': 'boundingBoxes',
+                                  'frameId': self.frame_id,
+                                  'boxes': BoundingBoxes([bounding_box])}
         self.data = BoxesMessage(self.frame_id, self.bounding_boxes)
 
     def test_init(self):

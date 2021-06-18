@@ -4,7 +4,6 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import asyncio
 import pytest
 
 from utils.utils import PC_URL
@@ -27,7 +26,7 @@ class TestSendMessages:
         # Connect.
         await ws_client.connect()
 
-        # Send the message
+        # Send the message.
         ws_client.send_message(BoxesMessage(1., BoundingBoxes([])))
 
         # Disconnect.
@@ -43,20 +42,19 @@ class TestSendMessages:
         # Connect.
         await ws_client.connect()
 
-        # Send invalid messages
+        # Send invalid messages.
         ws_client.send_message(StartMessage(1, box_id=1, frame_id=1.))
         ws_client.send_message(StopMessage(1))
         ws_client.send_message(UpdateMessage(1, [0.]))
 
-        #  Disconnect.
+        # Disconnect.
         await ws_client.disconnect()
         assert len(ws_client.write_queue) == 0
 
-    """Send 1000 bounding box messages as a stress test."""
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     async def test_send_many_message(self):
-        """Test connecting to websocket."""
+        """Send 1000 bounding box messages as a stress test."""
         ws_client = WebsocketClient(PC_URL, 'mock_id')
 
         # Connect.

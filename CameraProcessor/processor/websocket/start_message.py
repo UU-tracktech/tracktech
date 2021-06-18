@@ -204,7 +204,7 @@ class StartMessage(IMessage):
             other (StartMessage): StartCommand to compare with.
 
         Returns:
-            bool: Whether the messages are the same.
+            (bool): Whether the messages are the same.
         """
         return all([self.__object_id == other.object_id,
                     self.__base_64_image == other.base64_image,
@@ -215,7 +215,7 @@ class StartMessage(IMessage):
         """Converts the StartMessage to a string.
 
         Returns:
-            str: String representation of a StartMessage.
+            (str): String representation of a StartMessage.
         """
         return f'StartMessage(object id: {self.__object_id} image: ' \
                f'{self.__base_64_image if self.__base_64_image is not None else "None"} ' \
