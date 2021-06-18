@@ -15,6 +15,9 @@ class StopMessage(IMessage):
 
         Args:
             object_id (int): Identifier of the object that should not be tracked any longer.
+
+        Raises:
+            TypeError: Object id has to be an integer.
         """
         if not isinstance(object_id, int):
             raise TypeError('Object id should be an integer')

@@ -60,7 +60,7 @@ The following environment variables can be used:
 | PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                             
 | DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                      
 | TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                       
-| TRACKING_ALG     | Main.reid             | Name of the re-identification algorithm to use                              
+| REID_ALG         | Main.reid             | Name of the re-identification algorithm to use                              
 
 ### Configurations
 
