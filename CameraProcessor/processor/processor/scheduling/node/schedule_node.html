@@ -196,7 +196,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            Exception: argument is provided twice, existing argument would be overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__arguments</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">arg_nr</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index </span><span class="si">%s</span><span class="s2"> too large for arguments array with size </span><span class="si">%x</span><span class="s2">&quot;</span> <span class="o">%</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Index </span><span class="si">%s</span><span class="s1"> too large for arguments array with size </span><span class="si">%x</span><span class="s1">&#39;</span> <span class="o">%</span>
                              <span class="p">(</span><span class="n">arg_nr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__arguments</span><span class="p">)))</span>
 
         <span class="c1"># Ensure previously supplied argument isn&#39;t overwritten.</span>
@@ -205,8 +205,8 @@ Utrecht University within the Software Project course.
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__needed_args</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Argument should only be provided once by the scheduler, &quot;</span>
-                            <span class="s2">&quot;this indicates unnecessary execution by the scheduler&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Argument should only be provided once by the scheduler, &#39;</span>
+                            <span class="s1">&#39;this indicates unnecessary execution by the scheduler.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">global_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -346,7 +346,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            Exception: argument is provided twice, existing argument would be overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__arguments</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">arg_nr</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index </span><span class="si">%s</span><span class="s2"> too large for arguments array with size </span><span class="si">%x</span><span class="s2">&quot;</span> <span class="o">%</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Index </span><span class="si">%s</span><span class="s1"> too large for arguments array with size </span><span class="si">%x</span><span class="s1">&#39;</span> <span class="o">%</span>
                              <span class="p">(</span><span class="n">arg_nr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__arguments</span><span class="p">)))</span>
 
         <span class="c1"># Ensure previously supplied argument isn&#39;t overwritten.</span>
@@ -355,8 +355,8 @@ Utrecht University within the Software Project course.
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__needed_args</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Argument should only be provided once by the scheduler, &quot;</span>
-                            <span class="s2">&quot;this indicates unnecessary execution by the scheduler&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Argument should only be provided once by the scheduler, &#39;</span>
+                            <span class="s1">&#39;this indicates unnecessary execution by the scheduler.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">global_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -611,7 +611,7 @@ should never modify (use as readonly).</li>
 <span class="sd">            Exception: argument is provided twice, existing argument would be overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__arguments</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">arg_nr</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index </span><span class="si">%s</span><span class="s2"> too large for arguments array with size </span><span class="si">%x</span><span class="s2">&quot;</span> <span class="o">%</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Index </span><span class="si">%s</span><span class="s1"> too large for arguments array with size </span><span class="si">%x</span><span class="s1">&#39;</span> <span class="o">%</span>
                              <span class="p">(</span><span class="n">arg_nr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__arguments</span><span class="p">)))</span>
 
         <span class="c1"># Ensure previously supplied argument isn&#39;t overwritten.</span>
@@ -620,8 +620,8 @@ should never modify (use as readonly).</li>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__needed_args</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Argument should only be provided once by the scheduler, &quot;</span>
-                            <span class="s2">&quot;this indicates unnecessary execution by the scheduler&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Argument should only be provided once by the scheduler, &#39;</span>
+                            <span class="s1">&#39;this indicates unnecessary execution by the scheduler.&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>

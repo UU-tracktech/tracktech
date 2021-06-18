@@ -80,13 +80,16 @@ Utrecht University within the Software Project course.
 <span class="kn">import</span> <span class="nn">tornado.web</span>
 
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+<span class="kn">from</span> <span class="nn">processor.utils.display</span> <span class="kn">import</span> <span class="n">opencv_display</span>
 
 <span class="kn">from</span> <span class="nn">processor.pipeline.prepare_pipeline</span> <span class="kn">import</span> <span class="n">prepare_objects</span>
-<span class="kn">from</span> <span class="nn">processor.pipeline.process_frames</span> <span class="kn">import</span> <span class="n">process_stream</span><span class="p">,</span> <span class="n">opencv_display</span><span class="p">,</span> <span class="n">send_boxes_to_orchestrator</span>
+<span class="kn">from</span> <span class="nn">processor.pipeline.process_frames</span> <span class="kn">import</span> <span class="n">process_stream</span>
 
-<span class="kn">from</span> <span class="nn">processor.webhosting.websocket_client</span> <span class="kn">import</span> <span class="n">WebsocketClient</span>
+<span class="kn">from</span> <span class="nn">processor.websocket.websocket_client</span> <span class="kn">import</span> <span class="n">WebsocketClient</span>
 <span class="kn">from</span> <span class="nn">processor.webhosting.html_page_handler</span> <span class="kn">import</span> <span class="n">HtmlPageHandler</span>
 <span class="kn">from</span> <span class="nn">processor.webhosting.stream_handler</span> <span class="kn">import</span> <span class="n">StreamHandler</span>
+
+<span class="kn">from</span> <span class="nn">processor.websocket.boxes_message</span> <span class="kn">import</span> <span class="n">BoxesMessage</span>
 
 
 <span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
@@ -150,13 +153,9 @@ Utrecht University within the Software Project course.
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed.</span>
-        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span>
-                                                                                    <span class="n">websocket_client</span><span class="p">,</span>
-                                                                                    <span class="n">frame_obj</span><span class="p">,</span>
-                                                                                    <span class="n">detected_boxes</span><span class="p">,</span>
-                                                                                    <span class="n">tracked_boxes</span><span class="p">,</span>
-                                                                                    <span class="n">re_id_tracked_boxes</span>
-                                                                                    <span class="p">),</span>
+        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">:</span>
+        <span class="c1"># Sends the bounding boxes to the orchestrator using a websocket client.</span>
+        <span class="n">websocket_client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)),</span>
         <span class="n">websocket_client</span>
     <span class="p">)</span>
 
@@ -193,7 +192,7 @@ Utrecht University within the Software Project course.
         <span class="n">ws_id</span><span class="p">,</span> <span class="n">ws_url</span><span class="p">,</span> <span class="n">hls_url</span> <span class="o">=</span> <span class="n">enforce_deploy_environment_variables</span><span class="p">()</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">ws_id</span><span class="p">,</span> <span class="n">ws_url</span><span class="p">,</span> <span class="n">hls_url</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Mode you try to run in does not exist, did you make a typo?&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Mode you try to run in does not exist, did you make a typo?&#39;</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -331,13 +330,9 @@ Utrecht University within the Software Project course.
         <span class="n">tracker</span><span class="p">,</span>
         <span class="n">re_identifier</span><span class="p">,</span>
         <span class="c1"># Function to call when frame is processed.</span>
-        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">:</span> <span class="n">send_boxes_to_orchestrator</span><span class="p">(</span>
-                                                                                    <span class="n">websocket_client</span><span class="p">,</span>
-                                                                                    <span class="n">frame_obj</span><span class="p">,</span>
-                                                                                    <span class="n">detected_boxes</span><span class="p">,</span>
-                                                                                    <span class="n">tracked_boxes</span><span class="p">,</span>
-                                                                                    <span class="n">re_id_tracked_boxes</span>
-                                                                                    <span class="p">),</span>
+        <span class="k">lambda</span> <span class="n">frame_obj</span><span class="p">,</span> <span class="n">detected_boxes</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">,</span> <span class="n">re_id_tracked_boxes</span><span class="p">:</span>
+        <span class="c1"># Sends the bounding boxes to the orchestrator using a websocket client.</span>
+        <span class="n">websocket_client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_obj</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">tracked_boxes</span><span class="p">)),</span>
         <span class="n">websocket_client</span>
     <span class="p">)</span>
 </pre></div>
@@ -400,7 +395,7 @@ Utrecht University within the Software Project course.
         <span class="n">ws_id</span><span class="p">,</span> <span class="n">ws_url</span><span class="p">,</span> <span class="n">hls_url</span> <span class="o">=</span> <span class="n">enforce_deploy_environment_variables</span><span class="p">()</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">deploy</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">ws_id</span><span class="p">,</span> <span class="n">ws_url</span><span class="p">,</span> <span class="n">hls_url</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Mode you try to run in does not exist, did you make a typo?&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Mode you try to run in does not exist, did you make a typo?&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>

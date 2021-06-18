@@ -113,7 +113,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        ip_address (string):</span>
 <span class="sd">            Ip address where the message was sent from.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Received message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Received message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
@@ -128,7 +128,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address where the message was sent to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Sent message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Sent message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
@@ -141,7 +141,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket connected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WebSocket connected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
@@ -154,7 +154,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket disconnected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WebSocket disconnected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
 
@@ -169,7 +169,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        ip_address (string):</span>
 <span class="sd">            Ip address of the source of the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1"> on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -230,7 +230,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        ip_address (string):</span>
 <span class="sd">            Ip address where the message was sent from.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Received message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Received message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -270,7 +270,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address where the message was sent to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Sent message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Sent message on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -308,7 +308,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket connected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WebSocket connected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -345,7 +345,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            ip_address (string):</span>
 <span class="sd">                Ip address of the connection origin.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Websocket disconnected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WebSocket disconnected on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -384,7 +384,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        ip_address (string):</span>
 <span class="sd">            Ip address of the source of the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1"> on </span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">ip_address</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
