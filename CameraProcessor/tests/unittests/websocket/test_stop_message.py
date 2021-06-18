@@ -31,7 +31,7 @@ class TestStopMessage:
         with pytest.raises(TypeError):
             StopMessage(1.)  # Test with float rather than int.
         with pytest.raises(TypeError):
-            StopMessage("1")  # Test with string rather than int.
+            StopMessage('1')  # Test with string rather than int.
 
     def test_invalid_from_message(self):
         """Tests whether a message with missing keys raises Exceptions."""
