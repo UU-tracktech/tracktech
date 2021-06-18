@@ -99,8 +99,16 @@ def generate_index():
             sub_dirs[:] = []
 
     with open(index_loc, 'w') as index_file:
+        index_file.write('<style>')
+        index_file.write('body{background-color: #212529;color:#f7f7f7;font-family:system-ui,-apple-system,"Segoe UI",'
+                         'Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji",'
+                         '"Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";}')
+        index_file.write('a{background-color:rgb(51, 51, 51);color:#f7f7f7;margin:.1rem;padding:.1rem.5rem;'
+                         'box-sizing: border-box;text-decoration: none;margin-bottom:2px;display:inline-block}')
+        index_file.write('</style>')
+
         for index_path in index_paths:
-            index_file.write(f'<a href=".{index_path}">{index_path}</a>\n<hr>\n')
+            index_file.write(f'&mdash;<a href=".{index_path}">{index_path.replace("/index.html","")[1:]}</a>\n<br>\n')
 
 
 def get_imports(file_path):
