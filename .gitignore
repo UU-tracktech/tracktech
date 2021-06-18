@@ -1,28 +1,28 @@
-# Ignore all generated HTML for documentation
+# Ignore all generated HTML for documentation.
 /docs/html/*
 
-# Log files
+# Log files.
 *.log
 
-# Python related ignores
-# Dependent on personal environment and settings
+# Python related ignores.
+# Dependent on personal environment and settings.
 **/.idea
 
 # virtualenv
 .venv
 **/venv
 
-# Ignore linter config file outside of root to prevent duplicates
+# Ignore linter config file outside of root to prevent duplicates.
 **/.pylintrc
 !.pylintrc
 
 *.pyc
 
-# VS code
+# VS code.
 **/.vscode
 /.project
 
-# Directory
+# Directory.
 ForwarderOrchestrator
 
 CameraProcessor/src/yolov5s.pt

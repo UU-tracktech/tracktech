@@ -10,23 +10,23 @@ class StreamOptions:
     """Camera information object.
 
     Attributes:
-        segment_size (str): Seconds in a single video segment
-        segment_amount (str): Amount of video segments for the stream
-        encoding (str): The encoding to use for the stream
-        low (bool): Whether to encode the video to a low quality
-        medium (bool): Whether to encode the video to a medium quality
-        high (bool): Whether to encode the video to a high quality
+        segment_size (str): Seconds in a single video segment.
+        segment_amount (str): Amount of video segments for the stream.
+        encoding (str): The encoding to use for the stream.
+        low (bool): Whether to encode the video to a low quality.
+        medium (bool): Whether to encode the video to a medium quality.
+        high (bool): Whether to encode the video to a high quality.
     """
     def __init__(self, segment_size, segment_amount, encoding, low, medium, high):
         """Initializes a camara object that holds values.
 
         Args:
-            segment_size (str): Seconds in a single video segment
-            segment_amount (str): Amount of video segments for the stream
-            encoding (str): The encoding to use for the stream
-            low (bool): Whether to encode the video to a low quality
-            medium (bool): Whether to encode the video to a medium quality
-            high (bool): Whether to encode the video to a high quality
+            segment_size (str): Seconds in a single video segment.
+            segment_amount (str): Amount of video segments for the stream.
+            encoding (str): The encoding to use for the stream.
+            low (bool): Whether to encode the video to a low quality.
+            medium (bool): Whether to encode the video to a medium quality.
+            high (bool): Whether to encode the video to a high quality.
         """
 
         # Seconds in a single video segment.

@@ -30,7 +30,7 @@ class Yolov5Detector(IYoloDetector):
         device (str): Device that runs the detector.
         half (bool): Whether to half the model or not.
         classify (bool): Whether to classify.
-        names ([str]): List of names which that should get detected.
+        names ([str]): List of names, which that should get detected.
     """
 
     def __init__(self, config, filters):
@@ -52,15 +52,15 @@ class Yolov5Detector(IYoloDetector):
         # Initialize.
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
-                logging.info("CUDA unavailable")
+                logging.info('CUDA unavailable')
                 self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA.
         if self.device.type == 'cpu':
-            logging.info("I am using the CPU. Check CUDA version,"
-                         "or whether Pytorch is installed with CUDA support.")
+            logging.info('I am using the CPU. Check CUDA version,'
+                         'or whether Pytorch is installed with CUDA support.')
         else:
-            logging.info("I am using GPU")
+            logging.info('I am using GPU')
 
         # Load FP32 model.
         self.model = attempt_load(self.config['weights_path'],

@@ -15,7 +15,7 @@ def load_data(datatype, number=1, rng=False):
 
     Args:
         datatype (str): One of these options ['boundingBoxes', 'start', 'stop', 'featureMap', 'invalid'].
-        number (int): A number which will load 'nr' random json objects if not None.
+        number (int): A number, which will load 'nr' random json objects if not None.
         rng (bool): Whether to load data in a random order.
 
     Returns:
@@ -39,7 +39,7 @@ def load_data(datatype, number=1, rng=False):
     # File path and load content.
     json_name = filename + '.json'
     json_path = os.path.join(root_path, 'data', 'tests', 'integrationtests', json_name)
-    json_content = open(json_path, encoding="utf-8")
+    json_content = open(json_path, encoding='utf-8')
     json_objects = json.load(json_content)
 
     # Adjust number if it is different.

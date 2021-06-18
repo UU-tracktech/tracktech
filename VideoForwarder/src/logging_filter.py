@@ -11,7 +11,7 @@ from logging import Filter
 class LoggingFilter(Filter):
     """The log filter object."""
 
-    def __init__(self, name="LoggingFilter"):
+    def __init__(self, name='LoggingFilter'):
         """Create a new filter instance.
 
         Args:

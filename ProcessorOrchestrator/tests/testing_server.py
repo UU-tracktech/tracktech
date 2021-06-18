@@ -27,7 +27,7 @@ def test_start_testing_server():
 
 def _start_server():
     """Creates handlers and starts the IO loop."""
-    print("Starting setup server")
+    print('Starting setup server.')
 
     server_container = []
 
@@ -54,7 +54,7 @@ def stop_server(server):
     """Stops the server.
 
     Args:
-        server (HTTPServer): Server the of the test that should be stopped
+        server (HTTPServer): Server the of the test that should be stopped.
     """
 
     server.stop()
@@ -73,7 +73,7 @@ class TestingServer(WebSocketHandler):
         """Sets server.
 
         Args:
-            server (HTTPServer): Server on which the test is ran.
+            server (HTTPServer): Server on which the test is run.
         """
         # Noinspection PyAttributeOutsideInit | In tornado, the init function should be replaced with initialize.
         # pylint: disable=attribute-defined-outside-init
@@ -103,5 +103,5 @@ class TestingServer(WebSocketHandler):
         Args:
             message (string): String that should contain the string 'stop', which will stop the server.
         """
-        if message == "stop":
+        if message == 'stop':
             stop_server(self.server[0])

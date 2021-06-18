@@ -56,10 +56,10 @@ class TestScheduler:
         scheduler = schedule_wrapper.scheduler
 
         # Initialize graph with a simple string.
-        scheduler.schedule_graph(["big"], {})
+        scheduler.schedule_graph(['big'], {})
 
         assert schedule_wrapper.schedule_output_node.component.out == \
-               "big,start,start,first_arg,big,start,start,second_arg,merged"
+               'big,start,start,first_arg,big,start,start,second_arg,merged'
 
     def test_non_executable_graph(self):
         """Test whether an non-executable graph indeed raises an exception."""
@@ -69,7 +69,7 @@ class TestScheduler:
         scheduler = schedule_wrapper.scheduler
 
         # Not yet executable since not all arguments are filled.
-        assert pytest.raises(Exception, scheduler.schedule_graph, "invalid")
+        assert pytest.raises(Exception, scheduler.schedule_graph, 'invalid')
 
     def test_notify(self):
         """Tests the functionality of notify()."""

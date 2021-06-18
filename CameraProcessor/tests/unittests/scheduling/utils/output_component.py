@@ -45,6 +45,6 @@ class OutputComponent(IComponent):
         """See base class.
 
         Returns:
-            func: Work function to call when component is ran.
+            func: Work function to call when component is run.
         """
         return self.work

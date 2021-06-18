@@ -1,0 +1,32 @@
+name: Auth Lint
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/Auth_Lint.yml
+  pull_request:
+    paths:
+      - utility/Auth/**
+
+jobs:
+  forwarder_lint:
+    name: Auth Lint
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: recursive
+      - name: Build
+        run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml up --build --no-start
+      - name: Copy in pylintrc
+        run: docker cp .pylintrc auth_container:/app
+      - name: Copy in utility
+        run: docker cp utility/__init__.py auth_container:/app/utility/
+      - name: Copy in utility
+        run: docker cp utility/pylint-plugins/. auth_container:/app/utility/pylint-plugins/
+      - name: Run
+        run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml up --exit-code-from auth
+      - name: Remove
+        run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml down --rmi all
+        if: ${{ always() }}
