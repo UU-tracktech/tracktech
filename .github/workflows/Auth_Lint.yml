@@ -7,11 +7,11 @@ on:
       - .github/workflows/Auth_Lint.yml
   pull_request:
     paths:
-      - utility/**
+      - utility/Auth/**
 
 jobs:
   forwarder_lint:
-    name: Utility Lint
+    name: Auth Lint
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v1
@@ -24,15 +24,7 @@ jobs:
       - name: Copy in utility
         run: docker cp utility/__init__.py auth_container:/app/utility/
       - name: Copy in utility
-        run: docker cp utility/copyright_checker.py auth_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/comment_checker.py auth_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/docstring_checker.py auth_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/classes_checker.py auth_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/docstring_content_checker.py auth_container:/app/utility/
+        run: docker cp utility/pylint-plugins/. auth_container:/app/utility/pylint-plugins/
       - name: Run
         run: docker-compose -f ./utility/Auth/compose/docker-compose_lint.yml up --exit-code-from auth
       - name: Remove

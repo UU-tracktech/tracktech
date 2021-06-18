@@ -23,7 +23,7 @@ class Auth:
         """
 
         # Read the key file.
-        public_key_file = open(public_key_path, "r")
+        public_key_file = open(public_key_path, 'r')
         self.public_key = public_key_file.read()
         public_key_file.close()
 
@@ -45,17 +45,17 @@ class Auth:
 
         except Exception as e:
             # If decoding fails throw a AuthenticationError.
-            raise AuthenticationError("Failed to authorize", e) from e
+            raise AuthenticationError('Failed to authorize', e) from e
 
         try:
-            authorized = self.role in decoded["resource_access"][self.audience]["roles"]
+            authorized = self.role in decoded['resource_access'][self.audience]['roles']
             # If decoding succeeds but the role is invalid throw a AuthorizationError.
 
         except Exception as e:
             # If decoding fails throw a AuthenticationError.
-            raise AuthenticationError("Failed to authorize", e) from e
+            raise AuthenticationError('Failed to authorize', e) from e
 
         if not authorized:
-            raise AuthorizationError("Role not found")
+            raise AuthorizationError('Role not found')
 
-        print("Authed")
+        print('Authed')
