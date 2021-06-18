@@ -82,7 +82,7 @@ class TestProcessFrames:
             self.await_detection(video_capture, detector, tracker, re_identifier))
         video_capture.close()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_yolor(self, configs):
         """Tests process_stream function with YOLOR.
 

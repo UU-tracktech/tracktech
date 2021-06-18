@@ -6,8 +6,8 @@ Utrecht University within the Software Project course.
 """
 import os
 import argparse
-import gdown
 import logging
+import gdown
 import torch
 
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
