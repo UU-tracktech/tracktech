@@ -5,7 +5,8 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-from processor.utils.text import bounding_box_to_dict
+from processor.data_object.bounding_boxes import BoundingBoxes
+from processor.utils.text import bounding_boxes_to_dict
 from processor.websocket.i_message import IMessage
 
 
@@ -17,9 +18,14 @@ class BoxesMessage(IMessage):
         Args:
             frame_id (float): identifier of the frame.
             bounding_boxes (BoundingBoxes): bounding boxes in the frame.
+
+        Raises:
+            TypeError: One or more of the attributes given has the wrong type
         """
         if not isinstance(frame_id, float):
             raise TypeError('Frame id should be a float.')
+        if not isinstance(bounding_boxes, BoundingBoxes):
+            raise TypeError('bounding_boxes must be of type BoundingBoxes')
 
         self.__frame_id = frame_id
         self.__bounding_boxes = bounding_boxes
@@ -33,6 +39,9 @@ class BoxesMessage(IMessage):
 
         Returns:
             (BoxesMessage): BoxesCommand constructed from the dict.
+
+        Raises:
+            KeyError: One or more of the expected keys needed for the boxes message is missing.
         """
         if 'frameId' not in message.keys():
             raise KeyError('frameId missing')
@@ -43,7 +52,7 @@ class BoxesMessage(IMessage):
         frame_id = message['frameId']
         boxes = message['boxes']
 
-        return BoxesMessage(frame_id, boxes)
+        return BoxesMessage(frame_id, BoundingBoxes(boxes, frame_id))
 
     def to_message(self):
         """Converts the BoxesMessage to a dict representation.
@@ -51,11 +60,7 @@ class BoxesMessage(IMessage):
         Returns:
             (dict): Python dict representation of the message.
         """
-        return {
-            'type': 'boundingBoxes',
-            'frameId': self.__frame_id,
-            'boxes': [bounding_box_to_dict(bounding_box) for bounding_box in self.__bounding_boxes],
-        }
+        return bounding_boxes_to_dict(self.__bounding_boxes, self.__frame_id)
 
     @property
     def frame_id(self):
