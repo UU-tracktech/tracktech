@@ -59,4 +59,3 @@ class Auth:
             raise AuthorizationError("Role not found")
 
         print("Authed")
-
