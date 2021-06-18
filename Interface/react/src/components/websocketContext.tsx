@@ -13,15 +13,15 @@ import {
   OrchestratorMessage,
   SetUsesImagesMessage,
   AuthenticateOrchestratorMessage
-} from '../classes/orchestratorMessage'
+} from 'classes/orchestratorMessage'
 import {
-  Box,
   BoxesClientMessage,
   NewObjectClientMessage,
   StopClientMessage
-} from '../classes/clientMessage'
+} from 'classes/clientMessage'
+import { Box } from 'classes/box'
 
-/** The various states the websocket can be in */
+/** The various states the websocket can be in. */
 export type connectionState =
   | 'NONE'
   | 'CONNECTING'
@@ -30,7 +30,7 @@ export type connectionState =
   | 'CLOSED'
   | 'ERROR'
 
-/** Type containing all the arguments needed to create a context with a websocket */
+/** Type containing all the arguments needed to create a context with a websocket. */
 export type websocketArgs = {
   setSocket: (url: string) => void
   send: (message: OrchestratorMessage) => void
@@ -43,7 +43,7 @@ export type websocketArgs = {
   objects: NewObjectClientMessage[]
 }
 
-/** The context which can be used by other components to send/receive messages */
+/** The context which can be used by other components to send/receive messages. */
 export const websocketContext = React.createContext<websocketArgs>({
   setSocket: (url: string) => alert(JSON.stringify(url)),
   send: (message: OrchestratorMessage) => alert(JSON.stringify(message)),
@@ -53,34 +53,43 @@ export const websocketContext = React.createContext<websocketArgs>({
   objects: []
 })
 
-/** Listeners can listen for incoming messages and handle contents using the callback */
+/** Listeners can listen for incoming messages and handle contents using the callback. */
 type Listener = {
   id: string
   listener: number
   callback: (boxes: Box[], frameId: number) => void
 }
 
+/** Properties for a websocket provider, only requires react children. */
 type WebsocketProviderProps = {
   children: ReactNode
 }
 
+/**
+ * Context provider for a websocket connection with the processor orchestrator.
+ * @param props Properties containing children.
+ * @returns The children wrapped with a websocket context provider.
+ */
 export function WebsocketProvider(props: WebsocketProviderProps) {
-  /** State keeping track of what state the websocket is in */
+  /** State keeping track of what state the websocket is in. */
   const [connectionState, setConnectionState] = React.useState<connectionState>(
     'NONE'
   )
 
-  /** State keeping track of objects that were added */
+  // State keeping track of objects that were added.
   const [objects, setObjects] = React.useState<NewObjectClientMessage[]>([])
 
-  //
+  // Get current authentication data.
   const { keycloak } = useKeycloak()
 
   const socketRef = React.useRef<WebSocket>()
   const listenersRef = React.useRef<Listener[]>([])
   const listenerRef = React.useRef<number>(0)
 
-  /** Creates a socket which tries to connect to the given url */
+  /**
+   * Creates a socket which tries to connect to the given url.
+   * @param url Url of the websocket server.
+   */
   function setSocket(url: string) {
     try {
       var socket = new WebSocket(url)
@@ -91,27 +100,32 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
       socket.onerror = (ev: Event) => onError(ev)
 
       socketRef.current = socket
-      // Catch fail due to possible incorrect url
+      // Catch fail due to possible incorrect url.
     } catch {}
   }
 
-  /** Callback function for when the socket has connected sucessfully */
+  /**
+   * Callback function for when the socket has connected sucessfully.
+   * @param _ev Event argument.
+   */
   function onOpen(_ev: Event) {
-    console.log('connected socket')
     setConnectionState('OPEN')
 
     try {
-      // Authenticate the client
+      // Authenticate the client.
       if (keycloak.token)
         send(new AuthenticateOrchestratorMessage(keycloak.token))
-      // Let the orchestrator know that this client should receive images of new tracking objects
+      // Let the orchestrator know that this client should receive images of new tracking objects.
       send(new SetUsesImagesMessage(true))
     } catch {
-      // The first send can throw an error under testing, even though the message is sent properly
+      // The first send can throw an error under testing, even though the message is sent properly.
     }
   }
 
-  /** Callback for when a message has been received by the websocket */
+  /**
+   * Callback for when a message has been received by the websocket.
+   * @param ev Event argument containing the message.
+   */
   function onMessage(ev: MessageEvent<any>) {
     let data = JSON.parse(ev.data)
     switch (data.type) {
@@ -131,8 +145,8 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
   }
 
   /**
-   * Handles a bounding boxes message from the orchestrator
-   * This will pass on the message to all relevant listeners
+   * Handles a bounding boxes message from the orchestrator, will pass on the message to all relevant listeners.
+   * @param object The client message that was received.
    */
   function handleBoundingBoxesMessage(object: BoxesClientMessage) {
     var message = new BoxesClientMessage(
@@ -148,8 +162,8 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
   }
 
   /**
-   * Handles a new Object message from the orchestrator
-   * This will set the new obect in the state
+   * Handles a new Object message from the orchestrator, will set the new obect in the state.
+   * @param object The client message that was received.
    */
   function handleNewObjectMessage(object: NewObjectClientMessage) {
     var message = new NewObjectClientMessage(object.objectId, object.image)
@@ -162,8 +176,8 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
   }
 
   /**
-   * Handles a stap message from the orchestrator
-   * This will remove the object from the selection panel
+   * Handles a stop message from the orchestrator, will remove the object from the selection panel.
+   * @param object The client message that was received.
    */
   function handleStopMessage(object: StopClientMessage) {
     var message = new StopClientMessage(object.objectId)
@@ -174,19 +188,28 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
     )
   }
 
-  /** Callback for when the connection is closed */
+  /**
+   * Callback for when the connection is closed.
+   * @param _ev Event argument.
+   */
   function onClose(_ev: CloseEvent) {
-    console.log('closed socket')
     setConnectionState('CLOSED')
   }
 
-  /** Callback for when an error occurs with the socket */
+  /**
+   * Callback for when an error occurs with the socket.
+   * @param _ev Event argument.
+   */
   function onError(_ev: Event) {
-    console.log('socket error')
     setConnectionState('ERROR')
   }
 
-  /** Adds a listener to this socket */
+  /**
+   * Adds a listener to this socket.
+   * @param id Id of of the camera.
+   * @param callback Callback for when a message arrives.
+   * @returns The new listener.
+   */
   function addListener(
     id: string,
     callback: (boxes: Box[], frameId: number) => void
@@ -197,8 +220,8 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
   }
 
   /**
-   * Remove a listener from this socket
-   * @param listener The ID of the listener to remove
+   * Remove a listener from this socket.
+   * @param listener The Id of the listener to remove.
    */
   function removeListener(listener: number) {
     listenersRef.current = listenersRef.current?.filter(
@@ -207,8 +230,8 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
   }
 
   /**
-   * Sends a message over the websocket
-   * @param message The message to send over the socket
+   * Sends a message over the websocket.
+   * @param message The message to send over the socket.
    */
   function send(message: OrchestratorMessage) {
     if (!socketRef.current) throw new Error('socket is undefined')

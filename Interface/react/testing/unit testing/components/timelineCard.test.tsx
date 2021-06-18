@@ -9,7 +9,6 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { TimelineCard } from '../../../src/components/timelineCard'
-import { TimelineData } from '../../../src/classes/timelineData'
 
 describe('Tests for timelineCard component properties', () => {
   it('Shows the correct ID', () => {

@@ -27,6 +27,3 @@ describe('Checks if all components are there', () => {
     expect(screen.getByTestId('timelines-page-content')).toBeDefined()
   })
 })
-
-//TODO: To improve coverage:
-//TODO: use fetch mocks to check component contents are correct

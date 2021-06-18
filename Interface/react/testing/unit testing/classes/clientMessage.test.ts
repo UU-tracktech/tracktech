@@ -8,12 +8,12 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import {
-  Box,
   BoxesClientMessage,
   NewObjectClientMessage,
-  QueueItem,
   StopClientMessage
 } from '../../../src/classes/clientMessage'
+import { Box } from '../../../src/classes/box'
+import { QueueItem } from '../../../src/classes/queueItem'
 
 // Collection of tests for the classes contained in the clientmessage file
 describe('Test the creation of each class in the clientMesasage file', () => {
