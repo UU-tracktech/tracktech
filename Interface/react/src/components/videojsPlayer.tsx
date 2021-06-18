@@ -6,7 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useContext } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -14,6 +14,7 @@ import { useKeycloak } from '@react-keycloak/web'
 
 import { Box, size } from 'classes/box'
 import useAuthState from 'classes/useAuthState'
+import { environmentContext } from './environmentContext'
 
 /** Properties for the VideoPlayer component, including all callbacks that can be called with the player buttons,
  * as well as default videojs properties. */
@@ -51,13 +52,14 @@ export function VideoPlayer(props: VideoPlayerProps) {
   const changeIntervalRef = useRef<number>() // How often to check for a new segemnt after the inital has been obtained.
   const updateIntervalRef = useRef<number>() // How often to update the timestamp once it's known.
 
+  const { bufferTime, segmentLength } = useContext(environmentContext)
+
   var startUri // The name of the first segment received by the videoplayer.
   var startTime // The timestamp of the stream where the player was started.
   var timeStamp // The current timestamp of the stream.
   var playerSwitchTime // The timestamp of when the video player switch to the second segment.
   var playerStartTime // The current time of the video player when it's first being played.
   var bufferTimer // The interval that counts down while buffering.
-  var bufferTime // Time to wait during bufferring before giving up on the stream.
 
   useEffect(() => {
     // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests.
@@ -126,13 +128,13 @@ export function VideoPlayer(props: VideoPlayerProps) {
 
         // Waiting may happen twice in a row, so prevent multiple timers.
         if (!bufferTimer) {
-          bufferTime = 15 // How long to wait for. TODO: make this not hardcoded.
+          var bufferTimeVar = bufferTime // How long to wait for.
           const delta = 0.5 // Update frequency, every <delta> seconds it checks the status.
 
           // The interval will count down and show the alert if the countdown reaches 0.
           bufferTimer = player?.setInterval(() => {
-            bufferTime -= delta
-            if (bufferTime <= 0) {
+            bufferTimeVar -= delta
+            if (bufferTimeVar <= 0) {
               // Clear the interval and show a message to the user showing the problem.
               player?.clearInterval(bufferTimer)
               bufferTimer = undefined
@@ -213,7 +215,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       if (typeof currentUri === 'string') {
         playerSwitchTime = playerRef.current?.currentTime()
         console.log('URI changed: ', currentUri)
-        startTime = GetSegmentStarttime(currentUri)
+        startTime = GetSegmentStarttime(currentUri, segmentLength)
         console.log('Starttime: ', PrintTimestamp(startTime))
         if (changeIntervalRef.current)
           playerRef.current?.clearInterval(changeIntervalRef.current)
@@ -387,7 +389,10 @@ export function PrintTimestamp(time: number): string {
  * @param segName The filename of the segment.
  * @returns The time in seconds.
  */
-export function GetSegmentStarttime(segName: string): number {
+export function GetSegmentStarttime(
+  segName: string,
+  segmentLength: number
+): number {
   // Assuming the forwarder will always send a stream using.
   // HLS, which gives .ts files.
   if (!segName.endsWith('.ts')) {
@@ -405,8 +410,7 @@ export function GetSegmentStarttime(segName: string): number {
 
   // Filename ends with _VXYYY.ts where X is a version and YYY is the segment number.
   let end = segName.split('_V')[1]
-  let number = end.slice(1, end.length - 3) //remove the X and the .ts.
+  let number = end.slice(1, end.length - 3) // Remove the X and the .ts.
   // The segments have a certain length, so multiply the number with the length for the time.
-  // TODO: make this not hardcoded.
-  return (parseInt(number) - 1) * 2
+  return (parseInt(number) - 1) * segmentLength
 }

@@ -14,9 +14,10 @@ import tornado.ioloop
 import tornado.web
 
 from processor.utils.config_parser import ConfigParser
+from processor.utils.display import opencv_display
 
 from processor.pipeline.prepare_pipeline import prepare_objects
-from processor.pipeline.process_frames import process_stream, opencv_display
+from processor.pipeline.process_frames import process_stream
 
 from processor.websocket.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler

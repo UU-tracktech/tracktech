@@ -19,7 +19,11 @@ export type cameraSettingsType = {
 export type environmentArgs = {
   cameras: cameraSettingsType[]
   objectTypes: string[]
-  orchestratorUrl: string
+  orchestratorWebsocketUrl: string
+  orchestratorObjectIdsUrl: string
+  orchestratorTimelinesUrl: string
+  bufferTime: number
+  segmentLength: number
 }
 
 /** The context which can be used by other components get settings from the environment settings file. */
@@ -27,7 +31,11 @@ export const environmentContext = React.createContext<environmentArgs>({
   cameras: [],
   objectTypes: [],
   // Dummy websocket since the url must be valid, but is expected to be changed later.
-  orchestratorUrl: 'wss://echo.websocket.org'
+  orchestratorWebsocketUrl: 'wss://echo.websocket.org',
+  orchestratorObjectIdsUrl: '',
+  orchestratorTimelinesUrl: '',
+  bufferTime: 10,
+  segmentLength: 1
 })
 
 /** Context provider that reads settings file and serves results. */
@@ -51,7 +59,11 @@ export function EnvironmentProvider(props: { children: ReactNode }) {
       value={{
         cameras: environment?.cameras ?? [],
         objectTypes: environment?.objectTypes ?? [],
-        orchestratorUrl: environment?.orchestratorUrl ?? ''
+        orchestratorWebsocketUrl: environment?.orchestratorWebsocketUrl ?? '',
+        orchestratorObjectIdsUrl: environment?.orchestratorObjectIdsUrl ?? '',
+        orchestratorTimelinesUrl: environment?.orchestratorTimelinesUrl ?? '',
+        bufferTime: environment?.bufferTime ?? 10,
+        segmentLength: environment?.segmentLength ?? 1
       }}
     >
       {props.children}
