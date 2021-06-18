@@ -19,6 +19,8 @@ import { WebsocketProvider } from './components/websocketContext'
 import { EnvironmentProvider } from './components/environmentContext'
 import useAuthState from './classes/useAuthState'
 
+const { Footer } = Layout
+
 /**
  * Starting point of the React app, gets inserted into the DOM by index.tsx.
  * @returns The complete web application.
@@ -67,6 +69,18 @@ export function App() {
         <BrowserRouter key={1}>
           <NavMenu key={0} />
           {body()}
+          <Footer
+            style={{
+              position: 'static',
+              height: 25,
+              padding: '0px 0px 4px 0px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            © Utrecht University (ICS)
+          </Footer>
         </BrowserRouter>
       </Layout>
     </EnvironmentProvider>
