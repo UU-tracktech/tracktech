@@ -26,21 +26,21 @@ def feature_map_to_json(feature_map=None, object_id=None):
     })
 
 
-def bounding_boxes_to_json(bounding_boxes, timestamp):
-    """Converts the bounding boxes to JSON format of API call.
+def bounding_boxes_to_dict(bounding_boxes, timestamp):
+    """Converts a BoundingBoxes to a dictionary according to API format.
 
     Args:
         bounding_boxes (BoundingBoxes): boxes that get converted to json.
-        timestamp (Timestamp): timestamp of box used for syncing in the interface.
+        timestamp (Timestamp): timestamp of boxes used for syncing in the interface.
 
     Returns:
-        json: JSON representation of the object.
+        dict: Representation of the BoundingBoxes object.
     """
-    return json.dumps({
+    return {
         'type': 'boundingBoxes',
         'frameId': timestamp,
         'boxes': [bounding_box_to_dict(bounding_box) for bounding_box in bounding_boxes],
-    })
+    }
 
 
 def bounding_box_to_dict(bounding_box):
@@ -50,7 +50,7 @@ def bounding_box_to_dict(bounding_box):
         bounding_box (BoundingBox): box that gets converted to json.
 
     Returns:
-        str: JSON representation of the BoundingBox object.
+        dict: Representation of the BoundingBox object.
     """
     res = {
         'boxId': bounding_box.identifier,
@@ -64,6 +64,7 @@ def bounding_box_to_dict(bounding_box):
         'certainty': bounding_box.certainty
     }
 
+    # Add the objectId to the dict if it is set.
     if bounding_box.object_id is not None:
         res['objectId'] = bounding_box.object_id
 
@@ -110,18 +111,3 @@ def boxes_to_txt(bounding_boxes, shape, frame_nr):
             f'1,1,{"%.2f" % round(float(bounding_box.certainty), 2)} \n'  # certainty rounded to two decimals
 
     return boxes_text_string
-
-
-def error_to_json(error):
-    """Returns a json object containing the error message.
-
-    Args:
-        error (BaseException): the error to handle
-
-    Returns:
-        str: The error message in a JSON string
-    """
-    return json.dumps({
-        'type': 'error',
-        'error': repr(error)
-    })
