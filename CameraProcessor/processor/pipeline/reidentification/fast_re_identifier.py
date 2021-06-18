@@ -7,6 +7,8 @@ Utrecht University within the Software Project course.
 import os
 import argparse
 import gdown
+import logging
+import torch
 
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
 from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
@@ -41,6 +43,13 @@ class FastReIdentifier(PytorchReIdentifier):
         weight_name = cfg.MODEL.WEIGHTS
         weight_path = os.path.join(config['weights_dir_path'], weight_name)
         cfg.MODEL.WEIGHTS = weight_path
+
+        if not torch.cuda.is_available():
+            logging.info('Fast-Reid is using CPU')
+            cfg.MODEL.DEVICE = 'cpu'
+        else:
+            logging.info('Fast-Reid is using GPU')
+
         cfg.freeze()
 
         # Download the weights if it's not in the directory.

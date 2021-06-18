@@ -2,7 +2,6 @@ _BASE_: fastreid/configs/Base-SBS.yml
 
 MODEL:
   WEIGHTS: market_sbs_R101-ibn.pth
-  DEVICE: cpu
   BACKBONE:
     DEPTH: 101x
     WITH_IBN: True
