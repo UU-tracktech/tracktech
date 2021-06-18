@@ -11,7 +11,7 @@ WORKDIR /app
 ENV PYTHONPATH=/app
 
 # Install pylint
-RUN ["pip", "install", "pylint==2.8.3"]
+RUN ["pip", "install", "pylint==2.8.2"]
 
 # Create an utility folder, to copy in the utility files.
 RUN ["mkdir", "utility"]
