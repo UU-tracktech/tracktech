@@ -8,7 +8,6 @@ Utrecht University within the Software Project course.
 import cv2
 import numpy as np
 
-from tests.unittests.utils.conftest import X0, X1, Y0, Y1
 from processor.utils.features import slice_bounding_box, resize_cutout
 
 
@@ -24,10 +23,12 @@ class TestFeatures:
         # Red color to fill the bbox.
         color = np.array([0, 0, 255])
 
+        height, width, _ = img.shape
+
         # Color the bounding box rectangle in the image.
         cv2.rectangle(img,
-                      (X0, Y0),
-                      (X1, Y1),
+                      (int(bbox.rectangle.x1 * width), int(bbox.rectangle.y1 * height)),
+                      (int(bbox.rectangle.x2 * width), int(bbox.rectangle.y2 * height)),
                       (0, 0, 255),
                       -1)
         # Slice the image.

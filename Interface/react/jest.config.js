@@ -13,5 +13,6 @@ module.exports = {
     "automock": false,
     "setupFiles": [
       "<rootDir>/setupJest.js"
-    ]
+    ],
+    "modulePaths": ["<rootDir>/src"]
   }

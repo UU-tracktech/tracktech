@@ -6,25 +6,24 @@ Utrecht University within the Software Project course.
 
  */
 
-/**
-  The selection card component is used in the select list.
-  There is a card for every tracked object, it contains a button to stop tracking.
-*/
-
 import React from 'react'
 import { DeleteOutlined } from '@ant-design/icons'
 import { Button, Card, Popconfirm } from 'antd'
 
 const { Meta } = Card
 
+/** Properties for the selectionCard component, including click callback, id of the object and an image. */
 type selectionCardProps = { onClick: () => void; objectId: number; src: string }
 
-/** The selection card is used on the selection card on the home page.
+/**
+ * Selection card used on the selection card on the home page.
  * It displays a tracked object including its cutout.
+ * @param props Properties for the selection card.
+ * @returns An antd card containing all selected objects, their ids, and an image.
  */
 export function SelectionCard(props: selectionCardProps) {
   return (
-    // The main card is used to display the image
+    // The main card is used to display the image.
     <Card
       size='small'
       style={{

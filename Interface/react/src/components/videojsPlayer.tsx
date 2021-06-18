@@ -6,81 +6,80 @@ Utrecht University within the Software Project course.
 
  */
 
-/*
-  This component creates a videoplayer using the VideoJS plugin
-*/
-
 import React, { useRef, useEffect } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { size } from '../classes/size'
-import { Box } from '../classes/clientMessage'
 import { useKeycloak } from '@react-keycloak/web'
-import useAuthState from '../classes/useAuthState'
 
-// The properties used by the videoplayer
+import { Box, size } from 'classes/box'
+import useAuthState from 'classes/useAuthState'
+
+/** Properties for the VideoPlayer component, including all callbacks that can be called with the player buttons,
+ * as well as default videojs properties. */
 export type VideoPlayerProps = {
-  setSnapCallback: (snap: (box: Box) => string | undefined) => void
-  onTimestamp: (time: number) => void //Callback which updates the timestamp for the overlay
-  onPlayPause: (playing: boolean) => void //Callback which updates the playback state for the overlay
-  onPrimary: () => void //Callback to make this videoplayer the primary video player
-  onResize?: (size: size) => void //Callback to update viewport on resize
+  setSnapCallback: (snap: (box: Box) => string | undefined) => void // Callback to set snap functionality.
+  onTimestamp: (time: number) => void // Callback which updates the timestamp for the overlay.
+  onPlayPause: (playing: boolean) => void // Callback which updates the playback state for the overlay.
+  onPrimary: () => void // Callback to make this videoplayer the primary video player.
+  onResize?: (size: size) => void // Callback to update viewport on resize.
 } & videojs.PlayerOptions
 
+/**
+ * Wrapper for a videojs player that adds custom functionality and syncing with bounding boxes.
+ * @param props The properties for the VideoPlayer.
+ * @returns A videojs player injected with custom functionality.
+ */
 export function VideoPlayer(props: VideoPlayerProps) {
-  //Authentication hooks
+  // Authentication hooks.
   const { keycloak } = useKeycloak()
   const status = useAuthState()
 
-  // The DOM node to attach the videoplayer to
+  // The DOM node to attach the videoplayer to.
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // The videoplayer object
+  // The videoplayer object.
   const playerRef = useRef<videojs.Player>()
 
-  // Use the snap function callback to give the parent the ability to create snaps
+  // Use the snap function callback to give the parent the ability to create snaps.
   useEffect(() => {
     props.setSnapCallback(takeSnapshot)
   }, [props.setSnapCallback])
 
-  //Constants used to calculate the timestamp of the livestream based on segment file names
-  const initialUriIntervalRef = useRef<number>() //How often to check for the initial segment name
-  const changeIntervalRef = useRef<number>() //how often to check for a new segemnt after the inital has been obtained
-  const updateIntervalRef = useRef<number>() //How often to update the timestamp once it's known
+  // Constants used to calculate the timestamp of the livestream based on segment file names.
+  const initialUriIntervalRef = useRef<number>() // How often to check for the initial segment name.
+  const changeIntervalRef = useRef<number>() // How often to check for a new segemnt after the inital has been obtained.
+  const updateIntervalRef = useRef<number>() // How often to update the timestamp once it's known.
 
-  var startUri //The name of the first segment received by the videoplayer
-  var startTime //The timestamp of the stream where the player was started
-  var timeStamp //The current timestamp of the stream
-  var playerSwitchTime //The timestamp of when the video player switch to the second segment
-  var playerStartTime //The current time of the video player when it's first being played
-  var bufferTimer //The interval that counts down while buffering
-  var bufferTime //Time to wait during bufferring before giving up on the stream
+  var startUri // The name of the first segment received by the videoplayer.
+  var startTime // The timestamp of the stream where the player was started.
+  var timeStamp // The current timestamp of the stream.
+  var playerSwitchTime // The timestamp of when the video player switch to the second segment.
+  var playerStartTime // The current time of the video player when it's first being played.
+  var bufferTimer // The interval that counts down while buffering.
+  var bufferTime // Time to wait during bufferring before giving up on the stream.
 
   useEffect(() => {
-    // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests
-    // Time spend on trying to use a single way of authentication:
-    // 5hrs
-    // Please update if appropriate.
+    // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests.
     if (props.sources?.[0].src)
       props.sources[0].src += `?Bearer=${keycloak.token}`
 
-    // instantiate video.js
+    // Instantiate videojs.
     playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
 
-      // If the user is authenticated, add xhr headers with the bearer token to authorize
+      // If the user is authenticated, add xhr headers with the bearer token to authorize.
       if (status == 'authenticated') {
         //@ts-ignore
         videojs.Vhs.xhr.beforeRequest = function (options) {
-          //As headers might not exist yet, create them if not.
+          // As headers might not exist yet, create them if not.
           options.headers = options.headers || {}
           options.headers.Authorization = `Bearer ${keycloak.token}`
           return options
         }
       }
 
-      //Add button to make this videoplayer the primary player at the top of the page
+      // Add button to make this videoplayer the primary player at the top of the page.
       player?.controlBar.addChild(
         new extraButton(player, {
           onPress: props.onPrimary,
@@ -95,9 +94,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
       player?.on('play', () => onResize())
       player?.on('loadeddata', () => onResize())
 
-      //Timestamp calculation
-      /* On the first time a stream is started, attempt getting the
-         segment name, keep going until a name is obtained */
+      /* Timestamp calculation.
+       * On the first time a stream is started, attempt getting the segment name, keep going until a name is obtained. */
       player?.on('firstplay', () => {
         playerStartTime = playerRef.current?.currentTime()
         initialUriIntervalRef.current = player?.setInterval(() => {
@@ -105,7 +103,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         }, 200)
       })
 
-      //Every time the videoplayer is resumed, go back to updating the timestamp
+      // Every time the videoplayer is resumed, go back to updating the timestamp.
       player?.on('play', () => {
         updateIntervalRef.current = player?.setInterval(() => {
           updateTimestamp()
@@ -113,29 +111,29 @@ export function VideoPlayer(props: VideoPlayerProps) {
         props.onPlayPause(true)
       })
 
-      //Every time the player is paused, stop our manual timestamp update
-      //The player.currentTime() method from videoJS will keep going in the background
-      //If we don't stop our own update it will think the time while paused is double
+      /* Every time the player is paused, stop the manual timestamp update.
+       * The player.currentTime() method from videoJS will keep going in the background.
+       * If the manual update isn't stopped it will think the time while paused is double. */
       player?.on('pause', () => {
         if (updateIntervalRef.current)
           player?.clearInterval(updateIntervalRef.current)
         props.onPlayPause(false)
       })
 
-      //When the player starts bufferring it fires the waiting event
+      // When the player starts bufferring it fires the waiting event.
       player?.on('waiting', () => {
-        if (!startTime) return //prevent wonkyness on firstplay when there is no timestamp yet
+        if (!startTime) return // Prevent inconsistencies on firstplay when there is no timestamp yet.
 
-        //Waiting may happen twice in a row, so prevent multiple timers
+        // Waiting may happen twice in a row, so prevent multiple timers.
         if (!bufferTimer) {
-          bufferTime = 15 //how long to wait for. TODO: make this not hardcoded
-          const delta = 0.5 //update frequency, every <delta> seconds it checks the status
+          bufferTime = 15 // How long to wait for. TODO: make this not hardcoded.
+          const delta = 0.5 // Update frequency, every <delta> seconds it checks the status.
 
-          //The interval will count down and show the alert if the countdown reaches 0
+          // The interval will count down and show the alert if the countdown reaches 0.
           bufferTimer = player?.setInterval(() => {
             bufferTime -= delta
             if (bufferTime <= 0) {
-              //Clear the interval and show a message to the user showing the problem
+              // Clear the interval and show a message to the user showing the problem.
               player?.clearInterval(bufferTimer)
               bufferTimer = undefined
               player?.pause()
@@ -145,12 +143,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
                 null
               )
 
-              //TODO: make the alert look better
-              //The modal may overlap the default videojs error of "the media could not be loaded"
-              //The modal can be given a custom class so we can adjust it with CSS
-              //modal?.addClass('vjs-custom-modal')
-
-              //Try to reload the videoplayer when the user closes the warning message
+              // Try to reload the videoplayer when the user closes the warning message.
               modal?.on('modalclose', () => {
                 if (props.sources && props.sources[0].type)
                   player?.src({
@@ -168,9 +161,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
         }
       })
 
-      //Seeked is fired when the player starts/resumes playing video
-      //It seems to happen after a waiting but no guarantee it always happens after a waiting though
-      //Use this as a signal to stop waiting for a buffer if the timer is running
+      /* Seeked is fired when the player starts/resumes playing video.
+       * Use this as a signal to stop waiting for a buffer if the timer is running. */
       player?.on('seeked', () => {
         if (bufferTimer) {
           player?.clearInterval(bufferTimer)
@@ -183,27 +175,24 @@ export function VideoPlayer(props: VideoPlayerProps) {
   }, [])
 
   /**
-   * Accesses the video player tech and returns the URI
-   * from the first segment in the playlist
+   * Accesses the video player tech.
+   * @returns URI from the first segment in the playlist.
    */
   function getURI(): string | undefined {
-    //passing any argument suppresses a warning about accessing the tech
+    // Passing any argument suppresses a warning about accessing the tech.
     return playerRef.current?.tech({ randomArg: true })?.textTracks()?.[0]
       ?.activeCues?.[0]?.['value']?.uri
   }
 
   /**
-   * Used in an interval, attempts to get an URI and
-   * once it has one cancels itself, and starts a new
-   * interval that waits for a change in URI
+   * Used in an interval, attempts to get an URI and once it has one cancels itself,
+   * and starts a new interval that waits for a change in URI.
    */
   function getInitialUri() {
-    //attempt to get the segment name
+    // Attempt to get the segment name.
     let currentUri = getURI()
     if (currentUri) {
-      //if a segment name has been found, save it and start looking for an updated name
-      //console.log('InitialURI: ', currentUri)
-
+      // If a segment name has been found, save it and start looking for an updated name.
       startUri = currentUri
       if (initialUriIntervalRef.current)
         playerRef.current?.clearInterval(initialUriIntervalRef.current)
@@ -214,15 +203,13 @@ export function VideoPlayer(props: VideoPlayerProps) {
   }
 
   /**
-   * Used in an interval, attempts to get the URI of the current
-   * segment, and compares this to the initial URI. If it is not
-   * the same, cancels the interval and sets the time that
-   * the timestamp will be based on
+   * Used in an interval, attempts to get the URI of the current segment, and compares this to the initial URI.
+   * If it is not the same, cancels the interval and sets the time that the timestamp will be based on.
    */
   function lookForUriUpdate() {
     let currentUri = getURI()
     if (currentUri !== startUri) {
-      //ensure it is a string because typescript
+      // Ensure it is a string because typescript.
       if (typeof currentUri === 'string') {
         playerSwitchTime = playerRef.current?.currentTime()
         console.log('URI changed: ', currentUri)
@@ -235,34 +222,25 @@ export function VideoPlayer(props: VideoPlayerProps) {
   }
 
   /**
-   * Should be done in an interval, started whenever the user hits play
-   * this interval should be stopped whenever the user pauses
+   * Should be done in an interval, started whenever the user hits play.
+   * This interval should be stopped whenever the user pauses.
    */
   function updateTimestamp() {
     if (!startTime) {
-      //console.log('Timestamp: Loading...')
       return
     }
 
     let currentPlayer = playerRef.current?.currentTime()
     timeStamp = startTime + currentPlayer - playerSwitchTime + 0.2
 
-    //Update timestamp for overlay
+    // Update timestamp for overlay.
     props.onTimestamp(timeStamp)
-
-    //print this videoplayer info to console as 1 object
-    // let toPrint = {
-    //   timeStamp: PrintTimestamp(timeStamp),
-    //   frameID: timeStamp,
-    // }
-    //console.log(toPrint)
   }
 
-  /**
-   * Calls the onResize callback function in order to let the overlay know the exact screen dimensions to scale to
-   */
+  /** Calls the onResize callback function in order to let the overlay know the exact screen dimensions to scale to. */
   function onResize() {
     if (playerRef.current && props.onResize) {
+      // Get the dimensions of the video player.
       var player = playerRef.current.currentDimensions()
 
       var playerWidth = player.width
@@ -273,8 +251,10 @@ export function VideoPlayer(props: VideoPlayerProps) {
       var videoHeight = playerRef.current.videoHeight()
       var videoAspect = videoWidth / videoHeight
 
+      // If video aspect can't be gotten, use default 16:9.
       if (isNaN(videoAspect)) {
         videoAspect = 16 / 9
+        // Set the video width to match ratio.
         if (playerAspect < videoAspect) {
           videoWidth = playerWidth
           videoHeight = (playerWidth / 16) * 9
@@ -284,6 +264,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         }
       }
 
+      // Stretch video to match width.
       if (playerAspect < videoAspect) {
         var widthRatio = playerWidth / videoWidth
         var actualVideoHeight = widthRatio * videoHeight
@@ -293,6 +274,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
           left: 0,
           top: (playerHeight - actualVideoHeight) / 2
         })
+        // Stretch video to match height.
       } else {
         var heightRatio = playerHeight / videoHeight
         var actualVideoWidth = heightRatio * videoWidth
@@ -306,17 +288,25 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
   }
 
+  /**
+   * Create an image from a selected box.
+   * @param box The box from which the cutout should be generated.
+   * @returns A Data-URL encoded image string.
+   */
   function takeSnapshot(box: Box) {
     if (videoRef.current) {
+      // Create size relative to videoplayer.
       var { left, top, width, height } = box.toSize(
         videoRef.current.videoWidth,
         videoRef.current.videoHeight
       )
+      // Create new canvas of correct size.
       var canvas = document.createElement('canvas')
       canvas.width = width
       canvas.height = height
       var context = canvas.getContext('2d')
       if (context) {
+        // Create the cutout from the video
         context.drawImage(
           videoRef.current,
           left,
@@ -333,9 +323,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
     }
   }
 
-  // wrap the player in a div with a `data-vjs-player` attribute
-  // so videojs won't create additional wrapper in the DOM
-  // see https://github.com/videojs/video.js/pull/3856
+  /* Wrap the player in a div with a `data-vjs-player` attribute so videojs won't create additional wrapper in the DOM.
+   * See https://github.com/videojs/video.js/pull/3856 */
   return (
     <div
       data-testid='videojsplayer'
@@ -354,7 +343,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
 }
 
 /**
- * Create an additional button on the control bar
+ * Create an additional button on the control bar.
  * See: https://stackoverflow.com/questions/35604358/videojs-v5-adding-custom-components-in-es6-am-i-doing-it-right
  */
 export type ToggleSizeButtonOptions = {
@@ -362,6 +351,8 @@ export type ToggleSizeButtonOptions = {
   icon: string
   text: string
 }
+
+/** Add a custom button to the videojs player. */
 class extraButton extends videojs.getComponent('Button') {
   private onClick: () => void
 
@@ -378,29 +369,27 @@ class extraButton extends videojs.getComponent('Button') {
 }
 
 /**
- * Takes a timestamp in seconds and converts it to a string
- * with the format mm:ss:ms
- * @param {number} time The time in seconds
- * @returns {string} The time formatted as mm:ss
+ * Takes a timestamp in seconds and converts it to a string with the format mm:ss:ms.
+ * @param time The time in seconds.
+ * @returns The time formatted as mm:ss.
  */
 export function PrintTimestamp(time: number): string {
   let min = Math.floor(time / 60)
-  //toFixed(1) makes it so it is rounded to 1 decimal
+  // Rounded to one decimal.
   let sec = (time % 60).toFixed(1)
-  //to make it look pretty
+  // Universify amount of numbers.
   if (parseFloat(sec) < 10) sec = '0' + sec
   return min + ':' + sec
 }
 
 /**
- * Takes the filename of a segment of the stream and
- * determines the time of the video when this segment started
- * @param {string} segName The filename of the segment
- * @returns {number} The time in seconds
+ * Takes the filename of a segment of the stream and determines the time of the video when this segment started.
+ * @param segName The filename of the segment.
+ * @returns The time in seconds.
  */
 export function GetSegmentStarttime(segName: string): number {
-  //Assuming the forwarder will always send a stream using
-  //HLS, which gives .ts files afaik
+  // Assuming the forwarder will always send a stream using.
+  // HLS, which gives .ts files.
   if (!segName.endsWith('.ts')) {
     console.warn(
       'GetSegmentStarttime: expected .ts file but got something else'
@@ -408,17 +397,16 @@ export function GetSegmentStarttime(segName: string): number {
     return NaN
   }
 
-  //filename should contain '_V' if it comes from the forwarder
+  // Filename should contain '_V' if it comes from the forwarder.
   if (segName.indexOf('_V') === -1) {
     console.warn('Video file not from forwarder')
     return NaN
   }
 
-  //filename ends with _VXYYY.ts where X is a version
-  //and YYY is the segment number
+  // Filename ends with _VXYYY.ts where X is a version and YYY is the segment number.
   let end = segName.split('_V')[1]
-  let number = end.slice(1, end.length - 3) //remove the X and the .ts
-  //The segments have a certain length, so multiply the number with the length for the time
-  //TODO: make this not hardcoded
+  let number = end.slice(1, end.length - 3) //remove the X and the .ts.
+  // The segments have a certain length, so multiply the number with the length for the time.
+  // TODO: make this not hardcoded.
   return (parseInt(number) - 1) * 2
 }
