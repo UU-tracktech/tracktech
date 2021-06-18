@@ -27,23 +27,11 @@ class TestJsonDataloader:
     def test_get_annotations(self):
         """Tests getting json annotations."""
         # Only tests the start of the JSON string.
-        # print(self.dataloader.get_annotations()[0])
-
-        assert self.dataloader.get_annotations()[0] == '{"imageId": "000001", "boxes": [{"boxId": 0, "rect": '\
-                                                       '[0.1578125, 0.3229166666666667, 0.421875, 0.6291666666666667]'\
-                                                       ', "objectType": "car", "certainty": 0.25950881838798523}, ' \
-                                                       '{"boxId": 1, "rect": [0.015625, 0.29791666666666666, 0.4375, ' \
-                                                       '0.6333333333333333], "objectType": "truck", "certainty": ' \
-                                                       '0.27878302335739136}, {"boxId": 2, "rect": [0.0015625, ' \
-                                                       '0.3541666666666667, 0.071875, 0.6125], "objectType": "car",' \
-                                                       ' "certainty": 0.3122708797454834}, {"boxId": 3, "rect":' \
-                                                       ' [0.8890625, 0.4270833333333333, 1.0, 0.5729166666666666],' \
-                                                       ' "objectType": "car", "certainty": 0.8171709179878235},' \
-                                                       ' {"boxId": 4, "rect": [0.1796875, 0.325, 0.309375, 0.6875],' \
-                                                       ' "objectType": "person", "certainty": 0.8253413438796997},' \
-                                                       ' {"boxId": 5, "rect": [0.0265625, 0.30416666666666664,' \
-                                                       ' 0.14375, 0.7020833333333333], "objectType": "person",' \
-                                                       ' "certainty": 0.83024001121521}]}'
+        assert self.dataloader.get_annotations()[0].startswith(
+            '{"imageId": "000001", "boxes": [{'
+            '"boxId": 0, "rect": [0.1578125, 0.3229166666666667, 0.421875, 0.6291666666666667], '
+            '"objectType": "car", "certainty": 0.25950899720191956}, '
+        )
 
     def test_parse_line(self):
         """Tests parsing of file."""

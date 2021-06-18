@@ -119,3 +119,52 @@ class TestWebsocketClient(WebsocketCoroutines):
         # Give the event loop the control to send the message.
         yield asyncio.sleep(0)
         assert len(dummy_websocket.write_queue) == 0
+
+    @tornado.testing.gen_test(timeout=10)
+    def test_receive_update_message(self):
+        """Writes update message to echo websocket and check that it is received correctly."""
+        dummy_websocket = yield self.dummy_ws_connect('/echo', 'mock_id')
+        dummy_websocket.send_message(self.feature_map_message)
+
+        # Give the event loop the control to send the message.
+        yield asyncio.sleep(4)
+
+        assert dummy_websocket.message_queue.popleft() == self.feature_map_message
+
+    @tornado.testing.gen_test(timeout=10)
+    def test_receive_start_message(self):
+        """Writes start message to echo websocket and check that it is received correctly."""
+        dummy_websocket = yield self.dummy_ws_connect('/echo', 'mock_id')
+        dummy_websocket.send_message(self.start_message)
+
+        # Give the event loop the control to send the message.
+        yield asyncio.sleep(4)
+
+        assert dummy_websocket.message_queue.popleft() == self.start_message
+
+    @tornado.testing.gen_test(timeout=10)
+    def test_receive_stop_message(self):
+        """Writes start message to echo websocket and check that it is received correctly."""
+        dummy_websocket = yield self.dummy_ws_connect('/echo', 'mock_id')
+        dummy_websocket.send_message(self.stop_message)
+
+        # Give the event loop the control to send the message.
+        yield asyncio.sleep(4)
+
+        assert dummy_websocket.message_queue.popleft() == self.start_message
+
+    @tornado.testing.gen_test(timeout=10)
+    def test_dont_receive_boxes_message(self):
+        """Writes start message to echo websocket and check that it is not added to message queue.
+
+        BoxesMessage is explicitly not handled by the websocket, since the processor does not expect to receive it.
+        """
+        dummy_websocket = yield self.dummy_ws_connect('/echo', 'mock_id')
+        dummy_websocket.send_message(self.boxes_message)
+
+        # Give the event loop the control to send the message.
+        yield asyncio.sleep(4)
+
+        assert dummy_websocket.message_queue.popleft() == self.boxes_message
+
+
