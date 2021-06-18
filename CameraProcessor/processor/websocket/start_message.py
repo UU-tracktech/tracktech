@@ -139,13 +139,14 @@ class StartMessage(IMessage):
             # Box was not found in image.
             except ValueError as value_error:
                 error = value_error
+
         # We can still get the data from the image.
         if self.__image is not None:
             self.__cutout = self.__image
             return self.__cutout
+
         # There is no way to get the image. Log this and don't use the tracking data.
-        if error is not None:
-            raise error
+        raise error
 
     @staticmethod
     def __convert_base64_image_to_np_array(image):
