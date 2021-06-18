@@ -62,7 +62,6 @@ class TestProcessFrames:
         Returns:
             FakeTracker: Fake tracker implementation.
         """
-        # TODO Actually return SORT maybe # pylint: disable=fixme.
         return FakeTracker()
 
     @pytest.mark.timeout(90)

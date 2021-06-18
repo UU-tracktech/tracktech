@@ -78,7 +78,7 @@ class TestWebsocketClient(WebsocketCoroutines):
 
     @tornado.testing.gen_test(timeout=10)
     def test_connect_invalid_extension(self):
-        """Test handeling wrong websocket url."""
+        """Test handling wrong websocket url."""
         with pytest.raises(HTTPClientError):
             yield self.dummy_ws_connect('/invalid')
 
@@ -116,6 +116,6 @@ class TestWebsocketClient(WebsocketCoroutines):
         dummy_websocket = yield self.dummy_ws_connect('/', 'mock_id')
         dummy_websocket.send_message(self.feature_map_message)
 
-        # Give the eventloop the control to send the message.
+        # Give the event loop the control to send the message.
         yield asyncio.sleep(0)
         assert len(dummy_websocket.write_queue) == 0
