@@ -1,42 +1,35 @@
-"""COCO datalaoder class.
+"""COCO dataloader class.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-from os import path
+import os
+from pathlib import Path
 
 import requests
 from pycocotools.coco import COCO
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.data_object.rectangle import Rectangle
 from processor.dataloaders.i_dataloader import IDataloader
 
 
 class CocoDataloader(IDataloader):
     """COCO Dataloader, formats COCO Data."""
 
-    def __init__(self, configs, path_location):
+    def __init__(self, configs):
         """Initialize coco dataloader.
 
         Args:
             configs (dict): A dictionary of the configs.
-            path_location (str): String to select gt or det from the accuracy config.
         """
-        super().__init__(configs, path_location)
+        super().__init__(configs)
+        dataloader_config = configs['COCO']
+        self.file_path = dataloader_config['annotations_path']
+        self.image_path = dataloader_config['image_path']
+
+        # Create image path if it does not yet exist.
+        Path(self.image_path).mkdir(parents=True, exist_ok=True)
         self.coco = COCO(self.file_path)
-
-    def parse_file(self):
-        """Parses an annotations file.
-
-        Returns:
-            bounding_boxes_list (list): List of bounding boxes.
-        """
-        annotations = self.__get_annotations()
-        bounding_boxes_list = self.__parse_boxes(annotations)
-        return bounding_boxes_list
 
     def download_coco_image(self, image_id):
         """Downloads a single coco image given the identifier.
@@ -47,7 +40,8 @@ class CocoDataloader(IDataloader):
         image = self.coco.loadImgs([image_id])[0]
 
         image_data = requests.get(image['coco_url']).content
-        with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
+
+        with open(os.path.join(self.image_path, image['file_name']), 'wb') as handler:
             handler.write(image_data)
 
     def download_coco_images(self, amount):
@@ -65,15 +59,14 @@ class CocoDataloader(IDataloader):
 
         for image in images:
             image_data = requests.get(image['coco_url']).content
-            with open(self.image_path + '/' + image['file_name'], 'wb') as handler:
+            with open(os.path.join(self.image_path, image['file_name']), 'wb') as handler:
                 handler.write(image_data)
 
-    def get_image_dimensions(self, image_id, this_image_path):
+    def get_image_dimensions(self, image_id):
         """Gets the size of an image based on its name.
 
         Args:
             image_id (integer): String with the name of the image.
-            this_image_path (string): Path to image file.
 
         Returns:
             image.size (shape): width and height dimensions of the image.
@@ -84,39 +77,27 @@ class CocoDataloader(IDataloader):
 
         return width, height
 
-    def __parse_boxes(self, annotations):
-        """Parses bounding boxes.
+    def parse_line(self, line):
+        """Parses a line.
 
         Args:
-            annotations ([(str)]): Annotations tuples in a list.
+            line (JSON): JSON object with file line contents.
 
         Returns:
-            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
+            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.
         """
-        counter = 0
-        bounding_boxes_list = []
-        current_boxes = []
-        current_image_id = annotations[0]['image_id']
+        image_id = line['image_id']
+        width, height = self.get_image_dimensions(image_id)
+        identifier = line['id']
+        classification = self.coco.loadCats(line['category_id'])[0]['name']
+        x1 = line['bbox'][0] / width
+        y1 = line['bbox'][1] / height
+        x2 = (line['bbox'][0] + line['bbox'][2]) / width
+        y2 = (line['bbox'][1] + line['bbox'][3]) / height
+        certainty = 1
+        return [(image_id, identifier, x1, y1, x2, y2, certainty, classification, None)]
 
-        for annotation in annotations:
-            image_id = annotation['image_id']
-            width, height = self.get_image_dimensions(image_id, "")
-            if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, int(self.__get_image_name(current_image_id))))
-                current_boxes = []
-                current_image_id = image_id
-            current_boxes.append(BoundingBox(classification=self.coco.loadCats(annotation['category_id'])[0]['name'],
-                                             rectangle=Rectangle(x1=annotation['bbox'][0] / width,
-                                                                 y1=annotation['bbox'][1] / height,
-                                                                 x2=(annotation['bbox'][0] + annotation['bbox'][
-                                                                     2]) / width,
-                                                                 y2=(annotation['bbox'][1] + annotation['bbox'][
-                                                                     3]) / height),
-                                             identifier=counter,
-                                             certainty=1))
-        return bounding_boxes_list
-
-    def __get_annotations(self):
+    def get_annotations(self):
         """Gets annotations.
 
         Returns:
@@ -160,31 +141,3 @@ class CocoDataloader(IDataloader):
             if self.coco.loadCats(ann['category_id'])[0]['name'] in filters:
                 filtered_annotations.append(ann)
         return filtered_annotations
-
-    def __get_image_name(self, image_id):
-        """Gets the image name given an identifier.
-
-        Args:
-            image_id (int): Identifier of the image
-
-        Returns:
-            str: Name of the image.
-        """
-        zeros = ''
-        for _ in range(12 - len(str(image_id))):
-            zeros += '0'
-        image_name = zeros + str(image_id)
-        return image_name
-
-    def __get_image_path(self, image_id):
-        """Gets the image path given an identifier.
-
-        Args:
-            image_id (int): Identifier of the image
-
-        Returns:
-            str: Path of the image.
-        """
-        image_name = self.__get_image_name(image_id)
-        this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
-        return this_image_path

@@ -20,15 +20,15 @@ class InputComponent:
             obj (str): input object passed through by the scheduler.
 
         Returns:
-            str: Modified object used by the next layer.
+            str: The modified object used by the next layer.
         """
-        obj = obj.__add__(",start")
+        obj = obj.__add__(',start')
         return obj
 
     def execute_component(self):
         """Interface function to execute the component.
 
         Returns:
-            func: Work function to call when component is ran.
+            func: Work function to call when component is run.
         """
         return self.work

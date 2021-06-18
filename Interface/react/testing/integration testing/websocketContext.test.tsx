@@ -12,10 +12,11 @@ import {
   websocketArgs,
   websocketContext,
   WebsocketProvider
-} from '../../src/components/websocketContext'
-import { Overlay } from '../../src/components/overlay'
-import { StartOrchestratorMessage } from '../../src/classes/orchestratorMessage'
-import { Box, BoxesClientMessage } from '../../src/classes/clientMessage'
+} from 'components/websocketContext'
+import { Overlay } from 'components/overlay'
+import { StartOrchestratorMessage } from 'classes/orchestratorMessage'
+import { BoxesClientMessage } from 'classes/clientMessage'
+import { Box } from 'classes/box'
 
 var websocketAddress
 
@@ -26,19 +27,12 @@ beforeEach(() => {
   //reset the correct link just in case a test which changes it crashes
   websocketAddress = 'ws://processor-orchestrator/client'
 
-  
   // Render a websocketprovider with an overlay to draw the bounding box.
   render(
     <WebsocketProvider>
       <div>
         <websocketContext.Consumer>
-          {({
-            send,
-            setSocket,
-            socketUrl,
-            connectionState,
-            objects
-          }: websocketArgs) => (
+          {({ send, setSocket, connectionState, objects }: websocketArgs) => (
             <>
               <Overlay
                 source={{
@@ -49,7 +43,7 @@ beforeEach(() => {
                 showBoxes={'All'}
                 onPrimary={() => {}}
                 data-testId='overlay'
-                hiddenObjectTypes={[]}
+                hiddenObjectTypes={['hiddenObject']}
                 sources={[
                   {
                     src:
@@ -84,7 +78,7 @@ beforeEach(() => {
 })
 
 /**
- * Test whether or not the interface is able to connect to the orchestrator using the websocket context provider.
+ * Test whether the interface is able to connect to the orchestrator using the websocket context provider.
  */
 test('Websocket connects', async () => {
   jest.setTimeout(30000)
@@ -100,7 +94,6 @@ test('Websocket connects', async () => {
 /** Test whether the websocket correctly handles a wrong url */
 test('Websocket handles error and closes', async () => {
   jest.setTimeout(30000)
-  const msgSpy = jest.spyOn(global.console, 'log')
 
   //set up a wrong socket url
   const originalAddress = websocketAddress
@@ -112,12 +105,7 @@ test('Websocket handles error and closes', async () => {
     await new Promise((r) => setTimeout(r, 500))
   }
 
-  //since the state changes quickly I rely on a message in the console to confirm
-  //the websocket went through the error function
-  expect(msgSpy).toBeCalledWith('socket error')
-
-  //Confirm the socket is closed
-  expect(msgSpy).toBeCalledWith('closed socket')
+  //Check that the socket remains closed because it can't connect.
   expect(screen.getByTestId('state').textContent).toBe('CLOSED')
 
   //restore the original address for future tests
@@ -125,7 +113,7 @@ test('Websocket handles error and closes', async () => {
 })
 
 /**
- * Test whether or not an incoming bounding box is send to the queue and drawn.
+ * Test whether an incoming bounding box is send to the queue and drawn.
  */
 test('Bounding box send to queue', async () => {
   jest.setTimeout(30000)
@@ -164,7 +152,7 @@ test('Bounding box send to queue', async () => {
 /**
  * Test whether clicking on the box will result in a start command going to the processor
  */
-test('Bounding boxes start tracking', async () => {
+test('Clicking Bounding boxes starts tracking', async () => {
   jest.setTimeout(30000)
 
   // Create a new websocket that will act as if it was a processor
@@ -203,7 +191,8 @@ test('Bounding boxes start tracking', async () => {
       type: 'start',
       objectId: 1,
       frameId: 0,
-      boxId: 1
+      boxId: 1,
+      image: 'data:image/png;base64,00'
     })
     gotMessage = true
   }
@@ -263,6 +252,35 @@ test('Start tracking with image creates selection', async () => {
   expect(screen.getByTestId('testImage')).toBeDefined()
 })
 
-test.todo('Clicking tracked object indicator stops tracking')
+test('Overlay only draws indicators specified by filters', async () => {
+  // Create a new websocket that will act as if it was a processor
+  var processorSocket = new WebSocket('ws://processor-orchestrator/processor')
+  while (processorSocket.readyState != 1) {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  var identifyMessage = {
+    type: 'identifier',
+    id: '1'
+  }
+  processorSocket.send(JSON.stringify(identifyMessage))
 
-test.todo('Overlay only draws indicators specified by filters')
+  screen.getByTestId('button').click()
+  while (screen.getByTestId('state').textContent != 'OPEN') {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  //Send a box that has a type which gets filtered out
+  var boxesMessage = new BoxesClientMessage('boundingBoxes', 0, [
+    new Box(1, [0.2, 0.2, 0.8, 0.8], 'hiddenObject')
+  ])
+
+  screen.getByTestId('button').click()
+  while (screen.getByTestId('state').textContent != 'OPEN') {
+    await new Promise((r) => setTimeout(r, 500))
+  }
+
+  // Send the bounding boxes
+  processorSocket.send(JSON.stringify(boxesMessage))
+  //The box gets filtered out so it should not appear
+  expect(screen.queryByTestId('box-1')).toBeFalsy()
+})

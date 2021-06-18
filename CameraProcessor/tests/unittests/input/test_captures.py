@@ -14,7 +14,7 @@ class TestCaptures:
     """Tests the captures opening and closing.
 
     Attributes:
-        capture (ICapture): Capture that gets tested
+        capture (ICapture): Capture that gets tested.
     """
     def setup_method(self):
         """Creates an empty capture."""

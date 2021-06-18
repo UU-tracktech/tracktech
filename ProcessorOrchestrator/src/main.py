@@ -67,5 +67,5 @@ def create_app(client_auth, processor_auth):
     return Application(handlers, client_auth=client_auth, processor_auth=processor_auth)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

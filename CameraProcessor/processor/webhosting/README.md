@@ -5,7 +5,7 @@ There are two ways we use Tornado.
 
 One creates a WebSocket connection with the Processor Orchestrator component.
 This is used during the deployment of the Camera Processor.
-- [websocket_client.py](websocket_client.py): Defines the WebSocket logic
+- [websocket_client.py](../websocket/websocket_client.py): Defines the WebSocket logic
 - [start_command.py](start_command.py): Start command object
 - [stop_command.py](stop_command.py): Stop command object
 
@@ -15,8 +15,8 @@ This creates an HTTP server that can be connected to see the output of a single 
 - [stream_handler.py](stream_handler.py): Serves the individual frames to the WebClient
 
 ### Websockets
-The [WebsocketClient](websocket_client.py) creates a WebSocket connection with the Processor Orchestrator component.
-Given a WebSocket URL, the [WebsocketClient](websocket_client.py) will try to connect for a minute.
+The [WebsocketClient](../websocket/websocket_client.py) creates a WebSocket connection with the Processor Orchestrator component.
+Given a WebSocket URL, the [WebsocketClient](../websocket/websocket_client.py) will try to connect for a minute.
 It contains logic in case the connection gets lost where it keeps track of the messages that were not sent over.
 
 When messages are received from the Processor Orchestrator component the desired handler is being called. This still has to get implemented.

@@ -85,4 +85,4 @@ class Rectangle:
         Returns:
             str: String representation of a Rectangle.
         """
-        return f"Rectangle(x1:{self.__x1:.3f} y1:{self.__y1:.3f} x2:{self.__x2:.3f} y2:{self.__y2:.3f})"
+        return f'Rectangle(x1:{self.__x1:.3f} y1:{self.__y1:.3f} x2:{self.__x2:.3f} y2:{self.__y2:.3f})'

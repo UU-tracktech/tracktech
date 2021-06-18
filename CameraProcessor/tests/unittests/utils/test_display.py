@@ -52,7 +52,7 @@ def test_display_takes_dimensions(small_frame):
                                                 target_dimensions
                                                 )
 
-    # Asserts dimensions.
+    # Asserts the dimensions.
     tiled_height, tiled_width, _ = tiled_images.shape
     assert tiled_height == target_dimensions[1] * 2
     assert tiled_width == target_dimensions[0] * 2

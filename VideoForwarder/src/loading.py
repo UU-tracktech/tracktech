@@ -18,24 +18,24 @@ def create_camera():
     """Creat the camera using the URL and whether the camera has audio.
 
     Returns:
-        Camera: A camera object containing the camera url and if it has any audio
+        Camera: A camera object containing the camera url and if it has any audio.
     """
-    return Camera(environ["CAMERA_URL"], environ["CAMERA_AUDIO"] == "true")
+    return Camera(environ['CAMERA_URL'], environ['CAMERA_AUDIO'] == 'true')
 
 
 def create_stream_options():
     """Create the stream options for the camera.
 
     Returns:
-        StreamOptions: Load the stream options used for the conversion
+        StreamOptions: Load the stream options used for the conversion.
     """
     return StreamOptions(
-        environ.get("SEGMENT_SIZE") or "2",
-        environ.get("SEGMENT_AMOUNT") or "5",
-        environ.get("STREAM_ENCODING") or "libx264",
-        environ.get("STREAM_LOW") == "true",
-        environ.get("STREAM_MEDIUM") == "true",
-        environ.get("STREAM_HIGH") == "true"
+        environ.get('SEGMENT_SIZE') or '2',
+        environ.get('SEGMENT_AMOUNT') or '5',
+        environ.get('STREAM_ENCODING') or 'libx264',
+        environ.get('STREAM_LOW') == 'true',
+        environ.get('STREAM_MEDIUM') == 'true',
+        environ.get('STREAM_HIGH') == 'true'
     )
 
 
@@ -43,7 +43,7 @@ def get_remove_delay():
     """Get the delay after which conversion process is stopped.
 
     Returns:
-        float: How long the stream has no requests before stopping the conversion in seconds
+        float: How long the stream has no requests before stopping the conversion in seconds.
     """
     return float(environ.get('REMOVE_DELAY') or '60.0')
 
@@ -52,7 +52,7 @@ def get_timeout_delay():
     """Get the delay before the stream will become inactive.
 
     Returns:
-        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion
+        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion.
     """
     return int(environ.get('TIMEOUT_DELAY') or '30')
 
@@ -103,7 +103,7 @@ def create_authenticator():
         return None
 
     # Give back the Authentication object.
-    info("using client token validation")
+    info('using client token validation.')
     return Auth(
         public_key_path=public_key,
         algorithms=['RS256'],

@@ -1,4 +1,4 @@
-version: "3.2"
+version: '3.2'
 
 services:
   registry:
@@ -16,7 +16,7 @@ services:
     deploy:
       placement:
         constraints:
-          - "node.labels.registry==true "
+          - 'node.labels.registry==true '
     volumes:
       - registry:/var/lib/registry
       - registry_auth:/auth

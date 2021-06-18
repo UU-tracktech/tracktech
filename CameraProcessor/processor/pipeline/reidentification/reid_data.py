@@ -72,7 +72,7 @@ class ReidData:
 
         Returns:
             Union[int, None]: If the box contains an object that is being followed, return the object_id.
-                Otherwise return None.
+                Otherwise, return None.
         """
         return self.__query_boxes.get(box_id, None)
 

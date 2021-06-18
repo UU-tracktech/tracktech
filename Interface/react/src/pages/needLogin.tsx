@@ -6,15 +6,15 @@ Utrecht University within the Software Project course.
 
  */
 
-/*
-This page shows up for any user that is not authenticated, to prevent anyone from
-being able to gain access to the video streams
-*/
-
 import React from 'react'
 import { Alert } from 'antd'
 import { useKeycloak } from '@react-keycloak/web'
 
+/**
+ * This page shows up for any user that is not authenticated, to prevent
+ * access to the video streams by unauthorized users.
+ * @returns A screen displaying an error message signalling the user needs to log in.
+ */
 export function NeedLogin() {
   const { keycloak } = useKeycloak()
 
