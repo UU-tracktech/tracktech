@@ -57,13 +57,13 @@ class TestStartMessage:
             StartMessage(1.)  # Test object id float rather than int.
 
         with pytest.raises(TypeError):
-            StartMessage("1")  # Test object id string rather than int.
+            StartMessage('1')  # Test object id string rather than int.
 
         with pytest.raises(TypeError):
             StartMessage(self.object_id, box_id=.1, frame_id=self.frame_id)  # Test box id float rather than int.
 
         with pytest.raises(TypeError):
-            StartMessage(self.object_id, box_id="1", frame_id=self.frame_id)  # Test box id str rather than int.
+            StartMessage(self.object_id, box_id='1', frame_id=self.frame_id)  # Test box id str rather than int.
 
         with pytest.raises(TypeError):
             StartMessage(self.object_id, box_id=self.box_id, frame_id=1)  # Test frame id int rather than float.
