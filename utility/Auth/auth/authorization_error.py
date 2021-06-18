@@ -1,4 +1,4 @@
-"""Authentication error thrown when authentication fails.
+"""Authorization error thrown when authentication fails.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -6,6 +6,5 @@ Utrecht University within the Software Project course.
 """
 
 
-class AuthenticationError(Exception):
-    """Exception to throw when authentication fails."""
-    pass
+class AuthorizationError(Exception):
+    """Exception to throw when authorization fails."""

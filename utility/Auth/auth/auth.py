@@ -7,8 +7,8 @@ Utrecht University within the Software Project course.
 
 import jwt
 
-from AuthenticationError import AuthenticationError
-from AuthorizationError import AuthorizationError
+from authentication_error import AuthenticationError
+from authorization_error import AuthorizationError
 
 class Auth:
     """Keeps track of authentication options in order to validate tokens. """
