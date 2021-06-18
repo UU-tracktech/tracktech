@@ -36,7 +36,7 @@ export function Home() {
   const [primary, setPrimary] = React.useState<string>()
 
   const { send, objects, setSocket } = React.useContext(websocketContext)
-  const { cameras, objectTypes, orchestratorUrl } = React.useContext(
+  const { cameras, objectTypes, orchestratorWebsocketUrl } = React.useContext(
     environmentContext
   )
 
@@ -55,7 +55,7 @@ export function Home() {
   >([])
 
   React.useEffect(() => {
-    setSocket(orchestratorUrl)
+    setSocket(orchestratorWebsocketUrl)
   }, [])
 
   // Used for camera card key generation.

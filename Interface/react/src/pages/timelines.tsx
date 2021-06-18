@@ -6,13 +6,14 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Layout, Card, Timeline, Divider } from 'antd'
 import { Typography } from 'antd'
 
 import { ObjectCard } from 'components/objectCard'
 import { TimelineCard } from 'components/timelineCard'
 import { TimelineData, dateRange } from 'classes/timelineData'
+import { environmentContext } from 'components/environmentContext'
 
 const { Title } = Typography
 
@@ -33,9 +34,13 @@ export function Timelines() {
     setTimeLineEvents
   ] = React.useState<TimelineData | null>(new TimelineData([]))
 
+  const { orchestratorObjectIdsUrl, orchestratorTimelinesUrl } = useContext(
+    environmentContext
+  )
+
   React.useEffect(() => {
     // Get all the tracked objects from the server and display them.
-    fetch('https://tracktech.ml:50011/objectIds').then((text) =>
+    fetch(orchestratorObjectIdsUrl).then((text) =>
       text.json().then((json) => {
         if (json.data != undefined) setObjects(json.data)
       })
@@ -146,18 +151,16 @@ export function Timelines() {
    * @param id Id of the object to get logging data from.
    */
   function setTimeline(id: number) {
-    fetch('https://tracktech.ml:50011/timelines?objectId=' + id).then(
-      (text) => {
-        // The server might not have any data on the object.
-        if (text.status == 400) {
-          setTimeLineEvents(null)
-        } else {
-          text.json().then((json) => {
-            setTimeLineEvents(new TimelineData(json.data))
-          })
-        }
+    fetch(orchestratorTimelinesUrl + '?objectId=' + id).then((text) => {
+      // The server might not have any data on the object.
+      if (text.status == 400) {
+        setTimeLineEvents(null)
+      } else {
+        text.json().then((json) => {
+          setTimeLineEvents(new TimelineData(json.data))
+        })
       }
-    )
+    })
     setCurrentObject('Object ' + id)
   }
 

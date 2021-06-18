@@ -80,17 +80,17 @@ describe('Timestamp functions', () => {
     let warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
 
     // Wrong file extension test
-    expect(GetSegmentStarttime('wrongtype.png')).toBe(NaN)
+    expect(GetSegmentStarttime('wrongtype.png', 2)).toBe(NaN)
     expect(warnSpy).toBeCalledWith(
       'GetSegmentStarttime: expected .ts file but got something else'
     )
 
     // No _V in the filename meaning it's probably not from our forwarder
-    expect(GetSegmentStarttime('wrongname.ts')).toBe(NaN)
+    expect(GetSegmentStarttime('wrongname.ts', 2)).toBe(NaN)
     expect(warnSpy).toBeCalledWith('Video file not from forwarder')
 
     // Correct name, time obtained from 5 should be (5-1)*2 = 8
-    expect(GetSegmentStarttime('file_V05.ts')).toBe(8)
+    expect(GetSegmentStarttime('file_V05.ts', 2)).toBe(8)
     warnSpy.mockRestore()
   })
 })
