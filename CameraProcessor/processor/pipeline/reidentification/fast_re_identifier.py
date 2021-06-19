@@ -6,7 +6,9 @@ Utrecht University within the Software Project course.
 """
 import os
 import argparse
+import logging
 import gdown
+import torch
 
 from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
 from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
@@ -38,16 +40,25 @@ class FastReIdentifier(PytorchReIdentifier):
         # Load config from file and command-line arguments.
         cfg = get_cfg()
         cfg.merge_from_file(args.config_file)
+        weight_name = cfg.MODEL.WEIGHTS
+        weight_path = os.path.join(config['weights_dir_path'], weight_name)
+        cfg.MODEL.WEIGHTS = weight_path
+
+        if not torch.cuda.is_available():
+            logging.info('Fast-Reid is using CPU')
+            cfg.MODEL.DEVICE = 'cpu'
+        else:
+            logging.info('Fast-Reid is using GPU')
+
         cfg.freeze()
 
         # Download the weights if it's not in the directory.
         if not os.path.exists(config['weights_dir_path']):
             os.mkdir(config['weights_dir_path'])
 
-        if not os.path.exists(cfg.MODEL.WEIGHTS):
+        if not os.path.exists(weight_path):
             url = 'https://github.com/JDAI-CV/fast-reid/releases/download/v0.1.1/market_sbs_R101-ibn.pth'
-            output = cfg.MODEL.WEIGHTS
-            gdown.download(url, output, quiet=False)
+            gdown.download(url, weight_path, quiet=False)
 
         extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
 

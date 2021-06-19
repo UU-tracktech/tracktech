@@ -38,8 +38,7 @@ class TorchReIdentifier(PytorchReIdentifier):
 
         if not os.path.exists(weights_path):
             url = 'https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download'
-            output = weights_path
-            gdown.download(url, output, quiet=False)
+            gdown.download(url, weights_path, quiet=False)
 
         # Initialize the feature extractor of torch re-id.
         extractor = FeatureExtractor(
