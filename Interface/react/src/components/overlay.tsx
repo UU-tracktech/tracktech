@@ -299,8 +299,8 @@ export function Overlay(props: overlayProps) {
                   box.objectId && (
                     <Typography.Text
                       style={{
-                        position: 'relative',
-                        top: '-25px',
+                        position: 'absolute',
+                        top: '-30px',
                         left: '-2px',
                         border: color,
                         borderStyle: 'solid',
