@@ -329,7 +329,7 @@ export function Overlay(props: overlayProps) {
     notification.close(objectId.toString())
     notification.open({
       key: objectId.toString(),
-      message: 'Subject reappeared',
+      message: 'Object reappeared',
       description: `object ${objectId} was found on camera ${props.source.name}`,
       onClick: () => {
         // Close the message, as it is not needed anymore.
