@@ -28,5 +28,5 @@ jobs:
         run: docker-compose -f  VideoForwarder/compose/docker-compose_build_gpu.yml down --rmi all
         if: ${{ always() }}
       - name: Prune images
-        run: docker image prune --force --filter "until=168h"
+        run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}
