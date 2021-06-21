@@ -6,8 +6,7 @@ Utrecht University within the Software Project course.
 
  */
 
-import React, { ReactNode } from 'react'
-import { useKeycloak } from '@react-keycloak/web'
+import React, { ReactNode, useContext } from 'react'
 
 import {
   OrchestratorMessage,
@@ -20,6 +19,7 @@ import {
   StopClientMessage
 } from 'classes/clientMessage'
 import { Box } from 'classes/box'
+import { authContext } from 'components/authContext'
 
 /** The various states the websocket can be in. */
 export type connectionState =
@@ -80,7 +80,7 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
   const [objects, setObjects] = React.useState<NewObjectClientMessage[]>([])
 
   // Get current authentication data.
-  const { keycloak } = useKeycloak()
+  const { token } = useContext(authContext)
 
   const socketRef = React.useRef<WebSocket>()
   const listenersRef = React.useRef<Listener[]>([])
@@ -113,8 +113,7 @@ export function WebsocketProvider(props: WebsocketProviderProps) {
 
     try {
       // Authenticate the client.
-      if (keycloak.token)
-        send(new AuthenticateOrchestratorMessage(keycloak.token))
+      if (token) send(new AuthenticateOrchestratorMessage(token))
       // Let the orchestrator know that this client should receive images of new tracking objects.
       send(new SetUsesImagesMessage(true))
     } catch {

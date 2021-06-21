@@ -6,10 +6,10 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Skeleton, Typography } from 'antd'
-import { useKeycloak } from '@react-keycloak/web'
-import useAuthState from 'classes/useAuthState'
+import { authContext } from './authContext'
+import jwt_decode from 'jwt-decode'
 
 /**
  * Component displaying the login status.
@@ -17,9 +17,8 @@ import useAuthState from 'classes/useAuthState'
  */
 export function LoggedInUser() {
   // Obtain keycloak, to check for login info.
-  const { keycloak } = useKeycloak()
 
-  const status = useAuthState()
+  const { status, token } = useContext(authContext)
 
   // If the user is logged in, obtain the username from the token and display it.
   switch (status) {
@@ -42,6 +41,7 @@ export function LoggedInUser() {
         </Typography.Text>
       )
     case 'authenticated':
+      const decodedToken: any = jwt_decode(token)
       return (
         <div style={{ display: 'grid' }}>
           <Typography.Text
@@ -54,7 +54,7 @@ export function LoggedInUser() {
             data-testid={'usernameText'}
             style={{ lineHeight: 0 }}
           >
-            {keycloak.tokenParsed!['name']}
+            {decodedToken.name}
           </Typography.Text>
         </div>
       )

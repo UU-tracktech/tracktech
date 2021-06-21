@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { screen, render } from '@testing-library/react'
-import { ObjectTypeFilter } from '../../../src/components/objectTypeFilter'
+import { ObjectTypeFilter } from 'components/objectTypeFilter'
 
 // Collection of tests for the properties of the ObjectTypeFilter component
 describe('Tests for the objectTypeFilter properties', () => {

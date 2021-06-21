@@ -6,10 +6,9 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button, Skeleton } from 'antd'
-import { useKeycloak } from '@react-keycloak/web'
-import useAuthState from 'classes/useAuthState'
+import { authContext } from 'components/authContext'
 
 /**
  * Button allowing the user to log in or out, depending on authentication status.
@@ -17,16 +16,15 @@ import useAuthState from 'classes/useAuthState'
  */
 export function LoginButton() {
   // Obtain keycloak to look for login info.
-  const { keycloak } = useKeycloak()
-  const status = useAuthState()
+  const { status, login, logout } = useContext(authContext)
 
   // If the user is logged in, return a logout button, otherwise return a login button.
   switch (status) {
     case 'loading':
       return <Skeleton.Button active style={{ verticalAlign: 'middle' }} />
     case 'unauthenticated':
-      return <Button onClick={() => keycloak.login()}>Login</Button>
+      return <Button onClick={() => login()}>Login</Button>
     case 'authenticated':
-      return <Button onClick={() => keycloak.logout()}>Logout</Button>
+      return <Button onClick={() => logout()}>Logout</Button>
   }
 }

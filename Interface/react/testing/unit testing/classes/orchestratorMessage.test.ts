@@ -12,7 +12,7 @@ import {
   StartOrchestratorMessage,
   StopOrchestratorMessage,
   AuthenticateOrchestratorMessage
-} from '../../../src/classes/orchestratorMessage'
+} from 'classes/orchestratorMessage'
 
 // Collection of tests for the classes contained in the orchestratorMessage file
 describe('Test the creation of classes in the orchestratorMessage file', () => {
