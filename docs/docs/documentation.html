@@ -183,8 +183,16 @@ Utrecht University within the Software Project course.
             <span class="n">sub_dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">index_loc</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">index_file</span><span class="p">:</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;style&gt;&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;body{background-color: #212529;color:#f7f7f7;font-family:system-ui,-apple-system,&quot;Segoe UI&quot;,&#39;</span>
+                         <span class="s1">&#39;Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&#39;</span>
+                         <span class="s1">&#39;&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;a{background-color:rgb(51, 51, 51);color:#f7f7f7;margin:.1rem;padding:.1rem.5rem;&#39;</span>
+                         <span class="s1">&#39;box-sizing: border-box;text-decoration: none;margin-bottom:2px;display:inline-block}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/style&gt;&#39;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">index_path</span> <span class="ow">in</span> <span class="n">index_paths</span><span class="p">:</span>
-            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;hr&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&amp;mdash;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/index.html&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;br&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_imports</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
@@ -635,8 +643,16 @@ Utrecht University within the Software Project course.
             <span class="n">sub_dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">index_loc</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">index_file</span><span class="p">:</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;style&gt;&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;body{background-color: #212529;color:#f7f7f7;font-family:system-ui,-apple-system,&quot;Segoe UI&quot;,&#39;</span>
+                         <span class="s1">&#39;Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&#39;</span>
+                         <span class="s1">&#39;&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;a{background-color:rgb(51, 51, 51);color:#f7f7f7;margin:.1rem;padding:.1rem.5rem;&#39;</span>
+                         <span class="s1">&#39;box-sizing: border-box;text-decoration: none;margin-bottom:2px;display:inline-block}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/style&gt;&#39;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">index_path</span> <span class="ow">in</span> <span class="n">index_paths</span><span class="p">:</span>
-            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;hr&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&amp;mdash;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/index.html&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;br&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>

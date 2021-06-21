@@ -80,7 +80,8 @@ Utrecht University within the Software Project course.
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">processor.utils.text</span> <span class="kn">import</span> <span class="n">bounding_box_to_dict</span>
+<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
+<span class="kn">from</span> <span class="nn">processor.utils.text</span> <span class="kn">import</span> <span class="n">bounding_boxes_to_dict</span>
 <span class="kn">from</span> <span class="nn">processor.websocket.i_message</span> <span class="kn">import</span> <span class="n">IMessage</span>
 
 
@@ -92,9 +93,14 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            frame_id (float): identifier of the frame.</span>
 <span class="sd">            bounding_boxes (BoundingBoxes): bounding boxes in the frame.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: One or more of the attributes given has the wrong type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Frame id should be a float.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">BoundingBoxes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bounding_boxes must be of type BoundingBoxes&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
@@ -108,6 +114,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (BoxesMessage): BoxesCommand constructed from the dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: One or more of the expected keys needed for the boxes message is missing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;frameId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;frameId missing&#39;</span><span class="p">)</span>
@@ -118,7 +127,7 @@ Utrecht University within the Software Project course.
         <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">boxes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">to_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Converts the BoxesMessage to a dict representation.</span>
@@ -126,11 +135,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            (dict): Python dict representation of the message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;frameId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span><span class="p">,</span>
-            <span class="s1">&#39;boxes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">],</span>
-        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">frame_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -192,9 +197,14 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            frame_id (float): identifier of the frame.</span>
 <span class="sd">            bounding_boxes (BoundingBoxes): bounding boxes in the frame.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: One or more of the attributes given has the wrong type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Frame id should be a float.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">BoundingBoxes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bounding_boxes must be of type BoundingBoxes&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
@@ -208,6 +218,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (BoxesMessage): BoxesCommand constructed from the dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: One or more of the expected keys needed for the boxes message is missing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;frameId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;frameId missing&#39;</span><span class="p">)</span>
@@ -218,7 +231,7 @@ Utrecht University within the Software Project course.
         <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">boxes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">to_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Converts the BoxesMessage to a dict representation.</span>
@@ -226,11 +239,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            (dict): Python dict representation of the message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;frameId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span><span class="p">,</span>
-            <span class="s1">&#39;boxes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">],</span>
-        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">frame_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -291,9 +300,14 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            frame_id (float): identifier of the frame.</span>
 <span class="sd">            bounding_boxes (BoundingBoxes): bounding boxes in the frame.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: One or more of the attributes given has the wrong type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Frame id should be a float.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">BoundingBoxes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bounding_boxes must be of type BoundingBoxes&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span> <span class="o">=</span> <span class="n">frame_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span> <span class="o">=</span> <span class="n">bounding_boxes</span>
@@ -308,6 +322,12 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>frame_id (float):</strong>  identifier of the frame.</li>
 <li><strong>bounding_boxes (BoundingBoxes):</strong>  bounding boxes in the frame.</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>TypeError:</strong>  One or more of the attributes given has the wrong type</li>
 </ul>
 </div>
 
@@ -333,6 +353,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (BoxesMessage): BoxesCommand constructed from the dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: One or more of the expected keys needed for the boxes message is missing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;frameId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;frameId missing&#39;</span><span class="p">)</span>
@@ -343,7 +366,7 @@ Utrecht University within the Software Project course.
         <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">boxes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BoxesMessage</span><span class="p">(</span><span class="n">frame_id</span><span class="p">,</span> <span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">))</span>
 </pre></div>
 
         </details>
@@ -361,6 +384,12 @@ Utrecht University within the Software Project course.
 <blockquote>
   <p>(BoxesMessage): BoxesCommand constructed from the dict.</p>
 </blockquote>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>KeyError:</strong>  One or more of the expected keys needed for the boxes message is missing.</li>
+</ul>
 </div>
 
 
@@ -381,11 +410,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Returns:</span>
 <span class="sd">            (dict): Python dict representation of the message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;frameId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span><span class="p">,</span>
-            <span class="s1">&#39;boxes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">bounding_box_to_dict</span><span class="p">(</span><span class="n">bounding_box</span><span class="p">)</span> <span class="k">for</span> <span class="n">bounding_box</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">],</span>
-        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__bounding_boxes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame_id</span><span class="p">)</span>
 </pre></div>
 
         </details>

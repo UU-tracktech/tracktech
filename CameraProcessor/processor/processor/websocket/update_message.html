@@ -91,9 +91,20 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): Identifier of the object that should be followed.</span>
 <span class="sd">            feature_map ([float]): Feature map of the object that should be followed.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: object_id is not an integer.</span>
+<span class="sd">                       feature_map should be a list of floats.</span>
+<span class="sd">            AttributeError: feature_map does not contain elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Object id should be an integer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_map</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature_map is not a list but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">feature_map</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">feature_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;feature_map list is empty&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature_map contains other than a float, namely: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">feature_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
@@ -107,6 +118,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (BoxesMessage): UpdateMessage constructed from the dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: One or more of the expected keys needed for the update message is missing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;featureMap&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;featureMap missing&#39;</span><span class="p">)</span>
@@ -193,9 +207,20 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): Identifier of the object that should be followed.</span>
 <span class="sd">            feature_map ([float]): Feature map of the object that should be followed.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: object_id is not an integer.</span>
+<span class="sd">                       feature_map should be a list of floats.</span>
+<span class="sd">            AttributeError: feature_map does not contain elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Object id should be an integer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_map</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature_map is not a list but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">feature_map</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">feature_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;feature_map list is empty&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature_map contains other than a float, namely: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">feature_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
@@ -209,6 +234,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (BoxesMessage): UpdateMessage constructed from the dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: One or more of the expected keys needed for the update message is missing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;featureMap&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;featureMap missing&#39;</span><span class="p">)</span>
@@ -294,9 +322,20 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            object_id (int): Identifier of the object that should be followed.</span>
 <span class="sd">            feature_map ([float]): Feature map of the object that should be followed.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: object_id is not an integer.</span>
+<span class="sd">                       feature_map should be a list of floats.</span>
+<span class="sd">            AttributeError: feature_map does not contain elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Object id should be an integer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_map</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature_map is not a list but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">feature_map</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">feature_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;feature_map list is empty&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature_map contains other than a float, namely: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">feature_map</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__object_id</span> <span class="o">=</span> <span class="n">object_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
@@ -311,6 +350,14 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>object_id (int):</strong>  Identifier of the object that should be followed.</li>
 <li><strong>feature_map ([float]):</strong>  Feature map of the object that should be followed.</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>TypeError:</strong>  object_id is not an integer.
+feature_map should be a list of floats.</li>
+<li><strong>AttributeError:</strong>  feature_map does not contain elements.</li>
 </ul>
 </div>
 
@@ -336,6 +383,9 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (BoxesMessage): UpdateMessage constructed from the dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: One or more of the expected keys needed for the update message is missing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;featureMap&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;featureMap missing&#39;</span><span class="p">)</span>
@@ -364,6 +414,12 @@ Utrecht University within the Software Project course.
 <blockquote>
   <p>(BoxesMessage): UpdateMessage constructed from the dict.</p>
 </blockquote>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>KeyError:</strong>  One or more of the expected keys needed for the update message is missing</li>
+</ul>
 </div>
 
 
