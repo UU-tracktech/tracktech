@@ -19,6 +19,8 @@ import { websocketContext } from 'components/websocketContext'
 import { environmentContext } from 'components/environmentContext'
 import { StopOrchestratorMessage } from 'classes/orchestratorMessage'
 
+const { Footer, Content } = Layout
+
 /** The selection modes for the bounding boxes. */
 export type indicator = 'All' | 'Selection' | 'None'
 
@@ -36,7 +38,7 @@ export function Home() {
   const [primary, setPrimary] = React.useState<string>()
 
   const { send, objects, setSocket } = React.useContext(websocketContext)
-  const { cameras, objectTypes, orchestratorUrl } = React.useContext(
+  const { cameras, objectTypes, orchestratorWebsocketUrl } = React.useContext(
     environmentContext
   )
 
@@ -55,14 +57,14 @@ export function Home() {
   >([])
 
   React.useEffect(() => {
-    setSocket(orchestratorUrl)
+    setSocket(orchestratorWebsocketUrl)
   }, [])
 
   // Used for camera card key generation.
   var iterator = 0
 
   return (
-    <Layout.Content
+    <Content
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 4fr',
@@ -203,8 +205,19 @@ export function Home() {
             hiddenObjectTypes={filteredObjectTypes}
           />
         )}
+        <Footer
+          style={{
+            height: 25,
+            padding: '0px 0px 4px 0px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          © Utrecht University (ICS)
+        </Footer>
       </div>
-    </Layout.Content>
+    </Content>
   )
 
   /**

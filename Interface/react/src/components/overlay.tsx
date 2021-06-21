@@ -299,8 +299,8 @@ export function Overlay(props: overlayProps) {
                   box.objectId && (
                     <Typography.Text
                       style={{
-                        position: 'relative',
-                        top: '-25px',
+                        position: 'absolute',
+                        top: '-30px',
                         left: '-2px',
                         border: color,
                         borderStyle: 'solid',
@@ -329,7 +329,7 @@ export function Overlay(props: overlayProps) {
     notification.close(objectId.toString())
     notification.open({
       key: objectId.toString(),
-      message: 'Subject reappeared',
+      message: 'Object reappeared',
       description: `object ${objectId} was found on camera ${props.source.name}`,
       onClick: () => {
         // Close the message, as it is not needed anymore.

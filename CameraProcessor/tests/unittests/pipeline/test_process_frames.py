@@ -62,10 +62,9 @@ class TestProcessFrames:
         Returns:
             FakeTracker: Fake tracker implementation.
         """
-        # TODO Actually return SORT maybe # pylint: disable=fixme.
         return FakeTracker()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_yolov5(self, configs):
         """Tests process_stream function using Yolov5.
 
@@ -83,7 +82,7 @@ class TestProcessFrames:
             self.await_detection(video_capture, detector, tracker, re_identifier))
         video_capture.close()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_yolor(self, configs):
         """Tests process_stream function with YOLOR.
 
@@ -103,7 +102,7 @@ class TestProcessFrames:
         asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker, re_identifier))
         capture.close()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_fake(self, configs):
         """Tests process_stream with a fake detector.
 

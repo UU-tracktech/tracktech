@@ -43,7 +43,11 @@ The settings (places in public in react) should look like this.
     }
   ],
   "objectTypes": ["object types, like person or bicycle"],
-  "orchestratorUrl": "The url to the orchestrator"
+  "orchestratorWebsocketUrl": "The Url to the client websocket endpoint on the orchestrator",
+  "orchestratorObjectIdsUrl": "The Url to the orchestrator objectids HTTP endpoint",
+  "orchestratorTimelinesUrl": "The Url to the orchestrator timelines HTTP endpoint",
+  "bufferTime": (number setting the buffer length),
+  "segmentLength": (number corresponding to hls segment size of video forwarder)
 }
 ```
 
