@@ -7,7 +7,6 @@ Utrecht University within the Software Project course.
 import os
 import gdown
 
-import processor.utils.features as UtilsFeatures
 from processor.pipeline.reidentification.pytorch_re_identifier import PytorchReIdentifier
 from processor.pipeline.reidentification.torchreid.torchreid.utils import FeatureExtractor
 from processor.utils.features import resize_cutout
@@ -48,37 +47,27 @@ class TorchReIdentifier(PytorchReIdentifier):
 
         super().__init__(config, extractor)
 
-    def extract_features(self, frame_obj, bbox):
-        """Extract features from a single bounding box.
-
-        This is achieved by generating a cutout of the bounding boxes
-        and feeding them to the feature extractor of Torchreid.
+    def extract_features(self, cutouts):
+        """Extract features from a list of cutouts.
 
         Args:
-            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
+            cutouts ([np.ndarray]): A list of cutouts of the objects to extract features from.
 
         Returns:
-             [float]: Feature vector of single bounding box.
+             [[float]]: Feature vectors of the cutouts.
         """
-        # Cutout the bounding box from the frame and resize the cutout to the right size.
-        cutout = UtilsFeatures.slice_bounding_box(bbox, frame_obj.frame)
-        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
 
-        # Extract the feature from the cutout and convert it to a normal float array.
-        feature = self.extractor(resized_cutout).cpu().numpy().tolist()[0]
+        return self.extractor(cutouts).cpu().numpy().tolist()
 
-        return feature
-
-    def extract_features_from_cutout(self, cutout):
-        """Given a cutout, extracts the features from it.
+    def extract_features_from_image(self, image):
+        """Extract features from an image.
 
         Args:
-            cutout (np.ndarray): cutout of the object to extract features from.
+            image (np.ndarray): the image of the object to extract features from.
 
         Returns:
-            [float]: Feature vector of a single bounding box.
+            [float]: Feature vector of an image.
         """
-        resized_cutout = resize_cutout(cutout, self.config)
+        resized_image = resize_cutout(image, self.config)
 
-        return self.extractor(resized_cutout).cpu().numpy().tolist()[0]
+        return self.extractor(resized_image).cpu().numpy().tolist()[0]
