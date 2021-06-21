@@ -13,8 +13,6 @@ import { App } from './app'
 import reportWebVitals from './reportWebVitals'
 import 'bootstrap/dist/css/bootstrap.css'
 
-import { ReactKeycloakProvider } from '@react-keycloak/web'
-
 ReactDOM.render(
   <React.StrictMode>
     <App />

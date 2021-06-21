@@ -15,7 +15,7 @@ import { authContext } from 'components/authContext'
  * @returns The login button.
  */
 export function LoginButton() {
-  // Obtain keycloak to look for login info.
+  // Obtain auth to look for login info.
   const { status, login, logout } = useContext(authContext)
 
   // If the user is logged in, return a logout button, otherwise return a login button.

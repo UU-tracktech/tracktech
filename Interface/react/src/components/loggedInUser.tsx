@@ -16,7 +16,7 @@ import jwt_decode from 'jwt-decode'
  * @returns A text element displaying login status.
  */
 export function LoggedInUser() {
-  // Obtain keycloak, to check for login info.
+  // Obtain auth, to check for login info.
 
   const { status, token } = useContext(authContext)
 
