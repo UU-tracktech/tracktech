@@ -3,12 +3,8 @@ name: Documentation
 on:
   workflow_dispatch:
   push:
-    paths:
-      - .github/workflows/Documentation.yml
-  pull_request:
     branches:
       - master
-      - develop
   # Also trigger on page_build, as well as release created events
   page_build:
     release:
@@ -31,7 +27,7 @@ jobs:
         run: docker-compose down --rmi all
         if: ${{ always() }}
       - name: Prune images
-        run: docker image prune --force --filter "until=168h"
+        run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v2
@@ -59,4 +55,4 @@ jobs:
         with:
           # token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          folder: "documentation" # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.
+          folder: 'documentation' # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.

@@ -6,36 +6,41 @@ Utrecht University within the Software Project course.
 
  */
 
-/*
-  This page contains timelines showing when objects where detected over time.
-*/
-
-import React from 'react'
+import React, { useContext } from 'react'
 import { Layout, Card, Timeline, Divider } from 'antd'
 import { Typography } from 'antd'
 
-import { ObjectCard } from '../components/objectCard'
-import { TimelineCard } from '../components/timelineCard'
-import { TimelineData, dateRange } from '../classes/timelineData'
+import { ObjectCard } from 'components/objectCard'
+import { TimelineCard } from 'components/timelineCard'
+import { TimelineData, dateRange } from 'classes/timelineData'
+import { environmentContext } from 'components/environmentContext'
 
 const { Title } = Typography
 
+/**
+ * Timeline container component containing timelines that show when objects where detected over time.
+ * @returns The timelines page.
+ */
 export function Timelines() {
-  /** State containing all the tracked objects */
+  // State containing all the tracked objects.
   const [objects, setObjects] = React.useState<number[]>([])
-  /** State containing the currently selected item */
+  // State containing the currently selected item.
   const [currentObject, setCurrentObject] = React.useState<string>(
     'Tracking timelines'
   )
-  /** State containing the events of the currently selected item, which is null if no data is available */
+  // State containing the events of the currently selected item, which is null if no data is available.
   const [
     timelineEvents,
     setTimeLineEvents
   ] = React.useState<TimelineData | null>(new TimelineData([]))
 
+  const { orchestratorObjectIdsUrl, orchestratorTimelinesUrl } = useContext(
+    environmentContext
+  )
+
   React.useEffect(() => {
-    //Get all the tracked objects from the server and display them
-    fetch('https://tracktech.ml:50011/objectIds').then((text) =>
+    // Get all the tracked objects from the server and display them.
+    fetch(orchestratorObjectIdsUrl).then((text) =>
       text.json().then((json) => {
         if (json.data != undefined) setObjects(json.data)
       })
@@ -44,7 +49,7 @@ export function Timelines() {
 
   var timelines: JSX.Element[] = []
 
-  //Create the timeline of there is data
+  // Create the timeline if there is data.
   if (timelineEvents != null) {
     var events = timelineEvents.GetImportantEvents()
     for (let cameraId in events) {
@@ -57,7 +62,7 @@ export function Timelines() {
         </TimelineCard>
       )
     }
-    // Otherwise show a message explaining there is no data
+    // Otherwise show a message explaining there is no data.
   } else {
     timelines.push(
       <p style={{ paddingLeft: 10 }}>No tracking data available.</p>
@@ -65,7 +70,7 @@ export function Timelines() {
   }
 
   return (
-    //Main content of the page
+    // Main content of the page.
     <Layout.Content
       style={{
         display: 'grid',
@@ -83,7 +88,7 @@ export function Timelines() {
         }}
       >
         <Card
-          //This card contains the objects have been or are being tracked
+          // This card contains the objects have been or are being tracked.
           bodyStyle={{ padding: '4px' }}
           headStyle={{ padding: 0 }}
           size='small'
@@ -101,7 +106,7 @@ export function Timelines() {
               gridAutoRows: '100px'
             }}
           >
-            {/* Map the objects to cards */}
+            {/* Map the objects to cards. */}
             {objects.map((objectId) => {
               return (
                 <ObjectCard
@@ -118,7 +123,7 @@ export function Timelines() {
       <div
         style={{ overflowY: 'auto', backgroundColor: 'white', margin: '5px' }}
       >
-        {/*Show the currently selected object data */}
+        {/* Show the currently selected object data. */}
         <Title
           data-testid='timelines-page-title'
           style={{ padding: '10px 10px 0px' }}
@@ -141,37 +146,43 @@ export function Timelines() {
     </Layout.Content>
   )
 
-  //Get the timelines of the selected timelines and set them as visible
-  async function setTimeline(id: number) {
-    fetch('https://tracktech.ml:50011/timelines?objectId=' + id).then(
-      (text) => {
-        // The server might not have any data on the object
-        if (text.status == 400) {
-          setTimeLineEvents(null)
-        } else {
-          text.json().then((json) => {
-            setTimeLineEvents(new TimelineData(json.data))
-          })
-        }
+  /**
+   * Get the timelines of the selected timelines and set them as visible.
+   * @param id Id of the object to get logging data from.
+   */
+  function setTimeline(id: number) {
+    fetch(orchestratorTimelinesUrl + '?objectId=' + id).then((text) => {
+      // The server might not have any data on the object.
+      if (text.status == 400) {
+        setTimeLineEvents(null)
+      } else {
+        text.json().then((json) => {
+          setTimeLineEvents(new TimelineData(json.data))
+        })
       }
-    )
+    })
     setCurrentObject('Object ' + id)
   }
 
-  // Create the array of timeline items
+  /**
+   * Create the array of timeline items.
+   * @param cameraId Id of the camera to get items from.
+   * @param rangeArray Logging data for this camera.
+   * @returns
+   */
   function createTimelineItems(
     cameraId: string,
     rangeArray: dateRange[]
   ): JSX.Element[] {
     var val: JSX.Element[] = []
     rangeArray.forEach((x) => {
-      //From
+      // From.
       val.push(
         <Timeline.Item key={`${cameraId}-from-${x.from.toUTCString()}`}>
           {x.from.toUTCString()} | Found object
         </Timeline.Item>
       )
-      //To
+      // To.
       val.push(
         <Timeline.Item key={`${cameraId}-to-${x.to.toUTCString()}`} color='red'>
           {x.to.toUTCString()} | Lost object

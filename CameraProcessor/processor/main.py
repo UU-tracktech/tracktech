@@ -5,6 +5,7 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
+import os
 import sys
 import logging
 import asyncio
@@ -13,21 +14,24 @@ import tornado.ioloop
 import tornado.web
 
 from processor.utils.config_parser import ConfigParser
+from processor.utils.display import opencv_display
 
 from processor.pipeline.prepare_pipeline import prepare_objects
-from processor.pipeline.process_frames import process_stream, opencv_display, send_boxes_to_orchestrator
+from processor.pipeline.process_frames import process_stream
 
-from processor.webhosting.websocket_client import WebsocketClient
+from processor.websocket.websocket_client import WebsocketClient
 from processor.webhosting.html_page_handler import HtmlPageHandler
 from processor.webhosting.stream_handler import StreamHandler
+
+from processor.websocket.boxes_message import BoxesMessage
 
 
 def create_app(configs, port):
     """Creates a tornado app on a given port.
 
     Args:
-        configs (ConfigParser): configurations of the application
-        port (int): Port app exposes
+        configs (ConfigParser): configurations of the application.
+        port (int): Port app exposes.
     """
     print('*' * 30)
     print('*   open TORNADO stream on   *')
@@ -42,15 +46,39 @@ def create_app(configs, port):
     app.listen(port)
 
 
-async def deploy(configs, ws_id):
+def enforce_deploy_environment_variables():
+    """Makes sure the environment variables are set correctly when running in deploy mode.
+
+    Returns:
+        str, str, str: Id of the camera processor for the orchestrator.
+                       URL of the orchestrator WebSocket.
+                       URL of the forwarder stream.
+    """
+    if os.getenv('ORCHESTRATOR_URL') is None or os.getenv('HLS_STREAM_URL') is None or os.getenv('CAMERA_ID') is None:
+        raise EnvironmentError('Environment variable CAMERA_ID, HLS_STREAM_URL or ORCHESTRATOR_URL'
+                               ' is missing but is required during deployment.')
+
+    # Give back the values found in the environment.
+    return os.getenv('CAMERA_ID'), os.getenv('ORCHESTRATOR_URL'), os.getenv('HLS_STREAM_URL')
+
+
+async def deploy(configs, websocket_id, websocket_url, hls_url):
     """Connects to the orchestrator and starts the process_frames loop
 
     Args:
-        configs (ConfigParser): configurations for the prepared stream
-        ws_id (str): Id of the camera processor for the orchestrator
+        configs (configparser.ConfigParser): configurations for the prepared stream.
+        websocket_id (str): Id of the camera processor for the orchestrator.
+        websocket_url (str): Url of the orchestrator websocket.
+        hls_url (str): Url of the forwarder stream.
     """
-    capture, detector, tracker, re_identifier, ws_url = prepare_objects(configs)
-    websocket_client = WebsocketClient(ws_url, ws_id)
+    # To deploy, websocket url and forwarder url have to be set in the configurations.
+    configs['Input']['type'] = 'hls'
+    configs['Input']['hls_url'] = hls_url
+    configs['Orchestrator']['url'] = websocket_url
+
+    # Open the capture in combination with the stages and create the client.
+    capture, detector, tracker, re_identifier, websocket_url = prepare_objects(configs)
+    websocket_client = WebsocketClient(websocket_url, websocket_id)
     await websocket_client.connect()
     # Initiate the stream processing loop, giving the websocket client.
     await process_stream(
@@ -59,13 +87,9 @@ async def deploy(configs, ws_id):
         tracker,
         re_identifier,
         # Function to call when frame is processed.
-        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
-                                                                                    websocket_client,
-                                                                                    frame_obj,
-                                                                                    detected_boxes,
-                                                                                    tracked_boxes,
-                                                                                    re_id_tracked_boxes
-                                                                                    ),
+        lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
+        # Sends the bounding boxes to the orchestrator using a websocket client.
+        websocket_client.send_message(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
         websocket_client
     )
 
@@ -73,11 +97,12 @@ async def deploy(configs, ws_id):
 def main():
     """Run the main loop, depending on the mode run on localhost, locally with opencv or in the swarm.
 
-    Tornado uses a custom IOLoop
-    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop
+    Tornado uses a custom IOLoop.
+    Deploy first needs to connect with the orchestrator before it is able to start the asyncio loop.
 
     Raises:
-        AttributeError: Mode in which is ran does not exist.
+        AttributeError: Mode in which is run does not exist.
+        EnvironmentError: CAMERA_ID is missing, but the application is running in deploy mode.
     """
     # Load the config file.
     config_parser = ConfigParser('configs.ini', True)
@@ -95,12 +120,13 @@ def main():
         asyncio.get_event_loop().run_until_complete(
             process_stream(capture, detector, tracker, re_identifier, opencv_display, None)
         )
-    # Deploy mode where all is sent to the orchestrator using the websocket url.
+    # Deploy mode where all is sent to the orchestrator using the websocket URL.
     elif configs['Main']['mode'].lower() == 'deploy':
-        websocket_id = configs['Input']['camera_id']
-        asyncio.get_event_loop().run_until_complete(deploy(configs, websocket_id))
+        # Make environment variables are set when running in deploy.
+        ws_id, ws_url, hls_url = enforce_deploy_environment_variables()
+        asyncio.get_event_loop().run_until_complete(deploy(configs, ws_id, ws_url, hls_url))
     else:
-        raise AttributeError("Mode you try to run in does not exist, did you make a typo?")
+        raise AttributeError('Mode you try to run in does not exist, did you make a typo?')
 
 
 if __name__ == '__main__':

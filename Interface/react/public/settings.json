@@ -19,5 +19,9 @@
         "bus",
         "truck"
     ],
-    "orchestratorUrl": "wss://tracktech.ml:50011/client"
+    "orchestratorWebsocketUrl": "wss://tracktech.ml:50011/client",
+    "orchestratorObjectIdsUrl": "https://tracktech.ml:50011/objectIds",
+    "orchestratorTimelinesUrl": "https://tracktech.ml:50011/timelines",
+    "bufferTime": 15,
+    "segmentLength": 2
 }

@@ -148,6 +148,7 @@ class MotChallenge2DBox(_BaseDataset):
             if self.config["SEQMAP_FILE"]:
                 seqmap_file = self.config["SEQMAP_FILE"]
             else:
+                print(self.config['GT_FOLDER'])
                 if self.config["SEQMAP_FOLDER"] is None:
                     seqmap_file = os.path.join(self.config['GT_FOLDER'], 'seqmaps', self.gt_set + '.txt')
                 else:
@@ -163,6 +164,8 @@ class MotChallenge2DBox(_BaseDataset):
                     seq = row[0]
                     seq_list.append(seq)
                     ini_file = os.path.join(self.gt_fol, seq, 'seqinfo.ini')
+                    print(self.gt_fol)
+                    print(os.path.realpath(ini_file))
                     if not os.path.isfile(ini_file):
                         raise TrackEvalException('ini file does not exist: ' + seq + '/' + os.path.basename(ini_file))
                     ini_data = configparser.ConfigParser()

@@ -4,28 +4,32 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
+import os
 import logging
 from os import path
+from PIL import Image
 
-from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
-from processor.data_object.rectangle import Rectangle
 from processor.dataloaders.i_dataloader import IDataloader
 
 
 class MotDataloader(IDataloader):
     """MOT Dataloader, formats MOT Data."""
-    def __init__(self, configs, path_location):
+
+    def __init__(self, configs):
         """Initializes the MOTDataloader.
 
         Args:
             configs (dict): Configurations containing settings for dataloader.
-            path_location (str): The path of the MOT data.
         """
-        super().__init__(configs, path_location)
-        self.skipped_lines = 0
+        super().__init__(configs)
+        dataloader_config = configs['MOT']
+        self.file_path = dataloader_config['annotations_path']
+        self.image_path = dataloader_config['image_path']
+        self.image_dimensions = (-1, -1)
+        self.skipped_lines = []
+        self.delimiter = ' '
 
-    def __get_annotations(self):
+    def get_annotations(self):
         """Gets annotations.
 
         Returns:
@@ -36,72 +40,22 @@ class MotDataloader(IDataloader):
             lines = [line.rstrip('\n') for line in file]
 
         # Determine delimiter automatically.
-        delimiter = ' '
         if lines[0].__contains__(','):
-            delimiter = ','
+            self.delimiter = ','
 
-        annotations = []
-        # Extract information from lines.
-        for line in lines:
-            (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = self.__parse_line(line, delimiter)
-            if image_id - 1 >= self.nr_frames:
-                self.skipped_lines = self.skipped_lines + 1
-                continue
-            annotations.append((image_id, person_id, pos_x, pos_y, pos_w, pos_h))
-        return annotations
-
-    def __parse_boxes(self, annotations):
-        """Parses bounding boxes.
-
-        Args:
-            annotations ([(str)]): Annotations tuples in a list.
-
-        Returns:
-            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.
-        """
-        bounding_boxes_list = []
-        current_boxes = []
-        current_image_id = annotations[0][0]
-        # Extract information from lines.
-        for annotation in annotations:
-            (image_id, person_id, pos_x, pos_y, pos_w, pos_h) = annotation
-            this_image_path = self.__get_image_path(image_id)
-            width, height = self.get_image_dimensions(image_id, this_image_path)
-            if not current_image_id == image_id:
-                bounding_boxes_list.append(BoundingBoxes(current_boxes, current_image_id))
-                current_boxes = []
-                current_image_id = image_id
-            current_boxes.append(BoundingBox(classification='person',
-                                             rectangle=Rectangle(x1=pos_x / width,
-                                                                 y1=pos_y / height,
-                                                                 x2=(pos_x + pos_w) / width,
-                                                                 y2=(pos_y + pos_h) / height),
-                                             identifier=person_id,
-                                             certainty=1))
-        return bounding_boxes_list
+        return lines
 
     def __log_skipped(self):
         """Logs when lines skipped."""
-        if self.skipped_lines > 0:
+        if self.skipped_lines:
             logging.info(f'Skipped lines: {self.skipped_lines}')
-
-    def parse_file(self):
-        """Parses an annotations file.
-
-        Returns:
-            bounding_boxes_list (list): List of bounding boxes.
-        """
-        annotations = self.__get_annotations()
-        self.__log_skipped()
-        bounding_boxes_list = self.__parse_boxes(annotations)
-        return bounding_boxes_list
 
     @staticmethod
     def __get_image_name(image_id):
         """Get the name of an image.
 
         Args:
-            image_id (int): Id of the image.
+            image_id (int): ID of the image.
 
         Returns:
             name (string): Properly formatted image id.
@@ -125,15 +79,53 @@ class MotDataloader(IDataloader):
         this_image_path = path.abspath(f'{self.image_path}/{image_name}.jpg')
         return this_image_path
 
-    @staticmethod
-    def __parse_line(line, delimiter):
+    def get_image_dimensions(self, image_id):
+        """Gets the size of an image based on its name.
+
+        Args:
+            image_id (integer): String with the name of the image.
+
+        Returns:
+            (int,int): width and height dimensions of the image.
+        """
+        if self.image_dimensions >= (0, 0):
+            return self.image_dimensions
+        image_name = self.__get_image_name(image_id)
+        this_image_path = self.__get_image_path(image_name)
+
+        # File did not exist.
+        if not os.path.exists(this_image_path):
+            return None, None
+
+        # Open image and return its size.
+        image = Image.open(this_image_path)
+        self.image_dimensions = image.size
+        return image.size
+
+    def parse_line(self, line):
         """Parse line from file given a delimiter.
 
         Args:
             line (str): line in file.
-            delimiter (str): delimiter values in line are separated with.
 
         Returns:
             list (list): List of integer values of line parsed and put inside string.
         """
-        return [int(i) for i in line.split(delimiter)[:6]]
+        (image_id, identifier, pos_x, pos_y, pos_w, pos_h, certainty) = [int(i) for i in line.split(self.delimiter)[:7]]
+        # MOT is 1 based, while this project is 0 based.
+        pos_x -= 1
+        pos_y -= 1
+        width, height = self.get_image_dimensions(image_id)
+
+        # Image did not exist.
+        if width is None or height is None:
+            return []
+
+        # Make sure values are between the frame borders.
+        pos_x1 = max(pos_x, 0)
+        pos_y1 = max(pos_y, 0)
+        box_x2 = min(pos_x + pos_w, width)
+        box_y2 = min(pos_y + pos_h, height)
+
+        return [(image_id, identifier, pos_x1 / width, pos_y1 / height, box_x2 / width,
+                box_y2 / height, certainty, '', None)]

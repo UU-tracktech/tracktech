@@ -18,7 +18,7 @@ class TimelineHandler(RequestHandler):
 
     def set_default_headers(self):
         """Sets the default request headers for the request."""
-        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header('Access-Control-Allow-Origin', '*')
 
     def get(self):
         """Gets log file contents.
@@ -27,16 +27,16 @@ class TimelineHandler(RequestHandler):
         """
         object_id = self.get_argument("objectId", None)
         if object_id is None:
-            self.set_status(400, "Missing 'objectId' query parameter")
-            self.finish("Missing 'objectId' query parameter")
+            self.set_status(400, 'Missing "objectId" query parameter')
+            self.finish('Missing "objectId" query parameter')
             return
-        filename = f"tracking_timelines/tracking_logs_{object_id}.txt"
+        filename = f'tracking_timelines/tracking_logs_{object_id}.txt'
         if not os.path.exists(filename):
-            self.set_status(400, "Object id not present in tracking history")
-            self.finish("Object id not present in tracking history")
+            self.set_status(400, 'Object id not present in tracking history')
+            self.finish('Object id not present in tracking history')
             return
-        file = open(filename, "r")
-        data = file.read().replace("\n", "")
+        file = open(filename, 'r')
+        data = file.read().replace('\n', '')
         # Remove final comma.
         data = data[:-1]
         self.write(f'{{"data":[{data}]}}')

@@ -6,7 +6,6 @@ Utrecht University within the Software Project course.
 """
 
 PC_URL = 'ws://processor-orchestrator-service/processor'
-IF_URL = 'ws://processor-orchestrator-service/client'
 
 
 def __eq__(self, other):

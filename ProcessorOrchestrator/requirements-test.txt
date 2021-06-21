@@ -1,6 +1,5 @@
 tornado
 pylint==2.8.2
-pylint-exit
 pytest
 pytest-asyncio
 pytest-timeout

@@ -15,23 +15,22 @@ def main(configs):
 
     """
     folder_prefix = "../../../"
-    accuracy_section = configs['Accuracy']
-    det_folder = os.path.realpath(os.path.join(folder_prefix, accuracy_section['det_folder']))
-    gt_folder = os.path.realpath(os.path.join(folder_prefix, accuracy_section['gt_folder']))
-    benchmark = 'MOT20'
+    runner_section = configs['Runner']
+    det_folder = os.path.realpath(os.path.join(folder_prefix, runner_section['runs_path'], runner_section['data_set']))
+    gt_folder = os.path.realpath(os.path.join(folder_prefix,
+                                              runner_section['data_path'],
+                                              runner_section['data_set'],
+                                              'train'))
+    benchmark = configs['Tracking_Accuracy']['benchmark']
     metric = 'CLEAR'
     parallel = 'False'
     config = {"METRICS": metric,
               "USE_PARALLEL": parallel,
               "BENCHMARK": benchmark,
               "GT_FOLDER": gt_folder,
-              "TRACKERS_FOLDER": det_folder}
+              "TRACKERS_FOLDER": det_folder,
+              'SKIP_SPLIT_FOL': 'True'}
     mot_challenge(config)
-
-
-    # script_path = os.path.realpath('../../../processor/training/tracking/trackeval_master/scripts/run_mot_challenge.py')
-    # cmd = f"""python {script_path} --USE_PARALLEL {parallel} --METRICS {metric} --BENCHMARK {benchmark} --GT_FOLDER {gt_folder} --TRACKERS_FOLDER {det_folder}"""
-    # os.system(cmd)
 
 
 if __name__ == '__main__':

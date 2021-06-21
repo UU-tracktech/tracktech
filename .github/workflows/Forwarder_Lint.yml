@@ -24,20 +24,12 @@ jobs:
       - name: Copy in utility
         run: docker cp utility/__init__.py video-forwarder_container:/app/utility/
       - name: Copy in utility
-        run: docker cp utility/copyright_checker.py video-forwarder_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/comment_checker.py video-forwarder_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/docstring_checker.py video-forwarder_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/classes_checker.py video-forwarder_container:/app/utility/
-      - name: Copy in utility
-        run: docker cp utility/docstring_content_checker.py video-forwarder_container:/app/utility/
+        run: docker cp utility/pylint-plugins/. video-forwarder_container:/app/utility/pylint-plugins/
       - name: Run
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml up --exit-code-from video-forwarder
       - name: Remove
         run: docker-compose -f ./VideoForwarder/compose/docker-compose_lint.yml down --rmi all
         if: ${{ always() }}
       - name: Prune images
-        run: docker image prune --force --filter "until=168h"
+        run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}

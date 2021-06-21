@@ -1,4 +1,4 @@
-"""Generate the documentation using pdoc and jinja templating.
+"""Generate the documentation using PDOC and jinja templating.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -20,9 +20,9 @@ import mock
 
 
 def generate_documentation(component_source_path):
-    """Generates pdoc documentation for all Python modules in CameraProcessor project.
+    """Generates PDOC documentation for all Python modules in CameraProcessor project.
 
-    Removes previously created documentation if it exists.
+    Removes the previously created documentation if it exists.
 
     Args:
         component_source_path (Path): path to root folder of Python code.
@@ -84,7 +84,7 @@ def generate_index():
 
     index_loc = os.path.join(html_root, 'index.html')
 
-    # Removes current index.html to later generate it anew.
+    # Removes the current index.html to later generate it anew.
     # Must be removed before searching to prevent conflicting finds.
     if os.path.exists(index_loc):
         os.remove(index_loc)
@@ -99,8 +99,16 @@ def generate_index():
             sub_dirs[:] = []
 
     with open(index_loc, 'w') as index_file:
+        index_file.write('<style>')
+        index_file.write('body{background-color: #212529;color:#f7f7f7;font-family:system-ui,-apple-system,"Segoe UI",'
+                         'Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji",'
+                         '"Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";}')
+        index_file.write('a{background-color:rgb(51, 51, 51);color:#f7f7f7;margin:.1rem;padding:.1rem.5rem;'
+                         'box-sizing: border-box;text-decoration: none;margin-bottom:2px;display:inline-block}')
+        index_file.write('</style>')
+
         for index_path in index_paths:
-            index_file.write(f'<a href=".{index_path}">{index_path}</a>\n<hr>\n')
+            index_file.write(f'&mdash;<a href=".{index_path}">{index_path.replace("/index.html","")[1:]}</a>\n<br>\n')
 
 
 def get_imports(file_path):
@@ -222,7 +230,8 @@ def add_submodule_to_folders(folders):
     while index < len(folders):
         current_folder = folders[index]
 
-        # Find all folders/directories in current folder, add full path if folder name doesn't start with '.' or '_'.
+        # Find all folders/directories in the current folder,
+        # add full path if folder name doesn't start with '.' or '_'.
         for folder in os.scandir(current_folder):
             if not folder.is_dir() or folder.name.startswith('.') or folder.name.startswith('_'):
                 continue
@@ -305,7 +314,7 @@ def get_mock_modules(included_paths, included_modules):
 
     # Create mock for all import statements not included in included_modules.
     for included_module in included_paths:
-        # Get imports of module from included module.
+        # Get imports of module from the included module.
         module_imports = get_imports(included_module)
 
         # Loop over all found imports.
@@ -328,7 +337,8 @@ def get_mocked(mock_modules):
     Returns:
         [str]: modules that are mocked.
     """
-    installed_packages = [p.project_name for p in pkg_resources.working_set]  # pylint: disable=not-an-iterable
+    installed_packages = [p.project_name for p in pkg_resources.working_set]
+    # pylint: disable=not-an-iterable
 
     mocked = []
 
@@ -348,7 +358,7 @@ def get_mocked(mock_modules):
             mod_mock = mock.Mock(name=mod_name)
             sys.modules[mod_name] = mod_mock
 
-            # Mocked module.
+            # The mocked module.
             mocked.append(mod_name)
 
     return mocked
@@ -391,7 +401,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate documentation.')
 
     # Create index if flag is given.
-    # Generates index combining all documentation index.html files together in a root html/index.html file.
+    # Generates the index combining all documentation index.html files together in a root html/index.html file.
     parser.add_argument(
         '-ci',
         '--create-index',

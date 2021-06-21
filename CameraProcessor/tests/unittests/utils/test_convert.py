@@ -21,18 +21,18 @@ class TestConvert:
     def setup_method(self):
         """Setup method."""
         self.frame_obj = FrameObj(get_sample_frame(), 12)
-        self.box1 = [BoundingBox(1, Rectangle(0, 0, 1, 1), "person", 0.5)]
+        self.box1 = [BoundingBox(1, Rectangle(0, 0, 1, 1), 'person', 0.5)]
         self.dict1 = to_buffer_dict(self.frame_obj, self.box1)
 
     def test_convert(self):
         """Tests the to_buffer_dict function."""
         expected_dict = {
-            "frame": self.frame_obj.frame,
-            "frameId": self.frame_obj.timestamp,
-            "boxes": [
+            'frame': self.frame_obj.frame,
+            'frameId': self.frame_obj.timestamp,
+            'boxes': [
                 {
-                    "boxId": bounding_box.identifier,
-                    "rect": bounding_box.rectangle
+                    'boxId': bounding_box.identifier,
+                    'rect': bounding_box.rectangle
                 }
                 for bounding_box in BoundingBoxes(self.box1)
             ]

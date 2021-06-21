@@ -16,7 +16,7 @@ from processor.pipeline.process_frames import process_stream
 from processor.pipeline.detection.yolov5_detector import Yolov5Detector
 from processor.pipeline.detection.yolor_detector import YolorDetector
 from processor.input.video_capture import VideoCapture
-from processor.pipeline.process_frames import send_boxes_to_orchestrator
+from processor.websocket.boxes_message import BoxesMessage
 
 
 class TestProcessFrames:
@@ -51,7 +51,7 @@ class TestProcessFrames:
             configs (ConfigParser): Configurations of the test.
 
         Returns:
-            YolorDetector: Detection object of yolor.
+            YolorDetector: Detection object of YOLOR.
         """
         return YolorDetector(configs['Yolor'], configs['Filter'])
 
@@ -62,10 +62,9 @@ class TestProcessFrames:
         Returns:
             FakeTracker: Fake tracker implementation.
         """
-        # TODO Actually return SORT maybe # pylint: disable=fixme.
         return FakeTracker()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_yolov5(self, configs):
         """Tests process_stream function using Yolov5.
 
@@ -83,12 +82,12 @@ class TestProcessFrames:
             self.await_detection(video_capture, detector, tracker, re_identifier))
         video_capture.close()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_yolor(self, configs):
         """Tests process_stream function with YOLOR.
 
         Note:
-            Not parametrizing Yolor for the same reason as previous function.
+            Not parametrizing YOLOR for the same reason as previous function.
 
         Args:
             configs (ConfigParser): Configuration parser containing the configurations.
@@ -103,7 +102,7 @@ class TestProcessFrames:
         asyncio.get_event_loop().run_until_complete(self.await_detection(capture, detector, tracker, re_identifier))
         capture.close()
 
-    @pytest.mark.timeout(90)
+    @pytest.mark.timeout(180)
     def test_process_stream_with_fake(self, configs):
         """Tests process_stream with a fake detector.
 
@@ -129,7 +128,7 @@ class TestProcessFrames:
             detector (IDetector): Detection class.
             tracker (ITracker): Tracking class.
         """
-        # Create fake websocket.
+        # Create fake WebSocket.
         websocket_client = FakeWebsocket()
 
         # Process the stream.
@@ -138,13 +137,8 @@ class TestProcessFrames:
             detector,
             tracker,
             re_identifier,
-            lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes: send_boxes_to_orchestrator(
-                websocket_client,
-                frame_obj,
-                detected_boxes,
-                tracked_boxes,
-                re_id_tracked_boxes
-            ),
+            lambda frame_obj, detected_boxes, tracked_boxes, re_id_tracked_boxes:
+            websocket_client.send_message(BoxesMessage(frame_obj.timestamp, tracked_boxes)),
             websocket_client
         )
 

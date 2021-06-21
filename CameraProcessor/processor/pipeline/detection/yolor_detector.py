@@ -1,4 +1,4 @@
-"""Contains the main methods for running YOLOR object detection on a frame.
+"""Contains the main methods for running the YOLOR object detection on a frame.
 
 This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -28,13 +28,13 @@ class YolorDetector(IYoloDetector):
         device (str): Device that runs the detector.
         half (bool): Whether to half the model or not.
         classify (bool): Whether to classify.
-        names ([str]): List of names which that should get detected.
+        names ([str]): List of names, which that should get detected.
     """
     def __init__(self, config, filters):
         """Initiate the YolorDetector.
 
         Args:
-            config (ConfigParser): Configurations which also contain YOLOR configurations.
+            config (ConfigParser): Configurations, which also contain YOLOR configurations.
             filters (SectionProxy): Filtering for boundingBoxes.
         """
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -49,24 +49,24 @@ class YolorDetector(IYoloDetector):
         # Initialize.
         if self.config['device'] != 'cpu':
             if not torch.cuda.is_available():
-                logging.info("CUDA unavailable")
+                logging.info('CUDA unavailable')
                 self.config['device'] = 'cpu'
         self.device = select_device(self.config['device'])
         self.half = self.device.type != 'cpu'  # half precision only supported on CUDA.
         if self.device.type == 'cpu':
-            logging.info("I am using the CPU. Check CUDA version,"
-                         "or whether Pytorch is installed with CUDA support.")
+            logging.info('I am using the CPU. Check CUDA version,'
+                         'or whether Pytorch is installed with CUDA support.')
         else:
             logging.info("I am using GPU")
 
         # Download weights if not present.
         if not os.path.exists(self.config['weights_path']):
-            logging.warning(f"Weight files for YOLOR not found, downloading to {self.config['weights_path']}")
-            url = "https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76"
+            logging.warning(f'Weight files for YOLOR not found, downloading to {self.config["weights_path"]}')
+            url = 'https://drive.google.com/u/0/uc?id=1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76'
             output = self.config['weights_path']
             gdown.download(url, output, quiet=False)
         else:
-            logging.info(f"Yolor weights found at {self.config['weights_path']}")
+            logging.info(f'Yolor weights found at {self.config["weights_path"]}')
 
         # Load model.
         if self.device.type == 'cpu':
@@ -112,7 +112,7 @@ class YolorDetector(IYoloDetector):
         img = self.convert_image(img, self.device, self.half)
         pred = self.generate_predictions(img, self.model, self.config)
 
-        # Apply secondary Classifier.
+        # Apply a secondary Classifier.
         if self.classify:
             pred = apply_classifier(pred, self.modelc, img, frame_obj.frame)
 

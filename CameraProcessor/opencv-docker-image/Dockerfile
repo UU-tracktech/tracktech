@@ -13,7 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging.
 ENV PYTHONUNBUFFERED=1
 
-RUN python -m pip install "numpy==1.19.5"
+RUN python -m pip install 'numpy==1.19.5'
 
 # Install OpenCV.
 RUN apt-get update \ 

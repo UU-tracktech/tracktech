@@ -23,8 +23,8 @@ class ProcessorSocket(WebSocketHandler):
 
     Attributes:
         identifier (int): Serves as the unique identifier to this object.
-        authorized (bool): Shows whether or not the connection is authorized.
-        auth (Auth): Authorization object for the websocket handler
+        authorized (bool): Shows whether the connection is authorized.
+        auth (Auth): Authorization object for the websocket handler.
     """
 
     def __init__(self, application, request):
@@ -61,8 +61,8 @@ class ProcessorSocket(WebSocketHandler):
         Args:
             **kwargs (Any): Arguments given to the open command of the socket.
         """
-        logger.log_connect("/processor", self.request.remote_ip)
-        logger.log("New processor connected")
+        logger.log_connect('/processor', self.request.remote_ip)
+        logger.log('New processor connected.')
 
     # pylint: disable=broad-except
     def on_message(self, message):
@@ -80,43 +80,43 @@ class ProcessorSocket(WebSocketHandler):
                     - "featureMap"    | This signifies a message that contains a feature map of an object,
                                         see update_feature_map, for the other expected properties.
         """
-        logger.log_message_receive(message, "/processor", self.request.remote_ip)
+        logger.log_message_receive(message, '/processor', self.request.remote_ip)
 
         try:
             message_object = json.loads(message)
 
             # Switch on message type.
             actions = {
-                "identifier":
+                'identifier':
                     lambda: self.register_processor(message_object),
-                "boundingBoxes":
+                'boundingBoxes':
                     lambda: self.send_bounding_boxes(message_object),
-                "featureMap":
+                'featureMap':
                     lambda: self.update_feature_map(message_object)
             }
 
-            action_type = message_object["type"]
+            action_type = message_object['type']
 
             if self.authorized or self.auth is None:
                 # Execute correct function.
                 function = actions.get(action_type)
                 if function is None:
-                    logger.log("Someone gave an unknown command")
+                    logger.log('Someone gave an unknown command.')
                 else:
                     function()
-            elif action_type == "authenticate":
+            elif action_type == 'authenticate':
                 self.authenticate(message_object)
             else:
                 # Close the connection.
                 self.close()
-                logger.log("A processor was not authenticated first")
+                logger.log('A processor was not authenticated first,')
 
         except ValueError:
-            logger.log_error("/processor", "ValueError", self.request.remote_ip)
-            logger.log("Someone wrote bad json")
+            logger.log_error('/processor', 'ValueError', self.request.remote_ip)
+            logger.log('Someone wrote bad json.')
         except KeyError:
-            logger.log_error("/processor", "KeyError", self.request.remote_ip)
-            logger.log("Someone missed a property in their json")
+            logger.log_error('/processor', 'KeyError', self.request.remote_ip)
+            logger.log('Someone missed a property in their json.')
         except Exception as exc:
             logger.log_error("/processor", exc, self.request.remote_ip)
 
@@ -130,7 +130,7 @@ class ProcessorSocket(WebSocketHandler):
         """
 
         if self.auth is not None:
-            self.auth.validate(message["jwt"])
+            self.auth.validate(message['jwt'])
             self.authorized = True
 
     def send_message(self, message):
@@ -140,14 +140,14 @@ class ProcessorSocket(WebSocketHandler):
             message (string): string which should be send over this websocket.
         """
         self.write_message(message)
-        logger.log_message_send(message, "/processor", self.request.remote_ip)
+        logger.log_message_send(message, '/processor', self.request.remote_ip)
 
     def on_close(self):
         """Called when the websocket is closed, deletes itself from the dict of processors."""
-        logger.log_disconnect("/processor", self.request.remote_ip)
+        logger.log_disconnect('/processor', self.request.remote_ip)
         # Pop the identifier instead of del as it might be called twice.
         processors.pop(self.identifier, None)
-        logger.log(f"Processor with id {self.identifier} disconnected")
+        logger.log(f'Processor with id {self.identifier} disconnected')
 
     def data_received(self, chunk):
         """Unused method that could handle streamed request data.
@@ -164,18 +164,18 @@ class ProcessorSocket(WebSocketHandler):
                 JSON message that was received. It should contain the following property.
                     - "id" | The identifier of the processor under which this socket should be registered.
         """
-        identifier = message["id"]
+        identifier = message['id']
 
         self.identifier = identifier
         processors[self.identifier] = self
 
-        logger.log(f"Processor registered with id {self.identifier} from {self.request.remote_ip}")
+        logger.log(f'Processor registered with id {self.identifier} from {self.request.remote_ip}')
 
         for tracking_object in objects.values():
             self.write_message(json.dumps({
-                "type": "featureMap",
-                "objectId": tracking_object[0].identifier,
-                "featureMap": tracking_object[0].feature_map
+                'type': 'featureMap',
+                'objectId': tracking_object[0].identifier,
+                'featureMap': tracking_object[0].feature_map
             }))
 
     def send_bounding_boxes(self, message):
@@ -187,26 +187,26 @@ class ProcessorSocket(WebSocketHandler):
                     - "frameId" | The identifier of the frame for which these bounding boxes were computed.
                     - "boxes"   | An object containing the bounding boxes that were computed for this frame.
         """
-        frame_id = message["frameId"]
-        boxes = message["boxes"]
+        frame_id = message['frameId']
+        boxes = message['boxes']
 
         for client in client_socket.clients.values():
             client.send_message(json.dumps({
-                "type": "boundingBoxes",
-                "cameraId": self.identifier,
-                "frameId": frame_id,
-                "boxes": boxes
+                'type': 'boundingBoxes',
+                'cameraId': self.identifier,
+                'frameId': frame_id,
+                'boxes': boxes
             }))
 
         try:
-            for box in filter(lambda x: x.keys().__contains__("objectId"), boxes):
-                if not objects.keys().__contains__(box["objectId"]):
-                    logger.log(f"Got an object with id {box['objectId']} that is no longer tracked")
+            for box in filter(lambda x: x.keys().__contains__('objectId'), boxes):
+                if not objects.keys().__contains__(box['objectId']):
+                    logger.log(f'Got an object with id {box["objectId"]} that is no longer tracked')
                 else:
                     objects[box["objectId"]][0].log_spotting(self.identifier)
         except AttributeError:
-            logger.log_error("/processor", "AttributeError", self.request.remote_ip)
-            logger.log("Boxes array was not of the correct format")
+            logger.log_error('/processor', 'AttributeError', self.request.remote_ip)
+            logger.log('Boxes array was not of the correct format.')
 
     @staticmethod
     def update_feature_map(message):
@@ -217,19 +217,19 @@ class ProcessorSocket(WebSocketHandler):
                     - "objectId"   | The identifier of the object for which this feature map was computed.
                     - "featureMap" | An object containing the new feature map that was computed.
         """
-        object_id = message["objectId"]
-        feature_map = message["featureMap"]
+        object_id = message['objectId']
+        feature_map = message['featureMap']
 
         try:
             objects[object_id][0].update_feature_map(feature_map)
         except KeyError:
-            logger.log("Unknown object id")
+            logger.log('Unknown object id.')
             return
 
         feature_map_message = json.dumps({
-            "type": "featureMap",
-            "objectId": object_id,
-            "featureMap": feature_map
+            'type': 'featureMap',
+            'objectId': object_id,
+            'featureMap': feature_map
         })
 
         for processor in processors.values():

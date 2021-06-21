@@ -17,13 +17,13 @@ from src.objects.connections import processors
 
 
 def start_tracking_timeout_monitoring(timeout, event_loop):
-    """Starts a thread which monitors all objects currently being tracked and removes them after the timeout.
+    """Starts a thread, which monitors all objects currently being tracked and removes them after the timeout.
 
     Args:
         timeout (int):
-            The time in seconds after which a tracking object should no longer be tracked
+            The time in seconds after which a tracking object should no longer be tracked.
         event_loop (AbstractEventLoop):
-            The event loop that should be used inside the thread
+            The event loop that should be used inside the thread.
     """
     thread = threading.Thread(target=set_event_loop_and_start_tracking_monitoring_timout, args=(timeout, event_loop,))
     thread.start()
@@ -57,8 +57,8 @@ def monitor_tracking_timeout(timeout):
         if tracking_object[1] < timeout_border:
             for processor in processors.values():
                 processor.send_message(json.dumps({
-                    "type": "stop",
-                    "objectId": tracking_object[0].identifier
+                    'type': 'stop',
+                    'objectId': tracking_object[0].identifier
                 }))
             delete_list.append(tracking_object[0])
 
@@ -73,7 +73,7 @@ def monitor_tracking_timeout(timeout):
 
 
 objects = dict()
-"""Dictionary which matches an object identifier to.
+"""Dictionary, which matches an object identifier to.
 
 type: Dict[str, (TrackingObject, Optional[int])]
 """

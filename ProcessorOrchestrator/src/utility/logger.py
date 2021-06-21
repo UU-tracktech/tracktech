@@ -38,7 +38,7 @@ def log_message_receive(message, location, ip_address):
         ip_address (string):
             Ip address where the message was sent from.
     """
-    message = f"Received message on {location} from {ip_address}: {message}"
+    message = f'Received message on {location} from {ip_address}: {message}'
     logging.info(message)
 
 
@@ -53,7 +53,7 @@ def log_message_send(message, location, ip_address):
             ip_address (string):
                 Ip address where the message was sent to.
     """
-    message = f"Sent message on {location} from {ip_address}: {message}"
+    message = f'Sent message on {location} from {ip_address}: {message}'
     logging.info(message)
 
 
@@ -66,7 +66,7 @@ def log_connect(location, ip_address):
             ip_address (string):
                 Ip address of the connection origin.
     """
-    message = f"Websocket connected on {location} from {ip_address}"
+    message = f'WebSocket connected on {location} from {ip_address}'
     logging.info(message)
 
 
@@ -79,7 +79,7 @@ def log_disconnect(location, ip_address):
             ip_address (string):
                 Ip address of the connection origin.
     """
-    message = f"Websocket disconnected on {location} from {ip_address}"
+    message = f'WebSocket disconnected on {location} from {ip_address}'
     logging.info(message)
 
 
@@ -94,5 +94,5 @@ def log_error(location, error, ip_address):
         ip_address (string):
             Ip address of the source of the error.
     """
-    message = f"{error} on {location} from {ip_address}"
+    message = f'{error} on {location} from {ip_address}'
     logging.warning(message)

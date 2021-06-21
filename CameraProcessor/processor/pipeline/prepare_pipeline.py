@@ -53,11 +53,11 @@ def prepare_detector(configs):
         NameError: Whenever the name of the detection is not known.
     """
     # Instantiate the detector.
-    logging.info("Instantiating detector...")
+    logging.info('Instantiating detector...')
     if configs['Main'].get('detector').lower() not in DETECTOR_SWITCH:
-        raise NameError(f"Incorrect detector. Detector {configs['Main'].get('detector')} not found.")
+        raise NameError(f'Incorrect detector. Detector {configs["Main"].get("detector")} not found.')
 
-    # Detector exists so it is created.
+    # Detector exists, so it is created.
     return create_detector(configs['Main'].get('detector'),
                            configs
                            )
@@ -76,11 +76,11 @@ def prepare_tracker(configs):
         NameError: When an incorrect tracker is specified
     """
     # Instantiate the tracker.
-    logging.info("Instantiating tracker...")
+    logging.info('Instantiating tracker...')
     if configs['Main'].get('tracker').lower() not in TRACKER_SWITCH:
-        raise NameError(f"Incorrect tracker. Tracker {configs['Main'].get('tracker')} not found.")
+        raise NameError(f'Incorrect tracker. Tracker {configs["Main"].get("tracker")} not found.')
 
-    # Create tracker since it exists.
+    # Create the tracker, since it exists.
     return create_tracker(configs['Main'].get('tracker'),
                           configs
                           )
@@ -96,9 +96,9 @@ def prepare_reidentifier(configs):
         IReIdentifier: Implementation of the re-identification interface.
     """
     # Instantiate the re-identifier.
-    logging.info("Instantiating reidentifier...")
+    logging.info('Instantiating reidentifier...')
     if configs['Main'].get('reid').lower() not in REID_SWITCH:
-        raise NameError(f"Incorrect re-identifier. Re-identifier {configs['Main'].get('reid')} not found.")
+        raise NameError(f'Incorrect re-identifier. Re-identifier {configs["Main"].get("reid")} not found.')
 
     # Create re-identifier since it exists.
     return create_reidentifier(configs['Main'].get('reid'),
@@ -147,7 +147,7 @@ def prepare_scheduler(detector, tracker, re_identifier, on_processed_frame, fram
     Returns:
         Scheduler: Scheduler that has been configured with a plan.
     """
-    # Get args dict from used plan.
+    # Get args dict from the used plan.
     plan_args = pipeline_plan.plan_inputs
 
     # Put configuration into args dict.

@@ -20,7 +20,7 @@ class SingleOutputComponent(IComponent):
             str: A list of both inputs for the next layer.
         """
         first_arg, second_arg = args
-        return first_arg + "," + second_arg + ",merged"
+        return first_arg + ',' + second_arg + ',merged'
 
     def execute_component(self):
         """See base class.
