@@ -8,7 +8,8 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { NeedLogin } from '../../../src/pages/needLogin'
+import { NeedLogin } from 'pages/needLogin'
+import { MockAuthProvider } from '../utilities/mockAuthContextProvider'
 
 // Test if the login alert renders correctly
 test('should show the login alert', () => {
@@ -19,9 +20,12 @@ test('should show the login alert', () => {
 // Test if closing the alert by clicking on the X calls the login function
 test('should call keycloak.login() on closing the alert', () => {
   let mockLogin = jest.fn()
-  require('@react-keycloak/web').__SetMockLoginFunction(mockLogin)
 
-  render(<NeedLogin />)
+  render(
+    <MockAuthProvider state='unauthenticated' login={mockLogin}>
+      <NeedLogin />
+    </MockAuthProvider>
+  )
 
   //There should be only 1 button on screen which is the close button
   screen.getByRole('button').click()

@@ -51,7 +51,7 @@ export function NavMenu() {
         </Menu.Item>
       </Menu>
 
-      {/*/ The login buttons on the right of the navbar. Has to come before the pages to not break styling. */}
+      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling. */}
       <div style={{ gridColumnStart: '4' }}>
         <LoggedInUser />
       </div>

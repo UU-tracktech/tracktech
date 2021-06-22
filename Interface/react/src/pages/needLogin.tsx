@@ -6,9 +6,9 @@ Utrecht University within the Software Project course.
 
  */
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Alert } from 'antd'
-import { useKeycloak } from '@react-keycloak/web'
+import { authContext } from 'components/authContext'
 
 /**
  * This page shows up for any user that is not authenticated, to prevent
@@ -16,8 +16,7 @@ import { useKeycloak } from '@react-keycloak/web'
  * @returns A screen displaying an error message signalling the user needs to log in.
  */
 export function NeedLogin() {
-  const { keycloak } = useKeycloak()
-
+  const { login } = useContext(authContext)
   return (
     <div
       data-testid={'loginAlert'}
@@ -31,7 +30,7 @@ export function NeedLogin() {
         type={'error'}
         message={'Login'}
         description={'You need to be logged-in to view this page.'}
-        onClose={() => keycloak.login()}
+        onClose={() => login()}
         closable
       />
     </div>

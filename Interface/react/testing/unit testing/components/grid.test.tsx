@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { Grid } from '../../../src/components/grid'
+import { Grid } from 'components/grid'
 
 // The test environment has no implementation for window.alert
 // so to prevent errors, create a mock implementation for these tests

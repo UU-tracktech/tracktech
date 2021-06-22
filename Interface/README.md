@@ -47,7 +47,11 @@ The settings (places in public in react) should look like this.
   "orchestratorObjectIdsUrl": "The Url to the orchestrator objectids HTTP endpoint",
   "orchestratorTimelinesUrl": "The Url to the orchestrator timelines HTTP endpoint",
   "bufferTime": (number setting the buffer length),
-  "segmentLength": (number corresponding to hls segment size of video forwarder)
+  "segmentLength": (number corresponding to hls segment size of video forwarder),
+  "clientId": "ClientId used when getting a token",
+  "accessTokenUri": "URI token endpoint of identity providing service",
+  "authorizationUri": "URI authorization endpoint of identity providy service",
+  "redirectUri": "URI to redirect after token gathering"
 }
 ```
 

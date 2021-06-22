@@ -23,5 +23,9 @@
     "orchestratorObjectIdsUrl": "https://tracktech.ml:50011/objectIds",
     "orchestratorTimelinesUrl": "https://tracktech.ml:50011/timelines",
     "bufferTime": 15,
-    "segmentLength": 2
+    "segmentLength": 2,
+    "clientId": "Interface",
+    "accessTokenUri": "https://tracktech.ml:50009/auth/realms/Tracktech/protocol/openid-connect/token",
+    "authorizationUri": "https://tracktech.ml:50009/auth/realms/Tracktech/protocol/openid-connect/auth",
+    "redirectUri": "http://localhost"
 }

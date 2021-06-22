@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { Timelines } from '../../../src/pages/timelines'
+import { Timelines } from 'pages/timelines'
 
 // Tests that simply check if all expected components are there
 describe('Checks if all components are there', () => {

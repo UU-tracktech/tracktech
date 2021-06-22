@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { screen, render } from '@testing-library/react'
-import { ObjectCard } from '../../../src/components/objectCard'
+import { ObjectCard } from 'components/objectCard'
 
 // Collection of tests that check if the component correctly receives the properties
 describe('ObjectCard property tests', () => {
