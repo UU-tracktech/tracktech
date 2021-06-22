@@ -94,12 +94,12 @@ This run must be one of the subsystems since the root does not contain an `__ini
 `--rcfile` is the linting specification used by Pylint.
 
 `--reports` sets whether the full report should be displayed or not.
-Our recommendation would be `n` since this only displays linting errors/warnings, and the eventual score.
+Our recommendation would be `n` since this only displays linting errors/warnings and the eventual score.
 
 ### Ignoring folders from linting
 
 Some folders should be excluded from linting.
-This could be for multiple reasons like,
-the symlinked algorithms in the CameraProcessor folder,
-the Python virtual environment folder, etc.
+The exclusion could be for multiple reasons like,
+the symlinked algorithms in the CameraProcessor folder or
+the Python virtual environment folder.
 Add folder name to `ignore=` in `.pylintrc`.
