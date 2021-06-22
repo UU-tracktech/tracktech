@@ -120,7 +120,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
 <span class="sd">        authorized (bool): Shows whether the websocket connection is authorized.</span>
 <span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
-<span class="sd">        uses_images (bool): Bool indicating whether this client should receive images</span>
+<span class="sd">        uses_images (bool): Bool indicating whether or not this client should receive images</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
@@ -158,8 +158,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs (Any): Other arguments given to the websocket open.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add the client directly if auth is disabled.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -180,7 +180,7 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;stop&quot;  | This command is used to stop the tracking of an object,</span>
 <span class="sd">                                see stop_tracking, for the other expected properties.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Message should be in JSON format.</span>
@@ -188,43 +188,43 @@ Utrecht University within the Software Project course.
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;setUsesImages&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;setUsesImages&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_uses_image</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s1">&#39;start&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;start&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s1">&#39;stop&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="p">}</span>
 
             <span class="c1"># Get message type.</span>
-            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="c1"># Only execute function if socket is authenticated.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone gave an unknown command.&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">function</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s1">&#39;authenticate&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Close the connection.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;A client was not authenticated first&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A client was not authenticated first&quot;</span><span class="p">)</span>
 
         <span class="c1"># Message was not in JSON format.</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
         <span class="c1"># Message was in JSON format but did not contain all nececcary parameters.</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Someone missed a property in their json&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="s2">&quot;KeyError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone missed a property in their json&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sends a message over the websocket and logs it.</span>
@@ -232,7 +232,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
@@ -244,11 +244,11 @@ Utrecht University within the Software Project course.
 
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of clients.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="c1"># Pop the identifier as it might not exist if the client has not authenticated yet.</span>
         <span class="n">clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> disconnected.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Authenticates a client.</span>
@@ -260,29 +260,29 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;jwt&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set whether this client uses images.</span>
+        <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
 <span class="sd">                JSON message that was received. It should contain the following property</span>
-<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether the client uses images</span>
+<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether or not the client uses images</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;usesImages&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;usesImages&quot;</span><span class="p">]</span>
 
         <span class="c1"># If the client specifies it uses images, then send all the currently saved messages.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;newObject&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                        <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
                     <span class="p">}</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">client_message</span><span class="p">))</span>
 
@@ -302,39 +302,39 @@ Utrecht University within the Software Project course.
 <span class="sd">                Of these parameters, at least &quot;image&quot;, or the combination of &quot;frameId&quot; and &quot;boxId&quot; should</span>
 <span class="sd">                be present, though a full combination is also possible.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;cameraId&#39;</span><span class="p">]</span>
+        <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;cameraId&quot;</span><span class="p">]</span>
         <span class="c1"># The following parameters are optional.</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frameId&#39;</span><span class="p">)</span>
-        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxId&#39;</span><span class="p">)</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frameId&quot;</span><span class="p">)</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;boxId&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
 
         <span class="c1"># But at least some of them are required.</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frame_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">camera_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Unknown processor&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Create new tracking image, this also assigns an id.</span>
         <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">, &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s2"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Construct processor message.</span>
         <span class="n">processor_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
         <span class="k">if</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
         <span class="c1"># Send to the specified processor.</span>
         <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
@@ -343,12 +343,12 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Construct message for clients that use images.</span>
         <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;newObject&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">client_message</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">client_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
         <span class="c1"># Send a message that a new object has been tracked with the given image to all clients that use images.</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -366,9 +366,9 @@ Utrecht University within the Software Project course.
 <span class="sd">                JSON message that was received. It should contain the following properties</span>
 <span class="sd">                    - &quot;objectId&quot; | The identifier of the object which should no longer be tracked.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;unknown object&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;unknown object&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Let the object remove itself.</span>
@@ -377,19 +377,19 @@ Utrecht University within the Software Project course.
         <span class="c1"># Inform processors.</span>
         <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
             <span class="p">}))</span>
 
         <span class="c1"># Inform clients that use images.</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
                 <span class="p">}))</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stopped tracking of object with id </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stopped tracking of object with id </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -413,7 +413,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
 <span class="sd">        authorized (bool): Shows whether the websocket connection is authorized.</span>
 <span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
-<span class="sd">        uses_images (bool): Bool indicating whether this client should receive images</span>
+<span class="sd">        uses_images (bool): Bool indicating whether or not this client should receive images</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
@@ -451,8 +451,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs (Any): Other arguments given to the websocket open.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add the client directly if auth is disabled.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -473,7 +473,7 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;stop&quot;  | This command is used to stop the tracking of an object,</span>
 <span class="sd">                                see stop_tracking, for the other expected properties.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Message should be in JSON format.</span>
@@ -481,43 +481,43 @@ Utrecht University within the Software Project course.
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;setUsesImages&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;setUsesImages&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_uses_image</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s1">&#39;start&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;start&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s1">&#39;stop&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="p">}</span>
 
             <span class="c1"># Get message type.</span>
-            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="c1"># Only execute function if socket is authenticated.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone gave an unknown command.&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">function</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s1">&#39;authenticate&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Close the connection.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;A client was not authenticated first&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A client was not authenticated first&quot;</span><span class="p">)</span>
 
         <span class="c1"># Message was not in JSON format.</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
         <span class="c1"># Message was in JSON format but did not contain all nececcary parameters.</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Someone missed a property in their json&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="s2">&quot;KeyError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone missed a property in their json&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sends a message over the websocket and logs it.</span>
@@ -525,7 +525,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
@@ -537,11 +537,11 @@ Utrecht University within the Software Project course.
 
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of clients.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="c1"># Pop the identifier as it might not exist if the client has not authenticated yet.</span>
         <span class="n">clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> disconnected.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Authenticates a client.</span>
@@ -553,29 +553,29 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;jwt&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set whether this client uses images.</span>
+        <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
 <span class="sd">                JSON message that was received. It should contain the following property</span>
-<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether the client uses images</span>
+<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether or not the client uses images</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;usesImages&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;usesImages&quot;</span><span class="p">]</span>
 
         <span class="c1"># If the client specifies it uses images, then send all the currently saved messages.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;newObject&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                        <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
                     <span class="p">}</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">client_message</span><span class="p">))</span>
 
@@ -595,39 +595,39 @@ Utrecht University within the Software Project course.
 <span class="sd">                Of these parameters, at least &quot;image&quot;, or the combination of &quot;frameId&quot; and &quot;boxId&quot; should</span>
 <span class="sd">                be present, though a full combination is also possible.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;cameraId&#39;</span><span class="p">]</span>
+        <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;cameraId&quot;</span><span class="p">]</span>
         <span class="c1"># The following parameters are optional.</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frameId&#39;</span><span class="p">)</span>
-        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxId&#39;</span><span class="p">)</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frameId&quot;</span><span class="p">)</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;boxId&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
 
         <span class="c1"># But at least some of them are required.</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frame_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">camera_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Unknown processor&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Create new tracking image, this also assigns an id.</span>
         <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">, &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s2"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Construct processor message.</span>
         <span class="n">processor_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
         <span class="k">if</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
         <span class="c1"># Send to the specified processor.</span>
         <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
@@ -636,12 +636,12 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># Construct message for clients that use images.</span>
         <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;newObject&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">client_message</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">client_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
         <span class="c1"># Send a message that a new object has been tracked with the given image to all clients that use images.</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -659,9 +659,9 @@ Utrecht University within the Software Project course.
 <span class="sd">                JSON message that was received. It should contain the following properties</span>
 <span class="sd">                    - &quot;objectId&quot; | The identifier of the object which should no longer be tracked.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;unknown object&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;unknown object&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Let the object remove itself.</span>
@@ -670,19 +670,19 @@ Utrecht University within the Software Project course.
         <span class="c1"># Inform processors.</span>
         <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
             <span class="p">}))</span>
 
         <span class="c1"># Inform clients that use images.</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
                 <span class="p">}))</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stopped tracking of object with id </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stopped tracking of object with id </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -695,7 +695,7 @@ Utrecht University within the Software Project course.
 <li><strong>identifier (int):</strong>  Serves as the unique identifier to this object.</li>
 <li><strong>authorized (bool):</strong>  Shows whether the websocket connection is authorized.</li>
 <li><strong>auth (Auth):</strong>  Authorization object for the websocket handler</li>
-<li><strong>uses_images (bool):</strong>  Bool indicating whether this client should receive images</li>
+<li><strong>uses_images (bool):</strong>  Bool indicating whether or not this client should receive images</li>
 </ul>
 </div>
 
@@ -799,8 +799,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs (Any): Other arguments given to the websocket open.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New client connected with id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add the client directly if auth is disabled.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -847,7 +847,7 @@ to a dict of other websockets.</p>
 <span class="sd">                    - &quot;stop&quot;  | This command is used to stop the tracking of an object,</span>
 <span class="sd">                                see stop_tracking, for the other expected properties.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Message should be in JSON format.</span>
@@ -855,43 +855,43 @@ to a dict of other websockets.</p>
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;setUsesImages&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;setUsesImages&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_uses_image</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s1">&#39;start&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;start&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s1">&#39;stop&#39;</span><span class="p">:</span>
+                <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_tracking</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="p">}</span>
 
             <span class="c1"># Get message type.</span>
-            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="c1"># Only execute function if socket is authenticated.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone gave an unknown command.&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">function</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s1">&#39;authenticate&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Close the connection.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;A client was not authenticated first&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A client was not authenticated first&quot;</span><span class="p">)</span>
 
         <span class="c1"># Message was not in JSON format.</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
         <span class="c1"># Message was in JSON format but did not contain all nececcary parameters.</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Someone missed a property in their json&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="s2">&quot;KeyError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Someone missed a property in their json&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -932,7 +932,7 @@ format.</p>
 <span class="sd">        Args:</span>
 <span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 
@@ -992,11 +992,11 @@ format.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of clients.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s1">&#39;/client&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/client&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="c1"># Pop the identifier as it might not exist if the client has not authenticated yet.</span>
         <span class="n">clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> disconnected.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Client with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1026,7 +1026,7 @@ format.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;jwt&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">clients</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 </pre></div>
@@ -1058,38 +1058,38 @@ format.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_uses_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set whether this client uses images.</span>
+        <span class="sd">&quot;&quot;&quot;Set whether or not this client uses images.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message (json):</span>
 <span class="sd">                JSON message that was received. It should contain the following property</span>
-<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether the client uses images</span>
+<span class="sd">                    - &quot;usesImages&quot; | a bool indicating whether or not the client uses images</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;usesImages&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;usesImages&quot;</span><span class="p">]</span>
 
         <span class="c1"># If the client specifies it uses images, then send all the currently saved messages.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;newObject&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                        <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                        <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span>
                     <span class="p">}</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">client_message</span><span class="p">))</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Set whether this client uses images.</p>
+            <div class="docstring"><p>Set whether or not this client uses images.</p>
 
 <h6 id="args">Args</h6>
 
 <ul>
 <li><strong>message (json):</strong>  JSON message that was received. It should contain the following property
 <ul>
-<li>"usesImages" | a bool indicating whether the client uses images</li>
+<li>"usesImages" | a bool indicating whether or not the client uses images</li>
 </ul></li>
 </ul>
 </div>
@@ -1123,39 +1123,39 @@ format.</p>
 <span class="sd">                Of these parameters, at least &quot;image&quot;, or the combination of &quot;frameId&quot; and &quot;boxId&quot; should</span>
 <span class="sd">                be present, though a full combination is also possible.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;cameraId&#39;</span><span class="p">]</span>
+        <span class="n">camera_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;cameraId&quot;</span><span class="p">]</span>
         <span class="c1"># The following parameters are optional.</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frameId&#39;</span><span class="p">)</span>
-        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxId&#39;</span><span class="p">)</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frameId&quot;</span><span class="p">)</span>
+        <span class="n">box_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;boxId&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
 
         <span class="c1"># But at least some of them are required.</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">frame_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">camera_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Unknown processor&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown processor&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Create new tracking image, this also assigns an id.</span>
         <span class="n">tracking_object</span> <span class="o">=</span> <span class="n">TrackingObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">, &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s1"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s1"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;New tracking object created with id </span><span class="si">{</span><span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;found at bounding box with Id </span><span class="si">{</span><span class="n">box_id</span><span class="si">}</span><span class="s2"> on frame </span><span class="si">{</span><span class="n">frame_id</span><span class="si">}</span><span class="s2"> of camera </span><span class="si">{</span><span class="n">camera_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Construct processor message.</span>
         <span class="n">processor_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_id</span>
         <span class="k">if</span> <span class="n">box_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;boxId&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_id</span>
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">processor_message</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">processor_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
         <span class="c1"># Send to the specified processor.</span>
         <span class="n">processors</span><span class="p">[</span><span class="n">camera_id</span><span class="p">]</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
@@ -1164,12 +1164,12 @@ format.</p>
 
         <span class="c1"># Construct message for clients that use images.</span>
         <span class="n">client_message</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;newObject&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;newObject&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">client_message</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">client_message</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
         <span class="c1"># Send a message that a new object has been tracked with the given image to all clients that use images.</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -1222,9 +1222,9 @@ be present, though a full combination is also possible.</li>
 <span class="sd">                JSON message that was received. It should contain the following properties</span>
 <span class="sd">                    - &quot;objectId&quot; | The identifier of the object which should no longer be tracked.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;unknown object&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;unknown object&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Let the object remove itself.</span>
@@ -1233,19 +1233,19 @@ be present, though a full combination is also possible.</li>
         <span class="c1"># Inform processors.</span>
         <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">processor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
             <span class="p">}))</span>
 
         <span class="c1"># Inform clients that use images.</span>
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">uses_images</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span>
                 <span class="p">}))</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stopped tracking of object with id </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stopped tracking of object with id </span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>

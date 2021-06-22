@@ -143,7 +143,7 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__buffer</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__buffer</span><span class="p">[</span><span class="n">frame_id</span><span class="p">]</span>
 
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Frame not in buffer. Consider increasing the buffer size.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Frame not in buffer. Consider increasing the buffer size.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the frame object for a given timestamp.</span>
@@ -186,7 +186,7 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">identifier</span> <span class="o">==</span> <span class="n">box_id</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">box</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Box id was not found in the boxes list.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box id was not found in the boxes list&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -266,7 +266,7 @@ Utrecht University within the Software Project course.
         <span class="k">if</span> <span class="n">frame_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__buffer</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__buffer</span><span class="p">[</span><span class="n">frame_id</span><span class="p">]</span>
 
-        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Frame not in buffer. Consider increasing the buffer size.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Frame not in buffer. Consider increasing the buffer size.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the frame object for a given timestamp.</span>
@@ -309,7 +309,7 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">identifier</span> <span class="o">==</span> <span class="n">box_id</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">box</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Box id was not found in the boxes list.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box id was not found in the boxes list&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -549,7 +549,7 @@ thus it contains frames, and their tracked bounding boxes.</p>
             <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">identifier</span> <span class="o">==</span> <span class="n">box_id</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">box</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Box id was not found in the boxes list.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box id was not found in the boxes list&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>

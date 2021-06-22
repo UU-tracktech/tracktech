@@ -63,7 +63,7 @@ Utrecht University within the Software Project course.
     <span class="c1"># Instantiate the training mode.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Training&#39;</span><span class="p">]</span>
-    <span class="n">mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;mode_det&#39;</span><span class="p">]</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
     <span class="n">file</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;yolov5&#39;</span><span class="p">:</span>
         <span class="c1"># Run the training of Yolov5.</span>

@@ -35,25 +35,10 @@
                                 <a class="function" href="#IDataloader.__init__">IDataloader</a>
                         </li>
                         <li>
-                                <a class="function" href="#IDataloader.parse_boxes">parse_boxes</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#IDataloader.append_box">append_box</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#IDataloader.parse_box">parse_box</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#IDataloader.get_image_dimensions">get_image_dimensions</a>
                         </li>
                         <li>
-                                <a class="function" href="#IDataloader.parse_line">parse_line</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#IDataloader.parse_file">parse_file</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#IDataloader.get_annotations">get_annotations</a>
                         </li>
                 </ul>
 
@@ -88,136 +73,54 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
 
 <span class="k">class</span> <span class="nc">IDataloader</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Dataloader superclass. A dataloader formats annotated data into generic BoundingBox objects.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize dataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): A dictionary of the configs.</span>
+<span class="sd">            path_location (str): String to select gt or det from the accuracy config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="n">path_location</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;categories&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">nr_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
         <span class="c1"># Cannot contain negative amount of frames.</span>
         <span class="k">if</span> <span class="n">nr_frames</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Cannot have negative number of frames&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span> <span class="o">=</span> <span class="n">nr_frames</span>
 
-    <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (Dict): Dictionary with image_id as key and bounding_boxes as value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bounding_boxes_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="n">parsed_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">parsed_entity</span> <span class="ow">in</span> <span class="n">parsed_line</span><span class="p">:</span>
-                <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span> <span class="n">pos_y1</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span>
-                 <span class="n">object_id</span><span class="p">)</span> <span class="o">=</span> <span class="n">parsed_entity</span>
-                <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_box</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span>
-                                      <span class="n">pos_y1</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">object_id</span><span class="p">)</span>
-                <span class="n">bounding_boxes_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">append_box</span><span class="p">(</span><span class="n">bounding_boxes_dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">image_id</span><span class="p">),</span> <span class="n">bbox</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">bounding_boxes_dict</span>
-
-    <span class="k">def</span> <span class="nf">append_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes_dict</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            bounding_boxes_dict (Dict): Dict of which contains a BoundingBoxes object for every encountered image_id.</span>
-<span class="sd">            image_id (int): Id of the image the box belongs to.</span>
-<span class="sd">            bbox (BoundingbBox): BoundingBox object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># No entry for image ID in dict.</span>
-        <span class="k">if</span> <span class="n">image_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bounding_boxes_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">bounding_boxes_dict</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBoxes</span><span class="p">([</span><span class="n">bbox</span><span class="p">],</span> <span class="n">image_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bounding_boxes_dict</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_dict</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">parse_box</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_x2</span><span class="p">,</span> <span class="n">pos_y2</span><span class="p">,</span> <span class="n">certainty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classification</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses a box.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            identifier (int): ID.</span>
-<span class="sd">            pos_x (float): Top-left x value.</span>
-<span class="sd">            pos_y (float): Top-left y value.</span>
-<span class="sd">            pos_x2 (float): Bottom-right x value.</span>
-<span class="sd">            pos_y2 (float): Bottom-right y value.</span>
-<span class="sd">            certainty (float): Certainty.</span>
-<span class="sd">            classification (string): Classification.</span>
-<span class="sd">            object_id (int): ID of object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bbox (BoundingBox): Bounding box object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="n">classification</span><span class="p">,</span>
-                           <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span><span class="p">,</span>
-                                               <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span><span class="p">,</span>
-                                               <span class="n">x2</span><span class="o">=</span><span class="n">pos_x2</span><span class="p">,</span>
-                                               <span class="n">y2</span><span class="o">=</span><span class="n">pos_y2</span><span class="p">),</span>
-                           <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
-                           <span class="n">certainty</span><span class="o">=</span><span class="n">certainty</span><span class="p">,</span>
-                           <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span>
-                           <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            image_id (integer): String with the name of the image.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Get image dimensions not implemented&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Base functions of parse_line.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            line (str): Line.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Parse line not implemented&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
+<span class="sd">            this_image_path (string): Path to image file.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
+<span class="sd">            image.size (shape): width and height dimensions of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+        <span class="k">if</span> <span class="n">image_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
 
-    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
+    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a file into a BoundingBoxes object.</span>
 
-<span class="sd">                Returns:</span>
-<span class="sd">                    annotations ([(str)]): Annotations tuples in a list.</span>
-<span class="sd">                &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;get annotations not implemented&#39;</span><span class="p">)</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: When the loader is not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;parse file method not implemented&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -237,127 +140,48 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IDataloader</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Dataloader superclass. A dataloader formats annotated data into generic BoundingBox objects.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize dataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): A dictionary of the configs.</span>
+<span class="sd">            path_location (str): String to select gt or det from the accuracy config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="n">path_location</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;categories&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">nr_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
         <span class="c1"># Cannot contain negative amount of frames.</span>
         <span class="k">if</span> <span class="n">nr_frames</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Cannot have negative number of frames&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span> <span class="o">=</span> <span class="n">nr_frames</span>
 
-    <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (Dict): Dictionary with image_id as key and bounding_boxes as value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bounding_boxes_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="n">parsed_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">parsed_entity</span> <span class="ow">in</span> <span class="n">parsed_line</span><span class="p">:</span>
-                <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span> <span class="n">pos_y1</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span>
-                 <span class="n">object_id</span><span class="p">)</span> <span class="o">=</span> <span class="n">parsed_entity</span>
-                <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_box</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span>
-                                      <span class="n">pos_y1</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">object_id</span><span class="p">)</span>
-                <span class="n">bounding_boxes_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">append_box</span><span class="p">(</span><span class="n">bounding_boxes_dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">image_id</span><span class="p">),</span> <span class="n">bbox</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">bounding_boxes_dict</span>
-
-    <span class="k">def</span> <span class="nf">append_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes_dict</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            bounding_boxes_dict (Dict): Dict of which contains a BoundingBoxes object for every encountered image_id.</span>
-<span class="sd">            image_id (int): Id of the image the box belongs to.</span>
-<span class="sd">            bbox (BoundingbBox): BoundingBox object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># No entry for image ID in dict.</span>
-        <span class="k">if</span> <span class="n">image_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bounding_boxes_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">bounding_boxes_dict</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBoxes</span><span class="p">([</span><span class="n">bbox</span><span class="p">],</span> <span class="n">image_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bounding_boxes_dict</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_dict</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">parse_box</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_x2</span><span class="p">,</span> <span class="n">pos_y2</span><span class="p">,</span> <span class="n">certainty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classification</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses a box.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            identifier (int): ID.</span>
-<span class="sd">            pos_x (float): Top-left x value.</span>
-<span class="sd">            pos_y (float): Top-left y value.</span>
-<span class="sd">            pos_x2 (float): Bottom-right x value.</span>
-<span class="sd">            pos_y2 (float): Bottom-right y value.</span>
-<span class="sd">            certainty (float): Certainty.</span>
-<span class="sd">            classification (string): Classification.</span>
-<span class="sd">            object_id (int): ID of object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bbox (BoundingBox): Bounding box object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="n">classification</span><span class="p">,</span>
-                           <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span><span class="p">,</span>
-                                               <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span><span class="p">,</span>
-                                               <span class="n">x2</span><span class="o">=</span><span class="n">pos_x2</span><span class="p">,</span>
-                                               <span class="n">y2</span><span class="o">=</span><span class="n">pos_y2</span><span class="p">),</span>
-                           <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
-                           <span class="n">certainty</span><span class="o">=</span><span class="n">certainty</span><span class="p">,</span>
-                           <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span>
-                           <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            image_id (integer): String with the name of the image.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Get image dimensions not implemented&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Base functions of parse_line.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            line (str): Line.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Parse line not implemented&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
+<span class="sd">            this_image_path (string): Path to image file.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
+<span class="sd">            image.size (shape): width and height dimensions of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+        <span class="k">if</span> <span class="n">image_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
 
-    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
+    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a file into a BoundingBoxes object.</span>
 
-<span class="sd">                Returns:</span>
-<span class="sd">                    annotations ([(str)]): Annotations tuples in a list.</span>
-<span class="sd">                &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;get annotations not implemented&#39;</span><span class="p">)</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: When the loader is not implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;parse file method not implemented&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -370,20 +194,24 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#IDataloader.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">IDataloader</span><span class="signature">(configs)</span>
+            <span class="name">IDataloader</span><span class="signature">(configs, path_location)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize dataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): A dictionary of the configs.</span>
+<span class="sd">            path_location (str): String to select gt or det from the accuracy config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">accuracy_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="n">path_location</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;categories&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Filter&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">nr_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_config</span><span class="p">[</span><span class="s1">&#39;nr_frames&#39;</span><span class="p">])</span>
         <span class="c1"># Cannot contain negative amount of frames.</span>
         <span class="k">if</span> <span class="n">nr_frames</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -399,183 +227,8 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>configs (dict):</strong>  A dictionary of the configs.</li>
+<li><strong>path_location (str):</strong>  String to select gt or det from the accuracy config.</li>
 </ul>
-</div>
-
-
-                            </div>
-                            <div id="IDataloader.parse_boxes" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDataloader.parse_boxes">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">parse_boxes</span><span class="signature">(self, annotations)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (Dict): Dictionary with image_id as key and bounding_boxes as value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bounding_boxes_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="n">parsed_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">parsed_entity</span> <span class="ow">in</span> <span class="n">parsed_line</span><span class="p">:</span>
-                <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span> <span class="n">pos_y1</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span>
-                 <span class="n">object_id</span><span class="p">)</span> <span class="o">=</span> <span class="n">parsed_entity</span>
-                <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_box</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x0</span><span class="p">,</span> <span class="n">pos_y0</span><span class="p">,</span> <span class="n">pos_x1</span><span class="p">,</span>
-                                      <span class="n">pos_y1</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="n">object_id</span><span class="p">)</span>
-                <span class="n">bounding_boxes_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">append_box</span><span class="p">(</span><span class="n">bounding_boxes_dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">image_id</span><span class="p">),</span> <span class="n">bbox</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">bounding_boxes_dict</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Parses bounding boxes.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>annotations ([(str)]):</strong>  Annotations tuples in a list.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>bounding_boxes_list (Dict): Dictionary with image_id as key and bounding_boxes as value.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="IDataloader.append_box" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDataloader.append_box">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">append_box</span><span class="signature">(self, bounding_boxes_dict, image_id, bbox)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">append_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounding_boxes_dict</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            bounding_boxes_dict (Dict): Dict of which contains a BoundingBoxes object for every encountered image_id.</span>
-<span class="sd">            image_id (int): Id of the image the box belongs to.</span>
-<span class="sd">            bbox (BoundingbBox): BoundingBox object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># No entry for image ID in dict.</span>
-        <span class="k">if</span> <span class="n">image_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bounding_boxes_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">bounding_boxes_dict</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundingBoxes</span><span class="p">([</span><span class="n">bbox</span><span class="p">],</span> <span class="n">image_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bounding_boxes_dict</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span><span class="o">.</span><span class="n">bounding_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_dict</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Appends boxes.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>bounding_boxes_dict (Dict):</strong>  Dict of which contains a BoundingBoxes object for every encountered image_id.</li>
-<li><strong>image_id (int):</strong>  Id of the image the box belongs to.</li>
-<li><strong>bbox (BoundingbBox):</strong>  BoundingBox object.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>bounding_boxes_list ([BoundingBoxes]): List of BoundingBoxes objects.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="IDataloader.parse_box" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDataloader.parse_box">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@staticmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">parse_box</span><span class="signature">(
-    identifier,
-    pos_x,
-    pos_y,
-    pos_x2,
-    pos_y2,
-    certainty=None,
-    classification=&#39;&#39;,
-    object_id=None
-)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">parse_box</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_x2</span><span class="p">,</span> <span class="n">pos_y2</span><span class="p">,</span> <span class="n">certainty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classification</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses a box.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            identifier (int): ID.</span>
-<span class="sd">            pos_x (float): Top-left x value.</span>
-<span class="sd">            pos_y (float): Top-left y value.</span>
-<span class="sd">            pos_x2 (float): Bottom-right x value.</span>
-<span class="sd">            pos_y2 (float): Bottom-right y value.</span>
-<span class="sd">            certainty (float): Certainty.</span>
-<span class="sd">            classification (string): Classification.</span>
-<span class="sd">            object_id (int): ID of object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bbox (BoundingBox): Bounding box object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="n">classification</span><span class="p">,</span>
-                           <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span><span class="p">,</span>
-                                               <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span><span class="p">,</span>
-                                               <span class="n">x2</span><span class="o">=</span><span class="n">pos_x2</span><span class="p">,</span>
-                                               <span class="n">y2</span><span class="o">=</span><span class="n">pos_y2</span><span class="p">),</span>
-                           <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
-                           <span class="n">certainty</span><span class="o">=</span><span class="n">certainty</span><span class="p">,</span>
-                           <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span>
-                           <span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Parses a box.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>identifier (int):</strong>  ID.</li>
-<li><strong>pos_x (float):</strong>  Top-left x value.</li>
-<li><strong>pos_y (float):</strong>  Top-left y value.</li>
-<li><strong>pos_x2 (float):</strong>  Bottom-right x value.</li>
-<li><strong>pos_y2 (float):</strong>  Bottom-right y value.</li>
-<li><strong>certainty (float):</strong>  Certainty.</li>
-<li><strong>classification (string):</strong>  Classification.</li>
-<li><strong>object_id (int):</strong>  ID of object.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>bbox (BoundingBox): Bounding box object.</p>
-</blockquote>
 </div>
 
 
@@ -585,21 +238,26 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">def</span>
-            <span class="name">get_image_dimensions</span><span class="signature">(self, image_id)</span>:
+            <span class="name">get_image_dimensions</span><span class="signature">(self, image_id, this_image_path)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            image_id (integer): String with the name of the image.</span>
+<span class="sd">            this_image_path (string): Path to image file.</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            image.size (shape): width and height dimensions of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Get image dimensions not implemented&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">image_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span><span class="p">[</span><span class="n">image_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
 </pre></div>
 
         </details>
@@ -610,54 +268,14 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>image_id (integer):</strong>  String with the name of the image.</li>
+<li><strong>this_image_path (string):</strong>  Path to image file.</li>
 </ul>
 
-<h6 id="raises">Raises</h6>
+<h6 id="returns">Returns</h6>
 
-<ul>
-<li>NotImplementedError.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="IDataloader.parse_line" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDataloader.parse_line">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">parse_line</span><span class="signature">(self, line)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Base functions of parse_line.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            line (str): Line.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Parse line not implemented&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Base functions of parse_line.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>line (str):</strong>  Line.</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li>NotImplementedError.</li>
-</ul>
+<blockquote>
+  <p>image.size (shape): width and height dimensions of the image.</p>
+</blockquote>
 </div>
 
 
@@ -673,57 +291,23 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
+        <span class="sd">&quot;&quot;&quot;Parses a file into a BoundingBoxes object.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: When the loader is not implemented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;parse file method not implemented&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Parses an annotations file.</p>
+            <div class="docstring"><p>Parses a file into a BoundingBoxes object.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="raises">Raises</h6>
 
-<blockquote>
-  <p>bounding_boxes_list (list): List of bounding boxes.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="IDataloader.get_annotations" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IDataloader.get_annotations">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">get_annotations</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
-
-<span class="sd">                Returns:</span>
-<span class="sd">                    annotations ([(str)]): Annotations tuples in a list.</span>
-<span class="sd">                &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;get annotations not implemented&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Reads the annotations from a file.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>annotations ([(str)]): Annotations tuples in a list.</p>
-</blockquote>
+<ul>
+<li><strong>NotImplementedError:</strong>  When the loader is not implemented.</li>
+</ul>
 </div>
 
 

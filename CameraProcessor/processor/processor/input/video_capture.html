@@ -100,14 +100,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            path (str): path to the video.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Open VideoCapture.</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Opening video from path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opening video from path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Successfully opened video file&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully opened video file&quot;</span><span class="p">)</span>
 
         <span class="c1"># Frame counter to stop at last frame.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Video has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span><span class="si">}</span><span class="s1"> frames&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Video has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the video is still opened.</span>
@@ -171,14 +171,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            path (str): path to the video.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Open VideoCapture.</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Opening video from path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opening video from path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Successfully opened video file&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully opened video file&quot;</span><span class="p">)</span>
 
         <span class="c1"># Frame counter to stop at last frame.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Video has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span><span class="si">}</span><span class="s1"> frames&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Video has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the video is still opened.</span>
@@ -242,14 +242,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            path (str): path to the video.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Open VideoCapture.</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Opening video from path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opening video from path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Successfully opened video file&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully opened video file&quot;</span><span class="p">)</span>
 
         <span class="c1"># Frame counter to stop at last frame.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Video has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span><span class="si">}</span><span class="s1"> frames&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Video has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__nr_frames</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>

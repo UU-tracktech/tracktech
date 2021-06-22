@@ -132,22 +132,22 @@ Utrecht University within the Software Project course.
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="p">)</span>
 
         <span class="c1"># Set properties of the handler.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;remove_delay&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timeout_delay&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wait_delay&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stream_options&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
 
         <span class="c1"># Load the public key from application settings.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;authenticator&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
 
         <span class="c1"># Load the camera object from application settings.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;camera&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Cache-control&#39;</span><span class="p">,</span> <span class="s1">&#39;no-store&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Cache-control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-store&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
         <span class="c1"># Allow Authorization header to keep cors preflight happy.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">)</span>
@@ -171,7 +171,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting stream.&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
             <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
@@ -193,7 +193,7 @@ Utrecht University within the Software Project course.
 <span class="sd">             root (path): path of the folder that contains the stream segments and index files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;stream.m3u8&#39;</span><span class="p">)</span>
+        <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;stream.m3u8&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span><span class="p">):</span>
 
@@ -233,7 +233,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Print stopping for logging purposes.</span>
-        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;stopping stream.&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
         <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -266,9 +266,6 @@ Utrecht University within the Software Project course.
                         <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="s1">&#39;Unimplemented authorization method&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
-                    <span class="c1"># Auth from processor is next to impossible. So http requests do not need auth.</span>
-                    <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Url parameter bc video.js does not want to send headers with the index file request.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;Bearer&#39;</span><span class="p">))</span>
@@ -359,22 +356,22 @@ Utrecht University within the Software Project course.
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="p">)</span>
 
         <span class="c1"># Set properties of the handler.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;remove_delay&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timeout_delay&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wait_delay&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stream_options&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
 
         <span class="c1"># Load the public key from application settings.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;authenticator&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
 
         <span class="c1"># Load the camera object from application settings.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;camera&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Cache-control&#39;</span><span class="p">,</span> <span class="s1">&#39;no-store&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Cache-control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-store&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
         <span class="c1"># Allow Authorization header to keep cors preflight happy.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">)</span>
@@ -398,7 +395,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting stream.&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
             <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
@@ -420,7 +417,7 @@ Utrecht University within the Software Project course.
 <span class="sd">             root (path): path of the folder that contains the stream segments and index files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;stream.m3u8&#39;</span><span class="p">)</span>
+        <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;stream.m3u8&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span><span class="p">):</span>
 
@@ -460,7 +457,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Print stopping for logging purposes.</span>
-        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;stopping stream.&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
         <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -493,9 +490,6 @@ Utrecht University within the Software Project course.
                         <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="s1">&#39;Unimplemented authorization method&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
-                    <span class="c1"># Auth from processor is next to impossible. So http requests do not need auth.</span>
-                    <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Url parameter bc video.js does not want to send headers with the index file request.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;Bearer&#39;</span><span class="p">))</span>
@@ -587,17 +581,17 @@ Utrecht University within the Software Project course.
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">default_filename</span><span class="p">)</span>
 
         <span class="c1"># Set properties of the handler.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;remove_delay&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timeout_delay&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wait_delay&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timeout_delay&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wait_delay&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stream_options&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_options&quot;</span><span class="p">)</span>
 
         <span class="c1"># Load the public key from application settings.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;authenticator&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authenticator&quot;</span><span class="p">)</span>
 
         <span class="c1"># Load the camera object from application settings.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;camera&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;camera&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -626,8 +620,8 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the headers to allow cors and disable caching.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Cache-control&#39;</span><span class="p">,</span> <span class="s1">&#39;no-store&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Cache-control&quot;</span><span class="p">,</span> <span class="s2">&quot;no-store&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 
         <span class="c1"># Allow Authorization header to keep cors preflight happy.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">)</span>
@@ -694,7 +688,7 @@ Utrecht University within the Software Project course.
 
         <span class="c1"># If there is no current conversion, start one.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting stream.&#39;</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">(</span><span class="s2">&quot;starting stream&quot;</span><span class="p">)</span>
 
             <span class="c1"># Configure entry conversion.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">get_conversion_process</span><span class="p">(</span>
@@ -740,7 +734,7 @@ Utrecht University within the Software Project course.
 <span class="sd">             root (path): path of the folder that contains the stream segments and index files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;stream.m3u8&#39;</span><span class="p">)</span>
+        <span class="n">index_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;stream.m3u8&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_delay</span><span class="p">):</span>
 
@@ -828,7 +822,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Print stopping for logging purposes.</span>
-        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;stopping stream.&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping stream&quot;</span><span class="p">)</span>
 
         <span class="c1"># Stopping the conversion.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">conversion</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -884,9 +878,6 @@ Utrecht University within the Software Project course.
                         <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="s1">&#39;Unimplemented authorization method&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
-                    <span class="c1"># Auth from processor is next to impossible. So http requests do not need auth.</span>
-                    <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Url parameter bc video.js does not want to send headers with the index file request.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">authenticator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;Bearer&#39;</span><span class="p">))</span>

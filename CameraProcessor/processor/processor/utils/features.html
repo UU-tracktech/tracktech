@@ -80,7 +80,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        use `del`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        bbox (BoundingBox): A BoundingBox, which holds the rectangle we need</span>
+<span class="sd">        bbox (BoundingBox): A BoundingBox which holds the rectangle we need</span>
 <span class="sd">        img (np.ndarray): the numpy array representing the frame/image</span>
 
 <span class="sd">    Returns:</span>
@@ -90,7 +90,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice</span>
 <span class="sd">        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!</span>
 <span class="sd">        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up</span>
-<span class="sd">                   the memory!</span>
+<span class="sd">                   the memory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">return</span> <span class="n">img</span><span class="p">[</span>
@@ -105,7 +105,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Args:</span>
 <span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
 <span class="sd">            reference to the original image.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
@@ -144,7 +144,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        use `del`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        bbox (BoundingBox): A BoundingBox, which holds the rectangle we need</span>
+<span class="sd">        bbox (BoundingBox): A BoundingBox which holds the rectangle we need</span>
 <span class="sd">        img (np.ndarray): the numpy array representing the frame/image</span>
 
 <span class="sd">    Returns:</span>
@@ -154,7 +154,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice</span>
 <span class="sd">        img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!</span>
 <span class="sd">        a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up</span>
-<span class="sd">                   the memory!</span>
+<span class="sd">                   the memory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">return</span> <span class="n">img</span><span class="p">[</span>
@@ -183,7 +183,7 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>bbox (BoundingBox):</strong>  A BoundingBox, which holds the rectangle we need</li>
+<li><strong>bbox (BoundingBox):</strong>  A BoundingBox which holds the rectangle we need</li>
 <li><strong>img (np.ndarray):</strong>  the numpy array representing the frame/image</li>
 </ul>
 
@@ -199,7 +199,7 @@ Utrecht University within the Software Project course.
   <p>a = slice_bounding_box(bbox, img) # Assign variable a to reference the slice
   img = None # Remove the reference to the original image. IT IS STILL RETAINED IN MEMORY!!
   a = None # However, now that the slice of the image is also unreferenced, Python garbage collection will free up
-             the memory!</p>
+             the memory</p>
 </blockquote>
 </div>
 
@@ -221,7 +221,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Args:</span>
 <span class="sd">        cutout (np.ndarray): an np.ndarray representing the cutout you want to resize. In most cases, this is a</span>
 <span class="sd">            reference to the original image.</span>
-<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration.</span>
+<span class="sd">        configs (configparser.SectionProxy): Re-ID configuration</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         np.ndarray: A resized image, which will also be a reference. Therefore, any adjustments to the original</span>
@@ -244,7 +244,7 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>cutout (np.ndarray):</strong>  an np.ndarray representing the cutout you want to resize. In most cases, this is a
 reference to the original image.</li>
-<li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration.</li>
+<li><strong>configs (configparser.SectionProxy):</strong>  Re-ID configuration</li>
 </ul>
 
 <h6 id="returns">Returns</h6>

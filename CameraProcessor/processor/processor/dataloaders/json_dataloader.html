@@ -32,13 +32,7 @@
                     <a class="class" href="#JsonDataloader">JsonDataloader</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#JsonDataloader.__init__">JsonDataloader</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#JsonDataloader.get_annotations">get_annotations</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#JsonDataloader.parse_line">parse_line</a>
+                                <a class="function" href="#JsonDataloader.parse_file">parse_file</a>
                         </li>
                 </ul>
 
@@ -58,7 +52,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../dataloaders.html">dataloaders</a>.json_dataloader    </h1>
 
-                        <div class="docstring"><p>Dataloader super class.</p>
+                        <div class="docstring"><p>JSON dataloader class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -67,31 +61,62 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Dataloader super class.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;JSON dataloader class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
-
+<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
+<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
+<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
 <span class="kn">from</span> <span class="nn">processor.dataloaders.i_dataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
 
 
 <span class="k">class</span> <span class="nc">JsonDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize json dataloader.</span>
+    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a file into a BoundingBoxes object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bounding_boxes_list (list): a BoundingBoxes object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
+        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+
+    <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (dict): A dictionary of the configs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
 
-    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Extract information from lines.</span>
+        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_x2</span><span class="p">,</span> <span class="n">pos_y2</span><span class="p">)</span> <span class="o">=</span> <span class="n">annotation</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
+                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="n">current_image_id</span><span class="p">))</span>
+                <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
+            <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="n">object_type</span><span class="p">,</span>
+                                             <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span><span class="p">,</span>
+                                                                 <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span><span class="p">,</span>
+                                                                 <span class="n">x2</span><span class="o">=</span><span class="n">pos_x2</span><span class="p">,</span>
+                                                                 <span class="n">y2</span><span class="o">=</span><span class="n">pos_y2</span><span class="p">),</span>
+                                             <span class="n">identifier</span><span class="o">=</span><span class="n">person_id</span><span class="p">,</span>
+                                             <span class="n">certainty</span><span class="o">=</span><span class="n">certainty</span>
+                                             <span class="p">))</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+
+    <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
 
 <span class="sd">        Returns:</span>
@@ -100,31 +125,23 @@ Utrecht University within the Software Project course.
         <span class="c1"># Read file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">lines</span>
 
-    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses a line.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            line (JSON): (JSON object of line to parse.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">json_line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="n">image_id</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;imageId&#39;</span><span class="p">]</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-            <span class="n">person_id</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span>
-            <span class="n">certainty</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;certainty&#39;</span><span class="p">]</span>
-            <span class="n">object_type</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectType&#39;</span><span class="p">]</span>
-            <span class="n">x_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">y_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">x_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-            <span class="n">y_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
-            <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">x_left_top</span><span class="p">,</span> <span class="n">y_left_top</span><span class="p">,</span> <span class="n">x_right_bottom</span><span class="p">,</span> <span class="n">y_right_bottom</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span>
-                                <span class="n">object_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="c1"># Extract information from lines.</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">json_line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">image_id</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;imageId&#39;</span><span class="p">]</span>
+            <span class="n">boxes</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
+                <span class="n">person_id</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span>
+                <span class="n">certainty</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;certainty&#39;</span><span class="p">]</span>
+                <span class="n">object_type</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectType&#39;</span><span class="p">]</span>
+                <span class="n">x_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">y_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">x_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">y_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span>
+                                    <span class="n">x_left_top</span><span class="p">,</span> <span class="n">y_left_top</span><span class="p">,</span> <span class="n">x_right_bottom</span><span class="p">,</span> <span class="n">y_right_bottom</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">annotations</span>
 </pre></div>
 
@@ -145,17 +162,46 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">JsonDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize json dataloader.</span>
+    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a file into a BoundingBoxes object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bounding_boxes_list (list): a BoundingBoxes object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
+        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+
+    <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            configs (dict): A dictionary of the configs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
 
-    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Extract information from lines.</span>
+        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_x2</span><span class="p">,</span> <span class="n">pos_y2</span><span class="p">)</span> <span class="o">=</span> <span class="n">annotation</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
+                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="n">current_image_id</span><span class="p">))</span>
+                <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
+            <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="n">object_type</span><span class="p">,</span>
+                                             <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span><span class="p">,</span>
+                                                                 <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span><span class="p">,</span>
+                                                                 <span class="n">x2</span><span class="o">=</span><span class="n">pos_x2</span><span class="p">,</span>
+                                                                 <span class="n">y2</span><span class="o">=</span><span class="n">pos_y2</span><span class="p">),</span>
+                                             <span class="n">identifier</span><span class="o">=</span><span class="n">person_id</span><span class="p">,</span>
+                                             <span class="n">certainty</span><span class="o">=</span><span class="n">certainty</span>
+                                             <span class="p">))</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+
+    <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
 
 <span class="sd">        Returns:</span>
@@ -164,31 +210,23 @@ Utrecht University within the Software Project course.
         <span class="c1"># Read file.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">lines</span>
 
-    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses a line.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            line (JSON): (JSON object of line to parse.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">json_line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="n">image_id</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;imageId&#39;</span><span class="p">]</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-            <span class="n">person_id</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span>
-            <span class="n">certainty</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;certainty&#39;</span><span class="p">]</span>
-            <span class="n">object_type</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectType&#39;</span><span class="p">]</span>
-            <span class="n">x_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">y_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">x_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-            <span class="n">y_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
-            <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">x_left_top</span><span class="p">,</span> <span class="n">y_left_top</span><span class="p">,</span> <span class="n">x_right_bottom</span><span class="p">,</span> <span class="n">y_right_bottom</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span>
-                                <span class="n">object_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="c1"># Extract information from lines.</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">json_line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">image_id</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;imageId&#39;</span><span class="p">]</span>
+            <span class="n">boxes</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
+                <span class="n">person_id</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span>
+                <span class="n">certainty</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;certainty&#39;</span><span class="p">]</span>
+                <span class="n">object_type</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectType&#39;</span><span class="p">]</span>
+                <span class="n">x_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">y_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">x_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">y_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span>
+                                    <span class="n">x_left_top</span><span class="p">,</span> <span class="n">y_left_top</span><span class="p">,</span> <span class="n">x_right_bottom</span><span class="p">,</span> <span class="n">y_right_bottom</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">annotations</span>
 </pre></div>
 
@@ -198,124 +236,35 @@ Utrecht University within the Software Project course.
 </div>
 
 
-                            <div id="JsonDataloader.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#JsonDataloader.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">JsonDataloader</span><span class="signature">(configs)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize json dataloader.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            configs (dict): A dictionary of the configs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
-        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;JSON&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Initialize json dataloader.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>configs (dict):</strong>  A dictionary of the configs.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="JsonDataloader.get_annotations" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#JsonDataloader.get_annotations">#&nbsp;&nbsp</a>
+                            <div id="JsonDataloader.parse_file" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JsonDataloader.parse_file">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">get_annotations</span><span class="signature">(self)</span>:
+            <span class="name">parse_file</span><span class="signature">(self)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reads the annotations from a file.</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a file into a BoundingBoxes object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+<span class="sd">            bounding_boxes_list (list): a BoundingBoxes object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Read file.</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">lines</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
+        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Reads the annotations from a file.</p>
+            <div class="docstring"><p>Parses a file into a BoundingBoxes object.</p>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>annotations ([(str)]): Annotations tuples in a list.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="JsonDataloader.parse_line" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#JsonDataloader.parse_line">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">parse_line</span><span class="signature">(self, line)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses a line.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            line (JSON): (JSON object of line to parse.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">json_line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="n">image_id</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;imageId&#39;</span><span class="p">]</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">json_line</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
-            <span class="n">person_id</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;boxId&#39;</span><span class="p">]</span>
-            <span class="n">certainty</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;certainty&#39;</span><span class="p">]</span>
-            <span class="n">object_type</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectType&#39;</span><span class="p">]</span>
-            <span class="n">x_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">y_left_top</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">x_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-            <span class="n">y_right_bottom</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="s1">&#39;rect&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
-            <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">x_left_top</span><span class="p">,</span> <span class="n">y_left_top</span><span class="p">,</span> <span class="n">x_right_bottom</span><span class="p">,</span> <span class="n">y_right_bottom</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span>
-                                <span class="n">object_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">annotations</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Parses a line.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>line (JSON):</strong>  (JSON object of line to parse.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</p>
+  <p>bounding_boxes_list (list): a BoundingBoxes object.</p>
 </blockquote>
 </div>
 
