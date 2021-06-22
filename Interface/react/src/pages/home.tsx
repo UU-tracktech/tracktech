@@ -205,17 +205,6 @@ export function Home() {
             hiddenObjectTypes={filteredObjectTypes}
           />
         )}
-        <Footer
-          style={{
-            height: 25,
-            padding: '0px 0px 4px 0px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          © Utrecht University (ICS)
-        </Footer>
       </div>
     </Content>
   )
