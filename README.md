@@ -5,10 +5,10 @@
 [![Orchestrator Build](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator_Build.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Orchestrator_Build.yml)
 [![Processor Build](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor_Build.yml/badge.svg)](https://github.com/UU-tracktech/tracktech/actions/workflows/Processor_Build.yml)
 
-[![Forwarder Docker Pulls](https://img.shields.io/docker/pulls/tracktech/forwarder?label=Forwarder%20Docker%20Pulls)](https://hub.docker.com/repository/docker/tracktech/forwarder)
-[![Interface Docker Pulls](https://img.shields.io/docker/pulls/tracktech/interface?label=Interface%20Docker%20Pulls)](https://hub.docker.com/repository/docker/tracktech/interface)
-[![Orchestrator Docker Pulls](https://img.shields.io/docker/pulls/tracktech/orchestrator?label=Orchestrator%20Docker%20Pulls)](https://hub.docker.com/repository/docker/tracktech/orchestrator)
-[![Processor Docker Pulls](https://img.shields.io/docker/pulls/tracktech/processor?label=Processor%20Docker%20Pulls)](https://hub.docker.com/repository/docker/tracktech/processor)
+[![Forwarder Docker Pulls](https://img.shields.io/docker/pulls/tracktech/forwarder?label=Forwarder%20Docker%20Pulls)](https://hub.docker.com/r/tracktech/forwarder)
+[![Interface Docker Pulls](https://img.shields.io/docker/pulls/tracktech/interface?label=Interface%20Docker%20Pulls)](https://hub.docker.com/r/tracktech/interface)
+[![Orchestrator Docker Pulls](https://img.shields.io/docker/pulls/tracktech/orchestrator?label=Orchestrator%20Docker%20Pulls)](https://hub.docker.com/r/tracktech/orchestrator)
+[![Processor Docker Pulls](https://img.shields.io/docker/pulls/tracktech/processor?label=Processor%20Docker%20Pulls)](https://hub.docker.com/r/tracktech/processor)
 
 [![Codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech)
 

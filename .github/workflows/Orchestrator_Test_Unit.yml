@@ -46,5 +46,5 @@ jobs:
         run: docker-compose -f ./ProcessorOrchestrator/compose/docker-compose_test_unit.yml down --rmi all
         if: ${{ always() }}
       - name: Prune images
-        run: docker image prune --force --filter "until=168h"
+        run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}
