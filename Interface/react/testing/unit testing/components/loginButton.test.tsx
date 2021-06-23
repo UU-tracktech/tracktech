@@ -8,32 +8,38 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { screen, render } from '@testing-library/react'
-import { LoginButton } from '../../../src/components/loginButton'
+import { LoginButton } from 'components/loginButton'
+import { MockAuthProvider } from '../utilities/mockAuthContextProvider'
 
 describe('Tests for the login button', () => {
   it('Shows skeleton while loading', () => {
-    require('@react-keycloak/web').__SetMockInitialized(false)
-    render(<LoginButton />)
+    render(
+      <MockAuthProvider state='loading'>
+        <LoginButton />
+      </MockAuthProvider>
+    )
 
     expect(screen.queryByText('Login')).not.toBeTruthy()
     expect(screen.queryByText('Logout')).not.toBeTruthy()
   })
 
   it('Shows the login button if not logged in', () => {
-    require('@react-keycloak/web').__SetMockInitialized(true)
-    require('@react-keycloak/web').__SetMockAuthenticated(false)
-    render(<LoginButton />)
+    render(
+      <MockAuthProvider state='unauthenticated'>
+        <LoginButton />
+      </MockAuthProvider>
+    )
 
     expect(screen.queryByText('Login')).toBeTruthy()
   })
 
   it('Calls the login function when clicking login', () => {
     const mockLogin = jest.fn()
-
-    require('@react-keycloak/web').__SetMockInitialized(true)
-    require('@react-keycloak/web').__SetMockAuthenticated(false)
-    require('@react-keycloak/web').__SetMockLoginFunction(mockLogin)
-    render(<LoginButton />)
+    render(
+      <MockAuthProvider state='unauthenticated' login={mockLogin}>
+        <LoginButton />
+      </MockAuthProvider>
+    )
 
     expect(screen.queryByText('Login')).toBeTruthy()
     screen.getByText('Login').click()
@@ -42,9 +48,11 @@ describe('Tests for the login button', () => {
   })
 
   it('Shows the logout button if logged in', () => {
-    require('@react-keycloak/web').__SetMockInitialized(true)
-    require('@react-keycloak/web').__SetMockAuthenticated(true)
-    render(<LoginButton />)
+    render(
+      <MockAuthProvider state='authenticated'>
+        <LoginButton />
+      </MockAuthProvider>
+    )
 
     expect(screen.queryByText('Logout')).toBeTruthy()
   })
@@ -52,10 +60,11 @@ describe('Tests for the login button', () => {
   it('Calls the logout function when clicking the logout button', () => {
     const mockLogout = jest.fn()
 
-    require('@react-keycloak/web').__SetMockInitialized(true)
-    require('@react-keycloak/web').__SetMockAuthenticated(true)
-    require('@react-keycloak/web').__SetMockLogoutFunction(mockLogout)
-    render(<LoginButton />)
+    render(
+      <MockAuthProvider state='authenticated' logout={mockLogout}>
+        <LoginButton />
+      </MockAuthProvider>
+    )
 
     expect(screen.queryByText('Logout')).toBeTruthy()
     screen.getByText('Logout').click()

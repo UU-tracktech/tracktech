@@ -2,25 +2,40 @@
 
 This component is responsible for managing communications between camera processor and interfaces using WebSockets.
 
-## Architecture
-The architecture of the application is made up of the following main components:
-- main.py: starts the server and handles routing to handlers.
-- client_socket.py: contains the WebSocket handler for clients.
-- processor_socket.py: contains the WebSocket handler for processors.
-- object_manager.py: contains a class for tracking objects that contains the identifier, feature map, and functionality for automatic stopping of tracking.
-- connections.py: contains dictionaries for the currently connected sockets.
-- logger.py: contains methods for standardised logging.
-- timeline_handler.py: contains HTTP Handler that serves timeline tracking info of a specified object.
+## Quickstart
 
-## How to use
-There are two ways to start the server:
-- run "python src/main.py" with the current folder as the python root path, and after installing the packages in requirements.txt
-- (using docker) run "docker-compose up"
+### Starting
 
-### Dependencies
-Dependencies for running the main application are listed in requirements.txt; 
-dependencies for running the tests are listed in requirements-test.txt. All dependencies
-should be installed with pip.
+#### Docker
+
+Run the following command to startup the orchestrator
+
+```bash
+docker run -p 80:80
+```
+
+Port 430 should also be made available if SSL is used, see below for other optional environment variables.
+
+#### Local
+
+Make sure python is installed and the repository is cloned. Install the dependencies using.
+
+```bash
+pip install -r requirements.txt
+pip install Auth-1.0.tar.gz
+```
+
+Set the current folder as the python root path.
+
+Optionally set other environment variables.
+
+Run the program
+
+```bash
+python src/main.py
+```
+
+The stream can then be accessed at `http://localhost/stream.m3u8`
 
 ### Environment variables
 The following environment variables can be used:
@@ -81,6 +96,21 @@ This data is located at
 
 Where ID is the id of the object of which the timeline is required.  
 Timeline tracking data is returned as a JSON with one property, "data" that contains an array of objects with a "timeStamp" property and a "processorId" property containing the id of the processor on which the object was detected.
+
+## Architecture
+The architecture of the application is made up of the following main components:
+- main.py: starts the server and handles routing to handlers.
+- client_socket.py: contains the WebSocket handler for clients.
+- processor_socket.py: contains the WebSocket handler for processors.
+- object_manager.py: contains a class for tracking objects that contains the identifier, feature map, and functionality for automatic stopping of tracking.
+- connections.py: contains dictionaries for the currently connected sockets.
+- logger.py: contains methods for standardised logging.
+- timeline_handler.py: contains HTTP Handler that serves timeline tracking info of a specified object.
+
+## Dependencies
+Dependencies for running the main application are listed in requirements.txt; 
+dependencies for running the tests are listed in requirements-test.txt. All dependencies
+should be installed with pip.
 
 ## Running tests
 The project contains two testing stages, unit testing and integration testing.

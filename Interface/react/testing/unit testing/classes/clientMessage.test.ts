@@ -11,9 +11,9 @@ import {
   BoxesClientMessage,
   NewObjectClientMessage,
   StopClientMessage
-} from '../../../src/classes/clientMessage'
-import { Box } from '../../../src/classes/box'
-import { QueueItem } from '../../../src/classes/queueItem'
+} from 'classes/clientMessage'
+import { Box } from 'classes/box'
+import { QueueItem } from 'classes/queueItem'
 
 // Collection of tests for the classes contained in the clientmessage file
 describe('Test the creation of each class in the clientMesasage file', () => {

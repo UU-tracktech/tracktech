@@ -10,11 +10,10 @@ import React, { useRef, useEffect, useContext } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { useKeycloak } from '@react-keycloak/web'
 
 import { Box, size } from 'classes/box'
-import useAuthState from 'classes/useAuthState'
 import { environmentContext } from './environmentContext'
+import { authContext } from './authContext'
 
 /** Properties for the VideoPlayer component, including all callbacks that can be called with the player buttons,
  * as well as default videojs properties. */
@@ -33,8 +32,7 @@ export type VideoPlayerProps = {
  */
 export function VideoPlayer(props: VideoPlayerProps) {
   // Authentication hooks.
-  const { keycloak } = useKeycloak()
-  const status = useAuthState()
+  const { status, token } = useContext(authContext)
 
   // The DOM node to attach the videoplayer to.
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -63,10 +61,11 @@ export function VideoPlayer(props: VideoPlayerProps) {
 
   useEffect(() => {
     // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests.
-    if (props.sources?.[0].src)
-      props.sources[0].src += `?Bearer=${keycloak.token}`
+    if (props.sources?.[0].src && status != 'no-auth')
+      props.sources[0].src += `?Bearer=${token}`
 
-    // Instantiate videojs.
+    // Instantiate videojs. Ignore the videojs constructor, as this would otherwise throw error during documentation generation.
+    //@ts-ignore
     playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
 
@@ -76,7 +75,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
         videojs.Vhs.xhr.beforeRequest = function (options) {
           // As headers might not exist yet, create them if not.
           options.headers = options.headers || {}
-          options.headers.Authorization = `Bearer ${keycloak.token}`
+          options.headers.Authorization = `Bearer ${token}`
           return options
         }
       }
@@ -135,29 +134,21 @@ export function VideoPlayer(props: VideoPlayerProps) {
           bufferTimer = player?.setInterval(() => {
             bufferTimeVar -= delta
             if (bufferTimeVar <= 0) {
-              // Clear the interval and show a message to the user showing the problem.
+              // Clear the interval and automatically reload the player
               player?.clearInterval(bufferTimer)
               bufferTimer = undefined
               player?.pause()
 
-              var modal = player?.createModal(
-                'Unable to load stream. Check your connection or the video forwarder. Close this message to reload the stream.',
-                null
-              )
+              if (props.sources && props.sources[0].type)
+                player?.src({
+                  src: props.sources[0].src,
+                  type: props.sources[0].type
+                })
+              else if (props.sources) player?.src({ src: props.sources[0].src })
 
-              // Try to reload the videoplayer when the user closes the warning message.
-              modal?.on('modalclose', () => {
-                if (props.sources && props.sources[0].type)
-                  player?.src({
-                    src: props.sources[0].src,
-                    type: props.sources[0].type
-                  })
-                else if (props.sources)
-                  player?.src({ src: props.sources[0].src })
-
-                startTime = undefined
-                player?.load()
-              })
+              startTime = undefined
+              player?.load()
+              player?.play()
             }
           }, delta * 1000)
         }

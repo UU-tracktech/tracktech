@@ -9,21 +9,20 @@ Utrecht University within the Software Project course.
 import React from 'react'
 import { screen, render } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { NavMenu } from '../../../src/components/navbar'
-
-// Keycloak mock setup
-beforeAll(() => {
-  require('@react-keycloak/web').__SetMockInitialized(true)
-  require('@react-keycloak/web').__SetMockAuthenticated(true)
-  require('@react-keycloak/web').__SetMockTokenParsed({ name: 'John Doe' })
-})
+import { NavMenu } from 'components/navbar'
+import {
+  MockAuthProvider,
+  fakeJWTToken
+} from '../utilities/mockAuthContextProvider'
 
 // Render the navbar for each test
 beforeEach(() => {
   render(
-    <BrowserRouter>
-      <NavMenu />
-    </BrowserRouter>
+    <MockAuthProvider state='authenticated' token={fakeJWTToken}>
+      <BrowserRouter>
+        <NavMenu />
+      </BrowserRouter>
+    </MockAuthProvider>
   )
 })
 

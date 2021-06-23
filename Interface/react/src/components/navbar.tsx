@@ -36,9 +36,7 @@ export function NavMenu() {
       <img
         // The Tracktech logo at the left of the navbar.
         style={{ maxHeight: '100px', maxWidth: '100px', alignSelf: 'center' }}
-        src={
-          'https://cdn.discordapp.com/attachments/809363612404678657/814798379913314304/a.gif'
-        }
+        src={process.env.PUBLIC_URL + '/logo.gif'}
         alt={'logo'}
       />
       {/* Links to the pages in the navbar. */}
@@ -51,7 +49,7 @@ export function NavMenu() {
         </Menu.Item>
       </Menu>
 
-      {/*/ The login buttons on the right of the navbar. Has to come before the pages to not break styling. */}
+      {/* The login buttons on the right of the navbar. Has to come before the pages to not break styling. */}
       <div style={{ gridColumnStart: '4' }}>
         <LoggedInUser />
       </div>
