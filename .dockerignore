@@ -7,6 +7,9 @@
 !CameraProcessor/processor
 !ProcessorOrchestrator/src
 !VideoForwarder/src
+!Interface/react/package.json
+!Interface/react/src
+!Interface/react/tsconfig.json
 
 # Exclude existing html
 **/docs/html/

@@ -20,7 +20,7 @@ import mock
 
 
 def generate_documentation(component_source_path):
-    """Generates PDOC documentation for all Python modules in CameraProcessor project.
+    """Generates PDOC documentation for all Python modules in given Python source path.
 
     Removes the previously created documentation if it exists.
 

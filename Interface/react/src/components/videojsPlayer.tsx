@@ -64,7 +64,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
     if (props.sources?.[0].src && status != 'no-auth')
       props.sources[0].src += `?Bearer=${token}`
 
-    // Instantiate videojs.
+    // Instantiate videojs. Ignore the videojs constructor, as this would otherwise throw error during documentation generation.
+    //@ts-ignore
     playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
 
