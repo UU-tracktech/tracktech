@@ -20,6 +20,8 @@ export function LoginButton() {
 
   // If the user is logged in, return a logout button, otherwise return a login button.
   switch (status) {
+    case 'no-auth':
+      return <></>
     case 'loading':
       return <Skeleton.Button active style={{ verticalAlign: 'middle' }} />
     case 'unauthenticated':

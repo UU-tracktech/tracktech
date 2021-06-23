@@ -92,6 +92,7 @@ export function App() {
       case 'unauthenticated':
         return <NeedLogin />
       case 'authenticated':
+      case 'no-auth':
         return (
           /* Wrap the main content in a websocket provider to provide the pages
            * with access to the websocket connection to the orchestrator. */

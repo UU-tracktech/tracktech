@@ -31,6 +31,7 @@ export type authenticationStatus =
   | 'loading'
   | 'unauthenticated'
   | 'authenticated'
+  | 'no-auth'
 
 /** The context which can be used by other components to get auth data. */
 export const authContext = React.createContext<authArgs>({
@@ -57,6 +58,18 @@ export function AuthProvider(props: {
 
   // Get auth settings and then the token from url.
   React.useEffect(() => {
+    if (
+      ![
+        props.settings.accessTokenUri,
+        props.settings.authorizationUri,
+        props.settings.clientId,
+        props.settings.redirectUri
+      ].every((x) => x)
+    ) {
+      setStatus('no-auth')
+      return
+    } else if (status === 'no-auth') setStatus('unauthenticated')
+
     try {
       // If the callback was called from the authorization page, then the details are in the url.
       if (
@@ -83,6 +96,7 @@ export function AuthProvider(props: {
             window.localStorage.removeItem('token')
           }
         })
+
         // Replace the url so that the token can't be found in the history.
         window.history.replaceState(
           null,
