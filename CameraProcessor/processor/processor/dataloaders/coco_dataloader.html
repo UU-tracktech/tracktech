@@ -35,9 +35,6 @@
                                 <a class="function" href="#CocoDataloader.__init__">CocoDataloader</a>
                         </li>
                         <li>
-                                <a class="function" href="#CocoDataloader.parse_file">parse_file</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#CocoDataloader.download_coco_image">download_coco_image</a>
                         </li>
                         <li>
@@ -45,6 +42,12 @@
                         </li>
                         <li>
                                 <a class="function" href="#CocoDataloader.get_image_dimensions">get_image_dimensions</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CocoDataloader.parse_line">parse_line</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CocoDataloader.get_annotations">get_annotations</a>
                         </li>
                 </ul>
 
@@ -64,7 +67,7 @@
                     <h1 class="modulename">
 <a href="./../../processor.html">processor</a>.<a href="./../dataloaders.html">dataloaders</a>.coco_dataloader    </h1>
 
-                        <div class="docstring"><p>COCO datalaoder class.</p>
+                        <div class="docstring"><p>COCO dataloader class.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -73,45 +76,38 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;COCO datalaoder class.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;COCO dataloader class.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">pycocotools.coco</span> <span class="kn">import</span> <span class="n">COCO</span>
 
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
 <span class="kn">from</span> <span class="nn">processor.dataloaders.i_dataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
 
 
 <span class="k">class</span> <span class="nc">CocoDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;COCO Dataloader, formats COCO Data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize coco dataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): A dictionary of the configs.</span>
-<span class="sd">            path_location (str): String to select gt or det from the accuracy config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;COCO&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Create image path if it does not yet exist.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coco</span> <span class="o">=</span> <span class="n">COCO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="k">def</span> <span class="nf">download_coco_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Downloads a single coco image given the identifier.</span>
@@ -122,7 +118,8 @@ Utrecht University within the Software Project course.
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
             <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">download_coco_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
@@ -140,15 +137,14 @@ Utrecht University within the Software Project course.
 
         <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
             <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
                 <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            image_id (integer): String with the name of the image.</span>
-<span class="sd">            this_image_path (string): Path to image file.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            image.size (shape): width and height dimensions of the image.</span>
@@ -159,39 +155,27 @@ Utrecht University within the Software Project course.
 
         <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
 
-    <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
+    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a line.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+<span class="sd">            line (JSON): JSON object with file line contents.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
+<span class="sd">            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="n">classification</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">width</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">height</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span>
+        <span class="n">certainty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
 
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="n">image_id</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
-            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
-                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">current_image_id</span><span class="p">))))</span>
-                <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
-            <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-                                             <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y1</span><span class="o">=</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span>
-                                                                 <span class="n">x2</span><span class="o">=</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span>
-                                                                     <span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y2</span><span class="o">=</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span>
-                                                                     <span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                                             <span class="n">identifier</span><span class="o">=</span><span class="n">counter</span><span class="p">,</span>
-                                             <span class="n">certainty</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
-
-    <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
 
 <span class="sd">        Returns:</span>
@@ -235,34 +219,6 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">ann</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
                 <span class="n">filtered_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filtered_annotations</span>
-
-    <span class="k">def</span> <span class="nf">__get_image_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the image name given an identifier.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            image_id (int): Identifier of the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Name of the image.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">zeros</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_id</span><span class="p">))):</span>
-            <span class="n">zeros</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
-        <span class="n">image_name</span> <span class="o">=</span> <span class="n">zeros</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">image_name</span>
-
-    <span class="k">def</span> <span class="nf">__get_image_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the image path given an identifier.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            image_id (int): Identifier of the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Path of the image.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-        <span class="n">this_image_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1">.jpg&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">this_image_path</span>
 </pre></div>
 
         </details>
@@ -282,25 +238,20 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">CocoDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;COCO Dataloader, formats COCO Data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize coco dataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): A dictionary of the configs.</span>
-<span class="sd">            path_location (str): String to select gt or det from the accuracy config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;COCO&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Create image path if it does not yet exist.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coco</span> <span class="o">=</span> <span class="n">COCO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="k">def</span> <span class="nf">download_coco_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Downloads a single coco image given the identifier.</span>
@@ -311,7 +262,8 @@ Utrecht University within the Software Project course.
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
             <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">download_coco_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
@@ -329,15 +281,14 @@ Utrecht University within the Software Project course.
 
         <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
             <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
                 <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            image_id (integer): String with the name of the image.</span>
-<span class="sd">            this_image_path (string): Path to image file.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            image.size (shape): width and height dimensions of the image.</span>
@@ -348,39 +299,27 @@ Utrecht University within the Software Project course.
 
         <span class="k">return</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
 
-    <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
+    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a line.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
+<span class="sd">            line (JSON): JSON object with file line contents.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
+<span class="sd">            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="n">classification</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">width</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">height</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span>
+        <span class="n">certainty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
 
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="n">image_id</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
-            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
-                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">current_image_id</span><span class="p">))))</span>
-                <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
-            <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-                                             <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y1</span><span class="o">=</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span>
-                                                                 <span class="n">x2</span><span class="o">=</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span>
-                                                                     <span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y2</span><span class="o">=</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span>
-                                                                     <span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                                             <span class="n">identifier</span><span class="o">=</span><span class="n">counter</span><span class="p">,</span>
-                                             <span class="n">certainty</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
-
-    <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
 
 <span class="sd">        Returns:</span>
@@ -424,34 +363,6 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">ann</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
                 <span class="n">filtered_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filtered_annotations</span>
-
-    <span class="k">def</span> <span class="nf">__get_image_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the image name given an identifier.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            image_id (int): Identifier of the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Name of the image.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">zeros</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_id</span><span class="p">))):</span>
-            <span class="n">zeros</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
-        <span class="n">image_name</span> <span class="o">=</span> <span class="n">zeros</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">image_name</span>
-
-    <span class="k">def</span> <span class="nf">__get_image_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the image path given an identifier.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            image_id (int): Identifier of the image</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Path of the image.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-        <span class="n">this_image_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1">.jpg&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">this_image_path</span>
 </pre></div>
 
         </details>
@@ -464,19 +375,24 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#CocoDataloader.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">CocoDataloader</span><span class="signature">(configs, path_location)</span>
+            <span class="name">CocoDataloader</span><span class="signature">(configs)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize coco dataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): A dictionary of the configs.</span>
-<span class="sd">            path_location (str): String to select gt or det from the accuracy config.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;COCO&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Create image path if it does not yet exist.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coco</span> <span class="o">=</span> <span class="n">COCO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
 </pre></div>
 
@@ -488,42 +404,7 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>configs (dict):</strong>  A dictionary of the configs.</li>
-<li><strong>path_location (str):</strong>  String to select gt or det from the accuracy config.</li>
 </ul>
-</div>
-
-
-                            </div>
-                            <div id="CocoDataloader.parse_file" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.parse_file">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">parse_file</span><span class="signature">(self)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Parses an annotations file.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>bounding_boxes_list (list): List of bounding boxes.</p>
-</blockquote>
 </div>
 
 
@@ -547,7 +428,8 @@ Utrecht University within the Software Project course.
         <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadImgs</span><span class="p">([</span><span class="n">image_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
             <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 </pre></div>
 
@@ -589,7 +471,7 @@ Utrecht University within the Software Project course.
 
         <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
             <span class="n">image_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;coco_url&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">content</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">],</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
                 <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 </pre></div>
 
@@ -611,17 +493,16 @@ Utrecht University within the Software Project course.
 
         
             <span class="def">def</span>
-            <span class="name">get_image_dimensions</span><span class="signature">(self, image_id, this_image_path)</span>:
+            <span class="name">get_image_dimensions</span><span class="signature">(self, image_id)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            image_id (integer): String with the name of the image.</span>
-<span class="sd">            this_image_path (string): Path to image file.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            image.size (shape): width and height dimensions of the image.</span>
@@ -641,13 +522,96 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>image_id (integer):</strong>  String with the name of the image.</li>
-<li><strong>this_image_path (string):</strong>  Path to image file.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
   <p>image.size (shape): width and height dimensions of the image.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="CocoDataloader.parse_line" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.parse_line">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">parse_line</span><span class="signature">(self, line)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a line.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line (JSON): JSON object with file line contents.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image_id</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="n">classification</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">width</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">height</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">width</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">height</span>
+        <span class="n">certainty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="n">classification</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Parses a line.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>line (JSON):</strong>  JSON object with file line contents.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>line ([(int, int, float, float, float, float, float, string, None)]): parsed line.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="CocoDataloader.get_annotations" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CocoDataloader.get_annotations">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_annotations</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            annotations (list): List of string annotations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_all_annotations</span><span class="p">()</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__filter_annotations</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">annotations</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Gets annotations.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>annotations (list): List of string annotations.</p>
 </blockquote>
 </div>
 

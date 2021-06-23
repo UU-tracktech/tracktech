@@ -142,11 +142,11 @@
     <ul id="pdoc-modules">
     </ul>
     <script>
-        const modules = ["utility", "utility.classes_checker", "utility.comment_checker", "utility.copyright_checker", "utility.docstring_checker", "utility.docstring_content_checker"];
+        const modules = ["utility", "utility.pylint-plugins", "utility.pylint-plugins.classes_checker", "utility.pylint-plugins.comment_checker", "utility.pylint-plugins.copyright_checker", "utility.pylint-plugins.docstring_checker", "utility.pylint-plugins.docstring_content_checker"];
         const module_list = document.getElementById("pdoc-modules");
         const searchbox = document.getElementById("pdoc-search")
 
-        const modulesTree = {"utility": {"classes_checker": {}, "comment_checker": {}, "copyright_checker": {}, "docstring_checker": {}, "docstring_content_checker": {}}};
+        const modulesTree = {"utility": {"pylint-plugins": {"classes_checker": {}, "comment_checker": {}, "copyright_checker": {}, "docstring_checker": {}, "docstring_content_checker": {}}}};
 
         renderTree("");
 

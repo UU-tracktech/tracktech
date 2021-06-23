@@ -122,7 +122,7 @@ Utrecht University within the Software Project course.
 <span class="sd">                json containing the features that should become the new feature map on this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;updated feature map of object </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;updated feature map of object </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove_self</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Removes self from objects dict.&quot;&quot;&quot;</span>
@@ -134,10 +134,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            processor_id (int): Identifier of the processor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-            <span class="s2">&quot;timeStamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> | %H:%M:%S&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;processorId&quot;</span><span class="p">:</span> <span class="n">processor_id</span>
+            <span class="s1">&#39;timeStamp&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> | %H:%M:%S&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;processorId&#39;</span><span class="p">:</span> <span class="n">processor_id</span>
         <span class="p">}))</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -190,7 +190,7 @@ Utrecht University within the Software Project course.
 <span class="sd">                json containing the features that should become the new feature map on this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;updated feature map of object </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;updated feature map of object </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove_self</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Removes self from objects dict.&quot;&quot;&quot;</span>
@@ -202,10 +202,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            processor_id (int): Identifier of the processor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-            <span class="s2">&quot;timeStamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> | %H:%M:%S&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;processorId&quot;</span><span class="p">:</span> <span class="n">processor_id</span>
+            <span class="s1">&#39;timeStamp&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> | %H:%M:%S&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;processorId&#39;</span><span class="p">:</span> <span class="n">processor_id</span>
         <span class="p">}))</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -282,7 +282,7 @@ Utrecht University within the Software Project course.
 <span class="sd">                json containing the features that should become the new feature map on this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;updated feature map of object </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;updated feature map of object </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -336,10 +336,10 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            processor_id (int): Identifier of the processor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-            <span class="s2">&quot;timeStamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> | %H:%M:%S&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;processorId&quot;</span><span class="p">:</span> <span class="n">processor_id</span>
+            <span class="s1">&#39;timeStamp&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> | %H:%M:%S&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;processorId&#39;</span><span class="p">:</span> <span class="n">processor_id</span>
         <span class="p">}))</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

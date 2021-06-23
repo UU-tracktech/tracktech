@@ -87,7 +87,7 @@ Utrecht University within the Software Project course.
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
@@ -96,16 +96,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Missing &#39;objectId&#39; query parameter&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s2">&quot;Missing &#39;objectId&#39; query parameter&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Missing &quot;objectId&quot; query parameter&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s1">&#39;Missing &quot;objectId&quot; query parameter&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">.txt&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s1">.txt&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Object id not present in tracking history&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s2">&quot;Object id not present in tracking history&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Object id not present in tracking history&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s1">&#39;Object id not present in tracking history&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="c1"># Remove final comma.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:[</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">]</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -142,7 +142,7 @@ Utrecht University within the Software Project course.
 
     <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets log file contents.</span>
@@ -151,16 +151,16 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Missing &#39;objectId&#39; query parameter&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s2">&quot;Missing &#39;objectId&#39; query parameter&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Missing &quot;objectId&quot; query parameter&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s1">&#39;Missing &quot;objectId&quot; query parameter&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">.txt&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s1">.txt&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Object id not present in tracking history&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s2">&quot;Object id not present in tracking history&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Object id not present in tracking history&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s1">&#39;Object id not present in tracking history&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="c1"># Remove final comma.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:[</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">]</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -195,7 +195,7 @@ with html br tags.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">set_default_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets the default request headers for the request.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s2">&quot;Access-Control-Allow-Origin&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -222,16 +222,16 @@ with html br tags.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Missing &#39;objectId&#39; query parameter&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s2">&quot;Missing &#39;objectId&#39; query parameter&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Missing &quot;objectId&quot; query parameter&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s1">&#39;Missing &quot;objectId&quot; query parameter&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s2">.txt&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;tracking_timelines/tracking_logs_</span><span class="si">{</span><span class="n">object_id</span><span class="si">}</span><span class="s1">.txt&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Object id not present in tracking history&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s2">&quot;Object id not present in tracking history&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Object id not present in tracking history&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">(</span><span class="s1">&#39;Object id not present in tracking history&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="c1"># Remove final comma.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;data&quot;:[</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">]</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">)</span>

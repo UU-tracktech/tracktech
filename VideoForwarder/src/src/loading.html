@@ -93,24 +93,24 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Creat the camera using the URL and whether the camera has audio.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Camera: A camera object containing the camera url and if it has any audio</span>
+<span class="sd">        Camera: A camera object containing the camera url and if it has any audio.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Camera</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_URL&quot;</span><span class="p">],</span> <span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_AUDIO&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Camera</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CAMERA_URL&#39;</span><span class="p">],</span> <span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CAMERA_AUDIO&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">create_stream_options</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Create the stream options for the camera.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        StreamOptions: Load the stream options used for the conversion</span>
+<span class="sd">        StreamOptions: Load the stream options used for the conversion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">StreamOptions</span><span class="p">(</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEGMENT_SIZE&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEGMENT_AMOUNT&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_ENCODING&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;libx264&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_LOW&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_MEDIUM&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_HIGH&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SEGMENT_SIZE&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SEGMENT_AMOUNT&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_ENCODING&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;libx264&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_LOW&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_MEDIUM&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_HIGH&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span>
     <span class="p">)</span>
 
 
@@ -118,7 +118,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Get the delay after which conversion process is stopped.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: How long the stream has no requests before stopping the conversion in seconds</span>
+<span class="sd">        float: How long the stream has no requests before stopping the conversion in seconds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOVE_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;60.0&#39;</span><span class="p">)</span>
 
@@ -127,7 +127,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Get the delay before the stream will become inactive.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion</span>
+<span class="sd">        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TIMEOUT_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;30&#39;</span><span class="p">)</span>
 
@@ -178,7 +178,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Give back the Authentication object.</span>
-    <span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">(</span><span class="s1">&#39;using client token validation.&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Auth</span><span class="p">(</span>
         <span class="n">public_key_path</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
         <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS256&#39;</span><span class="p">],</span>
@@ -204,9 +204,9 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Creat the camera using the URL and whether the camera has audio.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Camera: A camera object containing the camera url and if it has any audio</span>
+<span class="sd">        Camera: A camera object containing the camera url and if it has any audio.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Camera</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_URL&quot;</span><span class="p">],</span> <span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CAMERA_AUDIO&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Camera</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CAMERA_URL&#39;</span><span class="p">],</span> <span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CAMERA_AUDIO&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -216,7 +216,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>Camera: A camera object containing the camera url and if it has any audio</p>
+  <p>Camera: A camera object containing the camera url and if it has any audio.</p>
 </blockquote>
 </div>
 
@@ -236,15 +236,15 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Create the stream options for the camera.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        StreamOptions: Load the stream options used for the conversion</span>
+<span class="sd">        StreamOptions: Load the stream options used for the conversion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">StreamOptions</span><span class="p">(</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEGMENT_SIZE&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEGMENT_AMOUNT&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_ENCODING&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;libx264&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_LOW&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_MEDIUM&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
-        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STREAM_HIGH&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SEGMENT_SIZE&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SEGMENT_AMOUNT&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_ENCODING&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;libx264&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_LOW&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_MEDIUM&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;STREAM_HIGH&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span>
     <span class="p">)</span>
 </pre></div>
 
@@ -255,7 +255,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>StreamOptions: Load the stream options used for the conversion</p>
+  <p>StreamOptions: Load the stream options used for the conversion.</p>
 </blockquote>
 </div>
 
@@ -275,7 +275,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Get the delay after which conversion process is stopped.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: How long the stream has no requests before stopping the conversion in seconds</span>
+<span class="sd">        float: How long the stream has no requests before stopping the conversion in seconds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOVE_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;60.0&#39;</span><span class="p">)</span>
 </pre></div>
@@ -287,7 +287,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>float: How long the stream has no requests before stopping the conversion in seconds</p>
+  <p>float: How long the stream has no requests before stopping the conversion in seconds.</p>
 </blockquote>
 </div>
 
@@ -307,7 +307,7 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Get the delay before the stream will become inactive.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion</span>
+<span class="sd">        int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TIMEOUT_DELAY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;30&#39;</span><span class="p">)</span>
 </pre></div>
@@ -319,7 +319,7 @@ Utrecht University within the Software Project course.
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion</p>
+  <p>int: Maximum amount of seconds that will be waited before removing stream files after stopping the conversion.</p>
 </blockquote>
 </div>
 
@@ -427,7 +427,7 @@ Utrecht University within the Software Project course.
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Give back the Authentication object.</span>
-    <span class="n">info</span><span class="p">(</span><span class="s2">&quot;using client token validation&quot;</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">(</span><span class="s1">&#39;using client token validation.&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Auth</span><span class="p">(</span>
         <span class="n">public_key_path</span><span class="o">=</span><span class="n">public_key</span><span class="p">,</span>
         <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS256&#39;</span><span class="p">],</span>

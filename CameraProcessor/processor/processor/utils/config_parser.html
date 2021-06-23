@@ -85,14 +85,14 @@ Utrecht University within the Software Project course.
 <span class="sd">    Attributes:</span>
 <span class="sd">        root_path (str): path to root</span>
 <span class="sd">        config_path (str): path to config file</span>
-<span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values</span>
+<span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">,</span> <span class="n">use_environment_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_name (str): name of the config file.</span>
-<span class="sd">            use_environment_vars (bool): Use environment variables</span>
+<span class="sd">            use_environment_vars (bool): Use environment variables.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            FileNotFoundError: The configuration file name searched for does not exist.</span>
@@ -153,7 +153,7 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">read_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override configurations using environment variables.</span>
 
-<span class="sd">        These properties can be changed within the docker-compose file</span>
+<span class="sd">        These properties can be changed within the docker-compose file.</span>
 <span class="sd">        in order to expose more to the outside and create an easier plug-and-play environment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -169,8 +169,6 @@ Utrecht University within the Software Project course.
         <span class="n">hls_stream_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">hls_stream_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: HLS_STREAM_URL used.&#39;</span><span class="p">)</span>
-            <span class="c1"># Also set mode to hls to prevent running a video.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hls&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hls_stream_url</span>
 
     <span class="nd">@staticmethod</span>
@@ -203,14 +201,14 @@ Utrecht University within the Software Project course.
 <span class="sd">    Attributes:</span>
 <span class="sd">        root_path (str): path to root</span>
 <span class="sd">        config_path (str): path to config file</span>
-<span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values</span>
+<span class="sd">        configs (configparser.ConfigParser): config parser containing keys and values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_name</span><span class="p">,</span> <span class="n">use_environment_vars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates the config and reads the values, converts paths to absolute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_name (str): name of the config file.</span>
-<span class="sd">            use_environment_vars (bool): Use environment variables</span>
+<span class="sd">            use_environment_vars (bool): Use environment variables.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            FileNotFoundError: The configuration file name searched for does not exist.</span>
@@ -271,7 +269,7 @@ Utrecht University within the Software Project course.
     <span class="k">def</span> <span class="nf">read_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override configurations using environment variables.</span>
 
-<span class="sd">        These properties can be changed within the docker-compose file</span>
+<span class="sd">        These properties can be changed within the docker-compose file.</span>
 <span class="sd">        in order to expose more to the outside and create an easier plug-and-play environment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -287,8 +285,6 @@ Utrecht University within the Software Project course.
         <span class="n">hls_stream_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">hls_stream_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: HLS_STREAM_URL used.&#39;</span><span class="p">)</span>
-            <span class="c1"># Also set mode to hls to prevent running a video.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hls&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hls_stream_url</span>
 
     <span class="nd">@staticmethod</span>
@@ -310,7 +306,7 @@ Utrecht University within the Software Project course.
 <ul>
 <li><strong>root_path (str):</strong>  path to root</li>
 <li><strong>config_path (str):</strong>  path to config file</li>
-<li><strong>configs (configparser.ConfigParser):</strong>  config parser containing keys and values</li>
+<li><strong>configs (configparser.ConfigParser):</strong>  config parser containing keys and values.</li>
 </ul>
 </div>
 
@@ -329,7 +325,7 @@ Utrecht University within the Software Project course.
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_name (str): name of the config file.</span>
-<span class="sd">            use_environment_vars (bool): Use environment variables</span>
+<span class="sd">            use_environment_vars (bool): Use environment variables.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            FileNotFoundError: The configuration file name searched for does not exist.</span>
@@ -363,7 +359,7 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>config_name (str):</strong>  name of the config file.</li>
-<li><strong>use_environment_vars (bool):</strong>  Use environment variables</li>
+<li><strong>use_environment_vars (bool):</strong>  Use environment variables.</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
@@ -437,7 +433,7 @@ Utrecht University within the Software Project course.
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">read_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override configurations using environment variables.</span>
 
-<span class="sd">        These properties can be changed within the docker-compose file</span>
+<span class="sd">        These properties can be changed within the docker-compose file.</span>
 <span class="sd">        in order to expose more to the outside and create an easier plug-and-play environment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -453,8 +449,6 @@ Utrecht University within the Software Project course.
         <span class="n">hls_stream_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HLS_STREAM_URL&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">hls_stream_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable: HLS_STREAM_URL used.&#39;</span><span class="p">)</span>
-            <span class="c1"># Also set mode to hls to prevent running a video.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hls&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Input&#39;</span><span class="p">][</span><span class="s1">&#39;hls_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hls_stream_url</span>
 </pre></div>
 
@@ -462,7 +456,7 @@ Utrecht University within the Software Project course.
 
             <div class="docstring"><p>Override configurations using environment variables.</p>
 
-<p>These properties can be changed within the docker-compose file
+<p>These properties can be changed within the docker-compose file.
 in order to expose more to the outside and create an easier plug-and-play environment.</p>
 </div>
 

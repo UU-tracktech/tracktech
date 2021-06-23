@@ -54,70 +54,98 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
 <span class="kn">import</span> <span class="nn">torchreid</span>
 
+<span class="kn">from</span> <span class="nn">tests.conftest</span> <span class="kn">import</span> <span class="n">root_path</span>
 <span class="kn">from</span> <span class="nn">processor.utils.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 
-
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># Instantiate the training.</span>
+    <span class="c1"># Instantiate the training mode.</span>
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Training_Torchreid&#39;</span><span class="p">]</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Training&#39;</span><span class="p">]</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;mode_reid&#39;</span><span class="p">]</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;torch&quot;</span><span class="p">:</span>
+        <span class="c1"># Run the training of TorchReid.</span>
+        <span class="c1"># Instantiate the training.</span>
+        <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Training_Torchreid&#39;</span><span class="p">]</span>
 
-    <span class="c1"># Sets data location an properties.</span>
-    <span class="n">datamanager</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ImageDataManager</span><span class="p">(</span>
-        <span class="n">root</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">],</span>
-        <span class="n">sources</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">],</span>
-        <span class="n">targets</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;targets&#39;</span><span class="p">],</span>
-        <span class="n">height</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]),</span>
-        <span class="n">width</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]),</span>
-        <span class="n">batch_size_train</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;batch_size_train&#39;</span><span class="p">]),</span>
-        <span class="n">batch_size_test</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;batch_size_test&#39;</span><span class="p">]),</span>
-        <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;random_flip&#39;</span><span class="p">,</span> <span class="s1">&#39;random_crop&#39;</span><span class="p">]</span>
-    <span class="p">)</span>
+        <span class="c1"># Sets data location an properties.</span>
+        <span class="n">datamanager</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ImageDataManager</span><span class="p">(</span>
+            <span class="n">root</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">],</span>
+            <span class="n">sources</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;sources&#39;</span><span class="p">],</span>
+            <span class="n">targets</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;targets&#39;</span><span class="p">],</span>
+            <span class="n">height</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]),</span>
+            <span class="n">width</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]),</span>
+            <span class="n">batch_size_train</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;batch_size_train&#39;</span><span class="p">]),</span>
+            <span class="n">batch_size_test</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;batch_size_test&#39;</span><span class="p">]),</span>
+            <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;random_flip&#39;</span><span class="p">,</span> <span class="s1">&#39;random_crop&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Selects the model.</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">build_model</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">],</span>
-        <span class="n">num_classes</span><span class="o">=</span><span class="n">datamanager</span><span class="o">.</span><span class="n">num_train_pids</span><span class="p">,</span>
-        <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">,</span>
-        <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
+        <span class="c1"># Selects the model.</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">build_model</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">],</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="n">datamanager</span><span class="o">.</span><span class="n">num_train_pids</span><span class="p">,</span>
+            <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">,</span>
+            <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Uses CUDA.</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        <span class="c1"># Uses CUDA.</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
-    <span class="c1"># Selects the optimizer to use.</span>
-    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">build_optimizer</span><span class="p">(</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">optim</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
-        <span class="n">lr</span><span class="o">=</span><span class="mf">0.0003</span>
-    <span class="p">)</span>
+        <span class="c1"># Selects the optimizer to use.</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">build_optimizer</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">optim</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+            <span class="n">lr</span><span class="o">=</span><span class="mf">0.0003</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Selects the scheduler to use.</span>
-    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">build_lr_scheduler</span><span class="p">(</span>
-        <span class="n">optimizer</span><span class="p">,</span>
-        <span class="n">lr_scheduler</span><span class="o">=</span><span class="s1">&#39;single_step&#39;</span><span class="p">,</span>
-        <span class="n">stepsize</span><span class="o">=</span><span class="mi">20</span>
-    <span class="p">)</span>
+        <span class="c1"># Selects the scheduler to use.</span>
+        <span class="n">scheduler</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">build_lr_scheduler</span><span class="p">(</span>
+            <span class="n">optimizer</span><span class="p">,</span>
+            <span class="n">lr_scheduler</span><span class="o">=</span><span class="s1">&#39;single_step&#39;</span><span class="p">,</span>
+            <span class="n">stepsize</span><span class="o">=</span><span class="mi">20</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Selects the engine to use.</span>
-    <span class="n">engine</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">ImageSoftmaxEngine</span><span class="p">(</span>
-        <span class="n">datamanager</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">,</span>
-        <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
-        <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
-        <span class="n">label_smooth</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
+        <span class="c1"># Selects the engine to use.</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">torchreid</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">ImageSoftmaxEngine</span><span class="p">(</span>
+            <span class="n">datamanager</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
+            <span class="n">label_smooth</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Runs the training.</span>
-    <span class="n">engine</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-        <span class="n">save_dir</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;save_dir&#39;</span><span class="p">],</span>
-        <span class="n">max_epoch</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;max_epoch&#39;</span><span class="p">]),</span>
-        <span class="n">eval_freq</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;eval_freq&#39;</span><span class="p">]),</span>
-        <span class="n">print_freq</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;print_freq&#39;</span><span class="p">]),</span>
-        <span class="n">test_only</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">)</span>
+        <span class="c1"># Runs the training.</span>
+        <span class="n">engine</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">save_dir</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;save_dir&#39;</span><span class="p">],</span>
+            <span class="n">max_epoch</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;max_epoch&#39;</span><span class="p">]),</span>
+            <span class="n">eval_freq</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;eval_freq&#39;</span><span class="p">]),</span>
+            <span class="n">print_freq</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;print_freq&#39;</span><span class="p">]),</span>
+            <span class="n">test_only</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;fast&quot;</span><span class="p">:</span>
+        <span class="c1"># Run the training of FastReid.</span>
+        <span class="c1"># Instantiate the training.</span>
+        <span class="n">config_parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span><span class="s1">&#39;configs.ini&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Training_Fastreid&#39;</span><span class="p">]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_path</span><span class="p">,</span> <span class="s1">&#39;processor&#39;</span><span class="p">,</span> <span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;reidentification&#39;</span><span class="p">,</span> <span class="s1">&#39;fastreid&#39;</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;/train_net.py&#39;</span>
+        <span class="n">num_gpus</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;num_gpus&#39;</span><span class="p">]</span>
+        <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;config_file&#39;</span><span class="p">]</span>
+        <span class="n">model_device</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;model_device&#39;</span><span class="p">]</span>
+        <span class="n">device_number</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;device_number&#39;</span><span class="p">]</span>
+        <span class="c1"># Start training.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model_device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;python &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/tools/train_net.py&quot; --config-file &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}{</span><span class="n">config_file</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;MODEL.DEVICE </span><span class="si">{</span><span class="n">model_device</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;python &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/tools/train_net.py&quot; --config-file &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}{</span><span class="n">config_file</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;MODEL.DEVICE </span><span class="si">{</span><span class="n">model_device</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">device_number</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>

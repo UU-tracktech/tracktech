@@ -119,8 +119,8 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
-<span class="sd">        authorized (bool): Shows whether or not the connection is authorized.</span>
-<span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
+<span class="sd">        authorized (bool): Shows whether the connection is authorized.</span>
+<span class="sd">        auth (Auth): Authorization object for the websocket handler.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
@@ -157,8 +157,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs (Any): Arguments given to the open command of the socket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;New processor connected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;New processor connected.&#39;</span><span class="p">)</span>
 
     <span class="c1"># pylint: disable=broad-except</span>
     <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -176,43 +176,43 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;featureMap&quot;    | This signifies a message that contains a feature map of an object,</span>
 <span class="sd">                                        see update_feature_map, for the other expected properties.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;identifier&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_bounding_boxes</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_feature_map</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="p">}</span>
 
-            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone gave an unknown command.&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">function</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s1">&#39;authenticate&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Close the connection.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A processor was not authenticated first&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;A processor was not authenticated first,&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;KeyError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone missed a property in their json&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone missed a property in their json.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
@@ -226,7 +226,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;jwt&#39;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -236,14 +236,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="c1"># Pop the identifier instead of del as it might be called twice.</span>
         <span class="n">processors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> disconnected&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
@@ -260,18 +260,18 @@ Utrecht University within the Software Project course.
 <span class="sd">                JSON message that was received. It should contain the following property.</span>
 <span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor registered with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor registered with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;featureMap&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">feature_map</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;featureMap&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">feature_map</span>
             <span class="p">}))</span>
 
     <span class="k">def</span> <span class="nf">send_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -283,26 +283,26 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;frameId&quot; | The identifier of the frame for which these bounding boxes were computed.</span>
 <span class="sd">                    - &quot;boxes&quot;   | An object containing the bounding boxes that were computed for this frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">]</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;cameraId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
-                <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="n">boxes</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cameraId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;frameId&#39;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
+                <span class="s1">&#39;boxes&#39;</span><span class="p">:</span> <span class="n">boxes</span>
             <span class="p">}))</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">),</span> <span class="n">boxes</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got an object with id </span><span class="si">{</span><span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> that is no longer tracked&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;objectId&#39;</span><span class="p">),</span> <span class="n">boxes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got an object with id </span><span class="si">{</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> that is no longer tracked&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">objects</span><span class="p">[</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">log_spotting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;AttributeError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Boxes array was not of the correct format&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;AttributeError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Boxes array was not of the correct format.&#39;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
@@ -313,19 +313,19 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;objectId&quot;   | The identifier of the object for which this feature map was computed.</span>
 <span class="sd">                    - &quot;featureMap&quot; | An object containing the new feature map that was computed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
-        <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;featureMap&quot;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span>
+        <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;featureMap&#39;</span><span class="p">]</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">objects</span><span class="p">[</span><span class="n">object_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update_feature_map</span><span class="p">(</span><span class="n">feature_map</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown object id&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Unknown object id.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">feature_map_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;featureMap&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span><span class="p">,</span>
-            <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span> <span class="n">feature_map</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;featureMap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span><span class="p">,</span>
+            <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span> <span class="n">feature_map</span>
         <span class="p">})</span>
 
         <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -351,8 +351,8 @@ Utrecht University within the Software Project course.
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        identifier (int): Serves as the unique identifier to this object.</span>
-<span class="sd">        authorized (bool): Shows whether or not the connection is authorized.</span>
-<span class="sd">        auth (Auth): Authorization object for the websocket handler</span>
+<span class="sd">        authorized (bool): Shows whether the connection is authorized.</span>
+<span class="sd">        auth (Auth): Authorization object for the websocket handler.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
@@ -389,8 +389,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs (Any): Arguments given to the open command of the socket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;New processor connected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;New processor connected.&#39;</span><span class="p">)</span>
 
     <span class="c1"># pylint: disable=broad-except</span>
     <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -408,43 +408,43 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;featureMap&quot;    | This signifies a message that contains a feature map of an object,</span>
 <span class="sd">                                        see update_feature_map, for the other expected properties.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;identifier&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_bounding_boxes</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_feature_map</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="p">}</span>
 
-            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone gave an unknown command.&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">function</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s1">&#39;authenticate&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Close the connection.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A processor was not authenticated first&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;A processor was not authenticated first,&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;KeyError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone missed a property in their json&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone missed a property in their json.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
@@ -458,7 +458,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;jwt&#39;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -468,14 +468,14 @@ Utrecht University within the Software Project course.
 <span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="c1"># Pop the identifier instead of del as it might be called twice.</span>
         <span class="n">processors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> disconnected&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unused method that could handle streamed request data.</span>
@@ -492,18 +492,18 @@ Utrecht University within the Software Project course.
 <span class="sd">                JSON message that was received. It should contain the following property.</span>
 <span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor registered with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor registered with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;featureMap&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">feature_map</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;featureMap&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">feature_map</span>
             <span class="p">}))</span>
 
     <span class="k">def</span> <span class="nf">send_bounding_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -515,26 +515,26 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;frameId&quot; | The identifier of the frame for which these bounding boxes were computed.</span>
 <span class="sd">                    - &quot;boxes&quot;   | An object containing the bounding boxes that were computed for this frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">]</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;cameraId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
-                <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="n">boxes</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cameraId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;frameId&#39;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
+                <span class="s1">&#39;boxes&#39;</span><span class="p">:</span> <span class="n">boxes</span>
             <span class="p">}))</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">),</span> <span class="n">boxes</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got an object with id </span><span class="si">{</span><span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> that is no longer tracked&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;objectId&#39;</span><span class="p">),</span> <span class="n">boxes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got an object with id </span><span class="si">{</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> that is no longer tracked&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">objects</span><span class="p">[</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">log_spotting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;AttributeError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Boxes array was not of the correct format&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;AttributeError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Boxes array was not of the correct format.&#39;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_feature_map</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
@@ -545,19 +545,19 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;objectId&quot;   | The identifier of the object for which this feature map was computed.</span>
 <span class="sd">                    - &quot;featureMap&quot; | An object containing the new feature map that was computed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
-        <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;featureMap&quot;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span>
+        <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;featureMap&#39;</span><span class="p">]</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">objects</span><span class="p">[</span><span class="n">object_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update_feature_map</span><span class="p">(</span><span class="n">feature_map</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown object id&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Unknown object id.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">feature_map_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;featureMap&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span><span class="p">,</span>
-            <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span> <span class="n">feature_map</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;featureMap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span><span class="p">,</span>
+            <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span> <span class="n">feature_map</span>
         <span class="p">})</span>
 
         <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -572,8 +572,8 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>identifier (int):</strong>  Serves as the unique identifier to this object.</li>
-<li><strong>authorized (bool):</strong>  Shows whether or not the connection is authorized.</li>
-<li><strong>auth (Auth):</strong>  Authorization object for the websocket handler</li>
+<li><strong>authorized (bool):</strong>  Shows whether the connection is authorized.</li>
+<li><strong>auth (Auth):</strong>  Authorization object for the websocket handler.</li>
 </ul>
 </div>
 
@@ -676,8 +676,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs (Any): Arguments given to the open command of the socket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;New processor connected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_connect</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;New processor connected.&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -720,43 +720,43 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;featureMap&quot;    | This signifies a message that contains a feature map of an object,</span>
 <span class="sd">                                        see update_feature_map, for the other expected properties.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_receive</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
             <span class="c1"># Switch on message type.</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;identifier&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;identifier&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_processor</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_bounding_boxes</span><span class="p">(</span><span class="n">message_object</span><span class="p">),</span>
-                <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span>
+                <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span>
                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_feature_map</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="p">}</span>
 
-            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+            <span class="n">action_type</span> <span class="o">=</span> <span class="n">message_object</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Execute correct function.</span>
                 <span class="n">function</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">action_type</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone gave an unknown command&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone gave an unknown command.&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">function</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s2">&quot;authenticate&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">action_type</span> <span class="o">==</span> <span class="s1">&#39;authenticate&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">message_object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Close the connection.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;A processor was not authenticated first&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;A processor was not authenticated first,&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone wrote bad json&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone wrote bad json.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;KeyError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Someone missed a property in their json&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Someone missed a property in their json.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 </pre></div>
@@ -804,7 +804,7 @@ Utrecht University within the Software Project course.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;jwt&#39;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 
@@ -841,7 +841,7 @@ Utrecht University within the Software Project course.
 <span class="sd">            message (string): string which should be send over this websocket.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message_send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -869,10 +869,10 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Called when the websocket is closed, deletes itself from the dict of processors.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_disconnect</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
         <span class="c1"># Pop the identifier instead of del as it might be called twice.</span>
         <span class="n">processors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> disconnected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> disconnected&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -931,18 +931,18 @@ Utrecht University within the Software Project course.
 <span class="sd">                JSON message that was received. It should contain the following property.</span>
 <span class="sd">                    - &quot;id&quot; | The identifier of the processor under which this socket should be registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="n">processors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor registered with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processor registered with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">tracking_object</span> <span class="ow">in</span> <span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;featureMap&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">feature_map</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;featureMap&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span> <span class="n">tracking_object</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">feature_map</span>
             <span class="p">}))</span>
 </pre></div>
 
@@ -981,26 +981,26 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;frameId&quot; | The identifier of the frame for which these bounding boxes were computed.</span>
 <span class="sd">                    - &quot;boxes&quot;   | An object containing the bounding boxes that were computed for this frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;frameId&quot;</span><span class="p">]</span>
-        <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;boxes&quot;</span><span class="p">]</span>
+        <span class="n">frame_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;frameId&#39;</span><span class="p">]</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boundingBoxes&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;cameraId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s2">&quot;frameId&quot;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
-                <span class="s2">&quot;boxes&quot;</span><span class="p">:</span> <span class="n">boxes</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;boundingBoxes&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cameraId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;frameId&#39;</span><span class="p">:</span> <span class="n">frame_id</span><span class="p">,</span>
+                <span class="s1">&#39;boxes&#39;</span><span class="p">:</span> <span class="n">boxes</span>
             <span class="p">}))</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s2">&quot;objectId&quot;</span><span class="p">),</span> <span class="n">boxes</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got an object with id </span><span class="si">{</span><span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> that is no longer tracked&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;objectId&#39;</span><span class="p">),</span> <span class="n">boxes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">objects</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got an object with id </span><span class="si">{</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> that is no longer tracked&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">objects</span><span class="p">[</span><span class="n">box</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">log_spotting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;/processor&quot;</span><span class="p">,</span> <span class="s2">&quot;AttributeError&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Boxes array was not of the correct format&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;/processor&#39;</span><span class="p">,</span> <span class="s1">&#39;AttributeError&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_ip</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Boxes array was not of the correct format.&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1040,19 +1040,19 @@ Utrecht University within the Software Project course.
 <span class="sd">                    - &quot;objectId&quot;   | The identifier of the object for which this feature map was computed.</span>
 <span class="sd">                    - &quot;featureMap&quot; | An object containing the new feature map that was computed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;objectId&quot;</span><span class="p">]</span>
-        <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s2">&quot;featureMap&quot;</span><span class="p">]</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;objectId&#39;</span><span class="p">]</span>
+        <span class="n">feature_map</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;featureMap&#39;</span><span class="p">]</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">objects</span><span class="p">[</span><span class="n">object_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update_feature_map</span><span class="p">(</span><span class="n">feature_map</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Unknown object id&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Unknown object id.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">feature_map_message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;featureMap&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;objectId&quot;</span><span class="p">:</span> <span class="n">object_id</span><span class="p">,</span>
-            <span class="s2">&quot;featureMap&quot;</span><span class="p">:</span> <span class="n">feature_map</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;featureMap&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;objectId&#39;</span><span class="p">:</span> <span class="n">object_id</span><span class="p">,</span>
+            <span class="s1">&#39;featureMap&#39;</span><span class="p">:</span> <span class="n">feature_map</span>
         <span class="p">})</span>
 
         <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>

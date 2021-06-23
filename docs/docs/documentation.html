@@ -73,7 +73,7 @@
                     <h1 class="modulename">
 <a href="./../docs.html">docs</a>.documentation    </h1>
 
-                        <div class="docstring"><p>Generate the documentation using pdoc and jinja templating.</p>
+                        <div class="docstring"><p>Generate the documentation using PDOC and jinja templating.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -82,7 +82,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Generate the documentation using pdoc and jinja templating.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Generate the documentation using PDOC and jinja templating.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -104,9 +104,9 @@ Utrecht University within the Software Project course.
 
 
 <span class="k">def</span> <span class="nf">generate_documentation</span><span class="p">(</span><span class="n">component_source_path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates pdoc documentation for all Python modules in CameraProcessor project.</span>
+    <span class="sd">&quot;&quot;&quot;Generates PDOC documentation for all Python modules in given Python source path.</span>
 
-<span class="sd">    Removes previously created documentation if it exists.</span>
+<span class="sd">    Removes the previously created documentation if it exists.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        component_source_path (Path): path to root folder of Python code.</span>
@@ -168,7 +168,7 @@ Utrecht University within the Software Project course.
 
     <span class="n">index_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">html_root</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Removes current index.html to later generate it anew.</span>
+    <span class="c1"># Removes the current index.html to later generate it anew.</span>
     <span class="c1"># Must be removed before searching to prevent conflicting finds.</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index_loc</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index_loc</span><span class="p">)</span>
@@ -183,8 +183,16 @@ Utrecht University within the Software Project course.
             <span class="n">sub_dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">index_loc</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">index_file</span><span class="p">:</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;style&gt;&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;body{background-color: #212529;color:#f7f7f7;font-family:system-ui,-apple-system,&quot;Segoe UI&quot;,&#39;</span>
+                         <span class="s1">&#39;Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&#39;</span>
+                         <span class="s1">&#39;&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;a{background-color:rgb(51, 51, 51);color:#f7f7f7;margin:.1rem;padding:.1rem.5rem;&#39;</span>
+                         <span class="s1">&#39;box-sizing: border-box;text-decoration: none;margin-bottom:2px;display:inline-block}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/style&gt;&#39;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">index_path</span> <span class="ow">in</span> <span class="n">index_paths</span><span class="p">:</span>
-            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;hr&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&amp;mdash;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/index.html&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;br&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_imports</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
@@ -306,7 +314,8 @@ Utrecht University within the Software Project course.
     <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
         <span class="n">current_folder</span> <span class="o">=</span> <span class="n">folders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
-        <span class="c1"># Find all folders/directories in current folder, add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
+        <span class="c1"># Find all folders/directories in the current folder,</span>
+        <span class="c1"># add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
         <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">current_folder</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -389,7 +398,7 @@ Utrecht University within the Software Project course.
 
     <span class="c1"># Create mock for all import statements not included in included_modules.</span>
     <span class="k">for</span> <span class="n">included_module</span> <span class="ow">in</span> <span class="n">included_paths</span><span class="p">:</span>
-        <span class="c1"># Get imports of module from included module.</span>
+        <span class="c1"># Get imports of module from the included module.</span>
         <span class="n">module_imports</span> <span class="o">=</span> <span class="n">get_imports</span><span class="p">(</span><span class="n">included_module</span><span class="p">)</span>
 
         <span class="c1"># Loop over all found imports.</span>
@@ -412,7 +421,8 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">        [str]: modules that are mocked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
+    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>
+    <span class="c1"># pylint: disable=not-an-iterable</span>
 
     <span class="n">mocked</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -432,7 +442,7 @@ Utrecht University within the Software Project course.
             <span class="n">mod_mock</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">mod_name</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">mod_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_mock</span>
 
-            <span class="c1"># Mocked module.</span>
+            <span class="c1"># The mocked module.</span>
             <span class="n">mocked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mod_name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">mocked</span>
@@ -475,7 +485,7 @@ Utrecht University within the Software Project course.
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate documentation.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Create index if flag is given.</span>
-    <span class="c1"># Generates index combining all documentation index.html files together in a root html/index.html file.</span>
+    <span class="c1"># Generates the index combining all documentation index.html files together in a root html/index.html file.</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;-ci&#39;</span><span class="p">,</span>
         <span class="s1">&#39;--create-index&#39;</span><span class="p">,</span>
@@ -529,9 +539,9 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">generate_documentation</span><span class="p">(</span><span class="n">component_source_path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates pdoc documentation for all Python modules in CameraProcessor project.</span>
+    <span class="sd">&quot;&quot;&quot;Generates PDOC documentation for all Python modules in given Python source path.</span>
 
-<span class="sd">    Removes previously created documentation if it exists.</span>
+<span class="sd">    Removes the previously created documentation if it exists.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        component_source_path (Path): path to root folder of Python code.</span>
@@ -588,9 +598,9 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Generates pdoc documentation for all Python modules in CameraProcessor project.</p>
+            <div class="docstring"><p>Generates PDOC documentation for all Python modules in given Python source path.</p>
 
-<p>Removes previously created documentation if it exists.</p>
+<p>Removes the previously created documentation if it exists.</p>
 
 <h6 id="args">Args</h6>
 
@@ -618,7 +628,7 @@ Utrecht University within the Software Project course.
 
     <span class="n">index_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">html_root</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Removes current index.html to later generate it anew.</span>
+    <span class="c1"># Removes the current index.html to later generate it anew.</span>
     <span class="c1"># Must be removed before searching to prevent conflicting finds.</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index_loc</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index_loc</span><span class="p">)</span>
@@ -633,8 +643,16 @@ Utrecht University within the Software Project course.
             <span class="n">sub_dirs</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">index_loc</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">index_file</span><span class="p">:</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;style&gt;&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;body{background-color: #212529;color:#f7f7f7;font-family:system-ui,-apple-system,&quot;Segoe UI&quot;,&#39;</span>
+                         <span class="s1">&#39;Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&#39;</span>
+                         <span class="s1">&#39;&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;a{background-color:rgb(51, 51, 51);color:#f7f7f7;margin:.1rem;padding:.1rem.5rem;&#39;</span>
+                         <span class="s1">&#39;box-sizing: border-box;text-decoration: none;margin-bottom:2px;display:inline-block}&#39;</span><span class="p">)</span>
+        <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/style&gt;&#39;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">index_path</span> <span class="ow">in</span> <span class="n">index_paths</span><span class="p">:</span>
-            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;hr&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">index_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&amp;mdash;&lt;a href=&quot;.</span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">index_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/index.html&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="se">\n</span><span class="s1">&lt;br&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -836,7 +854,8 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
     <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">):</span>
         <span class="n">current_folder</span> <span class="o">=</span> <span class="n">folders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
-        <span class="c1"># Find all folders/directories in current folder, add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
+        <span class="c1"># Find all folders/directories in the current folder,</span>
+        <span class="c1"># add full path if folder name doesn&#39;t start with &#39;.&#39; or &#39;_&#39;.</span>
         <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">current_folder</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">folder</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -1009,7 +1028,7 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
 
     <span class="c1"># Create mock for all import statements not included in included_modules.</span>
     <span class="k">for</span> <span class="n">included_module</span> <span class="ow">in</span> <span class="n">included_paths</span><span class="p">:</span>
-        <span class="c1"># Get imports of module from included module.</span>
+        <span class="c1"># Get imports of module from the included module.</span>
         <span class="n">module_imports</span> <span class="o">=</span> <span class="n">get_imports</span><span class="p">(</span><span class="n">included_module</span><span class="p">)</span>
 
         <span class="c1"># Loop over all found imports.</span>
@@ -1062,7 +1081,8 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
 <span class="sd">    Returns:</span>
 <span class="sd">        [str]: modules that are mocked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
+    <span class="n">installed_packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">project_name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">]</span>
+    <span class="c1"># pylint: disable=not-an-iterable</span>
 
     <span class="n">mocked</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -1082,7 +1102,7 @@ Looks for modules in all found folders (root_folder + both direct and indirect s
             <span class="n">mod_mock</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">mod_name</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">mod_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_mock</span>
 
-            <span class="c1"># Mocked module.</span>
+            <span class="c1"># The mocked module.</span>
             <span class="n">mocked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mod_name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">mocked</span>

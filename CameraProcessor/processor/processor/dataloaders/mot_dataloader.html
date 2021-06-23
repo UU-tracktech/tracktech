@@ -35,7 +35,13 @@
                                 <a class="function" href="#MotDataloader.__init__">MotDataloader</a>
                         </li>
                         <li>
-                                <a class="function" href="#MotDataloader.parse_file">parse_file</a>
+                                <a class="function" href="#MotDataloader.get_annotations">get_annotations</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MotDataloader.get_image_dimensions">get_image_dimensions</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MotDataloader.parse_line">parse_line</a>
                         </li>
                 </ul>
 
@@ -70,28 +76,32 @@ Utrecht University within the Software Project course.
 <span class="sd">Utrecht University within the Software Project course.</span>
 <span class="sd">© Copyright Utrecht University (Department of Information and Computing Sciences)</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_box</span> <span class="kn">import</span> <span class="n">BoundingBox</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.bounding_boxes</span> <span class="kn">import</span> <span class="n">BoundingBoxes</span>
-<span class="kn">from</span> <span class="nn">processor.data_object.rectangle</span> <span class="kn">import</span> <span class="n">Rectangle</span>
 <span class="kn">from</span> <span class="nn">processor.dataloaders.i_dataloader</span> <span class="kn">import</span> <span class="n">IDataloader</span>
 
 
 <span class="k">class</span> <span class="nc">MotDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;MOT Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the MOTDataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): Configurations containing settings for dataloader.</span>
-<span class="sd">            path_location (str): The path of the MOT data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;MOT&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
 
-    <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
 
 <span class="sd">        Returns:</span>
@@ -102,72 +112,22 @@ Utrecht University within the Software Project course.
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
 
         <span class="c1"># Determine delimiter automatically.</span>
-        <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
         <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
-            <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
 
-        <span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">image_id</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">continue</span>
-            <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">annotations</span>
-
-    <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="n">annotation</span>
-            <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
-                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="n">current_image_id</span><span class="p">))</span>
-                <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
-            <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
-                                             <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span>
-                                                                 <span class="n">x2</span><span class="o">=</span><span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">)</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y2</span><span class="o">=</span><span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                                             <span class="n">identifier</span><span class="o">=</span><span class="n">person_id</span><span class="p">,</span>
-                                             <span class="n">certainty</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+        <span class="k">return</span> <span class="n">lines</span>
 
     <span class="k">def</span> <span class="nf">__log_skipped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Logs when lines skipped.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skipped lines: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log_skipped</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the name of an image.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            image_id (int): Id of the image.</span>
+<span class="sd">            image_id (int): ID of the image.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            name (string): Properly formatted image id.</span>
@@ -191,18 +151,56 @@ Utrecht University within the Software Project course.
         <span class="n">this_image_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1">.jpg&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">this_image_path</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (integer): String with the name of the image.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (int,int): width and height dimensions of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span>
+        <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>
+
+        <span class="c1"># File did not exist.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># Open image and return its size.</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse line from file given a delimiter.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            line (str): line in file.</span>
-<span class="sd">            delimiter (str): delimiter values in line are separated with.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list (list): List of integer values of line parsed and put inside string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">6</span><span class="p">]]</span>
+        <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">certainty</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">7</span><span class="p">]]</span>
+        <span class="c1"># MOT is 1 based, while this project is 0 based.</span>
+        <span class="n">pos_x</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">pos_y</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+
+        <span class="c1"># Image did not exist.</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Make sure values are between the frame borders.</span>
+        <span class="n">pos_x1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pos_y1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">box_x2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">box_y2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x1</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="n">pos_y1</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="n">box_x2</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
+                <span class="n">box_y2</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
 </pre></div>
 
         </details>
@@ -221,17 +219,22 @@ Utrecht University within the Software Project course.
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MotDataloader</span><span class="p">(</span><span class="n">IDataloader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;MOT Dataloader, formats MOT Data.&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the MOTDataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): Configurations containing settings for dataloader.</span>
-<span class="sd">            path_location (str): The path of the MOT data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;MOT&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
 
-    <span class="k">def</span> <span class="nf">__get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
 
 <span class="sd">        Returns:</span>
@@ -242,72 +245,22 @@ Utrecht University within the Software Project course.
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
 
         <span class="c1"># Determine delimiter automatically.</span>
-        <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
         <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
-            <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
 
-        <span class="n">annotations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">image_id</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_frames</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">continue</span>
-            <span class="n">annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">annotations</span>
-
-    <span class="k">def</span> <span class="nf">__parse_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses bounding boxes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            annotations ([(str)]): Annotations tuples in a list.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list ([BoundingBox]): List of BoundingBox objects.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># Extract information from lines.</span>
-        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">person_id</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">=</span> <span class="n">annotation</span>
-            <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
-            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">this_image_path</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">current_image_id</span> <span class="o">==</span> <span class="n">image_id</span><span class="p">:</span>
-                <span class="n">bounding_boxes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBoxes</span><span class="p">(</span><span class="n">current_boxes</span><span class="p">,</span> <span class="n">current_image_id</span><span class="p">))</span>
-                <span class="n">current_boxes</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">current_image_id</span> <span class="o">=</span> <span class="n">image_id</span>
-            <span class="n">current_boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BoundingBox</span><span class="p">(</span><span class="n">classification</span><span class="o">=</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
-                                             <span class="n">rectangle</span><span class="o">=</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">pos_x</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y1</span><span class="o">=</span><span class="n">pos_y</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span>
-                                                                 <span class="n">x2</span><span class="o">=</span><span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">)</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
-                                                                 <span class="n">y2</span><span class="o">=</span><span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">)</span> <span class="o">/</span> <span class="n">height</span><span class="p">),</span>
-                                             <span class="n">identifier</span><span class="o">=</span><span class="n">person_id</span><span class="p">,</span>
-                                             <span class="n">certainty</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+        <span class="k">return</span> <span class="n">lines</span>
 
     <span class="k">def</span> <span class="nf">__log_skipped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Logs when lines skipped.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Skipped lines: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log_skipped</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the name of an image.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            image_id (int): Id of the image.</span>
+<span class="sd">            image_id (int): ID of the image.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            name (string): Properly formatted image id.</span>
@@ -331,18 +284,56 @@ Utrecht University within the Software Project course.
         <span class="n">this_image_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1">.jpg&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">this_image_path</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (integer): String with the name of the image.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (int,int): width and height dimensions of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span>
+        <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>
+
+        <span class="c1"># File did not exist.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># Open image and return its size.</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse line from file given a delimiter.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            line (str): line in file.</span>
-<span class="sd">            delimiter (str): delimiter values in line are separated with.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list (list): List of integer values of line parsed and put inside string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">6</span><span class="p">]]</span>
+        <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">certainty</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">7</span><span class="p">]]</span>
+        <span class="c1"># MOT is 1 based, while this project is 0 based.</span>
+        <span class="n">pos_x</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">pos_y</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+
+        <span class="c1"># Image did not exist.</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Make sure values are between the frame borders.</span>
+        <span class="n">pos_x1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pos_y1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">box_x2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">box_y2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x1</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="n">pos_y1</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="n">box_x2</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
+                <span class="n">box_y2</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
 </pre></div>
 
         </details>
@@ -355,20 +346,24 @@ Utrecht University within the Software Project course.
                                         <div class="attr function"><a class="headerlink" href="#MotDataloader.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">MotDataloader</span><span class="signature">(configs, path_location)</span>
+            <span class="name">MotDataloader</span><span class="signature">(configs)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the MOTDataloader.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            configs (dict): Configurations containing settings for dataloader.</span>
-<span class="sd">            path_location (str): The path of the MOT data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">path_location</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="n">dataloader_config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;MOT&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;annotations_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">dataloader_config</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skipped_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
 </pre></div>
 
         </details>
@@ -379,42 +374,157 @@ Utrecht University within the Software Project course.
 
 <ul>
 <li><strong>configs (dict):</strong>  Configurations containing settings for dataloader.</li>
-<li><strong>path_location (str):</strong>  The path of the MOT data.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="MotDataloader.parse_file" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MotDataloader.parse_file">#&nbsp;&nbsp</a>
+                            <div id="MotDataloader.get_annotations" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MotDataloader.get_annotations">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">parse_file</span><span class="signature">(self)</span>:
+            <span class="name">get_annotations</span><span class="signature">(self)</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parses an annotations file.</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_annotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets annotations.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bounding_boxes_list (list): List of bounding boxes.</span>
+<span class="sd">            annotations (list): List of string annotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_annotations</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log_skipped</span><span class="p">()</span>
-        <span class="n">bounding_boxes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_boxes</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bounding_boxes_list</span>
+        <span class="c1"># Read file.</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
+
+        <span class="c1"># Determine delimiter automatically.</span>
+        <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+
+        <span class="k">return</span> <span class="n">lines</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Parses an annotations file.</p>
+            <div class="docstring"><p>Gets annotations.</p>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>bounding_boxes_list (list): List of bounding boxes.</p>
+  <p>annotations (list): List of string annotations.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="MotDataloader.get_image_dimensions" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MotDataloader.get_image_dimensions">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_image_dimensions</span><span class="signature">(self, image_id)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_image_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the size of an image based on its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            image_id (integer): String with the name of the image.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (int,int): width and height dimensions of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span>
+        <span class="n">image_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_name</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+        <span class="n">this_image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_image_path</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>
+
+        <span class="c1"># File did not exist.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># Open image and return its size.</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">this_image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dimensions</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Gets the size of an image based on its name.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>image_id (integer):</strong>  String with the name of the image.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>(int,int): width and height dimensions of the image.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="MotDataloader.parse_line" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MotDataloader.parse_line">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">parse_line</span><span class="signature">(self, line)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse line from file given a delimiter.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line (str): line in file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list (list): List of integer values of line parsed and put inside string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">,</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">certainty</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">)[:</span><span class="mi">7</span><span class="p">]]</span>
+        <span class="c1"># MOT is 1 based, while this project is 0 based.</span>
+        <span class="n">pos_x</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">pos_y</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_dimensions</span><span class="p">(</span><span class="n">image_id</span><span class="p">)</span>
+
+        <span class="c1"># Image did not exist.</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Make sure values are between the frame borders.</span>
+        <span class="n">pos_x1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pos_y1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">box_x2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pos_x</span> <span class="o">+</span> <span class="n">pos_w</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">box_y2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pos_y</span> <span class="o">+</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[(</span><span class="n">image_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">pos_x1</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span> <span class="n">pos_y1</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="n">box_x2</span> <span class="o">/</span> <span class="n">width</span><span class="p">,</span>
+                <span class="n">box_y2</span> <span class="o">/</span> <span class="n">height</span><span class="p">,</span> <span class="n">certainty</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Parse line from file given a delimiter.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>line (str):</strong>  line in file.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>list (list): List of integer values of line parsed and put inside string.</p>
 </blockquote>
 </div>
 

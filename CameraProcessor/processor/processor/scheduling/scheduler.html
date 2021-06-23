@@ -90,7 +90,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</span>
+        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph, and a queue to determine execution order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start_node (INode): INode representing the initial input node, starting point of the graph.</span>
@@ -129,7 +129,7 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Node in queue should be executable&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Node in queue should be executable.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ready_nodes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Queues nodes that are ready to be executed.</span>
@@ -182,7 +182,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</span>
+        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph, and a queue to determine execution order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start_node (INode): INode representing the initial input node, starting point of the graph.</span>
@@ -221,7 +221,7 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Node in queue should be executable&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Node in queue should be executable.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ready_nodes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Queues nodes that are ready to be executed.</span>
@@ -274,7 +274,7 @@ Utrecht University within the Software Project course.
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</span>
+        <span class="sd">&quot;&quot;&quot;Inits Scheduler with a starting node that contains the graph, and a queue to determine execution order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start_node (INode): INode representing the initial input node, starting point of the graph.</span>
@@ -287,7 +287,7 @@ Utrecht University within the Software Project course.
 
         </details>
 
-            <div class="docstring"><p>Inits Scheduler with a starting node that contains the graph and a queue to determine execution order.</p>
+            <div class="docstring"><p>Inits Scheduler with a starting node that contains the graph, and a queue to determine execution order.</p>
 
 <h6 id="args">Args</h6>
 
@@ -337,7 +337,7 @@ Utrecht University within the Software Project course.
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">executable</span><span class="p">():</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">,</span> <span class="n">global_readonly</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Node in queue should be executable&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Node in queue should be executable.&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>

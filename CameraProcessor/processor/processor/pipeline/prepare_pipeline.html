@@ -125,11 +125,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        NameError: Whenever the name of the detection is not known.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the detector.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instantiating detector...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detector&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Detector exists so it is created.</span>
+    <span class="c1"># Detector exists, so it is created.</span>
     <span class="k">return</span> <span class="n">create_detector</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">),</span>
                            <span class="n">configs</span>
                            <span class="p">)</span>
@@ -148,11 +148,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        NameError: When an incorrect tracker is specified</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the tracker.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instantiating tracker...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tracker&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Create tracker since it exists.</span>
+    <span class="c1"># Create the tracker, since it exists.</span>
     <span class="k">return</span> <span class="n">create_tracker</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">),</span>
                           <span class="n">configs</span>
                           <span class="p">)</span>
@@ -168,9 +168,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        IReIdentifier: Implementation of the re-identification interface.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the re-identifier.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instantiating reidentifier...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">REID_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect re-identifier. Re-identifier </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect re-identifier. Re-identifier </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reid&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Create re-identifier since it exists.</span>
     <span class="k">return</span> <span class="n">create_reidentifier</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">),</span>
@@ -219,7 +219,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">        Scheduler: Scheduler that has been configured with a plan.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get args dict from used plan.</span>
+    <span class="c1"># Get args dict from the used plan.</span>
     <span class="n">plan_args</span> <span class="o">=</span> <span class="n">pipeline_plan</span><span class="o">.</span><span class="n">plan_inputs</span>
 
     <span class="c1"># Put configuration into args dict.</span>
@@ -312,11 +312,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        NameError: Whenever the name of the detection is not known.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the detector.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating detector...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instantiating detector...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTOR_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect detector. Detector </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detector&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Detector exists so it is created.</span>
+    <span class="c1"># Detector exists, so it is created.</span>
     <span class="k">return</span> <span class="n">create_detector</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;detector&#39;</span><span class="p">),</span>
                            <span class="n">configs</span>
                            <span class="p">)</span>
@@ -370,11 +370,11 @@ Utrecht University within the Software Project course.
 <span class="sd">        NameError: When an incorrect tracker is specified</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the tracker.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating tracker...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instantiating tracker...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRACKER_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect tracker. Tracker </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tracker&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Create tracker since it exists.</span>
+    <span class="c1"># Create the tracker, since it exists.</span>
     <span class="k">return</span> <span class="n">create_tracker</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tracker&#39;</span><span class="p">),</span>
                           <span class="n">configs</span>
                           <span class="p">)</span>
@@ -425,9 +425,9 @@ Utrecht University within the Software Project course.
 <span class="sd">        IReIdentifier: Implementation of the re-identification interface.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate the re-identifier.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Instantiating reidentifier...&quot;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Instantiating reidentifier...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">REID_SWITCH</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect re-identifier. Re-identifier </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect re-identifier. Re-identifier </span><span class="si">{</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;Main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reid&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Create re-identifier since it exists.</span>
     <span class="k">return</span> <span class="n">create_reidentifier</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reid&#39;</span><span class="p">),</span>
@@ -540,7 +540,7 @@ Utrecht University within the Software Project course.
 <span class="sd">    Returns:</span>
 <span class="sd">        Scheduler: Scheduler that has been configured with a plan.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get args dict from used plan.</span>
+    <span class="c1"># Get args dict from the used plan.</span>
     <span class="n">plan_args</span> <span class="o">=</span> <span class="n">pipeline_plan</span><span class="o">.</span><span class="n">plan_inputs</span>
 
     <span class="c1"># Put configuration into args dict.</span>

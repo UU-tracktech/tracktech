@@ -46,7 +46,7 @@
                     <h1 class="modulename">
 <a href="./../src.html">src</a>.conversion_process    </h1>
 
-                        <div class="docstring"><p>File that creates the subprocess for the ffmpeg conversion.</p>
+                        <div class="docstring"><p>File that creates the subprocess for the FFmpeg conversion.</p>
 
 <p>This program has been developed by students from the bachelor Computer Science at
 Utrecht University within the Software Project course.
@@ -55,7 +55,7 @@ Utrecht University within the Software Project course.
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;File that creates the subprocess for the ffmpeg conversion.</span>
+            <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;File that creates the subprocess for the FFmpeg conversion.</span>
 
 <span class="sd">This program has been developed by students from the bachelor Computer Science at</span>
 <span class="sd">Utrecht University within the Software Project course.</span>
@@ -69,10 +69,10 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Gets the ffmpeg conversion command for the camera stream that can be started later on.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        url (str): Url of the camera</span>
-<span class="sd">        audio (bool): Whether audio is included in the stream or not</span>
-<span class="sd">        root (str): Path to files where the camera stream should be put</span>
-<span class="sd">        stream_options (StreamOptions): object containing information on how to process the stream</span>
+<span class="sd">        url (str): Url of the camera.</span>
+<span class="sd">        audio (bool): Whether audio is included in the stream or not.</span>
+<span class="sd">        root (str): Path to files where the camera stream should be put.</span>
+<span class="sd">        stream_options (StreamOptions): object containing information on how to process the stream.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        SubProcess: ffmpeg subprocess with the correct parameters</span>
@@ -87,7 +87,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">low</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="sa">f</span><span class="s1">&#39;-vf:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,480)&#39;:&#39;if(lt(iw,ih),480,-2)&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-filter:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,480)&#39;:&#39;if(lt(iw,ih),480,-2)&#39;&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-c:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-b:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;800k&#39;</span><span class="p">,</span> <span class="s1">&#39;-maxrate&#39;</span><span class="p">,</span> <span class="s1">&#39;900k&#39;</span><span class="p">,</span> <span class="s1">&#39;-bufsize&#39;</span><span class="p">,</span> <span class="s1">&#39;1200k&#39;</span>
         <span class="p">])</span>  <span class="c1"># 360p - Low bit-rate Stream</span>
@@ -98,7 +98,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">medium</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="sa">f</span><span class="s1">&#39;-vf:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,858)&#39;:&#39;if(lt(iw,ih),858,-2)&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-filter:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,858)&#39;:&#39;if(lt(iw,ih),858,-2)&#39;&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-c:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-b:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;1425k&#39;</span><span class="p">,</span> <span class="s1">&#39;-maxrate&#39;</span><span class="p">,</span> <span class="s1">&#39;1600k&#39;</span><span class="p">,</span> <span class="s1">&#39;-bufsize&#39;</span><span class="p">,</span> <span class="s1">&#39;2138k&#39;</span>
         <span class="p">])</span>  <span class="c1"># 420p - Medium bit-rate Stream</span>
@@ -109,7 +109,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">high</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="sa">f</span><span class="s1">&#39;-vf:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,1280&#39;):&#39;if(lt(iw,ih),1280,-2)&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-filter:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,1280&#39;):&#39;if(lt(iw,ih),1280,-2)&#39;&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-c:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-b:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;2850k&#39;</span><span class="p">,</span> <span class="s1">&#39;-maxrate&#39;</span><span class="p">,</span> <span class="s1">&#39;3200k&#39;</span><span class="p">,</span> <span class="s1">&#39;-bufsize&#39;</span><span class="p">,</span> <span class="s1">&#39;4275k&#39;</span>
         <span class="p">])</span>  <span class="c1"># 720p - High bit-rate Stream</span>
@@ -159,10 +159,10 @@ Utrecht University within the Software Project course.
     <span class="sd">&quot;&quot;&quot;Gets the ffmpeg conversion command for the camera stream that can be started later on.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        url (str): Url of the camera</span>
-<span class="sd">        audio (bool): Whether audio is included in the stream or not</span>
-<span class="sd">        root (str): Path to files where the camera stream should be put</span>
-<span class="sd">        stream_options (StreamOptions): object containing information on how to process the stream</span>
+<span class="sd">        url (str): Url of the camera.</span>
+<span class="sd">        audio (bool): Whether audio is included in the stream or not.</span>
+<span class="sd">        root (str): Path to files where the camera stream should be put.</span>
+<span class="sd">        stream_options (StreamOptions): object containing information on how to process the stream.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        SubProcess: ffmpeg subprocess with the correct parameters</span>
@@ -177,7 +177,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">low</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="sa">f</span><span class="s1">&#39;-vf:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,480)&#39;:&#39;if(lt(iw,ih),480,-2)&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-filter:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,480)&#39;:&#39;if(lt(iw,ih),480,-2)&#39;&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-c:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-b:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;800k&#39;</span><span class="p">,</span> <span class="s1">&#39;-maxrate&#39;</span><span class="p">,</span> <span class="s1">&#39;900k&#39;</span><span class="p">,</span> <span class="s1">&#39;-bufsize&#39;</span><span class="p">,</span> <span class="s1">&#39;1200k&#39;</span>
         <span class="p">])</span>  <span class="c1"># 360p - Low bit-rate Stream</span>
@@ -188,7 +188,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">medium</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="sa">f</span><span class="s1">&#39;-vf:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,858)&#39;:&#39;if(lt(iw,ih),858,-2)&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-filter:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,858)&#39;:&#39;if(lt(iw,ih),858,-2)&#39;&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-c:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-b:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;1425k&#39;</span><span class="p">,</span> <span class="s1">&#39;-maxrate&#39;</span><span class="p">,</span> <span class="s1">&#39;1600k&#39;</span><span class="p">,</span> <span class="s1">&#39;-bufsize&#39;</span><span class="p">,</span> <span class="s1">&#39;2138k&#39;</span>
         <span class="p">])</span>  <span class="c1"># 420p - Medium bit-rate Stream</span>
@@ -199,7 +199,7 @@ Utrecht University within the Software Project course.
     <span class="k">if</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">high</span><span class="p">:</span>
         <span class="n">maps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">,</span> <span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">audio</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;-map&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0&#39;</span><span class="p">])</span>
         <span class="n">conversions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-            <span class="sa">f</span><span class="s1">&#39;-vf:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,1280&#39;):&#39;if(lt(iw,ih),1280,-2)&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-filter:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s2">&quot;scale=&#39;if(lt(iw,ih),-2,1280&#39;):&#39;if(lt(iw,ih),1280,-2)&#39;&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-c:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">stream_options</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
             <span class="sa">f</span><span class="s1">&#39;-b:v:</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;2850k&#39;</span><span class="p">,</span> <span class="s1">&#39;-maxrate&#39;</span><span class="p">,</span> <span class="s1">&#39;3200k&#39;</span><span class="p">,</span> <span class="s1">&#39;-bufsize&#39;</span><span class="p">,</span> <span class="s1">&#39;4275k&#39;</span>
         <span class="p">])</span>  <span class="c1"># 720p - High bit-rate Stream</span>
@@ -239,10 +239,10 @@ Utrecht University within the Software Project course.
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>url (str):</strong>  Url of the camera</li>
-<li><strong>audio (bool):</strong>  Whether audio is included in the stream or not</li>
-<li><strong>root (str):</strong>  Path to files where the camera stream should be put</li>
-<li><strong>stream_options (StreamOptions):</strong>  object containing information on how to process the stream</li>
+<li><strong>url (str):</strong>  Url of the camera.</li>
+<li><strong>audio (bool):</strong>  Whether audio is included in the stream or not.</li>
+<li><strong>root (str):</strong>  Path to files where the camera stream should be put.</li>
+<li><strong>stream_options (StreamOptions):</strong>  object containing information on how to process the stream.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
