@@ -63,7 +63,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
     // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests.
     if (props.sources?.[0].src) props.sources[0].src += `?Bearer=${token}`
 
-    // Instantiate videojs.
+    // Instantiate videojs. Ignore the videojs constructor, as this would otherwise throw error during documentation generation.
+    //@ts-ignore
     playerRef.current = videojs(videoRef.current, props, () => {
       var player = playerRef.current
 
