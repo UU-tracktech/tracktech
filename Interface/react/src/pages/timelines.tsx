@@ -14,6 +14,7 @@ import { ObjectCard } from 'components/objectCard'
 import { TimelineCard } from 'components/timelineCard'
 import { TimelineData, dateRange } from 'classes/timelineData'
 import { environmentContext } from 'components/environmentContext'
+import { websocketContext } from 'components/websocketContext'
 
 const { Title } = Typography
 
@@ -23,7 +24,7 @@ const { Title } = Typography
  */
 export function Timelines() {
   // State containing all the tracked objects.
-  const [objects, setObjects] = React.useState<number[]>([])
+  const [objectIds, setObjectIds] = React.useState<number[]>([])
   // State containing the currently selected item.
   const [currentObject, setCurrentObject] = React.useState<string>(
     'Tracking timelines'
@@ -38,11 +39,13 @@ export function Timelines() {
     environmentContext
   )
 
+  const { objects } = useContext(websocketContext)
+
   React.useEffect(() => {
     // Get all the tracked objects from the server and display them.
     fetch(orchestratorObjectIdsUrl).then((text) =>
       text.json().then((json) => {
-        if (json.data != undefined) setObjects(json.data)
+        if (json.data != undefined) setObjectIds(json.data)
       })
     )
   }, [])
@@ -103,16 +106,20 @@ export function Timelines() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gridAutoRows: '100px'
+              gridAutoRows: '100%'
             }}
           >
             {/* Map the objects to cards. */}
-            {objects.map((objectId) => {
+            {objectIds.map((objectId) => {
+              var objectImage = objects.find(
+                (message) => message.objectId == objectId
+              )?.image
               return (
                 <ObjectCard
                   key={objectId}
                   id={objectId}
                   viewCallback={(id: number) => setTimeline(id)}
+                  image={objectImage}
                 />
               )
             })}
