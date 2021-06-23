@@ -54,6 +54,7 @@ The settings (places in public in react) should look like this.
   "redirectUri": "URI to redirect after token gathering"
 }
 ```
+The final four settings can be left empty to start the app without the need to authenticate to use the interface.
 
 ## Architecture
 

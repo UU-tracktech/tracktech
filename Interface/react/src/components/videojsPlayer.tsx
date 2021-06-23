@@ -61,7 +61,8 @@ export function VideoPlayer(props: VideoPlayerProps) {
 
   useEffect(() => {
     // Add a token query parameter to the src, this will be used for the index file but not in subsequent requests.
-    if (props.sources?.[0].src) props.sources[0].src += `?Bearer=${token}`
+    if (props.sources?.[0].src && status != 'no-auth')
+      props.sources[0].src += `?Bearer=${token}`
 
     // Instantiate videojs.
     playerRef.current = videojs(videoRef.current, props, () => {
