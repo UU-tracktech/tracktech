@@ -13,10 +13,22 @@ There are two ways to run the interface:
 run
 
 ```bash
-docker-compose up
+docker create -p 5000:5000 --name interface tracktech/interface:latest
 ```
 
-in the current folder
+to create the container
+
+and copy in a config using
+
+```bash
+docker cp {config file} interface:build/settings.json
+```
+
+and finally, start the container with:
+
+```bash
+docker start interface
+```
 
 #### Local
 
@@ -26,7 +38,7 @@ Make sure you have npm installed and run
 npm start
 ```
 
-to start the interface
+to start the interface. Make sure the settings file in the public folder is configured.
 
 ### Settings
 
@@ -46,14 +58,15 @@ The settings (places in public in react) should look like this.
   "orchestratorWebsocketUrl": "The Url to the client websocket endpoint on the orchestrator",
   "orchestratorObjectIdsUrl": "The Url to the orchestrator objectids HTTP endpoint",
   "orchestratorTimelinesUrl": "The Url to the orchestrator timelines HTTP endpoint",
-  "bufferTime": (number setting the buffer length),
-  "segmentLength": (number corresponding to hls segment size of video forwarder),
+  "bufferTime": "number setting the buffer length",
+  "segmentLength": "number corresponding to hls segment size of video forwarder",
   "clientId": "ClientId used when getting a token",
   "accessTokenUri": "URI token endpoint of identity providing service",
   "authorizationUri": "URI authorization endpoint of identity providy service",
   "redirectUri": "URI to redirect after token gathering"
 }
 ```
+
 The final four settings can be left empty to start the app without the need to authenticate to use the interface.
 
 ## Architecture
