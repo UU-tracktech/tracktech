@@ -18,9 +18,9 @@ jobs:
         with:
           submodules: recursive
       - name: Build
-        run: docker build --file VideoForwarder/Dockerfile
+        run: docker build VideoForwarder
       - name: Build
-        run: docker build --file VideoForwarder/Dockerfile --target gpu
+        run: docker build VideoForwarder --target gpu
       - name: Prune images
         run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}

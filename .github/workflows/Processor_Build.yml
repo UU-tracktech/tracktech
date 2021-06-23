@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build
-        run: docker build --file CameraProcessor/Dockerfile
+        run: docker build CameraProcessor
       - name: Prune images
         run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}
