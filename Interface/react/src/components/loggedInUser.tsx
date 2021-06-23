@@ -22,6 +22,8 @@ export function LoggedInUser() {
 
   // If the user is logged in, obtain the username from the token and display it.
   switch (status) {
+    case 'no-auth':
+      return <></>
     case 'loading':
       return (
         <Skeleton
