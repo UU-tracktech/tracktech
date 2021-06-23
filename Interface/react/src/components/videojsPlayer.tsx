@@ -133,29 +133,21 @@ export function VideoPlayer(props: VideoPlayerProps) {
           bufferTimer = player?.setInterval(() => {
             bufferTimeVar -= delta
             if (bufferTimeVar <= 0) {
-              // Clear the interval and show a message to the user showing the problem.
+              // Clear the interval and automatically reload the player
               player?.clearInterval(bufferTimer)
               bufferTimer = undefined
               player?.pause()
 
-              var modal = player?.createModal(
-                'Unable to load stream. Check your connection or the video forwarder. Close this message to reload the stream.',
-                null
-              )
+              if (props.sources && props.sources[0].type)
+                player?.src({
+                  src: props.sources[0].src,
+                  type: props.sources[0].type
+                })
+              else if (props.sources) player?.src({ src: props.sources[0].src })
 
-              // Try to reload the videoplayer when the user closes the warning message.
-              modal?.on('modalclose', () => {
-                if (props.sources && props.sources[0].type)
-                  player?.src({
-                    src: props.sources[0].src,
-                    type: props.sources[0].type
-                  })
-                else if (props.sources)
-                  player?.src({ src: props.sources[0].src })
-
-                startTime = undefined
-                player?.load()
-              })
+              startTime = undefined
+              player?.load()
+              player?.play()
             }
           }, delta * 1000)
         }
