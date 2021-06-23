@@ -11,7 +11,11 @@ import { Button, Card } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 
 /** Properties of the objectCard component, containing object id and click callback. */
-type objectCardProps = { id: number; viewCallback: (id: number) => void }
+type objectCardProps = {
+  id: number
+  viewCallback: (id: number) => void
+  image?: string
+}
 
 /**
  * Component used in the object list on the timelines page, shows an object that was tracked before.
@@ -34,18 +38,30 @@ export function ObjectCard(props: objectCardProps) {
       // Styling.
       size='small'
       headStyle={{ padding: '0px 8px' }}
-      bodyStyle={{ padding: '0px 8px', width: '100%', lineHeight: 0 }}
+      bodyStyle={{ padding: '8px 8px', width: '100%', lineHeight: 0 }}
       style={{ marginTop: 5 }}
     >
-      {/* Button that can be clicked to view the timelines of this object. */}
-      <Button
-        type='primary'
-        onClick={() => props.viewCallback(props.id)}
-        style={{ marginTop: 10 }}
-        data-testid='objectViewButton'
+      <div
+        style={{
+          width: '100%',
+          display: 'grid'
+        }}
       >
-        View
-      </Button>
+        {props.image ? (
+          <img src={props.image} style={{ margin: '0px auto' }} />
+        ) : (
+          <p style={{ margin: '5px auto' }}>No image available.</p>
+        )}
+        {/* Button that can be clicked to view the timelines of this object. */}
+        <Button
+          type='primary'
+          onClick={() => props.viewCallback(props.id)}
+          style={{ marginTop: 10 }}
+          data-testid='objectViewButton'
+        >
+          View
+        </Button>
+      </div>
     </Card>
   )
 }
