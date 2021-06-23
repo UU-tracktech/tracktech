@@ -18,15 +18,9 @@ jobs:
         with:
           submodules: recursive
       - name: Build
-        run: docker-compose -f VideoForwarder/docker-compose.yml build --no-cache
-      - name: Remove
-        run: docker-compose -f  VideoForwarder/docker-compose.yml down --rmi all
-        if: ${{ always() }}
+        run: docker build VideoForwarder
       - name: Build
-        run: docker-compose -f VideoForwarder/compose/docker-compose_build_gpu.yml build --no-cache
-      - name: Remove
-        run: docker-compose -f  VideoForwarder/compose/docker-compose_build_gpu.yml down --rmi all
-        if: ${{ always() }}
+        run: docker build VideoForwarder --target gpu
       - name: Prune images
         run: docker image prune --force --filter "until=24h"
         if: ${{ always() }}
