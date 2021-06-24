@@ -13,14 +13,14 @@ import tornado.web
 from tornado.httpclient import HTTPClientError
 from tornado.websocket import WebSocketHandler
 
+from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
+from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.websocket.websocket_client import WebsocketClient
 from processor.websocket.boxes_message import BoxesMessage
 from processor.websocket.start_message import StartMessage
 from processor.websocket.stop_message import StopMessage
 from processor.websocket.update_message import UpdateMessage
-from tests.unittests.utils.echo_websocket_handler import EchoWebsocketHandler
-from tests.unittests.utils.websocket_coroutines import WebsocketCoroutines
 
 
 # pylint: disable=protected-access.

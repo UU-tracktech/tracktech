@@ -23,14 +23,19 @@ from processor.pipeline.reidentification.fastreid.fastreid.engine import launch
 from processor.pipeline.reidentification.fastreid.fastreid.engine.defaults import default_argument_parser
 
 
-class AccuracyObjectReid:
+class AccuracyObject:
     """Re-id accuracy class for torchreid."""
-    def __init__(self, config_parser):
-        """Initializes the configurations."""
-        config = config_parser.configs["TorchReid"]
+
+    def __init__(self, config_parser_func):
+        """Initializes the configurations.
+
+        Args:
+            config_parser_func (ConfigParser): Config parser to use.
+        """
+        configs = config_parser_func.configs["TorchReid"]
         # The path where the model weight file should be located.
-        self.weights_path = os.path.join(config['weights_dir_path'], config['model_name'] + '.pth')
-        check_weights(config, self.weights_path, 'osnet_x1_0')
+        self.weights_path = os.path.join(configs['weights_dir_path'], configs['model_name'] + '.pth')
+        check_weights(configs, self.weights_path, 'osnet_x1_0')
 
         cfg = get_default_config()
         self.adjust_cfg(cfg)
@@ -40,12 +45,16 @@ class AccuracyObjectReid:
         self.cfg = cfg
 
     def adjust_cfg(self, cfg):
-        """Makes adjustments to the config for evaluating."""
+        """Makes adjustments to the config for evaluating.
+
+        Args:
+            cfg (CfgNode): Config.
+        """
         # Dataset configs.
         cfg.data.type = 'image'
         cfg.data.sources = ['market1501']
         cfg.data.targets = ['market1501']
-        cfg.data.root = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..', 'data/datasets')
+        cfg.data.root = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', '..', 'data/annotated')
         cfg.data.split_id = 0  # split index.
 
         # Evaluation configs.
@@ -108,39 +117,66 @@ class AccuracyObjectReid:
         engine.run(**engine_run_kwargs(self.cfg))
 
 
-def check_weights(config, weights_path, weights_name):
-    """Checks if the weight files are downloaded."""
-    # Download the weights if it's not in the directory.
-    if not os.path.exists(config['weights_dir_path']):
-        os.mkdir(config['weights_dir_path'])
+def check_weights(config_file, weights_path_str, weights_name):
+    """Checks if the weight files are downloaded.
 
-    if not os.path.exists(weights_path):
+    Args:
+        config_file (dict): Config to use.
+        weights_path_str (str): Path to weights file .
+        weights_name (str): Mame of weights file.
+    """
+    # Download the weights if it's not in the directory.
+    if not os.path.exists(config_file['weights_dir_path']):
+        os.mkdir(config_file['weights_dir_path'])
+
+    if not os.path.exists(weights_path_str):
         if weights_name == 'osnet_x1_0':
             url = 'https://drive.google.com/u/0/uc?id=1vduhq5DpN2q1g4fYEZfPI17MJeh9qyrA&export=download'
         elif weights_name == 'market_sbs_R101-ibn':
             url = 'https://github.com/JDAI-CV/fast-reid/releases/download/v0.1.1/market_sbs_R101-ibn.pth'
         else:
             raise ValueError("Wrong weights name for reid accuracy.")
-        gdown.download(url, weights_path, quiet=False)
+        gdown.download(url, weights_path_str, quiet=False)
 
 
 def check_cfg(cfg):
-    """Checks the cfg for some sort of error."""
+    """Checks the cfg for some sort of error.
+
+    Args:
+        cfg (CfgNode): Config.
+    """
     if cfg.loss.name == 'triplet' and cfg.loss.triplet.weight_x == 0:
         assert cfg.train.fixbase_epoch == 0, \
             'The output of classifier is not included in the computational graph'
 
 
 def build_datamanager(cfg):
-    """Builds a data manager, which in this case is always an imagedata manager anyway."""
+    """Builds a data manager, which in this case is always an image data manager anyway.
+
+    Args:
+        cfg (CfgNode): Config.
+
+    Returns:
+        kwargs (kwargs): Keyword arguments.
+    """
     if cfg.data.type == 'image':
         return torchreid.data.ImageDataManager(**imagedata_kwargs(cfg))
-    else:
-        return torchreid.data.VideoDataManager(**videodata_kwargs(cfg))
+    return torchreid.data.VideoDataManager(**videodata_kwargs(cfg))
 
 
 def build_engine(cfg, datamanager, model, optimizer, scheduler):
-    """Builds the engine for accuracy."""
+    """Builds the engine for accuracy.
+
+    Args:
+        cfg (CfgNode): Config.
+        datamanager (torch.DataManager): Datamanager to use.
+        model (torch.model): Model.
+        optimizer (torch.optimizer): Optimizer.
+        scheduler (torch._LRScheduler): Scheduler.
+
+    Returns:
+        Engine (torch.Engine): Engine.
+    """
     if cfg.data.type == 'image':
         if cfg.loss.name == 'softmax':
             engine = torchreid.engine.ImageSoftmaxEngine(
@@ -196,7 +232,7 @@ def build_engine(cfg, datamanager, model, optimizer, scheduler):
 if __name__ == '__main__':
     config_parser = ConfigParser('configs.ini', True)
     if config_parser.configs["Accuracy"]["reid"] == 'torchreid':
-        accuracy_object = AccuracyObjectReid(config_parser)
+        accuracy_object = AccuracyObject(config_parser)
         accuracy_object.run_eval()
     elif config_parser.configs["Accuracy"]["reid"] == 'fastreid':
         # Grab the weight path from config.
