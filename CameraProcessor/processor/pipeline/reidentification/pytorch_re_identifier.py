@@ -8,7 +8,6 @@ from scipy.spatial.distance import euclidean, cosine
 
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
 import processor.utils.features as UtilsFeatures
 
 

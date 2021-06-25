@@ -160,7 +160,8 @@ class StartMessage(IMessage):
         """
         encoded_data = base64.b64decode(image.split(',')[1])
         np_rep = np.frombuffer(encoded_data, np.uint8)
-        return cv2.imdecode(np_rep, cv2.IMREAD_UNCHANGED)
+        decoded_data = cv2.imdecode(np_rep, cv2.IMREAD_UNCHANGED)
+        return cv2.cvtColor(decoded_data, cv2.COLOR_RGBA2RGB)
 
     @property
     def object_id(self):

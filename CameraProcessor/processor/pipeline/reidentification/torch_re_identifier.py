@@ -56,6 +56,8 @@ class TorchReIdentifier(PytorchReIdentifier):
         Returns:
              [[float]]: Feature vectors of the cutouts.
         """
+        if len(cutouts) == 0:
+            return []
 
         return self.extractor(cutouts).cpu().numpy().tolist()
 
@@ -69,5 +71,4 @@ class TorchReIdentifier(PytorchReIdentifier):
             [float]: Feature vector of an image.
         """
         resized_image = resize_cutout(image, self.config)
-
         return self.extractor(resized_image).cpu().numpy().tolist()[0]
