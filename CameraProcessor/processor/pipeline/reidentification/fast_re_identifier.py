@@ -14,7 +14,6 @@ from processor.pipeline.reidentification.fastreid.fastreid.config import get_cfg
 from processor.pipeline.reidentification.fastreid.demo.predictor import FeatureExtractionDemo
 from processor.pipeline.reidentification.pytorch_re_identifier import PytorchReIdentifier
 from processor.utils.features import resize_cutout
-import processor.utils.features as UtilsFeatures
 
 
 class FastReIdentifier(PytorchReIdentifier):
@@ -61,40 +60,32 @@ class FastReIdentifier(PytorchReIdentifier):
             gdown.download(url, weight_path, quiet=False)
 
         extractor = FeatureExtractionDemo(cfg, parallel=args.parallel)
-
         super().__init__(config, extractor)
 
-    def extract_features(self, frame_obj, bbox):
-        """Extracts features from a single bounding box.
-
-        This is achieved by generating a cutout of the bounding boxes
-        and feeding them to the feature extractor of Torchreid.
+    def extract_features(self, cutouts):
+        """Given cutouts, extracts the features from it.
 
         Args:
-            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
-
-        Returns:
-             [float]: Feature vector of single bounding box.
-        """
-        # Cutout the bounding box from the frame and resize the cutout to the right size.
-        cutout = UtilsFeatures.slice_bounding_box(bbox, frame_obj.frame)
-        resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
-
-        # Extract the feature from the cutout and convert it to a normal float array.
-        feature = self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()[0]
-
-        return feature
-
-    def extract_features_from_cutout(self, cutout):
-        """Given a cutout, extracts the features from it.
-
-        Args:
-            cutout (np.ndarray): cutout of the object to extract features from.
+            cutouts (np.ndarray): cutout of the object to extract features from.
 
         Returns:
             [float]: Feature vector of a single bounding box.
         """
-        resized_cutout = resize_cutout(cutout, self.config)
+        features = []
+        for cutout in cutouts:
+            features.append(self.extractor.run_on_image(cutout).cpu().numpy().tolist())
 
-        return self.extractor.run_on_image(resized_cutout).cpu().numpy().tolist()[0]
+        return features
+
+    def extract_features_from_image(self, image):
+        """Extract features from an image.
+
+        Args:
+            image (np.ndarray): the image of the object to extract features from.
+
+        Returns:
+            [float]: Feature vector of an image.
+        """
+        resized_image = resize_cutout(image, self.config)
+
+        return self.extractor.run_on_image(resized_image).cpu().numpy().tolist()[0]

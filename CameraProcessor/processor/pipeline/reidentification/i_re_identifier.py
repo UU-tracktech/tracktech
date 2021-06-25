@@ -28,28 +28,27 @@ class IReIdentifier(IComponent):
         """
         raise NotImplementedError('Feature map size getter not implemented')
 
-    def extract_features(self, frame_obj, bbox):
-        """Extract features from a single bounding box.
+    def extract_features(self, cutouts):
+        """Extract features from a list of cutouts.
 
         Args:
-            frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
-            bbox (BoundingBox): BoundingBox object that stores the bounding box from which we want to extract features.
+            cutouts ([np.ndarray]): A list of cutouts of the objects to extract features from.
 
         Returns:
-            [float]: Feature vector of a single bounding box.
+             [[float]]: Feature vectors of the cutouts.
         """
         raise NotImplementedError('Extract features function not implemented')
 
-    def extract_features_from_cutout(self, cutout):
-        """Given a cutout, extracts the features from it.
+    def extract_feature_from_image(self, image):
+        """Extract features from an image.
 
         Args:
-            cutout (np.ndarray): cutout of the object to extract features from.
+            image (np.ndarray): the image of the object to extract features from.
 
         Returns:
-            [float]: Feature vector of a single bounding box.
+            [float]: Feature vector of an image.
         """
-        raise NotImplementedError('Extract features from cutout function not implemented')
+        raise NotImplementedError('Extract features from image function not implemented')
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using a re-identification implementation.
