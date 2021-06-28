@@ -5,14 +5,16 @@ Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
 
-from processor.utils.config_parser import ConfigParser
 import os
+from processor.utils.config_parser import ConfigParser
 from processor.training.tracking.trackeval_master.scripts.run_mot_challenge import main as mot_challenge
 
 
 def main(configs):
-    """Method for running the tracking accuracy
+    """Method for running the tracking accuracy.
 
+    Args:
+        configs (ConfigParser): containing the configs of the program.
     """
     folder_prefix = "../../../"
     runner_section = configs['Runner']

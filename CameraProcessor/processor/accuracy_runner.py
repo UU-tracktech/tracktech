@@ -12,9 +12,6 @@ from processor.input.image_capture import ImageCapture
 from processor.utils.config_parser import ConfigParser
 from processor.utils.create_runners import create_detector, create_tracker
 from processor.utils.datawriter import get_data_writer
-from processor.data_writer.mot_data_writer import MotDataWriter
-from processor.data_writer.json_data_writer import JsonDataWriter
-from processor.data_writer.fake_data_writer import FakeDataWriter
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(f'{curr_dir}/../')
@@ -62,7 +59,7 @@ def main(configs):
 
 
 def __get_captures(configs):
-    """Gets all the captures in a folder
+    """Gets all the captures in a folder.
 
     Args:
         configs (ConfigParser): Configurations to run the accuracy with.
@@ -86,7 +83,7 @@ def __get_captures(configs):
         captures.append((ImageCapture(image_path), det_writer, track_writer))
         return captures
 
-    elif runner_config['data_structure'].lower() == 'mot':
+    if runner_config['data_structure'].lower() == 'mot':
         gt_root = os.path.realpath(os.path.join(data_path_prefix, 'train'))
         det_folder, track_folder = __get_mot_folders(det_path, runs_name)
         __check_seq_maps(gt_root, data_set_name)
@@ -101,12 +98,16 @@ def __get_captures(configs):
             capture = ImageCapture(images_path)
             captures.append((capture, det_writer, track_writer))
         return captures
-    else:
-        raise NotImplementedError('This file format is not supported')
+    raise NotImplementedError('This file format is not supported')
 
 
 def __check_seq_maps(gt_root, data_set_name):
-    """Check if a seq map directory exists, if not, make one automatically"""
+    """Check if a seq map directory exists, if not, make one automatically.
+
+    Args:
+        gt_root (string): root directory of the ground truth.
+        data_set_name (string): name of the MOT dataset.
+    """
     seq_map_folder = os.path.join(gt_root, 'seqmaps')
     if not os.path.exists(seq_map_folder):
         lines = ['name\n']
@@ -121,7 +122,17 @@ def __check_seq_maps(gt_root, data_set_name):
 
 
 def __get_mot_folders(path_prefix, runs_name):
-    # If it does not exist, then Initialize the directory
+    """Making folders if they do not exist.
+
+    Args:
+        path_prefix (string): Directory where the runs need to be stored.
+        runs_name (string): name of the runs.
+
+    Returns:
+        det_folder (string): folder where the detection runs are stored.
+        track_folder (string): folder where the tracker detections are stored.
+    """
+    # If it does not exist, then Initialize the directory.
     folder_name = os.path.join(path_prefix, runs_name)
     track_folder = os.path.join(folder_name, 'data')
     det_folder = os.path.join(folder_name, 'det')
