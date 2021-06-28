@@ -22,7 +22,7 @@ extension-pkg-whitelist=cv2,
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS,venv,yolov5,sort,sort_oh,yolor,torchreid,fastreid
+ignore=CVS,venv,yolov5,sort,sort_oh,yolor,torchreid,fastreid,trackeval_master
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
