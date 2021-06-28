@@ -5,6 +5,7 @@
 !docs
 !utility
 !CameraProcessor/processor
+!CameraProcessor/data/annotated/test
 !ProcessorOrchestrator/src
 !VideoForwarder/src
 !Interface/react/package.json
