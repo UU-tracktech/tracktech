@@ -4,48 +4,48 @@ abstract: "Real-time tracking of objects on multiple cameras."
 authors: 
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Berend Dekker"
+    family-names: "Dekker"
+    given-names: "Berend"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Brian van Beusekom"
+    family-names: "Van Beusekom"
+    given-names: "Brian"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Emile Bangma"
+    family-names: "Bangma"
+    given-names: "Emile"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Gerard van Schie"
+    family-names: "Van Schie"
+    given-names: "Gerard"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Jaimy Kwa"
+    family-names: "Kwa"
+    given-names: "Jaimy"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Jelle Teeuwissen"
+    family-names: "Teeuwissen"
+    given-names: "Jelle"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Li-Yeun Xu"
+    family-names: "Xu"
+    given-names: "Li-Yeun"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Max van der Hart"
+    family-names: "Van der Hart"
+    given-names: "Max"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Marieke van der Plaat"
+    family-names: "Van der Plaat"
+    given-names: "Marieke"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Rienk Fidder"
+    family-names: "Fidder"
+    given-names: "Rienk"
   -
     affiliation: "Utrecht University"
-    family-names: 
-    given-names: "Tim van Kemenade"
+    family-names: "Van Kemenade"
+    given-names: "Tim"
 cff-version: "1.1.0"
 date-released: 2021-06-28
 doi: "10.5281/zenodo.5037173"
