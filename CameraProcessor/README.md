@@ -11,7 +11,7 @@ notifying the camera operator when a subject is re-identified.
 Run the following command to start the processor.
 
 ```bat
-docker run -e HLS_STREAM_URL={Hls stream url} -e ORCHESTRATOR_URL={Orchestrator url} -e CAMERA_ID={Camera stream id} -e PROCESSOR_MODE=deploy -e DETECTION_ALG=yolov5 -e TRACKING_ALG=sort -e REID_ALG=torchreid
+docker run -e HLS_STREAM_URL={Hls stream url} -e ORCHESTRATOR_URL={Orchestrator url} -e CAMERA_ID={Camera stream id} -e PROCESSOR_MODE=deploy -e DETECTION_ALG=yolov5 -e TRACKING_ALG=sort -e REID_ALG=torchreid tracktech/processor:latest
 ```
 
 ### Starting

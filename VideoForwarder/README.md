@@ -11,7 +11,7 @@ This component retrieves a web stream and converts it to an HLS stream. The inte
 Run the following command to startup the forwarder
 
 ```bash
-docker run -p 80:80 --env CAMERA_URL={Stream url} --env CAMERA_AUDIO={Wether the stream contains audio} --env STREAM_LOW=true tracktech/forwarder
+docker run -p 80:80 --env CAMERA_URL={Stream url} --env CAMERA_AUDIO={Wether the stream contains audio} --env STREAM_LOW=true tracktech/forwarder:latest
 ```
 
 #### Local
