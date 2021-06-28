@@ -29,7 +29,6 @@ def main(configs):
         configs (ConfigParser): Configurations to run the accuracy with.
     """
     captures = __get_captures(configs)
-    # det_boxes = __get_det_boxes()
 
     for capture, det_writer, track_writer in captures:
 
@@ -48,7 +47,6 @@ def main(configs):
             if not ret:
                 continue
             image_id = int(capture.image_names[capture.image_index].split('.')[0])
-            # detected_boxes = det_boxes[index][image_id-1] #
             detected_boxes = detector.detect(frame_obj)
             tracked_boxes = tracker.track(frame_obj, detected_boxes, reid_data)
 
@@ -81,8 +79,11 @@ def __get_captures(configs):
     det_path = os.path.realpath(os.path.join(det_path, data_set_name))
     captures = []
     if runner_config['data_structure'].lower() == 'coco':
-        image_path = data_path_prefix
-        captures.append((ImageCapture(image_path), det_path))
+        image_path = os.path.realpath(os.path.join(data_path_prefix, 'images'))
+        det_writer = get_data_writer(configs, 'detection', det_path)
+        configs['Runner']['tracking'] = 'fake'
+        track_writer = get_data_writer(configs, 'tracking', det_path)
+        captures.append((ImageCapture(image_path), det_writer, track_writer))
         return captures
 
     elif runner_config['data_structure'].lower() == 'mot':
