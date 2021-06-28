@@ -23,7 +23,7 @@ COPY requirements-test.txt .
 RUN ["pip", "install", "-r", "requirements.txt"]
 RUN ["pip", "install", "-r", "requirements-test.txt"]
 
-COPY data/annotated/test data/annotated/test
+COPY data/tests data/tests
 COPY data/videos data/videos
 COPY pytest.ini pytest.ini
 COPY configs.ini configs.ini
