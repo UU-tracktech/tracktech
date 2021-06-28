@@ -18,9 +18,6 @@ from processor.pipeline.reidentification.torchreid.scripts.default_config import
     engine_run_kwargs, lr_scheduler_kwargs, imagedata_kwargs, videodata_kwargs
 from processor.pipeline.reidentification.torchreid.torchreid.utils import set_random_seed, Logger, collect_env_info, \
     load_pretrained_weights, compute_model_complexity, check_isfile, resume_from_checkpoint
-from processor.pipeline.reidentification.fastreid.tools.train_net import main as fastreid_main
-from processor.pipeline.reidentification.fastreid.fastreid.engine import launch
-from processor.pipeline.reidentification.fastreid.fastreid.engine.defaults import default_argument_parser
 
 
 class AccuracyObject:
