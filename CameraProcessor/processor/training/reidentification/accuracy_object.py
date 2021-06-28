@@ -236,27 +236,7 @@ if __name__ == '__main__':
         accuracy_object.run_eval()
     elif config_parser.configs["Accuracy"]["reid"] == 'fastreid':
         # Grab the weight path from config.
-        config = config_parser.configs["FastReid"]
-        weights_path = os.path.join(config['weights_dir_path'], 'market_sbs_R101-ibn.pth')
-        check_weights(config, weights_path, 'market_sbs_R101-ibn')
-        fastreid_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..',
-                                     'pipeline', 'reidentification', 'fastreid')
-
-        # Create the args that are normally passed to train_net.py.
-        args = default_argument_parser().parse_args(
-            ['--config-file', f'{os.path.join(fastreid_path, "configs/Market1501/bagtricks_R50.yml")}',
-             '--eval-only', 'MODEL.WEIGHTS', f'{weights_path}',
-             'MODEL.DEVICE', 'cuda:0'])
-        print("Command Line Args:", args)
-
-        # Launch the fastreid evaluation.
-        launch(
-            fastreid_main,
-            args.num_gpus,
-            num_machines=args.num_machines,
-            machine_rank=args.machine_rank,
-            dist_url=args.dist_url,
-            args=(args,),
-        )
+        raise OSError("Due to filepath issues, fastreid evaluation can not be run via accuraccy object. "
+                      "Please run evaluation from the command line as specified in the README.")
     else:
         raise ValueError("Incorrect re-id algorithm specified in Accuracy config.")
