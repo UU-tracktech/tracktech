@@ -8,7 +8,7 @@ Utrecht University within the Software Project course.
 
 import React from 'react'
 import { screen, render } from '@testing-library/react'
-import { CameraCard } from '../../../src/components/cameraCard'
+import { CameraCard } from 'components/cameraCard'
 
 describe('Collection of tests for the CameraCard', () => {
   it('Receives the correct ID', () => {

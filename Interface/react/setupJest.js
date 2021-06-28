@@ -9,4 +9,11 @@ Utrecht University within the Software Project course.
 import 'jest-canvas-mock'
 import { enableFetchMocks } from 'jest-fetch-mock'
 enableFetchMocks()
-fetch.mockResponse(JSON.stringify([]))
+fetch.mockResponse(
+  JSON.stringify({
+    clientId: 'Interface',
+    accessTokenUri: 'https://testAdress.test',
+    authorizationUri: 'https://testAdress.test',
+    redirectUri: 'https://testAdress.test'
+  })
+)

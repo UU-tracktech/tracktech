@@ -4,13 +4,11 @@ This program has been developed by students from the bachelor Computer Science a
 Utrecht University within the Software Project course.
 © Copyright Utrecht University (Department of Information and Computing Sciences)
 """
-import copy
-
 from scipy.spatial.distance import euclidean, cosine
 
 from processor.pipeline.reidentification.i_re_identifier import IReIdentifier
 from processor.data_object.bounding_box import BoundingBox
-from processor.data_object.bounding_boxes import BoundingBoxes
+import processor.utils.features as UtilsFeatures
 
 
 class PytorchReIdentifier(IReIdentifier):
@@ -35,22 +33,23 @@ class PytorchReIdentifier(IReIdentifier):
         """
         return self.re_identify
 
-    def extract_features_boxes(self, frame_obj, boxes):
-        """Extracts features from all bounding boxes generated in the tracking stage.
+    def extract_cutouts(self, frame_obj, boxes):
+        """Extracts cutouts from all bounding boxes generated in the tracking stage.
 
         Args:
             frame_obj (FrameObj): frame object storing OpenCV frame and timestamp.
             boxes (BoundingBoxes): BoundingBoxes object that has the bounding boxes of the tracking stage.
 
         Returns:
-            [[float]]: Feature vectors of the tracked objects.
+            cutouts ([np.ndarray]): A list of resized cutouts of the BoundingBoxes.
         """
-        features = []
-
+        cutouts = []
         for box in boxes:
-            features.append(self.extract_features(frame_obj, box))
+            cutout = UtilsFeatures.slice_bounding_box(box, frame_obj.frame)
+            resized_cutout = UtilsFeatures.resize_cutout(cutout, self.config)
+            cutouts.append(resized_cutout)
 
-        return features
+        return cutouts
 
     def re_identify(self, frame_obj, track_obj, re_id_data):
         """Performing re-identification using a re-identification implementation.
@@ -65,11 +64,10 @@ class PytorchReIdentifier(IReIdentifier):
         Returns:
             BoundingBoxes: object containing all re-id tracked boxes (bounding boxes where re-id is performed).
         """
-        tracked_bounding_boxes = track_obj.bounding_boxes
-        box_features = self.extract_features_boxes(frame_obj, track_obj)
 
-        # Copy the original bounding boxes to a new list.
-        bounding_boxes = copy.copy(tracked_bounding_boxes)
+        tracked_bounding_boxes = track_obj.bounding_boxes
+        cutouts = self.extract_cutouts(frame_obj, tracked_bounding_boxes)
+        box_features = self.extract_features(cutouts)
 
         # Loop over all objects being followed.
         for query_id in re_id_data.get_queries():
@@ -97,7 +95,7 @@ class PytorchReIdentifier(IReIdentifier):
                         re_id_data.add_query_box(box_id, query_id)
 
                         # Update object id of the box.
-                        bounding_boxes[i] = BoundingBox(
+                        tracked_bounding_boxes[i] = BoundingBox(
                             identifier=box_id,
                             rectangle=tracked_bounding_boxes[i].rectangle,
                             classification=tracked_bounding_boxes[i].classification,
@@ -107,7 +105,7 @@ class PytorchReIdentifier(IReIdentifier):
 
                         print(f'Re-Id of object {query_id} in box {box_id}')
 
-        return BoundingBoxes(bounding_boxes)
+        return track_obj
 
     def similarity(self, query_features, gallery_features):
         """Calculates the similarity rate between two feature vectors.
