@@ -1,19 +1,18 @@
 # Scheduling
 
-There are many methods to achieve the tracking of subjects and/or objects 
+There are many methods to achieve the tracking of subjects and objects 
 over multiple cameras.
 The method can be divided into several components.
-Some of these components can be run in parallel since they don't need
+Some of these components can be run in parallel since they do not need
 anything from each other.
 This parallelism can be hardcoded in the component itself, 
-but this is unfavourable since there are many methods to try.
+However, this is unfavourable since there are many methods to try.
 
 A scheduling process that takes in a plan (graph) 
 is better when trying multiple methods.
-The scheduler is responsible for the execution of the nodes, 
-and can have extensions for parallelism, and more, built-in.
+The scheduler is responsible for the execution of the nodes and can have extensions for parallelism and more built-in.
 This prevents recoding previously made components when a new component
-is added or an existing component is updated.
+is added, or an existing component is updated.
 
 ## scheduling.scheduler
 
@@ -22,7 +21,7 @@ which takes in a starting node (seen as the plan) and runs this starting node.
 The schedule node is responsible for queueing other nodes which are ready to run. 
 The schedule node checks which nodes can be run after it executed its internal component,
 all nodes to the queue are given to the scheduler via the notify function 
-given to the schedule node on execution.
+given to the scheduled node on execution.
 
 The scheduler makes the following assumptions:
 - The given plan is correct
@@ -57,8 +56,8 @@ arg_nr: int
 example_schedule_node = ScheduleNode(number_of_inputs, [(out_node, arg_nr)], ExampleComponent())
 ``` 
 It is important to note that the `arg_nr` must correspond to the index array 
-containing the expected input object and the `number_of_inputs` is the length 
-of the arguments list which must be complete before node execution.
+containing the expected input object, and the `number_of_inputs` is the length 
+of the arguments list, which must be complete before node execution.
 
 The last defined node in the Python plan is the input node of the schedule (or starting node). 
 This node must have exactly one input.
@@ -90,7 +89,7 @@ can be found in [example_plan.py](plan/example_plan.py).
 The scheduler node [schedule_node.py](node/schedule_node.py) is responsible for running 
 the component once it is called by the scheduler 
 (can only be called by the scheduler once all needed arguments have been collected) 
-and returning the output of the component to all out_nodes which need that output.
+Furthermore, returning the output of the component to all out_nodes which need that output.
 
 The schedule node overrides all functions of the interface node [INode](node/schedule_node.py).
 Why the interface is necessary is explained in the Interface Node section.
@@ -139,7 +138,7 @@ Any given component is used for every given iteration.
 It thus must be in a ready state after performing its work.
 The class itself is responsible for possible resets to be performed,
 storing data for the next iteration,
-outputting to objects outside of the scheduler 
+outputting to objects outside of the scheduler. 
 (further explained in the Output Component section), etc.
 
 The base component [BaseComponent](component/base_component.py) contains the basic form
@@ -180,12 +179,12 @@ has no extra restrictions.
 The only thing that needs to be mentioned is that any output component is responsible for
 sending output to objects outside of the scheduler flow.
 
-How this is done can depend on the use case, below a few examples:
+How this is done can depend on the use case. Below a few examples:
 - A listener on the component watching its state
 - A function to which output must be passed after completion of an iteration
 - A direct call to the API used to pass data between 
 the camera processor and processor orchestrator
 
 It is expected that a node without `out_nodes` contains an output component.
-Furthermore, any component can be an output component, it already counts as
+Furthermore, any component can be an output component, and it already counts as
 one if it emits output outside of the scheduler flow.
