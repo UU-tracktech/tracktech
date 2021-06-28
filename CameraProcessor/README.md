@@ -16,7 +16,7 @@ docker run -e HLS_STREAM_URL={Hls stream url} -e ORCHESTRATOR_URL={Orchestrator 
 
 ### Starting
 
-The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
+The camera processor can be run both locally, and in Docker, although the used system must comply with the set requirements.
 For differences in CUDA versions, check out the following
 [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one.
 CUDA 10.1 (version cu101) is used because it was available for all the members of the team.
@@ -164,7 +164,7 @@ For differences in CUDA versions, check out the following [link](https://downloa
 - [Python 3.8](https://www.python.org/downloads/release/python-3810/): no other Python versions have been tested.
 - [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): this CUDA version has been tested. _However, it has demonstrated to work with CUDA 11.1_
 - [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive): this cuDNN was chosen due to compatibility with CUDA 10.1.2.
-- [FFmpeg](https://ffmpeg.org/download.html): This is to extract meta data from the HLS stream to syncronise the stream with the interface.
+- [FFmpeg](https://ffmpeg.org/download.html): This is to extract metadata from the HLS stream to synchronise the stream with the interface.
 
 ### Packages
 
@@ -203,7 +203,7 @@ This setup will be able to run the YOLOv5 detection algorithm.
 
 ### Verify application in Docker
 
-In order to verify the detection/tracking/re-identifying running inside the Docker container, it is possible to stream to the result to localhost.
+In order to verify the detection/tracking/re-identifying running inside the Docker container, it is possible to stream the result to localhost.
 Add the following lines to the docker-compose.yml file inside the root inside the camera processor service:
 
 ```cmd

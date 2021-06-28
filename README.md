@@ -82,7 +82,7 @@ pip install pylint
 
 ### Run
 
-To run linting on the entire repository run the following command from the root:
+To run linting on the entire repository, run the following command from the root:
 `pylint CameraProcessor docs Interface ProcessorOrchestrator utility VideoForwarder --rcfile=.pylintrc --reports=n`
 
 #### Explanation
@@ -97,7 +97,7 @@ Our recommendation would be `n` since this only displays linting errors/warnings
 
 #### Constraints
 Pylint needs an `__init__.py` file in the subsystem root to parse all folders to lint.
-This run must be one of the subsystems since the root does not contain an `__init__.py` file.
+This run must be a subsystem since the root does not contain an `__init__.py` file.
 
 ### Ignoring folders from linting
 
