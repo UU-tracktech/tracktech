@@ -32,5 +32,5 @@ def get_sample_frame():
     Returns:
         numpy.ndarray: opencv frame from test data.
     """
-    __images_name = f'{root_path}/data/annotated/test/img1/000001.jpg'
+    __images_name = f'{root_path}/data/tests/unittests/images/000001.jpg'
     return cv2.imread(__images_name)
