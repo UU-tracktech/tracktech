@@ -204,11 +204,12 @@ python3 accuracy_object.py
 
 #### Fastreid
 
-With reid in `configs.ini` set to `fastreid`:
+Due to limitations, FastReid has to be directly called to evaluate using the command line:
 
 ```bash
-cd CameraProcessor/processor/training/reidentification/
-python3 accuracy_object.py
+cd <location-of-root>/CameraProcessor/processor/pipeline/reidentification/Fastreid
+export FASTREID_DATASETS=../../../../data/annotated/Market1501/
+python3 tools/train_net.py --config-file ./configs/Market1501/bagtricks_R50.yml ---eval-only MODEL.WEIGHTS /path/to/weight-file MODEL.DEVICE "cuda:0"
 ```
   
 

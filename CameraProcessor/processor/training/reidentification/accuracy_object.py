@@ -236,7 +236,7 @@ if __name__ == '__main__':
         accuracy_object.run_eval()
     elif config_parser.configs["Accuracy"]["reid"] == 'fastreid':
         # Grab the weight path from config.
-        raise OSError("Due to filepath issues, fastreid evaluation can not be run via accuraccy object. "
-                      "Please run evaluation from the command line as specified in the README.")
+        raise NotImplementedError("Due to filepath issues, fastreid evaluation can not be run via accuraccy object. "
+                                  "Please run evaluation from the command line as specified in the README.")
     else:
         raise ValueError("Incorrect re-id algorithm specified in Accuracy config.")
