@@ -14,7 +14,7 @@ Run the following command to startup the orchestrator
 docker run -p 80:80
 ```
 
-Port 430 should also be made available if SSL is used, see below for other optional environment variables.
+Port 430 should also be made available if SSL is used. See below for other optional environment variables.
 
 #### Local
 
@@ -67,9 +67,8 @@ The client WebSocket knows the following types of messages:
   - "boxId": The identifier of the bounding box computed for the object to be tracked.
   - "image": A serialised image that the processor can use for re-identification.
 
-  Of these properties, at least either "image" parameter or "frameId" and "boxId" parameters,  are required to be sent.
-- "stop" | This command is used to stop the tracking of an object,
-  it needs the following additional property:
+  Of these properties, at least either "image" parameter or "frameId" and "boxId" parameters are required to be sent.
+- "stop" | This command is used to stop the tracking of an object; it needs the following additional property:
   - "objectId" | The identifier of the object which should no longer be tracked.
 - "setUsesImages" | This command is used to specify whether or not this client uses images and should therefore
 receive cutouts when they are sent alongside a "start" command. It needs the following property:
