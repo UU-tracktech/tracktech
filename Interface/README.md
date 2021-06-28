@@ -1,6 +1,6 @@
 # Interface
 
-This component contains the web interface for the project. The interface is created with Typescript React and uses the Ant Design UI package for most of its UI components.
+This component contains the web interface for the project. The interface is created with Typescript React and uses the Ant Design UI package for most UI components.
 
 ## Quickstart
 
@@ -32,13 +32,13 @@ docker start interface
 
 #### Local
 
-Make sure you have npm installed and run
+Make sure npm is installed and run the following command
 
 ```bash
 npm start
 ```
 
-to start the interface. Make sure the settings file in the public folder is configured.
+To start the interface. Make sure the settings file in the public folder is configured.
 
 ### Settings
 
@@ -80,7 +80,7 @@ The architecture of the application consists of the following main components:
   - /react/src/components: The custom React components used throughout the application.
   - /react/src/classes: pure typescript classes.
 - /react/testing: Folder containing testing files, divided into:
-  - /react/testing/unit testing: Jest unit tests that tests individual components.
+  - /react/testing/unit testing: Jest unit tests that individually test components.
   - /react/testing/integration testing: Jest tests that test the integration of the interface with the orchestrator.
 
 ## Dependencies

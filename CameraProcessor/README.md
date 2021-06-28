@@ -14,11 +14,9 @@ Run the following command to start the processor.
 docker run -e HLS_STREAM_URL={Hls stream url} -e ORCHESTRATOR_URL={Orchestrator url} -e CAMERA_ID={Camera stream id} -e PROCESSOR_MODE=deploy -e DETECTION_ALG=yolov5 -e TRACKING_ALG=sort -e REID_ALG=torchreid
 ```
 
-The [venice.mp4](data/videos/venice.mp4) will be streamed to `http://localhost:9090`
-
 ### Starting
 
-The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
+The camera processor can be run both locally, and in Docker, although the used system must comply with the set requirements.
 For differences in CUDA versions, check out the following
 [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one.
 CUDA 10.1 (version cu101) is used because it was available for all the members of the team.
@@ -46,7 +44,12 @@ Windows insider program slows down the speed of pc a lot.
 
 #### Local
 
-First install [all dependencies](#dependencies).
+To run the system locally there are a few steps needed.
+
+1. First install [all dependencies](#dependencies).
+2. Open the CameraProcessor folder in an IDE.
+3. Change the [configurations](###configurations).
+4. Run main.py.
 
 ### Environment variables
 
@@ -158,24 +161,10 @@ The systems shares this information amongst processors.
 The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
 For differences in CUDA versions, check out the following [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one. We used the cu101 version because it was available for all of the members of the team.
 
-### Environment variables
-
-The system can use the following environment variables:
-(When these values are set, it overrides the configs.ini values with these)
-
-| Variable         | Config.ini value name | Description                                                                  |
-| ---------------- | --------------------- | ---------------------------------------------------------------------------- |
-| ORCHESTRATOR_URL | Orchestrator.url      | The link of the orchestrator WebSocket                                       |
-| HLS_STREAM_URL   | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
-| CAMERA_ID        | Input.camera_id       | The id of the camera used to coordinate data send to the orchestrator        |
-| PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                              |
-| DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                       |
-| TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                        |
-| TRACKING_ALG     | Main.reid             | Name of the re-identification algorithm to use                               |
-
 - [Python 3.8](https://www.python.org/downloads/release/python-3810/): no other Python versions have been tested.
 - [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): this CUDA version has been tested. _However, it has demonstrated to work with CUDA 11.1_
 - [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive): this cuDNN was chosen due to compatibility with CUDA 10.1.2.
+- [FFmpeg](https://ffmpeg.org/download.html): This is to extract metadata from the HLS stream to synchronise the stream with the interface.
 
 ### Packages
 
@@ -212,30 +201,9 @@ When [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-update2
 (once again, NVIDIA only), you should be able to run main.py in the processor directory locally.
 This setup will be able to run the YOLOv5 detection algorithm.
 
-### Running in Docker
-
-If you want to run it with GPU, it is a lot of hassle for Windows users and not recommended.
-You require the Windows Insider program to use CUDA in WSL2.
-Windows insider program slows down the speed of pc a lot.
-
-- GPU-enabled on Linux:
-  1.  You need an NVIDIA GPU that supports CUDA
-  2.  Check the version of the CUDA installation, change PyTorch import if needed
-  3.  Make sure the devices in configs.ini are set to 0
-  4.  Run `docker-compose up` in the root to build the container for deployment.
-- GPU-enabled on windows (Not recommended):
-  1.  You need an NVIDIA GPU that supports CUDA
-  2.  Follow the [nvidia install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
-  3.  Make sure the devices in configs.ini are set to 0
-  4.  Run `docker-compose up` in the root to build the container for deployment.
-  5.  Check the logs of your docker container in the Docker Desktop to see if it is working correctly.
-- GPU-disabled (can't run GPU code, only start container):
-  1.  In configs.ini, change the device value to CPU.
-  2.  Run `docker-compose up` in the root to build the container for deployment.
-
 ### Verify application in Docker
 
-In order to verify the detection/tracking/re-identifying running inside the Docker container, it is possible to stream to the result to localhost.
+In order to verify the detection/tracking/re-identifying running inside the Docker container, it is possible to stream the result to localhost.
 Add the following lines to the docker-compose.yml file inside the root inside the camera processor service:
 
 ```cmd
@@ -269,36 +237,7 @@ For Docker, the Dockerfile contains the setup and commands. These do not need an
 When running the tests locally inside PyCharm, ensure the testing library is set to Pytest for easy development.
 Create a Pytest configuration in PyCharm and test the unit tests folder.
 
-## Pylint with PyCharm
-
-We use Pylint for python code quality assurance.
-
-### Installation
-
-Input following command terminal:
-
-```
-pip install pylint
-```
-
 The final argument can be extended to test folders more specifically. This one runs the entire `unittest` folder.
 
 To run integration tests locally, WebSocket URLs must be altered for the orchestrator or the HLS stream URL for the forwarder.
 We strongly recommend using Docker to run these as described above.
-Install the PyCharm plugin:
-
-`Control+Alt+S` to open PyCharm settings.
-
-Navigate to `Settings>Plugins`.
-
-Search for `pylint`.
-
-Install the Pylint plugin.
-
-#### Settings
-
-`Control+Alt+S` to open PyCharm settings.
-
-Navigate to `Settings>Other Settings>Pylint`.
-
-Set up a link to Pylint and test settings.

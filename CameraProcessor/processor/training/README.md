@@ -1,4 +1,3 @@
-
 # Training the algorithms
 
 The following will describe how to train a model for the detection stage and the re-identification stage.
@@ -219,7 +218,7 @@ python3 tools/train_net.py --config-file ./configs/Market1501/bagtricks_R50.yml 
 
 Tracking uses either Sort or Sort_OH. Both of these algorithms are not based not a neural network, and thus the user cannot train the tracking stage. These algorithms solely rely on the detection stages' result. To improve tracking, please try to improve detection performance.
 
-#### I'm getting paging file size errors on Windows. How do I fix this?
+#### I am getting paging file size errors on Windows. How do I fix this?
 
 This error means that Windows does not have sufficient disk space for a paging file during the training. Either create more disk space by removing other files from the disk or consider running the training on a Unix based system.
 
@@ -227,7 +226,7 @@ This error means that Windows does not have sufficient disk space for a paging f
 
 Consider running training on a larger part of the dataset and for more epochs. Generally speaking, the larger the dataset used and the longer trained, the better the resulting model.
 
-#### I'm missing a dependency. Where can I find it?
+#### I am missing a dependency. Where can I find it?
 
 Try installing the package as follows:
 

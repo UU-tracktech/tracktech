@@ -25,7 +25,7 @@ RUN ["npm", "install"]
 COPY Interface/react/src Interface/react/src
 COPY Interface/react/tsconfig.json Interface/react/tsconfig.json
 
-RUN ["npx", "typedoc", "--out", "docs/html/Interface", "Interface/react/src", "--tsconfig", "Interface/react/tsconfig.json"]
+RUN ["npx", "typedoc", "--out", "docs/html/Interface", "Interface/react/src", "--tsconfig", "Interface/react/tsconfig.json", "--theme", "node_modules/typedoc-dark-theme/bin/default/"]
 
 
 # Copy the rest of the application.
