@@ -17,6 +17,7 @@ omit =
     # Don't test any documentation or testing files
     */processor/scheduling/component/*
     */processor/yolov5_test.py
+    */processor/training/tracking/trackeval_master/*
     # Don't cover main.py files
     */main.py
 

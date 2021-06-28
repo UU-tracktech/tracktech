@@ -1,0 +1,2 @@
+{"imageId": "13", "boxes": [{"boxId": 78, "rect": [0.1, 0.23, 0.5, 0.4], "objectType": "car", "certainty": 0.75, "objectId": 18}, {"boxId": 678, "rect": [0.2, 0.6, 0.7, 0.8], "objectType": "person", "certainty": 0.8, "objectId": 19}, {"boxId": 979, "rect": [0.22, 0.34, 0.62, 0.85], "objectType": "horse", "certainty": 0.8, "objectId": 100}]}
+{"imageId": "12", "boxes": [{"boxId": 6, "rect": [0, 0.6, 0.45, 1], "objectType": "person", "certainty": 0.5, "objectId": 6}]}
