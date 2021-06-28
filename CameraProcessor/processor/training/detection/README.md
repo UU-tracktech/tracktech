@@ -21,7 +21,7 @@ python train.py --data coco128.yaml --cfg yolov5s.yaml --weights '' --hyp hyp.sc
 
 - ```--hyp``` defines the hyp configuration for use for training.
 
-- ```--batch-size``` defines the batch size to use. This can be set to 2-4 times your GPU memory.
+- ```--batch-size``` defines the batch size to use. This can be set to 2-4 times the GPU's memory.
 
 The values of these parameters can be configured in the [configs.ini](../../../configs.ini) file.
 
@@ -42,7 +42,7 @@ python train.py --batch-size 8 --img 1280 1280 --data coco.yaml --cfg cfg/yolor_
 
 - ```--hyp``` defines the hyp configuration for use for training.
 
-- ```--batch-size``` defines the batch size to use. This can be set to 2-4 times your GPU memory.
+- ```--batch-size``` defines the batch size to use. This can be set to 2-4 times the GPU's memory.
 
 - ```--img``` defines the image dimensions.
 
@@ -50,7 +50,7 @@ python train.py --batch-size 8 --img 1280 1280 --data coco.yaml --cfg cfg/yolor_
 
 - ```--name``` defines the name of the model resulting from training.
 
-- ```--epochs``` defines how many iterations to train on. More is better but takes longer.
+- ```--epochs``` defines how many iterations to train. More is better but takes longer.
 
 The values of these parameters can be configured in the [configs.ini](../../../configs.ini) file.
 
@@ -73,8 +73,7 @@ It automatically determines the delimiters.
 `parse_boxes(self, boxes_to_parse)` takes a list of bounding boxes and parses them to a format supported
 by the `PODM` library.
 
-`read_boxes(self, path_to_boxes)` uses the `PreAnnotations` to load a list of bounding boxes from a file
-and parses the bounding boxes through the `parse_boxes` function, before returning the result.
+`read_boxes(self, path_to_boxes)` uses the `PreAnnotations` to load a list of bounding boxes from a file and parses the bounding boxes through the `parse_boxes` function before returning the result.
 
 `detect(self)` retrieves the accuracy of detections from a folder prespecified in the `__init__`.
 It prints the true positives `tp`, false positives `fp`, false negatives `fns`, and mean average precision `mAP`.

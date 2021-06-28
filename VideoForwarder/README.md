@@ -60,7 +60,7 @@ Required to specify
 
 #### SSL
 
-If both are specified, SSL is enabled
+If both are specified, SSL is enabled.
 
 | Variable | Description              |
 | -------- | ------------------------ |
@@ -79,7 +79,7 @@ If both are specified, SSL is enabled
 
 We use FFmpeg to pull the video stream and encode it to an HLS stream. FFmpeg is an HTTP based streaming protocol that allows adaptive bitrate streaming. We use tornado to serve the files and handle authentication, to match the rest of the project.
 
-## Depencencies
+## Dependencies
 
 ### Software
 

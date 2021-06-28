@@ -27,4 +27,4 @@ Draws bounding boxes on frames and includes a tag. It contains a draw method for
 Utilities for feature maps. It creates cutouts and resizes them to create the correct size for the model.
 
 ### text.py
-Converts data_objects to strings/dicts that get converted to text to send through the WebSocket.
+Converts data_objects to strings/dictionaries that get converted to text to send through the WebSocket.
