@@ -12,6 +12,8 @@
 
 [![Codecov](https://codecov.io/gh/UU-tracktech/tracktech/branch/develop/graph/badge.svg?token=swMWxrC43A)](https://codecov.io/gh/UU-tracktech/tracktech)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5037173.svg)](https://doi.org/10.5281/zenodo.5037173)
+
 This project is part of the 2021 spring bachelor final project of the Bachelor of Computer Science at Utrecht University.
 The team that worked on the project consists of eleven students from the Bachelor of Computer Science and Bachelor of Game Technology.
 This project has been done for educational purposes.
