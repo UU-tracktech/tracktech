@@ -14,7 +14,7 @@ class JsonDataWriter(IDataWriter):
     def __init__(self, det_destination):
         """Initializing the JSON data writer"""
         super().__init__()
-        destination_file = os.path.realpath(det_destination + '.txt')
+        destination_file = os.path.realpath(det_destination + '.json')
         self.file = open(destination_file, 'w')
 
     def write(self, bounding_boxes, shape):
