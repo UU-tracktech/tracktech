@@ -12,8 +12,8 @@ import {
   GetSegmentStarttime,
   PrintTimestamp,
   VideoPlayer
-} from '../../../src/components/videojsPlayer'
-import { Box } from '../../../src/classes/box'
+} from 'components/videojsPlayer'
+import { Box } from 'classes/box'
 
 let mockSnapCallback = jest.fn()
 let mockOnTimestamp = jest.fn()
@@ -31,9 +31,6 @@ afterAll(() => {
 })
 
 beforeEach(() => {
-  require('@react-keycloak/web').__SetMockInitialized(true)
-  require('@react-keycloak/web').__SetMockAuthenticated(true)
-
   render(
     <VideoPlayer
       setSnapCallback={mockSnapCallback}
