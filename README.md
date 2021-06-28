@@ -17,18 +17,6 @@ The team that worked on the project consists of eleven students from the Bachelo
 This project has been done for educational purposes.
 All code is open-source, and proper credit is given to respective parties.
 
-## Pylint
-
-We use Pylint for python code quality assurance.
-
-### Installation
-
-Input following command terminal:
-
-```
-pip install pylint
-```
-
 ### GPU support
 
 #### Updating/Installing drivers
@@ -80,21 +68,36 @@ Add the `GPU UUID` from the last step to the [Docker engine configuration file](
 }
 ```
 
+## Pylint
+
+We use Pylint for python code quality assurance.
+
+### Installation
+
+Input following command terminal:
+
+```
+pip install pylint
+```
+
 ### Run
 
-The Pylint linting should be run from the root with a specified Python module (subsystem).
-The command is as follows:
+To run linting on the entire repository run the following command from the root:
+`pylint CameraProcessor docs Interface ProcessorOrchestrator utility VideoForwarder --rcfile=.pylintrc --reports=n`
 
+#### Explanation
 `pylint <Subsystem> --rcfile=.pylintrc --reports=n`
 
-`<Sub system>` is the Python module to run.
-Pylint needs an `__init__.py` file in the root to parse all folders to lint.
-This run must be one of the subsystems since the root does not contain an `__init__.py` file.
+`<Subsystem>` is the Python module to run.
 
 `--rcfile` is the linting specification used by Pylint.
 
 `--reports` sets whether the full report should be displayed or not.
 Our recommendation would be `n` since this only displays linting errors/warnings and the eventual score.
+
+#### Constraints
+Pylint needs an `__init__.py` file in the subsystem root to parse all folders to lint.
+This run must be one of the subsystems since the root does not contain an `__init__.py` file.
 
 ### Ignoring folders from linting
 
