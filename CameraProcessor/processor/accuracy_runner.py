@@ -122,15 +122,14 @@ def __check_seq_maps(gt_root, data_set_name):
 
 
 def __get_mot_folders(path_prefix, runs_name):
-    """Making folders if they do not exist.
+    """Making folders if they do not exist and returns them.
 
     Args:
         path_prefix (string): Directory where the runs need to be stored.
         runs_name (string): name of the runs.
 
     Returns:
-        det_folder (string): folder where the detection runs are stored.
-        track_folder (string): folder where the tracker detections are stored.
+        det_folder, track_folder (string, string): folders where detections are stored.
     """
     # If it does not exist, then Initialize the directory.
     folder_name = os.path.join(path_prefix, runs_name)
