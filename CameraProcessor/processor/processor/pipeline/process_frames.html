@@ -97,8 +97,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
-    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="c1"># Frame buffer that stores 150 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -155,8 +155,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
-    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="c1"># Frame buffer that stores 150 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
 
     <span class="c1"># Create Scheduler by passing all information to construct the schedule nodes and its components.</span>
     <span class="n">scheduler</span> <span class="o">=</span> <span class="n">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">)</span>
@@ -207,7 +207,7 @@ Utrecht University within the Software Project course.
         <span class="c1"># Start command.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartMessage</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features_from_cutout</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">get_cutout</span><span class="p">(</span><span class="n">framebuffer</span><span class="p">))</span>
+                <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features_from_image</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">get_cutout</span><span class="p">(</span><span class="n">framebuffer</span><span class="p">))</span>
 
                 <span class="c1"># Sends the feature map to the orchestrator using a Websocket client.</span>
                 <span class="n">ws_client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">UpdateMessage</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">))</span>
@@ -270,8 +270,8 @@ Utrecht University within the Software Project course.
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
-    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="c1"># Frame buffer that stores 150 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
 
     <span class="n">frame_nr</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -366,8 +366,8 @@ Sends detections to client if client is used (HlsCapture).</p>
 <span class="sd">        on_processed_frame (Function): when the frame got processed. Call this function to handle effects.</span>
 <span class="sd">        ws_client (WebsocketClient): The websocket client so the message queue can be emptied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.</span>
-    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="c1"># Frame buffer that stores 150 frames (flushes older frames if new frames are added over the limit.</span>
+    <span class="n">frame_buffer</span> <span class="o">=</span> <span class="n">FrameBuffer</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
 
     <span class="c1"># Create Scheduler by passing all information to construct the schedule nodes and its components.</span>
     <span class="n">scheduler</span> <span class="o">=</span> <span class="n">prepare_scheduler</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">re_identifier</span><span class="p">,</span> <span class="n">on_processed_frame</span><span class="p">,</span> <span class="n">frame_buffer</span><span class="p">)</span>
@@ -453,7 +453,7 @@ during the loop). The objects called upon by the client are modified by referenc
         <span class="c1"># Start command.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">track_elem</span><span class="p">,</span> <span class="n">StartMessage</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features_from_cutout</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">get_cutout</span><span class="p">(</span><span class="n">framebuffer</span><span class="p">))</span>
+                <span class="n">feature_map</span> <span class="o">=</span> <span class="n">re_identifier</span><span class="o">.</span><span class="n">extract_features_from_image</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">get_cutout</span><span class="p">(</span><span class="n">framebuffer</span><span class="p">))</span>
 
                 <span class="c1"># Sends the feature map to the orchestrator using a Websocket client.</span>
                 <span class="n">ws_client</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">UpdateMessage</span><span class="p">(</span><span class="n">track_elem</span><span class="o">.</span><span class="n">object_id</span><span class="p">,</span> <span class="n">feature_map</span><span class="p">))</span>
