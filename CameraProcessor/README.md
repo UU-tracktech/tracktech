@@ -66,7 +66,7 @@ The following environment variables can be used:
 | CLIENT_ID        | Yes*     | -                     | Authentication ID for the orchestrator                                       |
 | CLIENT_SECRET    | Yes*     | -                     | Authentication secret for the orchestrator                                   |
 
-\* If the AUTH_SERVER_URL is present the id and secret have to be set.
+\* If the AUTH_SERVER_URL is present, the id and secret have to be set.
 
 ### Configurations
 
