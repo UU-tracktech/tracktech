@@ -56,14 +56,20 @@ To run the system locally there are a few steps needed.
 The following environment variables can be used:
 (When these are set, it overrides the configs.ini values with these)
 
-| Variable         | Config.ini value name | Description                                                                  |
-| ---------------- | --------------------- | ---------------------------------------------------------------------------- |
-| ORCHESTRATOR_URL | orchestrator.url      | The link of the orchestrator websocket                                       |
-| HLS_STREAM_URL   | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
-| PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                              |
-| DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                       |
-| TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                        |
-| REID_ALG         | Main.reid             | Name of the re-identification algorithm to use                               |
+| Variable         | Optional | Config.ini value name | Description                                                                  |
+| ---------------- | -------- | --------------------- | ---------------------------------------------------------------------------- |
+| ORCHESTRATOR_URL | No       | orchestrator.url      | The link of the orchestrator websocket                                       |
+| HLS_STREAM_URL   | No       | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
+| CAMERA_ID        | No       | -                     | Identifier of the processor instance                                         |
+| PROCESSOR_MODE   | Yes      | Main.mode             | In what mode the container runs                                              |
+| DETECTION_ALG    | Yes      | Main.detector         | Name of the detection algorithm to use                                       |
+| TRACKING_ALG     | Yes      | Main.tracker          | Name of the tracking algorithm to use                                        |
+| REID_ALG         | Yes      | Main.reid             | Name of the re-identification algorithm to use                               |
+| AUTH_SERVER_URL  | Yes      | -                     | Url of the authentication server                                             |
+| CLIENT_ID        | Yes*     | -                     | Authentication ID for the orchestrator                                       |
+| CLIENT_SECRET    | Yes*     | -                     | Authentication secret for the orchestrator                                   |
+
+\* If the AUTH_SERVER_URL is present, the id and secret have to be set.
 
 ### Configurations
 
