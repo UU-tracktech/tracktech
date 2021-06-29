@@ -8,14 +8,14 @@ Utrecht University within the Software Project course.
 from collections import OrderedDict
 import numpy as np
 
+from tests.unittests.conftest import get_small_frame
+from tests.unittests.conftest import get_large_frame
+from tests.unittests.utils.utils import get_sample_frame
 from processor.pipeline.frame_buffer import FrameBuffer
 from processor.data_object.rectangle import Rectangle
 from processor.data_object.bounding_box import BoundingBox
 from processor.data_object.bounding_boxes import BoundingBoxes
 from processor.data_object.frame_obj import FrameObj
-from tests.unittests.conftest import get_small_frame
-from tests.unittests.conftest import get_large_frame
-from tests.unittests.utils.utils import get_sample_frame
 
 
 # pylint: disable=attribute-defined-outside-init

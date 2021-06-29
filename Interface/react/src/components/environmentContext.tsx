@@ -15,7 +15,7 @@ export type cameraSettingsType = {
   Forwarder: string
 }
 
-/** Type containing all the arguments needed to create a context with a websocket. */
+/** Type containing all the arguments needed to create a context containing the environment settings. */
 export type environmentArgs = {
   cameras: cameraSettingsType[]
   objectTypes: string[]
@@ -24,9 +24,13 @@ export type environmentArgs = {
   orchestratorTimelinesUrl: string
   bufferTime: number
   segmentLength: number
+  clientId: string
+  accessTokenUri: string
+  authorizationUri: string
+  redirectUri: string
 }
 
-/** The context which can be used by other components get settings from the environment settings file. */
+/** The context which can be used by other components to get settings from the environment settings file. */
 export const environmentContext = React.createContext<environmentArgs>({
   cameras: [],
   objectTypes: [],
@@ -35,7 +39,11 @@ export const environmentContext = React.createContext<environmentArgs>({
   orchestratorObjectIdsUrl: '',
   orchestratorTimelinesUrl: '',
   bufferTime: 10,
-  segmentLength: 1
+  segmentLength: 1,
+  clientId: '',
+  accessTokenUri: '',
+  authorizationUri: '',
+  redirectUri: ''
 })
 
 /** Context provider that reads settings file and serves results. */
@@ -63,7 +71,11 @@ export function EnvironmentProvider(props: { children: ReactNode }) {
         orchestratorObjectIdsUrl: environment?.orchestratorObjectIdsUrl ?? '',
         orchestratorTimelinesUrl: environment?.orchestratorTimelinesUrl ?? '',
         bufferTime: environment?.bufferTime ?? 10,
-        segmentLength: environment?.segmentLength ?? 1
+        segmentLength: environment?.segmentLength ?? 1,
+        clientId: environment?.clientId ?? '',
+        accessTokenUri: environment?.accessTokenUri ?? '',
+        authorizationUri: environment?.authorizationUri ?? '',
+        redirectUri: environment?.redirectUri ?? ''
       }}
     >
       {props.children}

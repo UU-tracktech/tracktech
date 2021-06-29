@@ -1,4 +1,3 @@
-
 # Training the algorithms
 
 The following will describe how to train a model for the detection stage and the re-identification stage.
@@ -9,36 +8,36 @@ The following will describe how to train a model for the detection stage and the
 Clone the project
 
 ```bash
-  git clone https://github.com/UU-tracktech/tracktech.git
+git clone https://github.com/UU-tracktech/tracktech.git
 ```
 
 Go to the project directory.
 
 ```bash
-  cd <root-of-project>
+cd <root-of-project>
 ```
 
 Install dependencies (local)
 
 ```bash
-  npm install Interface/react
-  pip install CameraProcessor/requirements.txt
-  pip install CameraProcessor/requirements-reid.txt
-  pip install CameraProcessor/requirements-gpu.txt
-  pip install CameraProcessor/requirements-test.txt
-  pip install CameraProcessor/processor/pipeline/detection/yolov5/requirements.txt
-  pip install CameraProcessor/processor/pipeline/detection/yolor/requirements.txt
-  pip install CameraProcessor/processor/pipeline/reidentification/torchreid/requirements.txt
-  pip install ProcessorOrchestrator/requirements.txt
-  pip install ProcessorOrchestrator/requirements-test.txt
-  pip install VideoForwarder/requirements.txt
-  pip install VideoForwarder/requirements-test.txt
+npm install Interface/react
+pip install CameraProcessor/requirements.txt
+pip install CameraProcessor/requirements-reid.txt
+pip install CameraProcessor/requirements-gpu.txt
+pip install CameraProcessor/requirements-test.txt
+pip install CameraProcessor/processor/pipeline/detection/yolov5/requirements.txt
+pip install CameraProcessor/processor/pipeline/detection/yolor/requirements.txt
+pip install CameraProcessor/processor/pipeline/reidentification/torchreid/requirements.txt
+pip install ProcessorOrchestrator/requirements.txt
+pip install ProcessorOrchestrator/requirements-test.txt
+pip install VideoForwarder/requirements.txt
+pip install VideoForwarder/requirements-test.txt
 ```
 OR
 
 Install dependencies (Docker)
 ```bash
-  docker compose up
+docker compose up
 ```
 
   
@@ -129,8 +128,8 @@ file = /train.py
 With mode in `configs.ini` set to `yolov5`:
 
 ```bash
-  cd CameraProcessor/processor/training/detection/
-  python3 train.py
+cd CameraProcessor/processor/training/detection/
+python3 train.py
 ```
 
 #### Yolor
@@ -138,8 +137,8 @@ With mode in `configs.ini` set to `yolov5`:
 With mode in `configs.ini` set to `yolor`:
 
 ```bash
-  cd CameraProcessor/processor/training/detection/
-  python3 train.py
+cd CameraProcessor/processor/training/detection/
+python3 train.py
 ```
 
 ### Re-Identification
@@ -147,26 +146,79 @@ With mode in `configs.ini` set to `yolor`:
 #### Torchreid
 
 ```bash
-  cd CameraProcessor/processor/training/reidentification/
-  python3 train.py
+cd CameraProcessor/processor/training/reidentification/
+python3 train.py
 ```
 
 #### Fastreid
 
 ```bash
-  cd <location-of-root>/CameraProcessor/processor/pipeline/reidentification/Fastreid
-  export FASTREID_DATASETS=../../../../data/annotated/Market1501/
-  python3 tools/train_net.py --config-file ./configs/Market1501/bagtricks_R50.yml MODEL.DEVICE "cuda:0"
+cd <location-of-root>/CameraProcessor/processor/pipeline/reidentification/Fastreid
+export FASTREID_DATASETS=../../../../data/annotated/Market1501/
+python3 tools/train_net.py --config-file ./configs/Market1501/bagtricks_R50.yml MODEL.DEVICE "cuda:0"
 ```
 
+## Determining the accuracy
+
+### Detection
+
+Set the Accuracy mode in `configs.ini` in CameraProcessor to the desired value:
+
+```bash
+[Accuracy]
+# Detection algorithm to use for accuracy. Values: yolov5, yolor
+detector = yolov5
+# Re-identification algorithm to use for accuracy. Values: torchreid, fastreid
+reid = torchreid
+```
+
+#### Yolov5
+
+With detector in `configs.ini` set to `yolov5`:
+
+```bash
+cd CameraProcessor/processor/training/detection/
+python3 accuracy_object.py
+```
+
+#### Yolor
+
+With detector in `configs.ini` set to `yolor`:
+
+```bash
+cd CameraProcessor/processor/training/detection/
+python3 accuracy_object.py
+```
+
+### Re-Identification
+
+#### Torchreid
+
+With reid in `configs.ini` set to `torchreid`:
+
+```bash
+cd CameraProcessor/processor/training/reidentification/
+python3 accuracy_object.py
+```
+
+#### Fastreid
+
+Due to limitations, FastReid has to be directly called to evaluate using the command line:
+
+```bash
+cd <location-of-root>/CameraProcessor/processor/pipeline/reidentification/Fastreid
+export FASTREID_DATASETS=../../../../data/annotated/Market1501/
+python3 tools/train_net.py --config-file ./configs/Market1501/bagtricks_R50.yml ---eval-only MODEL.WEIGHTS /path/to/weight-file MODEL.DEVICE "cuda:0"
+```
   
+
 ## FAQ
 
 #### Why is there no training for tracking?
 
 Tracking uses either Sort or Sort_OH. Both of these algorithms are not based not a neural network, and thus the user cannot train the tracking stage. These algorithms solely rely on the detection stages' result. To improve tracking, please try to improve detection performance.
 
-#### I'm getting paging file size errors on Windows. How do I fix this?
+#### I am getting paging file size errors on Windows. How do I fix this?
 
 This error means that Windows does not have sufficient disk space for a paging file during the training. Either create more disk space by removing other files from the disk or consider running the training on a Unix based system.
 
@@ -174,12 +226,12 @@ This error means that Windows does not have sufficient disk space for a paging f
 
 Consider running training on a larger part of the dataset and for more epochs. Generally speaking, the larger the dataset used and the longer trained, the better the resulting model.
 
-#### I'm missing a dependency. Where can I find it?
+#### I am missing a dependency. Where can I find it?
 
 Try installing the package as follows:
 
 ```bash
-  pip install <name-of-package>
+pip install <name-of-package>
 ```
 
 #### The program cannot find my datasets. Where do I store them?
@@ -205,6 +257,9 @@ For example, when using the Market1501 and COCO datasets, the folder structure m
                ├──query
                └──readme.txt
 ```
+
+Re-identification on fastreid is an exception: it requires the dataset to be located next to the `accuracy_object.py`
+file in a folder names `datasets`.
 
 #### I want to train with custom data. Is this possible?
 

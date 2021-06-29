@@ -7,7 +7,7 @@ Utrecht University within the Software Project course.
 */
 
 import React from 'react'
-import { TimelineData, ToDate } from '../../../src/classes/timelineData'
+import { TimelineData, ToDate } from 'classes/timelineData'
 
 //Collection of tests that test the creation of timelines for objects
 describe('TimelineData class tests', () => {

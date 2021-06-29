@@ -5,8 +5,12 @@
 !docs
 !utility
 !CameraProcessor/processor
+!CameraProcessor/data/tests
 !ProcessorOrchestrator/src
 !VideoForwarder/src
+!Interface/react/package.json
+!Interface/react/src
+!Interface/react/tsconfig.json
 
 # Exclude existing html
 **/docs/html/

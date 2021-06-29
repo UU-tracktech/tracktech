@@ -17,14 +17,15 @@ class Rectangle:
             x2 (float): normalized bottom-right X.
             y2 (float): normalized bottom-right Y.
         """
-        if x1 > x2:
+        # Rounding for float precision errors errors.
+        if round(x1, 2) > round(x2, 2):
             raise ValueError(f'x1 {x1} should be smaller than or equal to x2 {x2}')
-        if y1 > y2:
+        if round(y1, 2) > round(y2, 2):
             raise ValueError(f'y1 {y1} should be smaller than or equal to y2 {y2}')
 
-        if x1 < 0 or y1 < 0:
+        if round(x1, 2) < 0 or round(y1, 2) < 0:
             raise ValueError(f'x1 {x1} and y1 {y1} should be greater than or equal to 0')
-        if x2 > 1 or y2 > 1:
+        if round(x2, 2) > 1 or round(y2, 2) > 1:
             raise ValueError(f'x2 {x2} and y2 {y2} should be smaller than or equal to 1')
 
         self.__x1 = x1

@@ -34,8 +34,8 @@ async def process_stream(capture, detector, tracker, re_identifier, on_processed
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects.
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied.
     """
-    # Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.
-    frame_buffer = FrameBuffer(300)
+    # Frame buffer that stores 150 frames (flushes older frames if new frames are added over the limit.
+    frame_buffer = FrameBuffer(150)
 
     frame_nr = 0
 
@@ -92,8 +92,8 @@ async def process_stream_scheduler(capture, detector, tracker, re_identifier, on
         on_processed_frame (Function): when the frame got processed. Call this function to handle effects.
         ws_client (WebsocketClient): The websocket client so the message queue can be emptied.
     """
-    # Frame buffer that stores 300 frames (flushes older frames if new frames are added over the limit.
-    frame_buffer = FrameBuffer(300)
+    # Frame buffer that stores 150 frames (flushes older frames if new frames are added over the limit.
+    frame_buffer = FrameBuffer(150)
 
     # Create Scheduler by passing all information to construct the schedule nodes and its components.
     scheduler = prepare_scheduler(detector, tracker, re_identifier, on_processed_frame, frame_buffer)
@@ -144,7 +144,7 @@ def process_message_queue(ws_client, framebuffer, re_identifier, re_id_data):
         # Start command.
         if isinstance(track_elem, StartMessage):
             try:
-                feature_map = re_identifier.extract_features_from_cutout(track_elem.get_cutout(framebuffer))
+                feature_map = re_identifier.extract_features_from_image(track_elem.get_cutout(framebuffer))
 
                 # Sends the feature map to the orchestrator using a Websocket client.
                 ws_client.send_message(UpdateMessage(track_elem.object_id, feature_map))

@@ -1,27 +1,24 @@
 {
-    "cameras": [
-        {
-            "Name": "Cam1",
-            "Id": "stream 1",
-            "Forwarder": "http://tracktech.ml:50008/stream.m3u8"
-        },
-        {
-            "Name": "Cam2",
-            "Id": "stream 2",
-            "Forwarder": "https://tracktech.ml:50012/stream.m3u8"
-        }
-    ],
-    "objectTypes": [
-        "person",
-        "bicycle",
-        "car",
-        "motorbike",
-        "bus",
-        "truck"
-    ],
-    "orchestratorWebsocketUrl": "wss://tracktech.ml:50011/client",
-    "orchestratorObjectIdsUrl": "https://tracktech.ml:50011/objectIds",
-    "orchestratorTimelinesUrl": "https://tracktech.ml:50011/timelines",
-    "bufferTime": 15,
-    "segmentLength": 2
+  "cameras": [
+    {
+      "Name": "{Name of camera 1}",
+      "Id": "{Id of camera 1}",
+      "Forwarder": "{Hls url of camera 1}"
+    },
+    {
+      "Name": "{Name of camera 2}",
+      "Id": "{Id of camera 2}",
+      "Forwarder": "{Hls url of camera 2}"
+    }
+  ],
+  "objectTypes": ["person", "bicycle", "car", "motorbike", "bus", "truck"],
+  "orchestratorWebsocketUrl": "{Orchestrator client url}",
+  "orchestratorObjectIdsUrl": "{Orchestrator objectIds url}",
+  "orchestratorTimelinesUrl": "{Orchestrator timelines url}",
+  "bufferTime": 15,
+  "segmentLength": 2,
+  "clientId": "{Client id}",
+  "accessTokenUri": "{Oauth token url}",
+  "authorizationUri": "{Oauth auth url}",
+  "redirectUri": "{Oauth redirect uri}"
 }

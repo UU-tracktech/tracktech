@@ -3,68 +3,78 @@
 The job of the camera processor is to detect all potential subjects
 and track the subjects that have been selected by the camera operators using the interface.
 The camera operators only see the detections within a frame and the subjects they started tracking.
-The tracking of subjects is performed over multiple cameras, 
+The tracking of subjects is performed over multiple cameras,
 notifying the camera operator when a subject is re-identified.
 
 ## Quickstart
 
-Run the following command to startup the compose file in the current directory with an example video.
+Run the following command to start the processor.
 
 ```bat
-docker-compose up --build
+docker run -e HLS_STREAM_URL={Hls stream url} -e ORCHESTRATOR_URL={Orchestrator url} -e CAMERA_ID={Camera stream id} -e PROCESSOR_MODE=deploy -e DETECTION_ALG=yolov5 -e TRACKING_ALG=sort -e REID_ALG=torchreid tracktech/processor:latest
 ```
-
-The [venice.mp4](data/videos/venice.mp4) will be streamed to `http://localhost:9090`
 
 ### Starting
 
-The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
-For differences in CUDA versions, check out the following 
-[link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one. 
+The camera processor can be run both locally, and in Docker, although the used system must comply with the set requirements.
+For differences in CUDA versions, check out the following
+[link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one.
 CUDA 10.1 (version cu101) is used because it was available for all the members of the team.
 
 #### Docker
 
 If the system is to be run with GPU, it is much hassle for Windows users and not recommended.
 In order to be able to run the system with GPU, access to the Windows Insider program is required to use CUDA in WSL2.
-Windows insider program slows down the speed of pc a lot. 
+Windows insider program slows down the speed of pc a lot.
 
 - GPU-enabled on Linux:
-   1. You need an NVIDIA GPU that supports CUDA.
-   2. Check the version of the CUDA installation, change PyTorch import if needed.
-   3. Make sure the devices in configs.ini are set to 0.
-   4. Run ```docker-compose up``` in the root to build the container for deployment.
+  1.  You need an NVIDIA GPU that supports CUDA.
+  2.  Check the version of the CUDA installation, change PyTorch import if needed.
+  3.  Make sure the devices in configs.ini are set to 0.
+  4.  Run `docker-compose up` in the root to build the container for deployment.
 - GPU-enabled on Windows (Not recommended):
-   1.  a CUDA supported NVIDIA GPU is required.
-   2. Follow the [NVIDIA install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
-   3. Make sure the devices in configs.ini are set to 0.
-   4. Run ```docker-compose up``` in the root to build the container for deployment.
-   5. Check the docker container logs in Docker Desktop to see if it is working properly.
+  1.  a CUDA supported NVIDIA GPU is required.
+  2.  Follow the [NVIDIA install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
+  3.  Make sure the devices in configs.ini are set to 0.
+  4.  Run `docker-compose up` in the root to build the container for deployment.
+  5.  Check the docker container logs in Docker Desktop to see if it is working properly.
 - GPU-disabled (cannot run GPU code, only start container):
-   1. In configs.ini, change the device value to CPU.
-   2. Run ```docker-compose up``` in the root to build the container for deployment.
+  1.  In configs.ini, change the device value to CPU.
+  2.  Run `docker-compose up` in the root to build the container for deployment.
 
 #### Local
 
-First install [all dependencies](#dependencies).
+To run the system locally there are a few steps needed.
+
+1. First install [all dependencies](#dependencies).
+2. Open the CameraProcessor folder in an IDE.
+3. Change the [configurations](###configurations).
+4. Run main.py.
 
 ### Environment variables
 
 The following environment variables can be used:
 (When these are set, it overrides the configs.ini values with these)
 
-| Variable         | Config.ini value name | Description                                                                 
-| ---------------- | --------------------- | ----------------------------------------------------------------------------
-| ORCHESTRATOR_URL | orchestrator.url      | The link of the orchestrator websocket                                      
-| HLS_STREAM_URL   | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls")
-| PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                             
-| DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                      
-| TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                       
-| REID_ALG         | Main.reid             | Name of the re-identification algorithm to use                              
+| Variable         | Optional | Config.ini value name | Description                                                                  |
+| ---------------- | -------- | --------------------- | ---------------------------------------------------------------------------- |
+| ORCHESTRATOR_URL | No       | orchestrator.url      | The link of the orchestrator websocket                                       |
+| HLS_STREAM_URL   | No       | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
+| CAMERA_ID        | No       | -                     | Identifier of the processor instance                                         |
+| PROCESSOR_MODE   | Yes      | Main.mode             | In what mode the container runs                                              |
+| DETECTION_ALG    | Yes      | Main.detector         | Name of the detection algorithm to use                                       |
+| TRACKING_ALG     | Yes      | Main.tracker          | Name of the tracking algorithm to use                                        |
+| REID_ALG         | Yes      | Main.reid             | Name of the re-identification algorithm to use                               |
+| AUTH_SERVER_URL  | Yes      | -                     | Url of the authentication server                                             |
+| CLIENT_ID        | Yes*     | -                     | Authentication ID for the orchestrator                                       |
+| CLIENT_SECRET    | Yes*     | -                     | Authentication secret for the orchestrator                                   |
+
+\* If the AUTH_SERVER_URL is present, the id and secret have to be set.
 
 ### Configurations
 
 CameraProcessor configurations inside the [configs.ini](configs.ini) file. Let's highlight some of the important ones:
+
 - **Main.mode:** This is the mode in which the application runs.
   - **deploy**: Connect using a WebSocket with the orchestrator URL.
   - **opencv**: Display the resulting processed frames inside an OpenCV native window.
@@ -84,15 +94,14 @@ CameraProcessor configurations inside the [configs.ini](configs.ini) file. Let's
 
 ### Configuration constraints
 
-There are two configuration constraints due to the way re-identification works. 
+There are two configuration constraints due to the way re-identification works.
 Feature maps generated by the camera processors can differ in size based on the used re-identification algorithm.
 These feature maps are sent to the orchestrator, which shares them with the other camera processors.
-This means that all camera processors must use the same re-identification algorithm, 
+This means that all camera processors must use the same re-identification algorithm,
 and once a new algorithm is chosen all processors, and the orchestrator must be restarted.
 
 - Restart orchestrator once re-identification algorithm is switched.
 - Use the same re-identification algorithm across all processors.
-
 
 ## Architecture
 
@@ -106,12 +115,12 @@ the unaltered video stream and commands/feature maps sent by the orchestrator.
 
 #### Video stream
 
-The video forwarder sends the video stream. 
+The video forwarder sends the video stream.
 This video forwarder previously encoded the camera stream to HLS, which the camera processor uses.
-Other input methods also exist, mainly image capture and video capture, 
+Other input methods also exist, mainly image capture and video capture,
 although both are only used for benchmarking/testing purposes.
-The HLS stream is wrapped together with the timestamp of the HLS segment 
-so that time can be consistently tracked by both the camera processor and the interface, 
+The HLS stream is wrapped together with the timestamp of the HLS segment
+so that time can be consistently tracked by both the camera processor and the interface,
 since both components utilize the same stream.
 
 Further explanation is located in the [processor/input README](processor/input/README.md).
@@ -125,14 +134,14 @@ The interface is responsible for choosing an object to track, which is done base
 
 ### Pipeline
 
-The pipeline is responsible for processing all inputs, detecting all potential subject (detection of all objects), 
+The pipeline is responsible for processing all inputs, detecting all potential subject (detection of all objects),
 Furthermore, tracking the subjects selected by the camera operator.
 How these goals are achieved is explained in the [pipeline README](processor/pipeline/README.md).
 
 ### Output
 
 There are two types of outputs:
-detections possibly associated with a tracked subject, 
+detections possibly associated with a tracked subject,
 and re-identification data.
 
 #### Detections
@@ -158,25 +167,10 @@ The systems shares this information amongst processors.
 The camera processor can be run both locally and in Docker, although the used system must comply with the set requirements.
 For differences in CUDA versions, check out the following [link](https://download.pytorch.org/whl/torch_stable.html) to see what distribution is available and choose one. We used the cu101 version because it was available for all of the members of the team.
 
-### Environment variables
-
-The system can use the following environment variables:
-(When these values are set, it overrides the configs.ini values with these)
-
-| Variable         | Config.ini value name | Description                                                                  |
-| ---------------- | --------------------- | ---------------------------------------------------------------------------- |
-| ORCHESTRATOR_URL | Orchestrator.url      | The link of the orchestrator WebSocket                                       |
-| HLS_STREAM_URL   | Input.hls_url         | The stream URL of the video forwarder (when set it runs in Input.type "hls") |
-| CAMERA_ID        | Input.camera_id       | The id of the camera used to coordinate data send to the orchestrator        |
-| PROCESSOR_MODE   | Main.mode             | In what mode the container runs                                              |
-| DETECTION_ALG    | Main.detector         | Name of the detection algorithm to use                                       |
-| TRACKING_ALG     | Main.tracker          | Name of the tracking algorithm to use                                        |
-| TRACKING_ALG     | Main.reid             | Name of the re-identification algorithm to use                               |
-
-
 - [Python 3.8](https://www.python.org/downloads/release/python-3810/): no other Python versions have been tested.
-- [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): this CUDA version has been tested. *However, it has demonstrated to work with CUDA 11.1*
+- [CUDA 10.1.2](https://developer.nvidia.com/cuda-10.1-download-archive-update2): this CUDA version has been tested. _However, it has demonstrated to work with CUDA 11.1_
 - [cuDNN 7.6.5](https://developer.nvidia.com/rdp/cudnn-archive): this cuDNN was chosen due to compatibility with CUDA 10.1.2.
+- [FFmpeg](https://ffmpeg.org/download.html): This is to extract metadata from the HLS stream to synchronise the stream with the interface.
 
 ### Packages
 
@@ -189,6 +183,7 @@ pip install -r requirements.txt
 pip install -r requirements-gpu.txt
 pip install -r requirements-reid.txt
 ```
+
 ## Development
 
 ### Testing
@@ -196,8 +191,10 @@ pip install -r requirements-reid.txt
 We use [Pytest](https://docs.pytest.org/en/stable/index.html) to test the code, making it easy to see the coverage.
 
 #### Docker
+
 The setup and commands are already included inside the Dockerfile; these do not need any tweaking.
 Running unit tests:
+
 ```
 docker-compose -f compose/docker-compose_test_unit.yml up --build
 ```
@@ -210,41 +207,24 @@ When [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-update2
 (once again, NVIDIA only), you should be able to run main.py in the processor directory locally.
 This setup will be able to run the YOLOv5 detection algorithm.
 
-### Running in Docker
-
-If you want to run it with GPU, it is a lot of hassle for Windows users and not recommended.
-You require the Windows Insider program to use CUDA in WSL2.
-Windows insider program slows down the speed of pc a lot.
-
-- GPU-enabled on Linux:
-  1.  You need an NVIDIA GPU that supports CUDA
-  2.  Check the version of the CUDA installation, change PyTorch import if needed
-  3.  Make sure the devices in configs.ini are set to 0
-  4.  Run `docker-compose up` in the root to build the container for deployment.
-- GPU-enabled on windows (Not recommended):
-  1.  You need an NVIDIA GPU that supports CUDA
-  2.  Follow the [nvidia install guide](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) step-by-step to expose your GPU to the docker container.
-  3.  Make sure the devices in configs.ini are set to 0
-  4.  Run `docker-compose up` in the root to build the container for deployment.
-  5.  Check the logs of your docker container in the Docker Desktop to see if it is working correctly.
-- GPU-disabled (can't run GPU code, only start container):
-  1.  In configs.ini, change the device value to CPU.
-  2.  Run `docker-compose up` in the root to build the container for deployment.
-
 ### Verify application in Docker
 
-In order to verify the detection/tracking/re-identifying running inside the Docker container, it is possible to stream to the result to localhost.
-Add the following lines to the docker-compose.yml file inside the root inside the camera processor service: 
+In order to verify the detection/tracking/re-identifying running inside the Docker container, it is possible to stream the result to localhost.
+Add the following lines to the docker-compose.yml file inside the root inside the camera processor service:
+
 ```cmd
 ports:
     - 9090:9090
 ```
+
 Set the PROCESSOR_MODE environment variable to "tornado".
 
-Open the link printed in the console when running ```docker-compose up``` and the stream will get shown after a bit.
+Open the link printed in the console when running `docker-compose up` and the stream will get shown after a bit.
 
-#### Local 
+#### Local
+
 When running the tests locally it is easiest to using the short command:
+
 ```cmd
 pytest --cov-config=.coveragerc --cov-report term-missing --cov-report=term --cov=processor/ tests/unittests
 ```
@@ -263,35 +243,7 @@ For Docker, the Dockerfile contains the setup and commands. These do not need an
 When running the tests locally inside PyCharm, ensure the testing library is set to Pytest for easy development.
 Create a Pytest configuration in PyCharm and test the unit tests folder.
 
-## Pylint with PyCharm
-
-We use Pylint for python code quality assurance.
-
-### Installation
-
-Input following command terminal:
-
-```
-pip install pylint
-```
 The final argument can be extended to test folders more specifically. This one runs the entire `unittest` folder.
 
 To run integration tests locally, WebSocket URLs must be altered for the orchestrator or the HLS stream URL for the forwarder.
 We strongly recommend using Docker to run these as described above.
-Install the PyCharm plugin:
-
-`Control+Alt+S` to open PyCharm settings.
-
-Navigate to `Settings>Plugins`.
-
-Search for `pylint`.
-
-Install the Pylint plugin.
-
-#### Settings
-
-`Control+Alt+S` to open PyCharm settings.
-
-Navigate to `Settings>Other Settings>Pylint`.
-
-Set up a link to Pylint and test settings.
