@@ -35,8 +35,6 @@ Run the program
 python src/main.py
 ```
 
-The stream can then be accessed at `http://localhost/stream.m3u8`
-
 ### Environment variables
 
 The following environment variables can be used:
